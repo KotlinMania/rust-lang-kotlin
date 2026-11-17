@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 
@@ -58,7 +58,7 @@ public fun register(t: MutPtr, dtor: RegisterDtorCallback) {
     val CXA_THREAD_ATEXIT_IMPL: FnCallback1? = null
     if (CXA_THREAD_ATEXIT_IMPL != null && DSO_HANDLE != null && !dso.isNull()) {
         run {
-            f(transmute(dtor), t, mutPtrFromRustCast(dso))
+            f(transmuteWithLayouts<RegisterDtorCallback, FnCallback>(dtor, UnresolvedTypeLayout<RegisterDtorCallback>(), UnresolvedTypeLayout<FnCallback>()), t, mutPtrFromRustCast(dso))
         }
     } else {
         run {

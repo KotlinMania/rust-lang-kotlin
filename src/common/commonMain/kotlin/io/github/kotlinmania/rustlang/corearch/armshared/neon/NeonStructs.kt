@@ -3,14 +3,16 @@
 package io.github.kotlinmania.rustlang.corearch.armshared.neon
 
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
@@ -20,7 +22,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
  * Arm-specific 64-bit wide vector of eight packed `Byte`.
  */
 public open class Int8x8T(
-    public var value: ByteArray,
+    public var value: ByteArray = ByteArray(8),
 ) : AsUnsigned<Uint8x8T>, AsSigned<Uint8x8T> {
     public var field0: ByteArray
         get() = value
@@ -42,9 +44,9 @@ public open class Int8x8T(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "int8x8_t", this.asArray())
 
-    public override fun asUnsigned(): Uint8x8T = transmute(this)
+    public override fun asUnsigned(): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(this, Int8x8T.typeLayout(), Uint8x8T.typeLayout())
 
-    public override fun asSigned(): Uint8x8T = transmute(this)
+    public override fun asSigned(): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(this, Int8x8T.typeLayout(), Uint8x8T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int8x8T> =
@@ -72,7 +74,7 @@ public open class Int8x8T(
          */
         public fun splat(value: Byte): Int8x8T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Byte>): Int8x8T = transmute(simd)
+        public fun from(simd: Simd<Byte>): Int8x8T = transmuteWithLayouts<Simd<Byte>, Int8x8T>(simd, UnresolvedTypeLayout<Simd<Byte>>(), Int8x8T.typeLayout())
     }
 }
 
@@ -80,7 +82,7 @@ public open class Int8x8T(
  * Arm-specific 64-bit wide vector of eight packed `UByte`.
  */
 public open class Uint8x8T(
-    public var value: UByteArray,
+    public var value: UByteArray = UByteArray(8),
 ) : AsSigned<Int8x8T>, AsUnsigned<Int8x8T> {
     public var field0: UByteArray
         get() = value
@@ -102,9 +104,9 @@ public open class Uint8x8T(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "uint8x8_t", this.asArray())
 
-    public override fun asSigned(): Int8x8T = transmute(this)
+    public override fun asSigned(): Int8x8T = transmuteWithLayouts<Uint8x8T, Int8x8T>(this, Uint8x8T.typeLayout(), Int8x8T.typeLayout())
 
-    public override fun asUnsigned(): Int8x8T = transmute(this)
+    public override fun asUnsigned(): Int8x8T = transmuteWithLayouts<Uint8x8T, Int8x8T>(this, Uint8x8T.typeLayout(), Int8x8T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint8x8T> =
@@ -132,7 +134,7 @@ public open class Uint8x8T(
          */
         public fun splat(value: UByte): Uint8x8T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UByte>): Uint8x8T = transmute(simd)
+        public fun from(simd: Simd<UByte>): Uint8x8T = transmuteWithLayouts<Simd<UByte>, Uint8x8T>(simd, UnresolvedTypeLayout<Simd<UByte>>(), Uint8x8T.typeLayout())
     }
 }
 
@@ -140,7 +142,7 @@ public open class Uint8x8T(
  * Arm-specific 64-bit wide polynomial vector of eight packed `p8`.
  */
 public open class Poly8x8T(
-    public var value: UByteArray,
+    public var value: UByteArray = UByteArray(8),
 ) {
     public var field0: UByteArray
         get() = value
@@ -188,7 +190,7 @@ public open class Poly8x8T(
          */
         public fun splat(value: P8): Poly8x8T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<P8>): Poly8x8T = transmute(simd)
+        public fun from(simd: Simd<P8>): Poly8x8T = transmuteWithLayouts<Simd<P8>, Poly8x8T>(simd, UnresolvedTypeLayout<Simd<P8>>(), Poly8x8T.typeLayout())
     }
 }
 
@@ -196,7 +198,7 @@ public open class Poly8x8T(
  * Arm-specific 64-bit wide vector of four packed `Short`.
  */
 public open class Int16x4T(
-    public var value: ShortArray,
+    public var value: ShortArray = ShortArray(4),
 ) : AsUnsigned<Uint16x4T>, AsSigned<Uint16x4T> {
     public var field0: ShortArray
         get() = value
@@ -218,9 +220,9 @@ public open class Int16x4T(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "int16x4_t", this.asArray())
 
-    public override fun asUnsigned(): Uint16x4T = transmute(this)
+    public override fun asUnsigned(): Uint16x4T = transmuteWithLayouts<Int16x4T, Uint16x4T>(this, Int16x4T.typeLayout(), Uint16x4T.typeLayout())
 
-    public override fun asSigned(): Uint16x4T = transmute(this)
+    public override fun asSigned(): Uint16x4T = transmuteWithLayouts<Int16x4T, Uint16x4T>(this, Int16x4T.typeLayout(), Uint16x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int16x4T> =
@@ -248,7 +250,7 @@ public open class Int16x4T(
          */
         public fun splat(value: Short): Int16x4T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Short>): Int16x4T = transmute(simd)
+        public fun from(simd: Simd<Short>): Int16x4T = transmuteWithLayouts<Simd<Short>, Int16x4T>(simd, UnresolvedTypeLayout<Simd<Short>>(), Int16x4T.typeLayout())
     }
 }
 
@@ -256,7 +258,7 @@ public open class Int16x4T(
  * Arm-specific 64-bit wide vector of four packed `UShort`.
  */
 public open class Uint16x4T(
-    public var value: UShortArray,
+    public var value: UShortArray = UShortArray(4),
 ) : AsSigned<Int16x4T>, AsUnsigned<Int16x4T> {
     public var field0: UShortArray
         get() = value
@@ -278,9 +280,9 @@ public open class Uint16x4T(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "uint16x4_t", this.asArray())
 
-    public override fun asSigned(): Int16x4T = transmute(this)
+    public override fun asSigned(): Int16x4T = transmuteWithLayouts<Uint16x4T, Int16x4T>(this, Uint16x4T.typeLayout(), Int16x4T.typeLayout())
 
-    public override fun asUnsigned(): Int16x4T = transmute(this)
+    public override fun asUnsigned(): Int16x4T = transmuteWithLayouts<Uint16x4T, Int16x4T>(this, Uint16x4T.typeLayout(), Int16x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint16x4T> =
@@ -308,7 +310,7 @@ public open class Uint16x4T(
          */
         public fun splat(value: UShort): Uint16x4T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UShort>): Uint16x4T = transmute(simd)
+        public fun from(simd: Simd<UShort>): Uint16x4T = transmuteWithLayouts<Simd<UShort>, Uint16x4T>(simd, UnresolvedTypeLayout<Simd<UShort>>(), Uint16x4T.typeLayout())
     }
 }
 
@@ -316,7 +318,7 @@ public open class Uint16x4T(
  * Arm-specific 64-bit wide vector of four packed `p16`.
  */
 public open class Poly16x4T(
-    public var value: UShortArray,
+    public var value: UShortArray = UShortArray(4),
 ) {
     public var field0: UShortArray
         get() = value
@@ -364,7 +366,7 @@ public open class Poly16x4T(
          */
         public fun splat(value: P16): Poly16x4T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<P16>): Poly16x4T = transmute(simd)
+        public fun from(simd: Simd<P16>): Poly16x4T = transmuteWithLayouts<Simd<P16>, Poly16x4T>(simd, UnresolvedTypeLayout<Simd<P16>>(), Poly16x4T.typeLayout())
     }
 }
 
@@ -372,7 +374,7 @@ public open class Poly16x4T(
  * Arm-specific 64-bit wide vector of two packed `Int`.
  */
 public open class Int32x2T(
-    public var value: IntArray,
+    public var value: IntArray = IntArray(2),
 ) : AsUnsigned<Uint32x2T>, AsSigned<Uint32x2T> {
     public var field0: IntArray
         get() = value
@@ -394,9 +396,9 @@ public open class Int32x2T(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "int32x2_t", this.asArray())
 
-    public override fun asUnsigned(): Uint32x2T = transmute(this)
+    public override fun asUnsigned(): Uint32x2T = transmuteWithLayouts<Int32x2T, Uint32x2T>(this, Int32x2T.typeLayout(), Uint32x2T.typeLayout())
 
-    public override fun asSigned(): Uint32x2T = transmute(this)
+    public override fun asSigned(): Uint32x2T = transmuteWithLayouts<Int32x2T, Uint32x2T>(this, Int32x2T.typeLayout(), Uint32x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int32x2T> =
@@ -424,7 +426,7 @@ public open class Int32x2T(
          */
         public fun splat(value: Int): Int32x2T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Int>): Int32x2T = transmute(simd)
+        public fun from(simd: Simd<Int>): Int32x2T = transmuteWithLayouts<Simd<Int>, Int32x2T>(simd, UnresolvedTypeLayout<Simd<Int>>(), Int32x2T.typeLayout())
     }
 }
 
@@ -432,7 +434,7 @@ public open class Int32x2T(
  * Arm-specific 64-bit wide vector of two packed `UInt`.
  */
 public open class Uint32x2T(
-    public var value: UIntArray,
+    public var value: UIntArray = UIntArray(2),
 ) : AsSigned<Int32x2T>, AsUnsigned<Int32x2T> {
     public var field0: UIntArray
         get() = value
@@ -454,9 +456,9 @@ public open class Uint32x2T(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "uint32x2_t", this.asArray())
 
-    public override fun asSigned(): Int32x2T = transmute(this)
+    public override fun asSigned(): Int32x2T = transmuteWithLayouts<Uint32x2T, Int32x2T>(this, Uint32x2T.typeLayout(), Int32x2T.typeLayout())
 
-    public override fun asUnsigned(): Int32x2T = transmute(this)
+    public override fun asUnsigned(): Int32x2T = transmuteWithLayouts<Uint32x2T, Int32x2T>(this, Uint32x2T.typeLayout(), Int32x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint32x2T> =
@@ -484,7 +486,7 @@ public open class Uint32x2T(
          */
         public fun splat(value: UInt): Uint32x2T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UInt>): Uint32x2T = transmute(simd)
+        public fun from(simd: Simd<UInt>): Uint32x2T = transmuteWithLayouts<Simd<UInt>, Uint32x2T>(simd, UnresolvedTypeLayout<Simd<UInt>>(), Uint32x2T.typeLayout())
     }
 }
 
@@ -492,7 +494,7 @@ public open class Uint32x2T(
  * Arm-specific 64-bit wide vector of two packed `Float`.
  */
 public open class Float32x2T(
-    public var value: FloatArray,
+    public var value: FloatArray = FloatArray(2),
 ) {
     public var field0: FloatArray
         get() = value
@@ -540,7 +542,7 @@ public open class Float32x2T(
          */
         public fun splat(value: Float): Float32x2T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Float>): Float32x2T = transmute(simd)
+        public fun from(simd: Simd<Float>): Float32x2T = transmuteWithLayouts<Simd<Float>, Float32x2T>(simd, UnresolvedTypeLayout<Simd<Float>>(), Float32x2T.typeLayout())
     }
 }
 
@@ -548,7 +550,7 @@ public open class Float32x2T(
  * Arm-specific 64-bit wide vector of one packed `Long`.
  */
 public open class Int64x1T(
-    public var value: LongArray,
+    public var value: LongArray = LongArray(1),
 ) : AsUnsigned<Uint64x1T>, AsSigned<Uint64x1T> {
     public var field0: LongArray
         get() = value
@@ -570,9 +572,9 @@ public open class Int64x1T(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "int64x1_t", this.asArray())
 
-    public override fun asUnsigned(): Uint64x1T = transmute(this)
+    public override fun asUnsigned(): Uint64x1T = transmuteWithLayouts<Int64x1T, Uint64x1T>(this, Int64x1T.typeLayout(), Uint64x1T.typeLayout())
 
-    public override fun asSigned(): Uint64x1T = transmute(this)
+    public override fun asSigned(): Uint64x1T = transmuteWithLayouts<Int64x1T, Uint64x1T>(this, Int64x1T.typeLayout(), Uint64x1T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int64x1T> =
@@ -600,7 +602,7 @@ public open class Int64x1T(
          */
         public fun splat(value: Long): Int64x1T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): Int64x1T = transmute(simd)
+        public fun from(simd: Simd<Long>): Int64x1T = transmuteWithLayouts<Simd<Long>, Int64x1T>(simd, UnresolvedTypeLayout<Simd<Long>>(), Int64x1T.typeLayout())
     }
 }
 
@@ -608,7 +610,7 @@ public open class Int64x1T(
  * Arm-specific 64-bit wide vector of one packed `ULong`.
  */
 public open class Uint64x1T(
-    public var value: ULongArray,
+    public var value: ULongArray = ULongArray(1),
 ) : AsSigned<Int64x1T>, AsUnsigned<Int64x1T> {
     public var field0: ULongArray
         get() = value
@@ -630,9 +632,9 @@ public open class Uint64x1T(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "uint64x1_t", this.asArray())
 
-    public override fun asSigned(): Int64x1T = transmute(this)
+    public override fun asSigned(): Int64x1T = transmuteWithLayouts<Uint64x1T, Int64x1T>(this, Uint64x1T.typeLayout(), Int64x1T.typeLayout())
 
-    public override fun asUnsigned(): Int64x1T = transmute(this)
+    public override fun asUnsigned(): Int64x1T = transmuteWithLayouts<Uint64x1T, Int64x1T>(this, Uint64x1T.typeLayout(), Int64x1T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint64x1T> =
@@ -660,7 +662,7 @@ public open class Uint64x1T(
          */
         public fun splat(value: ULong): Uint64x1T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<ULong>): Uint64x1T = transmute(simd)
+        public fun from(simd: Simd<ULong>): Uint64x1T = transmuteWithLayouts<Simd<ULong>, Uint64x1T>(simd, UnresolvedTypeLayout<Simd<ULong>>(), Uint64x1T.typeLayout())
     }
 }
 
@@ -668,7 +670,7 @@ public open class Uint64x1T(
  * Arm-specific 64-bit wide vector of one packed `p64`.
  */
 public open class Poly64x1T(
-    public var value: ULongArray,
+    public var value: ULongArray = ULongArray(1),
 ) {
     public var field0: ULongArray
         get() = value
@@ -716,7 +718,7 @@ public open class Poly64x1T(
          */
         public fun splat(value: P64): Poly64x1T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<P64>): Poly64x1T = transmute(simd)
+        public fun from(simd: Simd<P64>): Poly64x1T = transmuteWithLayouts<Simd<P64>, Poly64x1T>(simd, UnresolvedTypeLayout<Simd<P64>>(), Poly64x1T.typeLayout())
     }
 }
 
@@ -724,7 +726,7 @@ public open class Poly64x1T(
  * Arm-specific 128-bit wide vector of sixteen packed `Byte`.
  */
 public open class Int8x16T(
-    public var value: ByteArray,
+    public var value: ByteArray = ByteArray(16),
 ) : AsUnsigned<Uint8x16T>, AsSigned<Uint8x16T> {
     public var field0: ByteArray
         get() = value
@@ -746,9 +748,9 @@ public open class Int8x16T(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "int8x16_t", this.asArray())
 
-    public override fun asUnsigned(): Uint8x16T = transmute(this)
+    public override fun asUnsigned(): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(this, Int8x16T.typeLayout(), Uint8x16T.typeLayout())
 
-    public override fun asSigned(): Uint8x16T = transmute(this)
+    public override fun asSigned(): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(this, Int8x16T.typeLayout(), Uint8x16T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int8x16T> =
@@ -776,7 +778,7 @@ public open class Int8x16T(
          */
         public fun splat(value: Byte): Int8x16T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Byte>): Int8x16T = transmute(simd)
+        public fun from(simd: Simd<Byte>): Int8x16T = transmuteWithLayouts<Simd<Byte>, Int8x16T>(simd, UnresolvedTypeLayout<Simd<Byte>>(), Int8x16T.typeLayout())
     }
 }
 
@@ -784,7 +786,7 @@ public open class Int8x16T(
  * Arm-specific 128-bit wide vector of sixteen packed `UByte`.
  */
 public open class Uint8x16T(
-    public var value: UByteArray,
+    public var value: UByteArray = UByteArray(16),
 ) : AsSigned<Int8x16T>, AsUnsigned<Int8x16T> {
     public var field0: UByteArray
         get() = value
@@ -806,9 +808,9 @@ public open class Uint8x16T(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "uint8x16_t", this.asArray())
 
-    public override fun asSigned(): Int8x16T = transmute(this)
+    public override fun asSigned(): Int8x16T = transmuteWithLayouts<Uint8x16T, Int8x16T>(this, Uint8x16T.typeLayout(), Int8x16T.typeLayout())
 
-    public override fun asUnsigned(): Int8x16T = transmute(this)
+    public override fun asUnsigned(): Int8x16T = transmuteWithLayouts<Uint8x16T, Int8x16T>(this, Uint8x16T.typeLayout(), Int8x16T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint8x16T> =
@@ -836,7 +838,7 @@ public open class Uint8x16T(
          */
         public fun splat(value: UByte): Uint8x16T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UByte>): Uint8x16T = transmute(simd)
+        public fun from(simd: Simd<UByte>): Uint8x16T = transmuteWithLayouts<Simd<UByte>, Uint8x16T>(simd, UnresolvedTypeLayout<Simd<UByte>>(), Uint8x16T.typeLayout())
     }
 }
 
@@ -844,7 +846,7 @@ public open class Uint8x16T(
  * Arm-specific 128-bit wide vector of sixteen packed `p8`.
  */
 public open class Poly8x16T(
-    public var value: UByteArray,
+    public var value: UByteArray = UByteArray(16),
 ) {
     public var field0: UByteArray
         get() = value
@@ -892,7 +894,7 @@ public open class Poly8x16T(
          */
         public fun splat(value: P8): Poly8x16T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<P8>): Poly8x16T = transmute(simd)
+        public fun from(simd: Simd<P8>): Poly8x16T = transmuteWithLayouts<Simd<P8>, Poly8x16T>(simd, UnresolvedTypeLayout<Simd<P8>>(), Poly8x16T.typeLayout())
     }
 }
 
@@ -900,7 +902,7 @@ public open class Poly8x16T(
  * Arm-specific 128-bit wide vector of eight packed `Short`.
  */
 public open class Int16x8T(
-    public var value: ShortArray,
+    public var value: ShortArray = ShortArray(8),
 ) : AsUnsigned<Uint16x8T>, AsSigned<Uint16x8T> {
     public var field0: ShortArray
         get() = value
@@ -922,9 +924,9 @@ public open class Int16x8T(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "int16x8_t", this.asArray())
 
-    public override fun asUnsigned(): Uint16x8T = transmute(this)
+    public override fun asUnsigned(): Uint16x8T = transmuteWithLayouts<Int16x8T, Uint16x8T>(this, Int16x8T.typeLayout(), Uint16x8T.typeLayout())
 
-    public override fun asSigned(): Uint16x8T = transmute(this)
+    public override fun asSigned(): Uint16x8T = transmuteWithLayouts<Int16x8T, Uint16x8T>(this, Int16x8T.typeLayout(), Uint16x8T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int16x8T> =
@@ -952,7 +954,7 @@ public open class Int16x8T(
          */
         public fun splat(value: Short): Int16x8T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Short>): Int16x8T = transmute(simd)
+        public fun from(simd: Simd<Short>): Int16x8T = transmuteWithLayouts<Simd<Short>, Int16x8T>(simd, UnresolvedTypeLayout<Simd<Short>>(), Int16x8T.typeLayout())
     }
 }
 
@@ -960,7 +962,7 @@ public open class Int16x8T(
  * Arm-specific 128-bit wide vector of eight packed `UShort`.
  */
 public open class Uint16x8T(
-    public var value: UShortArray,
+    public var value: UShortArray = UShortArray(8),
 ) : AsSigned<Int16x8T>, AsUnsigned<Int16x8T> {
     public var field0: UShortArray
         get() = value
@@ -982,9 +984,9 @@ public open class Uint16x8T(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "uint16x8_t", this.asArray())
 
-    public override fun asSigned(): Int16x8T = transmute(this)
+    public override fun asSigned(): Int16x8T = transmuteWithLayouts<Uint16x8T, Int16x8T>(this, Uint16x8T.typeLayout(), Int16x8T.typeLayout())
 
-    public override fun asUnsigned(): Int16x8T = transmute(this)
+    public override fun asUnsigned(): Int16x8T = transmuteWithLayouts<Uint16x8T, Int16x8T>(this, Uint16x8T.typeLayout(), Int16x8T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint16x8T> =
@@ -1012,7 +1014,7 @@ public open class Uint16x8T(
          */
         public fun splat(value: UShort): Uint16x8T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UShort>): Uint16x8T = transmute(simd)
+        public fun from(simd: Simd<UShort>): Uint16x8T = transmuteWithLayouts<Simd<UShort>, Uint16x8T>(simd, UnresolvedTypeLayout<Simd<UShort>>(), Uint16x8T.typeLayout())
     }
 }
 
@@ -1020,7 +1022,7 @@ public open class Uint16x8T(
  * Arm-specific 128-bit wide vector of eight packed `p16`.
  */
 public open class Poly16x8T(
-    public var value: UShortArray,
+    public var value: UShortArray = UShortArray(8),
 ) {
     public var field0: UShortArray
         get() = value
@@ -1068,7 +1070,7 @@ public open class Poly16x8T(
          */
         public fun splat(value: P16): Poly16x8T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<P16>): Poly16x8T = transmute(simd)
+        public fun from(simd: Simd<P16>): Poly16x8T = transmuteWithLayouts<Simd<P16>, Poly16x8T>(simd, UnresolvedTypeLayout<Simd<P16>>(), Poly16x8T.typeLayout())
     }
 }
 
@@ -1076,7 +1078,7 @@ public open class Poly16x8T(
  * Arm-specific 128-bit wide vector of four packed `Int`.
  */
 public open class Int32x4T(
-    public var value: IntArray,
+    public var value: IntArray = IntArray(4),
 ) : AsUnsigned<Uint32x4T>, AsSigned<Uint32x4T> {
     public var field0: IntArray
         get() = value
@@ -1098,9 +1100,9 @@ public open class Int32x4T(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "int32x4_t", this.asArray())
 
-    public override fun asUnsigned(): Uint32x4T = transmute(this)
+    public override fun asUnsigned(): Uint32x4T = transmuteWithLayouts<Int32x4T, Uint32x4T>(this, Int32x4T.typeLayout(), Uint32x4T.typeLayout())
 
-    public override fun asSigned(): Uint32x4T = transmute(this)
+    public override fun asSigned(): Uint32x4T = transmuteWithLayouts<Int32x4T, Uint32x4T>(this, Int32x4T.typeLayout(), Uint32x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int32x4T> =
@@ -1128,7 +1130,7 @@ public open class Int32x4T(
          */
         public fun splat(value: Int): Int32x4T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Int>): Int32x4T = transmute(simd)
+        public fun from(simd: Simd<Int>): Int32x4T = transmuteWithLayouts<Simd<Int>, Int32x4T>(simd, UnresolvedTypeLayout<Simd<Int>>(), Int32x4T.typeLayout())
     }
 }
 
@@ -1136,7 +1138,7 @@ public open class Int32x4T(
  * Arm-specific 128-bit wide vector of four packed `UInt`.
  */
 public open class Uint32x4T(
-    public var value: UIntArray,
+    public var value: UIntArray = UIntArray(4),
 ) : AsSigned<Int32x4T>, AsUnsigned<Int32x4T> {
     public var field0: UIntArray
         get() = value
@@ -1158,9 +1160,9 @@ public open class Uint32x4T(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "uint32x4_t", this.asArray())
 
-    public override fun asSigned(): Int32x4T = transmute(this)
+    public override fun asSigned(): Int32x4T = transmuteWithLayouts<Uint32x4T, Int32x4T>(this, Uint32x4T.typeLayout(), Int32x4T.typeLayout())
 
-    public override fun asUnsigned(): Int32x4T = transmute(this)
+    public override fun asUnsigned(): Int32x4T = transmuteWithLayouts<Uint32x4T, Int32x4T>(this, Uint32x4T.typeLayout(), Int32x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint32x4T> =
@@ -1188,7 +1190,7 @@ public open class Uint32x4T(
          */
         public fun splat(value: UInt): Uint32x4T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UInt>): Uint32x4T = transmute(simd)
+        public fun from(simd: Simd<UInt>): Uint32x4T = transmuteWithLayouts<Simd<UInt>, Uint32x4T>(simd, UnresolvedTypeLayout<Simd<UInt>>(), Uint32x4T.typeLayout())
     }
 }
 
@@ -1196,7 +1198,7 @@ public open class Uint32x4T(
  * Arm-specific 128-bit wide vector of four packed `Float`.
  */
 public open class Float32x4T(
-    public var value: FloatArray,
+    public var value: FloatArray = FloatArray(4),
 ) {
     public var field0: FloatArray
         get() = value
@@ -1244,7 +1246,7 @@ public open class Float32x4T(
          */
         public fun splat(value: Float): Float32x4T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Float>): Float32x4T = transmute(simd)
+        public fun from(simd: Simd<Float>): Float32x4T = transmuteWithLayouts<Simd<Float>, Float32x4T>(simd, UnresolvedTypeLayout<Simd<Float>>(), Float32x4T.typeLayout())
     }
 }
 
@@ -1252,7 +1254,7 @@ public open class Float32x4T(
  * Arm-specific 128-bit wide vector of two packed `Long`.
  */
 public open class Int64x2T(
-    public var value: LongArray,
+    public var value: LongArray = LongArray(2),
 ) : AsUnsigned<Uint64x2T>, AsSigned<Uint64x2T> {
     public var field0: LongArray
         get() = value
@@ -1274,9 +1276,9 @@ public open class Int64x2T(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "int64x2_t", this.asArray())
 
-    public override fun asUnsigned(): Uint64x2T = transmute(this)
+    public override fun asUnsigned(): Uint64x2T = transmuteWithLayouts<Int64x2T, Uint64x2T>(this, Int64x2T.typeLayout(), Uint64x2T.typeLayout())
 
-    public override fun asSigned(): Uint64x2T = transmute(this)
+    public override fun asSigned(): Uint64x2T = transmuteWithLayouts<Int64x2T, Uint64x2T>(this, Int64x2T.typeLayout(), Uint64x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int64x2T> =
@@ -1304,7 +1306,7 @@ public open class Int64x2T(
          */
         public fun splat(value: Long): Int64x2T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): Int64x2T = transmute(simd)
+        public fun from(simd: Simd<Long>): Int64x2T = transmuteWithLayouts<Simd<Long>, Int64x2T>(simd, UnresolvedTypeLayout<Simd<Long>>(), Int64x2T.typeLayout())
     }
 }
 
@@ -1312,7 +1314,7 @@ public open class Int64x2T(
  * Arm-specific 128-bit wide vector of two packed `ULong`.
  */
 public open class Uint64x2T(
-    public var value: ULongArray,
+    public var value: ULongArray = ULongArray(2),
 ) : AsSigned<Int64x2T>, AsUnsigned<Int64x2T> {
     public var field0: ULongArray
         get() = value
@@ -1334,9 +1336,9 @@ public open class Uint64x2T(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "uint64x2_t", this.asArray())
 
-    public override fun asSigned(): Int64x2T = transmute(this)
+    public override fun asSigned(): Int64x2T = transmuteWithLayouts<Uint64x2T, Int64x2T>(this, Uint64x2T.typeLayout(), Int64x2T.typeLayout())
 
-    public override fun asUnsigned(): Int64x2T = transmute(this)
+    public override fun asUnsigned(): Int64x2T = transmuteWithLayouts<Uint64x2T, Int64x2T>(this, Uint64x2T.typeLayout(), Int64x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint64x2T> =
@@ -1364,7 +1366,7 @@ public open class Uint64x2T(
          */
         public fun splat(value: ULong): Uint64x2T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<ULong>): Uint64x2T = transmute(simd)
+        public fun from(simd: Simd<ULong>): Uint64x2T = transmuteWithLayouts<Simd<ULong>, Uint64x2T>(simd, UnresolvedTypeLayout<Simd<ULong>>(), Uint64x2T.typeLayout())
     }
 }
 
@@ -1372,7 +1374,7 @@ public open class Uint64x2T(
  * Arm-specific 128-bit wide vector of two packed `p64`.
  */
 public open class Poly64x2T(
-    public var value: ULongArray,
+    public var value: ULongArray = ULongArray(2),
 ) {
     public var field0: ULongArray
         get() = value
@@ -1420,7 +1422,7 @@ public open class Poly64x2T(
          */
         public fun splat(value: P64): Poly64x2T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<P64>): Poly64x2T = transmute(simd)
+        public fun from(simd: Simd<P64>): Poly64x2T = transmuteWithLayouts<Simd<P64>, Poly64x2T>(simd, UnresolvedTypeLayout<Simd<P64>>(), Poly64x2T.typeLayout())
     }
 }
 
@@ -1428,7 +1430,7 @@ public open class Poly64x2T(
  * Arm-specific 64-bit wide vector of four packed `f16`.
  */
 public open class Float16x4T(
-    public var value: List<F16>,
+    public var value: List<F16> = List(4) { F16() },
 ) {
     public var field0: List<F16>
         get() = value
@@ -1476,7 +1478,7 @@ public open class Float16x4T(
          */
         public fun splat(value: F16): Float16x4T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<F16>): Float16x4T = transmute(simd)
+        public fun from(simd: Simd<F16>): Float16x4T = transmuteWithLayouts<Simd<F16>, Float16x4T>(simd, UnresolvedTypeLayout<Simd<F16>>(), Float16x4T.typeLayout())
     }
 }
 
@@ -1484,7 +1486,7 @@ public open class Float16x4T(
  * Arm-specific 128-bit wide vector of eight packed `f16`.
  */
 public open class Float16x8T(
-    public var value: List<F16>,
+    public var value: List<F16> = List(8) { F16() },
 ) {
     public var field0: List<F16>
         get() = value
@@ -1532,7 +1534,7 @@ public open class Float16x8T(
          */
         public fun splat(value: F16): Float16x8T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<F16>): Float16x8T = transmute(simd)
+        public fun from(simd: Simd<F16>): Float16x8T = transmuteWithLayouts<Simd<F16>, Float16x8T>(simd, UnresolvedTypeLayout<Simd<F16>>(), Float16x8T.typeLayout())
     }
 }
 
@@ -1545,9 +1547,9 @@ public open class Int8x8x2T(
 ) : AsUnsigned<Uint8x8x2T>, AsSigned<Uint8x8x2T> {
     public open fun clone(): Int8x8x2T = Int8x8x2T(field0, field1)
 
-    public override fun asUnsigned(): Uint8x8x2T = transmute(this)
+    public override fun asUnsigned(): Uint8x8x2T = transmuteWithLayouts<Int8x8x2T, Uint8x8x2T>(this, Int8x8x2T.typeLayout(), Uint8x8x2T.typeLayout())
 
-    public override fun asSigned(): Uint8x8x2T = transmute(this)
+    public override fun asSigned(): Uint8x8x2T = transmuteWithLayouts<Int8x8x2T, Uint8x8x2T>(this, Int8x8x2T.typeLayout(), Uint8x8x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int8x8x2T> =
@@ -1586,9 +1588,9 @@ public open class Int8x8x3T(
 ) : AsUnsigned<Uint8x8x3T>, AsSigned<Uint8x8x3T> {
     public open fun clone(): Int8x8x3T = Int8x8x3T(field0, field1, field2)
 
-    public override fun asUnsigned(): Uint8x8x3T = transmute(this)
+    public override fun asUnsigned(): Uint8x8x3T = transmuteWithLayouts<Int8x8x3T, Uint8x8x3T>(this, Int8x8x3T.typeLayout(), Uint8x8x3T.typeLayout())
 
-    public override fun asSigned(): Uint8x8x3T = transmute(this)
+    public override fun asSigned(): Uint8x8x3T = transmuteWithLayouts<Int8x8x3T, Uint8x8x3T>(this, Int8x8x3T.typeLayout(), Uint8x8x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int8x8x3T> =
@@ -1632,9 +1634,9 @@ public open class Int8x8x4T(
 ) : AsUnsigned<Uint8x8x4T>, AsSigned<Uint8x8x4T> {
     public open fun clone(): Int8x8x4T = Int8x8x4T(field0, field1, field2, field3)
 
-    public override fun asUnsigned(): Uint8x8x4T = transmute(this)
+    public override fun asUnsigned(): Uint8x8x4T = transmuteWithLayouts<Int8x8x4T, Uint8x8x4T>(this, Int8x8x4T.typeLayout(), Uint8x8x4T.typeLayout())
 
-    public override fun asSigned(): Uint8x8x4T = transmute(this)
+    public override fun asSigned(): Uint8x8x4T = transmuteWithLayouts<Int8x8x4T, Uint8x8x4T>(this, Int8x8x4T.typeLayout(), Uint8x8x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int8x8x4T> =
@@ -1680,9 +1682,9 @@ public open class Int8x16x2T(
 ) : AsUnsigned<Uint8x16x2T>, AsSigned<Uint8x16x2T> {
     public open fun clone(): Int8x16x2T = Int8x16x2T(field0, field1)
 
-    public override fun asUnsigned(): Uint8x16x2T = transmute(this)
+    public override fun asUnsigned(): Uint8x16x2T = transmuteWithLayouts<Int8x16x2T, Uint8x16x2T>(this, Int8x16x2T.typeLayout(), Uint8x16x2T.typeLayout())
 
-    public override fun asSigned(): Uint8x16x2T = transmute(this)
+    public override fun asSigned(): Uint8x16x2T = transmuteWithLayouts<Int8x16x2T, Uint8x16x2T>(this, Int8x16x2T.typeLayout(), Uint8x16x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int8x16x2T> =
@@ -1721,9 +1723,9 @@ public open class Int8x16x3T(
 ) : AsUnsigned<Uint8x16x3T>, AsSigned<Uint8x16x3T> {
     public open fun clone(): Int8x16x3T = Int8x16x3T(field0, field1, field2)
 
-    public override fun asUnsigned(): Uint8x16x3T = transmute(this)
+    public override fun asUnsigned(): Uint8x16x3T = transmuteWithLayouts<Int8x16x3T, Uint8x16x3T>(this, Int8x16x3T.typeLayout(), Uint8x16x3T.typeLayout())
 
-    public override fun asSigned(): Uint8x16x3T = transmute(this)
+    public override fun asSigned(): Uint8x16x3T = transmuteWithLayouts<Int8x16x3T, Uint8x16x3T>(this, Int8x16x3T.typeLayout(), Uint8x16x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int8x16x3T> =
@@ -1767,9 +1769,9 @@ public open class Int8x16x4T(
 ) : AsUnsigned<Uint8x16x4T>, AsSigned<Uint8x16x4T> {
     public open fun clone(): Int8x16x4T = Int8x16x4T(field0, field1, field2, field3)
 
-    public override fun asUnsigned(): Uint8x16x4T = transmute(this)
+    public override fun asUnsigned(): Uint8x16x4T = transmuteWithLayouts<Int8x16x4T, Uint8x16x4T>(this, Int8x16x4T.typeLayout(), Uint8x16x4T.typeLayout())
 
-    public override fun asSigned(): Uint8x16x4T = transmute(this)
+    public override fun asSigned(): Uint8x16x4T = transmuteWithLayouts<Int8x16x4T, Uint8x16x4T>(this, Int8x16x4T.typeLayout(), Uint8x16x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int8x16x4T> =
@@ -1815,9 +1817,9 @@ public open class Uint8x8x2T(
 ) : AsSigned<Int8x8x2T>, AsUnsigned<Int8x8x2T> {
     public open fun clone(): Uint8x8x2T = Uint8x8x2T(field0, field1)
 
-    public override fun asSigned(): Int8x8x2T = transmute(this)
+    public override fun asSigned(): Int8x8x2T = transmuteWithLayouts<Uint8x8x2T, Int8x8x2T>(this, Uint8x8x2T.typeLayout(), Int8x8x2T.typeLayout())
 
-    public override fun asUnsigned(): Int8x8x2T = transmute(this)
+    public override fun asUnsigned(): Int8x8x2T = transmuteWithLayouts<Uint8x8x2T, Int8x8x2T>(this, Uint8x8x2T.typeLayout(), Int8x8x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint8x8x2T> =
@@ -1856,9 +1858,9 @@ public open class Uint8x8x3T(
 ) : AsSigned<Int8x8x3T>, AsUnsigned<Int8x8x3T> {
     public open fun clone(): Uint8x8x3T = Uint8x8x3T(field0, field1, field2)
 
-    public override fun asSigned(): Int8x8x3T = transmute(this)
+    public override fun asSigned(): Int8x8x3T = transmuteWithLayouts<Uint8x8x3T, Int8x8x3T>(this, Uint8x8x3T.typeLayout(), Int8x8x3T.typeLayout())
 
-    public override fun asUnsigned(): Int8x8x3T = transmute(this)
+    public override fun asUnsigned(): Int8x8x3T = transmuteWithLayouts<Uint8x8x3T, Int8x8x3T>(this, Uint8x8x3T.typeLayout(), Int8x8x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint8x8x3T> =
@@ -1902,9 +1904,9 @@ public open class Uint8x8x4T(
 ) : AsSigned<Int8x8x4T>, AsUnsigned<Int8x8x4T> {
     public open fun clone(): Uint8x8x4T = Uint8x8x4T(field0, field1, field2, field3)
 
-    public override fun asSigned(): Int8x8x4T = transmute(this)
+    public override fun asSigned(): Int8x8x4T = transmuteWithLayouts<Uint8x8x4T, Int8x8x4T>(this, Uint8x8x4T.typeLayout(), Int8x8x4T.typeLayout())
 
-    public override fun asUnsigned(): Int8x8x4T = transmute(this)
+    public override fun asUnsigned(): Int8x8x4T = transmuteWithLayouts<Uint8x8x4T, Int8x8x4T>(this, Uint8x8x4T.typeLayout(), Int8x8x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint8x8x4T> =
@@ -1950,9 +1952,9 @@ public open class Uint8x16x2T(
 ) : AsSigned<Int8x16x2T>, AsUnsigned<Int8x16x2T> {
     public open fun clone(): Uint8x16x2T = Uint8x16x2T(field0, field1)
 
-    public override fun asSigned(): Int8x16x2T = transmute(this)
+    public override fun asSigned(): Int8x16x2T = transmuteWithLayouts<Uint8x16x2T, Int8x16x2T>(this, Uint8x16x2T.typeLayout(), Int8x16x2T.typeLayout())
 
-    public override fun asUnsigned(): Int8x16x2T = transmute(this)
+    public override fun asUnsigned(): Int8x16x2T = transmuteWithLayouts<Uint8x16x2T, Int8x16x2T>(this, Uint8x16x2T.typeLayout(), Int8x16x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint8x16x2T> =
@@ -1991,9 +1993,9 @@ public open class Uint8x16x3T(
 ) : AsSigned<Int8x16x3T>, AsUnsigned<Int8x16x3T> {
     public open fun clone(): Uint8x16x3T = Uint8x16x3T(field0, field1, field2)
 
-    public override fun asSigned(): Int8x16x3T = transmute(this)
+    public override fun asSigned(): Int8x16x3T = transmuteWithLayouts<Uint8x16x3T, Int8x16x3T>(this, Uint8x16x3T.typeLayout(), Int8x16x3T.typeLayout())
 
-    public override fun asUnsigned(): Int8x16x3T = transmute(this)
+    public override fun asUnsigned(): Int8x16x3T = transmuteWithLayouts<Uint8x16x3T, Int8x16x3T>(this, Uint8x16x3T.typeLayout(), Int8x16x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint8x16x3T> =
@@ -2037,9 +2039,9 @@ public open class Uint8x16x4T(
 ) : AsSigned<Int8x16x4T>, AsUnsigned<Int8x16x4T> {
     public open fun clone(): Uint8x16x4T = Uint8x16x4T(field0, field1, field2, field3)
 
-    public override fun asSigned(): Int8x16x4T = transmute(this)
+    public override fun asSigned(): Int8x16x4T = transmuteWithLayouts<Uint8x16x4T, Int8x16x4T>(this, Uint8x16x4T.typeLayout(), Int8x16x4T.typeLayout())
 
-    public override fun asUnsigned(): Int8x16x4T = transmute(this)
+    public override fun asUnsigned(): Int8x16x4T = transmuteWithLayouts<Uint8x16x4T, Int8x16x4T>(this, Uint8x16x4T.typeLayout(), Int8x16x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint8x16x4T> =
@@ -2331,9 +2333,9 @@ public open class Int16x4x2T(
 ) : AsUnsigned<Uint16x4x2T>, AsSigned<Uint16x4x2T> {
     public open fun clone(): Int16x4x2T = Int16x4x2T(field0, field1)
 
-    public override fun asUnsigned(): Uint16x4x2T = transmute(this)
+    public override fun asUnsigned(): Uint16x4x2T = transmuteWithLayouts<Int16x4x2T, Uint16x4x2T>(this, Int16x4x2T.typeLayout(), Uint16x4x2T.typeLayout())
 
-    public override fun asSigned(): Uint16x4x2T = transmute(this)
+    public override fun asSigned(): Uint16x4x2T = transmuteWithLayouts<Int16x4x2T, Uint16x4x2T>(this, Int16x4x2T.typeLayout(), Uint16x4x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int16x4x2T> =
@@ -2372,9 +2374,9 @@ public open class Int16x4x3T(
 ) : AsUnsigned<Uint16x4x3T>, AsSigned<Uint16x4x3T> {
     public open fun clone(): Int16x4x3T = Int16x4x3T(field0, field1, field2)
 
-    public override fun asUnsigned(): Uint16x4x3T = transmute(this)
+    public override fun asUnsigned(): Uint16x4x3T = transmuteWithLayouts<Int16x4x3T, Uint16x4x3T>(this, Int16x4x3T.typeLayout(), Uint16x4x3T.typeLayout())
 
-    public override fun asSigned(): Uint16x4x3T = transmute(this)
+    public override fun asSigned(): Uint16x4x3T = transmuteWithLayouts<Int16x4x3T, Uint16x4x3T>(this, Int16x4x3T.typeLayout(), Uint16x4x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int16x4x3T> =
@@ -2418,9 +2420,9 @@ public open class Int16x4x4T(
 ) : AsUnsigned<Uint16x4x4T>, AsSigned<Uint16x4x4T> {
     public open fun clone(): Int16x4x4T = Int16x4x4T(field0, field1, field2, field3)
 
-    public override fun asUnsigned(): Uint16x4x4T = transmute(this)
+    public override fun asUnsigned(): Uint16x4x4T = transmuteWithLayouts<Int16x4x4T, Uint16x4x4T>(this, Int16x4x4T.typeLayout(), Uint16x4x4T.typeLayout())
 
-    public override fun asSigned(): Uint16x4x4T = transmute(this)
+    public override fun asSigned(): Uint16x4x4T = transmuteWithLayouts<Int16x4x4T, Uint16x4x4T>(this, Int16x4x4T.typeLayout(), Uint16x4x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int16x4x4T> =
@@ -2466,9 +2468,9 @@ public open class Int16x8x2T(
 ) : AsUnsigned<Uint16x8x2T>, AsSigned<Uint16x8x2T> {
     public open fun clone(): Int16x8x2T = Int16x8x2T(field0, field1)
 
-    public override fun asUnsigned(): Uint16x8x2T = transmute(this)
+    public override fun asUnsigned(): Uint16x8x2T = transmuteWithLayouts<Int16x8x2T, Uint16x8x2T>(this, Int16x8x2T.typeLayout(), Uint16x8x2T.typeLayout())
 
-    public override fun asSigned(): Uint16x8x2T = transmute(this)
+    public override fun asSigned(): Uint16x8x2T = transmuteWithLayouts<Int16x8x2T, Uint16x8x2T>(this, Int16x8x2T.typeLayout(), Uint16x8x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int16x8x2T> =
@@ -2507,9 +2509,9 @@ public open class Int16x8x3T(
 ) : AsUnsigned<Uint16x8x3T>, AsSigned<Uint16x8x3T> {
     public open fun clone(): Int16x8x3T = Int16x8x3T(field0, field1, field2)
 
-    public override fun asUnsigned(): Uint16x8x3T = transmute(this)
+    public override fun asUnsigned(): Uint16x8x3T = transmuteWithLayouts<Int16x8x3T, Uint16x8x3T>(this, Int16x8x3T.typeLayout(), Uint16x8x3T.typeLayout())
 
-    public override fun asSigned(): Uint16x8x3T = transmute(this)
+    public override fun asSigned(): Uint16x8x3T = transmuteWithLayouts<Int16x8x3T, Uint16x8x3T>(this, Int16x8x3T.typeLayout(), Uint16x8x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int16x8x3T> =
@@ -2553,9 +2555,9 @@ public open class Int16x8x4T(
 ) : AsUnsigned<Uint16x8x4T>, AsSigned<Uint16x8x4T> {
     public open fun clone(): Int16x8x4T = Int16x8x4T(field0, field1, field2, field3)
 
-    public override fun asUnsigned(): Uint16x8x4T = transmute(this)
+    public override fun asUnsigned(): Uint16x8x4T = transmuteWithLayouts<Int16x8x4T, Uint16x8x4T>(this, Int16x8x4T.typeLayout(), Uint16x8x4T.typeLayout())
 
-    public override fun asSigned(): Uint16x8x4T = transmute(this)
+    public override fun asSigned(): Uint16x8x4T = transmuteWithLayouts<Int16x8x4T, Uint16x8x4T>(this, Int16x8x4T.typeLayout(), Uint16x8x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int16x8x4T> =
@@ -2601,9 +2603,9 @@ public open class Uint16x4x2T(
 ) : AsSigned<Int16x4x2T>, AsUnsigned<Int16x4x2T> {
     public open fun clone(): Uint16x4x2T = Uint16x4x2T(field0, field1)
 
-    public override fun asSigned(): Int16x4x2T = transmute(this)
+    public override fun asSigned(): Int16x4x2T = transmuteWithLayouts<Uint16x4x2T, Int16x4x2T>(this, Uint16x4x2T.typeLayout(), Int16x4x2T.typeLayout())
 
-    public override fun asUnsigned(): Int16x4x2T = transmute(this)
+    public override fun asUnsigned(): Int16x4x2T = transmuteWithLayouts<Uint16x4x2T, Int16x4x2T>(this, Uint16x4x2T.typeLayout(), Int16x4x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint16x4x2T> =
@@ -2642,9 +2644,9 @@ public open class Uint16x4x3T(
 ) : AsSigned<Int16x4x3T>, AsUnsigned<Int16x4x3T> {
     public open fun clone(): Uint16x4x3T = Uint16x4x3T(field0, field1, field2)
 
-    public override fun asSigned(): Int16x4x3T = transmute(this)
+    public override fun asSigned(): Int16x4x3T = transmuteWithLayouts<Uint16x4x3T, Int16x4x3T>(this, Uint16x4x3T.typeLayout(), Int16x4x3T.typeLayout())
 
-    public override fun asUnsigned(): Int16x4x3T = transmute(this)
+    public override fun asUnsigned(): Int16x4x3T = transmuteWithLayouts<Uint16x4x3T, Int16x4x3T>(this, Uint16x4x3T.typeLayout(), Int16x4x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint16x4x3T> =
@@ -2688,9 +2690,9 @@ public open class Uint16x4x4T(
 ) : AsSigned<Int16x4x4T>, AsUnsigned<Int16x4x4T> {
     public open fun clone(): Uint16x4x4T = Uint16x4x4T(field0, field1, field2, field3)
 
-    public override fun asSigned(): Int16x4x4T = transmute(this)
+    public override fun asSigned(): Int16x4x4T = transmuteWithLayouts<Uint16x4x4T, Int16x4x4T>(this, Uint16x4x4T.typeLayout(), Int16x4x4T.typeLayout())
 
-    public override fun asUnsigned(): Int16x4x4T = transmute(this)
+    public override fun asUnsigned(): Int16x4x4T = transmuteWithLayouts<Uint16x4x4T, Int16x4x4T>(this, Uint16x4x4T.typeLayout(), Int16x4x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint16x4x4T> =
@@ -2736,9 +2738,9 @@ public open class Uint16x8x2T(
 ) : AsSigned<Int16x8x2T>, AsUnsigned<Int16x8x2T> {
     public open fun clone(): Uint16x8x2T = Uint16x8x2T(field0, field1)
 
-    public override fun asSigned(): Int16x8x2T = transmute(this)
+    public override fun asSigned(): Int16x8x2T = transmuteWithLayouts<Uint16x8x2T, Int16x8x2T>(this, Uint16x8x2T.typeLayout(), Int16x8x2T.typeLayout())
 
-    public override fun asUnsigned(): Int16x8x2T = transmute(this)
+    public override fun asUnsigned(): Int16x8x2T = transmuteWithLayouts<Uint16x8x2T, Int16x8x2T>(this, Uint16x8x2T.typeLayout(), Int16x8x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint16x8x2T> =
@@ -2777,9 +2779,9 @@ public open class Uint16x8x3T(
 ) : AsSigned<Int16x8x3T>, AsUnsigned<Int16x8x3T> {
     public open fun clone(): Uint16x8x3T = Uint16x8x3T(field0, field1, field2)
 
-    public override fun asSigned(): Int16x8x3T = transmute(this)
+    public override fun asSigned(): Int16x8x3T = transmuteWithLayouts<Uint16x8x3T, Int16x8x3T>(this, Uint16x8x3T.typeLayout(), Int16x8x3T.typeLayout())
 
-    public override fun asUnsigned(): Int16x8x3T = transmute(this)
+    public override fun asUnsigned(): Int16x8x3T = transmuteWithLayouts<Uint16x8x3T, Int16x8x3T>(this, Uint16x8x3T.typeLayout(), Int16x8x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint16x8x3T> =
@@ -2823,9 +2825,9 @@ public open class Uint16x8x4T(
 ) : AsSigned<Int16x8x4T>, AsUnsigned<Int16x8x4T> {
     public open fun clone(): Uint16x8x4T = Uint16x8x4T(field0, field1, field2, field3)
 
-    public override fun asSigned(): Int16x8x4T = transmute(this)
+    public override fun asSigned(): Int16x8x4T = transmuteWithLayouts<Uint16x8x4T, Int16x8x4T>(this, Uint16x8x4T.typeLayout(), Int16x8x4T.typeLayout())
 
-    public override fun asUnsigned(): Int16x8x4T = transmute(this)
+    public override fun asUnsigned(): Int16x8x4T = transmuteWithLayouts<Uint16x8x4T, Int16x8x4T>(this, Uint16x8x4T.typeLayout(), Int16x8x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint16x8x4T> =
@@ -3117,9 +3119,9 @@ public open class Int32x2x2T(
 ) : AsUnsigned<Uint32x2x2T>, AsSigned<Uint32x2x2T> {
     public open fun clone(): Int32x2x2T = Int32x2x2T(field0, field1)
 
-    public override fun asUnsigned(): Uint32x2x2T = transmute(this)
+    public override fun asUnsigned(): Uint32x2x2T = transmuteWithLayouts<Int32x2x2T, Uint32x2x2T>(this, Int32x2x2T.typeLayout(), Uint32x2x2T.typeLayout())
 
-    public override fun asSigned(): Uint32x2x2T = transmute(this)
+    public override fun asSigned(): Uint32x2x2T = transmuteWithLayouts<Int32x2x2T, Uint32x2x2T>(this, Int32x2x2T.typeLayout(), Uint32x2x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int32x2x2T> =
@@ -3158,9 +3160,9 @@ public open class Int32x2x3T(
 ) : AsUnsigned<Uint32x2x3T>, AsSigned<Uint32x2x3T> {
     public open fun clone(): Int32x2x3T = Int32x2x3T(field0, field1, field2)
 
-    public override fun asUnsigned(): Uint32x2x3T = transmute(this)
+    public override fun asUnsigned(): Uint32x2x3T = transmuteWithLayouts<Int32x2x3T, Uint32x2x3T>(this, Int32x2x3T.typeLayout(), Uint32x2x3T.typeLayout())
 
-    public override fun asSigned(): Uint32x2x3T = transmute(this)
+    public override fun asSigned(): Uint32x2x3T = transmuteWithLayouts<Int32x2x3T, Uint32x2x3T>(this, Int32x2x3T.typeLayout(), Uint32x2x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int32x2x3T> =
@@ -3204,9 +3206,9 @@ public open class Int32x2x4T(
 ) : AsUnsigned<Uint32x2x4T>, AsSigned<Uint32x2x4T> {
     public open fun clone(): Int32x2x4T = Int32x2x4T(field0, field1, field2, field3)
 
-    public override fun asUnsigned(): Uint32x2x4T = transmute(this)
+    public override fun asUnsigned(): Uint32x2x4T = transmuteWithLayouts<Int32x2x4T, Uint32x2x4T>(this, Int32x2x4T.typeLayout(), Uint32x2x4T.typeLayout())
 
-    public override fun asSigned(): Uint32x2x4T = transmute(this)
+    public override fun asSigned(): Uint32x2x4T = transmuteWithLayouts<Int32x2x4T, Uint32x2x4T>(this, Int32x2x4T.typeLayout(), Uint32x2x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int32x2x4T> =
@@ -3252,9 +3254,9 @@ public open class Int32x4x2T(
 ) : AsUnsigned<Uint32x4x2T>, AsSigned<Uint32x4x2T> {
     public open fun clone(): Int32x4x2T = Int32x4x2T(field0, field1)
 
-    public override fun asUnsigned(): Uint32x4x2T = transmute(this)
+    public override fun asUnsigned(): Uint32x4x2T = transmuteWithLayouts<Int32x4x2T, Uint32x4x2T>(this, Int32x4x2T.typeLayout(), Uint32x4x2T.typeLayout())
 
-    public override fun asSigned(): Uint32x4x2T = transmute(this)
+    public override fun asSigned(): Uint32x4x2T = transmuteWithLayouts<Int32x4x2T, Uint32x4x2T>(this, Int32x4x2T.typeLayout(), Uint32x4x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int32x4x2T> =
@@ -3293,9 +3295,9 @@ public open class Int32x4x3T(
 ) : AsUnsigned<Uint32x4x3T>, AsSigned<Uint32x4x3T> {
     public open fun clone(): Int32x4x3T = Int32x4x3T(field0, field1, field2)
 
-    public override fun asUnsigned(): Uint32x4x3T = transmute(this)
+    public override fun asUnsigned(): Uint32x4x3T = transmuteWithLayouts<Int32x4x3T, Uint32x4x3T>(this, Int32x4x3T.typeLayout(), Uint32x4x3T.typeLayout())
 
-    public override fun asSigned(): Uint32x4x3T = transmute(this)
+    public override fun asSigned(): Uint32x4x3T = transmuteWithLayouts<Int32x4x3T, Uint32x4x3T>(this, Int32x4x3T.typeLayout(), Uint32x4x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int32x4x3T> =
@@ -3339,9 +3341,9 @@ public open class Int32x4x4T(
 ) : AsUnsigned<Uint32x4x4T>, AsSigned<Uint32x4x4T> {
     public open fun clone(): Int32x4x4T = Int32x4x4T(field0, field1, field2, field3)
 
-    public override fun asUnsigned(): Uint32x4x4T = transmute(this)
+    public override fun asUnsigned(): Uint32x4x4T = transmuteWithLayouts<Int32x4x4T, Uint32x4x4T>(this, Int32x4x4T.typeLayout(), Uint32x4x4T.typeLayout())
 
-    public override fun asSigned(): Uint32x4x4T = transmute(this)
+    public override fun asSigned(): Uint32x4x4T = transmuteWithLayouts<Int32x4x4T, Uint32x4x4T>(this, Int32x4x4T.typeLayout(), Uint32x4x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int32x4x4T> =
@@ -3387,9 +3389,9 @@ public open class Uint32x2x2T(
 ) : AsSigned<Int32x2x2T>, AsUnsigned<Int32x2x2T> {
     public open fun clone(): Uint32x2x2T = Uint32x2x2T(field0, field1)
 
-    public override fun asSigned(): Int32x2x2T = transmute(this)
+    public override fun asSigned(): Int32x2x2T = transmuteWithLayouts<Uint32x2x2T, Int32x2x2T>(this, Uint32x2x2T.typeLayout(), Int32x2x2T.typeLayout())
 
-    public override fun asUnsigned(): Int32x2x2T = transmute(this)
+    public override fun asUnsigned(): Int32x2x2T = transmuteWithLayouts<Uint32x2x2T, Int32x2x2T>(this, Uint32x2x2T.typeLayout(), Int32x2x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint32x2x2T> =
@@ -3428,9 +3430,9 @@ public open class Uint32x2x3T(
 ) : AsSigned<Int32x2x3T>, AsUnsigned<Int32x2x3T> {
     public open fun clone(): Uint32x2x3T = Uint32x2x3T(field0, field1, field2)
 
-    public override fun asSigned(): Int32x2x3T = transmute(this)
+    public override fun asSigned(): Int32x2x3T = transmuteWithLayouts<Uint32x2x3T, Int32x2x3T>(this, Uint32x2x3T.typeLayout(), Int32x2x3T.typeLayout())
 
-    public override fun asUnsigned(): Int32x2x3T = transmute(this)
+    public override fun asUnsigned(): Int32x2x3T = transmuteWithLayouts<Uint32x2x3T, Int32x2x3T>(this, Uint32x2x3T.typeLayout(), Int32x2x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint32x2x3T> =
@@ -3474,9 +3476,9 @@ public open class Uint32x2x4T(
 ) : AsSigned<Int32x2x4T>, AsUnsigned<Int32x2x4T> {
     public open fun clone(): Uint32x2x4T = Uint32x2x4T(field0, field1, field2, field3)
 
-    public override fun asSigned(): Int32x2x4T = transmute(this)
+    public override fun asSigned(): Int32x2x4T = transmuteWithLayouts<Uint32x2x4T, Int32x2x4T>(this, Uint32x2x4T.typeLayout(), Int32x2x4T.typeLayout())
 
-    public override fun asUnsigned(): Int32x2x4T = transmute(this)
+    public override fun asUnsigned(): Int32x2x4T = transmuteWithLayouts<Uint32x2x4T, Int32x2x4T>(this, Uint32x2x4T.typeLayout(), Int32x2x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint32x2x4T> =
@@ -3522,9 +3524,9 @@ public open class Uint32x4x2T(
 ) : AsSigned<Int32x4x2T>, AsUnsigned<Int32x4x2T> {
     public open fun clone(): Uint32x4x2T = Uint32x4x2T(field0, field1)
 
-    public override fun asSigned(): Int32x4x2T = transmute(this)
+    public override fun asSigned(): Int32x4x2T = transmuteWithLayouts<Uint32x4x2T, Int32x4x2T>(this, Uint32x4x2T.typeLayout(), Int32x4x2T.typeLayout())
 
-    public override fun asUnsigned(): Int32x4x2T = transmute(this)
+    public override fun asUnsigned(): Int32x4x2T = transmuteWithLayouts<Uint32x4x2T, Int32x4x2T>(this, Uint32x4x2T.typeLayout(), Int32x4x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint32x4x2T> =
@@ -3563,9 +3565,9 @@ public open class Uint32x4x3T(
 ) : AsSigned<Int32x4x3T>, AsUnsigned<Int32x4x3T> {
     public open fun clone(): Uint32x4x3T = Uint32x4x3T(field0, field1, field2)
 
-    public override fun asSigned(): Int32x4x3T = transmute(this)
+    public override fun asSigned(): Int32x4x3T = transmuteWithLayouts<Uint32x4x3T, Int32x4x3T>(this, Uint32x4x3T.typeLayout(), Int32x4x3T.typeLayout())
 
-    public override fun asUnsigned(): Int32x4x3T = transmute(this)
+    public override fun asUnsigned(): Int32x4x3T = transmuteWithLayouts<Uint32x4x3T, Int32x4x3T>(this, Uint32x4x3T.typeLayout(), Int32x4x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint32x4x3T> =
@@ -3609,9 +3611,9 @@ public open class Uint32x4x4T(
 ) : AsSigned<Int32x4x4T>, AsUnsigned<Int32x4x4T> {
     public open fun clone(): Uint32x4x4T = Uint32x4x4T(field0, field1, field2, field3)
 
-    public override fun asSigned(): Int32x4x4T = transmute(this)
+    public override fun asSigned(): Int32x4x4T = transmuteWithLayouts<Uint32x4x4T, Int32x4x4T>(this, Uint32x4x4T.typeLayout(), Int32x4x4T.typeLayout())
 
-    public override fun asUnsigned(): Int32x4x4T = transmute(this)
+    public override fun asUnsigned(): Int32x4x4T = transmuteWithLayouts<Uint32x4x4T, Int32x4x4T>(this, Uint32x4x4T.typeLayout(), Int32x4x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint32x4x4T> =
@@ -4149,9 +4151,9 @@ public open class Int64x1x2T(
 ) : AsUnsigned<Uint64x1x2T>, AsSigned<Uint64x1x2T> {
     public open fun clone(): Int64x1x2T = Int64x1x2T(field0, field1)
 
-    public override fun asUnsigned(): Uint64x1x2T = transmute(this)
+    public override fun asUnsigned(): Uint64x1x2T = transmuteWithLayouts<Int64x1x2T, Uint64x1x2T>(this, Int64x1x2T.typeLayout(), Uint64x1x2T.typeLayout())
 
-    public override fun asSigned(): Uint64x1x2T = transmute(this)
+    public override fun asSigned(): Uint64x1x2T = transmuteWithLayouts<Int64x1x2T, Uint64x1x2T>(this, Int64x1x2T.typeLayout(), Uint64x1x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int64x1x2T> =
@@ -4190,9 +4192,9 @@ public open class Int64x1x3T(
 ) : AsUnsigned<Uint64x1x3T>, AsSigned<Uint64x1x3T> {
     public open fun clone(): Int64x1x3T = Int64x1x3T(field0, field1, field2)
 
-    public override fun asUnsigned(): Uint64x1x3T = transmute(this)
+    public override fun asUnsigned(): Uint64x1x3T = transmuteWithLayouts<Int64x1x3T, Uint64x1x3T>(this, Int64x1x3T.typeLayout(), Uint64x1x3T.typeLayout())
 
-    public override fun asSigned(): Uint64x1x3T = transmute(this)
+    public override fun asSigned(): Uint64x1x3T = transmuteWithLayouts<Int64x1x3T, Uint64x1x3T>(this, Int64x1x3T.typeLayout(), Uint64x1x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int64x1x3T> =
@@ -4236,9 +4238,9 @@ public open class Int64x1x4T(
 ) : AsUnsigned<Uint64x1x4T>, AsSigned<Uint64x1x4T> {
     public open fun clone(): Int64x1x4T = Int64x1x4T(field0, field1, field2, field3)
 
-    public override fun asUnsigned(): Uint64x1x4T = transmute(this)
+    public override fun asUnsigned(): Uint64x1x4T = transmuteWithLayouts<Int64x1x4T, Uint64x1x4T>(this, Int64x1x4T.typeLayout(), Uint64x1x4T.typeLayout())
 
-    public override fun asSigned(): Uint64x1x4T = transmute(this)
+    public override fun asSigned(): Uint64x1x4T = transmuteWithLayouts<Int64x1x4T, Uint64x1x4T>(this, Int64x1x4T.typeLayout(), Uint64x1x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int64x1x4T> =
@@ -4284,9 +4286,9 @@ public open class Int64x2x2T(
 ) : AsUnsigned<Uint64x2x2T>, AsSigned<Uint64x2x2T> {
     public open fun clone(): Int64x2x2T = Int64x2x2T(field0, field1)
 
-    public override fun asUnsigned(): Uint64x2x2T = transmute(this)
+    public override fun asUnsigned(): Uint64x2x2T = transmuteWithLayouts<Int64x2x2T, Uint64x2x2T>(this, Int64x2x2T.typeLayout(), Uint64x2x2T.typeLayout())
 
-    public override fun asSigned(): Uint64x2x2T = transmute(this)
+    public override fun asSigned(): Uint64x2x2T = transmuteWithLayouts<Int64x2x2T, Uint64x2x2T>(this, Int64x2x2T.typeLayout(), Uint64x2x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int64x2x2T> =
@@ -4325,9 +4327,9 @@ public open class Int64x2x3T(
 ) : AsUnsigned<Uint64x2x3T>, AsSigned<Uint64x2x3T> {
     public open fun clone(): Int64x2x3T = Int64x2x3T(field0, field1, field2)
 
-    public override fun asUnsigned(): Uint64x2x3T = transmute(this)
+    public override fun asUnsigned(): Uint64x2x3T = transmuteWithLayouts<Int64x2x3T, Uint64x2x3T>(this, Int64x2x3T.typeLayout(), Uint64x2x3T.typeLayout())
 
-    public override fun asSigned(): Uint64x2x3T = transmute(this)
+    public override fun asSigned(): Uint64x2x3T = transmuteWithLayouts<Int64x2x3T, Uint64x2x3T>(this, Int64x2x3T.typeLayout(), Uint64x2x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int64x2x3T> =
@@ -4371,9 +4373,9 @@ public open class Int64x2x4T(
 ) : AsUnsigned<Uint64x2x4T>, AsSigned<Uint64x2x4T> {
     public open fun clone(): Int64x2x4T = Int64x2x4T(field0, field1, field2, field3)
 
-    public override fun asUnsigned(): Uint64x2x4T = transmute(this)
+    public override fun asUnsigned(): Uint64x2x4T = transmuteWithLayouts<Int64x2x4T, Uint64x2x4T>(this, Int64x2x4T.typeLayout(), Uint64x2x4T.typeLayout())
 
-    public override fun asSigned(): Uint64x2x4T = transmute(this)
+    public override fun asSigned(): Uint64x2x4T = transmuteWithLayouts<Int64x2x4T, Uint64x2x4T>(this, Int64x2x4T.typeLayout(), Uint64x2x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Int64x2x4T> =
@@ -4419,9 +4421,9 @@ public open class Uint64x1x2T(
 ) : AsSigned<Int64x1x2T>, AsUnsigned<Int64x1x2T> {
     public open fun clone(): Uint64x1x2T = Uint64x1x2T(field0, field1)
 
-    public override fun asSigned(): Int64x1x2T = transmute(this)
+    public override fun asSigned(): Int64x1x2T = transmuteWithLayouts<Uint64x1x2T, Int64x1x2T>(this, Uint64x1x2T.typeLayout(), Int64x1x2T.typeLayout())
 
-    public override fun asUnsigned(): Int64x1x2T = transmute(this)
+    public override fun asUnsigned(): Int64x1x2T = transmuteWithLayouts<Uint64x1x2T, Int64x1x2T>(this, Uint64x1x2T.typeLayout(), Int64x1x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint64x1x2T> =
@@ -4460,9 +4462,9 @@ public open class Uint64x1x3T(
 ) : AsSigned<Int64x1x3T>, AsUnsigned<Int64x1x3T> {
     public open fun clone(): Uint64x1x3T = Uint64x1x3T(field0, field1, field2)
 
-    public override fun asSigned(): Int64x1x3T = transmute(this)
+    public override fun asSigned(): Int64x1x3T = transmuteWithLayouts<Uint64x1x3T, Int64x1x3T>(this, Uint64x1x3T.typeLayout(), Int64x1x3T.typeLayout())
 
-    public override fun asUnsigned(): Int64x1x3T = transmute(this)
+    public override fun asUnsigned(): Int64x1x3T = transmuteWithLayouts<Uint64x1x3T, Int64x1x3T>(this, Uint64x1x3T.typeLayout(), Int64x1x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint64x1x3T> =
@@ -4506,9 +4508,9 @@ public open class Uint64x1x4T(
 ) : AsSigned<Int64x1x4T>, AsUnsigned<Int64x1x4T> {
     public open fun clone(): Uint64x1x4T = Uint64x1x4T(field0, field1, field2, field3)
 
-    public override fun asSigned(): Int64x1x4T = transmute(this)
+    public override fun asSigned(): Int64x1x4T = transmuteWithLayouts<Uint64x1x4T, Int64x1x4T>(this, Uint64x1x4T.typeLayout(), Int64x1x4T.typeLayout())
 
-    public override fun asUnsigned(): Int64x1x4T = transmute(this)
+    public override fun asUnsigned(): Int64x1x4T = transmuteWithLayouts<Uint64x1x4T, Int64x1x4T>(this, Uint64x1x4T.typeLayout(), Int64x1x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint64x1x4T> =
@@ -4554,9 +4556,9 @@ public open class Uint64x2x2T(
 ) : AsSigned<Int64x2x2T>, AsUnsigned<Int64x2x2T> {
     public open fun clone(): Uint64x2x2T = Uint64x2x2T(field0, field1)
 
-    public override fun asSigned(): Int64x2x2T = transmute(this)
+    public override fun asSigned(): Int64x2x2T = transmuteWithLayouts<Uint64x2x2T, Int64x2x2T>(this, Uint64x2x2T.typeLayout(), Int64x2x2T.typeLayout())
 
-    public override fun asUnsigned(): Int64x2x2T = transmute(this)
+    public override fun asUnsigned(): Int64x2x2T = transmuteWithLayouts<Uint64x2x2T, Int64x2x2T>(this, Uint64x2x2T.typeLayout(), Int64x2x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint64x2x2T> =
@@ -4595,9 +4597,9 @@ public open class Uint64x2x3T(
 ) : AsSigned<Int64x2x3T>, AsUnsigned<Int64x2x3T> {
     public open fun clone(): Uint64x2x3T = Uint64x2x3T(field0, field1, field2)
 
-    public override fun asSigned(): Int64x2x3T = transmute(this)
+    public override fun asSigned(): Int64x2x3T = transmuteWithLayouts<Uint64x2x3T, Int64x2x3T>(this, Uint64x2x3T.typeLayout(), Int64x2x3T.typeLayout())
 
-    public override fun asUnsigned(): Int64x2x3T = transmute(this)
+    public override fun asUnsigned(): Int64x2x3T = transmuteWithLayouts<Uint64x2x3T, Int64x2x3T>(this, Uint64x2x3T.typeLayout(), Int64x2x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint64x2x3T> =
@@ -4641,9 +4643,9 @@ public open class Uint64x2x4T(
 ) : AsSigned<Int64x2x4T>, AsUnsigned<Int64x2x4T> {
     public open fun clone(): Uint64x2x4T = Uint64x2x4T(field0, field1, field2, field3)
 
-    public override fun asSigned(): Int64x2x4T = transmute(this)
+    public override fun asSigned(): Int64x2x4T = transmuteWithLayouts<Uint64x2x4T, Int64x2x4T>(this, Uint64x2x4T.typeLayout(), Int64x2x4T.typeLayout())
 
-    public override fun asUnsigned(): Int64x2x4T = transmute(this)
+    public override fun asUnsigned(): Int64x2x4T = transmuteWithLayouts<Uint64x2x4T, Int64x2x4T>(this, Uint64x2x4T.typeLayout(), Int64x2x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Uint64x2x4T> =

@@ -65,7 +65,7 @@ public fun <A> onceWith(make: () -> A): OnceWith<() -> A> = OnceWith(make = make
  */
 public open class OnceWith<F>(
     public var make: F?,
-) : TrustedLen<OnceWith<F>>, Iterable<A> {
+) : TrustedLen, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@OnceWith.next()) {

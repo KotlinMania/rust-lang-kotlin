@@ -114,4 +114,4 @@ public interface Coroutine<R, Yield, Return> {
     public fun resume(arg: R): CoroutineState<Yield, Return>
 }
 
-public fun <G : Coroutine<R, Any?, Any?>, R> Pin<G>.resume(arg: R, resumeGFn: (G, R) -> CoroutineState<Yield, Return>): CoroutineState<Yield, Return> = resumeGFn(this.asMut(), arg)
+public fun <Yield, Return, G : Coroutine<R, Yield, Return>, R> Pin<G>.resume(arg: R, resumeGFn: (G, R) -> CoroutineState<Yield, Return>): CoroutineState<Yield, Return> = resumeGFn(this.asMut(), arg)

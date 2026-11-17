@@ -31,14 +31,14 @@ import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
  * check(AsciiExt.toAsciiUppercase("café") == "CAFé")
  * ```
  *
- * In the first example, the lowercased string is represented `"cafe\u{301}"`
+ * In the first example, the lowercased string is represented `"cafe\u(301)"`
  * (the last character is an acute accent [combining character]). Unlike the
  * other characters in the string, the combining character will not get mapped
- * to an uppercase variant, resulting in `"CAFE\u{301}"`. In the second
- * example, the lowercased string is represented `"caf\u{e9}"` (the last
- * character is a single Unicode character representing an 'e' with an acute
+ * to an uppercase variant, resulting in `"CAFE\u(301)"`. In the second
+ * example, the lowercased string is represented `"caf\u(e9)"` (the last
+ * character is a single Unicode character representing an `e` with an acute
  * accent). Since the last character is defined outside the scope of ASCII,
- * it will not get mapped to an uppercase variant, resulting in `"CAF\u{e9}"`.
+ * it will not get mapped to an uppercase variant, resulting in `"CAF\u(e9)"`.
  *
  * [combining character]: https://en.wikipedia.org/wiki/CombiningCharacter
  */
@@ -56,7 +56,7 @@ public interface AsciiExt<T, out Owned> {
     /**
      * Makes a copy of the value in its ASCII upper case equivalent.
      *
-     * ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
+     * ASCII letters `a` to `z` are mapped to `A` to `Z`,
      * but non-ASCII letters are unchanged.
      *
      * To uppercase the value in-place, use [makeAsciiUppercase].
@@ -76,7 +76,7 @@ public interface AsciiExt<T, out Owned> {
     /**
      * Makes a copy of the value in its ASCII lower case equivalent.
      *
-     * ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
+     * ASCII letters `A` to `Z` are mapped to `a` to `z`,
      * but non-ASCII letters are unchanged.
      *
      * To lowercase the value in-place, use [makeAsciiLowercase].
@@ -109,7 +109,7 @@ public interface AsciiExt<T, out Owned> {
     /**
      * Converts this type to its ASCII upper case equivalent in-place.
      *
-     * ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
+     * ASCII letters `a` to `z` are mapped to `A` to `Z`,
      * but non-ASCII letters are unchanged.
      *
      * To return a new uppercased value without modifying the existing one, use
@@ -127,7 +127,7 @@ public interface AsciiExt<T, out Owned> {
     /**
      * Converts this type to its ASCII lower case equivalent in-place.
      *
-     * ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
+     * ASCII letters `A` to `Z` are mapped to `a` to `z`,
      * but non-ASCII letters are unchanged.
      *
      * To return a new lowercased value without modifying the existing one, use

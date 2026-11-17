@@ -7,7 +7,7 @@ public val FP_ILOGBNAN: Int = Int.MIN_VALUE
 
 public val FP_ILOGB0: Int = FP_ILOGBNAN
 
-public fun <Int, SignedInt, F : Float<F, Any?, Any?>> ilogb(x: F): Int {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> ilogb(x: F): Int {
     val zero = F.Int.ZERO
     var i = x.toBits()
     val e = x.ex().toInt()

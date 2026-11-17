@@ -73,9 +73,10 @@ public fun <T> T.copyTo(to: Write): Result<ULong> where T : Read<T> {
 public fun List<UByte>.bufferPriority(): BufferPriority = IN_MEMORY
 
 public fun List<UByte>.copyTo(to: Write): Result<ULong> {
-    val len = this.size
-    when (val tryResult = to.writeAll(this)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-    this = ((this).subList(len, (this).size))
+    var selfMut = this
+    val len = selfMut.size
+    when (val tryResult = to.writeAll(selfMut)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+    selfMut = ((selfMut).subList(len, (selfMut).size))
     return Result.Ok(len.toULong())
 }
 
@@ -170,6 +171,7 @@ public fun <I : Write, R : Read<R>> BufWriter<I>.copyFrom(reader: R): Result<ULo
                 val matchVal = reader.readBuf(cursor.reborrow())
                 when {
                     matchVal is Result.Ok -> {
+                        val valueVal = matchVal.value
                         val bytesRead = cursor.written()
                         if (bytesRead == 0) {
                             return Result.Ok(len)
@@ -178,8 +180,6 @@ public fun <I : Write, R : Read<R>> BufWriter<I>.copyFrom(reader: R): Result<ULo
                         len += bytesRead.toULong()
                         // SAFETY: BorrowedBuf guarantees all of its filled bytes are init
                         buf.setLen(buf.len() + bytesRead)
-                        // Read again if the buffer still has enough capacity, as BufWriter itself would do
-                        // This will occur if the reader returns short reads
                     }
                     matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
                         val e = matchVal.error
@@ -211,7 +211,9 @@ public fun <R : Read<R>, W : Write> stackBufferCopy(reader: R, writer: W): Resul
         run {
             val matchVal = reader.readBuf(buf1.unfilled())
             when {
-                matchVal is Result.Ok -> {}
+                matchVal is Result.Ok -> {
+                    val valueVal = matchVal.value
+                }
                 matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
                     val e = matchVal.error
                     continue

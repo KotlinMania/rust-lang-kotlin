@@ -985,14 +985,14 @@ public fun <T> copy(x: T): T = x
  *     open class Foo(public var bar: UByte)
  *     val fooArray = ubyteArrayOf(10u.toUByte())
  *     run {
- *         // Copy the data from 'fooArray' and treat it as a 'Foo'
+ *         // Copy the data from `fooArray` and treat it as a `Foo`
  *         var fooStruct: Foo = mem.transmuteCopy(fooArray)
  *         check(fooStruct.bar == 10u.toUByte())
  *         // Modify the copied data
  *         fooStruct.bar = 20u
  *         check(fooStruct.bar == 20u.toUByte())
  *     }
- *     // The contents of 'fooArray' should not have changed
+ *     // The contents of `fooArray` should not have changed
  *     check(fooArray == ubyteArrayOf(10u))
  *     val bytes: List<UByte> = listOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte())
  *     check(mem.transmuteCopy<List<UByte>, UInt>(bytes) == run { val bytesTmp0 = bytes.firstChunk().unwrap(); ((bytesTmp0[3].toUInt() shl 24) or (bytesTmp0[2].toUInt() shl 16) or (bytesTmp0[1].toUInt() shl 8) or bytesTmp0[0].toUInt()) })
@@ -1073,13 +1073,13 @@ public fun <Src, Dst> transmutePrefix(src: Src, typeLayoutSrc: TypeLayout<Src> =
         // SAFETY: When Dst is bigger, the union is the size of Dst
         Ordering.Less -> run {
             val a = transmuteNeo(src, typeLayoutSrc = typeLayoutSrc)
-            transmuteUnchecked(Transmute(a = a))
+            transmuteWithLayouts<Transmute, Dst>(Transmute(a = a), UnresolvedTypeLayout<Transmute>(), typeLayoutDst)
         }
         // SAFETY: When they're the same size, we can use the MIR primitive
-        Ordering.Equal -> transmuteWithLayouts(src, typeLayoutSrc, typeLayoutDst)
+        Ordering.Equal -> transmuteWithLayouts<Src, Dst>(src, typeLayoutSrc, typeLayoutDst)
         // SAFETY: When Src is bigger, the union is the size of Src
         Ordering.Greater -> run {
-            val u: Transmute<Src, Dst> = transmuteWithLayouts(src, typeLayoutSrc, typeLayoutDst)
+            val u: Transmute<Src, Dst> = transmuteWithLayouts<Src, Transmute<Src, Dst>>(src, typeLayoutSrc, UnresolvedTypeLayout<Transmute<Src, Dst>>())
             transmuteNeo(u.b, typeLayoutSrc = UnresolvedTypeLayout<B>())
         }
     }
@@ -1121,7 +1121,7 @@ public fun <Src, Dst> transmuteNeo(src: Src, typeLayoutSrc: TypeLayout<Src> = Un
     check((typeLayoutSrc).sizeBytes.toInt() == (UnresolvedTypeLayout<Dst>()).sizeBytes.toInt())
     // SAFETY: the const-assert just checked that they're the same size,
     // and any other safety invariants need to be upheld by the caller.
-    return transmuteWithLayouts(src, typeLayoutSrc, UnresolvedTypeLayout<Dst>())
+    return transmuteWithLayouts<Src, Dst>(src, typeLayoutSrc, UnresolvedTypeLayout<Dst>())
 }
 
 // even without panics, this helps for Miri backtraces
@@ -1215,7 +1215,7 @@ public fun <Src, Dst> transmuteNeo(src: Src, typeLayoutSrc: TypeLayout<Src> = Un
  * check(1 == tupleLike.discriminant())
  * check(2 == structLike.discriminant())
  * // ⚠️ This is undefined behavior. Don't do this. ⚠️
- * // assertEq(0, unchecked { std.mem.reinterpret::<_, u8>(std.mem.discriminant(&unitLike)) });
+ * // assertEq(0, unchecked ( std.mem.reinterpret::<_, u8>(std.mem.discriminant(&unitLike)) ));
  * ```
  */
 public fun <T> discriminant(v: T): Discriminant<T> = Discriminant(discriminantValue(v))

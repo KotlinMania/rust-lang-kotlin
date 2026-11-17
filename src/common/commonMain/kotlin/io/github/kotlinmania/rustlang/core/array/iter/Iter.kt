@@ -2,10 +2,11 @@
 package io.github.kotlinmania.rustlang.core.array.iter
 
 import io.github.kotlinmania.rustlang.core.array.iter.iterinner.PolymorphicIter
-import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.needsDrop
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
@@ -62,7 +63,7 @@ public fun <T> List<T>.intoIterFromTArrayn(n: Int): IntoIter<T> {
     //
     // Note: If normal `reinterpret` ever gets smart enough to allow this
     // directly, use it instead of `transmuteUnchecked`.
-    val data: List<MaybeUninit<T>> = transmuteUnchecked(this)
+    val data: List<MaybeUninit<T>> = transmuteWithLayouts<List<T>, List<MaybeUninit<T>>>(this, UnresolvedTypeLayout<List<T>>(), UnresolvedTypeLayout<List<MaybeUninit<T>>>())
     // SAFETY: The original array was entirely initialized and the alive
     // range we're passing here represents that fact.
     val inner = InnerSized.newUnchecked(IndexRange.zeroTo(n), data)
@@ -219,7 +220,7 @@ public fun <T> IntoIter<T>.sizeHint(n: Int): Pair<Int, Int?> = this.unsize().siz
 
 public fun <T, Acc> IntoIter<T>.fold(init: Acc, fold: (Acc, T) -> Acc, n: Int): Acc = this.unsizeMut().fold(init, fold)
 
-public fun <T, B, R> IntoIter<T>.tryFold(init: B, f: (B, T) -> R, n: Int): R where R : Try<R, B, Any?> = this.unsizeMut().tryFold(init, f)
+public fun <Residual, T, B, R> IntoIter<T>.tryFold(init: B, f: (B, T) -> R, n: Int): R where R : Try<R, B, Residual> = this.unsizeMut().tryFold(init, f)
 
 public fun <T> IntoIter<T>.count(n: Int): Int = this.len()
 
@@ -239,7 +240,7 @@ public fun <T> IntoIter<T>.nextBack(n: Int): Item? = this.unsizeMut().nextBack()
 
 public fun <T, Acc> IntoIter<T>.rfold(init: Acc, rfold: (Acc, Item) -> Acc, n: Int): Acc = this.unsizeMut().rfold(init, rfold)
 
-public fun <T, B, R> IntoIter<T>.tryRfold(init: B, f: (B, Item) -> R, n: Int): R where R : Try<R, B, Any?> = this.unsizeMut().tryRfold(init, f)
+public fun <Residual, T, B, R> IntoIter<T>.tryRfold(init: B, f: (B, Item) -> R, n: Int): R where R : Try<R, B, Residual> = this.unsizeMut().tryRfold(init, f)
 
 public fun <T> IntoIter<T>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.unsizeMut().advanceBackBy(n)
 

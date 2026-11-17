@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.libm.math.generic.fma
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.libm.math.generic.scalbn.scalbn
 import io.github.kotlinmania.rustlang.libm.math.support.env.FpResult
 import io.github.kotlinmania.rustlang.libm.math.support.env.Round
@@ -16,7 +17,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
  * Fused multiply-add that works when there is not a larger float size available. Computes
  * `(x * y) + z`.
  */
-public fun <Int, SignedInt, D, F> fmaRound(x: F, y: F, z: F, round: Round, castFromLossyFFn: (T) -> F, fromPartsFFn: (Boolean, UInt, Int) -> F, castFromFFn: (T) -> F): FpResult<F> where F : Float<F, Any?, Any?>, F : CastFrom<SignedInt, F>, F : CastFrom<Byte, F> {
+public fun <Int, SignedInt, D, OtherSign, Unsigned, F> fmaRound(x: F, y: F, z: F, round: Round, castFromLossyFFn: (T) -> F, fromPartsFFn: (Boolean, UInt, Int) -> F, castFromFFn: (T) -> F): FpResult<F> where F : Float<F, Int, SignedInt>, F : CastFrom<SignedInt, F>, F : CastFrom<Byte, F> {
     val one = IntTy.ONE
     val zero = IntTy.ZERO
     // Normalize such that the top of the mantissa is zero and we have a guard bit.
@@ -40,18 +41,18 @@ public fun <Int, SignedInt, D, F> fmaRound(x: F, y: F, z: F, round: Round, castF
     val zlo: Int
     var (rlo, rhi) = nx.m.widenMul(ny.m).loHi()
     // Exponent result of multiplication
-    var e: Int = nx.e + ny.e
+    var e: Int<OtherSign, Unsigned> = nx.e + ny.e
     // Needed shift to align `z` to the multiplication result
-    var d: Int = nz.e - e
-    val sbits = F.BITS.toInt()
+    var d: Int<OtherSign, Unsigned> = nz.e - e
+    val sbits = ((F.BITS as Any?) as Int<OtherSign, Unsigned>)
     // Scale `z`. Shift `z< <= kz`, `r> >= kr`, so `kz + kr == d`, set `e = e + kr` (== ez-kz)
-    if (d > 0) {
+    if ((kmCompareValues(d, 0) > 0)) {
         // The magnitude of `z` is larger than `x * y`
-        if (d < sbits) {
+        if ((kmCompareValues(d, sbits) < 0)) {
             // Maximum shift of one `F.BITS` means shifted `z` will fit into `2 * F.BITS`. Shift
             // it into `(zhi, zlo)`. No exponent adjustment necessary.
-            zlo = nz.m shl d
-            zhi = nz.m shr (sbits - d)
+            zlo = nz.m shl d.toInt()
+            zhi = nz.m shr (sbits - d).toInt()
         } else {
             // Shift larger than `sbits`, `z` only needs the top half `zhi`. Place it there (acts
             // as a shift by `sbits`).
@@ -62,12 +63,12 @@ public fun <Int, SignedInt, D, F> fmaRound(x: F, y: F, z: F, round: Round, castF
             e = nz.e - sbits
             if (d == 0) {
                 // Exactly `sbits`, nothing to do
-            } else if (d < sbits) {
+            } else if ((kmCompareValues(d, sbits) < 0)) {
                 // Remaining shift fits within `sbits`. Leave `z` in place, shift `x * y`
-                rlo = (rhi shl (sbits - d)) or (rlo shr d)
+                rlo = (rhi shl (sbits - d).toInt()) or (rlo shr d.toInt())
                 // Set the sticky bit
-                rlo = rlo or IntTy.from((rlo shl (sbits - d)) != zero)
-                rhi = rhi shr d
+                rlo = rlo or IntTy.from((rlo shl (sbits - d).toInt()) != zero)
+                rhi = rhi shr d.toInt()
             } else {
                 // `z`s magnitude is enough that `x * y` is irrelevant. It was nonzero, so set
                 // the sticky bit.
@@ -82,10 +83,10 @@ public fun <Int, SignedInt, D, F> fmaRound(x: F, y: F, z: F, round: Round, castF
         if (d == 0) {
             // No shift needed
             zlo = nz.m
-        } else if (d < sbits) {
+        } else if ((kmCompareValues(d, sbits) < 0)) {
             // Shift s.t. `nz.m` fits into `zlo`
-            val sticky = IntTy.from((nz.m shl (sbits - d)) != zero)
-            zlo = (nz.m shr d) or sticky
+            val sticky = IntTy.from((nz.m shl (sbits - d).toInt()) != zero)
+            zlo = (nz.m shr d.toInt()) or sticky
         } else {
             // Would be entirely shifted out, only set the sticky bit
             zlo = one
@@ -116,18 +117,18 @@ public fun <Int, SignedInt, D, F> fmaRound(x: F, y: F, z: F, round: Round, castF
     if (rhiNonzero) {
         // `d` > 0, need to shift both `rhi` and `rlo` into result
         e += sbits
-        d = rhi.leadingZeros().toInt() - 1
-        rhi = (rhi shl d) or (rlo shr (sbits - d))
+        d = ((rhi.leadingZeros() as Any?) as Int<OtherSign, Unsigned>) - 1
+        rhi = (rhi shl d.toInt()) or (rlo shr (sbits - d).toInt())
         // Update sticky
-        rhi = rhi or IntTy.from((rlo shl d) != zero)
+        rhi = rhi or IntTy.from((rlo shl d.toInt()) != zero)
     } else if (rlo != zero) {
         // `rhi` is zero, `rlo` is the entire result and needs to be shifted
-        d = rlo.leadingZeros().toInt() - 1
-        if (d < 0) {
+        d = ((rlo.leadingZeros() as Any?) as Int<OtherSign, Unsigned>) - 1
+        if ((kmCompareValues(d, 0) < 0)) {
             // Shift and set sticky
             rhi = (rlo shr 1) or (rlo and one)
         } else {
-            rhi = rlo shl d
+            rhi = rlo shl d.toInt()
         }
     } else {
         // exact +/- 0.0
@@ -146,9 +147,9 @@ public fun <Int, SignedInt, D, F> fmaRound(x: F, y: F, z: F, round: Round, castF
     // Unbiased exponent for the maximum value of `r`
     val maxPow = F.BITS - 1 + F.EXP_BIAS
     val status = Status.OK
-    if (e < -(maxPow.toInt() - 2)) {
+    if ((kmCompareValues(e, -(((maxPow as Any?) as Int<OtherSign, Unsigned>) - 2)) < 0)) {
         // Result is subnormal before rounding
-        if (e == -(maxPow.toInt() - 1)) {
+        if (e == -(((maxPow as Any?) as Int<OtherSign, Unsigned>) - 1)) {
             var c = fromPartsFFn(false, maxPow, zero)
             if (neg) {
                 c = -c
@@ -174,9 +175,9 @@ public fun <Int, SignedInt, D, F> fmaRound(x: F, y: F, z: F, round: Round, castF
             }
         } else {
             // Only round once when scaled
-            d = F.EXP_BITS.toInt() - 1
-            val sticky1 = IntTy.from(rhi shl (F.BITS.toInt() - d) != zero)
-            i = (((rhi shr d) or sticky1) shl d).signed()
+            d = ((F.EXP_BITS as Any?) as Int<OtherSign, Unsigned>) - 1
+            val sticky1 = IntTy.from(rhi shl (((F.BITS as Any?) as Int<OtherSign, Unsigned>) - d).toInt() != zero)
+            i = (((rhi shr d.toInt()) or sticky1) shl d.toInt()).signed()
             if (neg) {
                 i = -i
             }
@@ -190,7 +191,7 @@ public fun <Int, SignedInt, D, F> fmaRound(x: F, y: F, z: F, round: Round, castF
 /**
  * Representation of `F` that has handled subnormals.
  */
-public open class Norm<F : Float<F, Any?, Any?>>(
+public open class Norm<F : Float<F, Int, SignedInt>, Int, SignedInt>(
     /**
      * Normalized significand with one guard bit, unsigned.
      */
@@ -202,7 +203,7 @@ public open class Norm<F : Float<F, Any?, Any?>>(
     public var e: Int,
     public var neg: Boolean,
 ) {
-    public open fun clone(): Norm<F> = Norm(m, e, neg)
+    public open fun clone(): Norm<F, Int, SignedInt> = Norm(m, e, neg)
 
     /**
      * True if the value was zero, infinity, or NaN.
@@ -218,28 +219,28 @@ public open class Norm<F : Float<F, Any?, Any?>>(
     }
 
     public companion object {
-        public fun <F : Float<F, Any?, Any?>> typeLayout(): TypeLayout<Norm<F>> =
-            object : TypeLayout<Norm<F>> {
+        public fun <F : Float<F, Int, SignedInt>, Int, SignedInt> typeLayout(): TypeLayout<Norm<F, Int, SignedInt>> =
+            object : TypeLayout<Norm<F, Int, SignedInt>> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 12L
-                override fun readNative(addr: Long): Norm<F> =
+                override fun readNative(addr: Long): Norm<F, Int, SignedInt> =
                     Norm(
                         (PrimitiveLayouts.I32).readNative(addr),
                         (PrimitiveLayouts.I32).readNative(addr + 4L),
                         (PrimitiveLayouts.BOOL).readNative(addr + 8L),
                     )
-                override fun writeNative(addr: Long, value: Norm<F>) {
+                override fun writeNative(addr: Long, value: Norm<F, Int, SignedInt>) {
                     (PrimitiveLayouts.I32).writeNative(addr, value.m)
                     (PrimitiveLayouts.I32).writeNative(addr + 4L, value.e)
                     (PrimitiveLayouts.BOOL).writeNative(addr + 8L, value.neg)
                 }
-                override fun readBytes(buf: ByteArray, offset: Int): Norm<F> =
+                override fun readBytes(buf: ByteArray, offset: Int): Norm<F, Int, SignedInt> =
                     Norm(
                         (PrimitiveLayouts.I32).readBytes(buf, offset),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 4),
                         (PrimitiveLayouts.BOOL).readBytes(buf, offset + 8),
                     )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Norm<F>) {
+                override fun writeBytes(buf: ByteArray, offset: Int, value: Norm<F, Int, SignedInt>) {
                     (PrimitiveLayouts.I32).writeBytes(buf, offset, value.m)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 4, value.e)
                     (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 8, value.neg)
@@ -257,7 +258,7 @@ public open class Norm<F : Float<F, Any?, Any?>>(
          */
         public val ZERO_INF_NAN: UInt = F.EXP_SAT - Norm.EXP_UNBIAS
 
-        public fun <Int, SignedInt, F : Float<F, Any?, Any?>> fromFloat(x: F, fromPartsFFn: (Boolean, UInt, Int) -> F): Norm<F> {
+        public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> fromFloat(x: F, fromPartsFFn: (Boolean, UInt, Int) -> F): Norm<F, Int, SignedInt> {
             var ix = x.toBits()
             var e = x.ex().toInt()
             val neg = x.isSignNegative()

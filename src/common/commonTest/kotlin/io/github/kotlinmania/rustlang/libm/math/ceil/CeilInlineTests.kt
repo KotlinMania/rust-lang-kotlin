@@ -13,7 +13,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf16
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf32
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
 
-public fun <Int, SignedInt, F : Float<F, Any?, Any?>> check(f: (F) -> F, cases: List<Triple<F, F, Status>>) {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> check(f: (F) -> F, cases: List<Triple<F, F, Status>>) {
     for ((x, expRes, expStat) in cases) {
         val structVal = ceilStatus(x)
         val value = structVal.value

@@ -1180,7 +1180,7 @@ public open class Iter<T> internal constructor(
          * check(iter.len() == 0)
          * ```
          */
-        public fun <T> default(): Iter<T> = Iter(iter = Default.default())
+        public fun <T> default(): Iter<T> = Iter(iter = Keys.default())
     }
 }
 
@@ -1288,7 +1288,7 @@ public open class Range<T> internal constructor(
          * check(iter.count() == 0)
          * ```
          */
-        public fun <T> default(): Range<T> = Range(iter = Default.default())
+        public fun <T> default(): Range<T> = Range(iter = Range.default())
     }
 }
 

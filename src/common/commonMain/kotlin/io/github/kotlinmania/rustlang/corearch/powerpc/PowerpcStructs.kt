@@ -46,7 +46,7 @@ public open class Ppcf128 internal constructor(
      */
     public open fun toNeBytes(): UByteArray {
         // SAFETY: every bit pattern of a `ppcf128` is a valid `[UByte; 16]`.
-        return transmuteWithLayouts(this, this.fieldLayout, PrimitiveArrayLayouts.uByteArray((16).toInt()))
+        return transmuteWithLayouts<Ppcf128, UByteArray>(this, this.fieldLayout, PrimitiveArrayLayouts.uByteArray((16).toInt()))
     }
 
     /**
@@ -54,7 +54,7 @@ public open class Ppcf128 internal constructor(
      */
     public open fun toComponents(): Pair<Double, Double> {
         // SAFETY: every bit pattern of a `ppcf128` is a valid `[Double; 2]`.
-        val (large, small) = transmuteWithLayouts(this, this.fieldLayout, PrimitiveArrayLayouts.doubleArray((2).toInt()))
+        val (large, small) = transmuteWithLayouts<Ppcf128, DoubleArray>(this, this.fieldLayout, PrimitiveArrayLayouts.doubleArray((2).toInt()))
         return Pair(large, small)
     }
 

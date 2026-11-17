@@ -416,7 +416,7 @@ public open class Command internal constructor(
             val program1 = os2c(program, RustMutableReference(localStorageL166C8.asMutPtr(), localStorageL166C8.layout))
             var args = CStringArray.withCapacity(1)
             args.push(program1.clone())
-            return Command(program = program1, args = args, env = Default.default(), programKind = programKind, cwd = null, chroot = null, uid = null, gid = null, sawNul = sawNul, closures = mutableListOf(), groups = null, stdin = null, stdout = null, stderr = null, createPidfd = false, pgroup = null, setsid = false)
+            return Command(program = program1, args = args, env = CommandEnv.default(), programKind = programKind, cwd = null, chroot = null, uid = null, gid = null, sawNul = sawNul, closures = mutableListOf(), groups = null, stdin = null, stdout = null, stderr = null, createPidfd = false, pgroup = null, setsid = false)
         }
     }
 }
@@ -655,17 +655,17 @@ public fun readOutput(out: ChildPipe, stdout: List<UByte>, err: ChildPipe, stder
     // reader will return Ok(0), in which case we'll see `Ok` ourselves. In
     // this case we flip the other fd back into blocking mode and read
     // whatever's leftover on that file descriptor.
-    fun read(fd: FileDesc, dst: List<UByte>): Result<Boolean, io.github.kotlinmania.rustlang.std.io.Error> =
+    fun read(fd: FileDesc, dst: List<UByte>): Result<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error> =
         run {
             val matchVal = fd.readToEnd(dst)
             when (matchVal) { is Result.Ok -> {
-                Result.Ok<Boolean, io.github.kotlinmania.rustlang.std.io.Error>(true)
+                Result.Ok<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(true)
             }; is Result.Err -> {
                 val e = matchVal.error
                 if (e.rawOsError() == EWOULDBLOCK || e.rawOsError() == EAGAIN) {
-                    Result.Ok<Boolean, io.github.kotlinmania.rustlang.std.io.Error>(false)
+                    Result.Ok<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(false)
                 } else {
-                    Result.Err<Boolean, io.github.kotlinmania.rustlang.std.io.Error>(e)
+                    Result.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(e)
                 }
             } }
         }

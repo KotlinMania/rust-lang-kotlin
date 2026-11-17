@@ -3,15 +3,17 @@ package io.github.kotlinmania.rustlang.core.array
 import io.github.kotlinmania.rustlang.core.array.drain.Drain
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatn.repeatN
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
@@ -136,7 +138,7 @@ public fun <T> fromFn(f: (Int) -> T, n: Int): List<T> = tryFromFn(NeverShortCirc
  * }
  * ```
  */
-public fun <R> tryFromFn(cb: (Int) -> R, n: Int): ChangeOutputType<R, List<Output>> where R : Try<R, Any?, Any?> {
+public fun <Output, Residual, R> tryFromFn(cb: (Int) -> R, n: Int): ChangeOutputType<R, List<Output>> where R : Try<R, Output, Residual> {
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Output>()) }
     return when (val matchVal = tryFromFnErased(array, cb)) {
         is ControlFlow.Break -> {
@@ -181,10 +183,10 @@ public fun <T> fromMut(s: T): List<T> {
  * not optimizing away.  So if you give it a shot, make sure to watch what
  * happens in the codegen tests.
  */
-public fun <R : Try<R, Any?, Any?>> tryFromFnErased(buffer: MutableList<MaybeUninit<Output>>, generator: (Int) -> R): ControlFlow<Residual, Unit> {
+public fun <Output, Residual, R : Try<R, Output, Residual>> tryFromFnErased(buffer: MutableList<MaybeUninit<Output>>, generator: (Int) -> R): ControlFlow<Residual, Unit> {
     val guard = Guard(arrayMut = buffer, initialized = 0)
     while (guard.initialized < guard.arrayMut.size) {
-        val item = when (val tryResult = generator(guard.initialized).branch()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        val item = when (val tryResult = generator(guard.initialized).branch()) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<Residual, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
         // SAFETY: The loop condition ensures we have space to push the item
         guard.pushUnchecked(item)
     }
@@ -606,7 +608,7 @@ public fun <T, U> List<T>.map(f: (T) -> U, n: Int): List<U> = this.tryMap(NeverS
  * }
  * ```
  */
-public fun <T, R> List<T>.tryMap(f: (T) -> R, n: Int): ChangeOutputType<R, List<Output>> where R : Try<R, Any?, Any?> {
+public fun <Output, Residual, T, R> List<T>.tryMap(f: (T) -> R, n: Int): ChangeOutputType<R, List<Output>> where R : Try<R, Output, Residual> {
     val me = this
     // SAFETY: tryFromFn calls `f` N times.
     val f1 = Drain.new(me, f)
@@ -657,7 +659,7 @@ public fun <T> List<T>.eachRef(n: Int): List<T> {
         i += 1
     }
     // SAFETY: `* const T` has the same layout as `T`, and we've also initialised each pointer as a valid reference.
-    return transmuteUnchecked(buf)
+    return transmuteWithLayouts<List<ConstPtr>, List<T>>(buf, fixedListTypeLayout(PrimitiveLayouts.constPtrLayout(64L), (n).toInt()), UnresolvedTypeLayout<List<T>>())
 }
 
 /**
@@ -685,7 +687,7 @@ public fun <T> List<T>.eachMut(n: Int): List<T> {
         i += 1
     }
     // SAFETY: `* T` has the same layout as `T`, and we've also initialised each pointer as a valid reference.
-    return transmuteUnchecked(buf)
+    return transmuteWithLayouts<List<MutPtr>, List<T>>(buf, fixedListTypeLayout(PrimitiveLayouts.mutPtrLayout(64L), (n).toInt()), UnresolvedTypeLayout<List<T>>())
 }
 
 /**
@@ -831,7 +833,7 @@ public fun <I : Iterator<T>, T> I.specNextChunk(n: Int): Result<List<T>, IntoIte
     } }
 }
 
-public fun <I, T> I.specNextChunkTN(n: Int): Result<List<T>, IntoIter<T>> where I : Iterator<T>, I : TrustedLen<I> {
+public fun <I, T> I.specNextChunkTN(n: Int): Result<List<T>, IntoIter<T>> where I : Iterator<T>, I : TrustedLen {
     val len = this.sizeHint().first
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     return if (len < n) {
@@ -860,7 +862,7 @@ public fun <I, T> I.specNextChunkBack(n: Int): Result<List<T>, IntoIter<T>> {
     } }
 }
 
-public fun <I : TrustedLen<I>, T> I.specNextChunkBackTN(n: Int): Result<List<T>, IntoIter<T>> {
+public fun <I : TrustedLen, T> I.specNextChunkBackTN(n: Int): Result<List<T>, IntoIter<T>> {
     val len = this.sizeHint().first
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     return if (len < n) {

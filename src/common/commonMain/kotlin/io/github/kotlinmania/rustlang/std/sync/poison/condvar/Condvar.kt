@@ -196,7 +196,7 @@ public open class Condvar(
     public open fun <T> waitWhile(guard: MutexGuard<T>, condition: (T) -> Boolean): LockResult<MutexGuard<T>> {
         var guard1 = guard
         while (condition(guard1)) {
-            guard1 = when (val tryResult = this.wait(guard1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            guard1 = when (val tryResult = this.wait(guard1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
         }
         return Result.Ok(guard1)
     }
@@ -399,7 +399,7 @@ public open class Condvar(
                         timeout
                     }
                 }
-            guard1 = when (val tryResult = this.waitTimeout(guard1, timeout1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }.first
+            guard1 = when (val tryResult = this.waitTimeout(guard1, timeout1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }.first
         }
     }
 

@@ -581,7 +581,7 @@ public open class OccupiedEntry<K, V, A : AllocatorClone> internal constructor(
      *     else -> {}
      * }
      * // If now try to get the value, it will panic:
-     * // println("{}", map["poneyland"]);
+     * // println("()", map["poneyland"]);
      * ```
      */
     public open fun removeEntry(): Pair<K, V> = this.removeKv()
@@ -706,7 +706,7 @@ public open class OccupiedEntry<K, V, A : AllocatorClone> internal constructor(
      *     else -> {}
      * }
      * // If we try to get "poneyland"'s value, it'll panic:
-     * // println("{}", map["poneyland"]);
+     * // println("()", map["poneyland"]);
      * ```
      */
     public open fun remove(): V = this.removeKv().second

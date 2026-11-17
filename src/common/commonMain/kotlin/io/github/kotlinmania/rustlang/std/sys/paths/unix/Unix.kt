@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.paths.unix
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -15,7 +16,6 @@ import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.readLink
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.OsStringExt
@@ -42,7 +42,7 @@ public fun getcwd(): Result<PathBuf, Error> {
                 buf.shrinkToFit()
                 return Result.Ok<PathBuf, Error>(PathBuf.from(OsString.fromVec(buf)))
             } else {
-                val error = io.github.kotlinmania.rustlang.std.io.Error.lastOsError()
+                val error = io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError()
                 if (error.rawOsError() != ERANGE) {
                     return Result.Err<PathBuf, Error>(error)
                 }
@@ -61,7 +61,7 @@ public fun chdir(p: path.Path): Result<Unit, Error> {
     return if (result == 0) {
         Result.Ok<Unit, Error>(Unit)
     } else {
-        Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
     }
 }
 

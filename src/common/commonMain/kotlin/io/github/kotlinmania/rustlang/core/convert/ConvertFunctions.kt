@@ -52,11 +52,11 @@ public fun <T> identity(x: T): T = x
 
 // Note (#45742): replace the above impl for with the following more general one:
 // // AsMut lifts over DerefMut
-// impl<D: ?Sized + Deref<Target: AsMut<U>>, U: ?Sized> AsMut<U> for D {
-// fn asMut(self) -> U {
+// impl<D: ?Sized + Deref<Target: AsMut<U>>, U: ?Sized> AsMut<U> for D (
+// fn asMut(self) -> U (
 // self.derefMut().asMut()
-// }
-// }
+// )
+// )
 // From implies Into
 
 /**
@@ -75,7 +75,7 @@ public fun <T, U> T.into(fromUFn: (T) -> U): U where U : From<T, U> = fromUFn(th
 public fun <T> fromT(t: T): T = t
 
 // TryFrom implies TryInto
-public fun <T, U> T.tryInto(tryFromUFn: (T) -> Result<U, Error>): Result<U, Error> where U : TryFrom<T, U, Any?> = tryFromUFn(this)
+public fun <Error, T, U> T.tryInto(tryFromUFn: (T) -> Result<U, Error>): Result<U, Error> where U : TryFrom<T, U, Error> = tryFromUFn(this)
 
 // Infallible conversions are semantically equivalent to fallible conversions
 // with an uninhabited error type.

@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.cell.RefCell
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
@@ -17,7 +18,6 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.std.fs.File
-import io.github.kotlinmania.rustlang.std.io.Write
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
@@ -108,14 +108,14 @@ public open class StdinRaw(
         if (buf.isEmpty()) {
             return Result.Ok<Unit, Error>(Unit)
         }
-        return handleEbadf(this.value.readExact(buf), { Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF) })
+        return handleEbadf(this.value.readExact(buf), { Result.Err(io.github.kotlinmania.rustlang.core.io.error.Error.READ_EXACT_EOF) })
     }
 
     public open fun readBufExact(buf: BorrowedCursor<UByte>): Result<Unit, Error> {
         if (buf.capacity() == 0) {
             return Result.Ok<Unit, Error>(Unit)
         }
-        return handleEbadf(this.value.readBufExact(buf), { Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF) })
+        return handleEbadf(this.value.readBufExact(buf), { Result.Err(io.github.kotlinmania.rustlang.core.io.error.Error.READ_EXACT_EOF) })
     }
 
     public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = handleEbadf(this.value.readToEnd(buf), { Result.Ok(0) })

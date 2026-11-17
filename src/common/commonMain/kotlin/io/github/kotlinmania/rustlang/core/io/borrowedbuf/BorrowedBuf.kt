@@ -187,7 +187,7 @@ public open class BorrowedBuf<T>(
             val filled = buf.filled()
             val init = buf.isBufInit()
             val len = buf.bufLen()
-            return BorrowedBuf(buf = linearMutSliceView(buf.buf.asPtr().add(filled), (len - filled).toInt(), PrimitiveLayouts.U8), filled = 0, init = init)
+            return BorrowedBuf(buf = linearMutSliceView(buf.buf.asPtr().add(filled), (len - filled).toInt(), UnresolvedTypeLayout<MaybeUninit<T>>()), filled = 0, init = init)
         }
     }
 }

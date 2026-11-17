@@ -51,15 +51,15 @@ public typealias TryType<B, C> = ControlFlow<B, C>
  *             null -> {}
  *             else -> {
  *                 val left = matchVal
- *                 left.traverseInorder(f).getOrElse { return Result.failure(it) }
+ *                 when (val tryResult = left.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
  *             }
  *         }
- *         f(this.value).getOrElse { return Result.failure(it) }
+ *         when (val tryResult = f(this.value)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
  *         when (val matchVal1 = this.right) {
  *             null -> {}
  *             else -> {
  *                 val right = matchVal1
- *                 right.traverseInorder(f).getOrElse { return Result.failure(it) }
+ *                 when (val tryResult = right.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
  *             }
  *         }
  *         return ControlFlow.Continue()
@@ -198,15 +198,15 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
      *             null -> {}
      *             else -> {
      *                 val left = matchVal
-     *                 left.traverseInorder(f).getOrElse { return Result.failure(it) }
+     *                 when (val tryResult = left.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
      *             }
      *         }
-     *         f(this.value).getOrElse { return Result.failure(it) }
+     *         when (val tryResult = f(this.value)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
      *         when (val matchVal1 = this.right) {
      *             null -> {}
      *             else -> {
      *                 val right = matchVal1
-     *                 right.traverseInorder(f).getOrElse { return Result.failure(it) }
+     *                 when (val tryResult = right.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
      *             }
      *         }
      *         return ControlFlow.Continue()
@@ -294,15 +294,15 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
      *             null -> {}
      *             else -> {
      *                 val left = matchVal
-     *                 left.traverseInorder(f).getOrElse { return Result.failure(it) }
+     *                 when (val tryResult = left.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
      *             }
      *         }
-     *         f(this.value).getOrElse { return Result.failure(it) }
+     *         when (val tryResult = f(this.value)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
      *         when (val matchVal1 = this.right) {
      *             null -> {}
      *             else -> {
      *                 val right = matchVal1
-     *                 right.traverseInorder(f).getOrElse { return Result.failure(it) }
+     *                 when (val tryResult = right.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
      *             }
      *         }
      *         return ControlFlow.Continue()
@@ -400,7 +400,7 @@ public fun <T> ControlFlow<T, T>.intoValue(): T =
 /**
  * Creates a `ControlFlow` from any type implementing `Try`.
  */
-public fun <Output, Residual, R : Try<R, Any?, Any?>> ControlFlow.Companion.fromTry(r: R, branchRFn: (R) -> ControlFlow<Residual, Output>, fromResidualRFn: (R) -> R): ControlFlow<R, Output> where R : Try<R, Any?, Any?> =
+public fun <Output, Residual, R : Try<R, Output, Residual>> ControlFlow.Companion.fromTry(r: R, branchRFn: (R) -> ControlFlow<Residual, Output>, fromResidualRFn: (R) -> R): ControlFlow<R, Output> where R : Try<R, Output, Residual> =
     when (val matchVal = branchRFn(r)) {
         is ControlFlow.Continue -> {
             val (v) = matchVal
@@ -415,7 +415,7 @@ public fun <Output, Residual, R : Try<R, Any?, Any?>> ControlFlow.Companion.from
 /**
  * Converts a `ControlFlow` into any type implementing `Try`.
  */
-public fun <Output, Residual, R : Try<R, Any?, Any?>> ControlFlow<R, Output>.intoTry(fromOutputRFn: (Output) -> R): R where R : Try<R, Any?, Any?> =
+public fun <Output, Residual, R : Try<R, Output, Residual>> ControlFlow<R, Output>.intoTry(fromOutputRFn: (Output) -> R): R where R : Try<R, Output, Residual> =
     when (this) {
         is ControlFlow.Continue -> {
             val (v) = this

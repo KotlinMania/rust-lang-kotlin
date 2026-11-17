@@ -1,6 +1,7 @@
 package io.github.kotlinmania.rustlang.core.alloc
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -330,7 +331,7 @@ public interface Allocator {
         // deallocated, it cannot overlap `newPtr`. Thus, the call to `copyNonoverlapping` is
         // safe. The safety contract for `dealloc` must be upheld by the caller.
         run {
-            copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), oldLayout.size())
+            copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), oldLayout.size(), typeLayoutT = PrimitiveLayouts.U8)
             this.deallocate(ptr, oldLayout)
         }
         return Result.Ok<NonNull, AllocError>(newPtr)
@@ -383,7 +384,7 @@ public interface Allocator {
         // deallocated, it cannot overlap `newPtr`. Thus, the call to `copyNonoverlapping` is
         // safe. The safety contract for `dealloc` must be upheld by the caller.
         run {
-            copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), oldLayout.size())
+            copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), oldLayout.size(), typeLayoutT = PrimitiveLayouts.U8)
             this.deallocate(ptr, oldLayout)
         }
         return Result.Ok<NonNull, AllocError>(newPtr)
@@ -441,7 +442,7 @@ public interface Allocator {
         // deallocated, it cannot overlap `newPtr`. Thus, the call to `copyNonoverlapping` is
         // safe. The safety contract for `dealloc` must be upheld by the caller.
         run {
-            copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), newLayout.size())
+            copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), newLayout.size(), typeLayoutT = PrimitiveLayouts.U8)
             this.deallocate(ptr, oldLayout)
         }
         return Result.Ok<NonNull, AllocError>(newPtr)
@@ -522,7 +523,7 @@ public interface GlobalAllocator : StaticAllocator
  * copyable (such as by containing a `!Copy` field) or that copying them also respects allocator
  * equivalence as if it had been a clone.
  */
-public interface AllocatorClone<T> : Allocator
+public interface AllocatorClone : Allocator
 
 /**
  * Marks that an allocator and its supertypes will never invalidate currently allocated

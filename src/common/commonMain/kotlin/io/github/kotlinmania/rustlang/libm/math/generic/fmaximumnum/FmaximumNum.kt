@@ -17,7 +17,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 // Note that the IEEE 754-2019 specifies that a sNaN in either argument should signal invalid,
 // but we do not implement this.
 
-public fun <Int, SignedInt, F : Float<F, Any?, Any?>> fmaximumNum(x: F, y: F): F {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> fmaximumNum(x: F, y: F): F {
     val res =
         if ((kmCompareValues(x, y) > 0) || y.isNan()) {
             x

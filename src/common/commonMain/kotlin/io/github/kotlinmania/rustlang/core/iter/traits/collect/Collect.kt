@@ -103,7 +103,7 @@ public interface FromIterator<T, SelfType> {
      * check(v == mutableListOf(5, 5, 5, 5, 5))
      * ```
      */
-    public fun <I : IntoIterator<T, Any?>> fromIter(iter: I): SelfType
+    public fun <IntoIter, I : IntoIterator<T, IntoIter>> fromIter(iter: I): SelfType
 }
 
 /**
@@ -180,7 +180,7 @@ public interface FromIterator<T, SelfType> {
  * `Item`:
  *
  * ```kotlin
- * fun <Item, IntoIter, T> collectAsStrings(collection: T): List<String> {
+ * fun <T> collectAsStrings(collection: T): List<String> {
  *     return collection.iterator().map({ item -> "$item" }).toMutableList()
  * }
  * ```
@@ -205,7 +205,7 @@ public interface IntoIterator<Item, out IntoIter> {
     public fun intoIter(): IntoIter
 }
 
-public fun <Item, I> I.intoIter(): I = this
+public fun <I> I.intoIter(): I = this
 
 /**
  * Extend a collection with the contents of an iterator.
@@ -289,7 +289,7 @@ public interface Extend<T> {
      * check("abcdef" == message)
      * ```
      */
-    public fun <I : IntoIterator<T, Any?>> extend(iter: I)
+    public fun <IntoIter, I : IntoIterator<T, IntoIter>> extend(iter: I)
 
     /**
      * Extends a collection with exactly one element.
@@ -322,7 +322,7 @@ public interface Extend<T> {
     }
 }
 
-public fun <I : IntoIterator<Unit, Any?>> Unit.extend(iter: I) {
+public fun <IntoIter, I : IntoIterator<Unit, IntoIter>> Unit.extend(iter: I) {
     iter.iterator().forEach(drop)
 }
 
@@ -345,7 +345,7 @@ public fun Unit.extendOne(item: Unit) {}
  * check(lengths == listOf(1, 1, 3, 1))
  * ```
  */
-public fun <T, ExtendT, Iter : IntoIterator<T, Any?>> fromIteratorFromIterExtendT(iter: Iter, defaultExtendTFn: () -> ExtendT): ExtendT where ExtendT : Extend<T> {
+public fun <IntoIter, T, ExtendT, Iter : IntoIterator<T, IntoIter>> fromIteratorFromIterExtendT(iter: Iter, defaultExtendTFn: () -> ExtendT): ExtendT where ExtendT : Extend<T> {
     val res = defaultExtendTFn()
     res.extend(iter.iterator().map({ t -> t.first }), defaultExtendTFn)
     return res
@@ -355,7 +355,7 @@ public fun <T, ExtendT, Iter : IntoIterator<T, Any?>> fromIteratorFromIterExtend
  * An implementation of [`extend`](Extend.extend) that calls `extendOne` or
  * `extendOneUnchecked` for each element of the iterator.
  */
-public fun <ExtendT, I, T> defaultExtend(collection: ExtendT, iter: I) where ExtendT : Extend<T>, I : IntoIterator<T, Any?> {
+public fun <IntoIter, ExtendT, I, T> defaultExtend(collection: ExtendT, iter: I) where ExtendT : Extend<T>, I : IntoIterator<T, IntoIter> {
     // Specialize on `TrustedLen` and call `extendOneUnchecked` where
     // applicable.
     interface SpecExtend<I> {
@@ -376,7 +376,7 @@ public fun <ExtendT, I, T> defaultExtend(collection: ExtendT, iter: I) where Ext
         }
         iter1.forEach(extender(this))
     }
-    fun <ExtendT, I, T> ExtendT.extendI(iter1: I) where ExtendT : Extend<T>, I : TrustedLen<I> {
+    fun <ExtendT, I, T> ExtendT.extendI(iter1: I) where ExtendT : Extend<T>, I : TrustedLen {
         val (lowerBound, upperBound) = iter1.sizeHint()
         if (lowerBound > 0) {
             this.extendReserve(lowerBound)
@@ -393,7 +393,7 @@ public fun <ExtendT, I, T> defaultExtend(collection: ExtendT, iter: I) where Ext
     SpecExtend.Extend(collection, iter.iterator())
 }
 
-public fun <A, B, ExA, ExB, Iter : IntoIterator<Pair<A, B>, Any?>> Pair<ExA, ExB>.extend(iter: Iter) where ExA : Extend<A>, ExB : Extend<B> {
+public fun <IntoIter, A, B, ExA, ExB, Iter : IntoIterator<Pair<A, B>, IntoIter>> Pair<ExA, ExB>.extend(iter: Iter) where ExA : Extend<A>, ExB : Extend<B> {
     defaultExtend(this, iter)
 }
 
@@ -414,13 +414,13 @@ public fun <A, B, ExA, ExB> Pair<ExA, ExB>.extendOneUnchecked(item: Pair<A, B>) 
     }
 }
 
-public fun <A, B, ExA, ExB, Iter : IntoIterator<Pair<A, B>, Any?>> fromIteratorFromIterExAExB(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB): Pair<ExA, ExB> where ExA : Extend<A>, ExB : Extend<B> {
+public fun <IntoIter, A, B, ExA, ExB, Iter : IntoIterator<Pair<A, B>, IntoIter>> fromIteratorFromIterExAExB(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB): Pair<ExA, ExB> where ExA : Extend<A>, ExB : Extend<B> {
     val res: Pair<ExA, ExB>  = Pair.default()
     res.extend(iter)
     return res
 }
 
-public fun <A, B, C, ExA, ExB, ExC, Iter : IntoIterator<Triple<A, B, C>, Any?>> Triple<ExA, ExB, ExC>.extend(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C> {
+public fun <IntoIter, A, B, C, ExA, ExB, ExC, Iter : IntoIterator<Triple<A, B, C>, IntoIter>> Triple<ExA, ExB, ExC>.extend(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C> {
     defaultExtend(this, iter)
 }
 
@@ -444,13 +444,13 @@ public fun <A, B, C, ExA, ExB, ExC> Triple<ExA, ExB, ExC>.extendOneUnchecked(ite
     }
 }
 
-public fun <A, B, C, ExA, ExB, ExC, Iter : IntoIterator<Triple<A, B, C>, Any?>> fromIteratorFromIterExAExBExC(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC): Triple<ExA, ExB, ExC> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C> {
+public fun <IntoIter, A, B, C, ExA, ExB, ExC, Iter : IntoIterator<Triple<A, B, C>, IntoIter>> fromIteratorFromIterExAExBExC(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC): Triple<ExA, ExB, ExC> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C> {
     val res: Triple<ExA, ExB, ExC>  = Triple.default()
     res.extend(iter)
     return res
 }
 
-public fun <A, B, C, D, ExA, ExB, ExC, ExD, Iter : IntoIterator<List<Any?>, Any?>> List<Any?>.extend(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D> {
+public fun <IntoIter, A, B, C, D, ExA, ExB, ExC, ExD, Iter : IntoIterator<List<Any?>, IntoIter>> List<Any?>.extend(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D> {
     defaultExtend(this, iter)
 }
 
@@ -477,13 +477,13 @@ public fun <A, B, C, D, ExA, ExB, ExC, ExD> List<Any?>.extendOneUnchecked(item: 
     }
 }
 
-public fun <A, B, C, D, ExA, ExB, ExC, ExD, Iter : IntoIterator<List<Any?>, Any?>> fromIteratorFromIterExAExBExCExD(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D> {
+public fun <IntoIter, A, B, C, D, ExA, ExB, ExC, ExD, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExD(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D> {
     val res: List<Any?>  = List.default()
     res.extend(iter)
     return res
 }
 
-public fun <A, B, C, D, E, ExA, ExB, ExC, ExD, ExE, Iter : IntoIterator<List<Any?>, Any?>> List<Any?>.extendABCDE(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E> {
+public fun <IntoIter, A, B, C, D, E, ExA, ExB, ExC, ExD, ExE, Iter : IntoIterator<List<Any?>, IntoIter>> List<Any?>.extendABCDE(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E> {
     defaultExtend(this, iter)
 }
 
@@ -513,13 +513,13 @@ public fun <A, B, C, D, E, ExA, ExB, ExC, ExD, ExE> List<Any?>.extendOneUnchecke
     }
 }
 
-public fun <A, B, C, D, E, ExA, ExB, ExC, ExD, ExE, Iter : IntoIterator<List<Any?>, Any?>> fromIteratorFromIterExAExBExCExDExE(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E> {
+public fun <IntoIter, A, B, C, D, E, ExA, ExB, ExC, ExD, ExE, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExDExE(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E> {
     val res: List<Any?>  = List.default()
     res.extend(iter)
     return res
 }
 
-public fun <A, B, C, D, E, F, ExA, ExB, ExC, ExD, ExE, ExF, Iter : IntoIterator<List<Any?>, Any?>> List<Any?>.extendABCDEF(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F> {
+public fun <IntoIter, A, B, C, D, E, F, ExA, ExB, ExC, ExD, ExE, ExF, Iter : IntoIterator<List<Any?>, IntoIter>> List<Any?>.extendABCDEF(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F> {
     defaultExtend(this, iter)
 }
 
@@ -552,13 +552,13 @@ public fun <A, B, C, D, E, F, ExA, ExB, ExC, ExD, ExE, ExF> List<Any?>.extendOne
     }
 }
 
-public fun <A, B, C, D, E, F, ExA, ExB, ExC, ExD, ExE, ExF, Iter : IntoIterator<List<Any?>, Any?>> fromIteratorFromIterExAExBExCExDExEExF(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F> {
+public fun <IntoIter, A, B, C, D, E, F, ExA, ExB, ExC, ExD, ExE, ExF, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExDExEExF(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F> {
     val res: List<Any?>  = List.default()
     res.extend(iter)
     return res
 }
 
-public fun <A, B, C, D, E, F, G, ExA, ExB, ExC, ExD, ExE, ExF, ExG, Iter : IntoIterator<List<Any?>, Any?>> List<Any?>.extendABCDEFG(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G> {
+public fun <IntoIter, A, B, C, D, E, F, G, ExA, ExB, ExC, ExD, ExE, ExF, ExG, Iter : IntoIterator<List<Any?>, IntoIter>> List<Any?>.extendABCDEFG(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G> {
     defaultExtend(this, iter)
 }
 
@@ -594,13 +594,13 @@ public fun <A, B, C, D, E, F, G, ExA, ExB, ExC, ExD, ExE, ExF, ExG> List<Any?>.e
     }
 }
 
-public fun <A, B, C, D, E, F, G, ExA, ExB, ExC, ExD, ExE, ExF, ExG, Iter : IntoIterator<List<Any?>, Any?>> fromIteratorFromIterExAExBExCExDExEExFExG(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G> {
+public fun <IntoIter, A, B, C, D, E, F, G, ExA, ExB, ExC, ExD, ExE, ExF, ExG, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExDExEExFExG(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G> {
     val res: List<Any?>  = List.default()
     res.extend(iter)
     return res
 }
 
-public fun <A, B, C, D, E, F, G, H, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, Iter : IntoIterator<List<Any?>, Any?>> List<Any?>.extendABCDEFGH(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H> {
+public fun <IntoIter, A, B, C, D, E, F, G, H, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, Iter : IntoIterator<List<Any?>, IntoIter>> List<Any?>.extendABCDEFGH(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H> {
     defaultExtend(this, iter)
 }
 
@@ -639,13 +639,13 @@ public fun <A, B, C, D, E, F, G, H, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH> List
     }
 }
 
-public fun <A, B, C, D, E, F, G, H, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, Iter : IntoIterator<List<Any?>, Any?>> fromIteratorFromIterExAExBExCExDExEExFExGExH(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG, defaultExHFn: () -> ExH): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H> {
+public fun <IntoIter, A, B, C, D, E, F, G, H, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExDExEExFExGExH(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG, defaultExHFn: () -> ExH): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H> {
     val res: List<Any?>  = List.default()
     res.extend(iter)
     return res
 }
 
-public fun <A, B, C, D, E, F, G, H, I, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, Iter : IntoIterator<List<Any?>, Any?>> List<Any?>.extendABCDEFGHI(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I> {
+public fun <IntoIter, A, B, C, D, E, F, G, H, I, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, Iter : IntoIterator<List<Any?>, IntoIter>> List<Any?>.extendABCDEFGHI(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I> {
     defaultExtend(this, iter)
 }
 
@@ -687,13 +687,13 @@ public fun <A, B, C, D, E, F, G, H, I, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, E
     }
 }
 
-public fun <A, B, C, D, E, F, G, H, I, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, Iter : IntoIterator<List<Any?>, Any?>> fromIteratorFromIterExAExBExCExDExEExFExGExHExI(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG, defaultExHFn: () -> ExH, defaultExIFn: () -> ExI): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I> {
+public fun <IntoIter, A, B, C, D, E, F, G, H, I, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExDExEExFExGExHExI(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG, defaultExHFn: () -> ExH, defaultExIFn: () -> ExI): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I> {
     val res: List<Any?>  = List.default()
     res.extend(iter)
     return res
 }
 
-public fun <A, B, C, D, E, F, G, H, I, J, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, Iter : IntoIterator<List<Any?>, Any?>> List<Any?>.extendABCDEFGHIJ(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J> {
+public fun <IntoIter, A, B, C, D, E, F, G, H, I, J, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, Iter : IntoIterator<List<Any?>, IntoIter>> List<Any?>.extendABCDEFGHIJ(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J> {
     defaultExtend(this, iter)
 }
 
@@ -738,13 +738,13 @@ public fun <A, B, C, D, E, F, G, H, I, J, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH
     }
 }
 
-public fun <A, B, C, D, E, F, G, H, I, J, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, Iter : IntoIterator<List<Any?>, Any?>> fromIteratorFromIterExAExBExCExDExEExFExGExHExIExJ(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG, defaultExHFn: () -> ExH, defaultExIFn: () -> ExI, defaultExJFn: () -> ExJ): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J> {
+public fun <IntoIter, A, B, C, D, E, F, G, H, I, J, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExDExEExFExGExHExIExJ(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG, defaultExHFn: () -> ExH, defaultExIFn: () -> ExI, defaultExJFn: () -> ExJ): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J> {
     val res: List<Any?>  = List.default()
     res.extend(iter)
     return res
 }
 
-public fun <A, B, C, D, E, F, G, H, I, J, K, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK, Iter : IntoIterator<List<Any?>, Any?>> List<Any?>.extendABCDEFGHIJK(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K> {
+public fun <IntoIter, A, B, C, D, E, F, G, H, I, J, K, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK, Iter : IntoIterator<List<Any?>, IntoIter>> List<Any?>.extendABCDEFGHIJK(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K> {
     defaultExtend(this, iter)
 }
 
@@ -792,13 +792,13 @@ public fun <A, B, C, D, E, F, G, H, I, J, K, ExA, ExB, ExC, ExD, ExE, ExF, ExG, 
     }
 }
 
-public fun <A, B, C, D, E, F, G, H, I, J, K, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK, Iter : IntoIterator<List<Any?>, Any?>> fromIteratorFromIterExAExBExCExDExEExFExGExHExIExJExK(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG, defaultExHFn: () -> ExH, defaultExIFn: () -> ExI, defaultExJFn: () -> ExJ, defaultExKFn: () -> ExK): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K> {
+public fun <IntoIter, A, B, C, D, E, F, G, H, I, J, K, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExDExEExFExGExHExIExJExK(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG, defaultExHFn: () -> ExH, defaultExIFn: () -> ExI, defaultExJFn: () -> ExJ, defaultExKFn: () -> ExK): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K> {
     val res: List<Any?>  = List.default()
     res.extend(iter)
     return res
 }
 
-public fun <A, B, C, D, E, F, G, H, I, J, K, L, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK, ExL, Iter : IntoIterator<List<Any?>, Any?>> List<Any?>.extendABCDEFGHIJKL(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K>, ExL : Extend<L> {
+public fun <IntoIter, A, B, C, D, E, F, G, H, I, J, K, L, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK, ExL, Iter : IntoIterator<List<Any?>, IntoIter>> List<Any?>.extendABCDEFGHIJKL(iter: Iter) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K>, ExL : Extend<L> {
     defaultExtend(this, iter)
 }
 
@@ -849,7 +849,7 @@ public fun <A, B, C, D, E, F, G, H, I, J, K, L, ExA, ExB, ExC, ExD, ExE, ExF, Ex
     }
 }
 
-public fun <A, B, C, D, E, F, G, H, I, J, K, L, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK, ExL, Iter : IntoIterator<List<Any?>, Any?>> fromIteratorFromIterExAExBExCExDExEExFExGExHExIExJExKExL(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG, defaultExHFn: () -> ExH, defaultExIFn: () -> ExI, defaultExJFn: () -> ExJ, defaultExKFn: () -> ExK, defaultExLFn: () -> ExL): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K>, ExL : Extend<L> {
+public fun <IntoIter, A, B, C, D, E, F, G, H, I, J, K, L, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK, ExL, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExDExEExFExGExHExIExJExKExL(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG, defaultExHFn: () -> ExH, defaultExIFn: () -> ExI, defaultExJFn: () -> ExJ, defaultExKFn: () -> ExK, defaultExLFn: () -> ExL): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K>, ExL : Extend<L> {
     val res: List<Any?>  = List.default()
     res.extend(iter)
     return res

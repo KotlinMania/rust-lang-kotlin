@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 // Utility macros.
 
 public open class SimdShuffleIdx(
-    public var value: UIntArray,
+    public var value: UIntArray = UIntArray((LEN).toInt()),
 ) {
     public var field0: UIntArray
         get() = value

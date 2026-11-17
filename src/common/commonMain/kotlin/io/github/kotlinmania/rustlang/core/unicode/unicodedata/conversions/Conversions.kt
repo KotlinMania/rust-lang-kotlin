@@ -228,7 +228,7 @@ public fun toCasefold(c: Char): List<Char> {
                     }
                 }
             }
-            // if finalResult[1] == '\0' {
+            // if finalResult[1] == '\0' (
             finalResult[1] = lowercase1[0]
             if (uppercase[2] != '\u0000') {
                 if (false) {
@@ -284,11 +284,11 @@ public fun toCasefold(c: Char): List<Char> {
                 }
                 // finalResult[2] = lowercase1[1];
             }
-            // } else {
+            // ) else (
             // finalResult[2] = lowercase1[0];
             // debugAssertEq(lowercase1[1], '\0');
             // debugAssertEq(uppercase[2], '\0')
-            // }
+            // )
         }
         finalResult
     }())

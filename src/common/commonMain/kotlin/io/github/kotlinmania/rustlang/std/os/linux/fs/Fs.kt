@@ -29,11 +29,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let stat = meta.asRawStat();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun asRawStat(): Stat
@@ -47,11 +47,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
-     *     println("{}", meta.stDev());
+     *     println("()", meta.stDev());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun stDev(): ULong
@@ -65,11 +65,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
-     *     println("{}", meta.stIno());
+     *     println("()", meta.stIno());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun stIno(): ULong
@@ -83,11 +83,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
-     *     println("{}", meta.stMode());
+     *     println("()", meta.stMode());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun stMode(): UInt
@@ -101,11 +101,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
-     *     println("{}", meta.stNlink());
+     *     println("()", meta.stNlink());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun stNlink(): ULong
@@ -119,11 +119,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
-     *     println("{}", meta.stUid());
+     *     println("()", meta.stUid());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun stUid(): UInt
@@ -137,11 +137,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
-     *     println("{}", meta.stGid());
+     *     println("()", meta.stGid());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun stGid(): UInt
@@ -155,11 +155,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
-     *     println("{}", meta.stRdev());
+     *     println("()", meta.stRdev());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun stRdev(): ULong
@@ -176,11 +176,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
-     *     println("{}", meta.stSize());
+     *     println("()", meta.stSize());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun stSize(): ULong
@@ -194,11 +194,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
-     *     println("{}", meta.stAtime());
+     *     println("()", meta.stAtime());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun stAtime(): Long
@@ -214,11 +214,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
-     *     println("{}", meta.stAtimeNsec());
+     *     println("()", meta.stAtimeNsec());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun stAtimeNsec(): Long
@@ -232,11 +232,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
-     *     println("{}", meta.stMtime());
+     *     println("()", meta.stMtime());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun stMtime(): Long
@@ -252,11 +252,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
-     *     println("{}", meta.stMtimeNsec());
+     *     println("()", meta.stMtimeNsec());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun stMtimeNsec(): Long
@@ -270,11 +270,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
-     *     println("{}", meta.stCtime());
+     *     println("()", meta.stCtime());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun stCtime(): Long
@@ -290,11 +290,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
-     *     println("{}", meta.stCtimeNsec());
+     *     println("()", meta.stCtimeNsec());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun stCtimeNsec(): Long
@@ -308,11 +308,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
-     *     println("{}", meta.stBlksize());
+     *     println("()", meta.stBlksize());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun stBlksize(): ULong
@@ -326,11 +326,11 @@ public interface MetadataExt {
      * use std.io;
      * use std.os.linux.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
-     *     println("{}", meta.stBlocks());
+     *     println("()", meta.stBlocks());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun stBlocks(): ULong

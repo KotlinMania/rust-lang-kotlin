@@ -85,11 +85,11 @@ public fun compileError(msg: String = ""): String =
  * Constructs parameters for the other string-formatting macros.
  *
  * This macro functions by taking a formatting string literal containing
- * `{}` for each additional argument passed. `formatArgs` prepares the
+ * `()` for each additional argument passed. `formatArgs` prepares the
  * additional parameters to ensure the output can be interpreted as a string
  * and canonicalizes the arguments into a single type. Any value that implements
  * the [Display] trait can be passed to `formatArgs`, as can any
- * [Debug] implementation be passed to a `{ : ? }` within the formatting string.
+ * [Debug] implementation be passed to a `( : ? )` within the formatting string.
  *
  * This macro produces a value of type [fmt.Arguments]. This value can be
  * passed to the macros within [std.fmt] for performing useful redirection.

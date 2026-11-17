@@ -21,7 +21,7 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  * val iter: Splice = v.splice(1 until Int.MAX_VALUE, new)
  * ```
  */
-public open class Splice<I, A : Allocator> internal constructor(
+public open class Splice<I, A : Allocator, Item> internal constructor(
     drainCtorArg: Drain<Item, A>,
     public var replaceWith: I,
 ) : Iterable<Item> {
@@ -86,10 +86,10 @@ public open class Splice<I, A : Allocator> internal constructor(
     }
 
     public companion object {
-        public operator fun <I, A : Allocator> invoke(
+        public operator fun <I, A : Allocator, Item> invoke(
             drain: Drain<Item, A>,
             replaceWith: I,
-        ): Splice<I, A> = Splice<I, A>(
+        ): Splice<I, A, Item> = Splice<I, A, Item>(
             drainCtorArg = drain,
             replaceWith = replaceWith,
         )

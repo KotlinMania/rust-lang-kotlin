@@ -81,7 +81,8 @@ public fun Saturating<Int>.add(other: Saturating<Int>): Saturating<Int> = Satura
 public fun Saturating<Int>.addSaturatingInt(other: Saturating<Int>): Output = this.add(other)
 
 public fun Saturating<Int>.addAssign(other: Saturating<Int>) {
-    this = this + other
+    var selfMut = this
+    selfMut = selfMut + other
 }
 
 public fun Saturating<Int>.addAssignSaturatingInt(other: Saturating<Int>) {
@@ -89,7 +90,8 @@ public fun Saturating<Int>.addAssignSaturatingInt(other: Saturating<Int>) {
 }
 
 public fun Saturating<Int>.addAssign(other: Int) {
-    this = this + Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
+    var selfMut = this
+    selfMut = selfMut + Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
 public fun Saturating<Int>.addAssignInt(other: Int) {
@@ -101,7 +103,8 @@ public fun Saturating<Int>.sub(other: Saturating<Int>): Saturating<Int> = Satura
 public fun Saturating<Int>.subSaturatingInt(other: Saturating<Int>): Output = this.sub(other)
 
 public fun Saturating<Int>.subAssign(other: Saturating<Int>) {
-    this = this - other
+    var selfMut = this
+    selfMut = selfMut - other
 }
 
 public fun Saturating<Int>.subAssignSaturatingInt(other: Saturating<Int>) {
@@ -109,7 +112,8 @@ public fun Saturating<Int>.subAssignSaturatingInt(other: Saturating<Int>) {
 }
 
 public fun Saturating<Int>.subAssign(other: Int) {
-    this = this - Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
+    var selfMut = this
+    selfMut = selfMut - Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
 public fun Saturating<Int>.subAssignInt(other: Int) {
@@ -121,7 +125,8 @@ public fun Saturating<Int>.mul(other: Saturating<Int>): Saturating<Int> = Satura
 public fun Saturating<Int>.mulSaturatingInt(other: Saturating<Int>): Output = this.mul(other)
 
 public fun Saturating<Int>.mulAssign(other: Saturating<Int>) {
-    this = this * other
+    var selfMut = this
+    selfMut = selfMut * other
 }
 
 public fun Saturating<Int>.mulAssignSaturatingInt(other: Saturating<Int>) {
@@ -129,7 +134,8 @@ public fun Saturating<Int>.mulAssignSaturatingInt(other: Saturating<Int>) {
 }
 
 public fun Saturating<Int>.mulAssign(other: Int) {
-    this = this * Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
+    var selfMut = this
+    selfMut = selfMut * Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
 public fun Saturating<Int>.mulAssignInt(other: Int) {
@@ -152,7 +158,8 @@ public fun Saturating<Int>.div(other: Saturating<Int>): Saturating<Int> = Satura
 public fun Saturating<Int>.divSaturatingInt(other: Saturating<Int>): Output = this.div(other)
 
 public fun Saturating<Int>.divAssign(other: Saturating<Int>) {
-    this = this / other
+    var selfMut = this
+    selfMut = selfMut / other
 }
 
 public fun Saturating<Int>.divAssignSaturatingInt(other: Saturating<Int>) {
@@ -160,7 +167,8 @@ public fun Saturating<Int>.divAssignSaturatingInt(other: Saturating<Int>) {
 }
 
 public fun Saturating<Int>.divAssign(other: Int) {
-    this = this / Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
+    var selfMut = this
+    selfMut = selfMut / Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
 public fun Saturating<Int>.divAssignInt(other: Int) {
@@ -172,7 +180,8 @@ public fun Saturating<Int>.rem(other: Saturating<Int>): Saturating<Int> = Satura
 public fun Saturating<Int>.remSaturatingInt(other: Saturating<Int>): Output = this.rem(other)
 
 public fun Saturating<Int>.remAssign(other: Saturating<Int>) {
-    this = this % other
+    var selfMut = this
+    selfMut = selfMut % other
 }
 
 public fun Saturating<Int>.remAssignSaturatingInt(other: Saturating<Int>) {
@@ -180,7 +189,8 @@ public fun Saturating<Int>.remAssignSaturatingInt(other: Saturating<Int>) {
 }
 
 public fun Saturating<Int>.remAssign(other: Int) {
-    this = this % Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
+    var selfMut = this
+    selfMut = selfMut % Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
 public fun Saturating<Int>.remAssignInt(other: Int) {
@@ -194,7 +204,8 @@ public fun Saturating<Int>.bitxor(other: Saturating<Int>): Saturating<Int> = Sat
 public fun Saturating<Int>.bitxorSaturatingInt(other: Saturating<Int>): Output = this.bitxor(other)
 
 public fun Saturating<Int>.bitxorAssign(other: Saturating<Int>) {
-    this = this xor other
+    var selfMut = this
+    selfMut = selfMut xor other
 }
 
 public fun Saturating<Int>.bitxorAssignSaturatingInt(other: Saturating<Int>) {
@@ -202,7 +213,8 @@ public fun Saturating<Int>.bitxorAssignSaturatingInt(other: Saturating<Int>) {
 }
 
 public fun Saturating<Int>.bitxorAssign(other: Int) {
-    this = this xor Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
+    var selfMut = this
+    selfMut = selfMut xor Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
 public fun Saturating<Int>.bitxorAssignInt(other: Int) {
@@ -214,7 +226,8 @@ public fun Saturating<Int>.bitor(other: Saturating<Int>): Saturating<Int> = Satu
 public fun Saturating<Int>.bitorSaturatingInt(other: Saturating<Int>): Output = this.bitor(other)
 
 public fun Saturating<Int>.bitorAssign(other: Saturating<Int>) {
-    this = this or other
+    var selfMut = this
+    selfMut = selfMut or other
 }
 
 public fun Saturating<Int>.bitorAssignSaturatingInt(other: Saturating<Int>) {
@@ -222,7 +235,8 @@ public fun Saturating<Int>.bitorAssignSaturatingInt(other: Saturating<Int>) {
 }
 
 public fun Saturating<Int>.bitorAssign(other: Int) {
-    this = this or Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
+    var selfMut = this
+    selfMut = selfMut or Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
 public fun Saturating<Int>.bitorAssignInt(other: Int) {
@@ -234,7 +248,8 @@ public fun Saturating<Int>.bitand(other: Saturating<Int>): Saturating<Int> = Sat
 public fun Saturating<Int>.bitandSaturatingInt(other: Saturating<Int>): Output = this.bitand(other)
 
 public fun Saturating<Int>.bitandAssign(other: Saturating<Int>) {
-    this = this and other
+    var selfMut = this
+    selfMut = selfMut and other
 }
 
 public fun Saturating<Int>.bitandAssignSaturatingInt(other: Saturating<Int>) {
@@ -242,7 +257,8 @@ public fun Saturating<Int>.bitandAssignSaturatingInt(other: Saturating<Int>) {
 }
 
 public fun Saturating<Int>.bitandAssign(other: Int) {
-    this = this and Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
+    var selfMut = this
+    selfMut = selfMut and Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
 public fun Saturating<Int>.bitandAssignInt(other: Int) {
@@ -256,7 +272,8 @@ public fun Saturating<UByte>.addAssignSaturatingUByte(other: Saturating<UByte>) 
 }
 
 public fun Saturating<UByte>.addAssign(other: UByte) {
-    this = this + Saturating(other, fieldLayout = PrimitiveLayouts.U8)
+    var selfMut = this
+    selfMut = selfMut + Saturating(other, fieldLayout = PrimitiveLayouts.U8)
 }
 
 public fun Saturating<UByte>.addAssignUByte(other: UByte) {
@@ -270,7 +287,8 @@ public fun Saturating<UByte>.subAssignSaturatingUByte(other: Saturating<UByte>) 
 }
 
 public fun Saturating<UByte>.subAssign(other: UByte) {
-    this = this - Saturating(other, fieldLayout = PrimitiveLayouts.U8)
+    var selfMut = this
+    selfMut = selfMut - Saturating(other, fieldLayout = PrimitiveLayouts.U8)
 }
 
 public fun Saturating<UByte>.subAssignUByte(other: UByte) {
@@ -284,7 +302,8 @@ public fun Saturating<UByte>.mulAssignSaturatingUByte(other: Saturating<UByte>) 
 }
 
 public fun Saturating<UByte>.mulAssign(other: UByte) {
-    this = this * Saturating(other, fieldLayout = PrimitiveLayouts.U8)
+    var selfMut = this
+    selfMut = selfMut * Saturating(other, fieldLayout = PrimitiveLayouts.U8)
 }
 
 public fun Saturating<UByte>.mulAssignUByte(other: UByte) {
@@ -310,7 +329,8 @@ public fun Saturating<UByte>.divAssignSaturatingUByte(other: Saturating<UByte>) 
 }
 
 public fun Saturating<UByte>.divAssign(other: UByte) {
-    this = this / Saturating(other, fieldLayout = PrimitiveLayouts.U8)
+    var selfMut = this
+    selfMut = selfMut / Saturating(other, fieldLayout = PrimitiveLayouts.U8)
 }
 
 public fun Saturating<UByte>.divAssignUByte(other: UByte) {
@@ -324,7 +344,8 @@ public fun Saturating<UByte>.remAssignSaturatingUByte(other: Saturating<UByte>) 
 }
 
 public fun Saturating<UByte>.remAssign(other: UByte) {
-    this = this % Saturating(other, fieldLayout = PrimitiveLayouts.U8)
+    var selfMut = this
+    selfMut = selfMut % Saturating(other, fieldLayout = PrimitiveLayouts.U8)
 }
 
 public fun Saturating<UByte>.remAssignUByte(other: UByte) {
@@ -338,7 +359,8 @@ public fun Saturating<UByte>.bitxorAssignSaturatingUByte(other: Saturating<UByte
 }
 
 public fun Saturating<UByte>.bitxorAssign(other: UByte) {
-    this = this xor Saturating(other, fieldLayout = PrimitiveLayouts.U8)
+    var selfMut = this
+    selfMut = selfMut xor Saturating(other, fieldLayout = PrimitiveLayouts.U8)
 }
 
 public fun Saturating<UByte>.bitxorAssignUByte(other: UByte) {
@@ -352,7 +374,8 @@ public fun Saturating<UByte>.bitorAssignSaturatingUByte(other: Saturating<UByte>
 }
 
 public fun Saturating<UByte>.bitorAssign(other: UByte) {
-    this = this or Saturating(other, fieldLayout = PrimitiveLayouts.U8)
+    var selfMut = this
+    selfMut = selfMut or Saturating(other, fieldLayout = PrimitiveLayouts.U8)
 }
 
 public fun Saturating<UByte>.bitorAssignUByte(other: UByte) {
@@ -366,7 +389,8 @@ public fun Saturating<UByte>.bitandAssignSaturatingUByte(other: Saturating<UByte
 }
 
 public fun Saturating<UByte>.bitandAssign(other: UByte) {
-    this = this and Saturating(other, fieldLayout = PrimitiveLayouts.U8)
+    var selfMut = this
+    selfMut = selfMut and Saturating(other, fieldLayout = PrimitiveLayouts.U8)
 }
 
 public fun Saturating<UByte>.bitandAssignUByte(other: UByte) {
@@ -380,7 +404,8 @@ public fun Saturating<UShort>.addAssignSaturatingUShort(other: Saturating<UShort
 }
 
 public fun Saturating<UShort>.addAssign(other: UShort) {
-    this = this + Saturating(other, fieldLayout = PrimitiveLayouts.U16)
+    var selfMut = this
+    selfMut = selfMut + Saturating(other, fieldLayout = PrimitiveLayouts.U16)
 }
 
 public fun Saturating<UShort>.addAssignUShort(other: UShort) {
@@ -394,7 +419,8 @@ public fun Saturating<UShort>.subAssignSaturatingUShort(other: Saturating<UShort
 }
 
 public fun Saturating<UShort>.subAssign(other: UShort) {
-    this = this - Saturating(other, fieldLayout = PrimitiveLayouts.U16)
+    var selfMut = this
+    selfMut = selfMut - Saturating(other, fieldLayout = PrimitiveLayouts.U16)
 }
 
 public fun Saturating<UShort>.subAssignUShort(other: UShort) {
@@ -408,7 +434,8 @@ public fun Saturating<UShort>.mulAssignSaturatingUShort(other: Saturating<UShort
 }
 
 public fun Saturating<UShort>.mulAssign(other: UShort) {
-    this = this * Saturating(other, fieldLayout = PrimitiveLayouts.U16)
+    var selfMut = this
+    selfMut = selfMut * Saturating(other, fieldLayout = PrimitiveLayouts.U16)
 }
 
 public fun Saturating<UShort>.mulAssignUShort(other: UShort) {
@@ -434,7 +461,8 @@ public fun Saturating<UShort>.divAssignSaturatingUShort(other: Saturating<UShort
 }
 
 public fun Saturating<UShort>.divAssign(other: UShort) {
-    this = this / Saturating(other, fieldLayout = PrimitiveLayouts.U16)
+    var selfMut = this
+    selfMut = selfMut / Saturating(other, fieldLayout = PrimitiveLayouts.U16)
 }
 
 public fun Saturating<UShort>.divAssignUShort(other: UShort) {
@@ -448,7 +476,8 @@ public fun Saturating<UShort>.remAssignSaturatingUShort(other: Saturating<UShort
 }
 
 public fun Saturating<UShort>.remAssign(other: UShort) {
-    this = this % Saturating(other, fieldLayout = PrimitiveLayouts.U16)
+    var selfMut = this
+    selfMut = selfMut % Saturating(other, fieldLayout = PrimitiveLayouts.U16)
 }
 
 public fun Saturating<UShort>.remAssignUShort(other: UShort) {
@@ -462,7 +491,8 @@ public fun Saturating<UShort>.bitxorAssignSaturatingUShort(other: Saturating<USh
 }
 
 public fun Saturating<UShort>.bitxorAssign(other: UShort) {
-    this = this xor Saturating(other, fieldLayout = PrimitiveLayouts.U16)
+    var selfMut = this
+    selfMut = selfMut xor Saturating(other, fieldLayout = PrimitiveLayouts.U16)
 }
 
 public fun Saturating<UShort>.bitxorAssignUShort(other: UShort) {
@@ -476,7 +506,8 @@ public fun Saturating<UShort>.bitorAssignSaturatingUShort(other: Saturating<USho
 }
 
 public fun Saturating<UShort>.bitorAssign(other: UShort) {
-    this = this or Saturating(other, fieldLayout = PrimitiveLayouts.U16)
+    var selfMut = this
+    selfMut = selfMut or Saturating(other, fieldLayout = PrimitiveLayouts.U16)
 }
 
 public fun Saturating<UShort>.bitorAssignUShort(other: UShort) {
@@ -490,7 +521,8 @@ public fun Saturating<UShort>.bitandAssignSaturatingUShort(other: Saturating<USh
 }
 
 public fun Saturating<UShort>.bitandAssign(other: UShort) {
-    this = this and Saturating(other, fieldLayout = PrimitiveLayouts.U16)
+    var selfMut = this
+    selfMut = selfMut and Saturating(other, fieldLayout = PrimitiveLayouts.U16)
 }
 
 public fun Saturating<UShort>.bitandAssignUShort(other: UShort) {
@@ -504,7 +536,8 @@ public fun Saturating<UInt>.addAssignSaturatingUInt(other: Saturating<UInt>) {
 }
 
 public fun Saturating<UInt>.addAssign(other: UInt) {
-    this = this + Saturating(other, fieldLayout = PrimitiveLayouts.U32)
+    var selfMut = this
+    selfMut = selfMut + Saturating(other, fieldLayout = PrimitiveLayouts.U32)
 }
 
 public fun Saturating<UInt>.addAssignUInt(other: UInt) {
@@ -518,7 +551,8 @@ public fun Saturating<UInt>.subAssignSaturatingUInt(other: Saturating<UInt>) {
 }
 
 public fun Saturating<UInt>.subAssign(other: UInt) {
-    this = this - Saturating(other, fieldLayout = PrimitiveLayouts.U32)
+    var selfMut = this
+    selfMut = selfMut - Saturating(other, fieldLayout = PrimitiveLayouts.U32)
 }
 
 public fun Saturating<UInt>.subAssignUInt(other: UInt) {
@@ -532,7 +566,8 @@ public fun Saturating<UInt>.mulAssignSaturatingUInt(other: Saturating<UInt>) {
 }
 
 public fun Saturating<UInt>.mulAssign(other: UInt) {
-    this = this * Saturating(other, fieldLayout = PrimitiveLayouts.U32)
+    var selfMut = this
+    selfMut = selfMut * Saturating(other, fieldLayout = PrimitiveLayouts.U32)
 }
 
 public fun Saturating<UInt>.mulAssignUInt(other: UInt) {
@@ -558,7 +593,8 @@ public fun Saturating<UInt>.divAssignSaturatingUInt(other: Saturating<UInt>) {
 }
 
 public fun Saturating<UInt>.divAssign(other: UInt) {
-    this = this / Saturating(other, fieldLayout = PrimitiveLayouts.U32)
+    var selfMut = this
+    selfMut = selfMut / Saturating(other, fieldLayout = PrimitiveLayouts.U32)
 }
 
 public fun Saturating<UInt>.divAssignUInt(other: UInt) {
@@ -572,7 +608,8 @@ public fun Saturating<UInt>.remAssignSaturatingUInt(other: Saturating<UInt>) {
 }
 
 public fun Saturating<UInt>.remAssign(other: UInt) {
-    this = this % Saturating(other, fieldLayout = PrimitiveLayouts.U32)
+    var selfMut = this
+    selfMut = selfMut % Saturating(other, fieldLayout = PrimitiveLayouts.U32)
 }
 
 public fun Saturating<UInt>.remAssignUInt(other: UInt) {
@@ -586,7 +623,8 @@ public fun Saturating<UInt>.bitxorAssignSaturatingUInt(other: Saturating<UInt>) 
 }
 
 public fun Saturating<UInt>.bitxorAssign(other: UInt) {
-    this = this xor Saturating(other, fieldLayout = PrimitiveLayouts.U32)
+    var selfMut = this
+    selfMut = selfMut xor Saturating(other, fieldLayout = PrimitiveLayouts.U32)
 }
 
 public fun Saturating<UInt>.bitxorAssignUInt(other: UInt) {
@@ -600,7 +638,8 @@ public fun Saturating<UInt>.bitorAssignSaturatingUInt(other: Saturating<UInt>) {
 }
 
 public fun Saturating<UInt>.bitorAssign(other: UInt) {
-    this = this or Saturating(other, fieldLayout = PrimitiveLayouts.U32)
+    var selfMut = this
+    selfMut = selfMut or Saturating(other, fieldLayout = PrimitiveLayouts.U32)
 }
 
 public fun Saturating<UInt>.bitorAssignUInt(other: UInt) {
@@ -614,7 +653,8 @@ public fun Saturating<UInt>.bitandAssignSaturatingUInt(other: Saturating<UInt>) 
 }
 
 public fun Saturating<UInt>.bitandAssign(other: UInt) {
-    this = this and Saturating(other, fieldLayout = PrimitiveLayouts.U32)
+    var selfMut = this
+    selfMut = selfMut and Saturating(other, fieldLayout = PrimitiveLayouts.U32)
 }
 
 public fun Saturating<UInt>.bitandAssignUInt(other: UInt) {
@@ -628,7 +668,8 @@ public fun Saturating<ULong>.addAssignSaturatingULong(other: Saturating<ULong>) 
 }
 
 public fun Saturating<ULong>.addAssign(other: ULong) {
-    this = this + Saturating(other, fieldLayout = PrimitiveLayouts.U64)
+    var selfMut = this
+    selfMut = selfMut + Saturating(other, fieldLayout = PrimitiveLayouts.U64)
 }
 
 public fun Saturating<ULong>.addAssignULong(other: ULong) {
@@ -642,7 +683,8 @@ public fun Saturating<ULong>.subAssignSaturatingULong(other: Saturating<ULong>) 
 }
 
 public fun Saturating<ULong>.subAssign(other: ULong) {
-    this = this - Saturating(other, fieldLayout = PrimitiveLayouts.U64)
+    var selfMut = this
+    selfMut = selfMut - Saturating(other, fieldLayout = PrimitiveLayouts.U64)
 }
 
 public fun Saturating<ULong>.subAssignULong(other: ULong) {
@@ -656,7 +698,8 @@ public fun Saturating<ULong>.mulAssignSaturatingULong(other: Saturating<ULong>) 
 }
 
 public fun Saturating<ULong>.mulAssign(other: ULong) {
-    this = this * Saturating(other, fieldLayout = PrimitiveLayouts.U64)
+    var selfMut = this
+    selfMut = selfMut * Saturating(other, fieldLayout = PrimitiveLayouts.U64)
 }
 
 public fun Saturating<ULong>.mulAssignULong(other: ULong) {
@@ -682,7 +725,8 @@ public fun Saturating<ULong>.divAssignSaturatingULong(other: Saturating<ULong>) 
 }
 
 public fun Saturating<ULong>.divAssign(other: ULong) {
-    this = this / Saturating(other, fieldLayout = PrimitiveLayouts.U64)
+    var selfMut = this
+    selfMut = selfMut / Saturating(other, fieldLayout = PrimitiveLayouts.U64)
 }
 
 public fun Saturating<ULong>.divAssignULong(other: ULong) {
@@ -696,7 +740,8 @@ public fun Saturating<ULong>.remAssignSaturatingULong(other: Saturating<ULong>) 
 }
 
 public fun Saturating<ULong>.remAssign(other: ULong) {
-    this = this % Saturating(other, fieldLayout = PrimitiveLayouts.U64)
+    var selfMut = this
+    selfMut = selfMut % Saturating(other, fieldLayout = PrimitiveLayouts.U64)
 }
 
 public fun Saturating<ULong>.remAssignULong(other: ULong) {
@@ -710,7 +755,8 @@ public fun Saturating<ULong>.bitxorAssignSaturatingULong(other: Saturating<ULong
 }
 
 public fun Saturating<ULong>.bitxorAssign(other: ULong) {
-    this = this xor Saturating(other, fieldLayout = PrimitiveLayouts.U64)
+    var selfMut = this
+    selfMut = selfMut xor Saturating(other, fieldLayout = PrimitiveLayouts.U64)
 }
 
 public fun Saturating<ULong>.bitxorAssignULong(other: ULong) {
@@ -724,7 +770,8 @@ public fun Saturating<ULong>.bitorAssignSaturatingULong(other: Saturating<ULong>
 }
 
 public fun Saturating<ULong>.bitorAssign(other: ULong) {
-    this = this or Saturating(other, fieldLayout = PrimitiveLayouts.U64)
+    var selfMut = this
+    selfMut = selfMut or Saturating(other, fieldLayout = PrimitiveLayouts.U64)
 }
 
 public fun Saturating<ULong>.bitorAssignULong(other: ULong) {
@@ -738,7 +785,8 @@ public fun Saturating<ULong>.bitandAssignSaturatingULong(other: Saturating<ULong
 }
 
 public fun Saturating<ULong>.bitandAssign(other: ULong) {
-    this = this and Saturating(other, fieldLayout = PrimitiveLayouts.U64)
+    var selfMut = this
+    selfMut = selfMut and Saturating(other, fieldLayout = PrimitiveLayouts.U64)
 }
 
 public fun Saturating<ULong>.bitandAssignULong(other: ULong) {
@@ -752,7 +800,8 @@ public fun Saturating<U128>.addAssignSaturatingU128(other: Saturating<U128>) {
 }
 
 public fun Saturating<U128>.addAssign(other: U128) {
-    this = this + Saturating(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut + Saturating(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 public fun Saturating<U128>.addAssignU128(other: U128) {
@@ -766,7 +815,8 @@ public fun Saturating<U128>.subAssignSaturatingU128(other: Saturating<U128>) {
 }
 
 public fun Saturating<U128>.subAssign(other: U128) {
-    this = this - Saturating(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut - Saturating(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 public fun Saturating<U128>.subAssignU128(other: U128) {
@@ -780,7 +830,8 @@ public fun Saturating<U128>.mulAssignSaturatingU128(other: Saturating<U128>) {
 }
 
 public fun Saturating<U128>.mulAssign(other: U128) {
-    this = this * Saturating(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut * Saturating(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 public fun Saturating<U128>.mulAssignU128(other: U128) {
@@ -806,7 +857,8 @@ public fun Saturating<U128>.divAssignSaturatingU128(other: Saturating<U128>) {
 }
 
 public fun Saturating<U128>.divAssign(other: U128) {
-    this = this / Saturating(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut / Saturating(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 public fun Saturating<U128>.divAssignU128(other: U128) {
@@ -820,7 +872,8 @@ public fun Saturating<U128>.remAssignSaturatingU128(other: Saturating<U128>) {
 }
 
 public fun Saturating<U128>.remAssign(other: U128) {
-    this = this % Saturating(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut % Saturating(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 public fun Saturating<U128>.remAssignU128(other: U128) {
@@ -834,7 +887,8 @@ public fun Saturating<U128>.bitxorAssignSaturatingU128(other: Saturating<U128>) 
 }
 
 public fun Saturating<U128>.bitxorAssign(other: U128) {
-    this = this xor Saturating(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut xor Saturating(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 public fun Saturating<U128>.bitxorAssignU128(other: U128) {
@@ -848,7 +902,8 @@ public fun Saturating<U128>.bitorAssignSaturatingU128(other: Saturating<U128>) {
 }
 
 public fun Saturating<U128>.bitorAssign(other: U128) {
-    this = this or Saturating(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut or Saturating(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 public fun Saturating<U128>.bitorAssignU128(other: U128) {
@@ -862,7 +917,8 @@ public fun Saturating<U128>.bitandAssignSaturatingU128(other: Saturating<U128>) 
 }
 
 public fun Saturating<U128>.bitandAssign(other: U128) {
-    this = this and Saturating(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut and Saturating(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 public fun Saturating<U128>.bitandAssignU128(other: U128) {
@@ -888,7 +944,8 @@ public fun Saturating<Byte>.addAssignSaturatingByte(other: Saturating<Byte>) {
 }
 
 public fun Saturating<Byte>.addAssign(other: Byte) {
-    this = this + Saturating(other, fieldLayout = PrimitiveLayouts.I8)
+    var selfMut = this
+    selfMut = selfMut + Saturating(other, fieldLayout = PrimitiveLayouts.I8)
 }
 
 public fun Saturating<Byte>.addAssignByte(other: Byte) {
@@ -902,7 +959,8 @@ public fun Saturating<Byte>.subAssignSaturatingByte(other: Saturating<Byte>) {
 }
 
 public fun Saturating<Byte>.subAssign(other: Byte) {
-    this = this - Saturating(other, fieldLayout = PrimitiveLayouts.I8)
+    var selfMut = this
+    selfMut = selfMut - Saturating(other, fieldLayout = PrimitiveLayouts.I8)
 }
 
 public fun Saturating<Byte>.subAssignByte(other: Byte) {
@@ -916,7 +974,8 @@ public fun Saturating<Byte>.mulAssignSaturatingByte(other: Saturating<Byte>) {
 }
 
 public fun Saturating<Byte>.mulAssign(other: Byte) {
-    this = this * Saturating(other, fieldLayout = PrimitiveLayouts.I8)
+    var selfMut = this
+    selfMut = selfMut * Saturating(other, fieldLayout = PrimitiveLayouts.I8)
 }
 
 public fun Saturating<Byte>.mulAssignByte(other: Byte) {
@@ -942,7 +1001,8 @@ public fun Saturating<Byte>.divAssignSaturatingByte(other: Saturating<Byte>) {
 }
 
 public fun Saturating<Byte>.divAssign(other: Byte) {
-    this = this / Saturating(other, fieldLayout = PrimitiveLayouts.I8)
+    var selfMut = this
+    selfMut = selfMut / Saturating(other, fieldLayout = PrimitiveLayouts.I8)
 }
 
 public fun Saturating<Byte>.divAssignByte(other: Byte) {
@@ -956,7 +1016,8 @@ public fun Saturating<Byte>.remAssignSaturatingByte(other: Saturating<Byte>) {
 }
 
 public fun Saturating<Byte>.remAssign(other: Byte) {
-    this = this % Saturating(other, fieldLayout = PrimitiveLayouts.I8)
+    var selfMut = this
+    selfMut = selfMut % Saturating(other, fieldLayout = PrimitiveLayouts.I8)
 }
 
 public fun Saturating<Byte>.remAssignByte(other: Byte) {
@@ -970,7 +1031,8 @@ public fun Saturating<Byte>.bitxorAssignSaturatingByte(other: Saturating<Byte>) 
 }
 
 public fun Saturating<Byte>.bitxorAssign(other: Byte) {
-    this = this xor Saturating(other, fieldLayout = PrimitiveLayouts.I8)
+    var selfMut = this
+    selfMut = selfMut xor Saturating(other, fieldLayout = PrimitiveLayouts.I8)
 }
 
 public fun Saturating<Byte>.bitxorAssignByte(other: Byte) {
@@ -984,7 +1046,8 @@ public fun Saturating<Byte>.bitorAssignSaturatingByte(other: Saturating<Byte>) {
 }
 
 public fun Saturating<Byte>.bitorAssign(other: Byte) {
-    this = this or Saturating(other, fieldLayout = PrimitiveLayouts.I8)
+    var selfMut = this
+    selfMut = selfMut or Saturating(other, fieldLayout = PrimitiveLayouts.I8)
 }
 
 public fun Saturating<Byte>.bitorAssignByte(other: Byte) {
@@ -998,7 +1061,8 @@ public fun Saturating<Byte>.bitandAssignSaturatingByte(other: Saturating<Byte>) 
 }
 
 public fun Saturating<Byte>.bitandAssign(other: Byte) {
-    this = this and Saturating(other, fieldLayout = PrimitiveLayouts.I8)
+    var selfMut = this
+    selfMut = selfMut and Saturating(other, fieldLayout = PrimitiveLayouts.I8)
 }
 
 public fun Saturating<Byte>.bitandAssignByte(other: Byte) {
@@ -1012,7 +1076,8 @@ public fun Saturating<Short>.addAssignSaturatingShort(other: Saturating<Short>) 
 }
 
 public fun Saturating<Short>.addAssign(other: Short) {
-    this = this + Saturating(other, fieldLayout = PrimitiveLayouts.I16)
+    var selfMut = this
+    selfMut = selfMut + Saturating(other, fieldLayout = PrimitiveLayouts.I16)
 }
 
 public fun Saturating<Short>.addAssignShort(other: Short) {
@@ -1026,7 +1091,8 @@ public fun Saturating<Short>.subAssignSaturatingShort(other: Saturating<Short>) 
 }
 
 public fun Saturating<Short>.subAssign(other: Short) {
-    this = this - Saturating(other, fieldLayout = PrimitiveLayouts.I16)
+    var selfMut = this
+    selfMut = selfMut - Saturating(other, fieldLayout = PrimitiveLayouts.I16)
 }
 
 public fun Saturating<Short>.subAssignShort(other: Short) {
@@ -1040,7 +1106,8 @@ public fun Saturating<Short>.mulAssignSaturatingShort(other: Saturating<Short>) 
 }
 
 public fun Saturating<Short>.mulAssign(other: Short) {
-    this = this * Saturating(other, fieldLayout = PrimitiveLayouts.I16)
+    var selfMut = this
+    selfMut = selfMut * Saturating(other, fieldLayout = PrimitiveLayouts.I16)
 }
 
 public fun Saturating<Short>.mulAssignShort(other: Short) {
@@ -1066,7 +1133,8 @@ public fun Saturating<Short>.divAssignSaturatingShort(other: Saturating<Short>) 
 }
 
 public fun Saturating<Short>.divAssign(other: Short) {
-    this = this / Saturating(other, fieldLayout = PrimitiveLayouts.I16)
+    var selfMut = this
+    selfMut = selfMut / Saturating(other, fieldLayout = PrimitiveLayouts.I16)
 }
 
 public fun Saturating<Short>.divAssignShort(other: Short) {
@@ -1080,7 +1148,8 @@ public fun Saturating<Short>.remAssignSaturatingShort(other: Saturating<Short>) 
 }
 
 public fun Saturating<Short>.remAssign(other: Short) {
-    this = this % Saturating(other, fieldLayout = PrimitiveLayouts.I16)
+    var selfMut = this
+    selfMut = selfMut % Saturating(other, fieldLayout = PrimitiveLayouts.I16)
 }
 
 public fun Saturating<Short>.remAssignShort(other: Short) {
@@ -1094,7 +1163,8 @@ public fun Saturating<Short>.bitxorAssignSaturatingShort(other: Saturating<Short
 }
 
 public fun Saturating<Short>.bitxorAssign(other: Short) {
-    this = this xor Saturating(other, fieldLayout = PrimitiveLayouts.I16)
+    var selfMut = this
+    selfMut = selfMut xor Saturating(other, fieldLayout = PrimitiveLayouts.I16)
 }
 
 public fun Saturating<Short>.bitxorAssignShort(other: Short) {
@@ -1108,7 +1178,8 @@ public fun Saturating<Short>.bitorAssignSaturatingShort(other: Saturating<Short>
 }
 
 public fun Saturating<Short>.bitorAssign(other: Short) {
-    this = this or Saturating(other, fieldLayout = PrimitiveLayouts.I16)
+    var selfMut = this
+    selfMut = selfMut or Saturating(other, fieldLayout = PrimitiveLayouts.I16)
 }
 
 public fun Saturating<Short>.bitorAssignShort(other: Short) {
@@ -1122,7 +1193,8 @@ public fun Saturating<Short>.bitandAssignSaturatingShort(other: Saturating<Short
 }
 
 public fun Saturating<Short>.bitandAssign(other: Short) {
-    this = this and Saturating(other, fieldLayout = PrimitiveLayouts.I16)
+    var selfMut = this
+    selfMut = selfMut and Saturating(other, fieldLayout = PrimitiveLayouts.I16)
 }
 
 public fun Saturating<Short>.bitandAssignShort(other: Short) {
@@ -1148,7 +1220,8 @@ public fun Saturating<Long>.addAssignSaturatingLong(other: Saturating<Long>) {
 }
 
 public fun Saturating<Long>.addAssign(other: Long) {
-    this = this + Saturating(other, fieldLayout = PrimitiveLayouts.I64)
+    var selfMut = this
+    selfMut = selfMut + Saturating(other, fieldLayout = PrimitiveLayouts.I64)
 }
 
 public fun Saturating<Long>.addAssignLong(other: Long) {
@@ -1162,7 +1235,8 @@ public fun Saturating<Long>.subAssignSaturatingLong(other: Saturating<Long>) {
 }
 
 public fun Saturating<Long>.subAssign(other: Long) {
-    this = this - Saturating(other, fieldLayout = PrimitiveLayouts.I64)
+    var selfMut = this
+    selfMut = selfMut - Saturating(other, fieldLayout = PrimitiveLayouts.I64)
 }
 
 public fun Saturating<Long>.subAssignLong(other: Long) {
@@ -1176,7 +1250,8 @@ public fun Saturating<Long>.mulAssignSaturatingLong(other: Saturating<Long>) {
 }
 
 public fun Saturating<Long>.mulAssign(other: Long) {
-    this = this * Saturating(other, fieldLayout = PrimitiveLayouts.I64)
+    var selfMut = this
+    selfMut = selfMut * Saturating(other, fieldLayout = PrimitiveLayouts.I64)
 }
 
 public fun Saturating<Long>.mulAssignLong(other: Long) {
@@ -1202,7 +1277,8 @@ public fun Saturating<Long>.divAssignSaturatingLong(other: Saturating<Long>) {
 }
 
 public fun Saturating<Long>.divAssign(other: Long) {
-    this = this / Saturating(other, fieldLayout = PrimitiveLayouts.I64)
+    var selfMut = this
+    selfMut = selfMut / Saturating(other, fieldLayout = PrimitiveLayouts.I64)
 }
 
 public fun Saturating<Long>.divAssignLong(other: Long) {
@@ -1216,7 +1292,8 @@ public fun Saturating<Long>.remAssignSaturatingLong(other: Saturating<Long>) {
 }
 
 public fun Saturating<Long>.remAssign(other: Long) {
-    this = this % Saturating(other, fieldLayout = PrimitiveLayouts.I64)
+    var selfMut = this
+    selfMut = selfMut % Saturating(other, fieldLayout = PrimitiveLayouts.I64)
 }
 
 public fun Saturating<Long>.remAssignLong(other: Long) {
@@ -1230,7 +1307,8 @@ public fun Saturating<Long>.bitxorAssignSaturatingLong(other: Saturating<Long>) 
 }
 
 public fun Saturating<Long>.bitxorAssign(other: Long) {
-    this = this xor Saturating(other, fieldLayout = PrimitiveLayouts.I64)
+    var selfMut = this
+    selfMut = selfMut xor Saturating(other, fieldLayout = PrimitiveLayouts.I64)
 }
 
 public fun Saturating<Long>.bitxorAssignLong(other: Long) {
@@ -1244,7 +1322,8 @@ public fun Saturating<Long>.bitorAssignSaturatingLong(other: Saturating<Long>) {
 }
 
 public fun Saturating<Long>.bitorAssign(other: Long) {
-    this = this or Saturating(other, fieldLayout = PrimitiveLayouts.I64)
+    var selfMut = this
+    selfMut = selfMut or Saturating(other, fieldLayout = PrimitiveLayouts.I64)
 }
 
 public fun Saturating<Long>.bitorAssignLong(other: Long) {
@@ -1258,7 +1337,8 @@ public fun Saturating<Long>.bitandAssignSaturatingLong(other: Saturating<Long>) 
 }
 
 public fun Saturating<Long>.bitandAssign(other: Long) {
-    this = this and Saturating(other, fieldLayout = PrimitiveLayouts.I64)
+    var selfMut = this
+    selfMut = selfMut and Saturating(other, fieldLayout = PrimitiveLayouts.I64)
 }
 
 public fun Saturating<Long>.bitandAssignLong(other: Long) {
@@ -1272,7 +1352,8 @@ public fun Saturating<I128>.addAssignSaturatingI128(other: Saturating<I128>) {
 }
 
 public fun Saturating<I128>.addAssign(other: I128) {
-    this = this + Saturating(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut + Saturating(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 }
 
 public fun Saturating<I128>.addAssignI128(other: I128) {
@@ -1286,7 +1367,8 @@ public fun Saturating<I128>.subAssignSaturatingI128(other: Saturating<I128>) {
 }
 
 public fun Saturating<I128>.subAssign(other: I128) {
-    this = this - Saturating(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut - Saturating(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 }
 
 public fun Saturating<I128>.subAssignI128(other: I128) {
@@ -1300,7 +1382,8 @@ public fun Saturating<I128>.mulAssignSaturatingI128(other: Saturating<I128>) {
 }
 
 public fun Saturating<I128>.mulAssign(other: I128) {
-    this = this * Saturating(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut * Saturating(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 }
 
 public fun Saturating<I128>.mulAssignI128(other: I128) {
@@ -1326,7 +1409,8 @@ public fun Saturating<I128>.divAssignSaturatingI128(other: Saturating<I128>) {
 }
 
 public fun Saturating<I128>.divAssign(other: I128) {
-    this = this / Saturating(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut / Saturating(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 }
 
 public fun Saturating<I128>.divAssignI128(other: I128) {
@@ -1340,7 +1424,8 @@ public fun Saturating<I128>.remAssignSaturatingI128(other: Saturating<I128>) {
 }
 
 public fun Saturating<I128>.remAssign(other: I128) {
-    this = this % Saturating(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut % Saturating(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 }
 
 public fun Saturating<I128>.remAssignI128(other: I128) {
@@ -1354,7 +1439,8 @@ public fun Saturating<I128>.bitxorAssignSaturatingI128(other: Saturating<I128>) 
 }
 
 public fun Saturating<I128>.bitxorAssign(other: I128) {
-    this = this xor Saturating(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut xor Saturating(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 }
 
 public fun Saturating<I128>.bitxorAssignI128(other: I128) {
@@ -1368,7 +1454,8 @@ public fun Saturating<I128>.bitorAssignSaturatingI128(other: Saturating<I128>) {
 }
 
 public fun Saturating<I128>.bitorAssign(other: I128) {
-    this = this or Saturating(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut or Saturating(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 }
 
 public fun Saturating<I128>.bitorAssignI128(other: I128) {
@@ -1382,7 +1469,8 @@ public fun Saturating<I128>.bitandAssignSaturatingI128(other: Saturating<I128>) 
 }
 
 public fun Saturating<I128>.bitandAssign(other: I128) {
-    this = this and Saturating(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut and Saturating(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 }
 
 public fun Saturating<I128>.bitandAssignI128(other: I128) {

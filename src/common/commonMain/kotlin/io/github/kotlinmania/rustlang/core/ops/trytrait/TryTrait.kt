@@ -13,7 +13,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 public typealias TryType<T> = NeverShortCircuit<T>
 
 /**
- * The `?` operator and `try {}` blocks.
+ * The `?` operator and `try ()` blocks.
  *
  * `try_ *` methods typically involve a type implementing this trait.  For
  * example, the closures passed to [Iterator.tryFold] and
@@ -50,7 +50,7 @@ public typealias TryType<T> = NeverShortCircuit<T>
  * Let's add a new generic parameter `R` for that type, and bound it to the
  * output type that we want:
  * ```kotlin
- * fun <A, T, R : Try<A>> simpleTryFold1(iter: Any, accum: A, f: (A, T) -> R): R {
+ * fun <Residual, A, T, R : Try<A>> simpleTryFold1(iter: Any, accum: A, f: (A, T) -> R): R {
  *     return error("unsupported")
  * }
  * ```
@@ -58,7 +58,7 @@ public typealias TryType<T> = NeverShortCircuit<T>
  * If we get through the entire iterator, we need to wrap up the accumulator
  * into the return type using [Try.fromOutput]:
  * ```kotlin
- * fun <A, T, R : Try<A>> simpleTryFold2(iter: Any, accum: A, f: (A, T) -> R, fromOutputRFn: (A) -> R): R {
+ * fun <Residual, A, T, R : Try<A>> simpleTryFold2(iter: Any, accum: A, f: (A, T) -> R, fromOutputRFn: (A) -> R): R {
  *     var accum = accum
  *     for (x in iter) {
  *         val cf = f(accum, x).branch()
@@ -79,7 +79,7 @@ public typealias TryType<T> = NeverShortCircuit<T>
  * need to mention it in the bounds.  All types which implement `Try` can be
  * recreated from their corresponding residual, so we'll just call it:
  * ```kotlin
- * fun <A, T, R : Try<A>> simpleTryFold3(iter: Any, accum: A, f: (A, T) -> R, fromResidualRFn: (Any?) -> R, fromOutputRFn: (A) -> R): R {
+ * fun <Residual, A, T, R : Try<A>> simpleTryFold3(iter: Any, accum: A, f: (A, T) -> R, fromResidualRFn: (Any?) -> R, fromOutputRFn: (A) -> R): R {
  *     var accum = accum
  *     for (x in iter) {
  *         val cf = f(accum, x).branch()
@@ -102,7 +102,7 @@ public typealias TryType<T> = NeverShortCircuit<T>
  * `Break`" is exactly what happens inside the `?` operator.  So rather than
  * do all this manually, we can just use `?` instead:
  * ```kotlin
- * fun <A, T, R : Try<A>> simpleTryFold(iter: Any, accum: A, f: (A, T) -> R, fromOutputRFn: (A) -> R): R {
+ * fun <Residual, A, T, R : Try<A>> simpleTryFold(iter: Any, accum: A, f: (A, T) -> R, fromOutputRFn: (A) -> R): R {
  *     var accum = accum
  *     for (x in iter) {
  *         accum = f(accum, x).getOrElse { return Result.failure(it) }
@@ -222,12 +222,12 @@ public interface Residual<O, out TryType>
 // Note: force would be nice, but fails -- see #148915
 
 /**
- * Used in `try {}` blocks so the type produced in the `?` desugaring
+ * Used in `try ()` blocks so the type produced in the `?` desugaring
  * depends on the residual type `R` and the output type of the block `O`,
  * but importantly not on the contextual type the way it would be if
  * we called `<_ as FromResidual>.fromResidual(r)` directly.
  */
-public fun <R : Residual<O, Any?>, O> residualIntoTryType(r: R): TryType = FromResidual.FromResidual(r)
+public fun <TryType, R : Residual<O, TryType>, O> residualIntoTryType(r: R): TryType = FromResidual.FromResidual(r)
 
 public typealias ChangeOutputType<T : Try<T, Any?, Any?>, V, Output, Residual> = TryType
 

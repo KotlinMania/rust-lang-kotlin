@@ -2,9 +2,9 @@
 
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.ffi.CInt
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.cinterop.stdSysThreadlocalKeyUnixPthreadGetspecific
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.cinterop.stdSysThreadlocalKeyUnixPthreadKeyCreate
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.cinterop.stdSysThreadlocalKeyUnixPthreadKeyDelete

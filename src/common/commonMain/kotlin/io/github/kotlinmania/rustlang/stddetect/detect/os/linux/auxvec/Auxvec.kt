@@ -91,7 +91,7 @@ public open class AuxVec(
  * Note that run-time feature detection is not invoked for features that can
  * be detected at compile-time.
  *
- *  Note: We always directly use `getauxval` on `* - linux - { gnu, musl, ohos } *` and
+ *  Note: We always directly use `getauxval` on `* - linux - ( gnu, musl, ohos ) *` and
  * `* - android *` targets rather than `dlsym` it because we can safely assume
  * `getauxval` is linked to the binary.
  * - `* - linux - gnu *` targets ([since Rust 1.64](https://blog.rust-lang.org/2022/08/01/Increasing-glibc-kernel-requirements.html))
@@ -170,7 +170,7 @@ public fun auxvFromFileBytes(bytes: List<UByte>): Result<AuxVec, String> {
     val len = bytes.size
     val buf = mutableListOf(0, 1 + len / sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64))
     run {
-        copyNonoverlapping(bytes.asPtr(), mutPtrFromRustCast(buf.asMutPtr()), len)
+        copyNonoverlapping(bytes.asPtr(), mutPtrFromRustCast(buf.asMutPtr()), len, typeLayoutT = PrimitiveLayouts.U8)
     }
     return auxvFromBuf(buf)
 }

@@ -3,6 +3,7 @@
 package io.github.kotlinmania.rustlang.corearch.s390x.vector
 
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr

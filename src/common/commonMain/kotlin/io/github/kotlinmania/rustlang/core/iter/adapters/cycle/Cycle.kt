@@ -59,7 +59,7 @@ public open class Cycle<I>(
         }
     }
 
-    public open fun <Acc, R> tryFold(acc: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+    public open fun <Residual, Acc, R> tryFold(acc: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         var acc1 = acc
         // fully iterate the current iterator. this is necessary because
         // `self.iter` may be empty even when `self.orig` isn't
@@ -99,7 +99,10 @@ public open class Cycle<I>(
             n2 = run {
                 val matchVal1 = this.iter.advanceBy(n2)
                 when {
-                    matchVal1 is Result.Ok -> { return Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit) }
+                    matchVal1 is Result.Ok -> {
+                        val valueVal = matchVal1.value
+                        return Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
+                    }
                     matchVal1 is Result.Err && (matchVal1 as Result.Err).error.get() == n2 -> {
                         val e = matchVal1
                         val rem1 = matchVal1.error

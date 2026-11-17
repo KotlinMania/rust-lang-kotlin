@@ -14,7 +14,7 @@ public fun pipe(): Result<Pair<Pipe, Pipe>, Error> {
     val writePipe = c.INVALID_HANDLE_VALUE
     val ret = c.CreatePipe(readPipe, writePipe, MutPtr(0L), 0)
     return if (ret == 0) {
-        Result.Err<Pair<Pipe, Pipe>, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        Result.Err<Pair<Pipe, Pipe>, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
     } else {
         Result.Ok<Pair<Pipe, Pipe>, Error>(Pair(Handle.fromRawHandle(readPipe), Handle.fromRawHandle(writePipe)))
     }

@@ -8,7 +8,7 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 /**
  * A trait for objects which are byte-oriented sinks.
  *
- * Implementors of the `Write` trait are sometimes called 'writers'.
+ * Implementors of the `Write` trait are sometimes called `writers`.
  *
  * Writers are defined by two required methods, [write] and [flush]:
  *
@@ -210,6 +210,7 @@ public interface Write<T> {
                 val matchVal = this.write(buf1)
                 when {
                     matchVal is Result.Ok && matchVal.value == 0 -> {
+                        val valueVal = matchVal.value
                         return Result.Err(Error.WRITE_ALL_EOF)
                     }
                     matchVal is Result.Ok -> {
@@ -282,6 +283,7 @@ public interface Write<T> {
                 val matchVal = this.writeVectored(bufs)
                 when {
                     matchVal is Result.Ok && matchVal.value == 0 -> {
+                        val valueVal = matchVal.value
                         return Result.Err(Error.WRITE_ALL_EOF)
                     }
                     matchVal is Result.Ok -> {

@@ -7,7 +7,6 @@ import io.github.kotlinmania.rustlang.core.convert.AsMut
 import io.github.kotlinmania.rustlang.core.convert.AsRef
 import io.github.kotlinmania.rustlang.core.future.future.Future
 import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
-import io.github.kotlinmania.rustlang.core.marker.Tuple
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -256,17 +255,17 @@ public open class SyncView<T>(
     }
 }
 
-public fun <F, Args> SyncView<F>.callOnce(args: Args): Output where F : FnOnce<Args, Any?>, Args : Tuple = this.intoInner().callOnce(args)
+public fun <Output, F, Args> SyncView<F>.callOnce(args: Args): Output where F : FnOnce<Args, Output> = this.intoInner().callOnce(args)
 
-public fun <F, Args> SyncView<F>.callMut(args: Args): Output where F : FnMut<Args>, Args : Tuple = this.asMut().callMut(args)
+public fun <Output, F, Args> SyncView<F>.callMut(args: Args): Output where F : FnMut<Args, Output> = this.asMut().callMut(args)
 
-public fun <F, Args> SyncView<F>.call(args: Args): Output where F : Fn<Args>, Args : Tuple = this.asRef().call(args)
+public fun <Output, F, Args> SyncView<F>.call(args: Args): Output where F : Fn<Args, Output> = this.asRef().call(args)
 
-public fun <F, Args> SyncView<F>.asyncCallOnce(args: Args): CallOnceFuture where F : AsyncFnOnce<Args, Any?, Any?>, Args : Tuple = this.intoInner().asyncCallOnce(args)
+public fun <CallOnceFuture, Output, F, Args> SyncView<F>.asyncCallOnce(args: Args): CallOnceFuture where F : AsyncFnOnce<Args, CallOnceFuture, Output> = this.intoInner().asyncCallOnce(args)
 
-public fun <F, Args> SyncView<F>.asyncCallMut(args: Args): CallRefFuture where F : AsyncFnMut<Args, Any?>, Args : Tuple = this.asMut().asyncCallMut(args)
+public fun <CallRefFuture, CallOnceFuture, Output, F, Args> SyncView<F>.asyncCallMut(args: Args): CallRefFuture where F : AsyncFnMut<Args, CallRefFuture, CallOnceFuture, Output> = this.asMut().asyncCallMut(args)
 
-public fun <F, Args> SyncView<F>.asyncCall(args: Args): CallRefFuture where F : AsyncFn<Args>, Args : Tuple = this.asRef().asyncCall(args)
+public fun <CallRefFuture, CallOnceFuture, Output, F, Args> SyncView<F>.asyncCall(args: Args): CallRefFuture where F : AsyncFn<Args, CallRefFuture, CallOnceFuture, Output> = this.asRef().asyncCall(args)
 
 // also #98407
-public fun <R, G> SyncView<G>.resume(arg: R, resumeGFn: (G, R) -> CoroutineState<Yield, Return>): CoroutineState<Yield, Return> where G : Coroutine<R, Any?, Any?> = resumeGFn(this.asPinMut(), arg)
+public fun <Yield, Return, R, G> SyncView<G>.resume(arg: R, resumeGFn: (G, R) -> CoroutineState<Yield, Return>): CoroutineState<Yield, Return> where G : Coroutine<R, Yield, Return> = resumeGFn(this.asPinMut(), arg)

@@ -892,7 +892,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
                                 val v = matchVal1.second
                                 val v1 = conflict(k, v, firstOtherVal)
                                 // SAFETY: we remove the K, V out of the next entry,
-                                // apply 'f' to get a new (K, V), and insert it back
+                                // apply `f` to get a new (K, V), and insert it back
                                 // into the next entry that the cursor is pointing at
                                 selfCursor.insertAfterUnchecked(k, v1)
                             }
@@ -938,7 +938,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
                                         val v2 = matchVal3.second
                                         val v3 = conflict(k1, v2, otherVal)
                                         // SAFETY: we remove the K, V out of the next entry,
-                                        // apply 'f' to get a new (K, V), and insert it back
+                                        // apply `f` to get a new (K, V), and insert it back
                                         // into the next entry that the cursor is pointing at
                                         selfCursor.insertAfterUnchecked(k1, v3)
                                     }
@@ -1230,6 +1230,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
     }
 
     public open fun extendOne(tupleArg0: Pair<K, V>) {
+        val (k, v) = tupleArg0
         this.insert(k, v)
     }
 
@@ -1238,6 +1239,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
     }
 
     public open fun extendOneKV(tupleArg0: Pair<K, V>) {
+        val (k, v) = tupleArg0
         this.insert(k, v)
     }
 
@@ -1725,7 +1727,7 @@ public open class Iter<K, V> internal constructor(
          * check(iter.len() == 0)
          * ```
          */
-        public fun <K, V> default(): Iter<K, V> = Iter(range = Default.default(), length = 0)
+        public fun <K, V> default(): Iter<K, V> = Iter(range = LazyLeafRange.default(), length = 0)
     }
 }
 
@@ -1814,7 +1816,7 @@ public open class IterMut<K, V> internal constructor(
          * check(iter.len() == 0)
          * ```
          */
-        public fun <K, V> default(): IterMut<K, V> = IterMut(range = Default.default(), length = 0, marker = PhantomData())
+        public fun <K, V> default(): IterMut<K, V> = IterMut(range = LazyLeafRange.default(), length = 0, marker = PhantomData())
     }
 }
 
@@ -2002,7 +2004,7 @@ public open class Keys<K, V>(
          * check(iter.len() == 0)
          * ```
          */
-        public fun <K, V> default(): Keys<K, V> = Keys(inner = Default.default())
+        public fun <K, V> default(): Keys<K, V> = Keys(inner = Iter.default())
     }
 }
 
@@ -2051,7 +2053,7 @@ public open class Values<K, V>(
          * check(iter.len() == 0)
          * ```
          */
-        public fun <K, V> default(): Values<K, V> = Values(inner = Default.default())
+        public fun <K, V> default(): Values<K, V> = Values(inner = Iter.default())
     }
 }
 
@@ -2098,7 +2100,7 @@ public open class ValuesMut<K, V>(
          * check(iter.count() == 0)
          * ```
          */
-        public fun <K, V> default(): ValuesMut<K, V> = ValuesMut(inner = Default.default())
+        public fun <K, V> default(): ValuesMut<K, V> = ValuesMut(inner = IterMut.default())
     }
 }
 
@@ -2272,7 +2274,7 @@ public open class Range<K, V> internal constructor(
          * check(iter.count() == 0)
          * ```
          */
-        public fun <K, V> default(): Range<K, V> = Range(inner = Default.default())
+        public fun <K, V> default(): Range<K, V> = Range(inner = LeafRange.default())
     }
 }
 
@@ -2335,7 +2337,7 @@ public open class RangeMut<K, V> internal constructor(
          * check(iter.count() == 0)
          * ```
          */
-        public fun <K, V> default(): RangeMut<K, V> = RangeMut(inner = Default.default(), marker = Unit)
+        public fun <K, V> default(): RangeMut<K, V> = RangeMut(inner = LeafRange.default(), marker = Unit)
     }
 }
 

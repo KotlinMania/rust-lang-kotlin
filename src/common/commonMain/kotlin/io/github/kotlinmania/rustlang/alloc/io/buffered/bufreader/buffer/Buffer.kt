@@ -95,7 +95,7 @@ public open class Buffer internal constructor(
             // no part will become uninitialized.
             buf.setInit()
         }
-        when (val tryResult = reader.readBuf(buf.unfilled())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = reader.readBuf(buf.unfilled())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }
         this.filled += buf.len()
         this.initialized = buf.isInit()
         return Result.Ok(buf.len())
@@ -128,7 +128,7 @@ public open class Buffer internal constructor(
             this.pos = 0
             this.filled = buf.len()
             this.initialized = buf.isInit()
-            when (val tryResult = result) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = result) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, Error>(tryResult.error) }
         }
         return Result.Ok(this.buffer())
     }

@@ -155,13 +155,13 @@ public fun runUtf8Validation(v: List<UByte>): Result<Unit, Utf8Error> {
         val first = v[index]
         if (first >= 128u.toUByte()) {
             val w = utf8CharWidth(first)
-            // 2-byte encoding is for codepoints  \u{0080} to  \u{07ff}
+            // 2-byte encoding is for codepoints  \u(0080) to  \u(07ff)
             // first  C2 80        last DF BF
-            // 3-byte encoding is for codepoints  \u{0800} to  \u{ffff}
+            // 3-byte encoding is for codepoints  \u(0800) to  \u(ffff)
             // first  E0 A0 80     last EF BF BF
-            // excluding surrogates codepoints  \u{d800} to  \u{dfff}
+            // excluding surrogates codepoints  \u(d800) to  \u(dfff)
             // ED A0 80 to       ED BF BF
-            // 4-byte encoding is for codepoints \u{10000} to \u{10ffff}
+            // 4-byte encoding is for codepoints \u(10000) to \u(10ffff)
             // first  F0 90 80 80  last F4 8F BF BF
             //
             // Use the UTF-8 syntax from the RFC

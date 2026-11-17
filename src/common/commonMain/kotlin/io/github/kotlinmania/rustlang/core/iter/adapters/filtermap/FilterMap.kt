@@ -133,7 +133,7 @@ public open class FilterMap<I, F>(
         // can't know a lower bound, due to the predicate
     }
 
-    public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Any?> = this.iter.tryFold(init, filterMapTryFold(this.f, fold))
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, filterMapTryFold(this.f, fold))
 
     public open fun <Acc> fold(init: Acc, fold: (Acc, B) -> Acc): Acc = this.iter.fold(init, filterMapFold(this.f, fold))
 
@@ -149,7 +149,7 @@ public open class FilterMap<I, F>(
         return this.iter.tryRfold(find(this.f)).breakValue()
     }
 
-    public open fun <Acc, R> tryRfold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Any?> = this.iter.tryRfold(init, filterMapTryFold(this.f, fold))
+    public open fun <Residual, Acc, R> tryRfold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, filterMapTryFold(this.f, fold))
 
     public open fun <Acc> rfold(init: Acc, fold: (Acc, B) -> Acc): Acc = this.iter.rfold(init, filterMapFold(this.f, fold))
 
@@ -201,7 +201,7 @@ public fun <T, B, Acc> filterMapFold(f: (T) -> B?, fold: (Acc, B) -> Acc): (Acc,
         }
     } }
 
-public fun <T, B, Acc, R : Try<R, Acc, Any?>> filterMapTryFold(f: (T) -> B?, fold: (Acc, B) -> R): (Acc, T) -> R =
+public fun <Residual, T, B, Acc, R : Try<R, Acc, Residual>> filterMapTryFold(f: (T) -> B?, fold: (Acc, B) -> R): (Acc, T) -> R =
     { acc, item -> when (val matchVal = f(item)) {
         null -> acc
         else -> {

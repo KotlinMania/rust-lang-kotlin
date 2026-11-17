@@ -1239,7 +1239,7 @@ public open class Iter<T> internal constructor(
          * check(iter.len() == 0)
          * ```
          */
-        public fun <T> default(): Iter<T> = Iter(head = null, tail = null, len = 0, marker = Default.default())
+        public fun <T> default(): Iter<T> = Iter(head = null, tail = null, len = 0, marker = Unit)
     }
 }
 
@@ -1321,7 +1321,7 @@ public open class IterMut<T> internal constructor(
             marker = marker,
         )
 
-        public fun <T> default(): IterMut<T> = IterMut(head = null, tail = null, len = 0, marker = Default.default())
+        public fun <T> default(): IterMut<T> = IterMut(head = null, tail = null, len = 0, marker = Unit)
     }
 }
 
@@ -2247,7 +2247,7 @@ public fun <T, I : Iterable<T>> fromIteratorFromIterLinkedListT(iter: I): Linked
     return list
 }
 
-public fun <Item, IntoIter, I, A : Allocator> LinkedList<Item, A>.specExtend(iter: I) {
+public fun <I, A : Allocator> LinkedList<Item, A>.specExtend(iter: I) {
     iter.iterator().forEach({ elt -> this.addLast(elt) })
 }
 

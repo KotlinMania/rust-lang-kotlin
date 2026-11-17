@@ -110,17 +110,17 @@ public open class Exception internal constructor(
 //
 // #include <stdint.h>
 //
-// struct rustPanic {
+// struct rustPanic (
 // rustPanic(const rustPanic&);
 // ~rustPanic();
 //
 // uint64T x[2];
-// };
+// );
 //
-// void foo() {
-// rustPanic a = {0, 1};
+// void foo() (
+// rustPanic a = (0, 1);
 // throw a;
-// }
+// )
 //
 // That's essentially what we're trying to emulate. Most of the constant values
 // below were just copied from LLVM,

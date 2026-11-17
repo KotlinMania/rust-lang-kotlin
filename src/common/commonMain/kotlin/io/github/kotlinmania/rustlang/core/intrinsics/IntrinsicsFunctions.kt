@@ -176,7 +176,7 @@ public fun unlikely(b: Boolean): Boolean =
  * hint to the compiler that this condition is unlikely to be correctly
  * predicted by a CPU's branch predictor (e.g. a binary search).
  *
- * This is otherwise functionally equivalent to `if b { trueVal } else { falseVal }`.
+ * This is otherwise functionally equivalent to `if b ( trueVal ) else ( falseVal )`.
  *
  * Note that, unlike most intrinsics, this is safe to call;
  * it does not require an `unchecked` block.
@@ -209,7 +209,7 @@ public fun <T> selectUnpredictable(b: Boolean, trueVal: T, falseVal: T): T =
  * `mulAddRelaxed` method. For example,
  * [`f32.mulAddRelaxed`](../../std/primitive.f32.html#method.mulAddRelaxed).
  */
-public fun <UInt, T : FloatPrimitive<T, Any?>> fmuladd(a: T, b: T, c: T): T = a * b + c
+public fun <UInt, T : FloatPrimitive<T, UInt>> fmuladd(a: T, b: T, c: T): T = a * b + c
 
 /**
  * Integer `min`imum, signed or unsigned depending on `T`.
@@ -219,7 +219,7 @@ public fun <UInt, T : FloatPrimitive<T, Any?>> fmuladd(a: T, b: T, c: T): T = a 
  *
  * Stabilized as [u16.min] and [i64.min] and similar.
  */
-public fun <T : IntegerPrimitive<T>> integerMin(a: T, b: T): T =
+public fun <T : IntegerPrimitive> integerMin(a: T, b: T): T =
     if ((kmCompareValues(a, b) < 0)) {
         a
     } else {
@@ -234,7 +234,7 @@ public fun <T : IntegerPrimitive<T>> integerMin(a: T, b: T): T =
  *
  * Stabilized as [u16.max] and [i64.max] and similar.
  */
-public fun <T : IntegerPrimitive<T>> integerMax(a: T, b: T): T =
+public fun <T : IntegerPrimitive> integerMax(a: T, b: T): T =
     if ((kmCompareValues(a, b) < 0)) {
         b
     } else {
@@ -1031,7 +1031,7 @@ public fun maximumf128(x: F128, y: F128): F128 =
  * The stabilized versions of this intrinsic are available on the float
  * primitives via the `abs` method. For example, [f32.abs].
  */
-public fun <UInt, T : FloatPrimitive<T, Any?>> fabs(x: T, fromBitsTFn: (UInt) -> T): T = fromBitsTFn(x.toBits() and T.SIGN_MASK.inv())
+public fun <UInt, T : FloatPrimitive<T, UInt>> fabs(x: T, fromBitsTFn: (UInt) -> T): T = fromBitsTFn(x.toBits() and T.SIGN_MASK.inv())
 
 /**
  * Copies the sign from `y` to `x` for `f16` values.

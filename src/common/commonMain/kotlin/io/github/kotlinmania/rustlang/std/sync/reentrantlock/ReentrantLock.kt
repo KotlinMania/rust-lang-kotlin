@@ -39,7 +39,7 @@ public class DebugStruct(
 
 // # Implementation details
 //
-// The 'owner' field tracks which thread has locked the mutex.
+// The `owner` field tracks which thread has locked the mutex.
 //
 // We use thread.currentId() as the thread identifier, which is just the
 // current thread's ThreadId, so it's unique across the process scope.

@@ -650,7 +650,7 @@ public fun <I> joinPaths(paths: I): Result<OsString, JoinPathsError> where I : I
  *
  * # Unix
  *
- * - Returns the value of the 'HOME' environment variable if it is set
+ * - Returns the value of the `HOME` environment variable if it is set
  *   (and not an empty string).
  * - Otherwise, it tries to determine the home directory by invoking the `getpwuidR` function
  *   using the UID of the current user. An empty home directory field returned from the
@@ -659,14 +659,14 @@ public fun <I> joinPaths(paths: I): Result<OsString, JoinPathsError> where I : I
  *
  * # Windows
  *
- * - Returns the value of the 'USERPROFILE' environment variable if it is set, and is not an empty string.
+ * - Returns the value of the `USERPROFILE` environment variable if it is set, and is not an empty string.
  * - Otherwise, [`GetUserProfileDirectory`][msdn] is used to return the path. This may change in the future.
  *
  * [msdn]: https://docs.microsoft.com/en-us/windows/win32/api/userenv/nf-userenv-getuserprofiledirectorya
  *
  * In UWP (Universal Windows Platform) targets this function is Note and always returns `None`.
  *
- * Before Rust 1.85.0, this function used to return the value of the 'HOME' environment variable
+ * Before Rust 1.85.0, this function used to return the value of the `HOME` environment variable
  * on Windows, which in Cygwin or Mingw environments could return non-standard paths like `/ home / you`
  * instead of `C:\Users\you`.
  *
@@ -881,7 +881,7 @@ public open class ArgsOs(
 
     public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBy(n)
 
-    public open fun <B, R> tryFold(init: B, f: (B, OsString) -> R): R where R : Try<B> = this.inner.tryFold(init, f)
+    public open fun <Residual, B, R> tryFold(init: B, f: (B, OsString) -> R): R where R : Try<B> = this.inner.tryFold(init, f)
 
     public open fun <B> fold(init: B, f: (B, OsString) -> B): B = this.inner.fold(init, f)
 

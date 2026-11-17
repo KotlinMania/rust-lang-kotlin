@@ -30,6 +30,8 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
             val matchVal = this.chooseParentKv()
             when {
                 matchVal is Result.Ok && matchVal.value is Left -> {
+                    val valueVal = matchVal.value
+                    val (leftParentKv) = valueVal as Left
                     if (leftParentKv.canMerge()) {
                         val parent = leftParentKv.mergeTrackingParent(alloc)
                         Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(parent)
@@ -39,6 +41,8 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
                     }
                 }
                 matchVal is Result.Ok && matchVal.value is Right -> {
+                    val valueVal1 = matchVal.value
+                    val (rightParentKv) = valueVal1 as Right
                     if (rightParentKv.canMerge()) {
                         val parent1 = rightParentKv.mergeTrackingParent(alloc)
                         Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(parent1)
@@ -70,11 +74,16 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
  * and panics if it encounters an empty ancestor.
  */
 public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNodeAndAffectedAncestors(alloc: A): Boolean {
+    var selfMut = this
     while (true) {
         run {
-            val matchVal = this.fixNodeThroughParent(alloc.clone())
+            val matchVal = selfMut.fixNodeThroughParent(alloc.clone())
             when {
-                matchVal is Result.Ok && matchVal.value != null -> this = parent.forgetType()
+                matchVal is Result.Ok && matchVal.value != null -> {
+                    val valueVal = matchVal.value
+                    val parent = valueVal
+                    selfMut = parent.forgetType()
+                }
                 matchVal is Result.Ok && matchVal.value == null -> {
                     val None = matchVal.value
                     return true
@@ -143,22 +152,24 @@ public fun <K, V> Root<K, V>.fixRightBorderOfPlentiful() {
 }
 
 public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>.fixLeftBorderOfLeftEdge(alloc: A) {
+    var selfMut = this
     while (true) {
-        val matchVal = this.force()
+        val matchVal = selfMut.force()
         if (matchVal !is io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal) break
         val (internalKv) = matchVal as io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal
-        this = internalKv.fixLeftChild(alloc.clone()).firstKv()
-        check(this.reborrow().intoNode().len() > MIN_LEN)
+        selfMut = internalKv.fixLeftChild(alloc.clone()).firstKv()
+        check(selfMut.reborrow().intoNode().len() > MIN_LEN)
     }
 }
 
 public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>.fixRightBorderOfRightEdge(alloc: A) {
+    var selfMut = this
     while (true) {
-        val matchVal = this.force()
+        val matchVal = selfMut.force()
         if (matchVal !is io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal) break
         val (internalKv) = matchVal as io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal
-        this = internalKv.fixRightChild(alloc.clone()).lastKv()
-        check(this.reborrow().intoNode().len() > MIN_LEN)
+        selfMut = internalKv.fixRightChild(alloc.clone()).lastKv()
+        check(selfMut.reborrow().intoNode().len() > MIN_LEN)
     }
 }
 

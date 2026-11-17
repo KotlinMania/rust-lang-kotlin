@@ -201,25 +201,25 @@ public open class ByteString internal constructor(
         // Omitted due to inference failures
         //
         // @unstable(feature = "byteStr", issue = "134915")
-        // impl<a> From<&a str> for ByteString {
+        // impl<a> From<&a str> for ByteString (
         // @inline
-        // fn from(s: &a str) -> Self {
+        // fn from(s: &a str) -> Self (
         // ByteString(s.asBytes().toVec())
-        // }
-        // }
+        // )
+        // )
         //
         // @unstable(feature = "byteStr", issue = "134915")
-        // impl From<String> for ByteString {
+        // impl From<String> for ByteString (
         // @inline
-        // fn from(s: String) -> Self {
+        // fn from(s: String) -> Self (
         // ByteString(s.intoBytes())
-        // }
-        // }
+        // )
+        // )
         public fun from(s: ByteStr, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString = ByteString(s.value.toVec(), fieldLayout = fieldLayout)
 
         public fun <I : Iterable<Char>> fromIter(iter: I, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString = ByteString(iter.iterator().joinToString("").intoBytes(), fieldLayout = fieldLayout)
 
-        public fun <I : Iterable<UByte>> fromIterUByte(iter: I, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString = ByteString(iter.iterator().collect(), fieldLayout = fieldLayout)
+        public fun <I : Iterable<UByte>> fromIterUByte(iter: I, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString = ByteString(iter.iterator().toMutableList(), fieldLayout = fieldLayout)
 
         public fun <I : Iterable<String>> fromIterString(iter: I, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString = ByteString(iter.iterator().joinToString("").intoBytes(), fieldLayout = fieldLayout)
 
@@ -255,36 +255,36 @@ public open class ByteString internal constructor(
 // Omitted due to inference failures
 //
 // @unstable(feature = "byteStr", issue = "134915")
-// impl<a, const N: Int> From<&a [u8; N]> for ByteString {
+// impl<a, const N: Int> From<&a [u8; N]> for ByteString (
 // @inline
-// fn from(s: &a [u8; N]) -> Self {
+// fn from(s: &a [u8; N]) -> Self (
 // ByteString(s.asSlice().toVec())
-// }
-// }
+// )
+// )
 //
 // @unstable(feature = "byteStr", issue = "134915")
-// impl<const N: Int> From<[u8; N]> for ByteString {
+// impl<const N: Int> From<[u8; N]> for ByteString (
 // @inline
-// fn from(s: [u8; N]) -> Self {
+// fn from(s: [u8; N]) -> Self (
 // ByteString(s.asSlice().toVec())
-// }
-// }
+// )
+// )
 //
 // @unstable(feature = "byteStr", issue = "134915")
-// impl<a> From<&a [u8]> for ByteString {
+// impl<a> From<&a [u8]> for ByteString (
 // @inline
-// fn from(s: &a [u8]) -> Self {
+// fn from(s: &a [u8]) -> Self (
 // ByteString(s.toVec())
-// }
-// }
+// )
+// )
 //
 // @unstable(feature = "byteStr", issue = "134915")
-// impl From<Vec<u8>> for ByteString {
+// impl From<Vec<u8>> for ByteString (
 // @inline
-// fn from(s: Vec<u8>) -> Self {
+// fn from(s: Vec<u8>) -> Self (
 // ByteString(s)
-// }
-// }
+// )
+// )
 public fun fromVecUByte(s: ByteString): List<UByte> = s.value
 
 public fun fromCowByteStr(s: ByteString): ByteStr = s

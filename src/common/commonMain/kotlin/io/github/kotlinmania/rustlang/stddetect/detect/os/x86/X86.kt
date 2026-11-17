@@ -3,7 +3,10 @@
 
 package io.github.kotlinmania.rustlang.stddetect.detect.os.x86
 
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
 import io.github.kotlinmania.rustlang.stddetect.detect.cache.cache
@@ -47,7 +50,7 @@ public fun detectFeatures(): cache.Initializer {
         val ecx = structVal.ecx
         val edx = structVal.edx
         val vendorId: List<UByteArray> = listOf(ebx.toNeBytes(), edx.toNeBytes(), ecx.toNeBytes())
-        val vendorId1: UByteArray = transmute(vendorId)
+        val vendorId1: UByteArray = transmuteWithLayouts<List<UByteArray>, UByteArray>(vendorId, fixedListTypeLayout(PrimitiveArrayLayouts.uByteArray((4).toInt()), (3).toInt()), UnresolvedTypeLayout<UByteArray>())
         Pair(maxBasicLeaf, vendorId1)
     }
     if (maxBasicLeaf1 < 1) {

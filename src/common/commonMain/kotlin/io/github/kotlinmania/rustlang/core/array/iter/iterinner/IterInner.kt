@@ -194,7 +194,7 @@ public fun <T> PolymorphicIter<List<MaybeUninit<T>>>.advanceBy(n: Int): Result<U
 
 public fun <T, B> PolymorphicIter<List<MaybeUninit<T>>>.fold(init: B, f: (B, T) -> B): B = this.tryFold(init, NeverShortCircuit.wrapMut2(f)).first
 
-public fun <T, B, R> PolymorphicIter<List<MaybeUninit<T>>>.tryFold(init: B, f: (B, T) -> R): R where R : Try<R, B, Any?> {
+public fun <Residual, T, B, R> PolymorphicIter<List<MaybeUninit<T>>>.tryFold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> {
     // `alive` is an `IndexRange`, not an arbitrary iterator, so we can
     // trust that its `tryFold` isn't going to do something weird like
     // call the fold-er multiple times for the same index.
@@ -240,7 +240,7 @@ public fun <T> PolymorphicIter<List<MaybeUninit<T>>>.advanceBackBy(n: Int): Resu
 
 public fun <T, B> PolymorphicIter<List<MaybeUninit<T>>>.rfold(init: B, f: (B, T) -> B): B = this.tryRfold(init, NeverShortCircuit.wrapMut2(f)).first
 
-public fun <T, B, R> PolymorphicIter<List<MaybeUninit<T>>>.tryRfold(init: B, f: (B, T) -> R): R where R : Try<R, B, Any?> {
+public fun <Residual, T, B, R> PolymorphicIter<List<MaybeUninit<T>>>.tryRfold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> {
     // `alive` is an `IndexRange`, not an arbitrary iterator, so we can
     // trust that its `tryRfold` isn't going to do something weird like
     // call the fold-er multiple times for the same index.

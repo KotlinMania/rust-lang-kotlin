@@ -1545,6 +1545,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
     }
 
     public open fun extendOne(tupleArg0: Pair<K, V>) {
+        val (k, v) = tupleArg0
         this.put(k, v)
     }
 
@@ -1604,6 +1605,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
     }
 
     public open fun extendOneKV(tupleArg0: Pair<K, V>) {
+        val (k, v) = tupleArg0
         this.put(k, v)
     }
 
@@ -1649,6 +1651,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
     }
 
     public open fun extendOneKVKV(tupleArg0: Pair<K, V>) {
+        val (k, v) = tupleArg0
         this.put(k, v)
     }
 
@@ -1742,7 +1745,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
          * check(map1.capacity() == 0)
          * ```
          */
-        public fun <K, V, S, A : Allocator> default(): HashMap<K, V, S, A> where A : Allocator = HashMap.withHasherIn(Default.default(), Default.default())
+        public fun <K, V, S, A : Allocator> default(): HashMap<K, V, S, A> where A : Allocator = HashMap.withHasherIn(HashMap.default(), HashMap.default())
 
         public fun <K, V, S, A : Allocator, T : Iterable<Pair<K, V>>> fromIter(iter: T, defaultSFn: () -> S, defaultAFn: () -> A): HashMap<K, V, S, A> where S : BuildHasher, A : Allocator {
             val iter1 = iter.iterator()
@@ -2081,7 +2084,7 @@ public open class Iter<K, V> internal constructor(
             marker = marker,
         )
 
-        public fun <K, V> default(): Iter<K, V> = Iter(inner = Default.default(), marker = Unit)
+        public fun <K, V> default(): Iter<K, V> = Iter(inner = RawIter.default(), marker = Unit)
     }
 }
 
@@ -2171,7 +2174,7 @@ public open class IterMut<K, V> internal constructor(
             marker = marker,
         )
 
-        public fun <K, V> default(): IterMut<K, V> = IterMut(inner = Default.default(), marker = Unit)
+        public fun <K, V> default(): IterMut<K, V> = IterMut(inner = RawIter.default(), marker = Unit)
     }
 }
 
@@ -2239,7 +2242,7 @@ public open class IntoIter<K, V, A : Allocator> internal constructor(
             innerCtorArg = inner,
         )
 
-        public fun <K, V, A : Allocator> default(): IntoIter<K, V, A> = IntoIter(inner = Default.default())
+        public fun <K, V, A : Allocator> default(): IntoIter<K, V, A> = IntoIter(inner = RawIntoIter.default())
     }
 }
 
@@ -2302,7 +2305,7 @@ public open class IntoKeys<K, V, A : Allocator> internal constructor(
             innerCtorArg = inner,
         )
 
-        public fun <K, V, A : Allocator> default(): IntoKeys<K, V, A> = IntoKeys(inner = Default.default())
+        public fun <K, V, A : Allocator> default(): IntoKeys<K, V, A> = IntoKeys(inner = IntoIter.default())
     }
 }
 
@@ -2364,7 +2367,7 @@ public open class IntoValues<K, V, A : Allocator> internal constructor(
             innerCtorArg = inner,
         )
 
-        public fun <K, V, A : Allocator> default(): IntoValues<K, V, A> = IntoValues(inner = Default.default())
+        public fun <K, V, A : Allocator> default(): IntoValues<K, V, A> = IntoValues(inner = IntoIter.default())
     }
 }
 
@@ -2429,7 +2432,7 @@ public open class Keys<K, V>(
     public open fun len(): Int = this.inner.len()
 
     public companion object {
-        public fun <K, V> default(): Keys<K, V> = Keys(inner = Default.default())
+        public fun <K, V> default(): Keys<K, V> = Keys(inner = Iter.default())
     }
 }
 
@@ -2494,7 +2497,7 @@ public open class Values<K, V>(
     public open fun len(): Int = this.inner.len()
 
     public companion object {
-        public fun <K, V> default(): Values<K, V> = Values(inner = Default.default())
+        public fun <K, V> default(): Values<K, V> = Values(inner = Iter.default())
     }
 }
 
@@ -2679,7 +2682,7 @@ public open class ValuesMut<K, V>(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, value) -> value })).finish()
 
     public companion object {
-        public fun <K, V> default(): ValuesMut<K, V> = ValuesMut(inner = Default.default())
+        public fun <K, V> default(): ValuesMut<K, V> = ValuesMut(inner = IterMut.default())
     }
 }
 

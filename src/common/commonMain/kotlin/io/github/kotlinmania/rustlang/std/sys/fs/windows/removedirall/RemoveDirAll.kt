@@ -97,7 +97,10 @@ public fun openLinkNoReparse(parent: File, path: UnicodeStrRef, access: UInt, op
             val result = ntOpenFile(access, obj, share, options1)
             // Retry without OBJ_DONT_REPARSE if it's not supported.
             if (when {
-                result is Result.Err && result.error == WinError.INVALID_PARAMETER -> true
+                result is Result.Err && result.error == WinError.INVALID_PARAMETER -> {
+                    val errorVal = result.error
+                    true
+                }
                 else -> false
             } && ATTRIBUTES.load(Ordering.Relaxed) == c.OBJ_DONT_REPARSE) {
                 ATTRIBUTES.store(0, Ordering.Relaxed)
@@ -113,7 +116,10 @@ public fun openLinkNoReparse(parent: File, path: UnicodeStrRef, access: UInt, op
             val f = result1.value
             Result.Ok<File?, WinError>(f)
         }
-        result1 is Result.Err && (result1.error == WinError.FILE_NOT_FOUND || result1.error == WinError.PATH_NOT_FOUND || result1.error == WinError.BAD_NETPATH || result1.error == WinError.BAD_NET_NAME || result1.error == WinError.DELETE_PENDING) -> Result.Ok<File?, WinError>(null)
+        result1 is Result.Err && (result1.error == WinError.FILE_NOT_FOUND || result1.error == WinError.PATH_NOT_FOUND || result1.error == WinError.BAD_NETPATH || result1.error == WinError.BAD_NET_NAME || result1.error == WinError.DELETE_PENDING) -> {
+            val errorVal1 = (result1 as Result.Err).error
+            Result.Ok<File?, WinError>(null)
+        }
         else -> {
             val e = result1.error
             Result.Err<File?, WinError>(e)
@@ -132,7 +138,11 @@ public fun delete(parent: File, name: UnicodeStrRef): Result<Unit, WinError> {
     return run {
         val matchVal = openLinkNoReparse(parent, name, c.DELETE, 0u)
         when {
-            matchVal is Result.Ok && matchVal.value != null -> f.delete()
+            matchVal is Result.Ok && matchVal.value != null -> {
+                val valueVal = matchVal.value
+                val f = valueVal
+                f.delete()
+            }
             matchVal is Result.Ok && matchVal.value == null -> {
                 val None = matchVal.value
                 Result.Ok<Unit, WinError>(Unit)

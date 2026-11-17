@@ -375,7 +375,7 @@ public open class IntoIter<T, A : Allocator>(
         return accum1
     }
 
-    public open fun <B, R> tryFold(accum: B, f: (B, T) -> R, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout(), fromOutputRFn: (B) -> R): R where R : Try<B> {
+    public open fun <Residual, B, R> tryFold(accum: B, f: (B, T) -> R, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout(), fromOutputRFn: (B) -> R): R where R : Try<B> {
         var accum1 = accum
         if (((typeLayoutT).sizeBytes == 0L)) {
             while (((this.ptr.asPtr()).rawAddress.toULong() != (MutPtr((this.end).rawAddress)).rawAddress.toULong())) {
@@ -531,7 +531,7 @@ public open class IntoIter<T, A : Allocator>(
          * Creates an empty `vec.IntoIter`.
          *
          * ```kotlin
-         * val iter: ArrayDeque<UByte> = Default.default()
+         * val iter: ArrayDeque<UByte> = ArrayDeque()
          * check(iter.size == 0)
          * check(iter.toList() == listOf())
          * ```

@@ -110,7 +110,7 @@ public sealed class FullDecoded {
 /**
  * A floating point type which can be `decode`d.
  */
-public interface DecodableFloat<T> : FloatExt<T> {
+public interface DecodableFloat<T, out Int> : FloatExt<T, Int> {
     /**
      * The minimum positive normalized value.
      */
@@ -127,7 +127,7 @@ public fun decodableFloatMinPosNormValueDouble(): Double = 2.2250738585072014E-3
  * Returns a sign (true when negative) and `FullDecoded` value
  * from given floating point number.
  */
-public fun <T : DecodableFloat<T>> decode(v: T, minPosNormValueTFn: () -> T): Pair<Boolean, FullDecoded> {
+public fun <Int, T : DecodableFloat<T, Int>> decode(v: T, minPosNormValueTFn: () -> T): Pair<Boolean, FullDecoded> {
     val (mant, exp, sign) = v.integerDecode()
     val even = (mant and 1) == 0
     val decoded =

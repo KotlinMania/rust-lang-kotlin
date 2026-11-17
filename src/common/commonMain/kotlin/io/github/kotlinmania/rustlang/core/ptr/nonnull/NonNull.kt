@@ -12,7 +12,6 @@ import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.mem.typeinfo.of
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
@@ -22,6 +21,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropGlue
+import io.github.kotlinmania.rustlang.core.ptr.metadata.Thin
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut
 import io.github.kotlinmania.rustlang.core.ptr.metadata.metadata
 import io.github.kotlinmania.rustlang.core.ptr.withExposedProvenanceMut
@@ -90,7 +90,7 @@ import io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts
  */
 public open class NonNull(
     public var pointer: ConstPtr,
-) : TrivialClone<NonNull>, fmt.Pointer {
+) : TrivialClone<NonNull> {
     public val rawAddress: Long
         get() = pointer.rawAddress
 
@@ -242,7 +242,7 @@ public open class NonNull(
         // SAFETY: `NonNull` is `transparent` over a `* const T`, and `* const T`
         // and `* T` have the same layout, so transitively we can reinterpret
         // our `NonNull` to a `* T` directly.
-        return transmuteWithLayouts(this, NonNull.typeLayout(), PrimitiveLayouts.mutPtrLayout(64L))
+        return transmuteWithLayouts<NonNull, MutPtr>(this, NonNull.typeLayout(), PrimitiveLayouts.mutPtrLayout(64L))
     }
 
     /**
@@ -335,7 +335,7 @@ public open class NonNull(
      */
     public open fun <U> cast(): NonNull {
         // SAFETY: `self` is a `NonNull` pointer which is necessarily non-null
-        return transmuteWithLayouts(mutPtrFromRustCast(this.asPtr()), PrimitiveLayouts.mutPtrLayout(64L), NonNull.typeLayout<U>())
+        return transmuteWithLayouts<MutPtr, NonNull>(mutPtrFromRustCast(this.asPtr()), PrimitiveLayouts.mutPtrLayout(64L), NonNull.typeLayout<U>())
     }
 
     /**
@@ -388,7 +388,7 @@ public open class NonNull(
         // Additionally safety contract of `offset` guarantees that the resulting pointer is
         // pointing to an allocation, there can't be an allocation at null, thus it's safe to
         // construct `NonNull`.
-        return transmute(ConstPtr(this.asPtr().rawAddress + (count).toLong() * 1L))
+        return transmuteWithLayouts<Ptr, NonNull>(ConstPtr(this.asPtr().rawAddress + (count).toLong() * 1L), UnresolvedTypeLayout<Ptr>(), NonNull.typeLayout())
     }
 
     // even without panics, this helps for Miri backtraces
@@ -414,7 +414,7 @@ public open class NonNull(
         // Additionally safety contract of `offset` guarantees that the resulting pointer is
         // pointing to an allocation, there can't be an allocation at null, thus it's safe to
         // construct `NonNull`.
-        return transmute(this.asPtr().byteOffset(count))
+        return transmuteWithLayouts<MutPtr, NonNull>(this.asPtr().byteOffset(count), UnresolvedTypeLayout<MutPtr>(), NonNull.typeLayout())
     }
 
     // even without panics, this helps for Miri backtraces
@@ -438,7 +438,7 @@ public open class NonNull(
         // Additionally safety contract of `offset` guarantees that the resulting pointer is
         // pointing to an allocation, there can't be an allocation at null, thus it's safe to
         // construct `NonNull`.
-        return transmute(ConstPtr(this.asPtr().rawAddress + (count).toLong() * 1L))
+        return transmuteWithLayouts<Ptr, NonNull>(ConstPtr(this.asPtr().rawAddress + (count).toLong() * 1L), UnresolvedTypeLayout<Ptr>(), NonNull.typeLayout())
     }
 
     // even without panics, this helps for Miri backtraces
@@ -464,7 +464,7 @@ public open class NonNull(
         // Additionally safety contract of `add` guarantees that the resulting pointer is pointing
         // to an allocation, there can't be an allocation at null, thus it's safe to construct
         // `NonNull`.
-        return transmute(this.asPtr().byteAdd(count))
+        return transmuteWithLayouts<MutPtr, NonNull>(this.asPtr().byteAdd(count), UnresolvedTypeLayout<MutPtr>(), NonNull.typeLayout())
     }
 
     // even without panics, this helps for Miri backtraces
@@ -518,7 +518,7 @@ public open class NonNull(
         // Additionally safety contract of `sub` guarantees that the resulting pointer is pointing
         // to an allocation, there can't be an allocation at null, thus it's safe to construct
         // `NonNull`.
-        return transmute(this.asPtr().byteSub(count))
+        return transmuteWithLayouts<MutPtr, NonNull>(this.asPtr().byteSub(count), UnresolvedTypeLayout<MutPtr>(), NonNull.typeLayout())
     }
 
     // even without panics, this helps for Miri backtraces
@@ -819,7 +819,7 @@ public open class NonNull(
      */
     public open fun copyFrom(src: NonNull, count: Int) {
         // SAFETY: the caller must uphold the safety contract for `copy`.
-        copy((src.asPtr()).asConstPtr(), this.asPtr(), count)
+        copy((src.asPtr()).asConstPtr(), this.asPtr(), count, typeLayoutT = UnresolvedTypeLayout<T>())
     }
 
     // even without panics, this helps for Miri backtraces
@@ -836,7 +836,7 @@ public open class NonNull(
      */
     public open fun copyFromNonoverlapping(src: NonNull, count: Int) {
         // SAFETY: the caller must uphold the safety contract for `copyNonoverlapping`.
-        copyNonoverlapping((src.asPtr()).asConstPtr(), this.asPtr(), count)
+        copyNonoverlapping((src.asPtr()).asConstPtr(), this.asPtr(), count, typeLayoutT = UnresolvedTypeLayout<T>())
     }
 
     /**
@@ -1131,9 +1131,9 @@ public open class NonNull(
 
     public override fun clone(): NonNull = NonNull(this.pointer)
 
-    public override fun fmt(f: StringBuilder): Result<Unit, Unit> = this.asPtr().fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.asPtr()).toString()); Result.Ok(Unit) }
 
-    public open fun fmtPointer(f: StringBuilder): Result<Unit, Unit> = this.asPtr().fmt(f)
+    public open fun fmtPointer(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.asPtr()).toString()); Result.Ok(Unit) }
 
     public open fun eq(other: NonNull): Boolean = this.asPtr() == other.asPtr()
 
@@ -1177,7 +1177,7 @@ public open class NonNull(
          */
         public fun withoutProvenance(addr: NonZero<Int, NonZeroUsizeInner>): NonNull {
             // SAFETY: we know `addr` is non-zero and all nonzero integers are valid raw pointers.
-            return transmute(addr)
+            return transmuteWithLayouts<NonZero<Int, NonZeroUsizeInner>, NonNull>(addr, UnresolvedTypeLayout<NonZero<Int, NonZeroUsizeInner>>(), NonNull.typeLayout())
         }
 
         /**
@@ -1207,7 +1207,7 @@ public open class NonNull(
         }
 
         /**
-         * Converts an address back to a mutable pointer, picking up some previously 'exposed'
+         * Converts an address back to a mutable pointer, picking up some previously `exposed`
          * [provenance][ptr#provenance].
          *
          * For more details, see the equivalent method on a raw pointer, [ptr.withExposedProvenanceMut].
@@ -1259,7 +1259,7 @@ public open class NonNull(
             // SAFETY: the caller must guarantee that `ptr` is non-null.
             return run {
                 Unit
-                transmuteWithLayouts(ptr, PrimitiveLayouts.mutPtrLayout(64L), NonNull.typeLayout())
+                transmuteWithLayouts<MutPtr, NonNull>(ptr, PrimitiveLayouts.mutPtrLayout(64L), NonNull.typeLayout())
             }
         }
 
@@ -1309,7 +1309,7 @@ public open class NonNull(
          */
         public fun <T> fromRef(r: T): NonNull {
             // SAFETY: A reference cannot be null.
-            return transmuteWithLayouts(constPtrFromRustCast(r), PrimitiveLayouts.constPtrLayout(64L), NonNull.typeLayout())
+            return NonNull(constPtrFromRustCast(r))
         }
 
         /**
@@ -1317,7 +1317,7 @@ public open class NonNull(
          */
         public fun <T> fromMut(r: T): NonNull {
             // SAFETY: A mutable reference cannot be null.
-            return transmuteWithLayouts(mutPtrFromRustCast(r), PrimitiveLayouts.mutPtrLayout(64L), NonNull.typeLayout())
+            return transmuteWithLayouts<MutPtr, NonNull>(mutPtrFromRustCast(r), PrimitiveLayouts.mutPtrLayout(64L), NonNull.typeLayout())
         }
 
         /**
@@ -1328,7 +1328,7 @@ public open class NonNull(
          */
         public fun fromRawParts(dataPointer: NonNull, metadata: Metadata): NonNull {
             // SAFETY: The result of `ptr.from.rawPartsMut` is non-null because `dataPointer` is.
-            return NonNull.newUnchecked(linearMutSliceView(dataPointer.asPtr(), metadata.toInt(), PrimitiveLayouts.U8))
+            return NonNull.newUnchecked(linearMutSliceView(dataPointer.asPtr(), metadata.toInt(), UnresolvedTypeLayout<Thin>()))
         }
 
         /**
@@ -1445,7 +1445,7 @@ public fun NonNull.asNonNullPtr(): NonNull = this.cast()
  * @feature(slicePtrGet)
  * public fun doctestEntry() {
  *     val slice: NonNull = NonNull.sliceFromRawParts(NonNull.dangling(), 3)
- *     check(slice.asMutPtr() == NonNull.dangling().asPtr())
+ *     check(slice.asPtr() == NonNull.dangling().asPtr())
  * }
  * ```
  */
@@ -1490,7 +1490,7 @@ public fun NonNull.asMutPtr(): MutPtr = this.asNonNullPtr().asPtr()
  */
 public fun <T> NonNull.asUninitSlice(): List<MaybeUninit<T>> {
     // SAFETY: the caller must uphold the safety contract for `asUninitSlice`.
-    return linearSliceView(this.cast().asPtr(), this.len().toInt(), PrimitiveLayouts.U8)
+    return linearSliceView(this.cast().asPtr(), this.len().toInt(), UnresolvedTypeLayout<U>())
 }
 
 /**
@@ -1584,7 +1584,7 @@ public fun <T> NonNull.asUninitSliceMut(): MutableList<MaybeUninit<T>> {
  * }
  * ```
  */
-public fun <T, I> NonNull.getUncheckedMut(index: I): NonNull where I : SliceIndex<List<T>, Any?> {
+public fun <Output, T, I> NonNull.getUncheckedMut(index: I): NonNull where I : SliceIndex<List<T>, Output> {
     // SAFETY: the caller ensures that `self` is dereferenceable and `index` in-bounds.
     // As a consequence, the resulting pointer cannot be null.
     return NonNull.newUnchecked(this.asPtr().getUncheckedMut(index))

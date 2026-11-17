@@ -49,7 +49,7 @@ public fun <T> quicksort(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>
         // self-modifications via `isLess` would not be observed and this would
         // be unsound. Our temporary copy does not escape this scope.
         // We use `MaybeUninit` to avoid re-tag issues. Note: use `MaybeDangling`.
-        val pivotCopy = read(ConstPtr(((addrOf(v1[pivotPos]))).rawAddress))
+        val pivotCopy = read(ConstPtr(((addrOf(v1[pivotPos]))).rawAddress), typeLayoutT = UnresolvedTypeLayout<MaybeUninit<T>>())
         val pivotRef = (!hasDirectInteriorMutability<T>()).thenSome(pivotCopy.asPtr())
         // We choose a pivot, and check if this pivot is equal to our left
         // ancestor. If true, we do a partition putting equal elements on the
@@ -115,7 +115,7 @@ public fun <T> stablePartition(v: MutableList<T>, scratch: MutableList<MaybeUnin
             // Ideally the outer loop won't be unrolled, to save binary size,
             // but we do want the inner loop to be unrolled for small types, as
             // this gave significant performance boosts in benchmarks. Unrolling
-            // through for _ in 0..UNROLL_LEN { .. } instead of manually improves
+            // through for _ in 0..UNROLL_LEN ( .. ) instead of manually improves
             // compile times but has a ~10-20% performance penalty on opt-level=s.
             if (sizeOf<T>(typeLayoutT = typeLayoutT) <= 16) {
                 val UNROLL_LEN: Int = 4
@@ -142,7 +142,7 @@ public fun <T> stablePartition(v: MutableList<T>, scratch: MutableList<MaybeUnin
         // `pivot` must be copied into its correct position again, because a
         // comparison operator might have modified it.
         if (hasDirectInteriorMutability<T>()) {
-            copyNonoverlapping(pivot, pivotInScratch, 1)
+            copyNonoverlapping(pivot, pivotInScratch, 1, typeLayoutT = typeLayoutT)
         }
         // SAFETY: partitionOne being called exactly len times guarantees that scratch
         // is initialized with a permuted copy of `v`, and that numLeft <= v.len().

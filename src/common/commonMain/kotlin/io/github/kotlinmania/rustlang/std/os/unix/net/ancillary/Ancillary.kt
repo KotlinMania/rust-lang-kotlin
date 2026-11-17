@@ -427,7 +427,7 @@ public open class Messages(
                         CMSG_NXTHDR(msg, current)
                     }
                 }
-            val cmsg1 = when (val tryResult = cmsg.asRef()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            val cmsg1 = when (val tryResult = cmsg.asRef()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<AncillaryData, AncillaryError, Error>(tryResult.error) }
             // Most operating systems, but not Linux or emscripten, return the previous pointer
             // when its length is zero. Therefore, check if the previous pointer is the same as
             // the current one.
@@ -453,10 +453,10 @@ public open class Messages(
  * # Example
  *
  * @file:feature(unixSocketAncillaryData)
- * use std.os.unix.net::{UnixStream, SocketAncillary, AncillaryData};
+ * use std.os.unix.net::(UnixStream, SocketAncillary, AncillaryData);
  * use std.io.IoSliceMut;
  *
- * fn main() -> std.io.Result<()> {
+ * fn main() -> std.io.Result<()> (
  *     let sock = UnixStream.connect("/tmp/sock")?;
  *
  *     let mut fds = [0; 8];
@@ -467,15 +467,15 @@ public open class Messages(
  *     let mut bufs = [IoSliceMut.new(buf[..])][..];
  *     sock.recvVectoredWithAncillary(bufs, ancillary)?;
  *
- *     for ancillaryResult in ancillary.messages() {
- *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() {
- *             for fd in scmRights {
- *                 println("receive file descriptor: {fd}");
- *             }
- *         }
- *     }
+ *     for ancillaryResult in ancillary.messages() (
+ *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() (
+ *             for fd in scmRights (
+ *                 println("receive file descriptor: (fd)");
+ *             )
+ *         )
+ *     )
  *     Ok(())
- * }
+ * )
  * ```kotlin
  */
 public open class SocketAncillary(
@@ -509,10 +509,10 @@ public open class SocketAncillary(
      * # Example
      *
      * @file:feature(unixSocketAncillaryData)
-     * use std.os.unix.net::{UnixStream, SocketAncillary};
+     * use std.os.unix.net::(UnixStream, SocketAncillary);
      * use std.io.IoSliceMut;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixStream.connect("/tmp/sock")?;
      *
      *     let mut ancillaryBuffer = [0; 128];
@@ -522,9 +522,9 @@ public open class SocketAncillary(
      *     let mut bufs = [IoSliceMut.new(buf[..])][..];
      *     sock.recvVectoredWithAncillary(bufs, ancillary)?;
      *
-     *     println("Is truncated: {}", ancillary.truncated());
+     *     println("Is truncated: ()", ancillary.truncated());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun truncated(): Boolean = this.truncated
@@ -540,11 +540,11 @@ public open class SocketAncillary(
      * # Example
      *
      * @file:feature(unixSocketAncillaryData)
-     * use std.os.unix.net::{UnixStream, SocketAncillary};
+     * use std.os.unix.net::(UnixStream, SocketAncillary);
      * use std.os.unix.io.AsRawFd;
      * use std.io.IoSlice;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixStream.connect("/tmp/sock")?;
      *
      *     let mut ancillaryBuffer = [0; 128];
@@ -555,7 +555,7 @@ public open class SocketAncillary(
      *     let mut bufs = [IoSlice.new(&buf[..])][..];
      *     sock.sendVectoredWithAncillary(bufs, ancillary)?;
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun addFds(fds: List<RawFd>): Boolean {
@@ -582,10 +582,10 @@ public open class SocketAncillary(
      * # Example
      *
      * @file:feature(unixSocketAncillaryData)
-     * use std.os.unix.net::{UnixStream, SocketAncillary, AncillaryData};
+     * use std.os.unix.net::(UnixStream, SocketAncillary, AncillaryData);
      * use std.io.IoSliceMut;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixStream.connect("/tmp/sock")?;
      *
      *     let mut fds1 = [0; 8];
@@ -597,26 +597,26 @@ public open class SocketAncillary(
      *     let mut bufs = [IoSliceMut.new(buf[..])][..];
      *
      *     sock.recvVectoredWithAncillary(bufs, ancillary)?;
-     *     for ancillaryResult in ancillary.messages() {
-     *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() {
-     *             for fd in scmRights {
-     *                 println("receive file descriptor: {fd}");
-     *             }
-     *         }
-     *     }
+     *     for ancillaryResult in ancillary.messages() (
+     *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() (
+     *             for fd in scmRights (
+     *                 println("receive file descriptor: (fd)");
+     *             )
+     *         )
+     *     )
      *
      *     ancillary.clear();
      *
      *     sock.recvVectoredWithAncillary(bufs, ancillary)?;
-     *     for ancillaryResult in ancillary.messages() {
-     *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() {
-     *             for fd in scmRights {
-     *                 println("receive file descriptor: {fd}");
-     *             }
-     *         }
-     *     }
+     *     for ancillaryResult in ancillary.messages() (
+     *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() (
+     *             for fd in scmRights (
+     *                 println("receive file descriptor: (fd)");
+     *             )
+     *         )
+     *     )
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun clear() {

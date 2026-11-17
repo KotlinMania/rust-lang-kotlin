@@ -305,8 +305,8 @@ public fun <T, U, E, I> productResultTE(iter: I): Result<T, E> where T : Product
  *
  * # Examples
  *
- * This sums up the position of the character 'a' in a vector of strings,
- * if a word did not have the character 'a' the operation returns `None`:
+ * This sums up the position of the character `a` in a vector of strings,
+ * if a word did not have the character `a` the operation returns `None`:
  *
  * ```kotlin
  * val words = mutableListOf("have", "a", "great", "day")

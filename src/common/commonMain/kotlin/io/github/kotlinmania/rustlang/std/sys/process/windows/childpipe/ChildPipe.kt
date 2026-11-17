@@ -4,6 +4,7 @@
 package io.github.kotlinmania.rustlang.std.sys.process.windows.childpipe
 
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
@@ -15,7 +16,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sys.FromInner
@@ -179,7 +179,7 @@ public open class ChildPipe internal constructor(
         if (result == c.FALSE) {
             // We can return here because the call failed.
             // After this we must not return until the I/O completes.
-            return Result.Err<Int, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+            return Result.Err<Int, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
         }
         // Wait indefinitely for the result.
         val result2 =
@@ -197,7 +197,7 @@ public open class ChildPipe internal constructor(
             c.errorSuccess -> Result.Ok<Int, Error>(result2.transferred.toInt())
             else -> {
                 val error = matchVal
-                Result.Err<Int, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(((error as Any?) as Result<Int, Error>)))
+                Result.Err<Int, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(((error as Any?) as Result<Int, Error>)))
             }
         }
     }
@@ -306,7 +306,7 @@ public fun childPipe(oursReadable: Boolean, theirHandleInheritable: Boolean): Re
                         } }
                     }
                 } else {
-                    return Result.Err<Pipes, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(c.RtlNtStatusToDosError(status).toInt()))
+                    return Result.Err<Pipes, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(c.RtlNtStatusToDosError(status).toInt()))
                 }
             }
         // From now on we're using handles instead of paths to create and open pipes.
@@ -342,7 +342,7 @@ public fun childPipe(oursReadable: Boolean, theirHandleInheritable: Boolean): Re
             if (c.ntSuccess(status1)) {
                 Handle.fromRawHandle(ours)
             } else {
-                return Result.Err<Pipes, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(c.RtlNtStatusToDosError(status1).toInt()))
+                return Result.Err<Pipes, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(c.RtlNtStatusToDosError(status1).toInt()))
             }
         }
         // Open their side of the pipe for synchronous access.
@@ -364,7 +364,7 @@ public fun childPipe(oursReadable: Boolean, theirHandleInheritable: Boolean): Re
             if (c.ntSuccess(status2)) {
                 Handle.fromRawHandle(theirs)
             } else {
-                return Result.Err<Pipes, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(c.RtlNtStatusToDosError(status2).toInt()))
+                return Result.Err<Pipes, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(c.RtlNtStatusToDosError(status2).toInt()))
             }
         }
         Result.Ok<Pipes, Error>(Pipes(ours = ChildPipe(inner = ours1), theirs = ChildPipe(inner = theirs1)))
@@ -444,7 +444,7 @@ public fun readOutput(p1: ChildPipe, v1: List<UByte>, p2: ChildPipe, v2: List<UB
                 return p12.finish()
             }
         } else {
-            return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+            return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
         }
     }
 }

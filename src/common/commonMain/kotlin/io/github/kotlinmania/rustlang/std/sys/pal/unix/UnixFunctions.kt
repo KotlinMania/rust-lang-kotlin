@@ -147,7 +147,7 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
         }
     }
     // The standard streams might be closed on application startup. To prevent
-    // std.io::{stdin, stdout,stderr} objects from using other unrelated file
+    // std.io::(stdin, stdout,stderr) objects from using other unrelated file
     // resources opened later, we reopen standards streams when they are closed.
     sanitizeStandardFds()
     // By default, some platforms will send a *signal* when an EPIPE error
@@ -185,7 +185,7 @@ public fun cleanup() {}
  */
 public fun <T : IsMinusOne> cvt(t: T): Result<T, Error> =
     if (t.isMinusOne()) {
-        Result.Err<T, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        Result.Err<T, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
     } else {
         Result.Ok<T, Error>(t)
     }
@@ -219,7 +219,7 @@ public fun cvtNz(error: CInt): Result<Unit, Error> =
     if (error == 0) {
         Result.Ok<Unit, Error>(Unit)
     } else {
-        Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
+        Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(error))
     }
 
 // libc.abort() will run the SIGABRT handler.  That's fine because anyone who

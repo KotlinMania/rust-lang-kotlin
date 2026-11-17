@@ -36,7 +36,7 @@ public typealias Source<I> = I.Source
  */
 public open class Copied<I>(
     public var it: I,
-) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen<Copied<I>>, SourceIter<Source>, InPlaceIterable, Iterable<T> {
+) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen, SourceIter<Source>, InPlaceIterable, Iterable<T> {
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Copied.next()) {
@@ -56,7 +56,7 @@ public open class Copied<I>(
 
     public override fun sizeHint(): Pair<Int, Int?> = this.it.sizeHint()
 
-    public override fun <B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<R, B, Any?> = this.it.tryFold(init, copyTryFold(f))
+    public override fun <Residual, B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> = this.it.tryFold(init, copyTryFold(f))
 
     public override fun <Acc> fold(init: Acc, f: (Acc, T) -> Acc): Acc = this.it.fold(init, copyFold(f))
 
@@ -76,7 +76,7 @@ public open class Copied<I>(
 
     public open fun nextBack(): T? = this.it.nextBack()
 
-    public open fun <B, R> tryRfold(init: B, f: (B, T) -> R): R where R : Try<R, B, Any?> = this.it.tryRfold(init, copyTryFold(f))
+    public open fun <Residual, B, R> tryRfold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> = this.it.tryRfold(init, copyTryFold(f))
 
     public open fun <Acc> rfold(init: Acc, f: (Acc, T) -> Acc): Acc = this.it.rfold(init, copyFold(f))
 
@@ -135,7 +135,7 @@ public fun <T, Acc> copyFold(f: (Acc, T) -> Acc): (Acc, T) -> Acc = { acc, elt -
 
 public fun <T, Acc, R> copyTryFold(f: (Acc, T) -> R): (Acc, T) -> R = { acc, elt -> f(acc, elt) }
 
-public interface SpecNextChunk<T, SelfType> : Iterator<T> {
+public interface SpecNextChunk<T> : Iterator<T> {
     public fun specNextChunk(): Result<List<T>, IntoIter<T>>
 
     public fun next(): T?

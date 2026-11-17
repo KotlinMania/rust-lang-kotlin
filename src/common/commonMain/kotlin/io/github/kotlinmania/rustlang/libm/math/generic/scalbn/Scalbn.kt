@@ -22,7 +22,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.floattraits.IntTy
  * > If the calculation does not overflow or underflow, the returned value is exact and
  * > independent of the current rounding direction mode.
  */
-public fun <Int, SignedInt, F : Float<F, Any?, Any?>> scalbn(x: F, n: Int, fromPartsFFn: (Boolean, UInt, Int) -> F): F {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> scalbn(x: F, n: Int, fromPartsFFn: (Boolean, UInt, Int) -> F): F {
     var x1 = x
     var n1 = n
     val zero = IntTy.ZERO

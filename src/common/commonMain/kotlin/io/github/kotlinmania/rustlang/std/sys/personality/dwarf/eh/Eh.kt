@@ -263,7 +263,7 @@ public fun findEhAction(lsda: ConstPtr, context: EHContext): Result<EHAction, Un
     } else {
         // SjLj version:
         // The "IP" is an index into the call-site table, with two exceptions:
-        // -1 means no-action', and 0 means 'terminate'.
+        // -1 means no-action', and 0 means `terminate`.
         when ((ip).rawAddress.toInt()) {
             -1 -> { return Result.Ok<EHAction, Unit>(EHAction.None) }
             0 -> { return Result.Ok<EHAction, Unit>(EHAction.Terminate) }

@@ -1,7 +1,6 @@
 // port-lint: source x86/avxneconvert.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 
 /**
@@ -46,7 +45,7 @@ public fun mm256BcstneshPs(a: ConstPtr): M256 = bcstnesh2ps256(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtneebf16_ps)
  */
-public fun mmCvtneebf16Ps(a: ConstPtr): M128 = transmute(cvtneebf162ps128(a))
+public fun mmCvtneebf16Ps(a: ConstPtr): M128 = cvtneebf162ps128(a)
 
 /**
  * Convert packed BF16 (16-bit) floating-point even-indexed elements stored at memory locations starting at
@@ -54,7 +53,7 @@ public fun mmCvtneebf16Ps(a: ConstPtr): M128 = transmute(cvtneebf162ps128(a))
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtneebf16_ps)
  */
-public fun mm256Cvtneebf16Ps(a: ConstPtr): M256 = transmute(cvtneebf162ps256(a))
+public fun mm256Cvtneebf16Ps(a: ConstPtr): M256 = cvtneebf162ps256(a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point even-indexed elements stored at memory locations starting at
@@ -62,7 +61,7 @@ public fun mm256Cvtneebf16Ps(a: ConstPtr): M256 = transmute(cvtneebf162ps256(a))
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtneeph_ps)
  */
-public fun mmCvtneephPs(a: ConstPtr): M128 = transmute(cvtneeph2ps128(a))
+public fun mmCvtneephPs(a: ConstPtr): M128 = cvtneeph2ps128(a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point even-indexed elements stored at memory locations starting at
@@ -70,7 +69,7 @@ public fun mmCvtneephPs(a: ConstPtr): M128 = transmute(cvtneeph2ps128(a))
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtneeph_ps)
  */
-public fun mm256CvtneephPs(a: ConstPtr): M256 = transmute(cvtneeph2ps256(a))
+public fun mm256CvtneephPs(a: ConstPtr): M256 = cvtneeph2ps256(a)
 
 /**
  * Convert packed BF16 (16-bit) floating-point odd-indexed elements stored at memory locations starting at
@@ -78,7 +77,7 @@ public fun mm256CvtneephPs(a: ConstPtr): M256 = transmute(cvtneeph2ps256(a))
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtneobf16_ps)
  */
-public fun mmCvtneobf16Ps(a: ConstPtr): M128 = transmute(cvtneobf162ps128(a))
+public fun mmCvtneobf16Ps(a: ConstPtr): M128 = cvtneobf162ps128(a)
 
 /**
  * Convert packed BF16 (16-bit) floating-point odd-indexed elements stored at memory locations starting at
@@ -86,7 +85,7 @@ public fun mmCvtneobf16Ps(a: ConstPtr): M128 = transmute(cvtneobf162ps128(a))
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtneobf16_ps)
  */
-public fun mm256Cvtneobf16Ps(a: ConstPtr): M256 = transmute(cvtneobf162ps256(a))
+public fun mm256Cvtneobf16Ps(a: ConstPtr): M256 = cvtneobf162ps256(a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point odd-indexed elements stored at memory locations starting at
@@ -94,7 +93,7 @@ public fun mm256Cvtneobf16Ps(a: ConstPtr): M256 = transmute(cvtneobf162ps256(a))
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtneoph_ps)
  */
-public fun mmCvtneophPs(a: ConstPtr): M128 = transmute(cvtneoph2ps128(a))
+public fun mmCvtneophPs(a: ConstPtr): M128 = cvtneoph2ps128(a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point odd-indexed elements stored at memory locations starting at
@@ -102,7 +101,7 @@ public fun mmCvtneophPs(a: ConstPtr): M128 = transmute(cvtneoph2ps128(a))
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtneoph_ps)
  */
-public fun mm256CvtneophPs(a: ConstPtr): M256 = transmute(cvtneoph2ps256(a))
+public fun mm256CvtneophPs(a: ConstPtr): M256 = cvtneoph2ps256(a)
 
 /**
  * Convert packed single precision (32-bit) floating-point elements in a to packed BF16 (16-bit) floating-point

@@ -188,7 +188,7 @@ public open class CovariantUnsafeCell<T> internal constructor(
          *         CovariantUnsafeCell.rawGet(m.asPtr()).write(5)
          *     }
          *     // avoid below which references to uninitialized data
-         *     // unchecked { CovariantUnsafeCell.get(&*m.asPtr()).write(5); }
+         *     // unchecked ( CovariantUnsafeCell.get(&*m.asPtr()).write(5); )
          *     val uc = m.assumeInit()
          *     check(uc.intoInner() == 5)
          * }

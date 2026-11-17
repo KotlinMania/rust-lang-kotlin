@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 
-public fun <Int, SignedInt, F : Float<F, Any?, Any?>> specTest(f: (F, F) -> F) {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> specTest(f: (F, F) -> F) {
     run {
         val l = f(F.ZERO, F.ZERO)
         val r = F.ZERO

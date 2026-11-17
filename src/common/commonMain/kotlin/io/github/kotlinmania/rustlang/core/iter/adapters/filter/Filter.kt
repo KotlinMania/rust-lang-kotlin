@@ -143,15 +143,15 @@ public open class Filter<I, P>(
         return total
     }
 
-    public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, I.Item) -> R): R where R : Try<R, Acc, Any?> = this.iter.tryFold(init, filterTryFold(this.predicate, fold))
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, filterTryFold(this.predicate, fold))
 
-    public open fun <Acc> fold(init: Acc, fold: (Acc, I.Item) -> Acc): Acc = this.iter.fold(init, filterFold(this.predicate, fold))
+    public open fun <Acc> fold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.iter.fold(init, filterFold(this.predicate, fold))
 
     public open fun nextBack(): Item? = this.iter.rfind(this.predicate)
 
-    public open fun <Acc, R> tryRfold(init: Acc, fold: (Acc, I.Item) -> R): R where R : Try<R, Acc, Any?> = this.iter.tryRfold(init, filterTryFold(this.predicate, fold))
+    public open fun <Residual, Acc, R> tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, filterTryFold(this.predicate, fold))
 
-    public open fun <Acc> rfold(init: Acc, fold: (Acc, I.Item) -> Acc): Acc = this.iter.rfold(init, filterFold(this.predicate, fold))
+    public open fun <Acc> rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.iter.rfold(init, filterFold(this.predicate, fold))
 
     public override fun asInner(): Source {
         // SAFETY: unchecked function forwarding to unchecked function with the same requirements
@@ -199,7 +199,7 @@ public fun <T, Acc> filterFold(predicate: (T) -> Boolean, fold: (Acc, T) -> Acc)
         acc
     } }
 
-public fun <T, Acc, R : Try<R, Acc, Any?>> filterTryFold(predicate: (T) -> Boolean, fold: (Acc, T) -> R): (Acc, T) -> R =
+public fun <Residual, T, Acc, R : Try<R, Acc, Residual>> filterTryFold(predicate: (T) -> Boolean, fold: (Acc, T) -> R): (Acc, T) -> R =
     { acc, item -> if (predicate(item)) {
         fold(acc, item)
     } else {
@@ -219,7 +219,7 @@ public interface SpecAssumeCount {
     public fun assumeCountLeUpperBound(count: Int, upper: Int)
 }
 
-public fun <Item, I> specAssumeCountAssumeCountLeUpperBoundI(count: Int, upper: Int) {
+public fun <I> specAssumeCountAssumeCountLeUpperBoundI(count: Int, upper: Int) {
     // In the default we can't trust the `upper` for soundness
     // because it came from an untrusted `sizeHint`.
     // In debug mode we might as well check that the sizeHint wasn't too small

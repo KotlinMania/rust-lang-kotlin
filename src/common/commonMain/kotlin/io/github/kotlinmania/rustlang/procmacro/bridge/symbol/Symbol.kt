@@ -132,9 +132,9 @@ public open class Symbol internal constructor(
     }
 }
 
-public fun <TokenStream, Span, Symbol, S : Server<Any?, Any?, Any?>> decodeMarkedSymbolS(r: List<UByte>, s: HandleStore<S>, internSymbolSFn: (String) -> Symbol): MarkedSymbol<S> = Mark.mark(internSymbolSFn(String.decode(r, s)))
+public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> decodeMarkedSymbolS(r: List<UByte>, s: HandleStore<S>, internSymbolSFn: (String) -> Symbol): MarkedSymbol<S> = Mark.mark(internSymbolSFn(String.decode(r, s)))
 
-public fun <TokenStream, Span, Symbol, S : Server<Any?, Any?, Any?>> MarkedSymbol<S>.encode(w: Buffer, s: HandleStore<S>, withSymbolStringSFn: (Symbol, (String) -> Unit) -> Unit) {
+public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> MarkedSymbol<S>.encode(w: Buffer, s: HandleStore<S>, withSymbolStringSFn: (Symbol, (String) -> Unit) -> Unit) {
     withSymbolStringSFn(this.unmark(), { sym -> sym.encode(w, s) })
 }
 

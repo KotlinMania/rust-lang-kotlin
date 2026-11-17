@@ -46,7 +46,7 @@ public fun confstr(key: CInt, sizeHint: Int?): Result<OsString, Error> {
     }
     // `confstr` returns 0 in the case of an error.
     if (bytesNeededIncludingNul == 0) {
-        return Result.Err<OsString, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        return Result.Err<OsString, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
     }
     // Safety: `confstr(..., buf.asMutPtr(), buf.capacity())` returned a
     // non-zero value, meaning `bytesNeededIncludingNul` bytes were

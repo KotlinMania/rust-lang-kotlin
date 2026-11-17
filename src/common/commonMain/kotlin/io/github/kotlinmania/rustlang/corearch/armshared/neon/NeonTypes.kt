@@ -1,6 +1,7 @@
 package io.github.kotlinmania.rustlang.corearch.armshared.neon
 
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 
 public interface AsUnsigned<out Unsigned> {
     public fun asUnsigned(): Unsigned

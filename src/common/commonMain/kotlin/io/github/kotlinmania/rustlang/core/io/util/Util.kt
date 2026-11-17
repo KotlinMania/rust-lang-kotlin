@@ -568,7 +568,7 @@ public open class Take<T>(
                 null -> {}
                 else -> {
                     val offset = matchVal
-                    when (val tryResult = this.inner.seekRelative(offset)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.inner.seekRelative(offset)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, Error>(tryResult.error) }
                     this.limit = (this.limit - (offset.toULong()))
                     break
                 }
@@ -579,7 +579,7 @@ public open class Take<T>(
                 } else {
                     Long.MIN_VALUE
                 }
-            when (val tryResult = this.inner.seekRelative(offset1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.inner.seekRelative(offset1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, Error>(tryResult.error) }
             this.limit = (this.limit - (offset1.toULong()))
         }
         return Result.Ok(newPosition1)
@@ -593,7 +593,7 @@ public open class Take<T>(
         if (!this.position().checkedAddSigned(offset).isSomeAnd({ p -> p <= this.len })) {
             return Result.Err(ErrorKind.InvalidInput.into())
         }
-        when (val tryResult = this.inner.seekRelative(offset)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.inner.seekRelative(offset)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         this.limit = (this.limit - (offset.toULong()))
         return Result.Ok(Unit)
     }

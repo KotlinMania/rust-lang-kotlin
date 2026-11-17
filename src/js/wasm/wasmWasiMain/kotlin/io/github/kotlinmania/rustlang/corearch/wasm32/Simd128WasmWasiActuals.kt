@@ -2,6 +2,8 @@
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
+
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun llvmSwizzle(a: I8x16, b: I8x16): I8x16 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchWasm32Simd128LlvmSwizzle")

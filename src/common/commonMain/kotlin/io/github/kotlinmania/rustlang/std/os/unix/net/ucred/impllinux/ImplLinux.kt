@@ -28,7 +28,7 @@ public fun peerCred(socket: UnixStream): Result<UCred, Error> {
         if (ret == 0 && ucredSize1 == sizeOf(ucred, typeLayoutT = UnresolvedTypeLayout<Ucred>())) {
             Result.Ok<UCred, Error>(UCred(uid = ucred.uid, gid = ucred.gid, pid = ucred.pid))
         } else {
-            Result.Err<UCred, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+            Result.Err<UCred, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
         }
     }
 }

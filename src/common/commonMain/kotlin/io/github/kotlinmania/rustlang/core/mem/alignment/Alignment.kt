@@ -2,13 +2,14 @@
 package io.github.kotlinmania.rustlang.core.mem.alignment
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOfVal
 import io.github.kotlinmania.rustlang.core.mem.alignOfValRaw
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind
 import io.github.kotlinmania.rustlang.core.num.error.TryFromIntError
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
@@ -56,7 +57,7 @@ public open class Alignment internal constructor(
         // validity invariant of the type would have to have been broken earlier --
         // and emitting it in an otherwise simple method is bad for compile time.
         // SAFETY: All the discriminants are non-zero.
-        return transmute(this)
+        return transmuteWithLayouts<Alignment, NonZero<Int, NonZeroUsizeInner>>(this, TransparentTypeLayout(this.fieldLayout, { ptr, layout -> Alignment(ptr, layout) }, { it.innerReprTrick }), UnresolvedTypeLayout<NonZero<Int, NonZeroUsizeInner>>())
     }
 
     /**
@@ -329,7 +330,7 @@ public open class Alignment internal constructor(
             Unit
             // SAFETY: By precondition, this must be a power of two, and
             // our variants encompass all possible powers of two.
-            return transmute(align)
+            return transmuteWithLayouts<Int, Alignment>(align, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<Alignment>())
         }
 
         // Note(const-Note) Remove me once `Ord.max` is usable in const
@@ -342,7 +343,7 @@ public open class Alignment internal constructor(
 
         public fun tryFrom(align: NonZero<Int, NonZeroUsizeInner>): Result<Alignment, TryFromIntError> = align.get().tryInto()
 
-        public fun tryFrom(align: Int): Result<Alignment, TryFromIntError> = (Alignment.new(align)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.NotAPowerOfTwo)))
+        public fun tryFrom(align: Int): Result<Alignment, TryFromIntError> = (Alignment.new(align)?.let { Result.Ok<Alignment, TryFromIntError>(it) } ?: Result.Err<Alignment, TryFromIntError>(TryFromIntError(IntErrorKind.NotAPowerOfTwo)))
 
         /**
          * Returns [Alignment.Min], which is valid for any type.

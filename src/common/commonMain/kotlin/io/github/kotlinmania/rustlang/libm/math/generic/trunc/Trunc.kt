@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.IntTy
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
-public fun <Int, SignedInt, F : Float<F, Any?, Any?>> truncStatus(x: F, fromBitsFFn: (Int) -> F): FpResult<F> {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> truncStatus(x: F, fromBitsFFn: (Int) -> F): FpResult<F> {
     val xi: Int = x.toBits().toInt()
     val e: Int = x.expUnbiased()
     // The represented value has no fractional part, so no truncation is needed

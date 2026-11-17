@@ -55,7 +55,7 @@ public fun copy(from: Path, to: Path): Result<ULong, Error> {
     }
     val writer = when (val tryResult = File.create(to)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, Error>(tryResult.error) }
     val perm = metadata.permissions()
-    val ret = when (val tryResult = io.github.kotlinmania.rustlang.std.io.copy(reader, writer)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, Error>(tryResult.error) }
+    val ret = when (val tryResult = io.github.kotlinmania.rustlang.alloc.io.copy.copy(reader, writer)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, Error>(tryResult.error) }
     when (val tryResult = writer.setPermissions(perm)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, Error>(tryResult.error) }
     return Result.Ok<ULong, Error>(ret)
 }

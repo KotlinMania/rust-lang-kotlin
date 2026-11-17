@@ -36,13 +36,13 @@ public open class Parker(
     // The only memory ordering guarantee that parking and unparking provide, is
     // that things which happened before unpark() are visible on the thread
     // returning from park() afterwards. Otherwise, it was effectively unparked
-    // before unpark() was called while still consuming the 'token'.
+    // before unpark() was called while still consuming the `token`.
     //
     // In other words, unpark() needs to synchronize with the part of park() that
     // consumes the token and returns.
     //
     // This is done with a release-acquire synchronization, by using
-    // Ordering.Release when writing NOTIFIED (the 'token') in unpark(), and using
+    // Ordering.Release when writing NOTIFIED (the `token`) in unpark(), and using
     // Ordering.Acquire when checking for this state in park().
     // Assumes this is only called by the thread that owns the Parker,
     // which means that `self.state != PARKED`.

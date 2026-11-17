@@ -21,7 +21,6 @@ import io.github.kotlinmania.rustlang.core.mem.atomicRmwWithLayout
 import io.github.kotlinmania.rustlang.core.mem.atomicStoreWithLayout
 import io.github.kotlinmania.rustlang.core.mem.atomicXchgWithLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -93,6 +92,8 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.*
 // [nomicon]: ../../../nomicon/atomics.html
 //
 // ```kotlin
+// import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+// import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 // import std.mem.reinterpret
 // import std.sync.atomic.AtomicU16
 // import std.sync.atomic.AtomicU8
@@ -127,7 +128,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.*
 //     // This is UB: non-synchronized conflicting differently-sized atomic accesses.
 //     s.spawn({ atomic.store(1, Ordering.Relaxed) })
 //     s.spawn({ run {
-//         val differentlySized = reinterpret(atomic)
+//         val differentlySized = transmuteWithLayouts<AtomicU16, AtomicU8>(atomic, UnresolvedTypeLayout<AtomicU16>(), UnresolvedTypeLayout<AtomicU8>())
 //         differentlySized.store(2, Ordering.Relaxed)
 //     } })
 // })
@@ -137,7 +138,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.*
 //     val handle = s.spawn({ atomic.store(1, Ordering.Relaxed) })
 //     handle.join().expect("thread won't panic")
 //     s.spawn({ run {
-//         val differentlySized = reinterpret(atomic)
+//         val differentlySized = transmuteWithLayouts<AtomicU16, AtomicU8>(atomic, UnresolvedTypeLayout<AtomicU16>(), UnresolvedTypeLayout<AtomicU8>())
 //         differentlySized.store(2, Ordering.Relaxed)
 //     } })
 // })
@@ -373,7 +374,7 @@ public open class Align16<T>(
  *
  * This is an implementation detail for <code>[Atomic]\<T></code> which may disappear or be replaced at any time.
  */
-public interface AtomicPrimitive<T, out Storage>
+public interface AtomicPrimitive<out Storage>
 
 /**
  * A memory location which can be safely modified from multiple threads.
@@ -559,7 +560,7 @@ public val ATOMIC_BOOL_INIT: AtomicBool = AtomicBool.new(false)
 public fun AtomicBool.Companion.new(v: Boolean): AtomicBool {
     // SAFETY:
     // `Atomic<T>` is essentially a transparent wrapper around `T`.
-    return transmuteWithLayouts(v, PrimitiveLayouts.BOOL, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.U8, { ptr, layout -> Align1<UByte>(ptr, layout) }, { it.value }), 1L), { ptr, layout -> UnsafeCell<Align1<UByte>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicBool(ptr, layout) }, { it.v }))
+    return transmuteWithLayouts<Boolean, AtomicBool>(v, PrimitiveLayouts.BOOL, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.U8, { ptr, layout -> Align1<UByte>(ptr, layout) }, { it.value }), 1L), { ptr, layout -> UnsafeCell<Align1<UByte>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicBool(ptr, layout) }, { it.v }))
 }
 
 /**
@@ -737,7 +738,7 @@ public fun AtomicBool.intoInner(): Boolean {
     // * `Atomic<T>` is essentially a transparent wrapper around `T`.
     // * all operations on `Atomic<Boolean>` ensure that `T.Storage` remains
     // a valid `Boolean`.
-    return transmute(this)
+    return transmuteWithLayouts<AtomicBool, Boolean>(this, UnresolvedTypeLayout<AtomicBool>(), PrimitiveLayouts.BOOL)
 }
 
 // even without panics, this helps for Miri backtraces
@@ -793,7 +794,7 @@ public fun AtomicBool.load(order: Ordering): Boolean {
  */
 public fun AtomicBool.loadVolatile(order: Ordering): Boolean {
     // SAFETY: follows from our own safety requirements.
-    return atomicLoad(this.cast(), order, true) != 0
+    return atomicLoad(this.cast(), order, true, typeLayoutT = PrimitiveLayouts.U8) != 0
 }
 
 // even without panics, this helps for Miri backtraces
@@ -851,7 +852,7 @@ public fun AtomicBool.store(value: Boolean, order: Ordering) {
 public fun AtomicBool.storeVolatile(value: Boolean, order: Ordering) {
     // SAFETY: follows from our own safety requirements.
     run {
-        atomicStore(this.cast().castMut(), value.toUByte(), order, true)
+        atomicStore(this.cast().castMut(), value.toUByte(), order, true, typeLayoutT = PrimitiveLayouts.U8)
     }
 }
 
@@ -1522,7 +1523,7 @@ public fun AtomicBool.update(setOrder: Ordering, fetchOrder: Ordering, f: (Boole
 public fun AtomicPtr.Companion.new(p: MutPtr): AtomicPtr {
     // SAFETY:
     // `Atomic<T>` is essentially a transparent wrapper around `T`.
-    return transmuteWithLayouts(p, PrimitiveLayouts.mutPtrLayout(64L), TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.mutPtrLayout(64L), { ptr, layout -> Align8<MutPtr>(ptr, layout) }, { it.value }), 8L), { ptr, layout -> UnsafeCell<Align8<MutPtr>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicPtr(ptr, layout) }, { it.v }))
+    return transmuteWithLayouts<MutPtr, AtomicPtr>(p, PrimitiveLayouts.mutPtrLayout(64L), TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.mutPtrLayout(64L), { ptr, layout -> Align8<MutPtr>(ptr, layout) }, { it.value }), 8L), { ptr, layout -> UnsafeCell<Align8<MutPtr>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicPtr(ptr, layout) }, { it.v }))
 }
 
 /**
@@ -1751,7 +1752,7 @@ public fun AtomicPtr.Companion.fromMutSlice(v: MutableList<MutPtr>): MutableList
 public fun AtomicPtr.intoInner(): MutPtr {
     // SAFETY:
     // `Atomic<T>` is essentially a transparent wrapper around `T`.
-    return transmute(this)
+    return transmuteWithLayouts<AtomicPtr, MutPtr>(this, UnresolvedTypeLayout<AtomicPtr>(), this.v.value.fieldLayout)
 }
 
 // even without panics, this helps for Miri backtraces
@@ -1844,7 +1845,7 @@ public fun AtomicPtr.load(order: Ordering): MutPtr {
  */
 public fun AtomicPtr.loadVolatile(order: Ordering): MutPtr {
     // SAFETY: follows from our own safety requirements.
-    return atomicLoad(this.cast(), order, true)
+    return atomicLoad(this.cast(), order, true, typeLayoutT = this.v.value.fieldLayout)
 }
 
 // even without panics, this helps for Miri backtraces
@@ -1934,7 +1935,7 @@ public fun AtomicPtr.store(ptr: MutPtr, order: Ordering) {
 public fun AtomicPtr.storeVolatile(ptr: MutPtr, order: Ordering) {
     // SAFETY: follows from our own safety requirements.
     run {
-        atomicStore(this.cast().castMut(), ptr, order, true)
+        atomicStore(this.cast().castMut(), ptr, order, true, typeLayoutT = this.v.value.fieldLayout)
     }
 }
 
@@ -2712,7 +2713,7 @@ public class AtomicI8(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<A
     public companion object
 }
 
-public fun defaultAtomicI8(): AtomicI8 = AtomicI8.new(Default.default())
+public fun defaultAtomicI8(): AtomicI8 = AtomicI8.new(AtomicI8.default())
 
 public fun fromAtomicI8(v: Byte): AtomicI8 = AtomicI8.new(v)
 
@@ -2725,7 +2726,7 @@ public fun AtomicI8.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((
  *
  * ```kotlin
  */
-public fun AtomicI8.Companion.new(v: Byte): AtomicI8 = transmuteWithLayouts(v, PrimitiveLayouts.I8, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.I8, { ptr, layout -> Align1<Byte>(ptr, layout) }, { it.value }), 1L), { ptr, layout -> UnsafeCell<Align1<Byte>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicI8(ptr, layout) }, { it.v }))
+public fun AtomicI8.Companion.new(v: Byte): AtomicI8 = transmuteWithLayouts<Byte, AtomicI8>(v, PrimitiveLayouts.I8, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.I8, { ptr, layout -> Align1<Byte>(ptr, layout) }, { it.value }), 1L), { ptr, layout -> UnsafeCell<Align1<Byte>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicI8(ptr, layout) }, { it.v }))
 
 /**
  * Creates a new reference to an atomic integer from a pointer.
@@ -2734,19 +2735,19 @@ public fun AtomicI8.Companion.new(v: Byte): AtomicI8 = transmuteWithLayouts(v, P
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -2807,14 +2808,14 @@ public fun AtomicI8.Companion.fromMut(v: RustMutableReference<Byte>): AtomicI8 =
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicI8.Companion.getMutSlice(thisRef: MutableList<AtomicI8>): MutableList<Byte> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Byte>>())
@@ -2823,14 +2824,14 @@ public fun AtomicI8.Companion.getMutSlice(thisRef: MutableList<AtomicI8>): Mutab
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicI8.Companion.fromMutSlice(v: MutableList<Byte>): MutableList<AtomicI8> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicI8>>())
@@ -2846,7 +2847,7 @@ public fun AtomicI8.Companion.fromMutSlice(v: MutableList<Byte>): MutableList<At
  * assertEq(someVar.intoInner(), 5);
  * ```kotlin
  */
-public fun AtomicI8.intoInner(): Byte = transmute(this)
+public fun AtomicI8.intoInner(): Byte = transmuteWithLayouts<AtomicI8, Byte>(this, UnresolvedTypeLayout<AtomicI8>(), PrimitiveLayouts.I8)
 
 /**
  * Loads a value from the atomic integer.
@@ -2889,7 +2890,7 @@ public fun AtomicI8.load(order: Ordering): Byte = atomicLoad((this.asPtr()).asCo
  *
  * Panics if `order` is [Release] or [AcqRel].
  */
-public fun AtomicI8.loadVolatile(order: Ordering): Byte = atomicLoad(this.cast(), order, true)
+public fun AtomicI8.loadVolatile(order: Ordering): Byte = atomicLoad(this.cast(), order, true, typeLayoutT = PrimitiveLayouts.I8)
 
 /**
  * Stores a value into the atomic integer.
@@ -2936,7 +2937,7 @@ public fun AtomicI8.store(value: Byte, order: Ordering) {
  */
 public fun AtomicI8.storeVolatile(value: Byte, order: Ordering) {
     run {
-        atomicStore(this.cast().castMut(), value, order, true)
+        atomicStore(this.cast().castMut(), value, order, true, typeLayoutT = PrimitiveLayouts.I8)
     }
 }
 
@@ -3086,13 +3087,13 @@ public fun AtomicI8.compareExchange(current: Byte, new: Byte, success: Ordering,
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -3469,7 +3470,7 @@ public class AtomicU8(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<A
     public companion object
 }
 
-public fun defaultAtomicU8(): AtomicU8 = AtomicU8.new(Default.default())
+public fun defaultAtomicU8(): AtomicU8 = AtomicU8.new(AtomicU8.default())
 
 public fun fromAtomicU8(v: UByte): AtomicU8 = AtomicU8.new(v)
 
@@ -3482,7 +3483,7 @@ public fun AtomicU8.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((
  *
  * ```kotlin
  */
-public fun AtomicU8.Companion.new(v: UByte): AtomicU8 = transmuteWithLayouts(v, PrimitiveLayouts.U8, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.U8, { ptr, layout -> Align1<UByte>(ptr, layout) }, { it.value }), 1L), { ptr, layout -> UnsafeCell<Align1<UByte>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicU8(ptr, layout) }, { it.v }))
+public fun AtomicU8.Companion.new(v: UByte): AtomicU8 = transmuteWithLayouts<UByte, AtomicU8>(v, PrimitiveLayouts.U8, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.U8, { ptr, layout -> Align1<UByte>(ptr, layout) }, { it.value }), 1L), { ptr, layout -> UnsafeCell<Align1<UByte>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicU8(ptr, layout) }, { it.v }))
 
 /**
  * Creates a new reference to an atomic integer from a pointer.
@@ -3491,19 +3492,19 @@ public fun AtomicU8.Companion.new(v: UByte): AtomicU8 = transmuteWithLayouts(v, 
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -3564,14 +3565,14 @@ public fun AtomicU8.Companion.fromMut(v: RustMutableReference<UByte>): AtomicU8 
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicU8.Companion.getMutSlice(thisRef: MutableList<AtomicU8>): MutableList<UByte> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<UByte>>())
@@ -3580,14 +3581,14 @@ public fun AtomicU8.Companion.getMutSlice(thisRef: MutableList<AtomicU8>): Mutab
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicU8.Companion.fromMutSlice(v: MutableList<UByte>): MutableList<AtomicU8> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicU8>>())
@@ -3603,7 +3604,7 @@ public fun AtomicU8.Companion.fromMutSlice(v: MutableList<UByte>): MutableList<A
  * assertEq(someVar.intoInner(), 5);
  * ```kotlin
  */
-public fun AtomicU8.intoInner(): UByte = transmute(this)
+public fun AtomicU8.intoInner(): UByte = transmuteWithLayouts<AtomicU8, UByte>(this, UnresolvedTypeLayout<AtomicU8>(), PrimitiveLayouts.U8)
 
 /**
  * Loads a value from the atomic integer.
@@ -3646,7 +3647,7 @@ public fun AtomicU8.load(order: Ordering): UByte = atomicLoad((this.asPtr()).asC
  *
  * Panics if `order` is [Release] or [AcqRel].
  */
-public fun AtomicU8.loadVolatile(order: Ordering): UByte = atomicLoad(this.cast(), order, true)
+public fun AtomicU8.loadVolatile(order: Ordering): UByte = atomicLoad(this.cast(), order, true, typeLayoutT = PrimitiveLayouts.U8)
 
 /**
  * Stores a value into the atomic integer.
@@ -3693,7 +3694,7 @@ public fun AtomicU8.store(value: UByte, order: Ordering) {
  */
 public fun AtomicU8.storeVolatile(value: UByte, order: Ordering) {
     run {
-        atomicStore(this.cast().castMut(), value, order, true)
+        atomicStore(this.cast().castMut(), value, order, true, typeLayoutT = PrimitiveLayouts.U8)
     }
 }
 
@@ -3843,13 +3844,13 @@ public fun AtomicU8.compareExchange(current: UByte, new: UByte, success: Orderin
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -4226,7 +4227,7 @@ public class AtomicI16(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<
     public companion object
 }
 
-public fun defaultAtomicI16(): AtomicI16 = AtomicI16.new(Default.default())
+public fun defaultAtomicI16(): AtomicI16 = AtomicI16.new(AtomicI16.default())
 
 public fun fromAtomicI16(v: Short): AtomicI16 = AtomicI16.new(v)
 
@@ -4239,7 +4240,7 @@ public fun AtomicI16.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(
  *
  * ```kotlin
  */
-public fun AtomicI16.Companion.new(v: Short): AtomicI16 = transmuteWithLayouts(v, PrimitiveLayouts.I16, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.I16, { ptr, layout -> Align2<Short>(ptr, layout) }, { it.value }), 2L), { ptr, layout -> UnsafeCell<Align2<Short>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicI16(ptr, layout) }, { it.v }))
+public fun AtomicI16.Companion.new(v: Short): AtomicI16 = transmuteWithLayouts<Short, AtomicI16>(v, PrimitiveLayouts.I16, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.I16, { ptr, layout -> Align2<Short>(ptr, layout) }, { it.value }), 2L), { ptr, layout -> UnsafeCell<Align2<Short>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicI16(ptr, layout) }, { it.v }))
 
 /**
  * Creates a new reference to an atomic integer from a pointer.
@@ -4248,19 +4249,19 @@ public fun AtomicI16.Companion.new(v: Short): AtomicI16 = transmuteWithLayouts(v
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -4321,14 +4322,14 @@ public fun AtomicI16.Companion.fromMut(v: RustMutableReference<Short>): AtomicI1
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicI16.Companion.getMutSlice(thisRef: MutableList<AtomicI16>): MutableList<Short> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Short>>())
@@ -4337,14 +4338,14 @@ public fun AtomicI16.Companion.getMutSlice(thisRef: MutableList<AtomicI16>): Mut
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicI16.Companion.fromMutSlice(v: MutableList<Short>): MutableList<AtomicI16> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicI16>>())
@@ -4360,7 +4361,7 @@ public fun AtomicI16.Companion.fromMutSlice(v: MutableList<Short>): MutableList<
  * assertEq(someVar.intoInner(), 5);
  * ```kotlin
  */
-public fun AtomicI16.intoInner(): Short = transmute(this)
+public fun AtomicI16.intoInner(): Short = transmuteWithLayouts<AtomicI16, Short>(this, UnresolvedTypeLayout<AtomicI16>(), PrimitiveLayouts.I16)
 
 /**
  * Loads a value from the atomic integer.
@@ -4403,7 +4404,7 @@ public fun AtomicI16.load(order: Ordering): Short = atomicLoad((this.asPtr()).as
  *
  * Panics if `order` is [Release] or [AcqRel].
  */
-public fun AtomicI16.loadVolatile(order: Ordering): Short = atomicLoad(this.cast(), order, true)
+public fun AtomicI16.loadVolatile(order: Ordering): Short = atomicLoad(this.cast(), order, true, typeLayoutT = PrimitiveLayouts.I16)
 
 /**
  * Stores a value into the atomic integer.
@@ -4450,7 +4451,7 @@ public fun AtomicI16.store(value: Short, order: Ordering) {
  */
 public fun AtomicI16.storeVolatile(value: Short, order: Ordering) {
     run {
-        atomicStore(this.cast().castMut(), value, order, true)
+        atomicStore(this.cast().castMut(), value, order, true, typeLayoutT = PrimitiveLayouts.I16)
     }
 }
 
@@ -4600,13 +4601,13 @@ public fun AtomicI16.compareExchange(current: Short, new: Short, success: Orderi
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -4983,7 +4984,7 @@ public class AtomicU16(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<
     public companion object
 }
 
-public fun defaultAtomicU16(): AtomicU16 = AtomicU16.new(Default.default())
+public fun defaultAtomicU16(): AtomicU16 = AtomicU16.new(AtomicU16.default())
 
 public fun fromAtomicU16(v: UShort): AtomicU16 = AtomicU16.new(v)
 
@@ -4996,7 +4997,7 @@ public fun AtomicU16.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(
  *
  * ```kotlin
  */
-public fun AtomicU16.Companion.new(v: UShort): AtomicU16 = transmuteWithLayouts(v, PrimitiveLayouts.U16, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.U16, { ptr, layout -> Align2<UShort>(ptr, layout) }, { it.value }), 2L), { ptr, layout -> UnsafeCell<Align2<UShort>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicU16(ptr, layout) }, { it.v }))
+public fun AtomicU16.Companion.new(v: UShort): AtomicU16 = transmuteWithLayouts<UShort, AtomicU16>(v, PrimitiveLayouts.U16, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.U16, { ptr, layout -> Align2<UShort>(ptr, layout) }, { it.value }), 2L), { ptr, layout -> UnsafeCell<Align2<UShort>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicU16(ptr, layout) }, { it.v }))
 
 /**
  * Creates a new reference to an atomic integer from a pointer.
@@ -5005,19 +5006,19 @@ public fun AtomicU16.Companion.new(v: UShort): AtomicU16 = transmuteWithLayouts(
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -5078,14 +5079,14 @@ public fun AtomicU16.Companion.fromMut(v: RustMutableReference<UShort>): AtomicU
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicU16.Companion.getMutSlice(thisRef: MutableList<AtomicU16>): MutableList<UShort> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<UShort>>())
@@ -5094,14 +5095,14 @@ public fun AtomicU16.Companion.getMutSlice(thisRef: MutableList<AtomicU16>): Mut
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicU16.Companion.fromMutSlice(v: MutableList<UShort>): MutableList<AtomicU16> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicU16>>())
@@ -5117,7 +5118,7 @@ public fun AtomicU16.Companion.fromMutSlice(v: MutableList<UShort>): MutableList
  * assertEq(someVar.intoInner(), 5);
  * ```kotlin
  */
-public fun AtomicU16.intoInner(): UShort = transmute(this)
+public fun AtomicU16.intoInner(): UShort = transmuteWithLayouts<AtomicU16, UShort>(this, UnresolvedTypeLayout<AtomicU16>(), PrimitiveLayouts.U16)
 
 /**
  * Loads a value from the atomic integer.
@@ -5160,7 +5161,7 @@ public fun AtomicU16.load(order: Ordering): UShort = atomicLoad((this.asPtr()).a
  *
  * Panics if `order` is [Release] or [AcqRel].
  */
-public fun AtomicU16.loadVolatile(order: Ordering): UShort = atomicLoad(this.cast(), order, true)
+public fun AtomicU16.loadVolatile(order: Ordering): UShort = atomicLoad(this.cast(), order, true, typeLayoutT = PrimitiveLayouts.U16)
 
 /**
  * Stores a value into the atomic integer.
@@ -5207,7 +5208,7 @@ public fun AtomicU16.store(value: UShort, order: Ordering) {
  */
 public fun AtomicU16.storeVolatile(value: UShort, order: Ordering) {
     run {
-        atomicStore(this.cast().castMut(), value, order, true)
+        atomicStore(this.cast().castMut(), value, order, true, typeLayoutT = PrimitiveLayouts.U16)
     }
 }
 
@@ -5357,13 +5358,13 @@ public fun AtomicU16.compareExchange(current: UShort, new: UShort, success: Orde
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -5740,7 +5741,7 @@ public class AtomicI32(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<
     public companion object
 }
 
-public fun defaultAtomicI32(): AtomicI32 = AtomicI32.new(Default.default())
+public fun defaultAtomicI32(): AtomicI32 = AtomicI32.new(AtomicI32.default())
 
 public fun fromAtomicI32(v: Int): AtomicI32 = AtomicI32.new(v)
 
@@ -5753,7 +5754,7 @@ public fun AtomicI32.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(
  *
  * ```kotlin
  */
-public fun AtomicI32.Companion.new(v: Int): AtomicI32 = transmuteWithLayouts(v, PrimitiveLayouts.I32, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.I32, { ptr, layout -> Align4<Int>(ptr, layout) }, { it.value }), 4L), { ptr, layout -> UnsafeCell<Align4<Int>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicI32(ptr, layout) }, { it.v }))
+public fun AtomicI32.Companion.new(v: Int): AtomicI32 = transmuteWithLayouts<Int, AtomicI32>(v, PrimitiveLayouts.I32, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.I32, { ptr, layout -> Align4<Int>(ptr, layout) }, { it.value }), 4L), { ptr, layout -> UnsafeCell<Align4<Int>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicI32(ptr, layout) }, { it.v }))
 
 /**
  * Creates a new reference to an atomic integer from a pointer.
@@ -5762,19 +5763,19 @@ public fun AtomicI32.Companion.new(v: Int): AtomicI32 = transmuteWithLayouts(v, 
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -5835,14 +5836,14 @@ public fun AtomicI32.Companion.fromMut(v: RustMutableReference<Int>): AtomicI32 
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicI32.Companion.getMutSlice(thisRef: MutableList<AtomicI32>): MutableList<Int> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Int>>())
@@ -5851,14 +5852,14 @@ public fun AtomicI32.Companion.getMutSlice(thisRef: MutableList<AtomicI32>): Mut
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicI32.Companion.fromMutSlice(v: MutableList<Int>): MutableList<AtomicI32> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicI32>>())
@@ -5874,7 +5875,7 @@ public fun AtomicI32.Companion.fromMutSlice(v: MutableList<Int>): MutableList<At
  * assertEq(someVar.intoInner(), 5);
  * ```kotlin
  */
-public fun AtomicI32.intoInner(): Int = transmute(this)
+public fun AtomicI32.intoInner(): Int = transmuteWithLayouts<AtomicI32, Int>(this, UnresolvedTypeLayout<AtomicI32>(), PrimitiveLayouts.I32)
 
 /**
  * Loads a value from the atomic integer.
@@ -5917,7 +5918,7 @@ public fun AtomicI32.load(order: Ordering): Int = atomicLoad((this.asPtr()).asCo
  *
  * Panics if `order` is [Release] or [AcqRel].
  */
-public fun AtomicI32.loadVolatile(order: Ordering): Int = atomicLoad(this.cast(), order, true)
+public fun AtomicI32.loadVolatile(order: Ordering): Int = atomicLoad(this.cast(), order, true, typeLayoutT = PrimitiveLayouts.I32)
 
 /**
  * Stores a value into the atomic integer.
@@ -5964,7 +5965,7 @@ public fun AtomicI32.store(value: Int, order: Ordering) {
  */
 public fun AtomicI32.storeVolatile(value: Int, order: Ordering) {
     run {
-        atomicStore(this.cast().castMut(), value, order, true)
+        atomicStore(this.cast().castMut(), value, order, true, typeLayoutT = PrimitiveLayouts.I32)
     }
 }
 
@@ -6114,13 +6115,13 @@ public fun AtomicI32.compareExchange(current: Int, new: Int, success: Ordering, 
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -6497,7 +6498,7 @@ public class AtomicU32(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<
     public companion object
 }
 
-public fun defaultAtomicU32(): AtomicU32 = AtomicU32.new(Default.default())
+public fun defaultAtomicU32(): AtomicU32 = AtomicU32.new(AtomicU32.default())
 
 public fun fromAtomicU32(v: UInt): AtomicU32 = AtomicU32.new(v)
 
@@ -6510,7 +6511,7 @@ public fun AtomicU32.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(
  *
  * ```kotlin
  */
-public fun AtomicU32.Companion.new(v: UInt): AtomicU32 = transmuteWithLayouts(v, PrimitiveLayouts.U32, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.U32, { ptr, layout -> Align4<UInt>(ptr, layout) }, { it.value }), 4L), { ptr, layout -> UnsafeCell<Align4<UInt>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicU32(ptr, layout) }, { it.v }))
+public fun AtomicU32.Companion.new(v: UInt): AtomicU32 = transmuteWithLayouts<UInt, AtomicU32>(v, PrimitiveLayouts.U32, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.U32, { ptr, layout -> Align4<UInt>(ptr, layout) }, { it.value }), 4L), { ptr, layout -> UnsafeCell<Align4<UInt>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicU32(ptr, layout) }, { it.v }))
 
 /**
  * Creates a new reference to an atomic integer from a pointer.
@@ -6519,19 +6520,19 @@ public fun AtomicU32.Companion.new(v: UInt): AtomicU32 = transmuteWithLayouts(v,
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -6592,14 +6593,14 @@ public fun AtomicU32.Companion.fromMut(v: RustMutableReference<UInt>): AtomicU32
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicU32.Companion.getMutSlice(thisRef: MutableList<AtomicU32>): MutableList<UInt> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<UInt>>())
@@ -6608,14 +6609,14 @@ public fun AtomicU32.Companion.getMutSlice(thisRef: MutableList<AtomicU32>): Mut
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicU32.Companion.fromMutSlice(v: MutableList<UInt>): MutableList<AtomicU32> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicU32>>())
@@ -6631,7 +6632,7 @@ public fun AtomicU32.Companion.fromMutSlice(v: MutableList<UInt>): MutableList<A
  * assertEq(someVar.intoInner(), 5);
  * ```kotlin
  */
-public fun AtomicU32.intoInner(): UInt = transmute(this)
+public fun AtomicU32.intoInner(): UInt = transmuteWithLayouts<AtomicU32, UInt>(this, UnresolvedTypeLayout<AtomicU32>(), PrimitiveLayouts.U32)
 
 /**
  * Loads a value from the atomic integer.
@@ -6674,7 +6675,7 @@ public fun AtomicU32.load(order: Ordering): UInt = atomicLoad((this.asPtr()).asC
  *
  * Panics if `order` is [Release] or [AcqRel].
  */
-public fun AtomicU32.loadVolatile(order: Ordering): UInt = atomicLoad(this.cast(), order, true)
+public fun AtomicU32.loadVolatile(order: Ordering): UInt = atomicLoad(this.cast(), order, true, typeLayoutT = PrimitiveLayouts.U32)
 
 /**
  * Stores a value into the atomic integer.
@@ -6721,7 +6722,7 @@ public fun AtomicU32.store(value: UInt, order: Ordering) {
  */
 public fun AtomicU32.storeVolatile(value: UInt, order: Ordering) {
     run {
-        atomicStore(this.cast().castMut(), value, order, true)
+        atomicStore(this.cast().castMut(), value, order, true, typeLayoutT = PrimitiveLayouts.U32)
     }
 }
 
@@ -6871,13 +6872,13 @@ public fun AtomicU32.compareExchange(current: UInt, new: UInt, success: Ordering
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -7254,7 +7255,7 @@ public class AtomicI64(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<
     public companion object
 }
 
-public fun defaultAtomicI64(): AtomicI64 = AtomicI64.new(Default.default())
+public fun defaultAtomicI64(): AtomicI64 = AtomicI64.new(AtomicI64.default())
 
 public fun fromAtomicI64(v: Long): AtomicI64 = AtomicI64.new(v)
 
@@ -7267,7 +7268,7 @@ public fun AtomicI64.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(
  *
  * ```kotlin
  */
-public fun AtomicI64.Companion.new(v: Long): AtomicI64 = transmuteWithLayouts(v, PrimitiveLayouts.I64, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.I64, { ptr, layout -> Align8<Long>(ptr, layout) }, { it.value }), 8L), { ptr, layout -> UnsafeCell<Align8<Long>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicI64(ptr, layout) }, { it.v }))
+public fun AtomicI64.Companion.new(v: Long): AtomicI64 = transmuteWithLayouts<Long, AtomicI64>(v, PrimitiveLayouts.I64, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.I64, { ptr, layout -> Align8<Long>(ptr, layout) }, { it.value }), 8L), { ptr, layout -> UnsafeCell<Align8<Long>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicI64(ptr, layout) }, { it.v }))
 
 /**
  * Creates a new reference to an atomic integer from a pointer.
@@ -7276,19 +7277,19 @@ public fun AtomicI64.Companion.new(v: Long): AtomicI64 = transmuteWithLayouts(v,
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -7349,14 +7350,14 @@ public fun AtomicI64.Companion.fromMut(v: RustMutableReference<Long>): AtomicI64
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicI64.Companion.getMutSlice(thisRef: MutableList<AtomicI64>): MutableList<Long> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Long>>())
@@ -7365,14 +7366,14 @@ public fun AtomicI64.Companion.getMutSlice(thisRef: MutableList<AtomicI64>): Mut
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicI64.Companion.fromMutSlice(v: MutableList<Long>): MutableList<AtomicI64> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicI64>>())
@@ -7388,7 +7389,7 @@ public fun AtomicI64.Companion.fromMutSlice(v: MutableList<Long>): MutableList<A
  * assertEq(someVar.intoInner(), 5);
  * ```kotlin
  */
-public fun AtomicI64.intoInner(): Long = transmute(this)
+public fun AtomicI64.intoInner(): Long = transmuteWithLayouts<AtomicI64, Long>(this, UnresolvedTypeLayout<AtomicI64>(), PrimitiveLayouts.I64)
 
 /**
  * Loads a value from the atomic integer.
@@ -7431,7 +7432,7 @@ public fun AtomicI64.load(order: Ordering): Long = atomicLoad((this.asPtr()).asC
  *
  * Panics if `order` is [Release] or [AcqRel].
  */
-public fun AtomicI64.loadVolatile(order: Ordering): Long = atomicLoad(this.cast(), order, true)
+public fun AtomicI64.loadVolatile(order: Ordering): Long = atomicLoad(this.cast(), order, true, typeLayoutT = PrimitiveLayouts.I64)
 
 /**
  * Stores a value into the atomic integer.
@@ -7478,7 +7479,7 @@ public fun AtomicI64.store(value: Long, order: Ordering) {
  */
 public fun AtomicI64.storeVolatile(value: Long, order: Ordering) {
     run {
-        atomicStore(this.cast().castMut(), value, order, true)
+        atomicStore(this.cast().castMut(), value, order, true, typeLayoutT = PrimitiveLayouts.I64)
     }
 }
 
@@ -7628,13 +7629,13 @@ public fun AtomicI64.compareExchange(current: Long, new: Long, success: Ordering
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -8011,7 +8012,7 @@ public class AtomicU64(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<
     public companion object
 }
 
-public fun defaultAtomicU64(): AtomicU64 = AtomicU64.new(Default.default())
+public fun defaultAtomicU64(): AtomicU64 = AtomicU64.new(AtomicU64.default())
 
 public fun fromAtomicU64(v: ULong): AtomicU64 = AtomicU64.new(v)
 
@@ -8024,7 +8025,7 @@ public fun AtomicU64.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(
  *
  * ```kotlin
  */
-public fun AtomicU64.Companion.new(v: ULong): AtomicU64 = transmuteWithLayouts(v, PrimitiveLayouts.U64, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.U64, { ptr, layout -> Align8<ULong>(ptr, layout) }, { it.value }), 8L), { ptr, layout -> UnsafeCell<Align8<ULong>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicU64(ptr, layout) }, { it.v }))
+public fun AtomicU64.Companion.new(v: ULong): AtomicU64 = transmuteWithLayouts<ULong, AtomicU64>(v, PrimitiveLayouts.U64, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.U64, { ptr, layout -> Align8<ULong>(ptr, layout) }, { it.value }), 8L), { ptr, layout -> UnsafeCell<Align8<ULong>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicU64(ptr, layout) }, { it.v }))
 
 /**
  * Creates a new reference to an atomic integer from a pointer.
@@ -8033,19 +8034,19 @@ public fun AtomicU64.Companion.new(v: ULong): AtomicU64 = transmuteWithLayouts(v
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -8106,14 +8107,14 @@ public fun AtomicU64.Companion.fromMut(v: RustMutableReference<ULong>): AtomicU6
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicU64.Companion.getMutSlice(thisRef: MutableList<AtomicU64>): MutableList<ULong> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<ULong>>())
@@ -8122,14 +8123,14 @@ public fun AtomicU64.Companion.getMutSlice(thisRef: MutableList<AtomicU64>): Mut
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicU64.Companion.fromMutSlice(v: MutableList<ULong>): MutableList<AtomicU64> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicU64>>())
@@ -8145,7 +8146,7 @@ public fun AtomicU64.Companion.fromMutSlice(v: MutableList<ULong>): MutableList<
  * assertEq(someVar.intoInner(), 5);
  * ```kotlin
  */
-public fun AtomicU64.intoInner(): ULong = transmute(this)
+public fun AtomicU64.intoInner(): ULong = transmuteWithLayouts<AtomicU64, ULong>(this, UnresolvedTypeLayout<AtomicU64>(), PrimitiveLayouts.U64)
 
 /**
  * Loads a value from the atomic integer.
@@ -8188,7 +8189,7 @@ public fun AtomicU64.load(order: Ordering): ULong = atomicLoad((this.asPtr()).as
  *
  * Panics if `order` is [Release] or [AcqRel].
  */
-public fun AtomicU64.loadVolatile(order: Ordering): ULong = atomicLoad(this.cast(), order, true)
+public fun AtomicU64.loadVolatile(order: Ordering): ULong = atomicLoad(this.cast(), order, true, typeLayoutT = PrimitiveLayouts.U64)
 
 /**
  * Stores a value into the atomic integer.
@@ -8235,7 +8236,7 @@ public fun AtomicU64.store(value: ULong, order: Ordering) {
  */
 public fun AtomicU64.storeVolatile(value: ULong, order: Ordering) {
     run {
-        atomicStore(this.cast().castMut(), value, order, true)
+        atomicStore(this.cast().castMut(), value, order, true, typeLayoutT = PrimitiveLayouts.U64)
     }
 }
 
@@ -8385,13 +8386,13 @@ public fun AtomicU64.compareExchange(current: ULong, new: ULong, success: Orderi
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -8768,7 +8769,7 @@ public class AtomicI128(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell
     public companion object
 }
 
-public fun defaultAtomicI128(): AtomicI128 = AtomicI128.new(Default.default())
+public fun defaultAtomicI128(): AtomicI128 = AtomicI128.new(AtomicI128.default())
 
 public fun fromAtomicI128(v: I128): AtomicI128 = AtomicI128.new(v)
 
@@ -8781,7 +8782,7 @@ public fun AtomicI128.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append
  *
  * ```kotlin
  */
-public fun AtomicI128.Companion.new(v: I128): AtomicI128 = transmuteWithLayouts(v, PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }), TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }), { ptr, layout -> Align16<I128>(ptr, layout) }, { it.value }), 16L), { ptr, layout -> UnsafeCell<Align16<I128>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicI128(ptr, layout) }, { it.v }))
+public fun AtomicI128.Companion.new(v: I128): AtomicI128 = transmuteWithLayouts<I128, AtomicI128>(v, PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }), TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }), { ptr, layout -> Align16<I128>(ptr, layout) }, { it.value }), 16L), { ptr, layout -> UnsafeCell<Align16<I128>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicI128(ptr, layout) }, { it.v }))
 
 /**
  * Creates a new reference to an atomic integer from a pointer.
@@ -8790,19 +8791,19 @@ public fun AtomicI128.Companion.new(v: I128): AtomicI128 = transmuteWithLayouts(
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -8863,14 +8864,14 @@ public fun AtomicI128.Companion.fromMut(v: RustMutableReference<I128>): AtomicI1
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicI128.Companion.getMutSlice(thisRef: MutableList<AtomicI128>): MutableList<I128> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<I128>>())
@@ -8879,14 +8880,14 @@ public fun AtomicI128.Companion.getMutSlice(thisRef: MutableList<AtomicI128>): M
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicI128.Companion.fromMutSlice(v: MutableList<I128>): MutableList<AtomicI128> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicI128>>())
@@ -8902,7 +8903,7 @@ public fun AtomicI128.Companion.fromMutSlice(v: MutableList<I128>): MutableList<
  * assertEq(someVar.intoInner(), 5);
  * ```kotlin
  */
-public fun AtomicI128.intoInner(): I128 = transmute(this)
+public fun AtomicI128.intoInner(): I128 = transmuteWithLayouts<AtomicI128, I128>(this, UnresolvedTypeLayout<AtomicI128>(), PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 
 /**
  * Loads a value from the atomic integer.
@@ -8945,7 +8946,7 @@ public fun AtomicI128.load(order: Ordering): I128 = atomicLoad((this.asPtr()).as
  *
  * Panics if `order` is [Release] or [AcqRel].
  */
-public fun AtomicI128.loadVolatile(order: Ordering): I128 = atomicLoad(this.cast(), order, true)
+public fun AtomicI128.loadVolatile(order: Ordering): I128 = atomicLoad(this.cast(), order, true, typeLayoutT = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 
 /**
  * Stores a value into the atomic integer.
@@ -8992,7 +8993,7 @@ public fun AtomicI128.store(value: I128, order: Ordering) {
  */
 public fun AtomicI128.storeVolatile(value: I128, order: Ordering) {
     run {
-        atomicStore(this.cast().castMut(), value, order, true)
+        atomicStore(this.cast().castMut(), value, order, true, typeLayoutT = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
     }
 }
 
@@ -9142,13 +9143,13 @@ public fun AtomicI128.compareExchange(current: I128, new: I128, success: Orderin
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -9525,7 +9526,7 @@ public class AtomicU128(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell
     public companion object
 }
 
-public fun defaultAtomicU128(): AtomicU128 = AtomicU128.new(Default.default())
+public fun defaultAtomicU128(): AtomicU128 = AtomicU128.new(AtomicU128.default())
 
 public fun fromAtomicU128(v: U128): AtomicU128 = AtomicU128.new(v)
 
@@ -9538,7 +9539,7 @@ public fun AtomicU128.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append
  *
  * ```kotlin
  */
-public fun AtomicU128.Companion.new(v: U128): AtomicU128 = transmuteWithLayouts(v, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), { ptr, layout -> Align16<U128>(ptr, layout) }, { it.value }), 16L), { ptr, layout -> UnsafeCell<Align16<U128>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicU128(ptr, layout) }, { it.v }))
+public fun AtomicU128.Companion.new(v: U128): AtomicU128 = transmuteWithLayouts<U128, AtomicU128>(v, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), { ptr, layout -> Align16<U128>(ptr, layout) }, { it.value }), 16L), { ptr, layout -> UnsafeCell<Align16<U128>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicU128(ptr, layout) }, { it.v }))
 
 /**
  * Creates a new reference to an atomic integer from a pointer.
@@ -9547,19 +9548,19 @@ public fun AtomicU128.Companion.new(v: U128): AtomicU128 = transmuteWithLayouts(
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -9620,14 +9621,14 @@ public fun AtomicU128.Companion.fromMut(v: RustMutableReference<U128>): AtomicU1
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicU128.Companion.getMutSlice(thisRef: MutableList<AtomicU128>): MutableList<U128> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<U128>>())
@@ -9636,14 +9637,14 @@ public fun AtomicU128.Companion.getMutSlice(thisRef: MutableList<AtomicU128>): M
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicU128.Companion.fromMutSlice(v: MutableList<U128>): MutableList<AtomicU128> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicU128>>())
@@ -9659,7 +9660,7 @@ public fun AtomicU128.Companion.fromMutSlice(v: MutableList<U128>): MutableList<
  * assertEq(someVar.intoInner(), 5);
  * ```kotlin
  */
-public fun AtomicU128.intoInner(): U128 = transmute(this)
+public fun AtomicU128.intoInner(): U128 = transmuteWithLayouts<AtomicU128, U128>(this, UnresolvedTypeLayout<AtomicU128>(), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 
 /**
  * Loads a value from the atomic integer.
@@ -9702,7 +9703,7 @@ public fun AtomicU128.load(order: Ordering): U128 = atomicLoad((this.asPtr()).as
  *
  * Panics if `order` is [Release] or [AcqRel].
  */
-public fun AtomicU128.loadVolatile(order: Ordering): U128 = atomicLoad(this.cast(), order, true)
+public fun AtomicU128.loadVolatile(order: Ordering): U128 = atomicLoad(this.cast(), order, true, typeLayoutT = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 
 /**
  * Stores a value into the atomic integer.
@@ -9749,7 +9750,7 @@ public fun AtomicU128.store(value: U128, order: Ordering) {
  */
 public fun AtomicU128.storeVolatile(value: U128, order: Ordering) {
     run {
-        atomicStore(this.cast().castMut(), value, order, true)
+        atomicStore(this.cast().castMut(), value, order, true, typeLayoutT = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
     }
 }
 
@@ -9899,13 +9900,13 @@ public fun AtomicU128.compareExchange(current: U128, new: U128, success: Orderin
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -10282,7 +10283,7 @@ public class AtomicIsize(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCel
     public companion object
 }
 
-public fun defaultAtomicIsize(): AtomicIsize = AtomicIsize.new(Default.default())
+public fun defaultAtomicIsize(): AtomicIsize = AtomicIsize.new(AtomicIsize.default())
 
 public fun fromAtomicIsize(v: Int): AtomicIsize = AtomicIsize.new(v)
 
@@ -10295,7 +10296,7 @@ public fun AtomicIsize.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.appen
  *
  * ```kotlin
  */
-public fun AtomicIsize.Companion.new(v: Int): AtomicIsize = transmuteWithLayouts(v, PrimitiveLayouts.ISIZE64, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.ISIZE64, { ptr, layout -> Align8<Int>(ptr, layout) }, { it.value }), 8L), { ptr, layout -> UnsafeCell<Align8<Int>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicIsize(ptr, layout) }, { it.v }))
+public fun AtomicIsize.Companion.new(v: Int): AtomicIsize = transmuteWithLayouts<Int, AtomicIsize>(v, PrimitiveLayouts.ISIZE64, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.ISIZE64, { ptr, layout -> Align8<Int>(ptr, layout) }, { it.value }), 8L), { ptr, layout -> UnsafeCell<Align8<Int>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicIsize(ptr, layout) }, { it.v }))
 
 /**
  * Creates a new reference to an atomic integer from a pointer.
@@ -10304,19 +10305,19 @@ public fun AtomicIsize.Companion.new(v: Int): AtomicIsize = transmuteWithLayouts
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -10377,14 +10378,14 @@ public fun AtomicIsize.Companion.fromMut(v: RustMutableReference<Int>): AtomicIs
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicIsize.Companion.getMutSlice(thisRef: MutableList<AtomicIsize>): MutableList<Int> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Int>>())
@@ -10393,14 +10394,14 @@ public fun AtomicIsize.Companion.getMutSlice(thisRef: MutableList<AtomicIsize>):
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicIsize.Companion.fromMutSlice(v: MutableList<Int>): MutableList<AtomicIsize> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicIsize>>())
@@ -10416,7 +10417,7 @@ public fun AtomicIsize.Companion.fromMutSlice(v: MutableList<Int>): MutableList<
  * assertEq(someVar.intoInner(), 5);
  * ```kotlin
  */
-public fun AtomicIsize.intoInner(): Int = transmute(this)
+public fun AtomicIsize.intoInner(): Int = transmuteWithLayouts<AtomicIsize, Int>(this, UnresolvedTypeLayout<AtomicIsize>(), PrimitiveLayouts.ISIZE64)
 
 /**
  * Loads a value from the atomic integer.
@@ -10459,7 +10460,7 @@ public fun AtomicIsize.load(order: Ordering): Int = atomicLoad((this.asPtr()).as
  *
  * Panics if `order` is [Release] or [AcqRel].
  */
-public fun AtomicIsize.loadVolatile(order: Ordering): Int = atomicLoad(this.cast(), order, true)
+public fun AtomicIsize.loadVolatile(order: Ordering): Int = atomicLoad(this.cast(), order, true, typeLayoutT = PrimitiveLayouts.ISIZE64)
 
 /**
  * Stores a value into the atomic integer.
@@ -10506,7 +10507,7 @@ public fun AtomicIsize.store(value: Int, order: Ordering) {
  */
 public fun AtomicIsize.storeVolatile(value: Int, order: Ordering) {
     run {
-        atomicStore(this.cast().castMut(), value, order, true)
+        atomicStore(this.cast().castMut(), value, order, true, typeLayoutT = PrimitiveLayouts.ISIZE64)
     }
 }
 
@@ -10656,13 +10657,13 @@ public fun AtomicIsize.compareExchange(current: Int, new: Int, success: Ordering
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -11039,7 +11040,7 @@ public class AtomicUsize(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCel
     public companion object
 }
 
-public fun defaultAtomicUsize(): AtomicUsize = AtomicUsize.new(Default.default())
+public fun defaultAtomicUsize(): AtomicUsize = AtomicUsize.new(AtomicUsize.default())
 
 public fun fromAtomicUsize(v: Int): AtomicUsize = AtomicUsize.new(v)
 
@@ -11052,7 +11053,7 @@ public fun AtomicUsize.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.appen
  *
  * ```kotlin
  */
-public fun AtomicUsize.Companion.new(v: Int): AtomicUsize = transmuteWithLayouts(v, PrimitiveLayouts.USIZE64, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.USIZE64, { ptr, layout -> Align8<Int>(ptr, layout) }, { it.value }), 8L), { ptr, layout -> UnsafeCell<Align8<Int>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicUsize(ptr, layout) }, { it.v }))
+public fun AtomicUsize.Companion.new(v: Int): AtomicUsize = transmuteWithLayouts<Int, AtomicUsize>(v, PrimitiveLayouts.USIZE64, TransparentTypeLayout(TransparentTypeLayout(AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.USIZE64, { ptr, layout -> Align8<Int>(ptr, layout) }, { it.value }), 8L), { ptr, layout -> UnsafeCell<Align8<Int>>(ptr, layout) }, { it.value }), { ptr, layout -> AtomicUsize(ptr, layout) }, { it.v }))
 
 /**
  * Creates a new reference to an atomic integer from a pointer.
@@ -11061,19 +11062,19 @@ public fun AtomicUsize.Companion.new(v: Int): AtomicUsize = transmuteWithLayouts
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -11134,14 +11135,14 @@ public fun AtomicUsize.Companion.fromMut(v: RustMutableReference<Int>): AtomicUs
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicUsize.Companion.getMutSlice(thisRef: MutableList<AtomicUsize>): MutableList<Int> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Int>>())
@@ -11150,14 +11151,14 @@ public fun AtomicUsize.Companion.getMutSlice(thisRef: MutableList<AtomicUsize>):
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicUsize.Companion.fromMutSlice(v: MutableList<Int>): MutableList<AtomicUsize> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicUsize>>())
@@ -11173,7 +11174,7 @@ public fun AtomicUsize.Companion.fromMutSlice(v: MutableList<Int>): MutableList<
  * assertEq(someVar.intoInner(), 5);
  * ```kotlin
  */
-public fun AtomicUsize.intoInner(): Int = transmute(this)
+public fun AtomicUsize.intoInner(): Int = transmuteWithLayouts<AtomicUsize, Int>(this, UnresolvedTypeLayout<AtomicUsize>(), PrimitiveLayouts.USIZE64)
 
 /**
  * Loads a value from the atomic integer.
@@ -11216,7 +11217,7 @@ public fun AtomicUsize.load(order: Ordering): Int = atomicLoad((this.asPtr()).as
  *
  * Panics if `order` is [Release] or [AcqRel].
  */
-public fun AtomicUsize.loadVolatile(order: Ordering): Int = atomicLoad(this.cast(), order, true)
+public fun AtomicUsize.loadVolatile(order: Ordering): Int = atomicLoad(this.cast(), order, true, typeLayoutT = PrimitiveLayouts.USIZE64)
 
 /**
  * Stores a value into the atomic integer.
@@ -11263,7 +11264,7 @@ public fun AtomicUsize.store(value: Int, order: Ordering) {
  */
 public fun AtomicUsize.storeVolatile(value: Int, order: Ordering) {
     run {
-        atomicStore(this.cast().castMut(), value, order, true)
+        atomicStore(this.cast().castMut(), value, order, true, typeLayoutT = PrimitiveLayouts.USIZE64)
     }
 }
 
@@ -11413,13 +11414,13 @@ public fun AtomicUsize.compareExchange(current: Int, new: Int, success: Ordering
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -12129,12 +12130,12 @@ public fun <T> atomicUmin(dst: MutPtr, value: T, order: Ordering, typeLayoutT: T
  * An atomic operation on one thread will synchronize with a fence on another thread when:
  *
  * -   on thread 1:
- *     -   an atomic operation 'X' with (at least) [Release] ordering semantics on some atomic
- *         object 'm',
+ *     -   an atomic operation `X` with (at least) [Release] ordering semantics on some atomic
+ *         object `m`,
  *
  * -   is paired on thread 2 with:
- *     -   an atomic read 'Y' with any order on 'm',
- *     -   followed by a fence 'B' with (at least) [Acquire] ordering semantics.
+ *     -   an atomic read `Y` with any order on `m`,
+ *     -   followed by a fence `B` with (at least) [Acquire] ordering semantics.
  *
  * This provides a happens-before dependence between X and B.
  *
@@ -12155,11 +12156,11 @@ public fun <T> atomicUmin(dst: MutPtr, value: T, order: Ordering, typeLayoutT: T
  * A fence on one thread will synchronize with an atomic operation on another thread when:
  *
  * -   on thread:
- *     -   a fence 'A' with (at least) [Release] ordering semantics,
- *     -   followed by an atomic write 'X' with any ordering on some atomic object 'm',
+ *     -   a fence `A` with (at least) [Release] ordering semantics,
+ *     -   followed by an atomic write `X` with any ordering on some atomic object `m`,
  *
  * -   is paired on thread 2 with:
- *     -   an atomic operation 'Y' with (at least) [Acquire] ordering semantics.
+ *     -   an atomic operation `Y` with (at least) [Acquire] ordering semantics.
  *
  * This provides a happens-before dependence between A and Y.
  *
@@ -12180,12 +12181,12 @@ public fun <T> atomicUmin(dst: MutPtr, value: T, order: Ordering, typeLayoutT: T
  * A fence on one thread will synchronize with a fence on another thread when:
  *
  * -   on thread 1:
- *     -   a fence 'A' which has (at least) [Release] ordering semantics,
- *     -   followed by an atomic write 'X' with any ordering on some atomic object 'm',
+ *     -   a fence `A` which has (at least) [Release] ordering semantics,
+ *     -   followed by an atomic write `X` with any ordering on some atomic object `m`,
  *
  * -   is paired on thread 2 with:
- *     -   an atomic read 'Y' with any ordering on 'm',
- *     -   followed by a fence 'B' with (at least) [Acquire] ordering semantics.
+ *     -   an atomic read `Y` with any ordering on `m`,
+ *     -   followed by a fence `B` with (at least) [Acquire] ordering semantics.
  *
  * This provides a happens-before dependence between A and B.
  *

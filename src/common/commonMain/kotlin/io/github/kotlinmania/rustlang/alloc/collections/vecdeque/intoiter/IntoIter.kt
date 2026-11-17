@@ -90,7 +90,7 @@ public open class IntoIter<T, A : Allocator> internal constructor(
 
     public open fun count(): Int = this.inner.len
 
-    public open fun <B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<B> {
+    public open fun <Residual, B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<B> {
         var init1 = init
         open class Guard<T, A : Allocator>(
             public var deque: VecDeque<T, A>,
@@ -179,7 +179,7 @@ public open class IntoIter<T, A : Allocator> internal constructor(
         return ((NonZero.new<NonZeroUsizeInner, Int>(rem))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
-    public open fun <B, R> tryRfold(init: B, f: (B, T) -> R): R where R : Try<B> {
+    public open fun <Residual, B, R> tryRfold(init: B, f: (B, T) -> R): R where R : Try<B> {
         var init1 = init
         open class Guard<T, A : Allocator>(
             public var deque: VecDeque<T, A>,

@@ -431,7 +431,7 @@ public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTyp
             // which is tracked via `m` - when `m == 0`, we've written `mostSignificantBit(n)`
             // elements to the buffer.
             run {
-                copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (UnresolvedTypeLayout<*>()).strideBytes)), buf.size, typeLayoutT = typeLayoutT)
+                copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (typeLayoutT).strideBytes)), buf.size, typeLayoutT = typeLayoutT)
             }
             // `buf` has capacity of `self.len() * n`.
             val bufLen = buf.size
@@ -456,7 +456,7 @@ public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTyp
         // space with copies of the previous `len` elements.
         run {
             // This is non-overlapping since `2 ^ expn> rem`.
-            copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (UnresolvedTypeLayout<*>()).strideBytes)), remLen, typeLayoutT = typeLayoutT)
+            copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (typeLayoutT).strideBytes)), remLen, typeLayoutT = typeLayoutT)
             // `buf.len() + remLen` equals to `buf.capacity()` (`= self.len() * n`).
             buf.setLen(capacity)
         }
@@ -474,7 +474,7 @@ public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTyp
  * check(listOf(listOf(1, 2), listOf(3, 4)).concat() == listOf(1, 2, 3, 4))
  * ```
  */
-public fun <T, Item> List<T>.concat(): Output = Concat.Concat(this)
+public fun <Output, T, Item> List<T>.concat(): Output = Concat.Concat(this)
 
 /**
  * Flattens a slice of `T` into a single value `Self.Output`, placing a
@@ -488,7 +488,7 @@ public fun <T, Item> List<T>.concat(): Output = Concat.Concat(this)
  * check(listOf(listOf(1, 2), listOf(3, 4)).join(listOf(0, 0)) == listOf(1, 2, 0, 0, 3, 4))
  * ```
  */
-public fun <T, Separator> List<T>.join(sep: Separator): Output = Join.Join(this, sep)
+public fun <Output, T, Separator> List<T>.join(sep: Separator): Output = Join.Join(this, sep)
 
 /**
  * Flattens a slice of `T` into a single value `Self.Output`, placing a
@@ -501,13 +501,13 @@ public fun <T, Separator> List<T>.join(sep: Separator): Output = Join.Join(this,
  * check(listOf(listOf(1, 2), listOf(3, 4)).connect(0) == listOf(1, 2, 0, 3, 4))
  * ```
  */
-public fun <T, Separator> List<T>.connect(sep: Separator): Output = Join.Join(this, sep)
+public fun <Output, T, Separator> List<T>.connect(sep: Separator): Output = Join.Join(this, sep)
 
 /**
  * Returns a vector containing a copy of this slice where each byte
  * is mapped to its ASCII upper case equivalent.
  *
- * ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
+ * ASCII letters `a` to `z` are mapped to `A` to `Z`,
  * but non-ASCII letters are unchanged.
  *
  * To uppercase the value in-place, use [makeAsciiUppercase].
@@ -520,7 +520,7 @@ public fun List<UByte>.toAsciiUppercase(): List<UByte> = this.map({ b -> b.toAsc
  * Returns a vector containing a copy of this slice where each byte
  * is mapped to its ASCII lower case equivalent.
  *
- * ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
+ * ASCII letters `A` to `Z` are mapped to `a` to `z`,
  * but non-ASCII letters are unchanged.
  *
  * To lowercase the value in-place, use [makeAsciiLowercase].
@@ -544,7 +544,7 @@ public fun List<UByte>.toAsciiLowercase(): List<UByte> = this.map({ b -> b.toAsc
  * error[E0207]: the type parameter `T` is not constrained by the impl trait, self type, or predica
  * - -> library / alloc / src / slice.rs: 608: 6
  * |
- * 608 | impl<T: Clone, V: Borrow<[T]>> Concat for [V] {
+ * 608 | impl<T: Clone, V: Borrow<[T]>> Concat for [V] (
  * | ^ unconstrained type parameter
  * ```
  *

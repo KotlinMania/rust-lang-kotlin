@@ -6,6 +6,7 @@ package io.github.kotlinmania.rustlang.std.sys.io.error.unix
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -56,7 +57,6 @@ import io.github.kotlinmania.rustlang.libc.wasi.ETIMEDOUT
 import io.github.kotlinmania.rustlang.libc.wasi.ETXTBSY
 import io.github.kotlinmania.rustlang.libc.wasi.EWOULDBLOCK
 import io.github.kotlinmania.rustlang.libc.wasi.EXDEV
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.WouldBlock
 
 // SAFETY: this will always return the same pointer on a given thread.

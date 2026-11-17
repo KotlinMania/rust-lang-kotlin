@@ -34,7 +34,7 @@ public typealias Source<I> = I.Source
 public open class Take<I>(
     public var iter: I,
     public var n: Int,
-) : SourceIter<Source>, InPlaceIterable, TrustedFused, TrustedLen<Take<I>>, SpecTake<Take<I>>, Iterable<Item> {
+) : SourceIter<Source>, InPlaceIterable, TrustedFused, TrustedLen, SpecTake, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Take.next()) {
@@ -100,8 +100,8 @@ public open class Take<I>(
         return Pair(lower1, upper1)
     }
 
-    public override fun <Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
-        fun <T, Acc, R : Try<R, Acc, Any?>> check(n: RustMutableReference<Int>, fold1: (Acc, T) -> R): (Acc, T) -> ControlFlow<R, Acc> {
+    public override fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+        fun <Residual, T, Acc, R : Try<R, Acc, Residual>> check(n: RustMutableReference<Int>, fold1: (Acc, T) -> R): (Acc, T) -> ControlFlow<R, Acc> {
             val n1 = n
             return { acc, x ->
                 (n1).let { targetPlace -> var currentValue = targetPlace.read(); currentValue -= (1); targetPlace.write(currentValue) }
@@ -172,7 +172,7 @@ public open class Take<I>(
         }
     }
 
-    public open fun <Acc, R> tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> =
+    public open fun <Residual, Acc, R> tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> =
         if (this.n == 0) {
             init
         } else {
@@ -291,7 +291,7 @@ public open class Take<I>(
     }
 }
 
-public interface SpecTake<T> {
+public interface SpecTake {
     public fun <B> specFold(init: B, f: (B, Item) -> B): B
 
     public fun specForEach(f: (Item) -> Unit)
@@ -301,7 +301,7 @@ public fun <T> Take<Repeat<T>>.nextBack(): Item? = this.next()
 
 public fun <T> Take<Repeat<T>>.nthBack(n: Int): Item? = this.nth(n)
 
-public fun <T, Acc, R> Take<Repeat<T>>.tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> = this.tryFold(init, fold)
+public fun <Residual, T, Acc, R> Take<Repeat<T>>.tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.tryFold(init, fold)
 
 public fun <T, Acc> Take<Repeat<T>>.rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.fold(init, fold)
 

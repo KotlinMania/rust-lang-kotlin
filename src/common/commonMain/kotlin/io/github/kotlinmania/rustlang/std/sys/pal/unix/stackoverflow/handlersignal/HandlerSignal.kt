@@ -1,6 +1,7 @@
 // port-lint: source sys/pal/unix/stack_overflow/handler_signal.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlersignal
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
@@ -44,7 +45,6 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_READ
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_WRITE
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.MAP_STACK
 import io.github.kotlinmania.rustlang.libc.windows.SIGSEGV
-import io.github.kotlinmania.rustlang.std.io.Error
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.conf.pageSize
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.Handler

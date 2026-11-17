@@ -19,7 +19,7 @@ public fun pfeInvalid(): ParseFloatError = ParseFloatError(kind = FloatErrorKind
 /**
  * Converts a `BiasedFp` to the closest machine float type.
  */
-public fun <F : FloatExt<F>> biasedFpToFloat(x: BiasedFp, fromU64BitsFFn: (ULong) -> F): F {
+public fun <Int, F : FloatExt<F, Int>> biasedFpToFloat(x: BiasedFp, fromU64BitsFFn: (ULong) -> F): F {
     var word = x.m
     word = word or ((x.pBiased.toULong()) shl F.SIG_BITS.toInt())
     return fromU64BitsFFn(word)
@@ -30,7 +30,7 @@ public fun <F : FloatExt<F>> biasedFpToFloat(x: BiasedFp, fromU64BitsFFn: (ULong
 /**
  * Converts a decimal string into a floating point number.
  */
-public fun <F : Lemire<F>> dec2flt(s: String): Result<F, ParseFloatError> {
+public fun <Int, F : Lemire<F, Int>> dec2flt(s: String): Result<F, ParseFloatError> {
     val s1 = s
     var s2 = s1.encodeToByteArray().map { it.toUByte() }
     val c = s2.first() ?: return Result.Err<F, ParseFloatError>(pfeEmpty())

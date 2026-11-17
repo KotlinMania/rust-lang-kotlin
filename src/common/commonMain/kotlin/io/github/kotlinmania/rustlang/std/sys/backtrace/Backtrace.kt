@@ -80,7 +80,7 @@ public fun lock(): BacktraceLock {
  * This function is not Sync. The caller must hold a mutex lock, or there must be only one thread in the program.
  */
 public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
-    // Always 'fail' to get the cwd when running under Miri -
+    // Always `fail` to get the cwd when running under Miri -
     // this allows Miri to display backtraces in isolation mode
     val cwd =
         if (!false) {

@@ -80,18 +80,18 @@ public open class Inspect<I, F>(
 
     public open fun sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
 
-    public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, I.Item) -> R): R where R : Try<R, Acc, Any?> = this.iter.tryFold(init, inspectTryFold(this.f, fold))
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, inspectTryFold(this.f, fold))
 
-    public open fun <Acc> fold(init: Acc, fold: (Acc, I.Item) -> Acc): Acc = this.iter.fold(init, inspectFold(this.f, fold))
+    public open fun <Acc> fold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.iter.fold(init, inspectFold(this.f, fold))
 
     public open fun nextBack(): Item? {
         val next = this.iter.nextBack()
         return this.doInspect(next)
     }
 
-    public open fun <Acc, R> tryRfold(init: Acc, fold: (Acc, I.Item) -> R): R where R : Try<R, Acc, Any?> = this.iter.tryRfold(init, inspectTryFold(this.f, fold))
+    public open fun <Residual, Acc, R> tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, inspectTryFold(this.f, fold))
 
-    public open fun <Acc> rfold(init: Acc, fold: (Acc, I.Item) -> Acc): Acc = this.iter.rfold(init, inspectFold(this.f, fold))
+    public open fun <Acc> rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.iter.rfold(init, inspectFold(this.f, fold))
 
     public open fun len(): Int = this.iter.len()
 

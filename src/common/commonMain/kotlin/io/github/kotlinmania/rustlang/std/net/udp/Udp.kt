@@ -148,7 +148,7 @@ public open class UdpSocket(
      *
      * [Issue #34202]: https://github.com/rust-lang/rust/issues/34202
      */
-    public open fun <Iter, A : ToSocketAddrs<Any?>> sendTo(buf: List<UByte>, addr: A): Result<Int, Error> {
+    public open fun <Iter, A : ToSocketAddrs<Iter>> sendTo(buf: List<UByte>, addr: A): Result<Int, Error> {
         return when (val matchVal = when (val tryResult = addr.toSocketAddrs()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }.next()) {
             null -> Result.Err<Int, Error>(constError(ErrorKind.InvalidInput, "no addresses to send data to"))
             else -> {
@@ -666,7 +666,7 @@ public open class UdpSocket(
      * }
      * ```
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value.takeError()
 
     /**
      * Connects this UDP socket to a remote address, allowing the `send` and
@@ -702,7 +702,7 @@ public open class UdpSocket(
      * `connect`s to non-loopback addresses might fail, depending
      * on the platform.
      */
-    public open fun <Iter, A : ToSocketAddrs<Any?>> connect(addr: A): Result<Unit, Error> = this.value.connect(addr)
+    public open fun <Iter, A : ToSocketAddrs<Iter>> connect(addr: A): Result<Unit, Error> = this.value.connect(addr)
 
     /**
      * Sends data on the socket to the remote address to which it is connected.
@@ -922,7 +922,7 @@ public open class UdpSocket(
          * In order to limit your view of the network the least, `bind` to
          * [Ipv4Addr.Unspecified] or [Ipv6Addr.Unspecified].
          */
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(addr: A): Result<UdpSocket, Error> = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.UdpSocket.bind(addr).map({ UdpSocket(it) })
+        public fun <Iter, A : ToSocketAddrs<Iter>> bind(addr: A): Result<UdpSocket, Error> = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.UdpSocket.bind(addr).map({ UdpSocket(it) })
 
         public fun fromInner(inner: io.github.kotlinmania.rustlang.std.sys.net.connection.socket.UdpSocket): UdpSocket = UdpSocket(inner)
     }

@@ -16,10 +16,13 @@ import io.github.kotlinmania.rustlang.core.fmt.rt.Argument
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
+import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.str.asPtr
 import io.github.kotlinmania.rustlang.core.str.chars
@@ -378,7 +381,7 @@ public open class FormattingOptions(
             }
 
         /**
-         * Construct a new `FormattingOptions` representing the plain `{}` formatting specifier:
+         * Construct a new `FormattingOptions` representing the plain `()` formatting specifier:
          *
          * - no flags,
          * - filled with spaces,
@@ -496,23 +499,23 @@ public open class Formatter(
         val min = this.options.width
         return if (width >= Int.from(min)) {
             // We're over the minimum width, so then we can just write the bytes.
-            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
+            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
             this.buf.append(buf)
         } else if (this.signAwareZeroPad()) {
             // The sign and prefix goes before the padding if the fill character
             // is zero
             val oldOptions = this.options
             this.options.fill('0').align(Alignment.Right)
-            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
-            val postPadding = when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
+            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            val postPadding = when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
             this.buf.append(buf)
-            when (val tryResult = postPadding.write(this)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
+            when (val tryResult = postPadding.write(this)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
             this.options = oldOptions
             RustResult.Ok(Unit)
         } else {
             // Otherwise, the sign and prefix goes after the padding
-            val postPadding1 = when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
-            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
+            val postPadding1 = when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
             this.buf.append(buf)
             postPadding1.write(this)
         }
@@ -582,7 +585,7 @@ public open class Formatter(
         return if (charCount < Int.from(this.options.width)) {
             // If we're under the minimum width, then fill up the minimum width
             // with the specified string + some alignment.
-            val postPadding = when (val tryResult = this.padding(this.options.width - charCount.toUShort(), Alignment.Left)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
+            val postPadding = when (val tryResult = this.padding(this.options.width - charCount.toUShort(), Alignment.Left)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
             this.buf.append(s1)
             postPadding.write(this)
         } else {
@@ -663,10 +666,10 @@ public open class Formatter(
                                 error("unreachable")
                             } }
                         }
-                    val postPadding = when (val tryResult = this.padding(width - len2, Alignment.Right)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
+                    val postPadding = when (val tryResult = this.padding(width - len2, Alignment.Right)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
                     // SAFETY: Per the precondition.
                     run {
-                        when (val tryResult = this.writeFormattedParts(formatted1)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
+                        when (val tryResult = this.writeFormattedParts(formatted1)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
                     }
                     postPadding.write(this)
                 }
@@ -714,14 +717,14 @@ public open class Formatter(
                     }
                     // SAFETY: Per the precondition.
                     run {
-                        when (val tryResult = writeBytes(this.buf, s[0 until len])) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
+                        when (val tryResult = writeBytes(this.buf, s[0 until len])) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
                     }
                 }
                 // SAFETY: Per the precondition.
                 is numfmt.Part.Copy -> {
                     val (buf) = part
                     run {
-                        when (val tryResult = writeBytes(this.buf, buf)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
+                        when (val tryResult = writeBytes(this.buf, buf)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
                     }
                 }
             }
@@ -840,7 +843,7 @@ public open class Formatter(
     }
 
     /**
-     * Returns the character used as 'fill' whenever there is alignment.
+     * Returns the character used as `fill` whenever there is alignment.
      *
      * # Examples
      *
@@ -1180,7 +1183,7 @@ public open class Formatter(
      * Field names should be separated by space.
      */
     public open fun debugStructFieldsFinish(names: String, values: List<Debug>): Result {
-        // the macro generates either "Point x y" for a struct like `Point { x: UInt, y: UInt, }`
+        // the macro generates either "Point x y" for a struct like `Point ( x: UInt, y: UInt, )`
         // or just "Point" for a tuple struct like `Point(UInt, UInt)`. If there are no field names
         // (and therefore no space separator), we assume we format a tuple struct.
         // `.asBytes()` is to avoid bringing in UTF-8 code bloat
@@ -1417,7 +1420,7 @@ public open class Formatter(
 //
 // `fmt.Arguments.fromStr()` constructs this representation from a `String`.
 //
-// 2) Placeholders representation (e.g. formatArgs("hello {name}\n"))
+// 2) Placeholders representation (e.g. formatArgs("hello (name)\n"))
 // ┌────────────────────────────────┐
 // template: │           *const u8            │ ─▷ b"\x06hello \xC0\x01\n\x00"
 // ├────────────────────────────────┤
@@ -1436,7 +1439,7 @@ public open class Formatter(
 // The template byte sequence is the concatenation of parts of the following types:
 //
 // - Literal string piece:
-// Pieces that must be formatted verbatim (e.g. "hello " and "\n" in "hello {name}\n")
+// Pieces that must be formatted verbatim (e.g. "hello " and "\n" in "hello (name)\n")
 // appear literally in the template byte sequence, prefixed by their length.
 //
 // For pieces of up to 127 bytes, these are  represented as a single byte containing the
@@ -1454,7 +1457,7 @@ public open class Formatter(
 // Longer pieces are split into multiple pieces of max u16.Max bytes (at utf-8 boundaries).
 //
 // - Note:
-// Placeholders (e.g. `{ name }` in "hello {name}") are represented as a byte with the highest
+// Placeholders (e.g. `( name )` in "hello (name)") are represented as a byte with the highest
 // two bits set, followed by zero or more fields depending on the flags in the first byte:
 // ┌──────────┬┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┬┄┄┄┄┄┄┄┄┄┄┄┬┄┄┄┄┄┄┄┄┄┄┄┬┄┄┄┄┄┄┄┄┄┄┄┐
 // │0b11______│       flags       ┊   width   ┊ precision ┊ argIndex ┊ (e.g. b"\xC2\x05\0")
@@ -1616,7 +1619,7 @@ public open class Arguments internal constructor(
      *
      * However, the compiler may perform optimizations that can cause this
      * function to return `Some(_)` even if the format string contains
-     * placeholders. For example, `formatArgs("Hello, {}!", "world")` may be
+     * placeholders. For example, `formatArgs("Hello, ()!", "world")` may be
      * optimized to `formatArgs("Hello, world!")`, such that `asStr()`
      * returns `Some("Hello, world!")`.
      *
@@ -1655,7 +1658,7 @@ public open class Arguments internal constructor(
         // (I.e. only fmt.Arguments.fromStr is const, fmt.Arguments.new is not.)
         //
         // Outside const eval, transmuting a pointer to a Int is fine.
-        val bits: Int = transmute(this.args)
+        val bits: Int = transmuteWithLayouts<NonNull, Int>(this.args, UnresolvedTypeLayout<NonNull>(), UnresolvedTypeLayout<Int>())
         return if (bits and 1 == 1) {
             // SAFETY: This fmt.Arguments stores a &static str. See encoding documentation above.
             String.fromUtf8Unchecked(linearSliceView(this.template.asPtr(), (bits shr 1).toInt(), PrimitiveLayouts.U8))
@@ -1698,12 +1701,12 @@ public open class Arguments internal constructor(
         // fmt.Arguments, as documented above.
         public fun new(template: UByteArray, args: List<Argument>, n: Int, m: Int): Arguments {
             // SAFETY: Responsibility of the caller.
-            return Arguments(template = transmute(template), args = transmute(args))
+            return Arguments(template = transmuteWithLayouts<UByteArray, NonNull>(template, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<NonNull>()), args = transmuteWithLayouts<List<Argument>, NonNull>(args, UnresolvedTypeLayout<List<Argument>>(), UnresolvedTypeLayout<NonNull>()))
         }
 
         // Same as `fromStr`, but not const.
         // Used by formatArgs() expansion when arguments are inlined,
-        // e.g. formatArgs("{}", 123), which is not allowed in const.
+        // e.g. formatArgs("()", 123), which is not allowed in const.
         public fun fromStrNonconst(s: String): Arguments = Arguments.fromStr(s)
 
         /**
@@ -1713,7 +1716,7 @@ public open class Arguments internal constructor(
          */
         public fun fromStr(s: String): Arguments {
             // SAFETY: This is the "static str" representation of fmt.Arguments; see above.
-            return Arguments(template = transmute(s.asPtr()), args = transmute(s.length shl 1 or 1))
+            return Arguments(template = transmuteWithLayouts<ConstPtr, NonNull>(s.asPtr(), PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<NonNull>()), args = transmute(s.length shl 1 or 1))
         }
     }
 }

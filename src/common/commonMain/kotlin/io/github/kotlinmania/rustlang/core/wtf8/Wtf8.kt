@@ -136,7 +136,7 @@ public open class CodePoint(
     /**
      * Returns a Unicode scalar value for the code point.
      *
-     * Returns `'\u{FFFD}'` (the replacement character “�”)
+     * Returns `'\u(FFFD)'` (the replacement character “�”)
      * if the code point is a surrogate (from U+D800 to U+DFFF).
      */
     public open fun toCharLossy(): Char = (this.toChar() ?: Char.REPLACEMENT_CHARACTER)
@@ -203,7 +203,7 @@ public open class Wtf8 internal constructor(
 
     /**
      * Formats the string in double quotes, with characters escaped according to
-     * [char.escapeDebug] and unpaired surrogates represented as `\u{xxxx}`,
+     * [char.escapeDebug] and unpaired surrogates represented as `\u(xxxx)`,
      * where each `x` is a hexadecimal digit.
      */
     public open fun fmt(formatter: StringBuilder): Result<Unit, Unit> {

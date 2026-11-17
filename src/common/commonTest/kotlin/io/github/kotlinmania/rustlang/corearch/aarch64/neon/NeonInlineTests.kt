@@ -3,11 +3,16 @@
 package io.github.kotlinmania.rustlang.corearch.aarch64.neon
 
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.core.intrinsics.*
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.asPtr
+import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.corearch.armshared.neon.Float16x4x2T
 import io.github.kotlinmania.rustlang.corearch.armshared.neon.Float16x4x3T
@@ -680,1962 +685,1962 @@ public fun testVst1qF64() {
 
 public fun testVld1F16X2() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
-    val a: Float16x4x2T = transmute(vals)
+    val a: Float16x4x2T = transmuteWithLayouts<List<F16>, Float16x4x2T>(vals, fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, (8).toInt()), UnresolvedTypeLayout<Float16x4x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst1F16X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x4x2T = vld1F16X2(tmp1.asPtr().cast())
-    val out: List<F16> = transmute(r)
+    val out: List<F16> = transmuteWithLayouts<Float16x4x2T, List<F16>>(r, UnresolvedTypeLayout<Float16x4x2T>(), UnresolvedTypeLayout<List<F16>>())
     check(out == vals)
 }
 
 public fun testVld1F16X3() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
-    val a: Float16x4x3T = transmute(vals)
+    val a: Float16x4x3T = transmuteWithLayouts<List<F16>, Float16x4x3T>(vals, fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, (12).toInt()), UnresolvedTypeLayout<Float16x4x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst1F16X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x4x3T = vld1F16X3(tmp1.asPtr().cast())
-    val out: List<F16> = transmute(r)
+    val out: List<F16> = transmuteWithLayouts<Float16x4x3T, List<F16>>(r, UnresolvedTypeLayout<Float16x4x3T>(), UnresolvedTypeLayout<List<F16>>())
     check(out == vals)
 }
 
 public fun testVld1F16X4() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
-    val a: Float16x4x4T = transmute(vals)
+    val a: Float16x4x4T = transmuteWithLayouts<List<F16>, Float16x4x4T>(vals, fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, (16).toInt()), UnresolvedTypeLayout<Float16x4x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst1F16X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x4x4T = vld1F16X4(tmp1.asPtr().cast())
-    val out: List<F16> = transmute(r)
+    val out: List<F16> = transmuteWithLayouts<Float16x4x4T, List<F16>>(r, UnresolvedTypeLayout<Float16x4x4T>(), UnresolvedTypeLayout<List<F16>>())
     check(out == vals)
 }
 
 public fun testVld1qF16X2() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
-    val a: Float16x8x2T = transmute(vals)
+    val a: Float16x8x2T = transmuteWithLayouts<List<F16>, Float16x8x2T>(vals, fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, (16).toInt()), UnresolvedTypeLayout<Float16x8x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst1qF16X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x8x2T = vld1qF16X2(tmp1.asPtr().cast())
-    val out: List<F16> = transmute(r)
+    val out: List<F16> = transmuteWithLayouts<Float16x8x2T, List<F16>>(r, UnresolvedTypeLayout<Float16x8x2T>(), UnresolvedTypeLayout<List<F16>>())
     check(out == vals)
 }
 
 public fun testVld1qF16X3() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
-    val a: Float16x8x3T = transmute(vals)
+    val a: Float16x8x3T = transmuteWithLayouts<List<F16>, Float16x8x3T>(vals, fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, (24).toInt()), UnresolvedTypeLayout<Float16x8x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst1qF16X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x8x3T = vld1qF16X3(tmp1.asPtr().cast())
-    val out: List<F16> = transmute(r)
+    val out: List<F16> = transmuteWithLayouts<Float16x8x3T, List<F16>>(r, UnresolvedTypeLayout<Float16x8x3T>(), UnresolvedTypeLayout<List<F16>>())
     check(out == vals)
 }
 
 public fun testVld1qF16X4() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
-    val a: Float16x8x4T = transmute(vals)
+    val a: Float16x8x4T = transmuteWithLayouts<List<F16>, Float16x8x4T>(vals, fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, (32).toInt()), UnresolvedTypeLayout<Float16x8x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst1qF16X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x8x4T = vld1qF16X4(tmp1.asPtr().cast())
-    val out: List<F16> = transmute(r)
+    val out: List<F16> = transmuteWithLayouts<Float16x8x4T, List<F16>>(r, UnresolvedTypeLayout<Float16x8x4T>(), UnresolvedTypeLayout<List<F16>>())
     check(out == vals)
 }
 
 public fun testVld2F16() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
-    val a: Float16x4x2T = transmute(vals)
+    val a: Float16x4x2T = transmuteWithLayouts<List<F16>, Float16x4x2T>(vals, fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, (8).toInt()), UnresolvedTypeLayout<Float16x4x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst2F16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x4x2T = vld2F16(tmp1.asPtr().cast())
-    val out: List<F16> = transmute(r)
+    val out: List<F16> = transmuteWithLayouts<Float16x4x2T, List<F16>>(r, UnresolvedTypeLayout<Float16x4x2T>(), UnresolvedTypeLayout<List<F16>>())
     check(out == vals)
 }
 
 public fun testVld3F16() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
-    val a: Float16x4x3T = transmute(vals)
+    val a: Float16x4x3T = transmuteWithLayouts<List<F16>, Float16x4x3T>(vals, fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, (12).toInt()), UnresolvedTypeLayout<Float16x4x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst3F16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x4x3T = vld3F16(tmp1.asPtr().cast())
-    val out: List<F16> = transmute(r)
+    val out: List<F16> = transmuteWithLayouts<Float16x4x3T, List<F16>>(r, UnresolvedTypeLayout<Float16x4x3T>(), UnresolvedTypeLayout<List<F16>>())
     check(out == vals)
 }
 
 public fun testVld4F16() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
-    val a: Float16x4x4T = transmute(vals)
+    val a: Float16x4x4T = transmuteWithLayouts<List<F16>, Float16x4x4T>(vals, fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, (16).toInt()), UnresolvedTypeLayout<Float16x4x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst4F16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x4x4T = vld4F16(tmp1.asPtr().cast())
-    val out: List<F16> = transmute(r)
+    val out: List<F16> = transmuteWithLayouts<Float16x4x4T, List<F16>>(r, UnresolvedTypeLayout<Float16x4x4T>(), UnresolvedTypeLayout<List<F16>>())
     check(out == vals)
 }
 
 public fun testVld2qF16() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
-    val a: Float16x8x2T = transmute(vals)
+    val a: Float16x8x2T = transmuteWithLayouts<List<F16>, Float16x8x2T>(vals, fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, (16).toInt()), UnresolvedTypeLayout<Float16x8x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst2qF16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x8x2T = vld2qF16(tmp1.asPtr().cast())
-    val out: List<F16> = transmute(r)
+    val out: List<F16> = transmuteWithLayouts<Float16x8x2T, List<F16>>(r, UnresolvedTypeLayout<Float16x8x2T>(), UnresolvedTypeLayout<List<F16>>())
     check(out == vals)
 }
 
 public fun testVld3qF16() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
-    val a: Float16x8x3T = transmute(vals)
+    val a: Float16x8x3T = transmuteWithLayouts<List<F16>, Float16x8x3T>(vals, fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, (24).toInt()), UnresolvedTypeLayout<Float16x8x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst3qF16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x8x3T = vld3qF16(tmp1.asPtr().cast())
-    val out: List<F16> = transmute(r)
+    val out: List<F16> = transmuteWithLayouts<Float16x8x3T, List<F16>>(r, UnresolvedTypeLayout<Float16x8x3T>(), UnresolvedTypeLayout<List<F16>>())
     check(out == vals)
 }
 
 public fun testVld4qF16() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
-    val a: Float16x8x4T = transmute(vals)
+    val a: Float16x8x4T = transmuteWithLayouts<List<F16>, Float16x8x4T>(vals, fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, (32).toInt()), UnresolvedTypeLayout<Float16x8x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst4qF16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x8x4T = vld4qF16(tmp1.asPtr().cast())
-    val out: List<F16> = transmute(r)
+    val out: List<F16> = transmuteWithLayouts<Float16x8x4T, List<F16>>(r, UnresolvedTypeLayout<Float16x8x4T>(), UnresolvedTypeLayout<List<F16>>())
     check(out == vals)
 }
 
 public fun testVld1P64X2() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Poly64x1x2T = transmute(vals)
+    val a: Poly64x1x2T = transmuteWithLayouts<ULongArray, Poly64x1x2T>(vals, PrimitiveArrayLayouts.uLongArray((2).toInt()), UnresolvedTypeLayout<Poly64x1x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1P64X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly64x1x2T = vld1P64X2(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Poly64x1x2T, ULongArray>(r, UnresolvedTypeLayout<Poly64x1x2T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1P64X3() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Poly64x1x3T = transmute(vals)
+    val a: Poly64x1x3T = transmuteWithLayouts<ULongArray, Poly64x1x3T>(vals, PrimitiveArrayLayouts.uLongArray((3).toInt()), UnresolvedTypeLayout<Poly64x1x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1P64X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly64x1x3T = vld1P64X3(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Poly64x1x3T, ULongArray>(r, UnresolvedTypeLayout<Poly64x1x3T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1P64X4() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Poly64x1x4T = transmute(vals)
+    val a: Poly64x1x4T = transmuteWithLayouts<ULongArray, Poly64x1x4T>(vals, PrimitiveArrayLayouts.uLongArray((4).toInt()), UnresolvedTypeLayout<Poly64x1x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1P64X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly64x1x4T = vld1P64X4(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Poly64x1x4T, ULongArray>(r, UnresolvedTypeLayout<Poly64x1x4T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qP64X2() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Poly64x2x2T = transmute(vals)
+    val a: Poly64x2x2T = transmuteWithLayouts<ULongArray, Poly64x2x2T>(vals, PrimitiveArrayLayouts.uLongArray((4).toInt()), UnresolvedTypeLayout<Poly64x2x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1qP64X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly64x2x2T = vld1qP64X2(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Poly64x2x2T, ULongArray>(r, UnresolvedTypeLayout<Poly64x2x2T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qP64X3() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Poly64x2x3T = transmute(vals)
+    val a: Poly64x2x3T = transmuteWithLayouts<ULongArray, Poly64x2x3T>(vals, PrimitiveArrayLayouts.uLongArray((6).toInt()), UnresolvedTypeLayout<Poly64x2x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1qP64X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly64x2x3T = vld1qP64X3(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Poly64x2x3T, ULongArray>(r, UnresolvedTypeLayout<Poly64x2x3T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qP64X4() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Poly64x2x4T = transmute(vals)
+    val a: Poly64x2x4T = transmuteWithLayouts<ULongArray, Poly64x2x4T>(vals, PrimitiveArrayLayouts.uLongArray((8).toInt()), UnresolvedTypeLayout<Poly64x2x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1qP64X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly64x2x4T = vld1qP64X4(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Poly64x2x4T, ULongArray>(r, UnresolvedTypeLayout<Poly64x2x4T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1F32X2() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
-    val a: Float32x2x2T = transmute(vals)
+    val a: Float32x2x2T = transmuteWithLayouts<FloatArray, Float32x2x2T>(vals, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<Float32x2x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst1F32X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x2x2T = vld1F32X2(tmp1.asPtr().cast())
-    val out: FloatArray = transmute(r)
+    val out: FloatArray = transmuteWithLayouts<Float32x2x2T, FloatArray>(r, UnresolvedTypeLayout<Float32x2x2T>(), UnresolvedTypeLayout<FloatArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1F32X3() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
-    val a: Float32x2x3T = transmute(vals)
+    val a: Float32x2x3T = transmuteWithLayouts<FloatArray, Float32x2x3T>(vals, PrimitiveArrayLayouts.floatArray((6).toInt()), UnresolvedTypeLayout<Float32x2x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst1F32X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x2x3T = vld1F32X3(tmp1.asPtr().cast())
-    val out: FloatArray = transmute(r)
+    val out: FloatArray = transmuteWithLayouts<Float32x2x3T, FloatArray>(r, UnresolvedTypeLayout<Float32x2x3T>(), UnresolvedTypeLayout<FloatArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1F32X4() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
-    val a: Float32x2x4T = transmute(vals)
+    val a: Float32x2x4T = transmuteWithLayouts<FloatArray, Float32x2x4T>(vals, PrimitiveArrayLayouts.floatArray((8).toInt()), UnresolvedTypeLayout<Float32x2x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst1F32X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x2x4T = vld1F32X4(tmp1.asPtr().cast())
-    val out: FloatArray = transmute(r)
+    val out: FloatArray = transmuteWithLayouts<Float32x2x4T, FloatArray>(r, UnresolvedTypeLayout<Float32x2x4T>(), UnresolvedTypeLayout<FloatArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qF32X2() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
-    val a: Float32x4x2T = transmute(vals)
+    val a: Float32x4x2T = transmuteWithLayouts<FloatArray, Float32x4x2T>(vals, PrimitiveArrayLayouts.floatArray((8).toInt()), UnresolvedTypeLayout<Float32x4x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst1qF32X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x4x2T = vld1qF32X2(tmp1.asPtr().cast())
-    val out: FloatArray = transmute(r)
+    val out: FloatArray = transmuteWithLayouts<Float32x4x2T, FloatArray>(r, UnresolvedTypeLayout<Float32x4x2T>(), UnresolvedTypeLayout<FloatArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qF32X3() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
-    val a: Float32x4x3T = transmute(vals)
+    val a: Float32x4x3T = transmuteWithLayouts<FloatArray, Float32x4x3T>(vals, PrimitiveArrayLayouts.floatArray((12).toInt()), UnresolvedTypeLayout<Float32x4x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst1qF32X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x4x3T = vld1qF32X3(tmp1.asPtr().cast())
-    val out: FloatArray = transmute(r)
+    val out: FloatArray = transmuteWithLayouts<Float32x4x3T, FloatArray>(r, UnresolvedTypeLayout<Float32x4x3T>(), UnresolvedTypeLayout<FloatArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qF32X4() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
-    val a: Float32x4x4T = transmute(vals)
+    val a: Float32x4x4T = transmuteWithLayouts<FloatArray, Float32x4x4T>(vals, PrimitiveArrayLayouts.floatArray((16).toInt()), UnresolvedTypeLayout<Float32x4x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst1qF32X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x4x4T = vld1qF32X4(tmp1.asPtr().cast())
-    val out: FloatArray = transmute(r)
+    val out: FloatArray = transmuteWithLayouts<Float32x4x4T, FloatArray>(r, UnresolvedTypeLayout<Float32x4x4T>(), UnresolvedTypeLayout<FloatArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1F64X2() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
-    val a: Float64x1x2T = transmute(vals)
+    val a: Float64x1x2T = transmuteWithLayouts<DoubleArray, Float64x1x2T>(vals, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<Float64x1x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst1F64X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x1x2T = vld1F64X2(tmp1.asPtr().cast())
-    val out: DoubleArray = transmute(r)
+    val out: DoubleArray = transmuteWithLayouts<Float64x1x2T, DoubleArray>(r, UnresolvedTypeLayout<Float64x1x2T>(), UnresolvedTypeLayout<DoubleArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1F64X3() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
-    val a: Float64x1x3T = transmute(vals)
+    val a: Float64x1x3T = transmuteWithLayouts<DoubleArray, Float64x1x3T>(vals, PrimitiveArrayLayouts.doubleArray((3).toInt()), UnresolvedTypeLayout<Float64x1x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst1F64X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x1x3T = vld1F64X3(tmp1.asPtr().cast())
-    val out: DoubleArray = transmute(r)
+    val out: DoubleArray = transmuteWithLayouts<Float64x1x3T, DoubleArray>(r, UnresolvedTypeLayout<Float64x1x3T>(), UnresolvedTypeLayout<DoubleArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1F64X4() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
-    val a: Float64x1x4T = transmute(vals)
+    val a: Float64x1x4T = transmuteWithLayouts<DoubleArray, Float64x1x4T>(vals, PrimitiveArrayLayouts.doubleArray((4).toInt()), UnresolvedTypeLayout<Float64x1x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst1F64X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x1x4T = vld1F64X4(tmp1.asPtr().cast())
-    val out: DoubleArray = transmute(r)
+    val out: DoubleArray = transmuteWithLayouts<Float64x1x4T, DoubleArray>(r, UnresolvedTypeLayout<Float64x1x4T>(), UnresolvedTypeLayout<DoubleArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qF64X2() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
-    val a: Float64x2x2T = transmute(vals)
+    val a: Float64x2x2T = transmuteWithLayouts<DoubleArray, Float64x2x2T>(vals, PrimitiveArrayLayouts.doubleArray((4).toInt()), UnresolvedTypeLayout<Float64x2x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst1qF64X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x2x2T = vld1qF64X2(tmp1.asPtr().cast())
-    val out: DoubleArray = transmute(r)
+    val out: DoubleArray = transmuteWithLayouts<Float64x2x2T, DoubleArray>(r, UnresolvedTypeLayout<Float64x2x2T>(), UnresolvedTypeLayout<DoubleArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qF64X3() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
-    val a: Float64x2x3T = transmute(vals)
+    val a: Float64x2x3T = transmuteWithLayouts<DoubleArray, Float64x2x3T>(vals, PrimitiveArrayLayouts.doubleArray((6).toInt()), UnresolvedTypeLayout<Float64x2x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst1qF64X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x2x3T = vld1qF64X3(tmp1.asPtr().cast())
-    val out: DoubleArray = transmute(r)
+    val out: DoubleArray = transmuteWithLayouts<Float64x2x3T, DoubleArray>(r, UnresolvedTypeLayout<Float64x2x3T>(), UnresolvedTypeLayout<DoubleArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qF64X4() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
-    val a: Float64x2x4T = transmute(vals)
+    val a: Float64x2x4T = transmuteWithLayouts<DoubleArray, Float64x2x4T>(vals, PrimitiveArrayLayouts.doubleArray((8).toInt()), UnresolvedTypeLayout<Float64x2x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst1qF64X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x2x4T = vld1qF64X4(tmp1.asPtr().cast())
-    val out: DoubleArray = transmute(r)
+    val out: DoubleArray = transmuteWithLayouts<Float64x2x4T, DoubleArray>(r, UnresolvedTypeLayout<Float64x2x4T>(), UnresolvedTypeLayout<DoubleArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1S8X2() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
-    val a: Int8x8x2T = transmute(vals)
+    val a: Int8x8x2T = transmuteWithLayouts<ByteArray, Int8x8x2T>(vals, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<Int8x8x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst1S8X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x8x2T = vld1S8X2(tmp1.asPtr().cast())
-    val out: ByteArray = transmute(r)
+    val out: ByteArray = transmuteWithLayouts<Int8x8x2T, ByteArray>(r, UnresolvedTypeLayout<Int8x8x2T>(), UnresolvedTypeLayout<ByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1S8X3() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
-    val a: Int8x8x3T = transmute(vals)
+    val a: Int8x8x3T = transmuteWithLayouts<ByteArray, Int8x8x3T>(vals, PrimitiveArrayLayouts.byteArray((24).toInt()), UnresolvedTypeLayout<Int8x8x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst1S8X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x8x3T = vld1S8X3(tmp1.asPtr().cast())
-    val out: ByteArray = transmute(r)
+    val out: ByteArray = transmuteWithLayouts<Int8x8x3T, ByteArray>(r, UnresolvedTypeLayout<Int8x8x3T>(), UnresolvedTypeLayout<ByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1S8X4() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
-    val a: Int8x8x4T = transmute(vals)
+    val a: Int8x8x4T = transmuteWithLayouts<ByteArray, Int8x8x4T>(vals, PrimitiveArrayLayouts.byteArray((32).toInt()), UnresolvedTypeLayout<Int8x8x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst1S8X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x8x4T = vld1S8X4(tmp1.asPtr().cast())
-    val out: ByteArray = transmute(r)
+    val out: ByteArray = transmuteWithLayouts<Int8x8x4T, ByteArray>(r, UnresolvedTypeLayout<Int8x8x4T>(), UnresolvedTypeLayout<ByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qS8X2() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
-    val a: Int8x16x2T = transmute(vals)
+    val a: Int8x16x2T = transmuteWithLayouts<ByteArray, Int8x16x2T>(vals, PrimitiveArrayLayouts.byteArray((32).toInt()), UnresolvedTypeLayout<Int8x16x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst1qS8X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x16x2T = vld1qS8X2(tmp1.asPtr().cast())
-    val out: ByteArray = transmute(r)
+    val out: ByteArray = transmuteWithLayouts<Int8x16x2T, ByteArray>(r, UnresolvedTypeLayout<Int8x16x2T>(), UnresolvedTypeLayout<ByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qS8X3() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
-    val a: Int8x16x3T = transmute(vals)
+    val a: Int8x16x3T = transmuteWithLayouts<ByteArray, Int8x16x3T>(vals, PrimitiveArrayLayouts.byteArray((48).toInt()), UnresolvedTypeLayout<Int8x16x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst1qS8X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x16x3T = vld1qS8X3(tmp1.asPtr().cast())
-    val out: ByteArray = transmute(r)
+    val out: ByteArray = transmuteWithLayouts<Int8x16x3T, ByteArray>(r, UnresolvedTypeLayout<Int8x16x3T>(), UnresolvedTypeLayout<ByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qS8X4() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
-    val a: Int8x16x4T = transmute(vals)
+    val a: Int8x16x4T = transmuteWithLayouts<ByteArray, Int8x16x4T>(vals, PrimitiveArrayLayouts.byteArray((64).toInt()), UnresolvedTypeLayout<Int8x16x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst1qS8X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x16x4T = vld1qS8X4(tmp1.asPtr().cast())
-    val out: ByteArray = transmute(r)
+    val out: ByteArray = transmuteWithLayouts<Int8x16x4T, ByteArray>(r, UnresolvedTypeLayout<Int8x16x4T>(), UnresolvedTypeLayout<ByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1S16X2() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
-    val a: Int16x4x2T = transmute(vals)
+    val a: Int16x4x2T = transmuteWithLayouts<ShortArray, Int16x4x2T>(vals, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<Int16x4x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst1S16X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x4x2T = vld1S16X2(tmp1.asPtr().cast())
-    val out: ShortArray = transmute(r)
+    val out: ShortArray = transmuteWithLayouts<Int16x4x2T, ShortArray>(r, UnresolvedTypeLayout<Int16x4x2T>(), UnresolvedTypeLayout<ShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1S16X3() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
-    val a: Int16x4x3T = transmute(vals)
+    val a: Int16x4x3T = transmuteWithLayouts<ShortArray, Int16x4x3T>(vals, PrimitiveArrayLayouts.shortArray((12).toInt()), UnresolvedTypeLayout<Int16x4x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst1S16X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x4x3T = vld1S16X3(tmp1.asPtr().cast())
-    val out: ShortArray = transmute(r)
+    val out: ShortArray = transmuteWithLayouts<Int16x4x3T, ShortArray>(r, UnresolvedTypeLayout<Int16x4x3T>(), UnresolvedTypeLayout<ShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1S16X4() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
-    val a: Int16x4x4T = transmute(vals)
+    val a: Int16x4x4T = transmuteWithLayouts<ShortArray, Int16x4x4T>(vals, PrimitiveArrayLayouts.shortArray((16).toInt()), UnresolvedTypeLayout<Int16x4x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst1S16X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x4x4T = vld1S16X4(tmp1.asPtr().cast())
-    val out: ShortArray = transmute(r)
+    val out: ShortArray = transmuteWithLayouts<Int16x4x4T, ShortArray>(r, UnresolvedTypeLayout<Int16x4x4T>(), UnresolvedTypeLayout<ShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qS16X2() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
-    val a: Int16x8x2T = transmute(vals)
+    val a: Int16x8x2T = transmuteWithLayouts<ShortArray, Int16x8x2T>(vals, PrimitiveArrayLayouts.shortArray((16).toInt()), UnresolvedTypeLayout<Int16x8x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst1qS16X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x8x2T = vld1qS16X2(tmp1.asPtr().cast())
-    val out: ShortArray = transmute(r)
+    val out: ShortArray = transmuteWithLayouts<Int16x8x2T, ShortArray>(r, UnresolvedTypeLayout<Int16x8x2T>(), UnresolvedTypeLayout<ShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qS16X3() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
-    val a: Int16x8x3T = transmute(vals)
+    val a: Int16x8x3T = transmuteWithLayouts<ShortArray, Int16x8x3T>(vals, PrimitiveArrayLayouts.shortArray((24).toInt()), UnresolvedTypeLayout<Int16x8x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst1qS16X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x8x3T = vld1qS16X3(tmp1.asPtr().cast())
-    val out: ShortArray = transmute(r)
+    val out: ShortArray = transmuteWithLayouts<Int16x8x3T, ShortArray>(r, UnresolvedTypeLayout<Int16x8x3T>(), UnresolvedTypeLayout<ShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qS16X4() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
-    val a: Int16x8x4T = transmute(vals)
+    val a: Int16x8x4T = transmuteWithLayouts<ShortArray, Int16x8x4T>(vals, PrimitiveArrayLayouts.shortArray((32).toInt()), UnresolvedTypeLayout<Int16x8x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst1qS16X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x8x4T = vld1qS16X4(tmp1.asPtr().cast())
-    val out: ShortArray = transmute(r)
+    val out: ShortArray = transmuteWithLayouts<Int16x8x4T, ShortArray>(r, UnresolvedTypeLayout<Int16x8x4T>(), UnresolvedTypeLayout<ShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1S32X2() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
-    val a: Int32x2x2T = transmute(vals)
+    val a: Int32x2x2T = transmuteWithLayouts<IntArray, Int32x2x2T>(vals, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<Int32x2x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst1S32X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x2x2T = vld1S32X2(tmp1.asPtr().cast())
-    val out: IntArray = transmute(r)
+    val out: IntArray = transmuteWithLayouts<Int32x2x2T, IntArray>(r, UnresolvedTypeLayout<Int32x2x2T>(), UnresolvedTypeLayout<IntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1S32X3() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
-    val a: Int32x2x3T = transmute(vals)
+    val a: Int32x2x3T = transmuteWithLayouts<IntArray, Int32x2x3T>(vals, PrimitiveArrayLayouts.intArray((6).toInt()), UnresolvedTypeLayout<Int32x2x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst1S32X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x2x3T = vld1S32X3(tmp1.asPtr().cast())
-    val out: IntArray = transmute(r)
+    val out: IntArray = transmuteWithLayouts<Int32x2x3T, IntArray>(r, UnresolvedTypeLayout<Int32x2x3T>(), UnresolvedTypeLayout<IntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1S32X4() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
-    val a: Int32x2x4T = transmute(vals)
+    val a: Int32x2x4T = transmuteWithLayouts<IntArray, Int32x2x4T>(vals, PrimitiveArrayLayouts.intArray((8).toInt()), UnresolvedTypeLayout<Int32x2x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst1S32X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x2x4T = vld1S32X4(tmp1.asPtr().cast())
-    val out: IntArray = transmute(r)
+    val out: IntArray = transmuteWithLayouts<Int32x2x4T, IntArray>(r, UnresolvedTypeLayout<Int32x2x4T>(), UnresolvedTypeLayout<IntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qS32X2() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
-    val a: Int32x4x2T = transmute(vals)
+    val a: Int32x4x2T = transmuteWithLayouts<IntArray, Int32x4x2T>(vals, PrimitiveArrayLayouts.intArray((8).toInt()), UnresolvedTypeLayout<Int32x4x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst1qS32X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x4x2T = vld1qS32X2(tmp1.asPtr().cast())
-    val out: IntArray = transmute(r)
+    val out: IntArray = transmuteWithLayouts<Int32x4x2T, IntArray>(r, UnresolvedTypeLayout<Int32x4x2T>(), UnresolvedTypeLayout<IntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qS32X3() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
-    val a: Int32x4x3T = transmute(vals)
+    val a: Int32x4x3T = transmuteWithLayouts<IntArray, Int32x4x3T>(vals, PrimitiveArrayLayouts.intArray((12).toInt()), UnresolvedTypeLayout<Int32x4x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst1qS32X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x4x3T = vld1qS32X3(tmp1.asPtr().cast())
-    val out: IntArray = transmute(r)
+    val out: IntArray = transmuteWithLayouts<Int32x4x3T, IntArray>(r, UnresolvedTypeLayout<Int32x4x3T>(), UnresolvedTypeLayout<IntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qS32X4() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
-    val a: Int32x4x4T = transmute(vals)
+    val a: Int32x4x4T = transmuteWithLayouts<IntArray, Int32x4x4T>(vals, PrimitiveArrayLayouts.intArray((16).toInt()), UnresolvedTypeLayout<Int32x4x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst1qS32X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x4x4T = vld1qS32X4(tmp1.asPtr().cast())
-    val out: IntArray = transmute(r)
+    val out: IntArray = transmuteWithLayouts<Int32x4x4T, IntArray>(r, UnresolvedTypeLayout<Int32x4x4T>(), UnresolvedTypeLayout<IntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1S64X2() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x1x2T = transmute(vals)
+    val a: Int64x1x2T = transmuteWithLayouts<LongArray, Int64x1x2T>(vals, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<Int64x1x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst1S64X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x1x2T = vld1S64X2(tmp1.asPtr().cast())
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x1x2T, LongArray>(r, UnresolvedTypeLayout<Int64x1x2T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1S64X3() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x1x3T = transmute(vals)
+    val a: Int64x1x3T = transmuteWithLayouts<LongArray, Int64x1x3T>(vals, PrimitiveArrayLayouts.longArray((3).toInt()), UnresolvedTypeLayout<Int64x1x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst1S64X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x1x3T = vld1S64X3(tmp1.asPtr().cast())
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x1x3T, LongArray>(r, UnresolvedTypeLayout<Int64x1x3T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1S64X4() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x1x4T = transmute(vals)
+    val a: Int64x1x4T = transmuteWithLayouts<LongArray, Int64x1x4T>(vals, PrimitiveArrayLayouts.longArray((4).toInt()), UnresolvedTypeLayout<Int64x1x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst1S64X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x1x4T = vld1S64X4(tmp1.asPtr().cast())
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x1x4T, LongArray>(r, UnresolvedTypeLayout<Int64x1x4T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qS64X2() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x2x2T = transmute(vals)
+    val a: Int64x2x2T = transmuteWithLayouts<LongArray, Int64x2x2T>(vals, PrimitiveArrayLayouts.longArray((4).toInt()), UnresolvedTypeLayout<Int64x2x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst1qS64X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x2x2T = vld1qS64X2(tmp1.asPtr().cast())
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x2x2T, LongArray>(r, UnresolvedTypeLayout<Int64x2x2T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qS64X3() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x2x3T = transmute(vals)
+    val a: Int64x2x3T = transmuteWithLayouts<LongArray, Int64x2x3T>(vals, PrimitiveArrayLayouts.longArray((6).toInt()), UnresolvedTypeLayout<Int64x2x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst1qS64X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x2x3T = vld1qS64X3(tmp1.asPtr().cast())
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x2x3T, LongArray>(r, UnresolvedTypeLayout<Int64x2x3T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qS64X4() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x2x4T = transmute(vals)
+    val a: Int64x2x4T = transmuteWithLayouts<LongArray, Int64x2x4T>(vals, PrimitiveArrayLayouts.longArray((8).toInt()), UnresolvedTypeLayout<Int64x2x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst1qS64X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x2x4T = vld1qS64X4(tmp1.asPtr().cast())
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x2x4T, LongArray>(r, UnresolvedTypeLayout<Int64x2x4T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1U8X2() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Uint8x8x2T = transmute(vals)
+    val a: Uint8x8x2T = transmuteWithLayouts<UByteArray, Uint8x8x2T>(vals, PrimitiveArrayLayouts.uByteArray((16).toInt()), UnresolvedTypeLayout<Uint8x8x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1U8X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x8x2T = vld1U8X2(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Uint8x8x2T, UByteArray>(r, UnresolvedTypeLayout<Uint8x8x2T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1U8X3() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Uint8x8x3T = transmute(vals)
+    val a: Uint8x8x3T = transmuteWithLayouts<UByteArray, Uint8x8x3T>(vals, PrimitiveArrayLayouts.uByteArray((24).toInt()), UnresolvedTypeLayout<Uint8x8x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1U8X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x8x3T = vld1U8X3(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Uint8x8x3T, UByteArray>(r, UnresolvedTypeLayout<Uint8x8x3T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1U8X4() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Uint8x8x4T = transmute(vals)
+    val a: Uint8x8x4T = transmuteWithLayouts<UByteArray, Uint8x8x4T>(vals, PrimitiveArrayLayouts.uByteArray((32).toInt()), UnresolvedTypeLayout<Uint8x8x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1U8X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x8x4T = vld1U8X4(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Uint8x8x4T, UByteArray>(r, UnresolvedTypeLayout<Uint8x8x4T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qU8X2() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Uint8x16x2T = transmute(vals)
+    val a: Uint8x16x2T = transmuteWithLayouts<UByteArray, Uint8x16x2T>(vals, PrimitiveArrayLayouts.uByteArray((32).toInt()), UnresolvedTypeLayout<Uint8x16x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1qU8X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x16x2T = vld1qU8X2(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Uint8x16x2T, UByteArray>(r, UnresolvedTypeLayout<Uint8x16x2T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qU8X3() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Uint8x16x3T = transmute(vals)
+    val a: Uint8x16x3T = transmuteWithLayouts<UByteArray, Uint8x16x3T>(vals, PrimitiveArrayLayouts.uByteArray((48).toInt()), UnresolvedTypeLayout<Uint8x16x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1qU8X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x16x3T = vld1qU8X3(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Uint8x16x3T, UByteArray>(r, UnresolvedTypeLayout<Uint8x16x3T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qU8X4() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Uint8x16x4T = transmute(vals)
+    val a: Uint8x16x4T = transmuteWithLayouts<UByteArray, Uint8x16x4T>(vals, PrimitiveArrayLayouts.uByteArray((64).toInt()), UnresolvedTypeLayout<Uint8x16x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1qU8X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x16x4T = vld1qU8X4(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Uint8x16x4T, UByteArray>(r, UnresolvedTypeLayout<Uint8x16x4T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1U16X2() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Uint16x4x2T = transmute(vals)
+    val a: Uint16x4x2T = transmuteWithLayouts<UShortArray, Uint16x4x2T>(vals, PrimitiveArrayLayouts.uShortArray((8).toInt()), UnresolvedTypeLayout<Uint16x4x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1U16X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x4x2T = vld1U16X2(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Uint16x4x2T, UShortArray>(r, UnresolvedTypeLayout<Uint16x4x2T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1U16X3() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Uint16x4x3T = transmute(vals)
+    val a: Uint16x4x3T = transmuteWithLayouts<UShortArray, Uint16x4x3T>(vals, PrimitiveArrayLayouts.uShortArray((12).toInt()), UnresolvedTypeLayout<Uint16x4x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1U16X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x4x3T = vld1U16X3(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Uint16x4x3T, UShortArray>(r, UnresolvedTypeLayout<Uint16x4x3T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1U16X4() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Uint16x4x4T = transmute(vals)
+    val a: Uint16x4x4T = transmuteWithLayouts<UShortArray, Uint16x4x4T>(vals, PrimitiveArrayLayouts.uShortArray((16).toInt()), UnresolvedTypeLayout<Uint16x4x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1U16X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x4x4T = vld1U16X4(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Uint16x4x4T, UShortArray>(r, UnresolvedTypeLayout<Uint16x4x4T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qU16X2() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Uint16x8x2T = transmute(vals)
+    val a: Uint16x8x2T = transmuteWithLayouts<UShortArray, Uint16x8x2T>(vals, PrimitiveArrayLayouts.uShortArray((16).toInt()), UnresolvedTypeLayout<Uint16x8x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1qU16X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x8x2T = vld1qU16X2(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Uint16x8x2T, UShortArray>(r, UnresolvedTypeLayout<Uint16x8x2T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qU16X3() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Uint16x8x3T = transmute(vals)
+    val a: Uint16x8x3T = transmuteWithLayouts<UShortArray, Uint16x8x3T>(vals, PrimitiveArrayLayouts.uShortArray((24).toInt()), UnresolvedTypeLayout<Uint16x8x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1qU16X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x8x3T = vld1qU16X3(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Uint16x8x3T, UShortArray>(r, UnresolvedTypeLayout<Uint16x8x3T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qU16X4() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Uint16x8x4T = transmute(vals)
+    val a: Uint16x8x4T = transmuteWithLayouts<UShortArray, Uint16x8x4T>(vals, PrimitiveArrayLayouts.uShortArray((32).toInt()), UnresolvedTypeLayout<Uint16x8x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1qU16X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x8x4T = vld1qU16X4(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Uint16x8x4T, UShortArray>(r, UnresolvedTypeLayout<Uint16x8x4T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1U32X2() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
-    val a: Uint32x2x2T = transmute(vals)
+    val a: Uint32x2x2T = transmuteWithLayouts<UIntArray, Uint32x2x2T>(vals, PrimitiveArrayLayouts.uIntArray((4).toInt()), UnresolvedTypeLayout<Uint32x2x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst1U32X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x2x2T = vld1U32X2(tmp1.asPtr().cast())
-    val out: UIntArray = transmute(r)
+    val out: UIntArray = transmuteWithLayouts<Uint32x2x2T, UIntArray>(r, UnresolvedTypeLayout<Uint32x2x2T>(), UnresolvedTypeLayout<UIntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1U32X3() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
-    val a: Uint32x2x3T = transmute(vals)
+    val a: Uint32x2x3T = transmuteWithLayouts<UIntArray, Uint32x2x3T>(vals, PrimitiveArrayLayouts.uIntArray((6).toInt()), UnresolvedTypeLayout<Uint32x2x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst1U32X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x2x3T = vld1U32X3(tmp1.asPtr().cast())
-    val out: UIntArray = transmute(r)
+    val out: UIntArray = transmuteWithLayouts<Uint32x2x3T, UIntArray>(r, UnresolvedTypeLayout<Uint32x2x3T>(), UnresolvedTypeLayout<UIntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1U32X4() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
-    val a: Uint32x2x4T = transmute(vals)
+    val a: Uint32x2x4T = transmuteWithLayouts<UIntArray, Uint32x2x4T>(vals, PrimitiveArrayLayouts.uIntArray((8).toInt()), UnresolvedTypeLayout<Uint32x2x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst1U32X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x2x4T = vld1U32X4(tmp1.asPtr().cast())
-    val out: UIntArray = transmute(r)
+    val out: UIntArray = transmuteWithLayouts<Uint32x2x4T, UIntArray>(r, UnresolvedTypeLayout<Uint32x2x4T>(), UnresolvedTypeLayout<UIntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qU32X2() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
-    val a: Uint32x4x2T = transmute(vals)
+    val a: Uint32x4x2T = transmuteWithLayouts<UIntArray, Uint32x4x2T>(vals, PrimitiveArrayLayouts.uIntArray((8).toInt()), UnresolvedTypeLayout<Uint32x4x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst1qU32X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x4x2T = vld1qU32X2(tmp1.asPtr().cast())
-    val out: UIntArray = transmute(r)
+    val out: UIntArray = transmuteWithLayouts<Uint32x4x2T, UIntArray>(r, UnresolvedTypeLayout<Uint32x4x2T>(), UnresolvedTypeLayout<UIntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qU32X3() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
-    val a: Uint32x4x3T = transmute(vals)
+    val a: Uint32x4x3T = transmuteWithLayouts<UIntArray, Uint32x4x3T>(vals, PrimitiveArrayLayouts.uIntArray((12).toInt()), UnresolvedTypeLayout<Uint32x4x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst1qU32X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x4x3T = vld1qU32X3(tmp1.asPtr().cast())
-    val out: UIntArray = transmute(r)
+    val out: UIntArray = transmuteWithLayouts<Uint32x4x3T, UIntArray>(r, UnresolvedTypeLayout<Uint32x4x3T>(), UnresolvedTypeLayout<UIntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qU32X4() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
-    val a: Uint32x4x4T = transmute(vals)
+    val a: Uint32x4x4T = transmuteWithLayouts<UIntArray, Uint32x4x4T>(vals, PrimitiveArrayLayouts.uIntArray((16).toInt()), UnresolvedTypeLayout<Uint32x4x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst1qU32X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x4x4T = vld1qU32X4(tmp1.asPtr().cast())
-    val out: UIntArray = transmute(r)
+    val out: UIntArray = transmuteWithLayouts<Uint32x4x4T, UIntArray>(r, UnresolvedTypeLayout<Uint32x4x4T>(), UnresolvedTypeLayout<UIntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1U64X2() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x1x2T = transmute(vals)
+    val a: Uint64x1x2T = transmuteWithLayouts<ULongArray, Uint64x1x2T>(vals, PrimitiveArrayLayouts.uLongArray((2).toInt()), UnresolvedTypeLayout<Uint64x1x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1U64X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x1x2T = vld1U64X2(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x1x2T, ULongArray>(r, UnresolvedTypeLayout<Uint64x1x2T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1U64X3() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x1x3T = transmute(vals)
+    val a: Uint64x1x3T = transmuteWithLayouts<ULongArray, Uint64x1x3T>(vals, PrimitiveArrayLayouts.uLongArray((3).toInt()), UnresolvedTypeLayout<Uint64x1x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1U64X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x1x3T = vld1U64X3(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x1x3T, ULongArray>(r, UnresolvedTypeLayout<Uint64x1x3T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1U64X4() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x1x4T = transmute(vals)
+    val a: Uint64x1x4T = transmuteWithLayouts<ULongArray, Uint64x1x4T>(vals, PrimitiveArrayLayouts.uLongArray((4).toInt()), UnresolvedTypeLayout<Uint64x1x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1U64X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x1x4T = vld1U64X4(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x1x4T, ULongArray>(r, UnresolvedTypeLayout<Uint64x1x4T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qU64X2() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x2x2T = transmute(vals)
+    val a: Uint64x2x2T = transmuteWithLayouts<ULongArray, Uint64x2x2T>(vals, PrimitiveArrayLayouts.uLongArray((4).toInt()), UnresolvedTypeLayout<Uint64x2x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1qU64X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x2x2T = vld1qU64X2(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x2x2T, ULongArray>(r, UnresolvedTypeLayout<Uint64x2x2T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qU64X3() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x2x3T = transmute(vals)
+    val a: Uint64x2x3T = transmuteWithLayouts<ULongArray, Uint64x2x3T>(vals, PrimitiveArrayLayouts.uLongArray((6).toInt()), UnresolvedTypeLayout<Uint64x2x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1qU64X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x2x3T = vld1qU64X3(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x2x3T, ULongArray>(r, UnresolvedTypeLayout<Uint64x2x3T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qU64X4() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x2x4T = transmute(vals)
+    val a: Uint64x2x4T = transmuteWithLayouts<ULongArray, Uint64x2x4T>(vals, PrimitiveArrayLayouts.uLongArray((8).toInt()), UnresolvedTypeLayout<Uint64x2x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1qU64X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x2x4T = vld1qU64X4(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x2x4T, ULongArray>(r, UnresolvedTypeLayout<Uint64x2x4T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1P8X2() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Poly8x8x2T = transmute(vals)
+    val a: Poly8x8x2T = transmuteWithLayouts<UByteArray, Poly8x8x2T>(vals, PrimitiveArrayLayouts.uByteArray((16).toInt()), UnresolvedTypeLayout<Poly8x8x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1P8X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x8x2T = vld1P8X2(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Poly8x8x2T, UByteArray>(r, UnresolvedTypeLayout<Poly8x8x2T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1P8X3() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Poly8x8x3T = transmute(vals)
+    val a: Poly8x8x3T = transmuteWithLayouts<UByteArray, Poly8x8x3T>(vals, PrimitiveArrayLayouts.uByteArray((24).toInt()), UnresolvedTypeLayout<Poly8x8x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1P8X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x8x3T = vld1P8X3(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Poly8x8x3T, UByteArray>(r, UnresolvedTypeLayout<Poly8x8x3T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1P8X4() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Poly8x8x4T = transmute(vals)
+    val a: Poly8x8x4T = transmuteWithLayouts<UByteArray, Poly8x8x4T>(vals, PrimitiveArrayLayouts.uByteArray((32).toInt()), UnresolvedTypeLayout<Poly8x8x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1P8X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x8x4T = vld1P8X4(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Poly8x8x4T, UByteArray>(r, UnresolvedTypeLayout<Poly8x8x4T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qP8X2() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Poly8x16x2T = transmute(vals)
+    val a: Poly8x16x2T = transmuteWithLayouts<UByteArray, Poly8x16x2T>(vals, PrimitiveArrayLayouts.uByteArray((32).toInt()), UnresolvedTypeLayout<Poly8x16x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1qP8X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x16x2T = vld1qP8X2(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Poly8x16x2T, UByteArray>(r, UnresolvedTypeLayout<Poly8x16x2T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qP8X3() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Poly8x16x3T = transmute(vals)
+    val a: Poly8x16x3T = transmuteWithLayouts<UByteArray, Poly8x16x3T>(vals, PrimitiveArrayLayouts.uByteArray((48).toInt()), UnresolvedTypeLayout<Poly8x16x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1qP8X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x16x3T = vld1qP8X3(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Poly8x16x3T, UByteArray>(r, UnresolvedTypeLayout<Poly8x16x3T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qP8X4() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Poly8x16x4T = transmute(vals)
+    val a: Poly8x16x4T = transmuteWithLayouts<UByteArray, Poly8x16x4T>(vals, PrimitiveArrayLayouts.uByteArray((64).toInt()), UnresolvedTypeLayout<Poly8x16x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1qP8X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x16x4T = vld1qP8X4(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Poly8x16x4T, UByteArray>(r, UnresolvedTypeLayout<Poly8x16x4T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1P16X2() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Poly16x4x2T = transmute(vals)
+    val a: Poly16x4x2T = transmuteWithLayouts<UShortArray, Poly16x4x2T>(vals, PrimitiveArrayLayouts.uShortArray((8).toInt()), UnresolvedTypeLayout<Poly16x4x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1P16X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x4x2T = vld1P16X2(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Poly16x4x2T, UShortArray>(r, UnresolvedTypeLayout<Poly16x4x2T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1P16X3() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Poly16x4x3T = transmute(vals)
+    val a: Poly16x4x3T = transmuteWithLayouts<UShortArray, Poly16x4x3T>(vals, PrimitiveArrayLayouts.uShortArray((12).toInt()), UnresolvedTypeLayout<Poly16x4x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1P16X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x4x3T = vld1P16X3(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Poly16x4x3T, UShortArray>(r, UnresolvedTypeLayout<Poly16x4x3T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1P16X4() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Poly16x4x4T = transmute(vals)
+    val a: Poly16x4x4T = transmuteWithLayouts<UShortArray, Poly16x4x4T>(vals, PrimitiveArrayLayouts.uShortArray((16).toInt()), UnresolvedTypeLayout<Poly16x4x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1P16X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x4x4T = vld1P16X4(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Poly16x4x4T, UShortArray>(r, UnresolvedTypeLayout<Poly16x4x4T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qP16X2() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Poly16x8x2T = transmute(vals)
+    val a: Poly16x8x2T = transmuteWithLayouts<UShortArray, Poly16x8x2T>(vals, PrimitiveArrayLayouts.uShortArray((16).toInt()), UnresolvedTypeLayout<Poly16x8x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1qP16X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x8x2T = vld1qP16X2(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Poly16x8x2T, UShortArray>(r, UnresolvedTypeLayout<Poly16x8x2T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qP16X3() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Poly16x8x3T = transmute(vals)
+    val a: Poly16x8x3T = transmuteWithLayouts<UShortArray, Poly16x8x3T>(vals, PrimitiveArrayLayouts.uShortArray((24).toInt()), UnresolvedTypeLayout<Poly16x8x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1qP16X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x8x3T = vld1qP16X3(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Poly16x8x3T, UShortArray>(r, UnresolvedTypeLayout<Poly16x8x3T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld1qP16X4() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Poly16x8x4T = transmute(vals)
+    val a: Poly16x8x4T = transmuteWithLayouts<UShortArray, Poly16x8x4T>(vals, PrimitiveArrayLayouts.uShortArray((32).toInt()), UnresolvedTypeLayout<Poly16x8x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1qP16X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x8x4T = vld1qP16X4(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Poly16x8x4T, UShortArray>(r, UnresolvedTypeLayout<Poly16x8x4T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2F32() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
-    val a: Float32x2x2T = transmute(vals)
+    val a: Float32x2x2T = transmuteWithLayouts<FloatArray, Float32x2x2T>(vals, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<Float32x2x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst2F32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x2x2T = vld2F32(tmp1.asPtr().cast())
-    val out: FloatArray = transmute(r)
+    val out: FloatArray = transmuteWithLayouts<Float32x2x2T, FloatArray>(r, UnresolvedTypeLayout<Float32x2x2T>(), UnresolvedTypeLayout<FloatArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3F32() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
-    val a: Float32x2x3T = transmute(vals)
+    val a: Float32x2x3T = transmuteWithLayouts<FloatArray, Float32x2x3T>(vals, PrimitiveArrayLayouts.floatArray((6).toInt()), UnresolvedTypeLayout<Float32x2x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst3F32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x2x3T = vld3F32(tmp1.asPtr().cast())
-    val out: FloatArray = transmute(r)
+    val out: FloatArray = transmuteWithLayouts<Float32x2x3T, FloatArray>(r, UnresolvedTypeLayout<Float32x2x3T>(), UnresolvedTypeLayout<FloatArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4F32() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
-    val a: Float32x2x4T = transmute(vals)
+    val a: Float32x2x4T = transmuteWithLayouts<FloatArray, Float32x2x4T>(vals, PrimitiveArrayLayouts.floatArray((8).toInt()), UnresolvedTypeLayout<Float32x2x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst4F32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x2x4T = vld4F32(tmp1.asPtr().cast())
-    val out: FloatArray = transmute(r)
+    val out: FloatArray = transmuteWithLayouts<Float32x2x4T, FloatArray>(r, UnresolvedTypeLayout<Float32x2x4T>(), UnresolvedTypeLayout<FloatArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2qF32() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
-    val a: Float32x4x2T = transmute(vals)
+    val a: Float32x4x2T = transmuteWithLayouts<FloatArray, Float32x4x2T>(vals, PrimitiveArrayLayouts.floatArray((8).toInt()), UnresolvedTypeLayout<Float32x4x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst2qF32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x4x2T = vld2qF32(tmp1.asPtr().cast())
-    val out: FloatArray = transmute(r)
+    val out: FloatArray = transmuteWithLayouts<Float32x4x2T, FloatArray>(r, UnresolvedTypeLayout<Float32x4x2T>(), UnresolvedTypeLayout<FloatArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3qF32() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
-    val a: Float32x4x3T = transmute(vals)
+    val a: Float32x4x3T = transmuteWithLayouts<FloatArray, Float32x4x3T>(vals, PrimitiveArrayLayouts.floatArray((12).toInt()), UnresolvedTypeLayout<Float32x4x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst3qF32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x4x3T = vld3qF32(tmp1.asPtr().cast())
-    val out: FloatArray = transmute(r)
+    val out: FloatArray = transmuteWithLayouts<Float32x4x3T, FloatArray>(r, UnresolvedTypeLayout<Float32x4x3T>(), UnresolvedTypeLayout<FloatArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4qF32() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
-    val a: Float32x4x4T = transmute(vals)
+    val a: Float32x4x4T = transmuteWithLayouts<FloatArray, Float32x4x4T>(vals, PrimitiveArrayLayouts.floatArray((16).toInt()), UnresolvedTypeLayout<Float32x4x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst4qF32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x4x4T = vld4qF32(tmp1.asPtr().cast())
-    val out: FloatArray = transmute(r)
+    val out: FloatArray = transmuteWithLayouts<Float32x4x4T, FloatArray>(r, UnresolvedTypeLayout<Float32x4x4T>(), UnresolvedTypeLayout<FloatArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2F64() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
-    val a: Float64x1x2T = transmute(vals)
+    val a: Float64x1x2T = transmuteWithLayouts<DoubleArray, Float64x1x2T>(vals, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<Float64x1x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst2F64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x1x2T = vld2F64(tmp1.asPtr().cast())
-    val out: DoubleArray = transmute(r)
+    val out: DoubleArray = transmuteWithLayouts<Float64x1x2T, DoubleArray>(r, UnresolvedTypeLayout<Float64x1x2T>(), UnresolvedTypeLayout<DoubleArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3F64() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
-    val a: Float64x1x3T = transmute(vals)
+    val a: Float64x1x3T = transmuteWithLayouts<DoubleArray, Float64x1x3T>(vals, PrimitiveArrayLayouts.doubleArray((3).toInt()), UnresolvedTypeLayout<Float64x1x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst3F64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x1x3T = vld3F64(tmp1.asPtr().cast())
-    val out: DoubleArray = transmute(r)
+    val out: DoubleArray = transmuteWithLayouts<Float64x1x3T, DoubleArray>(r, UnresolvedTypeLayout<Float64x1x3T>(), UnresolvedTypeLayout<DoubleArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4F64() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
-    val a: Float64x1x4T = transmute(vals)
+    val a: Float64x1x4T = transmuteWithLayouts<DoubleArray, Float64x1x4T>(vals, PrimitiveArrayLayouts.doubleArray((4).toInt()), UnresolvedTypeLayout<Float64x1x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst4F64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x1x4T = vld4F64(tmp1.asPtr().cast())
-    val out: DoubleArray = transmute(r)
+    val out: DoubleArray = transmuteWithLayouts<Float64x1x4T, DoubleArray>(r, UnresolvedTypeLayout<Float64x1x4T>(), UnresolvedTypeLayout<DoubleArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2qF64() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
-    val a: Float64x2x2T = transmute(vals)
+    val a: Float64x2x2T = transmuteWithLayouts<DoubleArray, Float64x2x2T>(vals, PrimitiveArrayLayouts.doubleArray((4).toInt()), UnresolvedTypeLayout<Float64x2x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst2qF64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x2x2T = vld2qF64(tmp1.asPtr().cast())
-    val out: DoubleArray = transmute(r)
+    val out: DoubleArray = transmuteWithLayouts<Float64x2x2T, DoubleArray>(r, UnresolvedTypeLayout<Float64x2x2T>(), UnresolvedTypeLayout<DoubleArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3qF64() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
-    val a: Float64x2x3T = transmute(vals)
+    val a: Float64x2x3T = transmuteWithLayouts<DoubleArray, Float64x2x3T>(vals, PrimitiveArrayLayouts.doubleArray((6).toInt()), UnresolvedTypeLayout<Float64x2x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst3qF64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x2x3T = vld3qF64(tmp1.asPtr().cast())
-    val out: DoubleArray = transmute(r)
+    val out: DoubleArray = transmuteWithLayouts<Float64x2x3T, DoubleArray>(r, UnresolvedTypeLayout<Float64x2x3T>(), UnresolvedTypeLayout<DoubleArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4qF64() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
-    val a: Float64x2x4T = transmute(vals)
+    val a: Float64x2x4T = transmuteWithLayouts<DoubleArray, Float64x2x4T>(vals, PrimitiveArrayLayouts.doubleArray((8).toInt()), UnresolvedTypeLayout<Float64x2x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst4qF64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x2x4T = vld4qF64(tmp1.asPtr().cast())
-    val out: DoubleArray = transmute(r)
+    val out: DoubleArray = transmuteWithLayouts<Float64x2x4T, DoubleArray>(r, UnresolvedTypeLayout<Float64x2x4T>(), UnresolvedTypeLayout<DoubleArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2S8() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
-    val a: Int8x8x2T = transmute(vals)
+    val a: Int8x8x2T = transmuteWithLayouts<ByteArray, Int8x8x2T>(vals, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<Int8x8x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst2S8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x8x2T = vld2S8(tmp1.asPtr().cast())
-    val out: ByteArray = transmute(r)
+    val out: ByteArray = transmuteWithLayouts<Int8x8x2T, ByteArray>(r, UnresolvedTypeLayout<Int8x8x2T>(), UnresolvedTypeLayout<ByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3S8() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
-    val a: Int8x8x3T = transmute(vals)
+    val a: Int8x8x3T = transmuteWithLayouts<ByteArray, Int8x8x3T>(vals, PrimitiveArrayLayouts.byteArray((24).toInt()), UnresolvedTypeLayout<Int8x8x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst3S8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x8x3T = vld3S8(tmp1.asPtr().cast())
-    val out: ByteArray = transmute(r)
+    val out: ByteArray = transmuteWithLayouts<Int8x8x3T, ByteArray>(r, UnresolvedTypeLayout<Int8x8x3T>(), UnresolvedTypeLayout<ByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4S8() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
-    val a: Int8x8x4T = transmute(vals)
+    val a: Int8x8x4T = transmuteWithLayouts<ByteArray, Int8x8x4T>(vals, PrimitiveArrayLayouts.byteArray((32).toInt()), UnresolvedTypeLayout<Int8x8x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst4S8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x8x4T = vld4S8(tmp1.asPtr().cast())
-    val out: ByteArray = transmute(r)
+    val out: ByteArray = transmuteWithLayouts<Int8x8x4T, ByteArray>(r, UnresolvedTypeLayout<Int8x8x4T>(), UnresolvedTypeLayout<ByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2qS8() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
-    val a: Int8x16x2T = transmute(vals)
+    val a: Int8x16x2T = transmuteWithLayouts<ByteArray, Int8x16x2T>(vals, PrimitiveArrayLayouts.byteArray((32).toInt()), UnresolvedTypeLayout<Int8x16x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst2qS8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x16x2T = vld2qS8(tmp1.asPtr().cast())
-    val out: ByteArray = transmute(r)
+    val out: ByteArray = transmuteWithLayouts<Int8x16x2T, ByteArray>(r, UnresolvedTypeLayout<Int8x16x2T>(), UnresolvedTypeLayout<ByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3qS8() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
-    val a: Int8x16x3T = transmute(vals)
+    val a: Int8x16x3T = transmuteWithLayouts<ByteArray, Int8x16x3T>(vals, PrimitiveArrayLayouts.byteArray((48).toInt()), UnresolvedTypeLayout<Int8x16x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst3qS8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x16x3T = vld3qS8(tmp1.asPtr().cast())
-    val out: ByteArray = transmute(r)
+    val out: ByteArray = transmuteWithLayouts<Int8x16x3T, ByteArray>(r, UnresolvedTypeLayout<Int8x16x3T>(), UnresolvedTypeLayout<ByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4qS8() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
-    val a: Int8x16x4T = transmute(vals)
+    val a: Int8x16x4T = transmuteWithLayouts<ByteArray, Int8x16x4T>(vals, PrimitiveArrayLayouts.byteArray((64).toInt()), UnresolvedTypeLayout<Int8x16x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst4qS8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x16x4T = vld4qS8(tmp1.asPtr().cast())
-    val out: ByteArray = transmute(r)
+    val out: ByteArray = transmuteWithLayouts<Int8x16x4T, ByteArray>(r, UnresolvedTypeLayout<Int8x16x4T>(), UnresolvedTypeLayout<ByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2S16() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
-    val a: Int16x4x2T = transmute(vals)
+    val a: Int16x4x2T = transmuteWithLayouts<ShortArray, Int16x4x2T>(vals, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<Int16x4x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst2S16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x4x2T = vld2S16(tmp1.asPtr().cast())
-    val out: ShortArray = transmute(r)
+    val out: ShortArray = transmuteWithLayouts<Int16x4x2T, ShortArray>(r, UnresolvedTypeLayout<Int16x4x2T>(), UnresolvedTypeLayout<ShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3S16() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
-    val a: Int16x4x3T = transmute(vals)
+    val a: Int16x4x3T = transmuteWithLayouts<ShortArray, Int16x4x3T>(vals, PrimitiveArrayLayouts.shortArray((12).toInt()), UnresolvedTypeLayout<Int16x4x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst3S16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x4x3T = vld3S16(tmp1.asPtr().cast())
-    val out: ShortArray = transmute(r)
+    val out: ShortArray = transmuteWithLayouts<Int16x4x3T, ShortArray>(r, UnresolvedTypeLayout<Int16x4x3T>(), UnresolvedTypeLayout<ShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4S16() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
-    val a: Int16x4x4T = transmute(vals)
+    val a: Int16x4x4T = transmuteWithLayouts<ShortArray, Int16x4x4T>(vals, PrimitiveArrayLayouts.shortArray((16).toInt()), UnresolvedTypeLayout<Int16x4x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst4S16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x4x4T = vld4S16(tmp1.asPtr().cast())
-    val out: ShortArray = transmute(r)
+    val out: ShortArray = transmuteWithLayouts<Int16x4x4T, ShortArray>(r, UnresolvedTypeLayout<Int16x4x4T>(), UnresolvedTypeLayout<ShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2qS16() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
-    val a: Int16x8x2T = transmute(vals)
+    val a: Int16x8x2T = transmuteWithLayouts<ShortArray, Int16x8x2T>(vals, PrimitiveArrayLayouts.shortArray((16).toInt()), UnresolvedTypeLayout<Int16x8x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst2qS16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x8x2T = vld2qS16(tmp1.asPtr().cast())
-    val out: ShortArray = transmute(r)
+    val out: ShortArray = transmuteWithLayouts<Int16x8x2T, ShortArray>(r, UnresolvedTypeLayout<Int16x8x2T>(), UnresolvedTypeLayout<ShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3qS16() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
-    val a: Int16x8x3T = transmute(vals)
+    val a: Int16x8x3T = transmuteWithLayouts<ShortArray, Int16x8x3T>(vals, PrimitiveArrayLayouts.shortArray((24).toInt()), UnresolvedTypeLayout<Int16x8x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst3qS16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x8x3T = vld3qS16(tmp1.asPtr().cast())
-    val out: ShortArray = transmute(r)
+    val out: ShortArray = transmuteWithLayouts<Int16x8x3T, ShortArray>(r, UnresolvedTypeLayout<Int16x8x3T>(), UnresolvedTypeLayout<ShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4qS16() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
-    val a: Int16x8x4T = transmute(vals)
+    val a: Int16x8x4T = transmuteWithLayouts<ShortArray, Int16x8x4T>(vals, PrimitiveArrayLayouts.shortArray((32).toInt()), UnresolvedTypeLayout<Int16x8x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst4qS16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x8x4T = vld4qS16(tmp1.asPtr().cast())
-    val out: ShortArray = transmute(r)
+    val out: ShortArray = transmuteWithLayouts<Int16x8x4T, ShortArray>(r, UnresolvedTypeLayout<Int16x8x4T>(), UnresolvedTypeLayout<ShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2S32() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
-    val a: Int32x2x2T = transmute(vals)
+    val a: Int32x2x2T = transmuteWithLayouts<IntArray, Int32x2x2T>(vals, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<Int32x2x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst2S32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x2x2T = vld2S32(tmp1.asPtr().cast())
-    val out: IntArray = transmute(r)
+    val out: IntArray = transmuteWithLayouts<Int32x2x2T, IntArray>(r, UnresolvedTypeLayout<Int32x2x2T>(), UnresolvedTypeLayout<IntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3S32() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
-    val a: Int32x2x3T = transmute(vals)
+    val a: Int32x2x3T = transmuteWithLayouts<IntArray, Int32x2x3T>(vals, PrimitiveArrayLayouts.intArray((6).toInt()), UnresolvedTypeLayout<Int32x2x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst3S32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x2x3T = vld3S32(tmp1.asPtr().cast())
-    val out: IntArray = transmute(r)
+    val out: IntArray = transmuteWithLayouts<Int32x2x3T, IntArray>(r, UnresolvedTypeLayout<Int32x2x3T>(), UnresolvedTypeLayout<IntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4S32() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
-    val a: Int32x2x4T = transmute(vals)
+    val a: Int32x2x4T = transmuteWithLayouts<IntArray, Int32x2x4T>(vals, PrimitiveArrayLayouts.intArray((8).toInt()), UnresolvedTypeLayout<Int32x2x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst4S32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x2x4T = vld4S32(tmp1.asPtr().cast())
-    val out: IntArray = transmute(r)
+    val out: IntArray = transmuteWithLayouts<Int32x2x4T, IntArray>(r, UnresolvedTypeLayout<Int32x2x4T>(), UnresolvedTypeLayout<IntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2qS32() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
-    val a: Int32x4x2T = transmute(vals)
+    val a: Int32x4x2T = transmuteWithLayouts<IntArray, Int32x4x2T>(vals, PrimitiveArrayLayouts.intArray((8).toInt()), UnresolvedTypeLayout<Int32x4x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst2qS32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x4x2T = vld2qS32(tmp1.asPtr().cast())
-    val out: IntArray = transmute(r)
+    val out: IntArray = transmuteWithLayouts<Int32x4x2T, IntArray>(r, UnresolvedTypeLayout<Int32x4x2T>(), UnresolvedTypeLayout<IntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3qS32() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
-    val a: Int32x4x3T = transmute(vals)
+    val a: Int32x4x3T = transmuteWithLayouts<IntArray, Int32x4x3T>(vals, PrimitiveArrayLayouts.intArray((12).toInt()), UnresolvedTypeLayout<Int32x4x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst3qS32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x4x3T = vld3qS32(tmp1.asPtr().cast())
-    val out: IntArray = transmute(r)
+    val out: IntArray = transmuteWithLayouts<Int32x4x3T, IntArray>(r, UnresolvedTypeLayout<Int32x4x3T>(), UnresolvedTypeLayout<IntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4qS32() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
-    val a: Int32x4x4T = transmute(vals)
+    val a: Int32x4x4T = transmuteWithLayouts<IntArray, Int32x4x4T>(vals, PrimitiveArrayLayouts.intArray((16).toInt()), UnresolvedTypeLayout<Int32x4x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst4qS32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x4x4T = vld4qS32(tmp1.asPtr().cast())
-    val out: IntArray = transmute(r)
+    val out: IntArray = transmuteWithLayouts<Int32x4x4T, IntArray>(r, UnresolvedTypeLayout<Int32x4x4T>(), UnresolvedTypeLayout<IntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2S64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x1x2T = transmute(vals)
+    val a: Int64x1x2T = transmuteWithLayouts<LongArray, Int64x1x2T>(vals, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<Int64x1x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst2S64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x1x2T = vld2S64(tmp1.asPtr().cast())
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x1x2T, LongArray>(r, UnresolvedTypeLayout<Int64x1x2T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3S64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x1x3T = transmute(vals)
+    val a: Int64x1x3T = transmuteWithLayouts<LongArray, Int64x1x3T>(vals, PrimitiveArrayLayouts.longArray((3).toInt()), UnresolvedTypeLayout<Int64x1x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst3S64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x1x3T = vld3S64(tmp1.asPtr().cast())
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x1x3T, LongArray>(r, UnresolvedTypeLayout<Int64x1x3T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4S64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x1x4T = transmute(vals)
+    val a: Int64x1x4T = transmuteWithLayouts<LongArray, Int64x1x4T>(vals, PrimitiveArrayLayouts.longArray((4).toInt()), UnresolvedTypeLayout<Int64x1x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst4S64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x1x4T = vld4S64(tmp1.asPtr().cast())
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x1x4T, LongArray>(r, UnresolvedTypeLayout<Int64x1x4T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2qS64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x2x2T = transmute(vals)
+    val a: Int64x2x2T = transmuteWithLayouts<LongArray, Int64x2x2T>(vals, PrimitiveArrayLayouts.longArray((4).toInt()), UnresolvedTypeLayout<Int64x2x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst2qS64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x2x2T = vld2qS64(tmp1.asPtr().cast())
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x2x2T, LongArray>(r, UnresolvedTypeLayout<Int64x2x2T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3qS64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x2x3T = transmute(vals)
+    val a: Int64x2x3T = transmuteWithLayouts<LongArray, Int64x2x3T>(vals, PrimitiveArrayLayouts.longArray((6).toInt()), UnresolvedTypeLayout<Int64x2x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst3qS64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x2x3T = vld3qS64(tmp1.asPtr().cast())
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x2x3T, LongArray>(r, UnresolvedTypeLayout<Int64x2x3T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4qS64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x2x4T = transmute(vals)
+    val a: Int64x2x4T = transmuteWithLayouts<LongArray, Int64x2x4T>(vals, PrimitiveArrayLayouts.longArray((8).toInt()), UnresolvedTypeLayout<Int64x2x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst4qS64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x2x4T = vld4qS64(tmp1.asPtr().cast())
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x2x4T, LongArray>(r, UnresolvedTypeLayout<Int64x2x4T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2U8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Uint8x8x2T = transmute(vals)
+    val a: Uint8x8x2T = transmuteWithLayouts<UByteArray, Uint8x8x2T>(vals, PrimitiveArrayLayouts.uByteArray((16).toInt()), UnresolvedTypeLayout<Uint8x8x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst2U8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x8x2T = vld2U8(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Uint8x8x2T, UByteArray>(r, UnresolvedTypeLayout<Uint8x8x2T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3U8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Uint8x8x3T = transmute(vals)
+    val a: Uint8x8x3T = transmuteWithLayouts<UByteArray, Uint8x8x3T>(vals, PrimitiveArrayLayouts.uByteArray((24).toInt()), UnresolvedTypeLayout<Uint8x8x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst3U8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x8x3T = vld3U8(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Uint8x8x3T, UByteArray>(r, UnresolvedTypeLayout<Uint8x8x3T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4U8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Uint8x8x4T = transmute(vals)
+    val a: Uint8x8x4T = transmuteWithLayouts<UByteArray, Uint8x8x4T>(vals, PrimitiveArrayLayouts.uByteArray((32).toInt()), UnresolvedTypeLayout<Uint8x8x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst4U8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x8x4T = vld4U8(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Uint8x8x4T, UByteArray>(r, UnresolvedTypeLayout<Uint8x8x4T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2qU8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Uint8x16x2T = transmute(vals)
+    val a: Uint8x16x2T = transmuteWithLayouts<UByteArray, Uint8x16x2T>(vals, PrimitiveArrayLayouts.uByteArray((32).toInt()), UnresolvedTypeLayout<Uint8x16x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst2qU8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x16x2T = vld2qU8(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Uint8x16x2T, UByteArray>(r, UnresolvedTypeLayout<Uint8x16x2T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3qU8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Uint8x16x3T = transmute(vals)
+    val a: Uint8x16x3T = transmuteWithLayouts<UByteArray, Uint8x16x3T>(vals, PrimitiveArrayLayouts.uByteArray((48).toInt()), UnresolvedTypeLayout<Uint8x16x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst3qU8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x16x3T = vld3qU8(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Uint8x16x3T, UByteArray>(r, UnresolvedTypeLayout<Uint8x16x3T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4qU8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Uint8x16x4T = transmute(vals)
+    val a: Uint8x16x4T = transmuteWithLayouts<UByteArray, Uint8x16x4T>(vals, PrimitiveArrayLayouts.uByteArray((64).toInt()), UnresolvedTypeLayout<Uint8x16x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst4qU8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x16x4T = vld4qU8(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Uint8x16x4T, UByteArray>(r, UnresolvedTypeLayout<Uint8x16x4T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2U16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Uint16x4x2T = transmute(vals)
+    val a: Uint16x4x2T = transmuteWithLayouts<UShortArray, Uint16x4x2T>(vals, PrimitiveArrayLayouts.uShortArray((8).toInt()), UnresolvedTypeLayout<Uint16x4x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst2U16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x4x2T = vld2U16(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Uint16x4x2T, UShortArray>(r, UnresolvedTypeLayout<Uint16x4x2T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3U16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Uint16x4x3T = transmute(vals)
+    val a: Uint16x4x3T = transmuteWithLayouts<UShortArray, Uint16x4x3T>(vals, PrimitiveArrayLayouts.uShortArray((12).toInt()), UnresolvedTypeLayout<Uint16x4x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst3U16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x4x3T = vld3U16(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Uint16x4x3T, UShortArray>(r, UnresolvedTypeLayout<Uint16x4x3T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4U16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Uint16x4x4T = transmute(vals)
+    val a: Uint16x4x4T = transmuteWithLayouts<UShortArray, Uint16x4x4T>(vals, PrimitiveArrayLayouts.uShortArray((16).toInt()), UnresolvedTypeLayout<Uint16x4x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst4U16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x4x4T = vld4U16(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Uint16x4x4T, UShortArray>(r, UnresolvedTypeLayout<Uint16x4x4T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2qU16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Uint16x8x2T = transmute(vals)
+    val a: Uint16x8x2T = transmuteWithLayouts<UShortArray, Uint16x8x2T>(vals, PrimitiveArrayLayouts.uShortArray((16).toInt()), UnresolvedTypeLayout<Uint16x8x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst2qU16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x8x2T = vld2qU16(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Uint16x8x2T, UShortArray>(r, UnresolvedTypeLayout<Uint16x8x2T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3qU16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Uint16x8x3T = transmute(vals)
+    val a: Uint16x8x3T = transmuteWithLayouts<UShortArray, Uint16x8x3T>(vals, PrimitiveArrayLayouts.uShortArray((24).toInt()), UnresolvedTypeLayout<Uint16x8x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst3qU16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x8x3T = vld3qU16(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Uint16x8x3T, UShortArray>(r, UnresolvedTypeLayout<Uint16x8x3T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4qU16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Uint16x8x4T = transmute(vals)
+    val a: Uint16x8x4T = transmuteWithLayouts<UShortArray, Uint16x8x4T>(vals, PrimitiveArrayLayouts.uShortArray((32).toInt()), UnresolvedTypeLayout<Uint16x8x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst4qU16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x8x4T = vld4qU16(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Uint16x8x4T, UShortArray>(r, UnresolvedTypeLayout<Uint16x8x4T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2U32() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
-    val a: Uint32x2x2T = transmute(vals)
+    val a: Uint32x2x2T = transmuteWithLayouts<UIntArray, Uint32x2x2T>(vals, PrimitiveArrayLayouts.uIntArray((4).toInt()), UnresolvedTypeLayout<Uint32x2x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst2U32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x2x2T = vld2U32(tmp1.asPtr().cast())
-    val out: UIntArray = transmute(r)
+    val out: UIntArray = transmuteWithLayouts<Uint32x2x2T, UIntArray>(r, UnresolvedTypeLayout<Uint32x2x2T>(), UnresolvedTypeLayout<UIntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3U32() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
-    val a: Uint32x2x3T = transmute(vals)
+    val a: Uint32x2x3T = transmuteWithLayouts<UIntArray, Uint32x2x3T>(vals, PrimitiveArrayLayouts.uIntArray((6).toInt()), UnresolvedTypeLayout<Uint32x2x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst3U32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x2x3T = vld3U32(tmp1.asPtr().cast())
-    val out: UIntArray = transmute(r)
+    val out: UIntArray = transmuteWithLayouts<Uint32x2x3T, UIntArray>(r, UnresolvedTypeLayout<Uint32x2x3T>(), UnresolvedTypeLayout<UIntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4U32() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
-    val a: Uint32x2x4T = transmute(vals)
+    val a: Uint32x2x4T = transmuteWithLayouts<UIntArray, Uint32x2x4T>(vals, PrimitiveArrayLayouts.uIntArray((8).toInt()), UnresolvedTypeLayout<Uint32x2x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst4U32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x2x4T = vld4U32(tmp1.asPtr().cast())
-    val out: UIntArray = transmute(r)
+    val out: UIntArray = transmuteWithLayouts<Uint32x2x4T, UIntArray>(r, UnresolvedTypeLayout<Uint32x2x4T>(), UnresolvedTypeLayout<UIntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2qU32() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
-    val a: Uint32x4x2T = transmute(vals)
+    val a: Uint32x4x2T = transmuteWithLayouts<UIntArray, Uint32x4x2T>(vals, PrimitiveArrayLayouts.uIntArray((8).toInt()), UnresolvedTypeLayout<Uint32x4x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst2qU32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x4x2T = vld2qU32(tmp1.asPtr().cast())
-    val out: UIntArray = transmute(r)
+    val out: UIntArray = transmuteWithLayouts<Uint32x4x2T, UIntArray>(r, UnresolvedTypeLayout<Uint32x4x2T>(), UnresolvedTypeLayout<UIntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3qU32() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
-    val a: Uint32x4x3T = transmute(vals)
+    val a: Uint32x4x3T = transmuteWithLayouts<UIntArray, Uint32x4x3T>(vals, PrimitiveArrayLayouts.uIntArray((12).toInt()), UnresolvedTypeLayout<Uint32x4x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst3qU32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x4x3T = vld3qU32(tmp1.asPtr().cast())
-    val out: UIntArray = transmute(r)
+    val out: UIntArray = transmuteWithLayouts<Uint32x4x3T, UIntArray>(r, UnresolvedTypeLayout<Uint32x4x3T>(), UnresolvedTypeLayout<UIntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4qU32() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
-    val a: Uint32x4x4T = transmute(vals)
+    val a: Uint32x4x4T = transmuteWithLayouts<UIntArray, Uint32x4x4T>(vals, PrimitiveArrayLayouts.uIntArray((16).toInt()), UnresolvedTypeLayout<Uint32x4x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst4qU32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x4x4T = vld4qU32(tmp1.asPtr().cast())
-    val out: UIntArray = transmute(r)
+    val out: UIntArray = transmuteWithLayouts<Uint32x4x4T, UIntArray>(r, UnresolvedTypeLayout<Uint32x4x4T>(), UnresolvedTypeLayout<UIntArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2U64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x1x2T = transmute(vals)
+    val a: Uint64x1x2T = transmuteWithLayouts<ULongArray, Uint64x1x2T>(vals, PrimitiveArrayLayouts.uLongArray((2).toInt()), UnresolvedTypeLayout<Uint64x1x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst2U64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x1x2T = vld2U64(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x1x2T, ULongArray>(r, UnresolvedTypeLayout<Uint64x1x2T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3U64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x1x3T = transmute(vals)
+    val a: Uint64x1x3T = transmuteWithLayouts<ULongArray, Uint64x1x3T>(vals, PrimitiveArrayLayouts.uLongArray((3).toInt()), UnresolvedTypeLayout<Uint64x1x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst3U64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x1x3T = vld3U64(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x1x3T, ULongArray>(r, UnresolvedTypeLayout<Uint64x1x3T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4U64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x1x4T = transmute(vals)
+    val a: Uint64x1x4T = transmuteWithLayouts<ULongArray, Uint64x1x4T>(vals, PrimitiveArrayLayouts.uLongArray((4).toInt()), UnresolvedTypeLayout<Uint64x1x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst4U64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x1x4T = vld4U64(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x1x4T, ULongArray>(r, UnresolvedTypeLayout<Uint64x1x4T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2qU64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x2x2T = transmute(vals)
+    val a: Uint64x2x2T = transmuteWithLayouts<ULongArray, Uint64x2x2T>(vals, PrimitiveArrayLayouts.uLongArray((4).toInt()), UnresolvedTypeLayout<Uint64x2x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst2qU64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x2x2T = vld2qU64(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x2x2T, ULongArray>(r, UnresolvedTypeLayout<Uint64x2x2T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3qU64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x2x3T = transmute(vals)
+    val a: Uint64x2x3T = transmuteWithLayouts<ULongArray, Uint64x2x3T>(vals, PrimitiveArrayLayouts.uLongArray((6).toInt()), UnresolvedTypeLayout<Uint64x2x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst3qU64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x2x3T = vld3qU64(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x2x3T, ULongArray>(r, UnresolvedTypeLayout<Uint64x2x3T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4qU64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x2x4T = transmute(vals)
+    val a: Uint64x2x4T = transmuteWithLayouts<ULongArray, Uint64x2x4T>(vals, PrimitiveArrayLayouts.uLongArray((8).toInt()), UnresolvedTypeLayout<Uint64x2x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst4qU64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x2x4T = vld4qU64(tmp1.asPtr().cast())
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x2x4T, ULongArray>(r, UnresolvedTypeLayout<Uint64x2x4T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2P8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Poly8x8x2T = transmute(vals)
+    val a: Poly8x8x2T = transmuteWithLayouts<UByteArray, Poly8x8x2T>(vals, PrimitiveArrayLayouts.uByteArray((16).toInt()), UnresolvedTypeLayout<Poly8x8x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst2P8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x8x2T = vld2P8(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Poly8x8x2T, UByteArray>(r, UnresolvedTypeLayout<Poly8x8x2T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3P8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Poly8x8x3T = transmute(vals)
+    val a: Poly8x8x3T = transmuteWithLayouts<UByteArray, Poly8x8x3T>(vals, PrimitiveArrayLayouts.uByteArray((24).toInt()), UnresolvedTypeLayout<Poly8x8x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst3P8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x8x3T = vld3P8(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Poly8x8x3T, UByteArray>(r, UnresolvedTypeLayout<Poly8x8x3T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4P8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Poly8x8x4T = transmute(vals)
+    val a: Poly8x8x4T = transmuteWithLayouts<UByteArray, Poly8x8x4T>(vals, PrimitiveArrayLayouts.uByteArray((32).toInt()), UnresolvedTypeLayout<Poly8x8x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst4P8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x8x4T = vld4P8(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Poly8x8x4T, UByteArray>(r, UnresolvedTypeLayout<Poly8x8x4T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2qP8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Poly8x16x2T = transmute(vals)
+    val a: Poly8x16x2T = transmuteWithLayouts<UByteArray, Poly8x16x2T>(vals, PrimitiveArrayLayouts.uByteArray((32).toInt()), UnresolvedTypeLayout<Poly8x16x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst2qP8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x16x2T = vld2qP8(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Poly8x16x2T, UByteArray>(r, UnresolvedTypeLayout<Poly8x16x2T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3qP8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Poly8x16x3T = transmute(vals)
+    val a: Poly8x16x3T = transmuteWithLayouts<UByteArray, Poly8x16x3T>(vals, PrimitiveArrayLayouts.uByteArray((48).toInt()), UnresolvedTypeLayout<Poly8x16x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst3qP8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x16x3T = vld3qP8(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Poly8x16x3T, UByteArray>(r, UnresolvedTypeLayout<Poly8x16x3T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4qP8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Poly8x16x4T = transmute(vals)
+    val a: Poly8x16x4T = transmuteWithLayouts<UByteArray, Poly8x16x4T>(vals, PrimitiveArrayLayouts.uByteArray((64).toInt()), UnresolvedTypeLayout<Poly8x16x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst4qP8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x16x4T = vld4qP8(tmp1.asPtr().cast())
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Poly8x16x4T, UByteArray>(r, UnresolvedTypeLayout<Poly8x16x4T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2P16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Poly16x4x2T = transmute(vals)
+    val a: Poly16x4x2T = transmuteWithLayouts<UShortArray, Poly16x4x2T>(vals, PrimitiveArrayLayouts.uShortArray((8).toInt()), UnresolvedTypeLayout<Poly16x4x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst2P16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x4x2T = vld2P16(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Poly16x4x2T, UShortArray>(r, UnresolvedTypeLayout<Poly16x4x2T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3P16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Poly16x4x3T = transmute(vals)
+    val a: Poly16x4x3T = transmuteWithLayouts<UShortArray, Poly16x4x3T>(vals, PrimitiveArrayLayouts.uShortArray((12).toInt()), UnresolvedTypeLayout<Poly16x4x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst3P16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x4x3T = vld3P16(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Poly16x4x3T, UShortArray>(r, UnresolvedTypeLayout<Poly16x4x3T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4P16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Poly16x4x4T = transmute(vals)
+    val a: Poly16x4x4T = transmuteWithLayouts<UShortArray, Poly16x4x4T>(vals, PrimitiveArrayLayouts.uShortArray((16).toInt()), UnresolvedTypeLayout<Poly16x4x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst4P16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x4x4T = vld4P16(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Poly16x4x4T, UShortArray>(r, UnresolvedTypeLayout<Poly16x4x4T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2qP16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Poly16x8x2T = transmute(vals)
+    val a: Poly16x8x2T = transmuteWithLayouts<UShortArray, Poly16x8x2T>(vals, PrimitiveArrayLayouts.uShortArray((16).toInt()), UnresolvedTypeLayout<Poly16x8x2T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst2qP16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x8x2T = vld2qP16(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Poly16x8x2T, UShortArray>(r, UnresolvedTypeLayout<Poly16x8x2T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3qP16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Poly16x8x3T = transmute(vals)
+    val a: Poly16x8x3T = transmuteWithLayouts<UShortArray, Poly16x8x3T>(vals, PrimitiveArrayLayouts.uShortArray((24).toInt()), UnresolvedTypeLayout<Poly16x8x3T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst3qP16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x8x3T = vld3qP16(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Poly16x8x3T, UShortArray>(r, UnresolvedTypeLayout<Poly16x8x3T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4qP16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
-    val a: Poly16x8x4T = transmute(vals)
+    val a: Poly16x8x4T = transmuteWithLayouts<UShortArray, Poly16x8x4T>(vals, PrimitiveArrayLayouts.uShortArray((32).toInt()), UnresolvedTypeLayout<Poly16x8x4T>())
     val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst4qP16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x8x4T = vld4qP16(tmp1.asPtr().cast())
-    val out: UShortArray = transmute(r)
+    val out: UShortArray = transmuteWithLayouts<Poly16x8x4T, UShortArray>(r, UnresolvedTypeLayout<Poly16x8x4T>(), UnresolvedTypeLayout<UShortArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2qLaneS8() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
-    val a: Int8x16x2T = transmute(vals)
+    val a: Int8x16x2T = transmuteWithLayouts<ByteArray, Int8x16x2T>(vals, PrimitiveArrayLayouts.byteArray((32).toInt()), UnresolvedTypeLayout<Int8x16x2T>())
     val localStorageL1C0 = AddressableArrayLocal.fromByteArray(ByteArray(4) { 0.toByte() })
     vst2qLaneS8(localStorageL1C0.elementMutPtr(0), a, 15)
     val r: Int8x16x2T = vld2qLaneS8(localStorageL1C0.elementConstPtr(0), a, 15)
-    val out: ByteArray = transmute(r)
+    val out: ByteArray = transmuteWithLayouts<Int8x16x2T, ByteArray>(r, UnresolvedTypeLayout<Int8x16x2T>(), UnresolvedTypeLayout<ByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3qLaneS8() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
-    val a: Int8x16x3T = transmute(vals)
+    val a: Int8x16x3T = transmuteWithLayouts<ByteArray, Int8x16x3T>(vals, PrimitiveArrayLayouts.byteArray((48).toInt()), UnresolvedTypeLayout<Int8x16x3T>())
     val localStorageL1C0 = AddressableArrayLocal.fromByteArray(ByteArray(4) { 0.toByte() })
     vst3qLaneS8(localStorageL1C0.elementMutPtr(0), a, 15)
     val r: Int8x16x3T = vld3qLaneS8(localStorageL1C0.elementConstPtr(0), a, 15)
-    val out: ByteArray = transmute(r)
+    val out: ByteArray = transmuteWithLayouts<Int8x16x3T, ByteArray>(r, UnresolvedTypeLayout<Int8x16x3T>(), UnresolvedTypeLayout<ByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4qLaneS8() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
-    val a: Int8x16x4T = transmute(vals)
+    val a: Int8x16x4T = transmuteWithLayouts<ByteArray, Int8x16x4T>(vals, PrimitiveArrayLayouts.byteArray((64).toInt()), UnresolvedTypeLayout<Int8x16x4T>())
     val localStorageL1C0 = AddressableArrayLocal.fromByteArray(ByteArray(4) { 0.toByte() })
     vst4qLaneS8(localStorageL1C0.elementMutPtr(0), a, 15)
     val r: Int8x16x4T = vld4qLaneS8(localStorageL1C0.elementConstPtr(0), a, 15)
-    val out: ByteArray = transmute(r)
+    val out: ByteArray = transmuteWithLayouts<Int8x16x4T, ByteArray>(r, UnresolvedTypeLayout<Int8x16x4T>(), UnresolvedTypeLayout<ByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2qLaneU8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Uint8x16x2T = transmute(vals)
+    val a: Uint8x16x2T = transmuteWithLayouts<UByteArray, Uint8x16x2T>(vals, PrimitiveArrayLayouts.uByteArray((32).toInt()), UnresolvedTypeLayout<Uint8x16x2T>())
     val localStorageL1C0 = AddressableArrayLocal.fromUByteArray(UByteArray(4) { 0.toUByte() })
     vst2qLaneU8(localStorageL1C0.elementMutPtr(0), a, 15)
     val r: Uint8x16x2T = vld2qLaneU8(localStorageL1C0.elementConstPtr(0), a, 15)
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Uint8x16x2T, UByteArray>(r, UnresolvedTypeLayout<Uint8x16x2T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3qLaneU8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Uint8x16x3T = transmute(vals)
+    val a: Uint8x16x3T = transmuteWithLayouts<UByteArray, Uint8x16x3T>(vals, PrimitiveArrayLayouts.uByteArray((48).toInt()), UnresolvedTypeLayout<Uint8x16x3T>())
     val localStorageL1C0 = AddressableArrayLocal.fromUByteArray(UByteArray(4) { 0.toUByte() })
     vst3qLaneU8(localStorageL1C0.elementMutPtr(0), a, 15)
     val r: Uint8x16x3T = vld3qLaneU8(localStorageL1C0.elementConstPtr(0), a, 15)
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Uint8x16x3T, UByteArray>(r, UnresolvedTypeLayout<Uint8x16x3T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4qLaneU8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
-    val a: Uint8x16x4T = transmute(vals)
+    val a: Uint8x16x4T = transmuteWithLayouts<UByteArray, Uint8x16x4T>(vals, PrimitiveArrayLayouts.uByteArray((64).toInt()), UnresolvedTypeLayout<Uint8x16x4T>())
     val localStorageL1C0 = AddressableArrayLocal.fromUByteArray(UByteArray(4) { 0.toUByte() })
     vst4qLaneU8(localStorageL1C0.elementMutPtr(0), a, 15)
     val r: Uint8x16x4T = vld4qLaneU8(localStorageL1C0.elementConstPtr(0), a, 15)
-    val out: UByteArray = transmute(r)
+    val out: UByteArray = transmuteWithLayouts<Uint8x16x4T, UByteArray>(r, UnresolvedTypeLayout<Uint8x16x4T>(), UnresolvedTypeLayout<UByteArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2LaneS64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x1x2T = transmute(vals)
+    val a: Int64x1x2T = transmuteWithLayouts<LongArray, Int64x1x2T>(vals, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<Int64x1x2T>())
     val localStorageL1C0 = AddressableArrayLocal.fromLongArray(LongArray(4) { 0.toLong() })
     vst2LaneS64(localStorageL1C0.elementMutPtr(0), a, 0)
     val r: Int64x1x2T = vld2LaneS64(localStorageL1C0.elementConstPtr(0), a, 0)
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x1x2T, LongArray>(r, UnresolvedTypeLayout<Int64x1x2T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3LaneS64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x1x3T = transmute(vals)
+    val a: Int64x1x3T = transmuteWithLayouts<LongArray, Int64x1x3T>(vals, PrimitiveArrayLayouts.longArray((3).toInt()), UnresolvedTypeLayout<Int64x1x3T>())
     val localStorageL1C0 = AddressableArrayLocal.fromLongArray(LongArray(4) { 0.toLong() })
     vst3LaneS64(localStorageL1C0.elementMutPtr(0), a, 0)
     val r: Int64x1x3T = vld3LaneS64(localStorageL1C0.elementConstPtr(0), a, 0)
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x1x3T, LongArray>(r, UnresolvedTypeLayout<Int64x1x3T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4LaneS64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x1x4T = transmute(vals)
+    val a: Int64x1x4T = transmuteWithLayouts<LongArray, Int64x1x4T>(vals, PrimitiveArrayLayouts.longArray((4).toInt()), UnresolvedTypeLayout<Int64x1x4T>())
     val localStorageL1C0 = AddressableArrayLocal.fromLongArray(LongArray(4) { 0.toLong() })
     vst4LaneS64(localStorageL1C0.elementMutPtr(0), a, 0)
     val r: Int64x1x4T = vld4LaneS64(localStorageL1C0.elementConstPtr(0), a, 0)
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x1x4T, LongArray>(r, UnresolvedTypeLayout<Int64x1x4T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2qLaneS64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x2x2T = transmute(vals)
+    val a: Int64x2x2T = transmuteWithLayouts<LongArray, Int64x2x2T>(vals, PrimitiveArrayLayouts.longArray((4).toInt()), UnresolvedTypeLayout<Int64x2x2T>())
     val localStorageL1C0 = AddressableArrayLocal.fromLongArray(LongArray(4) { 0.toLong() })
     vst2qLaneS64(localStorageL1C0.elementMutPtr(0), a, 1)
     val r: Int64x2x2T = vld2qLaneS64(localStorageL1C0.elementConstPtr(0), a, 1)
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x2x2T, LongArray>(r, UnresolvedTypeLayout<Int64x2x2T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3qLaneS64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x2x3T = transmute(vals)
+    val a: Int64x2x3T = transmuteWithLayouts<LongArray, Int64x2x3T>(vals, PrimitiveArrayLayouts.longArray((6).toInt()), UnresolvedTypeLayout<Int64x2x3T>())
     val localStorageL1C0 = AddressableArrayLocal.fromLongArray(LongArray(4) { 0.toLong() })
     vst3qLaneS64(localStorageL1C0.elementMutPtr(0), a, 1)
     val r: Int64x2x3T = vld3qLaneS64(localStorageL1C0.elementConstPtr(0), a, 1)
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x2x3T, LongArray>(r, UnresolvedTypeLayout<Int64x2x3T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4qLaneS64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
-    val a: Int64x2x4T = transmute(vals)
+    val a: Int64x2x4T = transmuteWithLayouts<LongArray, Int64x2x4T>(vals, PrimitiveArrayLayouts.longArray((8).toInt()), UnresolvedTypeLayout<Int64x2x4T>())
     val localStorageL1C0 = AddressableArrayLocal.fromLongArray(LongArray(4) { 0.toLong() })
     vst4qLaneS64(localStorageL1C0.elementMutPtr(0), a, 1)
     val r: Int64x2x4T = vld4qLaneS64(localStorageL1C0.elementConstPtr(0), a, 1)
-    val out: LongArray = transmute(r)
+    val out: LongArray = transmuteWithLayouts<Int64x2x4T, LongArray>(r, UnresolvedTypeLayout<Int64x2x4T>(), UnresolvedTypeLayout<LongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2LaneU64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x1x2T = transmute(vals)
+    val a: Uint64x1x2T = transmuteWithLayouts<ULongArray, Uint64x1x2T>(vals, PrimitiveArrayLayouts.uLongArray((2).toInt()), UnresolvedTypeLayout<Uint64x1x2T>())
     val localStorageL1C0 = AddressableArrayLocal.fromULongArray(ULongArray(4) { 0.toULong() })
     vst2LaneU64(localStorageL1C0.elementMutPtr(0), a, 0)
     val r: Uint64x1x2T = vld2LaneU64(localStorageL1C0.elementConstPtr(0), a, 0)
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x1x2T, ULongArray>(r, UnresolvedTypeLayout<Uint64x1x2T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3LaneU64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x1x3T = transmute(vals)
+    val a: Uint64x1x3T = transmuteWithLayouts<ULongArray, Uint64x1x3T>(vals, PrimitiveArrayLayouts.uLongArray((3).toInt()), UnresolvedTypeLayout<Uint64x1x3T>())
     val localStorageL1C0 = AddressableArrayLocal.fromULongArray(ULongArray(4) { 0.toULong() })
     vst3LaneU64(localStorageL1C0.elementMutPtr(0), a, 0)
     val r: Uint64x1x3T = vld3LaneU64(localStorageL1C0.elementConstPtr(0), a, 0)
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x1x3T, ULongArray>(r, UnresolvedTypeLayout<Uint64x1x3T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4LaneU64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x1x4T = transmute(vals)
+    val a: Uint64x1x4T = transmuteWithLayouts<ULongArray, Uint64x1x4T>(vals, PrimitiveArrayLayouts.uLongArray((4).toInt()), UnresolvedTypeLayout<Uint64x1x4T>())
     val localStorageL1C0 = AddressableArrayLocal.fromULongArray(ULongArray(4) { 0.toULong() })
     vst4LaneU64(localStorageL1C0.elementMutPtr(0), a, 0)
     val r: Uint64x1x4T = vld4LaneU64(localStorageL1C0.elementConstPtr(0), a, 0)
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x1x4T, ULongArray>(r, UnresolvedTypeLayout<Uint64x1x4T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld2qLaneU64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x2x2T = transmute(vals)
+    val a: Uint64x2x2T = transmuteWithLayouts<ULongArray, Uint64x2x2T>(vals, PrimitiveArrayLayouts.uLongArray((4).toInt()), UnresolvedTypeLayout<Uint64x2x2T>())
     val localStorageL1C0 = AddressableArrayLocal.fromULongArray(ULongArray(4) { 0.toULong() })
     vst2qLaneU64(localStorageL1C0.elementMutPtr(0), a, 1)
     val r: Uint64x2x2T = vld2qLaneU64(localStorageL1C0.elementConstPtr(0), a, 1)
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x2x2T, ULongArray>(r, UnresolvedTypeLayout<Uint64x2x2T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld3qLaneU64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x2x3T = transmute(vals)
+    val a: Uint64x2x3T = transmuteWithLayouts<ULongArray, Uint64x2x3T>(vals, PrimitiveArrayLayouts.uLongArray((6).toInt()), UnresolvedTypeLayout<Uint64x2x3T>())
     val localStorageL1C0 = AddressableArrayLocal.fromULongArray(ULongArray(4) { 0.toULong() })
     vst3qLaneU64(localStorageL1C0.elementMutPtr(0), a, 1)
     val r: Uint64x2x3T = vld3qLaneU64(localStorageL1C0.elementConstPtr(0), a, 1)
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x2x3T, ULongArray>(r, UnresolvedTypeLayout<Uint64x2x3T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }
 
 public fun testVld4qLaneU64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
-    val a: Uint64x2x4T = transmute(vals)
+    val a: Uint64x2x4T = transmuteWithLayouts<ULongArray, Uint64x2x4T>(vals, PrimitiveArrayLayouts.uLongArray((8).toInt()), UnresolvedTypeLayout<Uint64x2x4T>())
     val localStorageL1C0 = AddressableArrayLocal.fromULongArray(ULongArray(4) { 0.toULong() })
     vst4qLaneU64(localStorageL1C0.elementMutPtr(0), a, 1)
     val r: Uint64x2x4T = vld4qLaneU64(localStorageL1C0.elementConstPtr(0), a, 1)
-    val out: ULongArray = transmute(r)
+    val out: ULongArray = transmuteWithLayouts<Uint64x2x4T, ULongArray>(r, UnresolvedTypeLayout<Uint64x2x4T>(), UnresolvedTypeLayout<ULongArray>())
     check((out).contentEquals(vals))
 }

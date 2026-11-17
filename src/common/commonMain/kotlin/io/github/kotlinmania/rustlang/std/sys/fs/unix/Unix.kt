@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CSsizeT
 import io.github.kotlinmania.rustlang.core.fmt.Write
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
@@ -132,7 +133,6 @@ import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.Permissions
 import io.github.kotlinmania.rustlang.std.fs.TryLockError
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
 import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
@@ -286,7 +286,7 @@ public open class File(
     }
 
     public open fun truncate(size: ULong): Result<Unit, Error> {
-        val size1: Off64T = when (val tryResult = size.tryInto().mapErr({ e -> io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, e) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        val size1: Off64T = when (val tryResult = size.tryInto().mapErr({ e -> io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidInput, e) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         return cvtR({ ftruncate64(this.asRawFd(), size1) }).map({ Unit })
     }
 
@@ -344,7 +344,10 @@ public open class File(
             when {
                 // Fall back to default implementation if the returned size is 0,
                 // we might be in a proc mount.
-                matchVal is Result.Ok && matchVal.value == 0 -> null
+                matchVal is Result.Ok && matchVal.value == 0 -> {
+                    val valueVal = matchVal.value
+                    null
+                }
                 else -> {
                     val result = matchVal
                     result
@@ -850,9 +853,9 @@ public open class OpenOptions(
                     // If no access mode is set, check if any creation flags are set
                     // to provide a more descriptive error message
                     if (this.create || this.createNew || this.truncate) {
-                        Result.Err<CInt, Error>(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
+                        Result.Err<CInt, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
                     } else {
-                        Result.Err<CInt, Error>(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "must specify at least one of read, write, or append access"))
+                        Result.Err<CInt, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidInput, "must specify at least one of read, write, or append access"))
                     }
                 }
             }
@@ -865,12 +868,12 @@ public open class OpenOptions(
                 matchVal.first == true && matchVal.second == false -> {}
                 matchVal.first == false && matchVal.second == false -> {
                     if (this.truncate || this.create || this.createNew) {
-                        return Result.Err<CInt, Error>(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
+                        return Result.Err<CInt, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
                     }
                 }
                 else -> {
                     if (this.truncate && !this.createNew) {
-                        return Result.Err<CInt, Error>(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "append and truncate cannot both be enabled"))
+                        return Result.Err<CInt, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidInput, "append and truncate cannot both be enabled"))
                     }
                 }
             }
@@ -1417,7 +1420,7 @@ public fun setPermNofollow(p: CStr, perm: FilePermissions): Result<Unit, Error> 
         return when (val tryResult = options.open(Path.new(osStr))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }.setPermissions(Permissions.fromInner(perm1))
     }
     // This res value is modified for platforms that support the `fchmodat` syscall.
-    var res: Result<Unit, Error> = Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.ErrorKind.Unsupported.into())
+    var res: Result<Unit, Error> = Result.Err<Unit, Error>(ErrorKind.Unsupported.into())
     // These platforms support `fchmodat`, so utilize this syscall over `open` + `fchmod`.
     // We can *not* use this on Android due to <https://github.com/android/ndk/issues/1258>.
     run {
@@ -1430,14 +1433,14 @@ public fun setPermNofollow(p: CStr, perm: FilePermissions): Result<Unit, Error> 
         Result.Ok<Unit, Error>(Unit)
     }; is Result.Err -> {
         val err = res.error
-        if (err.kind() == io.github.kotlinmania.rustlang.core.io.error.ErrorKind.Unsupported) {
+        if (err.kind() == ErrorKind.Unsupported) {
             run {
                 val matchVal = openAndSetPermissions(p, perm)
                 when (matchVal) { is Result.Ok -> {
                     return Result.Ok<Unit, Error>(Unit)
                 }; is Result.Err -> {
                     val e = matchVal.error
-                    if (e.kind() == io.github.kotlinmania.rustlang.core.io.error.ErrorKind.FilesystemLoop) {
+                    if (e.kind() == ErrorKind.FilesystemLoop) {
                         // When open is used with O_NOFOLLOW flag, if the trailing component of
                         // a path is a symbolic link, it should fail with ELOOP error. Instead of
                         // returning `FilesystemLoop`, this returns `Unsupported` to keep it consistent
@@ -1509,7 +1512,7 @@ public fun lstat(p: CStr): Result<FileAttr, Error> {
 public fun canonicalize(path: CStr): Result<PathBuf, Error> {
     val r = realpath(path.asPtr(), MutPtr(0L))
     if (r.isNull()) {
-        return Result.Err<PathBuf, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        return Result.Err<PathBuf, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
     }
     return Result.Ok<PathBuf, Error>(PathBuf.from(OsString.fromVec(run {
         val buf = CStr.fromPtr(r).toBytes().toMutableList()
@@ -1583,7 +1586,7 @@ public open class CachedFileMetadata(
 public fun copy(from: Path, to: Path): Result<ULong, Error> {
     val (reader, readerMetadata) = when (val tryResult = openFrom(from)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, Error>(tryResult.error) }
     val (writer, writerMetadata) = when (val tryResult = openToAndSetPermissions(to, readerMetadata)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, Error>(tryResult.error) }
-    return io.github.kotlinmania.rustlang.std.io.copy(CachedFileMetadata(reader, readerMetadata), CachedFileMetadata(writer, writerMetadata))
+    return io.github.kotlinmania.rustlang.alloc.io.copy.copy(CachedFileMetadata(reader, readerMetadata), CachedFileMetadata(writer, writerMetadata))
 }
 
 public fun chown(path: Path, uid: UInt, gid: UInt): Result<Unit, Error> =
@@ -1616,7 +1619,7 @@ public fun openatNofollowDironly(parentFd: RawFd?, p: CStr): Result<OwnedFd, Err
 public fun fdreaddir(dirFd: OwnedFd): Result<Pair<ReadDir, RawFd>, Error> {
     val ptr = fdopendir(dirFd.asRawFd())
     if (ptr.isNull()) {
-        return Result.Err<Pair<ReadDir, RawFd>, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        return Result.Err<Pair<ReadDir, RawFd>, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
     }
     val dirp = DirStream(ptr)
     // file descriptor is automatically closed by libc.closedir() now, so give up ownership

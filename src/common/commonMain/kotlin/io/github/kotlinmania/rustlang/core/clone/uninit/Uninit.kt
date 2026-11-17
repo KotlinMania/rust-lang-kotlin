@@ -92,7 +92,7 @@ public fun <T : TrivialClone<T>> copySpecCloneSliceT(src: List<T>, dst: MutPtr) 
     // SAFETY: The safety conditions of cloneToUninit() are a superset of those of
     // ptr.copyNonoverlapping().
     run {
-        copyNonoverlapping(src.asPtr(), dst.asMutPtr(), len)
+        copyNonoverlapping(src.asPtr(), dst.asMutPtr(), len, typeLayoutT = UnresolvedTypeLayout<T>())
     }
 }
 

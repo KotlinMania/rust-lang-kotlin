@@ -5,11 +5,12 @@ import io.github.kotlinmania.rustlang.core.intrinsics.sizeOfVal
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
 import io.github.kotlinmania.rustlang.core.mem.sizeOfValRaw
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -359,7 +360,7 @@ public open class Layout(
         public fun fromSizeAlign(size: Int, align: Int): Result<Layout, LayoutError> =
             if (Layout.isSizeAlignValid(size, align)) {
                 // SAFETY: Layout.isSizeAlignValid checks the preconditions for this call.
-                Result.Ok<Layout, LayoutError>(Layout(size = size, align = transmute(align)))
+                Result.Ok<Layout, LayoutError>(Layout(size = size, align = transmuteWithLayouts<Int, Alignment>(align, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<Alignment>())))
             } else {
                 Result.Err<Layout, LayoutError>(LayoutError())
             }
@@ -418,7 +419,7 @@ public open class Layout(
         public fun fromSizeAlignUnchecked(size: Int, align: Int): Layout {
             Unit
             // SAFETY: the caller is required to uphold the preconditions.
-            return Layout(size = size, align = transmute(align))
+            return Layout(size = size, align = transmuteWithLayouts<Int, Alignment>(align, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<Alignment>()))
         }
 
         /**

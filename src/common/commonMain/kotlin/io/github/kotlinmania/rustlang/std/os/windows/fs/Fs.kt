@@ -1,6 +1,7 @@
 // port-lint: source os/windows/fs.rs
 package io.github.kotlinmania.rustlang.std.os.windows.fs
 
+import io.github.kotlinmania.rustlang.alloc.io.read.defaultReadBuf
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.fs.File
@@ -9,7 +10,6 @@ import io.github.kotlinmania.rustlang.std.fs.FileType
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.OpenOptions
 import io.github.kotlinmania.rustlang.std.fs.Permissions
-import io.github.kotlinmania.rustlang.std.io.defaultReadBuf
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.FromInner
@@ -44,7 +44,7 @@ public interface FileExt {
      * use std.fs.File;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let mut file = File.open("foo.txt")?;
      *     let mut buffer = [0; 10];
      *
@@ -52,7 +52,7 @@ public interface FileExt {
      *     // start of the file.
      *     file.seekRead(buffer[..], 72)?;
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun seekRead(buf: MutableList<UByte>, offset: ULong): Result<Int, Error>
@@ -89,7 +89,7 @@ public interface FileExt {
      * use std.fs.File;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let mut file = File.open("foo.txt")?;
      *     let mut buffer = [0; 10];
      *
@@ -97,7 +97,7 @@ public interface FileExt {
      *     // start of the file.
      *     file.seekReadExact(buffer[..], 72)?;
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun seekReadExact(buf: MutableList<UByte>, offset: ULong): Result<Unit, Error> {
@@ -107,7 +107,10 @@ public interface FileExt {
             run {
                 val matchVal = this.seekRead(buf1, offset1)
                 when {
-                    matchVal is Result.Ok && matchVal.value == 0 -> { break }
+                    matchVal is Result.Ok && matchVal.value == 0 -> {
+                        val valueVal = matchVal.value
+                        break
+                    }
                     matchVal is Result.Ok -> {
                         val n = matchVal.value
                         buf1 = buf1.subList(n, buf1.size)
@@ -121,7 +124,7 @@ public interface FileExt {
             }
         }
         return if (!buf1.isEmpty()) {
-            Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
+            Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.READ_EXACT_EOF)
         } else {
             Result.Ok<Unit, Error>(Unit)
         }
@@ -147,7 +150,7 @@ public interface FileExt {
      * use std.mem.MaybeUninit;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let mut file = File.open("pi.txt")?;
      *
      *     // Read some bytes starting from offset 2
@@ -158,7 +161,7 @@ public interface FileExt {
      *     assert(buf.filled().startsWith(b"1"));
      *
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun seekReadBuf(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> = defaultReadBuf({ b -> this.seekRead(b, offset) }, buf)
@@ -183,7 +186,7 @@ public interface FileExt {
      * use std.mem.MaybeUninit;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let mut file = File.open("pi.txt")?;
      *
      *     // Read some bytes starting from offset 2
@@ -194,7 +197,7 @@ public interface FileExt {
      *     assert(buf.filled().startsWith(b"1"));
      *
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun seekReadBufExact(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> {
@@ -211,7 +214,7 @@ public interface FileExt {
             val n = buf.written() - prevWritten
             offset1 += n.toULong()
             if (n == 0) {
-                return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
+                return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.READ_EXACT_EOF)
             }
         }
         return Result.Ok<Unit, Error>(Unit)
@@ -238,14 +241,14 @@ public interface FileExt {
      * use std.fs.File;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let mut buffer = File.create("foo.txt")?;
      *
      *     // Write a byte string starting 72 bytes from
      *     // the start of the file.
      *     buffer.seekWrite(b"some bytes", 72)?;
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun seekWrite(buf: List<UByte>, offset: ULong): Result<Int, Error>
@@ -277,14 +280,14 @@ public interface FileExt {
      * use std.fs.File;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let mut buffer = File.create("foo.txt")?;
      *
      *     // Write a byte string starting 72 bytes from
      *     // the start of the file.
      *     buffer.seekWriteAll(b"some bytes", 72)?;
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun seekWriteAll(buf: List<UByte>, offset: ULong): Result<Unit, Error> {
@@ -295,7 +298,8 @@ public interface FileExt {
                 val matchVal = this.seekWrite(buf1, offset1)
                 when {
                     matchVal is Result.Ok && matchVal.value == 0 -> {
-                        return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.WRITE_ALL_EOF)
+                        val valueVal = matchVal.value
+                        return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.WRITE_ALL_EOF)
                     }
                     matchVal is Result.Ok -> {
                         val n = matchVal.value
@@ -598,7 +602,8 @@ public interface PermissionsExt<T> {
 public fun Permissions.fileAttributes(): UInt = this.asInner().fileAttributes()
 
 public fun Permissions.setFileAttributes(mask: UInt) {
-    this = Permissions.fromInner(FromInner.fromInner(mask))
+    var selfMut = this
+    selfMut = Permissions.fromInner(FromInner.fromInner(mask))
 }
 
 public fun permissionsExtFromFileAttributesPermissions(mask: UInt): Permissions = Permissions.fromInner(FromInner.fromInner(mask))
@@ -626,11 +631,11 @@ public interface MetadataExt {
      * use std.fs;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let metadata = fs.metadata("foo.txt")?;
      *     let attributes = metadata.fileAttributes();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      * [File Attribute Constants]: https:
      * ```
@@ -655,11 +660,11 @@ public interface MetadataExt {
      * use std.fs;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let metadata = fs.metadata("foo.txt")?;
      *     let creationTime = metadata.creationTime();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      *
      * [Filetime]: https://docs.microsoft.com/windows/win32/api/minwinbase/ns-minwinbase-filetime
@@ -691,11 +696,11 @@ public interface MetadataExt {
      * use std.fs;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let metadata = fs.metadata("foo.txt")?;
      *     let lastAccessTime = metadata.lastAccessTime();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      *
      * [Filetime]: https://docs.microsoft.com/windows/win32/api/minwinbase/ns-minwinbase-filetime
@@ -725,11 +730,11 @@ public interface MetadataExt {
      * use std.fs;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let metadata = fs.metadata("foo.txt")?;
      *     let lastWriteTime = metadata.lastWriteTime();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      *
      * [Filetime]: https://docs.microsoft.com/windows/win32/api/minwinbase/ns-minwinbase-filetime
@@ -749,11 +754,11 @@ public interface MetadataExt {
      * use std.fs;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let metadata = fs.metadata("foo.txt")?;
      *     let fileSize = metadata.fileSize();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun fileSize(): ULong
@@ -874,10 +879,10 @@ public fun FileTimes.setCreated(t: SystemTime): FileTimes {
  *
  * use std.os.windows.fs;
  *
- * fn main() -> std.io.Result<()> {
+ * fn main() -> std.io.Result<()> (
  *     fs.symlinkFile("a.txt", "b.txt")?;
  *     Ok(())
- * }
+ * )
  * ```kotlin
  *
  * Windows treats symlink creation as a[privileged action][symlink - security],
@@ -910,10 +915,10 @@ public fun symlinkFile(original: Path, link: Path): Result<Unit, Error> = symlin
  *
  * use std.os.windows.fs;
  *
- * fn main() -> std.io.Result<()> {
+ * fn main() -> std.io.Result<()> (
  *     fs.symlinkDir("a", "b")?;
  *     Ok(())
- * }
+ * )
  * ```kotlin
  *
  * Windows treats symlink creation as a[privileged action][symlink - security],

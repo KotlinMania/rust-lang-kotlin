@@ -26,7 +26,7 @@ public open class XsaveArea(
             // enabled in `XCR0`. We are using `ECX` to ensure enough space in all scenarios
             val structVal = cpuid(0x0du)
             val ecx = structVal.ecx
-            return XsaveArea(data = mutableListOf(AlignedArray(List(64) { 0 }, fieldLayout = PrimitiveArrayLayouts.uByteArray((64).toInt())), ecx.divCeil(64).toInt()).intoBoxedSlice())
+            return XsaveArea(data = mutableListOf(AlignedArray(UByteArray(64) { 0u.toUByte() }, fieldLayout = PrimitiveArrayLayouts.uByteArray((64).toInt())), ecx.divCeil(64).toInt()).intoBoxedSlice())
         }
     }
 }

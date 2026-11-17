@@ -8,7 +8,7 @@ import io.github.kotlinmania.rustlang.coresimd.simd.cmp.eq.SimdPartialEq
 /**
  * Parallel `PartialOrd`.
  */
-public interface SimdPartialOrd<T> : SimdPartialEq<T, Any?> {
+public interface SimdPartialOrd<T, out Mask> : SimdPartialEq<T, Mask> {
     /**
      * Test if each element is less than the corresponding element in `other`.
      */
@@ -33,7 +33,7 @@ public interface SimdPartialOrd<T> : SimdPartialEq<T, Any?> {
 /**
  * Parallel `Ord`.
  */
-public interface SimdOrd<T> : SimdPartialOrd<T> {
+public interface SimdOrd<T, out Mask> : SimdPartialOrd<T, Mask> {
     /**
      * Returns the element-wise maximum with `other`.
      */

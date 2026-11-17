@@ -82,7 +82,7 @@ private const val ASSERT_UNSAFE_PRECONDITION_TEMPLATE: String = "{const fun prec
  * macro for language UB are always ignored.
  *
  * This macro should be called as
- * `assertUnsafePrecondition(check_ { library, language } _ub, "message", (ident: type = expr, ident: type = expr) -> checkExpr)`
+ * `assertUnsafePrecondition(check_ ( library, language ) _ub, "message", (ident: type = expr, ident: type = expr) -> checkExpr)`
  * where each `expr` will be evaluated and passed in as function argument `ident: type`. Then all
  * those arguments are passed to a function with the body `checkExpr`.
  * Pick `checkLanguageUb` when this is guarding a violation of language UB, i.e., immediate UB

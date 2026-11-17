@@ -190,7 +190,7 @@ public class DebugTuple(
  * [asBytes]:
  *
  * ```kotlin
- * // The first byte is 104 - the byte value of `'h'`
+ * // The first byte is 104 - the byte value of ``h``
  * val s = "hello"
  * check(s.encodeToByteArray().map { it.toUByte() }[0] == 104u.toUByte())
  * // or
@@ -471,10 +471,11 @@ public open class RustAllocString(
     public open fun tryPushStr(string: String): Result<Unit, TryReserveError> = this.vec.tryExtendFromSliceOfBytes(string.encodeToByteArray().map { it.toUByte() })
 
     public open fun pushStrSlice(slice: List<String>) {
+        var selfMut = this
         // use saturating arithmetic to ensure that in the case of an overflow, reserve() throws OOM
         val additional: Saturating<Int> = slice.map({ x -> Saturating(x.len()) }).sum()
-        this.reserve(additional.first)
-        val (ptr, len, cap) = take(this).intoRawParts()
+        selfMut.reserve(additional.first)
+        val (ptr, len, cap) = take(selfMut).intoRawParts()
         // SAFETY: `self` have reserved enough space for strs in `slice`, and we are copying from valid UTF-8 slices.
         // Therefore all unchecked operations are safe.
         run {
@@ -483,7 +484,7 @@ public open class RustAllocString(
                 ptr.copyNonoverlapping(new.asPtr(), dst, new.len())
                 dst = dst.add(new.len())
             }
-            this = String.fromRawParts(ptr, len + additional.first, cap)
+            selfMut = String.fromRawParts(ptr, len + additional.first, cap)
         }
     }
 
@@ -887,7 +888,7 @@ public open class RustAllocString(
      * }
      * ```
      */
-    public open fun <Searcher, P : Pattern<Any?>> removeMatches(pat: P) {
+    public open fun <Searcher, P : Pattern<Searcher>> removeMatches(pat: P) {
         val rejections1 = run {
             val searcher = pat.intoSearcher(this)
             // Per Searcher.next:
@@ -1100,7 +1101,7 @@ public open class RustAllocString(
         // or into the uninitialized spare capacity otherwise. The borrow checker
         // ensures that the source and destination do not overlap.
         run {
-            copyNonoverlapping(string.asPtr(), this.vec.asMutPtr().add(idx), amt)
+            copyNonoverlapping(string.asPtr(), this.vec.asMutPtr().add(idx), amt, typeLayoutT = PrimitiveLayouts.U8)
         }
         // SAFETY: Update the length to include the newly added bytes.
         run {
@@ -1274,7 +1275,7 @@ public open class RustAllocString(
      * by [char]. This method returns such an iterator.
      *
      * It's important to remember that [char] represents a Unicode Scalar
-     * Value, and might not match your idea of what a 'character' is. Iteration
+     * Value, and might not match your idea of what a `character` is. Iteration
      * over grapheme clusters may be what you actually want. That functionality
      * is not provided by Rust's standard library, check crates.io instead.
      *
@@ -1369,7 +1370,7 @@ public open class RustAllocString(
      *
      * [replacen]: ../../std/primitive.str.html#method.replacen
      */
-    public open fun <Searcher, P : Pattern<Any?>> replaceFirst(from: P, to: String) {
+    public open fun <Searcher, P : Pattern<Searcher>> replaceFirst(from: P, to: String) {
         val range =
             when (val matchVal = this.matchIndices(from).next()) {
                 null -> { return }
@@ -1399,7 +1400,7 @@ public open class RustAllocString(
      * }
      * ```
      */
-    public open fun <Searcher, P : Pattern<Any?>> replaceLast(from: P, to: String) {
+    public open fun <Searcher, P : Pattern<Searcher>> replaceLast(from: P, to: String) {
         val range =
             when (val matchVal = this.rmatchIndices(from).next()) {
                 null -> { return }

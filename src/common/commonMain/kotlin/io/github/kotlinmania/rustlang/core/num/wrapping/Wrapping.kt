@@ -82,7 +82,8 @@ public fun Wrapping<UByte>.shl(other: Int): Wrapping<UByte> = Wrapping(this.valu
 public fun Wrapping<UByte>.shlInt(other: Int): Output = this.shl(other)
 
 public fun Wrapping<UByte>.shlAssign(other: Int) {
-    this = this shl other
+    var selfMut = this
+    selfMut = selfMut shl other
 }
 
 public fun Wrapping<UByte>.shlAssignInt(other: Int) {
@@ -94,7 +95,8 @@ public fun Wrapping<UByte>.shr(other: Int): Wrapping<UByte> = Wrapping(this.valu
 public fun Wrapping<UByte>.shrInt(other: Int): Output = this.shr(other)
 
 public fun Wrapping<UByte>.shrAssign(other: Int) {
-    this = this shr other
+    var selfMut = this
+    selfMut = selfMut shr other
 }
 
 public fun Wrapping<UByte>.shrAssignInt(other: Int) {
@@ -106,7 +108,8 @@ public fun Wrapping<Int>.add(other: Wrapping<Int>): Wrapping<Int> = Wrapping(thi
 public fun Wrapping<Int>.addWrappingInt(other: Wrapping<Int>): Output = this.add(other)
 
 public fun Wrapping<Int>.addAssign(other: Wrapping<Int>) {
-    this = this + other
+    var selfMut = this
+    selfMut = selfMut + other
 }
 
 public fun Wrapping<Int>.addAssignWrappingInt(other: Wrapping<Int>) {
@@ -114,7 +117,8 @@ public fun Wrapping<Int>.addAssignWrappingInt(other: Wrapping<Int>) {
 }
 
 public fun Wrapping<Int>.addAssign(other: Int) {
-    this = this + Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
+    var selfMut = this
+    selfMut = selfMut + Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
 public fun Wrapping<Int>.addAssignInt(other: Int) {
@@ -126,7 +130,8 @@ public fun Wrapping<Int>.sub(other: Wrapping<Int>): Wrapping<Int> = Wrapping(thi
 public fun Wrapping<Int>.subWrappingInt(other: Wrapping<Int>): Output = this.sub(other)
 
 public fun Wrapping<Int>.subAssign(other: Wrapping<Int>) {
-    this = this - other
+    var selfMut = this
+    selfMut = selfMut - other
 }
 
 public fun Wrapping<Int>.subAssignWrappingInt(other: Wrapping<Int>) {
@@ -134,7 +139,8 @@ public fun Wrapping<Int>.subAssignWrappingInt(other: Wrapping<Int>) {
 }
 
 public fun Wrapping<Int>.subAssign(other: Int) {
-    this = this - Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
+    var selfMut = this
+    selfMut = selfMut - Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
 public fun Wrapping<Int>.subAssignInt(other: Int) {
@@ -146,7 +152,8 @@ public fun Wrapping<Int>.mul(other: Wrapping<Int>): Wrapping<Int> = Wrapping(thi
 public fun Wrapping<Int>.mulWrappingInt(other: Wrapping<Int>): Output = this.mul(other)
 
 public fun Wrapping<Int>.mulAssign(other: Wrapping<Int>) {
-    this = this * other
+    var selfMut = this
+    selfMut = selfMut * other
 }
 
 public fun Wrapping<Int>.mulAssignWrappingInt(other: Wrapping<Int>) {
@@ -154,7 +161,8 @@ public fun Wrapping<Int>.mulAssignWrappingInt(other: Wrapping<Int>) {
 }
 
 public fun Wrapping<Int>.mulAssign(other: Int) {
-    this = this * Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
+    var selfMut = this
+    selfMut = selfMut * Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
 public fun Wrapping<Int>.mulAssignInt(other: Int) {
@@ -166,7 +174,8 @@ public fun Wrapping<Int>.div(other: Wrapping<Int>): Wrapping<Int> = Wrapping(thi
 public fun Wrapping<Int>.divWrappingInt(other: Wrapping<Int>): Output = this.div(other)
 
 public fun Wrapping<Int>.divAssign(other: Wrapping<Int>) {
-    this = this / other
+    var selfMut = this
+    selfMut = selfMut / other
 }
 
 public fun Wrapping<Int>.divAssignWrappingInt(other: Wrapping<Int>) {
@@ -174,7 +183,8 @@ public fun Wrapping<Int>.divAssignWrappingInt(other: Wrapping<Int>) {
 }
 
 public fun Wrapping<Int>.divAssign(other: Int) {
-    this = this / Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
+    var selfMut = this
+    selfMut = selfMut / Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
 public fun Wrapping<Int>.divAssignInt(other: Int) {
@@ -186,7 +196,8 @@ public fun Wrapping<Int>.rem(other: Wrapping<Int>): Wrapping<Int> = Wrapping(thi
 public fun Wrapping<Int>.remWrappingInt(other: Wrapping<Int>): Output = this.rem(other)
 
 public fun Wrapping<Int>.remAssign(other: Wrapping<Int>) {
-    this = this % other
+    var selfMut = this
+    selfMut = selfMut % other
 }
 
 public fun Wrapping<Int>.remAssignWrappingInt(other: Wrapping<Int>) {
@@ -194,7 +205,8 @@ public fun Wrapping<Int>.remAssignWrappingInt(other: Wrapping<Int>) {
 }
 
 public fun Wrapping<Int>.remAssign(other: Int) {
-    this = this % Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
+    var selfMut = this
+    selfMut = selfMut % Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
 public fun Wrapping<Int>.remAssignInt(other: Int) {
@@ -208,7 +220,8 @@ public fun Wrapping<Int>.bitxor(other: Wrapping<Int>): Wrapping<Int> = Wrapping(
 public fun Wrapping<Int>.bitxorWrappingInt(other: Wrapping<Int>): Output = this.bitxor(other)
 
 public fun Wrapping<Int>.bitxorAssign(other: Wrapping<Int>) {
-    this = this xor other
+    var selfMut = this
+    selfMut = selfMut xor other
 }
 
 public fun Wrapping<Int>.bitxorAssignWrappingInt(other: Wrapping<Int>) {
@@ -216,7 +229,8 @@ public fun Wrapping<Int>.bitxorAssignWrappingInt(other: Wrapping<Int>) {
 }
 
 public fun Wrapping<Int>.bitxorAssign(other: Int) {
-    this = this xor Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
+    var selfMut = this
+    selfMut = selfMut xor Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
 public fun Wrapping<Int>.bitxorAssignInt(other: Int) {
@@ -228,7 +242,8 @@ public fun Wrapping<Int>.bitor(other: Wrapping<Int>): Wrapping<Int> = Wrapping(t
 public fun Wrapping<Int>.bitorWrappingInt(other: Wrapping<Int>): Output = this.bitor(other)
 
 public fun Wrapping<Int>.bitorAssign(other: Wrapping<Int>) {
-    this = this or other
+    var selfMut = this
+    selfMut = selfMut or other
 }
 
 public fun Wrapping<Int>.bitorAssignWrappingInt(other: Wrapping<Int>) {
@@ -236,7 +251,8 @@ public fun Wrapping<Int>.bitorAssignWrappingInt(other: Wrapping<Int>) {
 }
 
 public fun Wrapping<Int>.bitorAssign(other: Int) {
-    this = this or Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
+    var selfMut = this
+    selfMut = selfMut or Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
 public fun Wrapping<Int>.bitorAssignInt(other: Int) {
@@ -248,7 +264,8 @@ public fun Wrapping<Int>.bitand(other: Wrapping<Int>): Wrapping<Int> = Wrapping(
 public fun Wrapping<Int>.bitandWrappingInt(other: Wrapping<Int>): Output = this.bitand(other)
 
 public fun Wrapping<Int>.bitandAssign(other: Wrapping<Int>) {
-    this = this and other
+    var selfMut = this
+    selfMut = selfMut and other
 }
 
 public fun Wrapping<Int>.bitandAssignWrappingInt(other: Wrapping<Int>) {
@@ -256,7 +273,8 @@ public fun Wrapping<Int>.bitandAssignWrappingInt(other: Wrapping<Int>) {
 }
 
 public fun Wrapping<Int>.bitandAssign(other: Int) {
-    this = this and Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
+    var selfMut = this
+    selfMut = selfMut and Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
 public fun Wrapping<Int>.bitandAssignInt(other: Int) {
@@ -272,7 +290,8 @@ public fun Wrapping<UByte>.addAssignWrappingUByte(other: Wrapping<UByte>) {
 }
 
 public fun Wrapping<UByte>.addAssign(other: UByte) {
-    this = this + Wrapping(other, fieldLayout = PrimitiveLayouts.U8)
+    var selfMut = this
+    selfMut = selfMut + Wrapping(other, fieldLayout = PrimitiveLayouts.U8)
 }
 
 public fun Wrapping<UByte>.addAssignUByte(other: UByte) {
@@ -286,7 +305,8 @@ public fun Wrapping<UByte>.subAssignWrappingUByte(other: Wrapping<UByte>) {
 }
 
 public fun Wrapping<UByte>.subAssign(other: UByte) {
-    this = this - Wrapping(other, fieldLayout = PrimitiveLayouts.U8)
+    var selfMut = this
+    selfMut = selfMut - Wrapping(other, fieldLayout = PrimitiveLayouts.U8)
 }
 
 public fun Wrapping<UByte>.subAssignUByte(other: UByte) {
@@ -300,7 +320,8 @@ public fun Wrapping<UByte>.mulAssignWrappingUByte(other: Wrapping<UByte>) {
 }
 
 public fun Wrapping<UByte>.mulAssign(other: UByte) {
-    this = this * Wrapping(other, fieldLayout = PrimitiveLayouts.U8)
+    var selfMut = this
+    selfMut = selfMut * Wrapping(other, fieldLayout = PrimitiveLayouts.U8)
 }
 
 public fun Wrapping<UByte>.mulAssignUByte(other: UByte) {
@@ -314,7 +335,8 @@ public fun Wrapping<UByte>.divAssignWrappingUByte(other: Wrapping<UByte>) {
 }
 
 public fun Wrapping<UByte>.divAssign(other: UByte) {
-    this = this / Wrapping(other, fieldLayout = PrimitiveLayouts.U8)
+    var selfMut = this
+    selfMut = selfMut / Wrapping(other, fieldLayout = PrimitiveLayouts.U8)
 }
 
 public fun Wrapping<UByte>.divAssignUByte(other: UByte) {
@@ -328,7 +350,8 @@ public fun Wrapping<UByte>.remAssignWrappingUByte(other: Wrapping<UByte>) {
 }
 
 public fun Wrapping<UByte>.remAssign(other: UByte) {
-    this = this % Wrapping(other, fieldLayout = PrimitiveLayouts.U8)
+    var selfMut = this
+    selfMut = selfMut % Wrapping(other, fieldLayout = PrimitiveLayouts.U8)
 }
 
 public fun Wrapping<UByte>.remAssignUByte(other: UByte) {
@@ -342,7 +365,8 @@ public fun Wrapping<UByte>.bitxorAssignWrappingUByte(other: Wrapping<UByte>) {
 }
 
 public fun Wrapping<UByte>.bitxorAssign(other: UByte) {
-    this = this xor Wrapping(other, fieldLayout = PrimitiveLayouts.U8)
+    var selfMut = this
+    selfMut = selfMut xor Wrapping(other, fieldLayout = PrimitiveLayouts.U8)
 }
 
 public fun Wrapping<UByte>.bitxorAssignUByte(other: UByte) {
@@ -356,7 +380,8 @@ public fun Wrapping<UByte>.bitorAssignWrappingUByte(other: Wrapping<UByte>) {
 }
 
 public fun Wrapping<UByte>.bitorAssign(other: UByte) {
-    this = this or Wrapping(other, fieldLayout = PrimitiveLayouts.U8)
+    var selfMut = this
+    selfMut = selfMut or Wrapping(other, fieldLayout = PrimitiveLayouts.U8)
 }
 
 public fun Wrapping<UByte>.bitorAssignUByte(other: UByte) {
@@ -370,7 +395,8 @@ public fun Wrapping<UByte>.bitandAssignWrappingUByte(other: Wrapping<UByte>) {
 }
 
 public fun Wrapping<UByte>.bitandAssign(other: UByte) {
-    this = this and Wrapping(other, fieldLayout = PrimitiveLayouts.U8)
+    var selfMut = this
+    selfMut = selfMut and Wrapping(other, fieldLayout = PrimitiveLayouts.U8)
 }
 
 public fun Wrapping<UByte>.bitandAssignUByte(other: UByte) {
@@ -384,7 +410,8 @@ public fun Wrapping<UShort>.addAssignWrappingUShort(other: Wrapping<UShort>) {
 }
 
 public fun Wrapping<UShort>.addAssign(other: UShort) {
-    this = this + Wrapping(other, fieldLayout = PrimitiveLayouts.U16)
+    var selfMut = this
+    selfMut = selfMut + Wrapping(other, fieldLayout = PrimitiveLayouts.U16)
 }
 
 public fun Wrapping<UShort>.addAssignUShort(other: UShort) {
@@ -398,7 +425,8 @@ public fun Wrapping<UShort>.subAssignWrappingUShort(other: Wrapping<UShort>) {
 }
 
 public fun Wrapping<UShort>.subAssign(other: UShort) {
-    this = this - Wrapping(other, fieldLayout = PrimitiveLayouts.U16)
+    var selfMut = this
+    selfMut = selfMut - Wrapping(other, fieldLayout = PrimitiveLayouts.U16)
 }
 
 public fun Wrapping<UShort>.subAssignUShort(other: UShort) {
@@ -412,7 +440,8 @@ public fun Wrapping<UShort>.mulAssignWrappingUShort(other: Wrapping<UShort>) {
 }
 
 public fun Wrapping<UShort>.mulAssign(other: UShort) {
-    this = this * Wrapping(other, fieldLayout = PrimitiveLayouts.U16)
+    var selfMut = this
+    selfMut = selfMut * Wrapping(other, fieldLayout = PrimitiveLayouts.U16)
 }
 
 public fun Wrapping<UShort>.mulAssignUShort(other: UShort) {
@@ -426,7 +455,8 @@ public fun Wrapping<UShort>.divAssignWrappingUShort(other: Wrapping<UShort>) {
 }
 
 public fun Wrapping<UShort>.divAssign(other: UShort) {
-    this = this / Wrapping(other, fieldLayout = PrimitiveLayouts.U16)
+    var selfMut = this
+    selfMut = selfMut / Wrapping(other, fieldLayout = PrimitiveLayouts.U16)
 }
 
 public fun Wrapping<UShort>.divAssignUShort(other: UShort) {
@@ -440,7 +470,8 @@ public fun Wrapping<UShort>.remAssignWrappingUShort(other: Wrapping<UShort>) {
 }
 
 public fun Wrapping<UShort>.remAssign(other: UShort) {
-    this = this % Wrapping(other, fieldLayout = PrimitiveLayouts.U16)
+    var selfMut = this
+    selfMut = selfMut % Wrapping(other, fieldLayout = PrimitiveLayouts.U16)
 }
 
 public fun Wrapping<UShort>.remAssignUShort(other: UShort) {
@@ -454,7 +485,8 @@ public fun Wrapping<UShort>.bitxorAssignWrappingUShort(other: Wrapping<UShort>) 
 }
 
 public fun Wrapping<UShort>.bitxorAssign(other: UShort) {
-    this = this xor Wrapping(other, fieldLayout = PrimitiveLayouts.U16)
+    var selfMut = this
+    selfMut = selfMut xor Wrapping(other, fieldLayout = PrimitiveLayouts.U16)
 }
 
 public fun Wrapping<UShort>.bitxorAssignUShort(other: UShort) {
@@ -468,7 +500,8 @@ public fun Wrapping<UShort>.bitorAssignWrappingUShort(other: Wrapping<UShort>) {
 }
 
 public fun Wrapping<UShort>.bitorAssign(other: UShort) {
-    this = this or Wrapping(other, fieldLayout = PrimitiveLayouts.U16)
+    var selfMut = this
+    selfMut = selfMut or Wrapping(other, fieldLayout = PrimitiveLayouts.U16)
 }
 
 public fun Wrapping<UShort>.bitorAssignUShort(other: UShort) {
@@ -482,7 +515,8 @@ public fun Wrapping<UShort>.bitandAssignWrappingUShort(other: Wrapping<UShort>) 
 }
 
 public fun Wrapping<UShort>.bitandAssign(other: UShort) {
-    this = this and Wrapping(other, fieldLayout = PrimitiveLayouts.U16)
+    var selfMut = this
+    selfMut = selfMut and Wrapping(other, fieldLayout = PrimitiveLayouts.U16)
 }
 
 public fun Wrapping<UShort>.bitandAssignUShort(other: UShort) {
@@ -496,7 +530,8 @@ public fun Wrapping<UInt>.addAssignWrappingUInt(other: Wrapping<UInt>) {
 }
 
 public fun Wrapping<UInt>.addAssign(other: UInt) {
-    this = this + Wrapping(other, fieldLayout = PrimitiveLayouts.U32)
+    var selfMut = this
+    selfMut = selfMut + Wrapping(other, fieldLayout = PrimitiveLayouts.U32)
 }
 
 public fun Wrapping<UInt>.addAssignUInt(other: UInt) {
@@ -510,7 +545,8 @@ public fun Wrapping<UInt>.subAssignWrappingUInt(other: Wrapping<UInt>) {
 }
 
 public fun Wrapping<UInt>.subAssign(other: UInt) {
-    this = this - Wrapping(other, fieldLayout = PrimitiveLayouts.U32)
+    var selfMut = this
+    selfMut = selfMut - Wrapping(other, fieldLayout = PrimitiveLayouts.U32)
 }
 
 public fun Wrapping<UInt>.subAssignUInt(other: UInt) {
@@ -524,7 +560,8 @@ public fun Wrapping<UInt>.mulAssignWrappingUInt(other: Wrapping<UInt>) {
 }
 
 public fun Wrapping<UInt>.mulAssign(other: UInt) {
-    this = this * Wrapping(other, fieldLayout = PrimitiveLayouts.U32)
+    var selfMut = this
+    selfMut = selfMut * Wrapping(other, fieldLayout = PrimitiveLayouts.U32)
 }
 
 public fun Wrapping<UInt>.mulAssignUInt(other: UInt) {
@@ -538,7 +575,8 @@ public fun Wrapping<UInt>.divAssignWrappingUInt(other: Wrapping<UInt>) {
 }
 
 public fun Wrapping<UInt>.divAssign(other: UInt) {
-    this = this / Wrapping(other, fieldLayout = PrimitiveLayouts.U32)
+    var selfMut = this
+    selfMut = selfMut / Wrapping(other, fieldLayout = PrimitiveLayouts.U32)
 }
 
 public fun Wrapping<UInt>.divAssignUInt(other: UInt) {
@@ -552,7 +590,8 @@ public fun Wrapping<UInt>.remAssignWrappingUInt(other: Wrapping<UInt>) {
 }
 
 public fun Wrapping<UInt>.remAssign(other: UInt) {
-    this = this % Wrapping(other, fieldLayout = PrimitiveLayouts.U32)
+    var selfMut = this
+    selfMut = selfMut % Wrapping(other, fieldLayout = PrimitiveLayouts.U32)
 }
 
 public fun Wrapping<UInt>.remAssignUInt(other: UInt) {
@@ -566,7 +605,8 @@ public fun Wrapping<UInt>.bitxorAssignWrappingUInt(other: Wrapping<UInt>) {
 }
 
 public fun Wrapping<UInt>.bitxorAssign(other: UInt) {
-    this = this xor Wrapping(other, fieldLayout = PrimitiveLayouts.U32)
+    var selfMut = this
+    selfMut = selfMut xor Wrapping(other, fieldLayout = PrimitiveLayouts.U32)
 }
 
 public fun Wrapping<UInt>.bitxorAssignUInt(other: UInt) {
@@ -580,7 +620,8 @@ public fun Wrapping<UInt>.bitorAssignWrappingUInt(other: Wrapping<UInt>) {
 }
 
 public fun Wrapping<UInt>.bitorAssign(other: UInt) {
-    this = this or Wrapping(other, fieldLayout = PrimitiveLayouts.U32)
+    var selfMut = this
+    selfMut = selfMut or Wrapping(other, fieldLayout = PrimitiveLayouts.U32)
 }
 
 public fun Wrapping<UInt>.bitorAssignUInt(other: UInt) {
@@ -594,7 +635,8 @@ public fun Wrapping<UInt>.bitandAssignWrappingUInt(other: Wrapping<UInt>) {
 }
 
 public fun Wrapping<UInt>.bitandAssign(other: UInt) {
-    this = this and Wrapping(other, fieldLayout = PrimitiveLayouts.U32)
+    var selfMut = this
+    selfMut = selfMut and Wrapping(other, fieldLayout = PrimitiveLayouts.U32)
 }
 
 public fun Wrapping<UInt>.bitandAssignUInt(other: UInt) {
@@ -608,7 +650,8 @@ public fun Wrapping<ULong>.addAssignWrappingULong(other: Wrapping<ULong>) {
 }
 
 public fun Wrapping<ULong>.addAssign(other: ULong) {
-    this = this + Wrapping(other, fieldLayout = PrimitiveLayouts.U64)
+    var selfMut = this
+    selfMut = selfMut + Wrapping(other, fieldLayout = PrimitiveLayouts.U64)
 }
 
 public fun Wrapping<ULong>.addAssignULong(other: ULong) {
@@ -622,7 +665,8 @@ public fun Wrapping<ULong>.subAssignWrappingULong(other: Wrapping<ULong>) {
 }
 
 public fun Wrapping<ULong>.subAssign(other: ULong) {
-    this = this - Wrapping(other, fieldLayout = PrimitiveLayouts.U64)
+    var selfMut = this
+    selfMut = selfMut - Wrapping(other, fieldLayout = PrimitiveLayouts.U64)
 }
 
 public fun Wrapping<ULong>.subAssignULong(other: ULong) {
@@ -636,7 +680,8 @@ public fun Wrapping<ULong>.mulAssignWrappingULong(other: Wrapping<ULong>) {
 }
 
 public fun Wrapping<ULong>.mulAssign(other: ULong) {
-    this = this * Wrapping(other, fieldLayout = PrimitiveLayouts.U64)
+    var selfMut = this
+    selfMut = selfMut * Wrapping(other, fieldLayout = PrimitiveLayouts.U64)
 }
 
 public fun Wrapping<ULong>.mulAssignULong(other: ULong) {
@@ -650,7 +695,8 @@ public fun Wrapping<ULong>.divAssignWrappingULong(other: Wrapping<ULong>) {
 }
 
 public fun Wrapping<ULong>.divAssign(other: ULong) {
-    this = this / Wrapping(other, fieldLayout = PrimitiveLayouts.U64)
+    var selfMut = this
+    selfMut = selfMut / Wrapping(other, fieldLayout = PrimitiveLayouts.U64)
 }
 
 public fun Wrapping<ULong>.divAssignULong(other: ULong) {
@@ -664,7 +710,8 @@ public fun Wrapping<ULong>.remAssignWrappingULong(other: Wrapping<ULong>) {
 }
 
 public fun Wrapping<ULong>.remAssign(other: ULong) {
-    this = this % Wrapping(other, fieldLayout = PrimitiveLayouts.U64)
+    var selfMut = this
+    selfMut = selfMut % Wrapping(other, fieldLayout = PrimitiveLayouts.U64)
 }
 
 public fun Wrapping<ULong>.remAssignULong(other: ULong) {
@@ -678,7 +725,8 @@ public fun Wrapping<ULong>.bitxorAssignWrappingULong(other: Wrapping<ULong>) {
 }
 
 public fun Wrapping<ULong>.bitxorAssign(other: ULong) {
-    this = this xor Wrapping(other, fieldLayout = PrimitiveLayouts.U64)
+    var selfMut = this
+    selfMut = selfMut xor Wrapping(other, fieldLayout = PrimitiveLayouts.U64)
 }
 
 public fun Wrapping<ULong>.bitxorAssignULong(other: ULong) {
@@ -692,7 +740,8 @@ public fun Wrapping<ULong>.bitorAssignWrappingULong(other: Wrapping<ULong>) {
 }
 
 public fun Wrapping<ULong>.bitorAssign(other: ULong) {
-    this = this or Wrapping(other, fieldLayout = PrimitiveLayouts.U64)
+    var selfMut = this
+    selfMut = selfMut or Wrapping(other, fieldLayout = PrimitiveLayouts.U64)
 }
 
 public fun Wrapping<ULong>.bitorAssignULong(other: ULong) {
@@ -706,7 +755,8 @@ public fun Wrapping<ULong>.bitandAssignWrappingULong(other: Wrapping<ULong>) {
 }
 
 public fun Wrapping<ULong>.bitandAssign(other: ULong) {
-    this = this and Wrapping(other, fieldLayout = PrimitiveLayouts.U64)
+    var selfMut = this
+    selfMut = selfMut and Wrapping(other, fieldLayout = PrimitiveLayouts.U64)
 }
 
 public fun Wrapping<ULong>.bitandAssignULong(other: ULong) {
@@ -720,7 +770,8 @@ public fun Wrapping<U128>.addAssignWrappingU128(other: Wrapping<U128>) {
 }
 
 public fun Wrapping<U128>.addAssign(other: U128) {
-    this = this + Wrapping(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut + Wrapping(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 public fun Wrapping<U128>.addAssignU128(other: U128) {
@@ -734,7 +785,8 @@ public fun Wrapping<U128>.subAssignWrappingU128(other: Wrapping<U128>) {
 }
 
 public fun Wrapping<U128>.subAssign(other: U128) {
-    this = this - Wrapping(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut - Wrapping(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 public fun Wrapping<U128>.subAssignU128(other: U128) {
@@ -748,7 +800,8 @@ public fun Wrapping<U128>.mulAssignWrappingU128(other: Wrapping<U128>) {
 }
 
 public fun Wrapping<U128>.mulAssign(other: U128) {
-    this = this * Wrapping(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut * Wrapping(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 public fun Wrapping<U128>.mulAssignU128(other: U128) {
@@ -762,7 +815,8 @@ public fun Wrapping<U128>.divAssignWrappingU128(other: Wrapping<U128>) {
 }
 
 public fun Wrapping<U128>.divAssign(other: U128) {
-    this = this / Wrapping(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut / Wrapping(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 public fun Wrapping<U128>.divAssignU128(other: U128) {
@@ -776,7 +830,8 @@ public fun Wrapping<U128>.remAssignWrappingU128(other: Wrapping<U128>) {
 }
 
 public fun Wrapping<U128>.remAssign(other: U128) {
-    this = this % Wrapping(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut % Wrapping(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 public fun Wrapping<U128>.remAssignU128(other: U128) {
@@ -790,7 +845,8 @@ public fun Wrapping<U128>.bitxorAssignWrappingU128(other: Wrapping<U128>) {
 }
 
 public fun Wrapping<U128>.bitxorAssign(other: U128) {
-    this = this xor Wrapping(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut xor Wrapping(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 public fun Wrapping<U128>.bitxorAssignU128(other: U128) {
@@ -804,7 +860,8 @@ public fun Wrapping<U128>.bitorAssignWrappingU128(other: Wrapping<U128>) {
 }
 
 public fun Wrapping<U128>.bitorAssign(other: U128) {
-    this = this or Wrapping(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut or Wrapping(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 public fun Wrapping<U128>.bitorAssignU128(other: U128) {
@@ -818,7 +875,8 @@ public fun Wrapping<U128>.bitandAssignWrappingU128(other: Wrapping<U128>) {
 }
 
 public fun Wrapping<U128>.bitandAssign(other: U128) {
-    this = this and Wrapping(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut and Wrapping(other, fieldLayout = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 public fun Wrapping<U128>.bitandAssignU128(other: U128) {
@@ -832,7 +890,8 @@ public fun Wrapping<Byte>.addAssignWrappingByte(other: Wrapping<Byte>) {
 }
 
 public fun Wrapping<Byte>.addAssign(other: Byte) {
-    this = this + Wrapping(other, fieldLayout = PrimitiveLayouts.I8)
+    var selfMut = this
+    selfMut = selfMut + Wrapping(other, fieldLayout = PrimitiveLayouts.I8)
 }
 
 public fun Wrapping<Byte>.addAssignByte(other: Byte) {
@@ -846,7 +905,8 @@ public fun Wrapping<Byte>.subAssignWrappingByte(other: Wrapping<Byte>) {
 }
 
 public fun Wrapping<Byte>.subAssign(other: Byte) {
-    this = this - Wrapping(other, fieldLayout = PrimitiveLayouts.I8)
+    var selfMut = this
+    selfMut = selfMut - Wrapping(other, fieldLayout = PrimitiveLayouts.I8)
 }
 
 public fun Wrapping<Byte>.subAssignByte(other: Byte) {
@@ -860,7 +920,8 @@ public fun Wrapping<Byte>.mulAssignWrappingByte(other: Wrapping<Byte>) {
 }
 
 public fun Wrapping<Byte>.mulAssign(other: Byte) {
-    this = this * Wrapping(other, fieldLayout = PrimitiveLayouts.I8)
+    var selfMut = this
+    selfMut = selfMut * Wrapping(other, fieldLayout = PrimitiveLayouts.I8)
 }
 
 public fun Wrapping<Byte>.mulAssignByte(other: Byte) {
@@ -874,7 +935,8 @@ public fun Wrapping<Byte>.divAssignWrappingByte(other: Wrapping<Byte>) {
 }
 
 public fun Wrapping<Byte>.divAssign(other: Byte) {
-    this = this / Wrapping(other, fieldLayout = PrimitiveLayouts.I8)
+    var selfMut = this
+    selfMut = selfMut / Wrapping(other, fieldLayout = PrimitiveLayouts.I8)
 }
 
 public fun Wrapping<Byte>.divAssignByte(other: Byte) {
@@ -888,7 +950,8 @@ public fun Wrapping<Byte>.remAssignWrappingByte(other: Wrapping<Byte>) {
 }
 
 public fun Wrapping<Byte>.remAssign(other: Byte) {
-    this = this % Wrapping(other, fieldLayout = PrimitiveLayouts.I8)
+    var selfMut = this
+    selfMut = selfMut % Wrapping(other, fieldLayout = PrimitiveLayouts.I8)
 }
 
 public fun Wrapping<Byte>.remAssignByte(other: Byte) {
@@ -902,7 +965,8 @@ public fun Wrapping<Byte>.bitxorAssignWrappingByte(other: Wrapping<Byte>) {
 }
 
 public fun Wrapping<Byte>.bitxorAssign(other: Byte) {
-    this = this xor Wrapping(other, fieldLayout = PrimitiveLayouts.I8)
+    var selfMut = this
+    selfMut = selfMut xor Wrapping(other, fieldLayout = PrimitiveLayouts.I8)
 }
 
 public fun Wrapping<Byte>.bitxorAssignByte(other: Byte) {
@@ -916,7 +980,8 @@ public fun Wrapping<Byte>.bitorAssignWrappingByte(other: Wrapping<Byte>) {
 }
 
 public fun Wrapping<Byte>.bitorAssign(other: Byte) {
-    this = this or Wrapping(other, fieldLayout = PrimitiveLayouts.I8)
+    var selfMut = this
+    selfMut = selfMut or Wrapping(other, fieldLayout = PrimitiveLayouts.I8)
 }
 
 public fun Wrapping<Byte>.bitorAssignByte(other: Byte) {
@@ -930,7 +995,8 @@ public fun Wrapping<Byte>.bitandAssignWrappingByte(other: Wrapping<Byte>) {
 }
 
 public fun Wrapping<Byte>.bitandAssign(other: Byte) {
-    this = this and Wrapping(other, fieldLayout = PrimitiveLayouts.I8)
+    var selfMut = this
+    selfMut = selfMut and Wrapping(other, fieldLayout = PrimitiveLayouts.I8)
 }
 
 public fun Wrapping<Byte>.bitandAssignByte(other: Byte) {
@@ -944,7 +1010,8 @@ public fun Wrapping<Short>.addAssignWrappingShort(other: Wrapping<Short>) {
 }
 
 public fun Wrapping<Short>.addAssign(other: Short) {
-    this = this + Wrapping(other, fieldLayout = PrimitiveLayouts.I16)
+    var selfMut = this
+    selfMut = selfMut + Wrapping(other, fieldLayout = PrimitiveLayouts.I16)
 }
 
 public fun Wrapping<Short>.addAssignShort(other: Short) {
@@ -958,7 +1025,8 @@ public fun Wrapping<Short>.subAssignWrappingShort(other: Wrapping<Short>) {
 }
 
 public fun Wrapping<Short>.subAssign(other: Short) {
-    this = this - Wrapping(other, fieldLayout = PrimitiveLayouts.I16)
+    var selfMut = this
+    selfMut = selfMut - Wrapping(other, fieldLayout = PrimitiveLayouts.I16)
 }
 
 public fun Wrapping<Short>.subAssignShort(other: Short) {
@@ -972,7 +1040,8 @@ public fun Wrapping<Short>.mulAssignWrappingShort(other: Wrapping<Short>) {
 }
 
 public fun Wrapping<Short>.mulAssign(other: Short) {
-    this = this * Wrapping(other, fieldLayout = PrimitiveLayouts.I16)
+    var selfMut = this
+    selfMut = selfMut * Wrapping(other, fieldLayout = PrimitiveLayouts.I16)
 }
 
 public fun Wrapping<Short>.mulAssignShort(other: Short) {
@@ -986,7 +1055,8 @@ public fun Wrapping<Short>.divAssignWrappingShort(other: Wrapping<Short>) {
 }
 
 public fun Wrapping<Short>.divAssign(other: Short) {
-    this = this / Wrapping(other, fieldLayout = PrimitiveLayouts.I16)
+    var selfMut = this
+    selfMut = selfMut / Wrapping(other, fieldLayout = PrimitiveLayouts.I16)
 }
 
 public fun Wrapping<Short>.divAssignShort(other: Short) {
@@ -1000,7 +1070,8 @@ public fun Wrapping<Short>.remAssignWrappingShort(other: Wrapping<Short>) {
 }
 
 public fun Wrapping<Short>.remAssign(other: Short) {
-    this = this % Wrapping(other, fieldLayout = PrimitiveLayouts.I16)
+    var selfMut = this
+    selfMut = selfMut % Wrapping(other, fieldLayout = PrimitiveLayouts.I16)
 }
 
 public fun Wrapping<Short>.remAssignShort(other: Short) {
@@ -1014,7 +1085,8 @@ public fun Wrapping<Short>.bitxorAssignWrappingShort(other: Wrapping<Short>) {
 }
 
 public fun Wrapping<Short>.bitxorAssign(other: Short) {
-    this = this xor Wrapping(other, fieldLayout = PrimitiveLayouts.I16)
+    var selfMut = this
+    selfMut = selfMut xor Wrapping(other, fieldLayout = PrimitiveLayouts.I16)
 }
 
 public fun Wrapping<Short>.bitxorAssignShort(other: Short) {
@@ -1028,7 +1100,8 @@ public fun Wrapping<Short>.bitorAssignWrappingShort(other: Wrapping<Short>) {
 }
 
 public fun Wrapping<Short>.bitorAssign(other: Short) {
-    this = this or Wrapping(other, fieldLayout = PrimitiveLayouts.I16)
+    var selfMut = this
+    selfMut = selfMut or Wrapping(other, fieldLayout = PrimitiveLayouts.I16)
 }
 
 public fun Wrapping<Short>.bitorAssignShort(other: Short) {
@@ -1042,7 +1115,8 @@ public fun Wrapping<Short>.bitandAssignWrappingShort(other: Wrapping<Short>) {
 }
 
 public fun Wrapping<Short>.bitandAssign(other: Short) {
-    this = this and Wrapping(other, fieldLayout = PrimitiveLayouts.I16)
+    var selfMut = this
+    selfMut = selfMut and Wrapping(other, fieldLayout = PrimitiveLayouts.I16)
 }
 
 public fun Wrapping<Short>.bitandAssignShort(other: Short) {
@@ -1056,7 +1130,8 @@ public fun Wrapping<Long>.addAssignWrappingLong(other: Wrapping<Long>) {
 }
 
 public fun Wrapping<Long>.addAssign(other: Long) {
-    this = this + Wrapping(other, fieldLayout = PrimitiveLayouts.I64)
+    var selfMut = this
+    selfMut = selfMut + Wrapping(other, fieldLayout = PrimitiveLayouts.I64)
 }
 
 public fun Wrapping<Long>.addAssignLong(other: Long) {
@@ -1070,7 +1145,8 @@ public fun Wrapping<Long>.subAssignWrappingLong(other: Wrapping<Long>) {
 }
 
 public fun Wrapping<Long>.subAssign(other: Long) {
-    this = this - Wrapping(other, fieldLayout = PrimitiveLayouts.I64)
+    var selfMut = this
+    selfMut = selfMut - Wrapping(other, fieldLayout = PrimitiveLayouts.I64)
 }
 
 public fun Wrapping<Long>.subAssignLong(other: Long) {
@@ -1084,7 +1160,8 @@ public fun Wrapping<Long>.mulAssignWrappingLong(other: Wrapping<Long>) {
 }
 
 public fun Wrapping<Long>.mulAssign(other: Long) {
-    this = this * Wrapping(other, fieldLayout = PrimitiveLayouts.I64)
+    var selfMut = this
+    selfMut = selfMut * Wrapping(other, fieldLayout = PrimitiveLayouts.I64)
 }
 
 public fun Wrapping<Long>.mulAssignLong(other: Long) {
@@ -1098,7 +1175,8 @@ public fun Wrapping<Long>.divAssignWrappingLong(other: Wrapping<Long>) {
 }
 
 public fun Wrapping<Long>.divAssign(other: Long) {
-    this = this / Wrapping(other, fieldLayout = PrimitiveLayouts.I64)
+    var selfMut = this
+    selfMut = selfMut / Wrapping(other, fieldLayout = PrimitiveLayouts.I64)
 }
 
 public fun Wrapping<Long>.divAssignLong(other: Long) {
@@ -1112,7 +1190,8 @@ public fun Wrapping<Long>.remAssignWrappingLong(other: Wrapping<Long>) {
 }
 
 public fun Wrapping<Long>.remAssign(other: Long) {
-    this = this % Wrapping(other, fieldLayout = PrimitiveLayouts.I64)
+    var selfMut = this
+    selfMut = selfMut % Wrapping(other, fieldLayout = PrimitiveLayouts.I64)
 }
 
 public fun Wrapping<Long>.remAssignLong(other: Long) {
@@ -1126,7 +1205,8 @@ public fun Wrapping<Long>.bitxorAssignWrappingLong(other: Wrapping<Long>) {
 }
 
 public fun Wrapping<Long>.bitxorAssign(other: Long) {
-    this = this xor Wrapping(other, fieldLayout = PrimitiveLayouts.I64)
+    var selfMut = this
+    selfMut = selfMut xor Wrapping(other, fieldLayout = PrimitiveLayouts.I64)
 }
 
 public fun Wrapping<Long>.bitxorAssignLong(other: Long) {
@@ -1140,7 +1220,8 @@ public fun Wrapping<Long>.bitorAssignWrappingLong(other: Wrapping<Long>) {
 }
 
 public fun Wrapping<Long>.bitorAssign(other: Long) {
-    this = this or Wrapping(other, fieldLayout = PrimitiveLayouts.I64)
+    var selfMut = this
+    selfMut = selfMut or Wrapping(other, fieldLayout = PrimitiveLayouts.I64)
 }
 
 public fun Wrapping<Long>.bitorAssignLong(other: Long) {
@@ -1154,7 +1235,8 @@ public fun Wrapping<Long>.bitandAssignWrappingLong(other: Wrapping<Long>) {
 }
 
 public fun Wrapping<Long>.bitandAssign(other: Long) {
-    this = this and Wrapping(other, fieldLayout = PrimitiveLayouts.I64)
+    var selfMut = this
+    selfMut = selfMut and Wrapping(other, fieldLayout = PrimitiveLayouts.I64)
 }
 
 public fun Wrapping<Long>.bitandAssignLong(other: Long) {
@@ -1168,7 +1250,8 @@ public fun Wrapping<I128>.addAssignWrappingI128(other: Wrapping<I128>) {
 }
 
 public fun Wrapping<I128>.addAssign(other: I128) {
-    this = this + Wrapping(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut + Wrapping(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 }
 
 public fun Wrapping<I128>.addAssignI128(other: I128) {
@@ -1182,7 +1265,8 @@ public fun Wrapping<I128>.subAssignWrappingI128(other: Wrapping<I128>) {
 }
 
 public fun Wrapping<I128>.subAssign(other: I128) {
-    this = this - Wrapping(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut - Wrapping(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 }
 
 public fun Wrapping<I128>.subAssignI128(other: I128) {
@@ -1196,7 +1280,8 @@ public fun Wrapping<I128>.mulAssignWrappingI128(other: Wrapping<I128>) {
 }
 
 public fun Wrapping<I128>.mulAssign(other: I128) {
-    this = this * Wrapping(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut * Wrapping(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 }
 
 public fun Wrapping<I128>.mulAssignI128(other: I128) {
@@ -1210,7 +1295,8 @@ public fun Wrapping<I128>.divAssignWrappingI128(other: Wrapping<I128>) {
 }
 
 public fun Wrapping<I128>.divAssign(other: I128) {
-    this = this / Wrapping(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut / Wrapping(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 }
 
 public fun Wrapping<I128>.divAssignI128(other: I128) {
@@ -1224,7 +1310,8 @@ public fun Wrapping<I128>.remAssignWrappingI128(other: Wrapping<I128>) {
 }
 
 public fun Wrapping<I128>.remAssign(other: I128) {
-    this = this % Wrapping(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut % Wrapping(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 }
 
 public fun Wrapping<I128>.remAssignI128(other: I128) {
@@ -1238,7 +1325,8 @@ public fun Wrapping<I128>.bitxorAssignWrappingI128(other: Wrapping<I128>) {
 }
 
 public fun Wrapping<I128>.bitxorAssign(other: I128) {
-    this = this xor Wrapping(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut xor Wrapping(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 }
 
 public fun Wrapping<I128>.bitxorAssignI128(other: I128) {
@@ -1252,7 +1340,8 @@ public fun Wrapping<I128>.bitorAssignWrappingI128(other: Wrapping<I128>) {
 }
 
 public fun Wrapping<I128>.bitorAssign(other: I128) {
-    this = this or Wrapping(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut or Wrapping(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 }
 
 public fun Wrapping<I128>.bitorAssignI128(other: I128) {
@@ -1266,7 +1355,8 @@ public fun Wrapping<I128>.bitandAssignWrappingI128(other: Wrapping<I128>) {
 }
 
 public fun Wrapping<I128>.bitandAssign(other: I128) {
-    this = this and Wrapping(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+    var selfMut = this
+    selfMut = selfMut and Wrapping(other, fieldLayout = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 }
 
 public fun Wrapping<I128>.bitandAssignI128(other: I128) {

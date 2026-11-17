@@ -153,7 +153,7 @@ public interface CommandExt {
      * required to gracefully handle errors it is recommended to use the
      * cross-platform `spawn` instead.
      */
-    public fun exec(): io.github.kotlinmania.rustlang.std.io.Error
+    public fun exec(): io.github.kotlinmania.rustlang.core.io.error.Error
 
     /**
      * Set executable argument
@@ -259,7 +259,7 @@ public fun Command.preExec(f: () -> Result<Unit, Error>): Command {
     return this
 }
 
-public fun Command.exec(): io.github.kotlinmania.rustlang.std.io.Error {
+public fun Command.exec(): io.github.kotlinmania.rustlang.core.io.error.Error {
     // NOTE: This may *not* be safe to call after `libc.fork`, because it
     // may allocate. That may be worth fixing at some point in the future.
     return this.asInnerMut().exec(Stdio.Inherit)
@@ -316,12 +316,12 @@ public interface ExitStatusExt<T> {
      * status. The following example relies on that convention and is therefore not guaranteed to
      * hold on every target:
      *
-     * # if cfg(targetOs = "fuchsia") { return; }
+     * # if cfg(targetOs = "fuchsia") ( return; )
      * use std.os.unix.process.ExitStatusExt;
      * use std.process.ExitStatus;
      *
      * let signal = 15; // SIGTERM
-     * assert(signal > 0 && signal < 0x7f, "not a valid Unix termination signal: {signal}");
+     * assert(signal > 0 && signal < 0x7f, "not a valid Unix termination signal: (signal)");
      *
      * let status = ExitStatus.fromRaw(signal);
      * assert(!status.success());
@@ -361,7 +361,7 @@ public interface ExitStatusExt<T> {
      * In other words, if [`Wifsignaled`][wait], this returns [`Wtermsig`][wait]. For such a status,
      * [ExitStatus.code] returns `None`:
      *
-     * # if cfg(targetOs = "fuchsia") { return; }
+     * # if cfg(targetOs = "fuchsia") ( return; )
      * use std.os.unix.process.ExitStatusExt;
      * use std.process.ExitStatus;
      *
@@ -460,17 +460,17 @@ public interface ChildExt<T> {
      *
      * @file:feature(unixSendSignal)
      *
-     * use std::{io, os.unix.process.ChildExt, process::{Command, Stdio}};
+     * use std::(io, os.unix.process.ChildExt, process::(Command, Stdio));
      *
      * use libc.Sigterm;
      *
-     * fn main() -> io.Result<()> {
-     *     # if cfg(not(all(targetVendor = "apple", not(targetOs = "macos")))) {
+     * fn main() -> io.Result<()> (
+     *     # if cfg(not(all(targetVendor = "apple", not(targetOs = "macos")))) (
      *     let child = Command.new("cat").stdin(Stdio.piped()).spawn()?;
      *     child.sendSignal(SIGTERM)?;
-     *     # }
+     *     # )
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun sendSignal(signal: Int): Result<Unit, Error>
@@ -489,20 +489,20 @@ public interface ChildExt<T> {
      *
      * @file:feature(unixSendSignal)
      *
-     * use std::{io, os.unix.process::{ChildExt, CommandExt}, process::{Command, Stdio}};
+     * use std::(io, os.unix.process::(ChildExt, CommandExt), process::(Command, Stdio));
      *
      * use libc.Sigterm;
      *
-     * fn main() -> io.Result<()> {
-     *     # if cfg(not(all(targetVendor = "apple", not(targetOs = "macos")))) {
+     * fn main() -> io.Result<()> (
+     *     # if cfg(not(all(targetVendor = "apple", not(targetOs = "macos")))) (
      *     let child = Command.new("cat")
      *         .stdin(Stdio.piped())
      *         .processGroup(0)
      *         .spawn()?;
      *     child.sendProcessGroupSignal(SIGTERM)?;
-     *     # }
+     *     # )
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun sendProcessGroupSignal(signal: Int): Result<Unit, Error>
@@ -521,16 +521,16 @@ public interface ChildExt<T> {
      *
      * @file:feature(unixKillProcessGroup)
      *
-     * use std::{os.unix.process::{ChildExt, CommandExt}, process::{Command, Stdio}};
+     * use std::(os.unix.process::(ChildExt, CommandExt), process::(Command, Stdio));
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let mut child = Command.new("cat")
      *         .stdin(Stdio.piped())
      *         .processGroup(0)
      *         .spawn()?;
      *     child.killProcessGroup()?;
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      *
      * [Child.kill]: process.Child.kill
@@ -634,7 +634,7 @@ public fun fromChildStderr(fd: OwnedFd): ChildStderr {
  *
  * use std.os.unix.process;
  * let parent = process.parentId();
- * println("The parent process has ID {}", parent);
+ * println("The parent process has ID ()", parent);
  * ```kotlin
  */
 public fun parentId(): UInt = getppid()

@@ -1,10 +1,10 @@
 // port-lint: source math/asin.rs
 package io.github.kotlinmania.rustlang.libm.math.asin
 
-import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.sqrt.sqrt
 import io.github.kotlinmania.rustlang.libm.math.fabs.fabs
 import io.github.kotlinmania.rustlang.libm.math.getHighWord
 import io.github.kotlinmania.rustlang.libm.math.getLowWord
+import io.github.kotlinmania.rustlang.libm.math.sqrt.sqrt
 import io.github.kotlinmania.rustlang.libm.math.withSetLowWord
 
 public val PIO2_HI: Double = 1.57079632679489655800e00

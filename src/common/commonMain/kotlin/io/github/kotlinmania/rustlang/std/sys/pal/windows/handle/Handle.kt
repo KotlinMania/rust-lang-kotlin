@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.pal.windows.handle
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.alloc.io.read.defaultReadVectored
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.write.Write
@@ -17,7 +18,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.windows.io.AsHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.AsRawHandle
@@ -258,7 +258,7 @@ public open class Handle(
             else -> {
                 val status3 = status1
                 val error = c.RtlNtStatusToDosError(status3)
-                Result.Err<Int, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(((error as Any?) as Result<Int, Error>)))
+                Result.Err<Int, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(((error as Any?) as Result<Int, Error>)))
             }
         }
     }
@@ -308,7 +308,7 @@ public open class Handle(
             else -> {
                 val status3 = status1
                 val error = c.RtlNtStatusToDosError(status3)
-                Result.Err<Int, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(((error as Any?) as Result<Int, Error>)))
+                Result.Err<Int, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(((error as Any?) as Result<Int, Error>)))
             }
         }
     }
@@ -318,7 +318,7 @@ public open class Handle(
             run {
                 val event = c.CreateEventW(MutPtr(0L), manual.toInt(), init.toInt(), ConstPtr(0L))
                 if (event.isNull()) {
-                    Result.Err<Handle, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+                    Result.Err<Handle, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
                 } else {
                     Result.Ok<Handle, Error>(Handle.fromRawHandle(event))
                 }

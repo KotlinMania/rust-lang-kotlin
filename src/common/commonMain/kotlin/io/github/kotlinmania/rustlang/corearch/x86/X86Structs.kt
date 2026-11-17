@@ -15,7 +15,7 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -92,7 +92,7 @@ public open class X87F80 internal constructor(
      */
     public open fun toNeBytes(): UByteArray {
         // SAFETY: the first 10 bytes are initialized.
-        return (UnresolvedTypeLayout<UByteArray>()).readNative((ConstPtr(((addrOf(this))).rawAddress)).rawAddress)
+        return (PrimitiveArrayLayouts.uByteArray((10).toInt())).readNative((ConstPtr(((addrOf(this))).rawAddress)).rawAddress)
     }
 
     public companion object {
@@ -156,7 +156,7 @@ public open class X87F80 internal constructor(
  * ```
  */
 public open class M128i(
-    public var value: LongArray,
+    public var value: LongArray = LongArray(2),
 ) {
     public var field0: LongArray
         get() = value
@@ -178,21 +178,21 @@ public open class M128i(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m128i", this.asArray())
 
-    public open fun asU8x16(): U8x16 = transmute(this)
+    public open fun asU8x16(): U8x16 = transmuteWithLayouts<M128i, U8x16>(this, M128i.typeLayout(), UnresolvedTypeLayout<U8x16>())
 
-    public open fun asU16x8(): U16x8 = transmute(this)
+    public open fun asU16x8(): U16x8 = transmuteWithLayouts<M128i, U16x8>(this, M128i.typeLayout(), UnresolvedTypeLayout<U16x8>())
 
-    public open fun asU32x4(): U32x4 = transmute(this)
+    public open fun asU32x4(): U32x4 = transmuteWithLayouts<M128i, U32x4>(this, M128i.typeLayout(), UnresolvedTypeLayout<U32x4>())
 
-    public open fun asU64x2(): U64x2 = transmute(this)
+    public open fun asU64x2(): U64x2 = transmuteWithLayouts<M128i, U64x2>(this, M128i.typeLayout(), UnresolvedTypeLayout<U64x2>())
 
-    public open fun asI8x16(): I8x16 = transmute(this)
+    public open fun asI8x16(): I8x16 = transmuteWithLayouts<M128i, I8x16>(this, M128i.typeLayout(), UnresolvedTypeLayout<I8x16>())
 
-    public open fun asI16x8(): I16x8 = transmute(this)
+    public open fun asI16x8(): I16x8 = transmuteWithLayouts<M128i, I16x8>(this, M128i.typeLayout(), UnresolvedTypeLayout<I16x8>())
 
-    public open fun asI32x4(): I32x4 = transmute(this)
+    public open fun asI32x4(): I32x4 = transmuteWithLayouts<M128i, I32x4>(this, M128i.typeLayout(), UnresolvedTypeLayout<I32x4>())
 
-    public open fun asI64x2(): I64x2 = transmute(this)
+    public open fun asI64x2(): I64x2 = transmuteWithLayouts<M128i, I64x2>(this, M128i.typeLayout(), UnresolvedTypeLayout<I64x2>())
 
     public companion object {
         public fun typeLayout(): TypeLayout<M128i> =
@@ -220,7 +220,7 @@ public open class M128i(
          */
         public fun splat(value: Long): M128i = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): M128i = transmute(simd)
+        public fun from(simd: Simd<Long>): M128i = transmuteWithLayouts<Simd<Long>, M128i>(simd, UnresolvedTypeLayout<Simd<Long>>(), M128i.typeLayout())
     }
 }
 
@@ -258,7 +258,7 @@ public open class M128i(
  * ```
  */
 public open class M128(
-    public var value: FloatArray,
+    public var value: FloatArray = FloatArray(4),
 ) {
     public var field0: FloatArray
         get() = value
@@ -280,7 +280,7 @@ public open class M128(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m128", this.asArray())
 
-    public open fun asF32x4(): F32x4 = transmute(this)
+    public open fun asF32x4(): F32x4 = transmuteWithLayouts<M128, F32x4>(this, M128.typeLayout(), UnresolvedTypeLayout<F32x4>())
 
     public companion object {
         public fun typeLayout(): TypeLayout<M128> =
@@ -308,7 +308,7 @@ public open class M128(
          */
         public fun splat(value: Float): M128 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Float>): M128 = transmute(simd)
+        public fun from(simd: Simd<Float>): M128 = transmuteWithLayouts<Simd<Float>, M128>(simd, UnresolvedTypeLayout<Simd<Float>>(), M128.typeLayout())
     }
 }
 
@@ -346,7 +346,7 @@ public open class M128(
  * ```
  */
 public open class M128d(
-    public var value: DoubleArray,
+    public var value: DoubleArray = DoubleArray(2),
 ) {
     public var field0: DoubleArray
         get() = value
@@ -368,7 +368,7 @@ public open class M128d(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m128d", this.asArray())
 
-    public open fun asF64x2(): F64x2 = transmute(this)
+    public open fun asF64x2(): F64x2 = transmuteWithLayouts<M128d, F64x2>(this, M128d.typeLayout(), UnresolvedTypeLayout<F64x2>())
 
     public companion object {
         public fun typeLayout(): TypeLayout<M128d> =
@@ -396,7 +396,7 @@ public open class M128d(
          */
         public fun splat(value: Double): M128d = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): M128d = transmute(simd)
+        public fun from(simd: Simd<Double>): M128d = transmuteWithLayouts<Simd<Double>, M128d>(simd, UnresolvedTypeLayout<Simd<Double>>(), M128d.typeLayout())
     }
 }
 
@@ -438,7 +438,7 @@ public open class M128d(
  * ```
  */
 public open class M256i(
-    public var value: LongArray,
+    public var value: LongArray = LongArray(4),
 ) {
     public var field0: LongArray
         get() = value
@@ -460,21 +460,21 @@ public open class M256i(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m256i", this.asArray())
 
-    public open fun asU8x32(): U8x32 = transmute(this)
+    public open fun asU8x32(): U8x32 = transmuteWithLayouts<M256i, U8x32>(this, M256i.typeLayout(), UnresolvedTypeLayout<U8x32>())
 
-    public open fun asU16x16(): U16x16 = transmute(this)
+    public open fun asU16x16(): U16x16 = transmuteWithLayouts<M256i, U16x16>(this, M256i.typeLayout(), UnresolvedTypeLayout<U16x16>())
 
-    public open fun asU32x8(): U32x8 = transmute(this)
+    public open fun asU32x8(): U32x8 = transmuteWithLayouts<M256i, U32x8>(this, M256i.typeLayout(), UnresolvedTypeLayout<U32x8>())
 
-    public open fun asU64x4(): U64x4 = transmute(this)
+    public open fun asU64x4(): U64x4 = transmuteWithLayouts<M256i, U64x4>(this, M256i.typeLayout(), UnresolvedTypeLayout<U64x4>())
 
-    public open fun asI8x32(): I8x32 = transmute(this)
+    public open fun asI8x32(): I8x32 = transmuteWithLayouts<M256i, I8x32>(this, M256i.typeLayout(), UnresolvedTypeLayout<I8x32>())
 
-    public open fun asI16x16(): I16x16 = transmute(this)
+    public open fun asI16x16(): I16x16 = transmuteWithLayouts<M256i, I16x16>(this, M256i.typeLayout(), UnresolvedTypeLayout<I16x16>())
 
-    public open fun asI32x8(): I32x8 = transmute(this)
+    public open fun asI32x8(): I32x8 = transmuteWithLayouts<M256i, I32x8>(this, M256i.typeLayout(), UnresolvedTypeLayout<I32x8>())
 
-    public open fun asI64x4(): I64x4 = transmute(this)
+    public open fun asI64x4(): I64x4 = transmuteWithLayouts<M256i, I64x4>(this, M256i.typeLayout(), UnresolvedTypeLayout<I64x4>())
 
     public companion object {
         public fun typeLayout(): TypeLayout<M256i> =
@@ -502,7 +502,7 @@ public open class M256i(
          */
         public fun splat(value: Long): M256i = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): M256i = transmute(simd)
+        public fun from(simd: Simd<Long>): M256i = transmuteWithLayouts<Simd<Long>, M256i>(simd, UnresolvedTypeLayout<Simd<Long>>(), M256i.typeLayout())
     }
 }
 
@@ -540,7 +540,7 @@ public open class M256i(
  * ```
  */
 public open class M256(
-    public var value: FloatArray,
+    public var value: FloatArray = FloatArray(8),
 ) {
     public var field0: FloatArray
         get() = value
@@ -562,7 +562,7 @@ public open class M256(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m256", this.asArray())
 
-    public open fun asF32x8(): F32x8 = transmute(this)
+    public open fun asF32x8(): F32x8 = transmuteWithLayouts<M256, F32x8>(this, M256.typeLayout(), UnresolvedTypeLayout<F32x8>())
 
     public companion object {
         public fun typeLayout(): TypeLayout<M256> =
@@ -590,7 +590,7 @@ public open class M256(
          */
         public fun splat(value: Float): M256 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Float>): M256 = transmute(simd)
+        public fun from(simd: Simd<Float>): M256 = transmuteWithLayouts<Simd<Float>, M256>(simd, UnresolvedTypeLayout<Simd<Float>>(), M256.typeLayout())
     }
 }
 
@@ -628,7 +628,7 @@ public open class M256(
  * ```
  */
 public open class M256d(
-    public var value: DoubleArray,
+    public var value: DoubleArray = DoubleArray(4),
 ) {
     public var field0: DoubleArray
         get() = value
@@ -650,7 +650,7 @@ public open class M256d(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m256d", this.asArray())
 
-    public open fun asF64x4(): F64x4 = transmute(this)
+    public open fun asF64x4(): F64x4 = transmuteWithLayouts<M256d, F64x4>(this, M256d.typeLayout(), UnresolvedTypeLayout<F64x4>())
 
     public companion object {
         public fun typeLayout(): TypeLayout<M256d> =
@@ -678,7 +678,7 @@ public open class M256d(
          */
         public fun splat(value: Double): M256d = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): M256d = transmute(simd)
+        public fun from(simd: Simd<Double>): M256d = transmuteWithLayouts<Simd<Double>, M256d>(simd, UnresolvedTypeLayout<Simd<Double>>(), M256d.typeLayout())
     }
 }
 
@@ -710,7 +710,7 @@ public open class M256d(
  * a "bag of bits" which is left up to interpretation at the point of use.
  */
 public open class M512i(
-    public var value: LongArray,
+    public var value: LongArray = LongArray(8),
 ) {
     public var field0: LongArray
         get() = value
@@ -732,21 +732,21 @@ public open class M512i(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m512i", this.asArray())
 
-    public open fun asU8x64(): U8x64 = transmute(this)
+    public open fun asU8x64(): U8x64 = transmuteWithLayouts<M512i, U8x64>(this, M512i.typeLayout(), UnresolvedTypeLayout<U8x64>())
 
-    public open fun asU16x32(): U16x32 = transmute(this)
+    public open fun asU16x32(): U16x32 = transmuteWithLayouts<M512i, U16x32>(this, M512i.typeLayout(), UnresolvedTypeLayout<U16x32>())
 
-    public open fun asU32x16(): U32x16 = transmute(this)
+    public open fun asU32x16(): U32x16 = transmuteWithLayouts<M512i, U32x16>(this, M512i.typeLayout(), UnresolvedTypeLayout<U32x16>())
 
-    public open fun asU64x8(): U64x8 = transmute(this)
+    public open fun asU64x8(): U64x8 = transmuteWithLayouts<M512i, U64x8>(this, M512i.typeLayout(), UnresolvedTypeLayout<U64x8>())
 
-    public open fun asI8x64(): I8x64 = transmute(this)
+    public open fun asI8x64(): I8x64 = transmuteWithLayouts<M512i, I8x64>(this, M512i.typeLayout(), UnresolvedTypeLayout<I8x64>())
 
-    public open fun asI16x32(): I16x32 = transmute(this)
+    public open fun asI16x32(): I16x32 = transmuteWithLayouts<M512i, I16x32>(this, M512i.typeLayout(), UnresolvedTypeLayout<I16x32>())
 
-    public open fun asI32x16(): I32x16 = transmute(this)
+    public open fun asI32x16(): I32x16 = transmuteWithLayouts<M512i, I32x16>(this, M512i.typeLayout(), UnresolvedTypeLayout<I32x16>())
 
-    public open fun asI64x8(): I64x8 = transmute(this)
+    public open fun asI64x8(): I64x8 = transmuteWithLayouts<M512i, I64x8>(this, M512i.typeLayout(), UnresolvedTypeLayout<I64x8>())
 
     public companion object {
         public fun typeLayout(): TypeLayout<M512i> =
@@ -774,7 +774,7 @@ public open class M512i(
          */
         public fun splat(value: Long): M512i = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): M512i = transmute(simd)
+        public fun from(simd: Simd<Long>): M512i = transmuteWithLayouts<Simd<Long>, M512i>(simd, UnresolvedTypeLayout<Simd<Long>>(), M512i.typeLayout())
     }
 }
 
@@ -802,7 +802,7 @@ public open class M512i(
  * "pd" which is used for `__m512d`.
  */
 public open class M512(
-    public var value: FloatArray,
+    public var value: FloatArray = FloatArray(16),
 ) {
     public var field0: FloatArray
         get() = value
@@ -824,7 +824,7 @@ public open class M512(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m512", this.asArray())
 
-    public open fun asF32x16(): F32x16 = transmute(this)
+    public open fun asF32x16(): F32x16 = transmuteWithLayouts<M512, F32x16>(this, M512.typeLayout(), UnresolvedTypeLayout<F32x16>())
 
     public companion object {
         public fun typeLayout(): TypeLayout<M512> =
@@ -852,7 +852,7 @@ public open class M512(
          */
         public fun splat(value: Float): M512 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Float>): M512 = transmute(simd)
+        public fun from(simd: Simd<Float>): M512 = transmuteWithLayouts<Simd<Float>, M512>(simd, UnresolvedTypeLayout<Simd<Float>>(), M512.typeLayout())
     }
 }
 
@@ -880,7 +880,7 @@ public open class M512(
  * "ps" which is used for `__m512`.
  */
 public open class M512d(
-    public var value: DoubleArray,
+    public var value: DoubleArray = DoubleArray(8),
 ) {
     public var field0: DoubleArray
         get() = value
@@ -902,7 +902,7 @@ public open class M512d(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m512d", this.asArray())
 
-    public open fun asF64x8(): F64x8 = transmute(this)
+    public open fun asF64x8(): F64x8 = transmuteWithLayouts<M512d, F64x8>(this, M512d.typeLayout(), UnresolvedTypeLayout<F64x8>())
 
     public companion object {
         public fun typeLayout(): TypeLayout<M512d> =
@@ -930,7 +930,7 @@ public open class M512d(
          */
         public fun splat(value: Double): M512d = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): M512d = transmute(simd)
+        public fun from(simd: Simd<Double>): M512d = transmuteWithLayouts<Simd<Double>, M512d>(simd, UnresolvedTypeLayout<Simd<Double>>(), M512d.typeLayout())
     }
 }
 
@@ -948,7 +948,7 @@ public open class M512d(
  * the same.
  */
 public open class M128bh(
-    public var value: UShortArray,
+    public var value: UShortArray = UShortArray(8),
 ) {
     public var field0: UShortArray
         get() = value
@@ -970,13 +970,13 @@ public open class M128bh(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m128bh", this.asArray())
 
-    public open fun asU16x8(): U16x8 = transmute(this)
+    public open fun asU16x8(): U16x8 = transmuteWithLayouts<M128bh, U16x8>(this, M128bh.typeLayout(), UnresolvedTypeLayout<U16x8>())
 
-    public open fun asU32x4(): U32x4 = transmute(this)
+    public open fun asU32x4(): U32x4 = transmuteWithLayouts<M128bh, U32x4>(this, M128bh.typeLayout(), UnresolvedTypeLayout<U32x4>())
 
-    public open fun asI16x8(): I16x8 = transmute(this)
+    public open fun asI16x8(): I16x8 = transmuteWithLayouts<M128bh, I16x8>(this, M128bh.typeLayout(), UnresolvedTypeLayout<I16x8>())
 
-    public open fun asI32x4(): I32x4 = transmute(this)
+    public open fun asI32x4(): I32x4 = transmuteWithLayouts<M128bh, I32x4>(this, M128bh.typeLayout(), UnresolvedTypeLayout<I32x4>())
 
     public companion object {
         public fun typeLayout(): TypeLayout<M128bh> =
@@ -1004,7 +1004,7 @@ public open class M128bh(
          */
         public fun splat(value: UShort): M128bh = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UShort>): M128bh = transmute(simd)
+        public fun from(simd: Simd<UShort>): M128bh = transmuteWithLayouts<Simd<UShort>, M128bh>(simd, UnresolvedTypeLayout<Simd<UShort>>(), M128bh.typeLayout())
     }
 }
 
@@ -1023,7 +1023,7 @@ public open class M128bh(
  * the same.
  */
 public open class M256bh(
-    public var value: UShortArray,
+    public var value: UShortArray = UShortArray(16),
 ) {
     public var field0: UShortArray
         get() = value
@@ -1045,13 +1045,13 @@ public open class M256bh(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m256bh", this.asArray())
 
-    public open fun asU16x16(): U16x16 = transmute(this)
+    public open fun asU16x16(): U16x16 = transmuteWithLayouts<M256bh, U16x16>(this, M256bh.typeLayout(), UnresolvedTypeLayout<U16x16>())
 
-    public open fun asU32x8(): U32x8 = transmute(this)
+    public open fun asU32x8(): U32x8 = transmuteWithLayouts<M256bh, U32x8>(this, M256bh.typeLayout(), UnresolvedTypeLayout<U32x8>())
 
-    public open fun asI16x16(): I16x16 = transmute(this)
+    public open fun asI16x16(): I16x16 = transmuteWithLayouts<M256bh, I16x16>(this, M256bh.typeLayout(), UnresolvedTypeLayout<I16x16>())
 
-    public open fun asI32x8(): I32x8 = transmute(this)
+    public open fun asI32x8(): I32x8 = transmuteWithLayouts<M256bh, I32x8>(this, M256bh.typeLayout(), UnresolvedTypeLayout<I32x8>())
 
     public companion object {
         public fun typeLayout(): TypeLayout<M256bh> =
@@ -1079,7 +1079,7 @@ public open class M256bh(
          */
         public fun splat(value: UShort): M256bh = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UShort>): M256bh = transmute(simd)
+        public fun from(simd: Simd<UShort>): M256bh = transmuteWithLayouts<Simd<UShort>, M256bh>(simd, UnresolvedTypeLayout<Simd<UShort>>(), M256bh.typeLayout())
     }
 }
 
@@ -1098,7 +1098,7 @@ public open class M256bh(
  * the same.
  */
 public open class M512bh(
-    public var value: UShortArray,
+    public var value: UShortArray = UShortArray(32),
 ) {
     public var field0: UShortArray
         get() = value
@@ -1120,13 +1120,13 @@ public open class M512bh(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m512bh", this.asArray())
 
-    public open fun asU16x32(): U16x32 = transmute(this)
+    public open fun asU16x32(): U16x32 = transmuteWithLayouts<M512bh, U16x32>(this, M512bh.typeLayout(), UnresolvedTypeLayout<U16x32>())
 
-    public open fun asU32x16(): U32x16 = transmute(this)
+    public open fun asU32x16(): U32x16 = transmuteWithLayouts<M512bh, U32x16>(this, M512bh.typeLayout(), UnresolvedTypeLayout<U32x16>())
 
-    public open fun asI16x32(): I16x32 = transmute(this)
+    public open fun asI16x32(): I16x32 = transmuteWithLayouts<M512bh, I16x32>(this, M512bh.typeLayout(), UnresolvedTypeLayout<I16x32>())
 
-    public open fun asI32x16(): I32x16 = transmute(this)
+    public open fun asI32x16(): I32x16 = transmuteWithLayouts<M512bh, I32x16>(this, M512bh.typeLayout(), UnresolvedTypeLayout<I32x16>())
 
     public companion object {
         public fun typeLayout(): TypeLayout<M512bh> =
@@ -1154,7 +1154,7 @@ public open class M512bh(
          */
         public fun splat(value: UShort): M512bh = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UShort>): M512bh = transmute(simd)
+        public fun from(simd: Simd<UShort>): M512bh = transmuteWithLayouts<Simd<UShort>, M512bh>(simd, UnresolvedTypeLayout<Simd<UShort>>(), M512bh.typeLayout())
     }
 }
 
@@ -1173,7 +1173,7 @@ public open class M512bh(
  * the same.
  */
 public open class M128h(
-    public var value: List<F16>,
+    public var value: List<F16> = List(8) { F16() },
 ) {
     public var field0: List<F16>
         get() = value
@@ -1195,7 +1195,7 @@ public open class M128h(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m128h", this.asArray())
 
-    public open fun asF16x8(): F16x8 = transmute(this)
+    public open fun asF16x8(): F16x8 = transmuteWithLayouts<M128h, F16x8>(this, M128h.typeLayout(), UnresolvedTypeLayout<F16x8>())
 
     public companion object {
         public fun typeLayout(): TypeLayout<M128h> =
@@ -1223,7 +1223,7 @@ public open class M128h(
          */
         public fun splat(value: F16): M128h = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<F16>): M128h = transmute(simd)
+        public fun from(simd: Simd<F16>): M128h = transmuteWithLayouts<Simd<F16>, M128h>(simd, UnresolvedTypeLayout<Simd<F16>>(), M128h.typeLayout())
     }
 }
 
@@ -1242,7 +1242,7 @@ public open class M128h(
  * the same.
  */
 public open class M256h(
-    public var value: List<F16>,
+    public var value: List<F16> = List(16) { F16() },
 ) {
     public var field0: List<F16>
         get() = value
@@ -1264,7 +1264,7 @@ public open class M256h(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m256h", this.asArray())
 
-    public open fun asF16x16(): F16x16 = transmute(this)
+    public open fun asF16x16(): F16x16 = transmuteWithLayouts<M256h, F16x16>(this, M256h.typeLayout(), UnresolvedTypeLayout<F16x16>())
 
     public companion object {
         public fun typeLayout(): TypeLayout<M256h> =
@@ -1292,7 +1292,7 @@ public open class M256h(
          */
         public fun splat(value: F16): M256h = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<F16>): M256h = transmute(simd)
+        public fun from(simd: Simd<F16>): M256h = transmuteWithLayouts<Simd<F16>, M256h>(simd, UnresolvedTypeLayout<Simd<F16>>(), M256h.typeLayout())
     }
 }
 
@@ -1311,7 +1311,7 @@ public open class M256h(
  * the same.
  */
 public open class M512h(
-    public var value: List<F16>,
+    public var value: List<F16> = List(32) { F16() },
 ) {
     public var field0: List<F16>
         get() = value
@@ -1333,7 +1333,7 @@ public open class M512h(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m512h", this.asArray())
 
-    public open fun asF16x32(): F16x32 = transmute(this)
+    public open fun asF16x32(): F16x32 = transmuteWithLayouts<M512h, F16x32>(this, M512h.typeLayout(), UnresolvedTypeLayout<F16x32>())
 
     public companion object {
         public fun typeLayout(): TypeLayout<M512h> =
@@ -1361,7 +1361,7 @@ public open class M512h(
          */
         public fun splat(value: F16): M512h = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<F16>): M512h = transmute(simd)
+        public fun from(simd: Simd<F16>): M512h = transmuteWithLayouts<Simd<F16>, M512h>(simd, UnresolvedTypeLayout<Simd<F16>>(), M512h.typeLayout())
     }
 }
 

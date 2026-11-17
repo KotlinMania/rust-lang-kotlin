@@ -1,6 +1,7 @@
 // port-lint: source x86/kl.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -113,7 +114,7 @@ public fun mmEncodekey128U32(keyParams: UInt, key: M128i, handle: MutPtr): UInt 
     val key0 = tupleStructVal.field1
     val key1 = tupleStructVal.field2
     val key2 = tupleStructVal.field3
-    writeUnaligned(handle, listOf(key0, key1, key2))
+    writeUnaligned(handle, listOf(key0, key1, key2), typeLayoutT = PrimitiveLayouts.U8)
     return control
 }
 
@@ -139,7 +140,7 @@ public fun mmEncodekey256U32(keyParams: UInt, keyLo: M128i, keyHi: M128i, handle
     val key1 = tupleStructVal.field2
     val key2 = tupleStructVal.field3
     val key3 = tupleStructVal.field4
-    writeUnaligned(handle, listOf(key0, key1, key2, key3))
+    writeUnaligned(handle, listOf(key0, key1, key2, key3), typeLayoutT = PrimitiveLayouts.U8)
     return control
 }
 

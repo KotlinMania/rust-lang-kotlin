@@ -1,6 +1,7 @@
 // port-lint: source alloc.rs
 package io.github.kotlinmania.rustlang.alloc.alloc
 
+import io.github.kotlinmania.rustlang.core.alloc.*
 import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
@@ -25,13 +26,13 @@ import io.github.kotlinmania.rustlang.core.result.Result
 // (the code expanding that attribute macro generates those functions), or to call
 // the default implementations in std (`__rdl_alloc` etc. in `library / std / src / alloc.rs`)
 // otherwise.
-public fun rustAlloc(size: ULong, align: Alignment): MutPtr = MutPtr(kmAlloc(size.toLong(), align.toLong()))
+public fun rustAlloc(size: ULong, align: Alignment): MutPtr = MutPtr(kmAlloc(size.toLong(), align.asUsize().toLong()))
 
-public fun rustDealloc(ptr: NonNull, size: ULong, align: Alignment) = kmDealloc(ptr.rawAddress, size.toLong(), align.toLong())
+public fun rustDealloc(ptr: NonNull, size: ULong, align: Alignment) = kmDealloc(ptr.rawAddress, size.toLong(), align.asUsize().toLong())
 
-public fun rustRealloc(ptr: NonNull, oldSize: ULong, align: Alignment, newSize: ULong): MutPtr = MutPtr(kmRealloc(ptr.rawAddress, oldSize.toLong(), align.toLong(), newSize.toLong()))
+public fun rustRealloc(ptr: NonNull, oldSize: ULong, align: Alignment, newSize: ULong): MutPtr = MutPtr(kmRealloc(ptr.rawAddress, oldSize.toLong(), align.asUsize().toLong(), newSize.toLong()))
 
-public fun rustAllocZeroed(size: ULong, align: Alignment): MutPtr = MutPtr(kmAllocZeroed(size.toLong(), align.toLong()))
+public fun rustAllocZeroed(size: ULong, align: Alignment): MutPtr = MutPtr(kmAllocZeroed(size.toLong(), align.asUsize().toLong()))
 
 public fun rustNoAllocShimIsUnstableV2() = Unit
 
@@ -94,7 +95,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                         // `realloc` probably checks for `newSize >= oldLayout.size()` or something similar.
                         assertUnchecked(newSize >= oldLayout.size())
                         val rawPtr = reallocNonnull(ptr, oldLayout, newSize)
-                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
                         if (zeroed) {
                             kmWriteBytes((MutPtr((rawPtr).rawAddress + ((oldSize).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress, (0).toUByte(), (newSize - oldSize).toLong() * (PrimitiveLayouts.U8).sizeBytes)
                         }
@@ -110,7 +111,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                     val oldSize1 = matchVal
                     run {
                         val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
-                        copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), oldSize1)
+                        copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asPtr(), oldSize1, typeLayoutT = PrimitiveLayouts.U8)
                         this.deallocate(ptr, oldLayout)
                         Result.Ok<NonNull, AllocError>(newPtr)
                     }
@@ -138,7 +139,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                         // `realloc` probably checks for `newSize <= oldLayout.size()` or something similar.
                         assertUnchecked(newSize <= oldLayout.size())
                         val rawPtr = reallocNonnull(ptr, oldLayout, newSize)
-                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
                         Result.Ok<NonNull, AllocError>(ptr1.castSlice(newSize))
                     }
                 }
@@ -151,7 +152,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                     val newSize1 = matchVal
                     run {
                         val newPtr = when (val tryResult = this.allocate(newLayout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
-                        copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), newSize1)
+                        copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asPtr(), newSize1, typeLayoutT = PrimitiveLayouts.U8)
                         this.deallocate(ptr, oldLayout)
                         Result.Ok<NonNull, AllocError>(newPtr)
                     }
@@ -183,7 +184,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
         val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
         // SAFETY: both pointers are valid and this operations is in bounds.
         run {
-            copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), minOf(oldLayout.size(), newLayout.size()))
+            copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asPtr(), minOf(oldLayout.size(), newLayout.size()), typeLayoutT = PrimitiveLayouts.U8)
         }
         // SAFETY: Caller ensures the ptr & layout are correct.
         run {
@@ -251,7 +252,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                             } else {
                                 alloc(layout)
                             }
-                        val ptr = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        val ptr = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
                         Result.Ok<NonNull, AllocError>(ptr.castSlice(size))
                     }
                 }
@@ -282,7 +283,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                     val size = matchVal
                     run {
                         val rawPtr = constAllocate(layout.size(), layout.align())
-                        val ptr = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        val ptr = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
                         if (zeroed) {
                             // SAFETY: the pointer returned by `constAllocate` is valid to write to.
                             ptr.writeBytes(0, size)
@@ -371,7 +372,7 @@ public fun alloc(layout: Layout): MutPtr {
         // Make sure we don't accidentally allow omitting the allocator shim in
         // stable code until it is actually stabilized.
         rustNoAllocShimIsUnstableV2()
-        MutPtr(kmAlloc((layout.size()).toLong(), (layout.alignment()).toLong()))
+        MutPtr(kmAlloc((layout.size()).toLong(), (layout.alignment()).asUsize().toLong()))
     }
 }
 
@@ -421,7 +422,7 @@ public fun dealloc(ptr: MutPtr, layout: Layout) {
  */
 public fun deallocNonnull(ptr: NonNull, layout: Layout) {
     // SAFETY: Upheld by caller.
-    kmDealloc((ptr).rawAddress, (layout.size()).toLong(), (layout.alignment()).toLong())
+    kmDealloc((ptr).rawAddress, (layout.size()).toLong(), (layout.alignment()).asUsize().toLong())
 }
 
 // even without panics, this helps for Miri backtraces
@@ -478,7 +479,7 @@ public fun realloc(ptr: MutPtr, layout: Layout, newSize: Int): MutPtr {
  */
 public fun reallocNonnull(ptr: NonNull, layout: Layout, newSize: Int): MutPtr {
     // SAFETY: Upheld by caller.
-    return MutPtr(kmRealloc((ptr).rawAddress, (layout.size()).toLong(), (layout.alignment()).toLong(), (newSize).toLong()))
+    return MutPtr(kmRealloc((ptr).rawAddress, (layout.size()).toLong(), (layout.alignment()).asUsize().toLong(), (newSize).toLong()))
 }
 
 // even without panics, this helps for Miri backtraces
@@ -543,7 +544,7 @@ public fun allocZeroed(layout: Layout): MutPtr {
         // Make sure we don't accidentally allow omitting the allocator shim in
         // stable code until it is actually stabilized.
         rustNoAllocShimIsUnstableV2()
-        MutPtr(kmAllocZeroed((layout.size()).toLong(), (layout.alignment()).toLong()))
+        MutPtr(kmAllocZeroed((layout.size()).toLong(), (layout.alignment()).asUsize().toLong()))
     }
 }
 

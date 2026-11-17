@@ -46,7 +46,7 @@ public interface Select<T> {
     public fun select(trueValues: T, falseValues: T): T
 }
 
-public fun <Mask, T, U> Mask<U>.select(trueValues: Simd<T>, falseValues: Simd<T>, n: Int): Simd<T> where U : MaskElement<U> {
+public fun <Mask, Unsigned, T, U> Mask<U>.select(trueValues: Simd<T>, falseValues: Simd<T>, n: Int): Simd<T> where U : MaskElement<U, Mask, Unsigned> {
     // Safety:
     // simdAs between masks is always safe (they're vectors of ints).
     // simdSelect uses a mask that matches the width and number of elements
@@ -90,14 +90,14 @@ public fun <Mask, T> ULong.select(trueValues: Simd<T>, falseValues: Simd<T>, n: 
     }
 }
 
-public fun <T, U> Mask<U>.select(trueValues: Mask<T>, falseValues: Mask<T>, n: Int): Mask<T> where T : MaskElement<T>, U : MaskElement<U> {
+public fun <Mask, Unsigned, T, U> Mask<U>.select(trueValues: Mask<T>, falseValues: Mask<T>, n: Int): Mask<T> where T : MaskElement<T, Mask, Unsigned>, U : MaskElement<U, Mask, Unsigned> {
     val selected: Simd<T> = Select.Select(this, trueValues.toSimd(), falseValues.toSimd())
     // Safety: all values come from masks
-    return Mask.fromSimdUnchecked(selected)
+    return fromSimdUnchecked(selected)
 }
 
-public fun <T> ULong.select(trueValues: Mask<T>, falseValues: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> {
+public fun <Mask, Unsigned, T> ULong.select(trueValues: Mask<T>, falseValues: Mask<T>, n: Int): Mask<T> where T : MaskElement<T, Mask, Unsigned> {
     val selected: Simd<T> = Select.Select(this, trueValues.toSimd(), falseValues.toSimd())
     // Safety: all values come from masks
-    return Mask.fromSimdUnchecked(selected)
+    return fromSimdUnchecked(selected)
 }

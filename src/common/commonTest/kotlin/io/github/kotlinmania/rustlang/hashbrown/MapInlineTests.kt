@@ -43,7 +43,7 @@ public typealias HM = HashMap<Int, Int, DefaultHashBuilder, Global>
 
 public typealias Hasher = DefaultHasher
 
-// Omitted quickcheck/rand property test items pending quickcheck-kotlin / rand-kotlin port (Hermes Kanban t_19971811).
+// Omitted quickcheck/rand property test items pending quickcheck-kotlin / rand-kotlin port (Hermes Kanban card 19971811).
 
 public open class Droppable(
     public var k: Int,
@@ -1598,7 +1598,7 @@ public open class MmapAllocator(
             0 -> Result.Ok<Int, AllocError>(n1)
             else -> {
                 val rem = matchVal
-                (n1.checkedAdd(this.pageSize - rem)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))
+                (n1.checkedAdd(this.pageSize - rem)?.let { Result.Ok<Int, AllocError>(it) } ?: Result.Err<Int, AllocError>(AllocError()))
             }
         }
     }

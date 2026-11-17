@@ -3,9 +3,9 @@ package io.github.kotlinmania.rustlang.std.thread.lifecycle
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.io.write.Write
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybedangling.MaybeDangling
-import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
@@ -13,7 +13,6 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.panic.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sync.Arc
@@ -95,11 +94,11 @@ public fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean, 
     val rustStart1 =
         run {
             val ptr = Box.intoRaw(rustStart)
-            val ptr1 = transmuteWithLayouts(ptr, PrimitiveLayouts.mutPtrLayout(64L), PrimitiveLayouts.mutPtrLayout(64L))
+            val ptr1 = transmute(ptr)
             Box.fromRaw(ptr1)
         }
     val init = ThreadInit(handle = thread.clone(), rustStart = rustStart1)
-    return Result.Ok<JoinInner<T>, Error>(JoinInner(native = when (val tryResult = io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread.new(stackSize1, init)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<JoinInner<T>, Error>(tryResult.error) }, thread = thread, packet = myPacket))
+    return Result.Ok<JoinInner<T>, Error>(JoinInner(native = when (val tryResult = io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread.new(stackSize1, init)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<JoinInner<T>, Error>((tryResult.error as Error)); else -> error("Unexpected Result variant: $tryResult") }, thread = thread, packet = myPacket))
 }
 
 /**
@@ -218,7 +217,7 @@ public open class Packet<T> internal constructor(
             else -> {
                 val scope = matchVal3
                 // Now that there will be no more user code running on this thread
-                // that can use scope, mark the thread as 'finished'.
+                // that can use scope, mark the thread as `finished`.
                 // It's important we only do this after the `result` has been dropped,
                 // since dropping it might still use things it borrowed from scope.
                 scope.decrementNumRunningThreads(unhandledPanic)

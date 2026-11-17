@@ -34,7 +34,7 @@ public fun interface RunBridgeAndClientRunClientCallback {
     public operator fun invoke(arg0: BridgeConfig): Buffer
 }
 
-public open class HandleStore<S : Server<Any?, Any?, Any?>, TokenStream, Span, Symbol> internal constructor(
+public open class HandleStore<S : Server<TokenStream, Span, Symbol>, TokenStream, Span, Symbol> internal constructor(
     tokenStreamCtorArg: OwnedStore<MarkedTokenStream<S>>,
     spanCtorArg: InternedStore<MarkedSpan<S>>,
 ) {
@@ -45,7 +45,7 @@ public open class HandleStore<S : Server<Any?, Any?, Any?>, TokenStream, Span, S
         internal set
 
     public companion object {
-        public operator fun <S : Server<Any?, Any?, Any?>, TokenStream, Span, Symbol> invoke(
+        public operator fun <S : Server<TokenStream, Span, Symbol>, TokenStream, Span, Symbol> invoke(
             tokenStream: OwnedStore<MarkedTokenStream<S>>,
             span: InternedStore<MarkedSpan<S>>,
         ): HandleStore<S, TokenStream, Span, Symbol> = HandleStore<S, TokenStream, Span, Symbol>(
@@ -53,7 +53,7 @@ public open class HandleStore<S : Server<Any?, Any?, Any?>, TokenStream, Span, S
             spanCtorArg = span,
         )
 
-        public fun <TokenStream, Span, Symbol, S : Server<Any?, Any?, Any?>> new(): HandleStore<S, TokenStream, Span, Symbol> {
+        public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> new(): HandleStore<S, TokenStream, Span, Symbol> {
             val TOKEN_STREAM: AtomicU32  = AtomicU32.new(1)
             val SPAN: AtomicU32  = AtomicU32.new(1)
             return HandleStore(tokenStream = Handle.OwnedStore.new(TOKEN_STREAM), span = Handle.InternedStore.new(SPAN))
@@ -67,17 +67,17 @@ public typealias MarkedSpan<S> = Marked<Span, Span>
 
 public typealias MarkedSymbol<S> = Marked<Symbol, Symbol>
 
-public fun <TokenStream, Span, Symbol, S : Server<Any?, Any?, Any?>> MarkedTokenStream<S>.encode(w: Buffer, s: HandleStore<S, TokenStream, Span, Symbol>) {
+public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> MarkedTokenStream<S>.encode(w: Buffer, s: HandleStore<S, TokenStream, Span, Symbol>) {
     s.tokenStream.alloc(this).encode(w, s)
 }
 
-public fun <TokenStream, Span, Symbol, S : Server<Any?, Any?, Any?>> decodeMarkedTokenStreamS(r: List<UByte>, s: HandleStore<S, TokenStream, Span, Symbol>): MarkedTokenStream<S> = s.tokenStream.take(Handle.Handle.decode(r, Unit))
+public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> decodeMarkedTokenStreamS(r: List<UByte>, s: HandleStore<S, TokenStream, Span, Symbol>): MarkedTokenStream<S> = s.tokenStream.take(Handle.Handle.decode(r, Unit))
 
-public fun <TokenStream, Span, Symbol, S : Server<Any?, Any?, Any?>> MarkedSpan<S>.encode(w: Buffer, s: HandleStore<S, TokenStream, Span, Symbol>) {
+public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> MarkedSpan<S>.encode(w: Buffer, s: HandleStore<S, TokenStream, Span, Symbol>) {
     s.span.alloc(this).encode(w, s)
 }
 
-public fun <TokenStream, Span, Symbol, S : Server<Any?, Any?, Any?>> decodeMarkedSpanS(r: List<UByte>, s: HandleStore<S, TokenStream, Span, Symbol>): MarkedSpan<S> = s.span.copy(Handle.Handle.decode(r, Unit))
+public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> decodeMarkedSpanS(r: List<UByte>, s: HandleStore<S, TokenStream, Span, Symbol>): MarkedSpan<S> = s.span.copy(Handle.Handle.decode(r, Unit))
 
 public interface Server<TokenStream, Span, Symbol> {
     public fun globals(): ExpnGlobals<Span>
@@ -156,7 +156,7 @@ public interface Server<TokenStream, Span, Symbol> {
 }
 
 // Note(eddyb) `public` only for `ExecutionStrategy` below.
-public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Symbol> internal constructor(
+public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream, Span, Symbol> internal constructor(
     handleStoreCtorArg: HandleStore<S, TokenStream, Span, Symbol>,
     public var server: S,
 ) {
@@ -703,7 +703,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
     }
 
     public companion object {
-        public operator fun <S : Server<Any?, Any?, Any?>, TokenStream, Span, Symbol> invoke(
+        public operator fun <S : Server<TokenStream, Span, Symbol>, TokenStream, Span, Symbol> invoke(
             handleStore: HandleStore<S, TokenStream, Span, Symbol>,
             server: S,
         ): Dispatcher<S, TokenStream, Span, Symbol> = Dispatcher<S, TokenStream, Span, Symbol>(
@@ -854,7 +854,7 @@ public open class MessagePipe<T>(
     }
 }
 
-public fun <TokenStream, Span, Symbol, S : Server<Any?, Any?, Any?>, I : Encode<HandleStore<S, TokenStream, Span, Symbol>>, O : Decode<HandleStore<S, TokenStream, Span, Symbol>, O>> runServer(strategy: ExecutionStrategy, server: S, input: I, runClient: RunBridgeAndClientRunClientCallback, forceShowPanics: Boolean): Result<O, PanicMessage> {
+public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>, I : Encode<HandleStore<S, TokenStream, Span, Symbol>>, O : Decode<HandleStore<S, TokenStream, Span, Symbol>, O>> runServer(strategy: ExecutionStrategy, server: S, input: I, runClient: RunBridgeAndClientRunClientCallback, forceShowPanics: Boolean): Result<O, PanicMessage> {
     val dispatcher = Dispatcher(handleStore = HandleStore.new(), server = server)
     val globals = dispatcher.server.globals()
     var buf = Buffer.new()
@@ -863,12 +863,12 @@ public fun <TokenStream, Span, Symbol, S : Server<Any?, Any?, Any?>, I : Encode<
     return Result.decode(buf, dispatcher.handleStore)
 }
 
-public fun <TokenStream, Span, Symbol, S> Client.run1(strategy: ExecutionStrategy, server: S, input: TokenStream, forceShowPanics: Boolean): Result<TokenStream, PanicMessage> where S : Server<Any?, Any?, Any?> {
+public fun <TokenStream, Span, Symbol, S> Client.run1(strategy: ExecutionStrategy, server: S, input: TokenStream, forceShowPanics: Boolean): Result<TokenStream, PanicMessage> where S : Server<TokenStream, Span, Symbol> {
     val run = this.run
     return runServer(strategy, server, MarkedTokenStream.mark(input), run, forceShowPanics).map({ s -> MarkedTokenStream.unmark(s).unwrapOrDefault() })
 }
 
-public fun <TokenStream, Span, Symbol, S> Client.run2(strategy: ExecutionStrategy, server: S, input: TokenStream, input2: TokenStream, forceShowPanics: Boolean): Result<TokenStream, PanicMessage> where S : Server<Any?, Any?, Any?> {
+public fun <TokenStream, Span, Symbol, S> Client.run2(strategy: ExecutionStrategy, server: S, input: TokenStream, input2: TokenStream, forceShowPanics: Boolean): Result<TokenStream, PanicMessage> where S : Server<TokenStream, Span, Symbol> {
     val run = this.run
     return runServer(strategy, server, Pair(MarkedTokenStream.mark(input), MarkedTokenStream.mark(input2)), run, forceShowPanics).map({ s -> MarkedTokenStream.unmark(s).unwrapOrDefault() })
 }

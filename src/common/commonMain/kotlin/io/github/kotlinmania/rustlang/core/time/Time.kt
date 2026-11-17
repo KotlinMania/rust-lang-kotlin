@@ -752,7 +752,7 @@ public open class Duration(
      *
      * Unlike [Duration.asSecsF32] or [Duration.asSecsF64], which convert
      * to floating-point numbers and may lose precision, this method displays a precise
-     * value. If the formatting precision `{ :.N }` is explicitly specified:
+     * value. If the formatting precision `( :.N )` is explicitly specified:
      *
      * - `N` < 9: it rounds the subsecond part with tie resolution to even.
      * - `N` = 9: it displays the precise 9-digit subsecond part.
@@ -787,25 +787,29 @@ public open class Duration(
     public override fun add(rhs: Duration): Duration = (this.checkedAdd(rhs) ?: error("adding durations should not exceed u64::MAX"))
 
     public override fun addAssign(rhs: Duration) {
-        this = this + rhs
+        var selfMut = this
+        selfMut = selfMut + rhs
     }
 
     public override fun sub(rhs: Duration): Duration = (this.checkedSub(rhs) ?: error("subtracting durations should not be negative"))
 
     public override fun subAssign(rhs: Duration) {
-        this = this - rhs
+        var selfMut = this
+        selfMut = selfMut - rhs
     }
 
     public override fun mul(rhs: UInt): Duration = (this.checkedMul(rhs) ?: error("multiplying duration by scalar should not exceed u64::MAX"))
 
     public override fun mulAssign(rhs: UInt) {
-        this = this * rhs
+        var selfMut = this
+        selfMut = selfMut * rhs
     }
 
     public override fun div(rhs: UInt): Duration = (this.checkedDiv(rhs) ?: error("divisor should not be zero"))
 
     public override fun divAssign(rhs: UInt) {
-        this = this / rhs
+        var selfMut = this
+        selfMut = selfMut / rhs
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {

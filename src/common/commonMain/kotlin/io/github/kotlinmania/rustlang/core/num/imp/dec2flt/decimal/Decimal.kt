@@ -26,7 +26,7 @@ public open class Decimal(
     /**
      * Detect if the float can be accurately reconstructed from native floats.
      */
-    public open fun <F : Lemire<F>> canUseFastPath(): Boolean = F.MIN_EXPONENT_FAST_PATH <= this.exponent && this.exponent <= F.MAX_EXPONENT_DISGUISED_FAST_PATH && this.mantissa <= F.MAX_MANTISSA_FAST_PATH && !this.manyDigits
+    public open fun <Int, F : Lemire<F, Int>> canUseFastPath(): Boolean = F.MIN_EXPONENT_FAST_PATH <= this.exponent && this.exponent <= F.MAX_EXPONENT_DISGUISED_FAST_PATH && this.mantissa <= F.MAX_MANTISSA_FAST_PATH && !this.manyDigits
 
     /**
      * Try turning the decimal into an exact float representation, using machine-sized integers
@@ -40,7 +40,7 @@ public open class Decimal(
      * There is an exception: disguised fast-path cases, where we can shift
      * powers-of-10 from the exponent to the significant digits.
      */
-    public open fun <F : Lemire<F>> tryFastPath(fromU64FFn: (ULong) -> F, pow10FastPathFFn: (Int) -> F): F? {
+    public open fun <Int, F : Lemire<F, Int>> tryFastPath(fromU64FFn: (ULong) -> F, pow10FastPathFFn: (Int) -> F): F? {
         // Here we need to work around <https://github.com/rust-lang/rust/issues/114479>.
         // The fast path crucially depends on arithmetic being rounded to the correct number of bits
         // without any intermediate rounding. On x86 (without SSE or SSE2) this requires the precision

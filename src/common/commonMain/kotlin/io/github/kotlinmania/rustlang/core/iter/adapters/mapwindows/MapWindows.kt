@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.option.Item
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
@@ -47,25 +48,25 @@ public class DebugStruct(
  * This `class` is created by the [Iterator.mapWindows]. See its
  * documentation for more information.
  */
-public open class MapWindows<I, F> internal constructor(
+public open class MapWindows<I, F, Item> internal constructor(
     public var f: F,
-    innerCtorArg: MapWindowsInner<I>,
+    innerCtorArg: MapWindowsInner<I, Item>,
 ) {
-    public var inner: MapWindowsInner<I> = innerCtorArg
+    public var inner: MapWindowsInner<I, Item> = innerCtorArg
         internal set
 
     public companion object {
-        public operator fun <I, F> invoke(
+        public operator fun <I, F, Item> invoke(
             f: F,
-            inner: MapWindowsInner<I>,
-        ): MapWindows<I, F> = MapWindows<I, F>(
+            inner: MapWindowsInner<I, Item>,
+        ): MapWindows<I, F, Item> = MapWindows<I, F, Item>(
             f = f,
             innerCtorArg = inner,
         )
     }
 }
 
-public open class MapWindowsInner<I> internal constructor(
+public open class MapWindowsInner<I, Item> internal constructor(
     public var iter: I,
     bufferCtorArg: Buffer<Item>?,
 ) {
@@ -85,10 +86,10 @@ public open class MapWindowsInner<I> internal constructor(
         internal set
 
     public companion object {
-        public operator fun <I> invoke(
+        public operator fun <I, Item> invoke(
             iter: I,
             buffer: Buffer<Item>?,
-        ): MapWindowsInner<I> = MapWindowsInner<I>(
+        ): MapWindowsInner<I, Item> = MapWindowsInner<I, Item>(
             iter = iter,
             bufferCtorArg = buffer,
         )
@@ -112,7 +113,7 @@ public open class Buffer<T>(
     public var start: Int,
 )
 
-public fun <Item, I, F> MapWindows.Companion.new(iter: I, f: F, n: Int, typeLayoutI: TypeLayout<I> = UnresolvedTypeLayout()): MapWindows<I, F> {
+public fun <I, F> MapWindows.Companion.new(iter: I, f: F, n: Int, typeLayoutI: TypeLayout<I> = UnresolvedTypeLayout()): MapWindows<I, F, Item> {
     check(n != 0) { "array in `Iterator::map_windows` must contain more than 0 elements" }
     // Only ZST arrays' length can be so large.
     if (((UnresolvedTypeLayout<Item>()).sizeBytes == 0L)) {
@@ -121,9 +122,9 @@ public fun <Item, I, F> MapWindows.Companion.new(iter: I, f: F, n: Int, typeLayo
     return MapWindows(inner = MapWindowsInner.new(iter), f = f)
 }
 
-public fun <Item, I> MapWindowsInner.Companion.new(iter: I, n: Int): MapWindowsInner<I> = MapWindowsInner(iter = iter, buffer = null)
+public fun <I> MapWindowsInner.Companion.new(iter: I, n: Int): MapWindowsInner<I, Item> = MapWindowsInner(iter = iter, buffer = null)
 
-public fun <Item, I> MapWindowsInner<I>.nextWindow(n: Int): List<Item>? {
+public fun <I> MapWindowsInner<I, Item>.nextWindow(n: Int): List<Item>? {
     when (val matchVal = this.buffer) {
         // It is the first time to advance. We collect
         // the first `N` items from `self.iter` to initialize `self.buffer`.
@@ -147,7 +148,7 @@ public fun <Item, I> MapWindowsInner<I>.nextWindow(n: Int): List<Item>? {
     return this.buffer?.let({ it.asArrayRef() })
 }
 
-public fun <Item, I> MapWindowsInner<I>.sizeHint(n: Int): Pair<Int, Int?> {
+public fun <I> MapWindowsInner<I, Item>.sizeHint(n: Int): Pair<Int, Int?> {
     val (lo, hi) = this.iter.sizeHint()
     return if (this.buffer != null) {
         // If the first `N` items are already yielded by the inner iterator,
@@ -261,7 +262,7 @@ public fun <T> Buffer<T>.clone(n: Int): Buffer<T> {
     return ManuallyDrop.intoInner(buffer)
 }
 
-public fun <Item, I> MapWindowsInner<I>.clone(n: Int): MapWindowsInner<I> = MapWindowsInner(iter = this.iter.clone(), buffer = this.buffer)
+public fun <I> MapWindowsInner<I, Item>.clone(n: Int): MapWindowsInner<I, Item> = MapWindowsInner(iter = this.iter.clone(), buffer = this.buffer)
 
 public fun <T> Buffer<T>.drop(n: Int) {
     // SAFETY: our invariant guarantees that N elements starting from
@@ -272,14 +273,14 @@ public fun <T> Buffer<T>.drop(n: Int) {
     }
 }
 
-public fun <Item, I, R> MapWindows<I, F>.next(n: Int): R? {
+public fun <I, R> MapWindows<I, F, Item>.next(n: Int): R? {
     val window = (this.inner.nextWindow() ?: return null)
     val out = (this.f)(window)
     return out
 }
 
-public fun <Item, I, R> MapWindows<I, F>.sizeHint(n: Int): Pair<Int, Int?> = this.inner.sizeHint()
+public fun <I, R> MapWindows<I, F, Item>.sizeHint(n: Int): Pair<Int, Int?> = this.inner.sizeHint()
 
-public fun <Item, I, F> MapWindows<I, F>.fmt(f: StringBuilder, n: Int): Result<Unit, Unit> = DebugStruct(f, "MapWindows").field("iter", this.inner.iter).finish()
+public fun <I, F> MapWindows<I, F, Item>.fmt(f: StringBuilder, n: Int): Result<Unit, Unit> = DebugStruct(f, "MapWindows").field("iter", this.inner.iter).finish()
 
-public fun <Item, I, F> MapWindows<I, F>.clone(n: Int): MapWindows<I, F> = MapWindows(f = this.f.clone(), inner = this.inner.clone())
+public fun <I, F> MapWindows<I, F, Item>.clone(n: Int): MapWindows<I, F, Item> = MapWindows(f = this.f.clone(), inner = this.inner.clone())

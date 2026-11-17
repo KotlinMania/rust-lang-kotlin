@@ -366,7 +366,7 @@ public open class IterMut<T>(
  * An internal abstraction over the splitting iterators, so that
  * splitn, splitnMut etc can be implemented once.
  */
-public interface SplitIter<T> {
+public interface SplitIter {
     /**
      * Marks the underlying iterator as complete, extracting the remaining
      * portion of the slice.
@@ -393,13 +393,13 @@ public interface SplitIter<T> {
  * [split]: slice.split
  * [slices]: slice
  */
-public open class Split<T, P>(
+public open class Split<T, P, Output>(
     // Used for `SplitWhitespace` and `SplitAsciiWhitespace` `asStr` methods
     public var v: List<T>,
     public var pred: P,
     // Used for `SplitAsciiWhitespace` `asStr` method
     public var finished: Boolean,
-) : SplitIter<Split<T, P>>, Iterable<List<T>> {
+) : SplitIter, Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@Split.next()) {
@@ -433,7 +433,7 @@ public open class Split<T, P>(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Split").field("v", this.v).field("finished", this.finished).finish()
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
-    public open fun clone(): Split<T, P> = Split(v = this.v, pred = this.pred.clone(), finished = this.finished)
+    public open fun clone(): Split<T, P, Output> = Split(v = this.v, pred = this.pred.clone(), finished = this.finished)
 
     public override fun next(): List<T>? {
         if (this.finished) {
@@ -485,7 +485,7 @@ public open class Split<T, P>(
         }
 
     public companion object {
-        public fun <T> new(slice: List<T>, pred: (T) -> Boolean): Split<T, P> = Split(v = slice, pred = pred, finished = false)
+        public fun <T> new(slice: List<T>, pred: (T) -> Boolean): Split<T, P, Output> = Split(v = slice, pred = pred, finished = false)
     }
 }
 
@@ -509,7 +509,7 @@ public open class Split<T, P>(
  * [splitInclusive]: slice.splitInclusive
  * [slices]: slice
  */
-public open class SplitInclusive<T, P>(
+public open class SplitInclusive<T, P, Output>(
     public var v: List<T>,
     public var pred: P,
     public var finished: Boolean,
@@ -526,7 +526,7 @@ public open class SplitInclusive<T, P>(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "SplitInclusive").field("v", this.v).field("finished", this.finished).finish()
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
-    public open fun clone(): SplitInclusive<T, P> = SplitInclusive(v = this.v, pred = this.pred.clone(), finished = this.finished)
+    public open fun clone(): SplitInclusive<T, P, Output> = SplitInclusive(v = this.v, pred = this.pred.clone(), finished = this.finished)
 
     public open fun next(): List<T>? {
         if (this.finished) {
@@ -574,7 +574,7 @@ public open class SplitInclusive<T, P>(
     }
 
     public companion object {
-        public fun <T> new(slice: List<T>, pred: (T) -> Boolean): SplitInclusive<T, P> {
+        public fun <T> new(slice: List<T>, pred: (T) -> Boolean): SplitInclusive<T, P, Output> {
             val finished = slice.isEmpty()
             return SplitInclusive(v = slice, pred = pred, finished = finished)
         }
@@ -597,11 +597,11 @@ public open class SplitInclusive<T, P>(
  * [splitMut]: slice.splitMut
  * [slices]: slice
  */
-public open class SplitMut<T, P>(
+public open class SplitMut<T, P, Output>(
     public var v: MutableList<T>,
     public var pred: P,
     public var finished: Boolean,
-) : SplitIter<SplitMut<T, P>>, Iterable<MutableList<T>> {
+) : SplitIter, Iterable<MutableList<T>> {
     override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
         override fun computeNext() {
             when (val v = this@SplitMut.next()) {
@@ -672,7 +672,7 @@ public open class SplitMut<T, P>(
     }
 
     public companion object {
-        public fun <T> new(slice: MutableList<T>, pred: (T) -> Boolean): SplitMut<T, P> = SplitMut(v = slice, pred = pred, finished = false)
+        public fun <T> new(slice: MutableList<T>, pred: (T) -> Boolean): SplitMut<T, P, Output> = SplitMut(v = slice, pred = pred, finished = false)
     }
 }
 
@@ -693,7 +693,7 @@ public open class SplitMut<T, P>(
  * [splitInclusiveMut]: slice.splitInclusiveMut
  * [slices]: slice
  */
-public open class SplitInclusiveMut<T, P>(
+public open class SplitInclusiveMut<T, P, Output>(
     public var v: MutableList<T>,
     public var pred: P,
     public var finished: Boolean,
@@ -765,7 +765,7 @@ public open class SplitInclusiveMut<T, P>(
     }
 
     public companion object {
-        public fun <T> new(slice: MutableList<T>, pred: (T) -> Boolean): SplitInclusiveMut<T, P> {
+        public fun <T> new(slice: MutableList<T>, pred: (T) -> Boolean): SplitInclusiveMut<T, P, Output> {
             val finished = slice.isEmpty()
             return SplitInclusiveMut(v = slice, pred = pred, finished = finished)
         }
@@ -791,10 +791,10 @@ public open class SplitInclusiveMut<T, P>(
  * [rsplit]: slice.rsplit
  * [slices]: slice
  */
-public open class RSplit<T, P> internal constructor(
-    innerCtorArg: Split<T, P>,
-) : SplitIter<RSplit<T, P>>, Iterable<List<T>> {
-    public var inner: Split<T, P> = innerCtorArg
+public open class RSplit<T, P, Output> internal constructor(
+    innerCtorArg: Split<T, P, Output>,
+) : SplitIter, Iterable<List<T>> {
+    public var inner: Split<T, P, Output> = innerCtorArg
         internal set
 
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
@@ -809,7 +809,7 @@ public open class RSplit<T, P> internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "RSplit").field("v", this.inner.v).field("finished", this.inner.finished).finish()
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
-    public open fun clone(): RSplit<T, P> = RSplit(inner = this.inner.clone())
+    public open fun clone(): RSplit<T, P, Output> = RSplit(inner = this.inner.clone())
 
     public override fun next(): List<T>? = this.inner.nextBack()
 
@@ -820,13 +820,13 @@ public open class RSplit<T, P> internal constructor(
     public override fun finish(): List<T>? = this.inner.finish()
 
     public companion object {
-        public operator fun <T, P> invoke(
-            inner: Split<T, P>,
-        ): RSplit<T, P> = RSplit<T, P>(
+        public operator fun <T, P, Output> invoke(
+            inner: Split<T, P, Output>,
+        ): RSplit<T, P, Output> = RSplit<T, P, Output>(
             innerCtorArg = inner,
         )
 
-        public fun <T> new(slice: List<T>, pred: (T) -> Boolean): RSplit<T, P> = RSplit(inner = Split.new(slice, pred))
+        public fun <T> new(slice: List<T>, pred: (T) -> Boolean): RSplit<T, P, Output> = RSplit(inner = Split.new(slice, pred))
     }
 }
 
@@ -846,10 +846,10 @@ public open class RSplit<T, P> internal constructor(
  * [rsplitMut]: slice.rsplitMut
  * [slices]: slice
  */
-public open class RSplitMut<T, P> internal constructor(
-    innerCtorArg: SplitMut<T, P>,
-) : SplitIter<RSplitMut<T, P>>, Iterable<MutableList<T>> {
-    public var inner: SplitMut<T, P> = innerCtorArg
+public open class RSplitMut<T, P, Output> internal constructor(
+    innerCtorArg: SplitMut<T, P, Output>,
+) : SplitIter, Iterable<MutableList<T>> {
+    public var inner: SplitMut<T, P, Output> = innerCtorArg
         internal set
 
     override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
@@ -872,13 +872,13 @@ public open class RSplitMut<T, P> internal constructor(
     public override fun nextBack(): MutableList<T>? = this.inner.next()
 
     public companion object {
-        public operator fun <T, P> invoke(
-            inner: SplitMut<T, P>,
-        ): RSplitMut<T, P> = RSplitMut<T, P>(
+        public operator fun <T, P, Output> invoke(
+            inner: SplitMut<T, P, Output>,
+        ): RSplitMut<T, P, Output> = RSplitMut<T, P, Output>(
             innerCtorArg = inner,
         )
 
-        public fun <T> new(slice: MutableList<T>, pred: (T) -> Boolean): RSplitMut<T, P> = RSplitMut(inner = SplitMut.new(slice, pred))
+        public fun <T> new(slice: MutableList<T>, pred: (T) -> Boolean): RSplitMut<T, P, Output> = RSplitMut(inner = SplitMut.new(slice, pred))
     }
 }
 
@@ -965,22 +965,22 @@ public open class GenericSplitN<I>(
  * [splitn]: slice.splitn
  * [slices]: slice
  */
-public open class SplitN<T, P> internal constructor(
-    innerCtorArg: GenericSplitN<Split<T, P>>,
+public open class SplitN<T, P, Output> internal constructor(
+    innerCtorArg: GenericSplitN<Split<T, P, Output>>,
 ) {
-    public var inner: GenericSplitN<Split<T, P>> = innerCtorArg
+    public var inner: GenericSplitN<Split<T, P, Output>> = innerCtorArg
         internal set
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "SplitN").field("inner", this.inner).finish()
 
     public companion object {
-        public operator fun <T, P> invoke(
-            inner: GenericSplitN<Split<T, P>>,
-        ): SplitN<T, P> = SplitN<T, P>(
+        public operator fun <T, P, Output> invoke(
+            inner: GenericSplitN<Split<T, P, Output>>,
+        ): SplitN<T, P, Output> = SplitN<T, P, Output>(
             innerCtorArg = inner,
         )
 
-        public fun <T> new(s: Split<T, (T) -> Boolean>, n: Int): SplitN<T, P> = SplitN(inner = GenericSplitN(iter = s, count = n))
+        public fun <T> new(s: Split<T, (T) -> Boolean, Output>, n: Int): SplitN<T, P, Output> = SplitN(inner = GenericSplitN(iter = s, count = n))
     }
 }
 
@@ -1004,22 +1004,22 @@ public open class SplitN<T, P> internal constructor(
  * [rsplitn]: slice.rsplitn
  * [slices]: slice
  */
-public open class RSplitN<T, P> internal constructor(
-    innerCtorArg: GenericSplitN<RSplit<T, P>>,
+public open class RSplitN<T, P, Output> internal constructor(
+    innerCtorArg: GenericSplitN<RSplit<T, P, Output>>,
 ) {
-    public var inner: GenericSplitN<RSplit<T, P>> = innerCtorArg
+    public var inner: GenericSplitN<RSplit<T, P, Output>> = innerCtorArg
         internal set
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "RSplitN").field("inner", this.inner).finish()
 
     public companion object {
-        public operator fun <T, P> invoke(
-            inner: GenericSplitN<RSplit<T, P>>,
-        ): RSplitN<T, P> = RSplitN<T, P>(
+        public operator fun <T, P, Output> invoke(
+            inner: GenericSplitN<RSplit<T, P, Output>>,
+        ): RSplitN<T, P, Output> = RSplitN<T, P, Output>(
             innerCtorArg = inner,
         )
 
-        public fun <T> new(s: RSplit<T, (T) -> Boolean>, n: Int): RSplitN<T, P> = RSplitN(inner = GenericSplitN(iter = s, count = n))
+        public fun <T> new(s: RSplit<T, (T) -> Boolean, Output>, n: Int): RSplitN<T, P, Output> = RSplitN(inner = GenericSplitN(iter = s, count = n))
     }
 }
 
@@ -1039,22 +1039,22 @@ public open class RSplitN<T, P> internal constructor(
  * [splitnMut]: slice.splitnMut
  * [slices]: slice
  */
-public open class SplitNMut<T, P> internal constructor(
-    innerCtorArg: GenericSplitN<SplitMut<T, P>>,
+public open class SplitNMut<T, P, Output> internal constructor(
+    innerCtorArg: GenericSplitN<SplitMut<T, P, Output>>,
 ) {
-    public var inner: GenericSplitN<SplitMut<T, P>> = innerCtorArg
+    public var inner: GenericSplitN<SplitMut<T, P, Output>> = innerCtorArg
         internal set
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "SplitNMut").field("inner", this.inner).finish()
 
     public companion object {
-        public operator fun <T, P> invoke(
-            inner: GenericSplitN<SplitMut<T, P>>,
-        ): SplitNMut<T, P> = SplitNMut<T, P>(
+        public operator fun <T, P, Output> invoke(
+            inner: GenericSplitN<SplitMut<T, P, Output>>,
+        ): SplitNMut<T, P, Output> = SplitNMut<T, P, Output>(
             innerCtorArg = inner,
         )
 
-        public fun <T> new(s: SplitMut<T, (T) -> Boolean>, n: Int): SplitNMut<T, P> = SplitNMut(inner = GenericSplitN(iter = s, count = n))
+        public fun <T> new(s: SplitMut<T, (T) -> Boolean, Output>, n: Int): SplitNMut<T, P, Output> = SplitNMut(inner = GenericSplitN(iter = s, count = n))
     }
 }
 
@@ -1075,22 +1075,22 @@ public open class SplitNMut<T, P> internal constructor(
  * [rsplitnMut]: slice.rsplitnMut
  * [slices]: slice
  */
-public open class RSplitNMut<T, P> internal constructor(
-    innerCtorArg: GenericSplitN<RSplitMut<T, P>>,
+public open class RSplitNMut<T, P, Output> internal constructor(
+    innerCtorArg: GenericSplitN<RSplitMut<T, P, Output>>,
 ) {
-    public var inner: GenericSplitN<RSplitMut<T, P>> = innerCtorArg
+    public var inner: GenericSplitN<RSplitMut<T, P, Output>> = innerCtorArg
         internal set
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "RSplitNMut").field("inner", this.inner).finish()
 
     public companion object {
-        public operator fun <T, P> invoke(
-            inner: GenericSplitN<RSplitMut<T, P>>,
-        ): RSplitNMut<T, P> = RSplitNMut<T, P>(
+        public operator fun <T, P, Output> invoke(
+            inner: GenericSplitN<RSplitMut<T, P, Output>>,
+        ): RSplitNMut<T, P, Output> = RSplitNMut<T, P, Output>(
             innerCtorArg = inner,
         )
 
-        public fun <T> new(s: RSplitMut<T, (T) -> Boolean>, n: Int): RSplitNMut<T, P> = RSplitNMut(inner = GenericSplitN(iter = s, count = n))
+        public fun <T> new(s: RSplitMut<T, (T) -> Boolean, Output>, n: Int): RSplitNMut<T, P, Output> = RSplitNMut(inner = GenericSplitN(iter = s, count = n))
     }
 }
 
@@ -1116,7 +1116,7 @@ public open class RSplitNMut<T, P> internal constructor(
 public open class Windows<T> internal constructor(
     public var v: List<T>,
     sizeCtorArg: NonZero<Int, NonZeroUsizeInner>,
-) : TrustedLen<Windows<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
     public var size: NonZero<Int, NonZeroUsizeInner> = sizeCtorArg
         internal set
 
@@ -1234,7 +1234,7 @@ public open class Windows<T> internal constructor(
 public open class Chunks<T>(
     public var v: List<T>,
     public var chunkSize: Int,
-) : TrustedLen<Chunks<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@Chunks.next()) {
@@ -1378,7 +1378,7 @@ public open class ChunksMut<T> internal constructor(
     vCtorArg: MutPtr,
     public var chunkSize: Int,
     public var marker: Unit,
-) : TrustedLen<ChunksMut<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
     /**
      * # Safety
      * This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
@@ -1547,7 +1547,7 @@ public open class ChunksExact<T>(
     public var v: List<T>,
     public var rem: List<T>,
     public var chunkSize: Int,
-) : TrustedLen<ChunksExact<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@ChunksExact.next()) {
@@ -1678,7 +1678,7 @@ public open class ChunksExactMut<T> internal constructor(
     // The iterator never yields from here, so this can be unique
     public var chunkSize: Int,
     public var marker: Unit,
-) : TrustedLen<ChunksExactMut<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
     /**
      * # Safety
      * This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
@@ -1899,7 +1899,7 @@ public val MAY_HAVE_SIDE_EFFECT: Boolean = false
 public open class RChunks<T>(
     public var v: List<T>,
     public var chunkSize: Int,
-) : TrustedLen<RChunks<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@RChunks.next()) {
@@ -2031,7 +2031,7 @@ public open class RChunksMut<T> internal constructor(
     vCtorArg: MutPtr,
     public var chunkSize: Int,
     public var marker: Unit,
-) : TrustedLen<RChunksMut<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
     /**
      * # Safety
      * This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
@@ -2196,7 +2196,7 @@ public open class RChunksExact<T>(
     public var v: List<T>,
     public var rem: List<T>,
     public var chunkSize: Int,
-) : TrustedLen<RChunksExact<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@RChunksExact.next()) {
@@ -2331,7 +2331,7 @@ public open class RChunksExactMut<T> internal constructor(
     vCtorArg: MutPtr,
     public var rem: MutableList<T>,
     public var chunkSize: Int,
-) : TrustedLen<RChunksExactMut<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
     /**
      * # Safety
      * This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,

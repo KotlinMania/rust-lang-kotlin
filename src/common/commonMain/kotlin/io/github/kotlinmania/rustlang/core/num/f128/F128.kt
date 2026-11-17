@@ -16,11 +16,11 @@ import io.github.kotlinmania.rustlang.core.intrinsics.maximumf128
 import io.github.kotlinmania.rustlang.core.intrinsics.minimumNumberNszF128
 import io.github.kotlinmania.rustlang.core.intrinsics.minimumf128
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.floatBinaryWithLayout
 import io.github.kotlinmania.rustlang.core.mem.floatFmaWithLayout
 import io.github.kotlinmania.rustlang.core.mem.floatPowiWithLayout
 import io.github.kotlinmania.rustlang.core.mem.floatUnaryWithLayout
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.FpCategory
 import io.github.kotlinmania.rustlang.core.panic.constAssert
@@ -856,7 +856,7 @@ public inline fun <reified Int> F128.toIntStrict(): Int = (this.toIntChecked<Int
  */
 public fun F128.toBits(): U128 {
     // SAFETY: `ULong` is a plain old datatype so we can always reinterpret to it.
-    return transmute(this)
+    return transmuteWithLayouts<F128, U128>(this, UnresolvedTypeLayout<F128>(), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 }
 
 /**
@@ -903,7 +903,7 @@ public fun F128.toBits(): U128 {
 public fun F128.Companion.fromBits(v: U128): F128 {
     // It turns out the safety issues with sNaN were overblown! Hooray!
     // SAFETY: `ULong` is a plain old datatype so we can always reinterpret from it.
-    return transmuteWithLayouts(v, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), PrimitiveLayouts.F128_LAYOUT)
+    return transmuteWithLayouts<U128, F128>(v, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), PrimitiveLayouts.F128_LAYOUT)
 }
 
 /**
@@ -1173,14 +1173,15 @@ public fun F128.totalCmp(other: F128): Ordering {
  * ```
  */
 public fun F128.clamp(min: F128, max: F128): F128 {
+    var selfMut = this
     constAssert(min <= max, "min > max, or either was NaN", "min > max, or either was NaN. min = {min:?}, max = {max:?}", min, max)
-    if (this < min) {
-        this = min
+    if (selfMut < min) {
+        selfMut = min
     }
-    if (this > max) {
-        this = max
+    if (selfMut > max) {
+        selfMut = max
     }
-    return this
+    return selfMut
 }
 
 /**

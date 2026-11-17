@@ -114,7 +114,7 @@ public open class RepeatNInner<T> internal constructor(
  */
 public open class RepeatN<A>(
     public var inner: RepeatNInner<A>?,
-) : TrustedLen<RepeatN<A>>, Iterable<A> {
+) : TrustedLen, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@RepeatN.next()) {
@@ -191,7 +191,7 @@ public open class RepeatN<A>(
 
     public open fun nthBack(n: Int): A? = this.nth(n)
 
-    public open fun <B, R> tryRfold(init: B, f: (B, A) -> R): R where R : Try<R, B, Any?> = this.tryFold(init, f)
+    public open fun <Residual, B, R> tryRfold(init: B, f: (B, A) -> R): R where R : Try<R, B, Residual> = this.tryFold(init, f)
 
     public open fun <B> rfold(init: B, f: (B, A) -> B): B = this.fold(init, f)
 

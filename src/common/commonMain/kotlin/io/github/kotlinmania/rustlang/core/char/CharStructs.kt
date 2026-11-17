@@ -205,7 +205,7 @@ public open class EscapeDebug internal constructor(
  */
 public open class ToUppercase(
     public var value: CaseMappingIter,
-) : TrustedLen<ToUppercase>, TrustedRandomAccessNoCoerce, TrustedRandomAccess, Iterable<Char> {
+) : TrustedLen, TrustedRandomAccessNoCoerce, TrustedRandomAccess, Iterable<Char> {
     public var field0: CaseMappingIter
         get() = value
         set(v) {
@@ -264,7 +264,7 @@ public open class ToUppercase(
  */
 public open class ToTitlecase(
     public var value: CaseMappingIter,
-) : TrustedLen<ToTitlecase>, TrustedRandomAccessNoCoerce, TrustedRandomAccess, Iterable<Char> {
+) : TrustedLen, TrustedRandomAccessNoCoerce, TrustedRandomAccess, Iterable<Char> {
     public var field0: CaseMappingIter
         get() = value
         set(v) {
@@ -323,7 +323,7 @@ public open class ToTitlecase(
  */
 public open class ToLowercase(
     public var value: CaseMappingIter,
-) : TrustedLen<ToLowercase>, TrustedRandomAccessNoCoerce, TrustedRandomAccess, Iterable<Char> {
+) : TrustedLen, TrustedRandomAccessNoCoerce, TrustedRandomAccess, Iterable<Char> {
     public var field0: CaseMappingIter
         get() = value
         set(v) {
@@ -382,7 +382,7 @@ public open class ToLowercase(
  */
 public open class ToCasefold(
     public var value: CaseMappingIter,
-) : TrustedLen<ToCasefold>, TrustedRandomAccessNoCoerce, TrustedRandomAccess, Iterable<Char> {
+) : TrustedLen, TrustedRandomAccessNoCoerce, TrustedRandomAccess, Iterable<Char> {
     public var field0: CaseMappingIter
         get() = value
         set(v) {
@@ -433,7 +433,7 @@ public open class ToCasefold(
 
 public open class CaseMappingIter internal constructor(
     valueCtorArg: IntoIter<Char>,
-) : TrustedLen<CaseMappingIter>, TrustedRandomAccessNoCoerce, TrustedRandomAccess, Iterable<Char> {
+) : TrustedLen, TrustedRandomAccessNoCoerce, TrustedRandomAccess, Iterable<Char> {
     public var value: IntoIter<Char> = valueCtorArg
         internal set
 

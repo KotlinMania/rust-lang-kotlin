@@ -133,9 +133,10 @@ public fun Nothing.not(): Nothing = when (this) {}
  *             }
  *
  *         public open fun bitand(destructuredArg0: BooleanVector): BooleanVector {
+ *             val rhs = destructuredArg0.value
  *             val lhs = this.value
- *             check(lhs.size == rhs.len())
- *             return BooleanVector((lhs.zip(rhs.iter())).map({ (x, y) -> x and y }).collect())
+ *             check(lhs.size == rhs.size)
+ *             return BooleanVector((lhs.zip(rhs)).map({ (x, y) -> x and y }).collect())
  *         }
  *     }
  *     val bv1 = BooleanVector(mutableListOf(true, true, false, false))
@@ -255,9 +256,10 @@ public fun I128.bitandI128(other: I128): Output = this.bitand(other)
  *             }
  *
  *         public open fun bitor(destructuredArg0: BooleanVector): BooleanVector {
+ *             val rhs = destructuredArg0.value
  *             val lhs = this.value
- *             check(lhs.size == rhs.len())
- *             return BooleanVector((lhs.zip(rhs.iter())).map({ (x, y) -> x or y }).collect())
+ *             check(lhs.size == rhs.size)
+ *             return BooleanVector((lhs.zip(rhs)).map({ (x, y) -> x or y }).collect())
  *         }
  *     }
  *     val bv1 = BooleanVector(mutableListOf(true, true, false, false))
@@ -377,9 +379,10 @@ public fun I128.bitorI128(other: I128): Output = this.bitor(other)
  *             }
  *
  *         public open fun bitxor(destructuredArg0: BooleanVector): BooleanVector {
+ *             val rhs = destructuredArg0.value
  *             val lhs = this.value
- *             check(lhs.size == rhs.len())
- *             return BooleanVector((lhs.zip(rhs.iter())).map({ (x, y) -> x xor y }).collect())
+ *             check(lhs.size == rhs.size)
+ *             return BooleanVector((lhs.zip(rhs)).map({ (x, y) -> x xor y }).collect())
  *         }
  *     }
  *     val bv1 = BooleanVector(mutableListOf(true, true, false, false))
@@ -476,8 +479,9 @@ public fun I128.bitxorI128(other: I128): Output = this.bitxor(other)
  *             }
  *
  *         public open fun shl(destructuredArg0: Scalar): Scalar {
+ *             val rhs = destructuredArg0.value
  *             val lhs = this.value
- *             return Scalar(lhs shl rhs.toInt())
+ *             return Scalar(lhs shl rhs)
  *         }
  *     }
  *     check(Scalar(4) shl Scalar(2).toInt() == Scalar(16))
@@ -947,8 +951,9 @@ public fun I128.shlI128(other: I128): Output = Shl.Shl(this, other)
  *             }
  *
  *         public open fun shr(destructuredArg0: Scalar): Scalar {
+ *             val rhs = destructuredArg0.value
  *             val lhs = this.value
- *             return Scalar(lhs shr rhs.toInt())
+ *             return Scalar(lhs shr rhs)
  *         }
  *     }
  *     check(Scalar(16) shr Scalar(2).toInt() == Scalar(4))
@@ -1411,7 +1416,8 @@ public fun I128.shrI128(other: I128): Output = Shr.Shr(this, other)
  *
  *     // rhs is the "right-hand side" of the expression `a & = b`
  *     public open fun bitandAssign(rhs: Scalar) {
- *         this = Scalar(this.value and rhs.value)
+ *         var selfMut = this
+ *         selfMut = Scalar(selfMut.value and rhs.value)
  *     }
  * }
  * var scalar = Scalar(true)
@@ -1443,8 +1449,9 @@ public fun I128.shrI128(other: I128): Output = Shr.Shr(this, other)
  *
  *     // `rhs` is the "right-hand side" of the expression `a & = b`.
  *     public open fun bitandAssign(rhs: BooleanVector) {
- *         check(this.value.size == rhs.value.size)
- *         this = BooleanVector((this.value.zip(rhs.value)).map({ (x, y) -> x and y }).collect())
+ *         var selfMut = this
+ *         check(selfMut.value.size == rhs.value.size)
+ *         selfMut = BooleanVector((selfMut.value.zip(rhs.value)).map({ (x, y) -> x and y }).collect())
  *     }
  * }
  * var bv = BooleanVector(mutableListOf(true, true, false, false))

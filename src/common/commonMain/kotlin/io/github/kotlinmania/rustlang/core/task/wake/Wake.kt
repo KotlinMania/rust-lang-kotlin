@@ -4,12 +4,13 @@ package io.github.kotlinmania.rustlang.core.task.wake
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.any.Any
 import io.github.kotlinmania.rustlang.core.convert.AsRef
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -400,7 +401,7 @@ public open class ContextBuilder(
          */
         public fun fromWaker(waker: Waker): ContextBuilder {
             // SAFETY: LocalWaker is just Waker without thread safety
-            val localWaker = transmute(waker)
+            val localWaker = transmuteWithLayouts<Waker, ContextBuilder>(waker, UnresolvedTypeLayout<Waker>(), UnresolvedTypeLayout<ContextBuilder>())
             return ContextBuilder(waker = waker, localWaker = localWaker, ext = ExtData.None(), marker = Unit, marker2 = Unit)
         }
 
@@ -564,8 +565,9 @@ public open class Waker internal constructor(
      * ```
      */
     public open fun cloneFrom(source: Waker) {
-        if (!this.willWake(source)) {
-            this = source.clone()
+        var selfMut = this
+        if (!selfMut.willWake(source)) {
+            selfMut = source.clone()
         }
     }
 
@@ -583,7 +585,7 @@ public open class Waker internal constructor(
 
     public override fun asRef(): LocalWaker {
         // SAFETY: LocalWaker is just Waker without thread safety
-        return transmute(this)
+        return transmuteWithLayouts<Waker, LocalWaker>(this, UnresolvedTypeLayout<Waker>(), TransparentTypeLayout(this.fieldLayout, { ptr, layout -> LocalWaker(ptr, layout) }, { it.waker }))
     }
 
     public companion object {
@@ -673,7 +675,7 @@ public open class Waker internal constructor(
         public fun fromFnPtr(f: FromFnPtrFCallback, fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout()): Waker {
             // SAFETY: Unsafe is used for transmutes, pointer came from `fun()` so it
             // is sound to reinterpret it back to `fun()`.
-            val VTABLE: RawWakerVTable  = RawWakerVTable.new({ thisRef -> RawWaker.new(thisRef, VTABLE) }, { thisRef -> transmute(thisRef)() }, { thisRef -> transmute(thisRef)() }, {})
+            val VTABLE: RawWakerVTable  = RawWakerVTable.new({ thisRef -> RawWaker.new(thisRef, VTABLE) }, { thisRef -> transmuteWithLayouts<ConstPtr, FromFnPtrFCallback>(thisRef, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<FromFnPtrFCallback>())() }, { thisRef -> transmuteWithLayouts<ConstPtr, FromFnPtrFCallback>(thisRef, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<FromFnPtrFCallback>())() }, {})
             val raw = RawWaker.new(constPtrFromRustCast(f), VTABLE)
             // SAFETY: `clone` is just a copy, `drop` is a no-op while `wake` and
             // `wakeByRef` just call the function pointer.
@@ -818,8 +820,9 @@ public open class LocalWaker internal constructor(
     public open fun clone(): LocalWaker = LocalWaker(waker = (this.waker.vtable.clone)(this.waker.data), fieldLayout = this.fieldLayout)
 
     public open fun cloneFrom(source: LocalWaker) {
-        if (!this.willWake(source)) {
-            this = source.clone()
+        var selfMut = this
+        if (!selfMut.willWake(source)) {
+            selfMut = source.clone()
         }
     }
 
@@ -916,7 +919,7 @@ public open class LocalWaker internal constructor(
         public fun fromFnPtr(f: FromFnPtrFCallback, fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout()): LocalWaker {
             // SAFETY: Unsafe is used for transmutes, pointer came from `fun()` so it
             // is sound to reinterpret it back to `fun()`.
-            val VTABLE: RawWakerVTable  = RawWakerVTable.new({ thisRef -> RawWaker.new(thisRef, VTABLE) }, { thisRef -> transmute(thisRef)() }, { thisRef -> transmute(thisRef)() }, {})
+            val VTABLE: RawWakerVTable  = RawWakerVTable.new({ thisRef -> RawWaker.new(thisRef, VTABLE) }, { thisRef -> transmuteWithLayouts<ConstPtr, FromFnPtrFCallback>(thisRef, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<FromFnPtrFCallback>())() }, { thisRef -> transmuteWithLayouts<ConstPtr, FromFnPtrFCallback>(thisRef, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<FromFnPtrFCallback>())() }, {})
             val raw = RawWaker.new(constPtrFromRustCast(f), VTABLE)
             // SAFETY: `clone` is just a copy, `drop` is a no-op while `wake` and
             // `wakeByRef` just call the function pointer.

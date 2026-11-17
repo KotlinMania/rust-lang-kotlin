@@ -49,7 +49,7 @@ public fun Double.alreadyRoundedValueShouldUseExponential(): Boolean {
 
 // Don't inline this so callers don't use the stack space this function
 // requires unless they have to.
-public fun <T> floatToDecimalCommonExact(fmt: Formatter, num: T, sign: Sign, precision: UShort): Result where T : DecodableFloat<T> {
+public fun <Int, T> floatToDecimalCommonExact(fmt: Formatter, num: T, sign: Sign, precision: UShort): Result where T : DecodableFloat<T, Int> {
     val buf: List<MaybeUninit<UByte>>  = List(1024) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
     // enough for f32 and f64
     val parts: List<MaybeUninit<numfmt.Part>>  = List(4) { MaybeUninit.uninit(UnresolvedTypeLayout<numfmt.Part>()) }
@@ -60,7 +60,7 @@ public fun <T> floatToDecimalCommonExact(fmt: Formatter, num: T, sign: Sign, pre
 
 // Don't inline this so callers that call both this and the above won't wind
 // up using the combined stack space of both functions in some cases.
-public fun <T> floatToDecimalCommonShortest(fmt: Formatter, num: T, sign: Sign, precision: UShort): Result where T : DecodableFloat<T> {
+public fun <Int, T> floatToDecimalCommonShortest(fmt: Formatter, num: T, sign: Sign, precision: UShort): Result where T : DecodableFloat<T, Int> {
     // enough for f32 and f64
     val buf: List<MaybeUninit<UByte>>  = List((MAX_SIG_DIGITS).toInt()) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
     val parts: List<MaybeUninit<numfmt.Part>>  = List(4) { MaybeUninit.uninit(UnresolvedTypeLayout<numfmt.Part>()) }
@@ -69,7 +69,7 @@ public fun <T> floatToDecimalCommonShortest(fmt: Formatter, num: T, sign: Sign, 
     return fmt.padFormattedParts(formatted)
 }
 
-public fun <T> floatToDecimalDisplay(fmt: Formatter, num: T): Result where T : DecodableFloat<T> {
+public fun <Int, T> floatToDecimalDisplay(fmt: Formatter, num: T): Result where T : DecodableFloat<T, Int> {
     val forceSign = fmt.signPlus()
     val sign =
         when (forceSign) {
@@ -90,7 +90,7 @@ public fun <T> floatToDecimalDisplay(fmt: Formatter, num: T): Result where T : D
 
 // Don't inline this so callers don't use the stack space this function
 // requires unless they have to.
-public fun <T> floatToExponentialCommonExact(fmt: Formatter, num: T, sign: Sign, precision: UShort, upper: Boolean): Result where T : DecodableFloat<T> {
+public fun <Int, T> floatToExponentialCommonExact(fmt: Formatter, num: T, sign: Sign, precision: UShort, upper: Boolean): Result where T : DecodableFloat<T, Int> {
     val buf: List<MaybeUninit<UByte>>  = List(1024) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
     // enough for f32 and f64
     val parts: List<MaybeUninit<numfmt.Part>>  = List(6) { MaybeUninit.uninit(UnresolvedTypeLayout<numfmt.Part>()) }
@@ -101,7 +101,7 @@ public fun <T> floatToExponentialCommonExact(fmt: Formatter, num: T, sign: Sign,
 
 // Don't inline this so callers that call both this and the above won't wind
 // up using the combined stack space of both functions in some cases.
-public fun <T> floatToExponentialCommonShortest(fmt: Formatter, num: T, sign: Sign, upper: Boolean): Result where T : DecodableFloat<T> {
+public fun <Int, T> floatToExponentialCommonShortest(fmt: Formatter, num: T, sign: Sign, upper: Boolean): Result where T : DecodableFloat<T, Int> {
     // enough for f32 and f64
     val buf: List<MaybeUninit<UByte>>  = List((MAX_SIG_DIGITS).toInt()) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
     val parts: List<MaybeUninit<numfmt.Part>>  = List(6) { MaybeUninit.uninit(UnresolvedTypeLayout<numfmt.Part>()) }
@@ -111,7 +111,7 @@ public fun <T> floatToExponentialCommonShortest(fmt: Formatter, num: T, sign: Si
 }
 
 // Common code of floating point LowerExp and UpperExp.
-public fun <T> floatToExponentialCommon(fmt: Formatter, num: T, upper: Boolean): Result where T : DecodableFloat<T> {
+public fun <Int, T> floatToExponentialCommon(fmt: Formatter, num: T, upper: Boolean): Result where T : DecodableFloat<T, Int> {
     val forceSign = fmt.signPlus()
     val sign =
         when (forceSign) {
@@ -129,7 +129,7 @@ public fun <T> floatToExponentialCommon(fmt: Formatter, num: T, upper: Boolean):
     }
 }
 
-public fun <T> floatToGeneralDebug(fmt: Formatter, num: T): Result where T : DecodableFloat<T>, T : GeneralFormat {
+public fun <Int, T> floatToGeneralDebug(fmt: Formatter, num: T): Result where T : DecodableFloat<T, Int>, T : GeneralFormat {
     val forceSign = fmt.signPlus()
     val sign =
         when (forceSign) {
@@ -149,7 +149,7 @@ public fun <T> floatToGeneralDebug(fmt: Formatter, num: T): Result where T : Dec
         }
         else -> {
             val precision = matchVal
-            // this behavior of {:.PREC?} predates exponential formatting for {:?}
+            // this behavior of (:.PREC?) predates exponential formatting for (:?)
             floatToDecimalCommonExact(fmt, num, sign, precision)
         }
     }

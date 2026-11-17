@@ -16,6 +16,6 @@ public fun memcmp(s1: ConstPtr, s2: ConstPtr, n: ULong): CInt = memcmp(s1, s2, n
 
 public fun bcmp(s1: ConstPtr, s2: ConstPtr, n: ULong): CInt = bcmp(s1, s2, n.toInt())
 
-public fun strlen(s: ConstPtr): ULong = strlen(s).toULong()
+public fun strlen(s: ConstPtr): ULong = io.github.kotlinmania.rustlang.core.ffi.cstr.strlen(s).toULong()
 
 public fun wcslen(s: ConstPtr): ULong = wcslen(s).toULong()

@@ -31,7 +31,7 @@ public val U128_LO_MASK: U128 = U128.fromULong(ULong.MAX_VALUE)
 public open class U256(
     public var hi: U128,
     public var lo: U128,
-) : MinInt<U256, I256, U256>, BitOr<U256>, Not<U256>, Add<U256, U256>, Sub<U256, U256>, Shl<UInt, U256>, Shr<UInt, U256>, DInt<U256, U128> {
+) : MinInt<U256, I256, U256>, BitOr<U256>, Not<U256>, Add<U256, U256>, Sub<U256, U256>, Shl<UInt, U256>, Shr<UInt, U256>, DInt<U256, U128, Any, Any> {
     public open fun clone(): U256 = U256(hi, lo)
 
     /**
@@ -162,7 +162,7 @@ public open class U256(
 public open class I256(
     public var hi: I128,
     public var lo: U128,
-) : MinInt<I256, U256, U256>, BitOr<I256>, Not<I256>, Add<I256, I256>, Sub<I256, I256>, Shl<UInt, I256>, Shr<UInt, I256>, DInt<I256, I128> {
+) : MinInt<I256, U256, U256>, BitOr<I256>, Not<I256>, Add<I256, I256>, Sub<I256, I256>, Shl<UInt, I256>, Shr<UInt, I256>, DInt<I256, I128, Any, Any> {
     public open fun clone(): I256 = I256(hi, lo)
 
     /**

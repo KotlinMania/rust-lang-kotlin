@@ -6,9 +6,10 @@ package io.github.kotlinmania.rustlang.corearch.loongarch64.lasx
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
@@ -45,7 +46,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
  * types tend to correspond to suffixes like "b", "h", "w" or "d".
  */
 public open class M256i(
-    public var value: LongArray,
+    public var value: LongArray = LongArray(4),
 ) {
     public var field0: LongArray
         get() = value
@@ -93,11 +94,11 @@ public open class M256i(
          */
         public fun splat(value: Long): M256i = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): M256i = transmute(simd)
+        public fun from(simd: Simd<Long>): M256i = transmuteWithLayouts<Simd<Long>, M256i>(simd, UnresolvedTypeLayout<Simd<Long>>(), M256i.typeLayout())
     }
 }
 
-public fun fromSimdLong(simd: M256i): Simd<Long> = transmute(simd)
+public fun fromSimdLong(simd: M256i): Simd<Long> = transmuteWithLayouts<M256i, Simd<Long>>(simd, M256i.typeLayout(), UnresolvedTypeLayout<Simd<Long>>())
 
 /**
  * 256-bit wide set of eight `Float` values, LoongArch-specific
@@ -121,7 +122,7 @@ public fun fromSimdLong(simd: M256i): Simd<Long> = transmute(simd)
  * suffixed with "s".
  */
 public open class M256(
-    public var value: FloatArray,
+    public var value: FloatArray = FloatArray(8),
 ) {
     public var field0: FloatArray
         get() = value
@@ -169,11 +170,11 @@ public open class M256(
          */
         public fun splat(value: Float): M256 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Float>): M256 = transmute(simd)
+        public fun from(simd: Simd<Float>): M256 = transmuteWithLayouts<Simd<Float>, M256>(simd, UnresolvedTypeLayout<Simd<Float>>(), M256.typeLayout())
     }
 }
 
-public fun fromSimdFloat(simd: M256): Simd<Float> = transmute(simd)
+public fun fromSimdFloat(simd: M256): Simd<Float> = transmuteWithLayouts<M256, Simd<Float>>(simd, M256.typeLayout(), UnresolvedTypeLayout<Simd<Float>>())
 
 /**
  * 256-bit wide set of four `Double` values, LoongArch-specific
@@ -197,7 +198,7 @@ public fun fromSimdFloat(simd: M256): Simd<Float> = transmute(simd)
  * with "d". Not to be confused with "d" which is used for `m256i`.
  */
 public open class M256d(
-    public var value: DoubleArray,
+    public var value: DoubleArray = DoubleArray(4),
 ) {
     public var field0: DoubleArray
         get() = value
@@ -245,14 +246,14 @@ public open class M256d(
          */
         public fun splat(value: Double): M256d = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): M256d = transmute(simd)
+        public fun from(simd: Simd<Double>): M256d = transmuteWithLayouts<Simd<Double>, M256d>(simd, UnresolvedTypeLayout<Simd<Double>>(), M256d.typeLayout())
     }
 }
 
-public fun fromSimdDouble(simd: M256d): Simd<Double> = transmute(simd)
+public fun fromSimdDouble(simd: M256d): Simd<Double> = transmuteWithLayouts<M256d, Simd<Double>>(simd, M256d.typeLayout(), UnresolvedTypeLayout<Simd<Double>>())
 
 public open class V32i8(
-    public var value: ByteArray,
+    public var value: ByteArray = ByteArray(32),
 ) {
     public var field0: ByteArray
         get() = value
@@ -284,7 +285,7 @@ public open class V32i8(
 }
 
 public open class V16i16(
-    public var value: ShortArray,
+    public var value: ShortArray = ShortArray(16),
 ) {
     public var field0: ShortArray
         get() = value
@@ -316,7 +317,7 @@ public open class V16i16(
 }
 
 public open class V8i32(
-    public var value: IntArray,
+    public var value: IntArray = IntArray(8),
 ) {
     public var field0: IntArray
         get() = value
@@ -348,7 +349,7 @@ public open class V8i32(
 }
 
 public open class V4i64(
-    public var value: LongArray,
+    public var value: LongArray = LongArray(4),
 ) {
     public var field0: LongArray
         get() = value
@@ -380,7 +381,7 @@ public open class V4i64(
 }
 
 public open class V32u8(
-    public var value: UByteArray,
+    public var value: UByteArray = UByteArray(32),
 ) {
     public var field0: UByteArray
         get() = value
@@ -412,7 +413,7 @@ public open class V32u8(
 }
 
 public open class V16u16(
-    public var value: UShortArray,
+    public var value: UShortArray = UShortArray(16),
 ) {
     public var field0: UShortArray
         get() = value
@@ -444,7 +445,7 @@ public open class V16u16(
 }
 
 public open class V8u32(
-    public var value: UIntArray,
+    public var value: UIntArray = UIntArray(8),
 ) {
     public var field0: UIntArray
         get() = value
@@ -476,7 +477,7 @@ public open class V8u32(
 }
 
 public open class V4u64(
-    public var value: ULongArray,
+    public var value: ULongArray = ULongArray(4),
 ) {
     public var field0: ULongArray
         get() = value
@@ -508,7 +509,7 @@ public open class V4u64(
 }
 
 public open class V8f32(
-    public var value: FloatArray,
+    public var value: FloatArray = FloatArray(8),
 ) {
     public var field0: FloatArray
         get() = value
@@ -540,7 +541,7 @@ public open class V8f32(
 }
 
 public open class V4f64(
-    public var value: DoubleArray,
+    public var value: DoubleArray = DoubleArray(4),
 ) {
     public var field0: DoubleArray
         get() = value

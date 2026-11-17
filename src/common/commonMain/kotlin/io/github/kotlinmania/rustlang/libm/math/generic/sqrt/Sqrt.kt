@@ -52,7 +52,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 // Goldschmidt has the advantage over Newton-Raphson that `sqrt(x)` and `1 / sqrt(x)` are
 // computed at the same time, i.e. there is no need to calculate `1 / sqrt(x)` and invert it.
 
-public fun <Int, SignedInt, ISet1, ISet2, D, F> sqrtRound(x: F, round: Round, fromPartsFFn: (Boolean, UInt, Int) -> F, fromBitsFFn: (Int) -> F): FpResult<F> where F : Float<F, Any?, Any?>, F : SqrtHelper<F, Any?, Any?> {
+public fun <Int, SignedInt, ISet1, ISet2, D, OtherSign, Unsigned, F> sqrtRound(x: F, round: Round, fromPartsFFn: (Boolean, UInt, Int) -> F, fromBitsFFn: (Int) -> F): FpResult<F> where F : Float<F, Int, SignedInt>, F : SqrtHelper<F, ISet1, ISet2, Int, SignedInt> {
     val zero = IntTy.ZERO
     val one = IntTy.ONE
     var ix = x.toBits()
@@ -136,7 +136,7 @@ public fun <Int, SignedInt, ISet1, ISet2, D, F> sqrtRound(x: F, round: Round, fr
             }
         }
     // Extract the top 6 bits of the significand with the lowest bit of the exponent.
-    val i = Int.castFrom(ix shr (F.SIG_BITS - 6).toInt()) and 0x7F
+    val i = castFrom(ix shr (F.SIG_BITS - 6).toInt()) and 0x7F
     // Start with an initial guess for `r = 1 / sqrt(m)` from the table, and shift `m` as an
     // initial value for `s = sqrt(m)`. See the module documentation for details.
     val r1U0: ISet1 = F.ISet1.castFrom(RSQRT_TAB[i]) shl (F.ISet1.BITS - 16).toInt()
@@ -211,7 +211,7 @@ public fun <Int, SignedInt, ISet1, ISet2, D, F> sqrtRound(x: F, round: Round, fr
 /**
  * Multiply at the wider integer size, returning the high half.
  */
-public fun <D, I : HInt<I, Any?>> wmulh(a: I, b: I): I = a.widenMul(b).hi()
+public fun <D, OtherSign, Unsigned, I : HInt<I, D, OtherSign, Unsigned>> wmulh(a: I, b: I): I = a.widenMul(b).hi()
 
 /**
  * Perform `count` goldschmidt iterations, returning `(rU0, sU)`.
@@ -225,7 +225,7 @@ public fun <D, I : HInt<I, Any?>> wmulh(a: I, b: I): I = a.widenMul(b).hi()
  * Note that performance relies on the optimizer being able to unroll these loops (reasonably
  * trivial, `count` is a constant when called).
  */
-public fun <D, I> goldschmidt(rU0: I, sU2: I, count: UInt, finalSet: Boolean, fromIFn: (UByte) -> I): Pair<I, I> where I : HInt<I, Any?> {
+public fun <D, OtherSign, Unsigned, I> goldschmidt(rU0: I, sU2: I, count: UInt, finalSet: Boolean, fromIFn: (UByte) -> I): Pair<I, I> where I : HInt<I, D, OtherSign, Unsigned> {
     var rU01 = rU0
     var sU21 = sU2
     val threeU2 = fromIFn(0x3u.toUByte()) shl (I.BITS - 2).toInt()
@@ -272,7 +272,7 @@ public sealed class Exp<T> {
 /**
  * Size-specific constants related to the square root routine.
  */
-public interface SqrtHelper<T, ISet1, ISet2> : Float<T, Any?, Any?> {
+public interface SqrtHelper<T, ISet1, ISet2, Int, SignedInt> : Float<T, Int, SignedInt> {
     /**
      * Number of rounds at `ISet1`.
      */

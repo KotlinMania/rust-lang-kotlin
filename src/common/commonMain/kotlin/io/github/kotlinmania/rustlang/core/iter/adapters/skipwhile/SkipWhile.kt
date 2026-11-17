@@ -89,7 +89,7 @@ public open class SkipWhile<I, P>(
         // can't know a lower bound, due to the predicate
     }
 
-    public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, I.Item) -> R): R where R : Try<R, Acc, Any?> {
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         var init1 = init
         if (!this.flag) {
             when (val matchVal = this.next()) {
@@ -103,7 +103,7 @@ public open class SkipWhile<I, P>(
         return this.iter.tryFold(init1, fold)
     }
 
-    public open fun <Acc> fold(init: Acc, fold: (Acc, I.Item) -> Acc): Acc {
+    public open fun <Acc> fold(init: Acc, fold: (Acc, Item) -> Acc): Acc {
         var init1 = init
         if (!this.flag) {
             when (val matchVal = this.next()) {

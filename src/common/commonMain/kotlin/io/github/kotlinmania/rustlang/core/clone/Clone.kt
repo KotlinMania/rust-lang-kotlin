@@ -97,21 +97,15 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  * implementation of `Clone` cannot be `derive`d, but can be implemented as:
  *
  * ```kotlin
- * public fun interface FnCallback {
- *     public operator fun invoke(): T
- * }
- *
- * public fun doctestEntry() {
- *     open class Generate<T>(public var value: () -> T) {
- *         public var field0: FnCallback
- *             get() = value
- *             set(v) {
- *                 value = v
- *             }
- *
- *         public open fun clone(): Generate<T> {
- *             return Generate(this.value)
+ * open class Generate<T>(public var value: () -> T) {
+ *     public var field0: () -> T
+ *         get() = value
+ *         set(v) {
+ *             value = v
  *         }
+ *
+ *     public open fun clone(): Generate<T> {
+ *         return Generate(this.value)
  *     }
  * }
  * ```
@@ -119,20 +113,14 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  * If we `derive`:
  *
  * ```kotlin
- * public fun interface FnCallback {
- *     public operator fun invoke(): T
- * }
+ * open class Generate<T>(public var value: () -> T) {
+ *     public var field0: () -> T
+ *         get() = value
+ *         set(v) {
+ *             value = v
+ *         }
  *
- * public fun doctestEntry() {
- *     open class Generate<T>(public var value: () -> T) {
- *         public var field0: FnCallback
- *             get() = value
- *             set(v) {
- *                 value = v
- *             }
- *
- *         public open fun clone(): Generate<T> = Generate(value)
- *     }
+ *     public open fun clone(): Generate<T> = Generate(value)
  * }
  * ```
  *

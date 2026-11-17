@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.corearch.loongarch64.lasx
 
 import io.github.kotlinmania.rustlang.core.hint.blackBox
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.transmute
 
 // LoongArch64 LASX intrinsics - intrinsics.simd implementation

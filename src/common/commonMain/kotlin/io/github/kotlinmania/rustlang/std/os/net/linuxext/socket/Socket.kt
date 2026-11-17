@@ -38,11 +38,11 @@ public interface UnixSocketExt {
      * use std.os.android.net.UnixSocketExt;
      * use std.os.unix.net.UnixDatagram;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
      *     sock.setPasscred(true).expect("setPasscred failed");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun setPasscred(passcred: Boolean): Result<Unit, Error>

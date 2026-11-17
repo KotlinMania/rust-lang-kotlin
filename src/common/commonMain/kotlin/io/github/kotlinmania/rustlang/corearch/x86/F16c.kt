@@ -1,7 +1,9 @@
 // port-lint: source x86/f16c.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.simd.F16x4
 import io.github.kotlinmania.rustlang.corearch.simd.F16x8
@@ -26,7 +28,7 @@ public expect fun llvmVcvtps2ph256(a: F32x8, rounding: Int): I16x8
  */
 public fun mmCvtphPs(a: M128i): M128 =
     run {
-        val a1: F16x8 = transmute(a)
+        val a1: F16x8 = transmuteWithLayouts<M128i, F16x8>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<F16x8>())
         val a2: F16x4 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
         run { val _simdArg0 = a2; _simdArg0 }
     }
@@ -39,7 +41,7 @@ public fun mmCvtphPs(a: M128i): M128 =
  */
 public fun mm256CvtphPs(a: M128i): M256 =
     run {
-        val a1: F16x8 = transmute(a)
+        val a1: F16x8 = transmuteWithLayouts<M128i, F16x8>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<F16x8>())
         run { val _simdArg0 = a1; _simdArg0 }
     }
 
@@ -65,7 +67,7 @@ public fun mmCvtpsPh(a: M128, immRounding: Int): M128i {
     return run {
         val a1 = a.asF32x4()
         val r = llvmVcvtps2ph128(a1, immRounding)
-        transmute(r)
+        transmuteWithLayouts<I16x8, M128i>(r, UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
     }
 }
 
@@ -90,6 +92,6 @@ public fun mm256CvtpsPh(a: M256, immRounding: Int): M128i {
     return run {
         val a1 = a.asF32x8()
         val r = llvmVcvtps2ph256(a1, immRounding)
-        transmute(r)
+        transmuteWithLayouts<I16x8, M128i>(r, UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
     }
 }

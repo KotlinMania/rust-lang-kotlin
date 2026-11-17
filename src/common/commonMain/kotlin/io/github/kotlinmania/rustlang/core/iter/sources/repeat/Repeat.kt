@@ -70,7 +70,7 @@ public fun <T> repeat(elt: T): Repeat<T> = Repeat(element = elt)
  */
 public open class Repeat<A>(
     public var element: A,
-) : TrustedLen<Repeat<A>>, Iterable<A> {
+) : TrustedLen, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@Repeat.next()) {

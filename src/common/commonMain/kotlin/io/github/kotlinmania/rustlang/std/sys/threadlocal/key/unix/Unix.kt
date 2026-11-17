@@ -1,14 +1,15 @@
 // port-lint: source sys/thread_local/key/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.ffi.CInt
 import io.github.kotlinmania.rustlang.std.os.raw.CUint
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
@@ -21,7 +22,7 @@ public fun interface CreateDtorCallback {
     public operator fun invoke(arg0: MutPtr)
 }
 
-public typealias PthreadKeyT = io.github.kotlinmania.rustlang.std.ffi.CUint
+public typealias PthreadKeyT = io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 
 public expect fun pthreadKeyCreate(key: MutPtr, destructor: PthreadKeyCreateDestructorCallback): CInt
 
@@ -36,7 +37,7 @@ public typealias Key = PthreadKeyT
 public fun create(dtor: CreateDtorCallback?): Key {
     val localStorageL27C4 = AddressableLocal(0, PrimitiveLayouts.I32)
     val key by localStorageL27C4
-    if (pthreadKeyCreate(RustMutableReference(localStorageL27C4.asMutPtr(), localStorageL27C4.layout), transmute(dtor)) != 0) {
+    if (pthreadKeyCreate(RustMutableReference(localStorageL27C4.asMutPtr(), localStorageL27C4.layout), transmuteWithLayouts<CreateDtorCallback?, Key>(dtor, UnresolvedTypeLayout<CreateDtorCallback?>(), UnresolvedTypeLayout<CUint>())) != 0) {
         run {
             when (val matchVal = panicOutput()) {
                 null -> {}

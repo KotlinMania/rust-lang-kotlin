@@ -3,10 +3,12 @@
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 
 public fun compareBytes(a: V128, b: List<V128>) {
-    val a1: UByteArray = transmute(a)
+    val a1: UByteArray = transmuteWithLayouts<V128, UByteArray>(a, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
     if (b.any({ b1 ->
         val b2: UByteArray = transmute(b1)
         a1.contentEquals(b2)

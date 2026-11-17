@@ -1,7 +1,10 @@
 // port-lint: source x86/avx512bf16.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.simd.F32x16
 import io.github.kotlinmania.rustlang.corearch.simd.F32x4
 import io.github.kotlinmania.rustlang.corearch.simd.F32x8
@@ -37,7 +40,7 @@ public expect fun dpbf16ps512(a: F32x16, b: I16x32, c: I16x32): F32x16
  * 128-bit wide vector.
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#expand=1769,1651&avx512techs=AVX512_BF16&text=_mm_cvtne2ps_pbh)
  */
-public fun mmCvtne2psPbh(a: M128, b: M128): M128bh = transmute(cvtne2ps2bf16(a.asF32x4(), b.asF32x4()))
+public fun mmCvtne2psPbh(a: M128, b: M128): M128bh = transmuteWithLayouts<I16x8, M128bh>(cvtne2ps2bf16(a.asF32x4(), b.asF32x4()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128bh>())
 
 /**
  * Convert packed single-precision (32-bit) floating-point elements in two vectors
@@ -71,7 +74,7 @@ public fun mmMaskzCvtne2psPbh(k: Mmask8, a: M128, b: M128): M128bh =
  * 256-bit wide vector.
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#expand=1769,1651,1654&avx512techs=AVX512_BF16&text=_mm256_cvtne2ps_pbh)
  */
-public fun mm256Cvtne2psPbh(a: M256, b: M256): M256bh = transmute(cvtne2ps2bf16256(a.asF32x8(), b.asF32x8()))
+public fun mm256Cvtne2psPbh(a: M256, b: M256): M256bh = transmuteWithLayouts<I16x16, M256bh>(cvtne2ps2bf16256(a.asF32x8(), b.asF32x8()), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256bh>())
 
 /**
  * Convert packed single-precision (32-bit) floating-point elements in two vectors a and b
@@ -103,7 +106,7 @@ public fun mm256MaskzCvtne2psPbh(k: Mmask16, a: M256, b: M256): M256bh =
  * 512-bit wide vector.
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#expand=1769,1651,1654,1657&avx512techs=AVX512_BF16&text=_mm512_cvtne2ps_pbh)
  */
-public fun mm512Cvtne2psPbh(a: M512, b: M512): M512bh = transmute(cvtne2ps2bf16512(a.asF32x16(), b.asF32x16()))
+public fun mm512Cvtne2psPbh(a: M512, b: M512): M512bh = transmuteWithLayouts<I16x32, M512bh>(cvtne2ps2bf16512(a.asF32x16(), b.asF32x16()), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512bh>())
 
 /**
  * Convert packed single-precision (32-bit) floating-point elements in two vectors
@@ -136,7 +139,7 @@ public fun mm512MaskzCvtne2psPbh(k: Mmask32, a: M512, b: M512): M512bh =
  * floating-point elements, and store the results in dst.
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#expand=1769,1651,1654,1657,1660&avx512techs=AVX512_BF16&text=_mm256_cvtneps_pbh)
  */
-public fun mm256CvtnepsPbh(a: M256): M128bh = transmute(cvtneps2bf16256(a.asF32x8()))
+public fun mm256CvtnepsPbh(a: M256): M128bh = transmuteWithLayouts<I16x8, M128bh>(cvtneps2bf16256(a.asF32x8()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128bh>())
 
 /**
  * Convert packed single-precision (32-bit) floating-point elements in a to packed BF16 (16-bit)
@@ -167,7 +170,7 @@ public fun mm256MaskzCvtnepsPbh(k: Mmask8, a: M256): M128bh =
  * floating-point elements, and store the results in dst.
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#expand=1769,1651,1654,1657,1660&avx512techs=AVX512_BF16&text=_mm512_cvtneps_pbh)
  */
-public fun mm512CvtnepsPbh(a: M512): M256bh = transmute(cvtneps2bf16512(a.asF32x16()))
+public fun mm512CvtnepsPbh(a: M512): M256bh = transmuteWithLayouts<I16x16, M256bh>(cvtneps2bf16512(a.asF32x16()), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256bh>())
 
 /**
  * Convert packed single-precision (32-bit) floating-point elements in a to packed BF16 (16-bit)
@@ -199,7 +202,7 @@ public fun mm512MaskzCvtnepsPbh(k: Mmask16, a: M512): M256bh =
  * with elements in src, and store the results in dst.
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#expand=1769,1651,1654,1657,1660&avx512techs=AVX512_BF16&text=_mm_dpbf16_ps)
  */
-public fun mmDpbf16Ps(src: M128, a: M128bh, b: M128bh): M128 = transmute(dpbf16ps(src.asF32x4(), a.asI16x8(), b.asI16x8()))
+public fun mmDpbf16Ps(src: M128, a: M128bh, b: M128bh): M128 = transmuteWithLayouts<F32x4, M128>(dpbf16ps(src.asF32x4(), a.asI16x8(), b.asI16x8()), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
 
 /**
  * Compute dot-product of BF16 (16-bit) floating-point pairs in a and b,
@@ -234,7 +237,7 @@ public fun mmMaskzDpbf16Ps(k: Mmask8, src: M128, a: M128bh, b: M128bh): M128 =
  * with elements in src, and store the results in dst.
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#expand=1769,1651,1654,1657,1660&avx512techs=AVX512_BF16&text=_mm256_dpbf16_ps)
  */
-public fun mm256Dpbf16Ps(src: M256, a: M256bh, b: M256bh): M256 = transmute(dpbf16ps256(src.asF32x8(), a.asI16x16(), b.asI16x16()))
+public fun mm256Dpbf16Ps(src: M256, a: M256bh, b: M256bh): M256 = transmuteWithLayouts<F32x8, M256>(dpbf16ps256(src.asF32x8(), a.asI16x16(), b.asI16x16()), UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
 
 /**
  * Compute dot-product of BF16 (16-bit) floating-point pairs in a and b,
@@ -270,7 +273,7 @@ public fun mm256MaskzDpbf16Ps(k: Mmask8, src: M256, a: M256bh, b: M256bh): M256 
  * floating-point elements with elements in src, and store the results in dst.
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#expand=1769,1651,1654,1657,1660&avx512techs=AVX512_BF16&text=_mm512_dpbf16_ps)
  */
-public fun mm512Dpbf16Ps(src: M512, a: M512bh, b: M512bh): M512 = transmute(dpbf16ps512(src.asF32x16(), a.asI16x32(), b.asI16x32()))
+public fun mm512Dpbf16Ps(src: M512, a: M512bh, b: M512bh): M512 = transmuteWithLayouts<F32x16, M512>(dpbf16ps512(src.asF32x16(), a.asI16x32(), b.asI16x32()), UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
 
 /**
  * Compute dot-product of BF16 (16-bit) floating-point pairs in a and b,
@@ -304,7 +307,7 @@ public fun mm512MaskzDpbf16Ps(k: Mmask16, src: M512, a: M512bh, b: M512bh): M512
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_cvtpbh_ps)
  */
-public fun mm512CvtpbhPs(a: M256bh): M512 = mm512Castsi512Ps(mm512SlliEpi32(mm512Cvtepi16Epi32(transmute(a)), 16))
+public fun mm512CvtpbhPs(a: M256bh): M512 = mm512Castsi512Ps(mm512SlliEpi32(mm512Cvtepi16Epi32(transmuteWithLayouts<M256bh, M512>(a, UnresolvedTypeLayout<M256bh>(), UnresolvedTypeLayout<M512>())), 16))
 
 /**
  * Converts packed BF16 (16-bit) floating-point elements in a to packed single-precision (32-bit)
@@ -338,7 +341,7 @@ public fun mm512MaskzCvtpbhPs(k: Mmask16, a: M256bh): M512 =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtpbh_ps)
  */
-public fun mm256CvtpbhPs(a: M128bh): M256 = mm256Castsi256Ps(mm256SlliEpi32(mm256Cvtepi16Epi32(transmute(a)), 16))
+public fun mm256CvtpbhPs(a: M128bh): M256 = mm256Castsi256Ps(mm256SlliEpi32(mm256Cvtepi16Epi32(transmuteWithLayouts<M128bh, M256>(a, UnresolvedTypeLayout<M128bh>(), UnresolvedTypeLayout<M256>())), 16))
 
 /**
  * Converts packed BF16 (16-bit) floating-point elements in a to packed single-precision (32-bit)
@@ -372,7 +375,7 @@ public fun mm256MaskzCvtpbhPs(k: Mmask8, a: M128bh): M256 =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtpbh_ps)
  */
-public fun mmCvtpbhPs(a: M128bh): M128 = mmCastsi128Ps(mmSlliEpi32(mmCvtepi16Epi32(transmute(a)), 16))
+public fun mmCvtpbhPs(a: M128bh): M128 = mmCastsi128Ps(mmSlliEpi32(mmCvtepi16Epi32(transmuteWithLayouts<M128bh, M128>(a, UnresolvedTypeLayout<M128bh>(), UnresolvedTypeLayout<M128>())), 16))
 
 /**
  * Converts packed BF16 (16-bit) floating-point elements in a to single-precision (32-bit) floating-point

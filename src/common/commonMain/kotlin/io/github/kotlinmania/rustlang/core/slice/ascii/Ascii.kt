@@ -198,7 +198,7 @@ public fun List<UByte>.eqIgnoreAsciiCaseChunks(other: List<UByte>, n: Int): Bool
 /**
  * Converts this slice to its ASCII upper case equivalent in-place.
  *
- * ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
+ * ASCII letters `a` to `z` are mapped to `A` to `Z`,
  * but non-ASCII letters are unchanged.
  *
  * To return a new uppercased value without modifying the existing one, use
@@ -219,7 +219,7 @@ public fun List<UByte>.makeAsciiUppercase() {
 /**
  * Converts this slice to its ASCII lower case equivalent in-place.
  *
- * ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
+ * ASCII letters `A` to `Z` are mapped to `a` to `z`,
  * but non-ASCII letters are unchanged.
  *
  * To return a new lowercased value without modifying the existing one, use
@@ -254,7 +254,7 @@ public fun List<UByte>.escapeAscii(): EscapeAscii = EscapeAscii(inner = this.fla
 /**
  * Returns a byte slice with leading ASCII whitespace bytes removed.
  *
- * 'Whitespace' refers to the definition used by
+ * `Whitespace` refers to the definition used by
  * [u8.isAsciiWhitespace]. Importantly, this definition excludes
  * the `\0x0B` byte even though it has the Unicode [WhiteSpace] property
  * and is removed by [str.trimStart].
@@ -288,7 +288,7 @@ public fun List<UByte>.trimAsciiStart(): List<UByte> {
 /**
  * Returns a byte slice with trailing ASCII whitespace bytes removed.
  *
- * 'Whitespace' refers to the definition used by
+ * `Whitespace` refers to the definition used by
  * [u8.isAsciiWhitespace]. Importantly, this definition excludes
  * the `\0x0B` byte even though it has the Unicode [WhiteSpace] property
  * and is removed by [str.trimEnd].
@@ -323,7 +323,7 @@ public fun List<UByte>.trimAsciiEnd(): List<UByte> {
  * Returns a byte slice with leading and trailing ASCII whitespace bytes
  * removed.
  *
- * 'Whitespace' refers to the definition used by
+ * `Whitespace` refers to the definition used by
  * [u8.isAsciiWhitespace]. Importantly, this definition excludes
  * the `\0x0B` byte even though it has the Unicode [WhiteSpace] property
  * and is removed by [str.trim].
@@ -467,14 +467,23 @@ public open class SplitAsciiWhitespace internal constructor(
     }
 }
 
-public open class EscapeByte : Fn<UByte>, FnMut<UByte>, FnOnce<UByte, EscapeDefault> {
+public open class EscapeByte : Fn<UByte, Any>, FnMut<UByte, Any>, FnOnce<UByte, EscapeDefault> {
     public open fun clone(): EscapeByte = EscapeByte()
 
-    public override fun call(tupleArg0: UByte): EscapeDefault = escapeDefault(byte)
+    public override fun call(tupleArg0: UByte): EscapeDefault {
+        val byte = tupleArg0
+        return escapeDefault(byte)
+    }
 
-    public override fun callMut(tupleArg0: UByte): EscapeDefault = this.call(byte)
+    public override fun callMut(tupleArg0: UByte): EscapeDefault {
+        val byte = tupleArg0
+        return this.call(byte)
+    }
 
-    public override fun callOnce(tupleArg0: UByte): EscapeDefault = this.call(byte)
+    public override fun callOnce(tupleArg0: UByte): EscapeDefault {
+        val byte = tupleArg0
+        return this.call(byte)
+    }
 
     public companion object {
         public fun typeLayout(): TypeLayout<EscapeByte> =
@@ -520,7 +529,7 @@ public open class EscapeAscii internal constructor(
 
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
-    public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, UByte) -> R): R where R : Try<R, Acc, Any?> = this.inner.tryFold(init, fold)
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, UByte) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryFold(init, fold)
 
     public open fun <Acc> fold(init: Acc, fold: (Acc, UByte) -> Acc): Acc = this.inner.fold(init, fold)
 

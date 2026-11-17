@@ -131,7 +131,7 @@ public fun unreachableUnchecked(): Nothing {
  * compiler already knows the range of `countOnes`, so there is no benefit to
  * `val n = UInt.countOnes(x); assertUnchecked(n <= UInt.BITS);`.
  *
- * `assertUnchecked` is logically equivalent to `ifBranch cond { unreachableUnchecked(); }`. If
+ * `assertUnchecked` is logically equivalent to `ifBranch cond ( unreachableUnchecked(); )`. If
  * ever you are tempted to write `assertUnchecked(false)`, you should instead use
  * [unreachableUnchecked] directly.
  *

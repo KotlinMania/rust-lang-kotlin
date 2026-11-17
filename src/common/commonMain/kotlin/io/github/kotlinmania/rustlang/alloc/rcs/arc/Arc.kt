@@ -24,7 +24,6 @@ import io.github.kotlinmania.rustlang.core.clone.UseCloned
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.fmt.Error
-import io.github.kotlinmania.rustlang.core.fmt.Pointer
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSpinLoopHint
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
@@ -86,7 +85,7 @@ public fun panicArcOverflow(): Nothing {
 // as `Holder` is fundamental!
 
 /**
- * A thread-safe reference-counting pointer. 'Arc' stands for Atomically
+ * A thread-safe reference-counting pointer. `Arc` stands for Atomically
  * Reference Counted'.
  *
  * The type `Arc<T>` provides shared ownership of a value of type `T`,
@@ -256,7 +255,7 @@ public open class Arc<T, A : Allocator> internal constructor(
     ptrCtorArg: NonNull,
     public var phantom: Unit,
     public var alloc: A,
-) : UseCloned, Share, PinSafePointer, DerefPure, ArcEqIdent<T, A>, Pointer, AsRef<T>, Allocator, AllocatorNightly, AllocatorClone {
+) : UseCloned, Share, PinSafePointer, DerefPure, ArcEqIdent<T, A>, AsRef<T>, Allocator, AllocatorNightly, AllocatorClone {
     public var ptr: NonNull = ptrCtorArg
         internal set
 
@@ -527,7 +526,7 @@ public open class Arc<T, A : Allocator> internal constructor(
 
     public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
 
-    public open fun fmtPointer(f: StringBuilder): Result<Unit, Error> = Pointer.fmt((this), f)
+    public open fun fmtPointer(f: StringBuilder): Result<Unit, Error> = run { f.append(((this)).toString()); Result.Ok(Unit) }
 
     public override fun hashCode(): Int {
         var state = 0
@@ -716,7 +715,7 @@ public open class Arc<T, A : Allocator> internal constructor(
             val inner = initPtr.asPtr()
             // ignore-tidy-undocumented-unchecked
             return run {
-                write(addrOfMut(inner.data), data)
+                write(addrOfMut(inner.data), data, typeLayoutT = UnresolvedTypeLayout<T>())
                 // The above write to the data field must be visible to any threads which
                 // observe a non-zero strong count. Therefore we need at least "Release" ordering
                 // in order to synchronize with the `compareExchangeWeak` in `Weak.upgrade`.
@@ -995,7 +994,7 @@ public open class Arc<T, A : Allocator> internal constructor(
             thisRef1.inner().strong.load(Acquire)
             // SAFETY: This mirrors the line
             //
-            // unchecked { ptr.dropInPlace(Self.getMutUnchecked(self)) };
+            // unchecked ( ptr.dropInPlace(Self.getMutUnchecked(self)) );
             //
             // in `dropSlow`. Instead of dropping the value behind the pointer,
             // it is read and eventually returned; `ptr.read` has the same
@@ -1064,7 +1063,7 @@ public open class Arc<T, A : Allocator> internal constructor(
          * }
          * ```
          */
-        public fun <Output, Residual, T, A : Allocator, R> tryMap(thisRef: Arc<T, A>, f: (T) -> R, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): TryType where R : Try<Any?, Any?> {
+        public fun <Output, Residual, T, A : Allocator, R> tryMap(thisRef: Arc<T, A>, f: (T) -> R, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): TryType where R : Try<Output, Residual> {
             return if (sizeOf<T>(typeLayoutT = typeLayoutT) == sizeOf<Output>(typeLayoutT = UnresolvedTypeLayout<Output>()) && alignOf<T>(typeLayoutT = typeLayoutT) == alignOf<Output>(typeLayoutT = UnresolvedTypeLayout<Output>()) && Arc.isUnique(thisRef)) {
                 // ignore-tidy-undocumented-unchecked
                 run {
@@ -1599,7 +1598,7 @@ public open class Arc<T, A : Allocator> internal constructor(
                     // Initialize `inProgress` with move of **this.
                     // We have to express this in terms of bytes because `T: ? Sized`; there is no
                     // operation that just copies a value based on its `sizeOfVal()`.
-                    copyNonoverlapping(thisRef1.cast(), inProgress.dataPtr().cast(), sizeOfVal)
+                    copyNonoverlapping(thisRef1.cast(), inProgress.dataPtr().cast(), sizeOfVal, typeLayoutT = PrimitiveLayouts.U8)
                     // We are now safe from panics.
                     forget(guard)
                     // Materialize our own implicit weak pointer, so that it can clean
@@ -1923,7 +1922,7 @@ public open class Weak<T, A : Allocator> internal constructor(
      * (strong).let { }
      * // But not any more. We can do weak.asPtr(), but accessing the pointer would lead to
      * // undefined behavior.
-     * // assertEq("hello", unchecked { &*weak.asPtr() });
+     * // assertEq("hello", unchecked ( &*weak.asPtr() ));
      * ```
      */
     public open fun asPtr(): ConstPtr {
@@ -3012,7 +3011,7 @@ public fun <T> Arc.Companion.copyFromSlice(v: List<T>): Arc<List<T>, Global> {
     // ignore-tidy-undocumented-unchecked
     return run {
         val ptr = Arc.allocateForSlice(v.size)
-        copyNonoverlapping(v.asPtr(), mutPtrFromRustCast((addrOfMut(ptr.data))), v.size)
+        copyNonoverlapping(v.asPtr(), mutPtrFromRustCast((addrOfMut(ptr.data))), v.size, typeLayoutT = UnresolvedTypeLayout<T>())
         Arc.fromPtr(ptr)
     }
 }
@@ -3286,7 +3285,7 @@ public interface ArcEqIdent<T, A : Allocator> {
  * # Examples
  *
  * ```kotlin
- * val x: Int = Default.default()
+ * val x: Int = 0
  * check(x == 0)
  * ```
  */
@@ -3333,7 +3332,7 @@ public var STATIC_INNER_SLICE: SliceArcInnerForStatic = SliceArcInnerForStatic(i
  * This may or may not share an allocation with other Arcs.
  */
 public fun defaultArcString(): Arc<String, Global> {
-    val arc: Arc<List<UByte>, Global> = Default.default()
+    val arc: Arc<List<UByte>, Global> = Arc.default()
     check(String.fromUtf8(arc).isOk())
     val (ptr, alloc) = Arc.intoInnerWithAllocator(arc)
     // ignore-tidy-undocumented-unchecked
@@ -3490,7 +3489,7 @@ public fun <T, A : AllocatorNightly> fromArcTSliceA(v: List<T>): Arc<List<T>, A>
  * check("eggplant" == shared)
  * ```
  */
-public fun <Owned, B> fromArcB(cow: B): Arc<B, Global> where B : ToOwned<Any?> =
+public fun <Owned, B> fromArcB(cow: B): Arc<B, Global> where B : ToOwned<Owned> =
     when (cow) {
         is Cow.Borrowed -> {
             val (s) = cow
@@ -3746,7 +3745,7 @@ public open class UniqueArc<T, A : Allocator> internal constructor(
     // references exist, we already have a form of shared mutability!
     public var marker2: Unit,
     public var alloc: A,
-) : Pointer, BorrowMut<T>, AsRef<T>, AsMut<T>, PinSafePointer, DerefPure {
+) : BorrowMut<T>, AsRef<T>, AsMut<T>, PinSafePointer, DerefPure {
     public var ptr: NonNull = ptrCtorArg
         internal set
 
@@ -3756,7 +3755,7 @@ public open class UniqueArc<T, A : Allocator> internal constructor(
 
     public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
 
-    public open fun fmtPointer(f: StringBuilder): Result<Unit, Error> = Pointer.fmt((this), f)
+    public open fun fmtPointer(f: StringBuilder): Result<Unit, Error> = run { f.append(((this)).toString()); Result.Ok(Unit) }
 
     public open fun borrow(): T = this
 
@@ -4059,7 +4058,7 @@ public open class UniqueArc<T, A : Allocator> internal constructor(
          * }
          * ```
          */
-        public fun <Output, Residual, T, A : Allocator, R> tryMap(thisRef: UniqueArc<T, A>, f: (T) -> R, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): TryType where R : Try<Any?, Any?> {
+        public fun <Output, Residual, T, A : Allocator, R> tryMap(thisRef: UniqueArc<T, A>, f: (T) -> R, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): TryType where R : Try<Output, Residual> {
             return if (sizeOf<T>(typeLayoutT = typeLayoutT) == sizeOf<Output>(typeLayoutT = UnresolvedTypeLayout<Output>()) && alignOf<T>(typeLayoutT = typeLayoutT) == alignOf<Output>(typeLayoutT = UnresolvedTypeLayout<Output>()) && UniqueArc.weakCount(thisRef) == 0) {
                 // ignore-tidy-undocumented-unchecked
                 run {

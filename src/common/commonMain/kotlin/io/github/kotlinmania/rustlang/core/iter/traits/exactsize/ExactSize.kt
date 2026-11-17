@@ -64,7 +64,7 @@ import io.github.kotlinmania.rustlang.core.panicking.assertFailed
  * check(4 == counter.len())
  * ```
  */
-public interface ExactSizeIterator<T> {
+public interface ExactSizeIterator {
     /**
      * Returns the exact remaining length of the iterator.
      *

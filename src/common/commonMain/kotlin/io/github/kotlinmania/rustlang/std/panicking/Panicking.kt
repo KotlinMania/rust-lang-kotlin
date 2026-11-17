@@ -237,10 +237,10 @@ public fun takeHook(): (PanicHookInfo) -> Unit {
  * public fun doctestEntry() {
  *     // Equivalent to
  *     // let prev = panic.takeHook();
- *     // panic.setHook(Holder.new(move |info| {
+ *     // panic.setHook(Holder.new(move |info| (
  *     // println("...");
  *     // prev(info);
- *     // }));
+ *     // )));
  *     panic.updateHook({ prev, info ->
  *         println("Print custom message and execute panic handler as usual")
  *         prev(info)
@@ -323,6 +323,8 @@ public fun defaultHook(info: PanicHookInfo) {
     run {
         val matchVal1 = trySetOutputCapture(null)
         if (matchVal1 is Result.Ok && matchVal1.value != null) {
+            val valueVal = matchVal1.value
+            val local = valueVal
             write(local.lock().unwrapOrElse({ e -> e.intoInner() }))
             trySetOutputCapture(local).ok()
         } else {

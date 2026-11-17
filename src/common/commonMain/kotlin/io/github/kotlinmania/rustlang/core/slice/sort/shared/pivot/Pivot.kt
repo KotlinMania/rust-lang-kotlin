@@ -43,7 +43,7 @@ public fun <T> choosePivot(v: List<T>, isLess: (T, T) -> Boolean): Int {
             if (len < PSEUDO_MEDIAN_REC_THRESHOLD) {
                 median3((UnresolvedTypeLayout<T>()).readNative((a).rawAddress), (UnresolvedTypeLayout<T>()).readNative((b).rawAddress), (UnresolvedTypeLayout<T>()).readNative((c).rawAddress), isLess).offsetFromUnsigned(vBase)
             } else {
-                median3Rec(a, b, c, lenDiv8, isLess).offsetFromUnsigned(vBase)
+                median3Rec(a, b, c, lenDiv8, isLess, typeLayoutT = UnresolvedTypeLayout<T>()).offsetFromUnsigned(vBase)
             }
         }
     // SAFETY: preconditions must have been met for offsetFromUnsigned()

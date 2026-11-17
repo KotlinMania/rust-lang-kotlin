@@ -9,7 +9,6 @@ import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
 import io.github.kotlinmania.rustlang.core.marker.Freeze
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -20,9 +19,7 @@ import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteNeo
-import io.github.kotlinmania.rustlang.core.mem.transmuteUnchecked
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
@@ -169,7 +166,7 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
- * import io.github.kotlinmania.rustlang.core.mem.reinterpret
+ * import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
  * import std.mem.MaybeUninit
  *
  * val data1 = run {
@@ -182,7 +179,7 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  *     }
  *     // Everything is initialized. Transmute the array to the
  *     // initialized type.
- *     reinterpret(data)
+ *     transmuteWithLayouts<List<MaybeUninit<List<UInt>>>, List<List<UInt>>>(data, UnresolvedTypeLayout<List<MaybeUninit<List<UInt>>>>(), UnresolvedTypeLayout<List<List<UInt>>>())
  * }
  * check(data1[0] == listOf(42))
  * ```
@@ -296,10 +293,10 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
  * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
  * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
- * import io.github.kotlinmania.rustlang.core.mem.reinterpret
+ * import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
  *
  * fun <T> unsoundTransmute(value: T): MaybeUninit<T> {
- *     return reinterpret(value)
+ *     return transmuteWithLayouts<T, MaybeUninit<T>>(value, UnresolvedTypeLayout<T>(), UnresolvedTypeLayout<MaybeUninit<T>>())
  * }
  * fun main() {
  *     val localStorageL10C4 = AddressableLocal(0, PrimitiveLayouts.I32)
@@ -337,14 +334,15 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  * ```kotlin
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
- * import io.github.kotlinmania.rustlang.core.mem.reinterpret
+ * import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
  *
  * public fun doctestEntry() {
  *     fun identity(t: T): T {
  *         return run {
- *             val u: MaybeUninit<UByteArray> = reinterpret(t)
- *             reinterpret(u)
+ *             val u: MaybeUninit<UByteArray> = transmuteWithLayouts<T, MaybeUninit<UByteArray>>(t, UnresolvedTypeLayout<T>(), UnresolvedTypeLayout<MaybeUninit<UByteArray>>())
+ *             transmuteWithLayouts<MaybeUninit<UByteArray>, T>(u, UnresolvedTypeLayout<MaybeUninit<UByteArray>>(), UnresolvedTypeLayout<T>())
  *             // OK.
  *         }
  *     }
@@ -375,8 +373,8 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  * ```kotlin
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
- * import io.github.kotlinmania.rustlang.core.mem.reinterpret
  * import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
  *
  * public fun doctestEntry() {
@@ -392,8 +390,8 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  *     open class U(public var field0: UByte, public var field1: UShort)
  *     fun unsoundIdentity(t: T): T {
  *         return run {
- *             val u: MaybeUninit<U> = transmuteWithLayouts(t, T.typeLayout(), T.typeLayout())
- *             reinterpret(u)
+ *             val u: MaybeUninit<U> = transmuteWithLayouts<T, MaybeUninit<U>>(t, T.typeLayout(), UnresolvedTypeLayout<MaybeUninit<U>>())
+ *             transmuteWithLayouts<MaybeUninit<U>, T>(u, UnresolvedTypeLayout<MaybeUninit<U>>(), T.typeLayout())
  *             // UB.
  *         }
  *     }
@@ -406,8 +404,9 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  * ```kotlin
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
- * import io.github.kotlinmania.rustlang.core.mem.reinterpret
+ * import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
  *
  * public fun doctestEntry() {
  *     @repr(C)
@@ -423,8 +422,8 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  *     fun nonIdentity(t: T): T {
  *         return run {
  *             // May lose an initialized byte.
- *             val u: MaybeUninit<U> = reinterpret(t)
- *             reinterpret(u)
+ *             val u: MaybeUninit<U> = transmuteWithLayouts<T, MaybeUninit<U>>(t, UnresolvedTypeLayout<T>(), UnresolvedTypeLayout<MaybeUninit<U>>())
+ *             transmuteWithLayouts<MaybeUninit<U>, T>(u, UnresolvedTypeLayout<MaybeUninit<U>>(), UnresolvedTypeLayout<T>())
  *         }
  *     }
  * }
@@ -444,7 +443,7 @@ public open class MaybeUninit<T>(
     // SAFETY: the clone implementation is a copy, see above.
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
-        // NB: there is no `.padFmt` so we can't use a simpler `formatArgs("MaybeUninit<{..}>").
+        // NB: there is no `.padFmt` so we can't use a simpler `formatArgs("MaybeUninit<(..)>").
         val fullName = "MaybeUninit"
         val prefixLen = (fullName.indexOf("MaybeUninit").takeIf { it >= 0 })!!
         return run { f.append(fullName.substring(prefixLen)); Result.Ok(Unit) }
@@ -530,9 +529,10 @@ public open class MaybeUninit<T>(
      * ```
      */
     public open fun write(value: T): T {
-        this = MaybeUninit.new(value, UnresolvedTypeLayout<T>())
+        var selfMut = this
+        selfMut = MaybeUninit.new(value, UnresolvedTypeLayout<T>())
         // SAFETY: We just initialized this value.
-        return this.assumeInitMut()
+        return selfMut.assumeInitMut()
     }
 
     /**
@@ -989,7 +989,7 @@ public open class MaybeUninit<T>(
      */
     public open fun asBytes(): List<MaybeUninit<UByte>> {
         // SAFETY: MaybeUninit<u8> is always valid, even for padding bytes
-        return linearSliceView(this.asPtr().cast(), sizeOf<T>().toInt(), PrimitiveLayouts.U8)
+        return linearSliceView(this.asPtr().cast(), sizeOf<T>().toInt(), UnresolvedTypeLayout<MaybeUninit<UByte>>())
     }
 
     /**
@@ -1022,7 +1022,7 @@ public open class MaybeUninit<T>(
      */
     public open fun asBytesMut(): MutableList<MaybeUninit<UByte>> {
         // SAFETY: MaybeUninit<u8> is always valid, even for padding bytes
-        return linearMutSliceView(this.asMutPtr().cast(), sizeOf<T>().toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(this.asMutPtr().cast(), sizeOf<T>().toInt(), UnresolvedTypeLayout<MaybeUninit<UByte>>())
     }
 
     public companion object {
@@ -1153,7 +1153,7 @@ public open class MaybeUninit<T>(
             // * `MaybeUninit` does not drop, so there are no double-frees
             // And thus the conversion is safe
             return run {
-                transmuteWithLayouts(array, UnresolvedTypeLayout<List<MaybeUninit<T>>>(), UnresolvedTypeLayout<List<T>>())
+                transmuteWithLayouts<List<MaybeUninit<T>>, List<T>>(array, UnresolvedTypeLayout<List<MaybeUninit<T>>>(), UnresolvedTypeLayout<List<T>>())
             }
         }
 
@@ -1230,7 +1230,7 @@ public open class MaybeUninit<T>(
  */
 public fun <T> List<MaybeUninit<T>>.writeCopyOfSlice(src: List<T>): MutableList<T> {
     // SAFETY: &[T] and &[MaybeUninit<T>] have the same layout
-    val uninitSrc: List<MaybeUninit<T>> = transmute(src)
+    val uninitSrc: List<MaybeUninit<T>> = transmuteWithLayouts<List<T>, List<MaybeUninit<T>>>(src, UnresolvedTypeLayout<List<T>>(), UnresolvedTypeLayout<List<MaybeUninit<T>>>())
     run { val dstTmp0 = this; val srcTmp0 = uninitSrc; for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
     // SAFETY: Valid elements have just been copied into `self` so it is initialized
     return this.assumeInitMut()
@@ -1714,7 +1714,7 @@ public fun <T> List<MaybeUninit<T>>.assumeInitMut(typeLayoutT: TypeLayout<T> = U
  */
 public fun <T> MaybeUninit<List<T>>.transpose(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<MaybeUninit<T>> {
     // SAFETY: T and MaybeUninit<T> have the same layout
-    return transmuteUnchecked(this)
+    return transmuteWithLayouts<MaybeUninit<List<T>>, List<MaybeUninit<T>>>(this, UnresolvedTypeLayout<MaybeUninit<List<T>>>(), UnresolvedTypeLayout<List<MaybeUninit<T>>>())
 }
 
 public fun <T> fromMaybeUninitTArrayn(arr: List<MaybeUninit<T>>, n: Int): MaybeUninit<List<T>> = arr.transpose()
@@ -1755,7 +1755,7 @@ public fun <T> fromMaybeUninitTArrayn(arr: MaybeUninit<List<T>>, n: Int): List<M
  */
 public fun <T> List<MaybeUninit<T>>.transpose(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MaybeUninit<List<T>> {
     // SAFETY: T and MaybeUninit<T> have the same layout
-    return transmuteUnchecked(this)
+    return transmuteWithLayouts<List<MaybeUninit<T>>, MaybeUninit<List<T>>>(this, UnresolvedTypeLayout<List<MaybeUninit<T>>>(), UnresolvedTypeLayout<MaybeUninit<List<T>>>())
 }
 
 public open class Guard<T>(

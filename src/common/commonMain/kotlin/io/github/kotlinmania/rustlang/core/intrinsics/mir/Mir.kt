@@ -63,77 +63,77 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 // use core.intrinsics.mir::*;
 //
 // @customMir(dialect = "built")
-// pub fn chooseLoad(a: &i32, b: &i32, c: bool) -> i32 {
-//     mir! {
-//         {
-//             match c {
+// pub fn chooseLoad(a: &i32, b: &i32, c: bool) -> i32 (
+//     mir! (
+//         (
+//             match c (
 //                 true => t,
 //                 _ => f,
-//             }
-//         }
+//             )
+//         )
 //
-//         t = {
+//         t = (
 //             let temp = a;
 //             Goto(loadAndExit)
-//         }
+//         )
 //
-//         f = {
+//         f = (
 //             temp = b;
 //             Goto(loadAndExit)
-//         }
+//         )
 //
-//         loadAndExit = {
+//         loadAndExit = (
 //             RET = *temp;
 //             Return()
-//         }
-//     }
-// }
+//         )
+//     )
+// )
 //
 // @customMir(dialect = "built")
-// fn unwrapUnchecked<T>(opt: Option<T>) -> T {
-//     mir! {
-//         {
+// fn unwrapUnchecked<T>(opt: Option<T>) -> T (
+//     mir! (
+//         (
 //             RET = Move(Field(Variant(opt, 1), 0));
 //             Return()
-//         }
-//     }
-// }
+//         )
+//     )
+// )
 //
 // @customMir(dialect = "runtime", phase = "optimized")
-// fn pushAndPop<T>(v: Vec<T>, value: T) {
-//     mir! {
+// fn pushAndPop<T>(v: Vec<T>, value: T) (
+//     mir! (
 //         let _unused;
 //         let popped;
 //
-//         {
+//         (
 //             Call(_unused = Vec.push(v, value), ReturnTo(pop), UnwindContinue())
-//         }
+//         )
 //
-//         pop = {
+//         pop = (
 //             Call(popped = Vec.pop(v), ReturnTo(drop), UnwindContinue())
-//         }
+//         )
 //
-//         drop = {
+//         drop = (
 //             Drop(popped, ReturnTo(ret), UnwindContinue())
-//         }
+//         )
 //
-//         ret = {
+//         ret = (
 //             Return()
-//         }
-//     }
-// }
+//         )
+//     )
+// )
 //
 // @customMir(dialect = "runtime", phase = "optimized")
-// fn annotatedReturnType() -> (i32, bool) {
-//     mir! {
+// fn annotatedReturnType() -> (i32, bool) (
+//     mir! (
 //         type RET = (i32, bool);
-//         {
+//         (
 //             RET.0 = 1;
 //             RET.1 = true;
 //             Return()
-//         }
-//     }
-// }
+//         )
+//     )
+// )
 // ```kotlin
 // We can also set off compilation failures that happen in sufficiently late stages of the compiler:
 // ```rust,compile_fail
@@ -143,37 +143,37 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 // use core.intrinsics.mir::*;
 //
 // @customMir(dialect = "built")
-// fn borrowError(shouldInit: bool) -> i32 {
-//     mir! {
+// fn borrowError(shouldInit: bool) -> i32 (
+//     mir! (
 //         let temp: i32;
 //
-//         {
-//             match shouldInit {
+//         (
+//             match shouldInit (
 //                 true => init,
 //                 _ => useTemp,
-//             }
-//         }
+//             )
+//         )
 //
-//         init = {
+//         init = (
 //             temp = 0;
 //             Goto(useTemp)
-//         }
+//         )
 //
-//         useTemp = {
+//         useTemp = (
 //             RET = temp;
 //             Return()
-//         }
-//     }
-// }
+//         )
+//     )
+// )
 // ```kotlin
 // ```text
 // error[E0381]: used binding is possibly-uninitialized
 //   --> test.rs:24:13
 //    |
-// 8  | /     mir! {
+// 8  | /     mir! (
 // 9  | |         let temp: i32;
 // 10 | |
-// 11 | |         {
+// 11 | |         (
 // ...  |
 // 19 | |             temp = 0;
 //    | |             -------- binding initialized here in some conditions
@@ -181,8 +181,8 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 // 24 | |             RET = temp;
 //    | |             ^^^^^^^^^^ value used here but it is possibly-uninitialized
 // 25 | |             Return()
-// 26 | |         }
-// 27 | |     }
+// 26 | |         )
+// 27 | |     )
 //    | |_____- binding declared here but left uninitialized
 //
 // error: aborting due to 1 previous error
@@ -255,7 +255,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 // use core.intrinsics.mir::*;
 //
 // @customMir(dialect = "built")
-// fn debuginfo(arg: Option<&i32>) {
+// fn debuginfo(arg: Option<&i32>) (
 //     mir(
 //         // Debuginfo for a source variable `plainLocal` that just duplicates `arg`.
 //         debug plainLocal => arg;
@@ -264,11 +264,11 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 //         debug projection => *Field::<&i32>(Variant(arg, 1), 0);
 //         // Debuginfo for a source variable `constant` that always holds the value `5`.
 //         debug constant => 5_usize;
-//         {
+//         (
 //             Return()
-//         }
+//         )
 //     )
-// }
+// )
 // ```kotlin
 
 /**

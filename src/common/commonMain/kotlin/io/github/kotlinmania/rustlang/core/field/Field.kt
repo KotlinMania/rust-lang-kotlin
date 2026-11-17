@@ -65,8 +65,8 @@ public fun <T> FieldRepresentingType<T, Field>.fmt(f: StringBuilder, variant: UI
     // longer compiles, then the following debug impl could also work in
     // the meantime:
     // `rust
-    // let typeName = const { typeName::<T>() };
-    // write(f, "fieldOf({typeName}, {VARIANT}.{FIELD})")
+    // let typeName = const ( typeName::<T>() );
+    // write(f, "fieldOf((typeName), (VARIANT).(FIELD))")
     // `
 }
 
@@ -101,10 +101,10 @@ public fun <T> FieldRepresentingType<T, Field>.cmp(other: FieldRepresentingType<
  * Given a valid value of type `Self.Base`, there exists a valid value of type `Self.Type` at
  * byte offset `OFFSET`
  */
-public interface Field<T, out Base, out Type> {
+public interface Field<out Base, out Type> {
     /**
      * The offset of the field in bytes.
      */
     public val OFFSET: Int
-        get() = fieldOffset<T>()
+        get() = fieldOffset<Field>()
 }

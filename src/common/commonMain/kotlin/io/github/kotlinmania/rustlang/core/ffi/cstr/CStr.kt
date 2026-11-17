@@ -451,7 +451,7 @@ public open class CStr internal constructor(
             // means the call to `fromBytesWithNulUnchecked` is correct.
             //
             // The cast from cChar to u8 is ok because a cChar is always one byte.
-            return CStr.fromBytesWithNulUnchecked(linearSliceView(ConstPtr((ptr).rawAddress), (len.asInner() + 1).toInt(), PrimitiveLayouts.U8))
+            return CStr.fromBytesWithNulUnchecked(linearSliceView(ConstPtr((ptr).rawAddress), (len.asInner() + 1).toInt(), UnresolvedTypeLayout<CChar>()))
         }
 
         /**
@@ -772,7 +772,7 @@ public open class Bytes internal constructor(
 }
 
 /**
- * Helper struct for safely printing a [CStr] with [format] and `{}`.
+ * Helper struct for safely printing a [CStr] with [format] and `()`.
  *
  * A [CStr] might contain non-Unicode data. This `class` implements the
  * [Display] trait in a way that mitigates that. It is created by the

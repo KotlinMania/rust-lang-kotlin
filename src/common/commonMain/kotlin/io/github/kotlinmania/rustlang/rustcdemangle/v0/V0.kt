@@ -423,7 +423,7 @@ public open class Parser(
         }
 
     public open fun next(): Result<UByte, ParseError> {
-        val b = when (val tryResult = (this.peek()?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UByte, ParseError>(tryResult.error) }
+        val b = when (val tryResult = (this.peek()?.let { Result.Ok<UByte, ParseError>(it) } ?: Result.Err<UByte, ParseError>(ParseError.Invalid))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UByte, ParseError>(tryResult.error) }
         this.next += 1
         return Result.Ok<UByte, ParseError>(b)
     }
@@ -484,14 +484,14 @@ public open class Parser(
             x = when (val tryResult = (x.checkedMul(62uL)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, ParseError>(tryResult.error) }
             x = when (val tryResult = (x.checkedAdd(d)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, ParseError>(tryResult.error) }
         }
-        return (x.checkedAdd(1uL)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))
+        return (x.checkedAdd(1uL)?.let { Result.Ok<ULong, ParseError>(it) } ?: Result.Err<ULong, ParseError>(ParseError.Invalid))
     }
 
     public open fun optInteger62(tag: UByte): Result<ULong, ParseError> {
         if (!this.eat(tag)) {
             return Result.Ok<ULong, ParseError>(0uL)
         }
-        return ((when (val tryResult = this.integer62()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, ParseError>(tryResult.error) }.checkedAdd(1))?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))
+        return ((when (val tryResult = this.integer62()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, ParseError>(tryResult.error) }.checkedAdd(1))?.let { Result.Ok<ULong, ParseError>(it) } ?: Result.Err<ULong, ParseError>(ParseError.Invalid))
     }
 
     public open fun disambiguator(): Result<ULong, ParseError> = this.optInteger62(115u)
@@ -566,7 +566,7 @@ public open class Printer internal constructor(
      */
     public var out: StringBuilder?,
     /**
-     * Cumulative number of scopes bound by `for<...>` binders ('G'),
+     * Cumulative number of scopes bound by `for<...>` binders (`G`),
      * anywhere "around" the current entity (e.g. type) being demangled.
      * This value is not tracked while skipping printing, as it'd be unused.
      *
@@ -733,7 +733,7 @@ public open class Printer internal constructor(
     }
 
     /**
-     * Optionally enter a binder ('G') for late-bound scopes,
+     * Optionally enter a binder (`G`) for late-bound scopes,
      * printing e.g. `for<>` before calling the closure,
      * and make those scopes visible to it (via depth level).
      */
@@ -782,7 +782,7 @@ public open class Printer internal constructor(
 
     /**
      * Print list elements using the given closure and separator,
-     * until the end of the list ('E') is found, or the parser errors.
+     * until the end of the list (`E`) is found, or the parser errors.
      * Returns the number of elements printed.
      */
     public open fun printSepList(f: (Printer) -> Result<Unit, Error>, sep: String): Result<Int, io.github.kotlinmania.rustlang.core.error.Error> {
@@ -1253,7 +1253,7 @@ public open class Printer internal constructor(
                 when (val tryResult = thisRef.printSepList({ it.printType() }, ", ")) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
                 when (val tryResult = thisRef.print(")")) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
                 if (thisRef.eat(117u)) {
-                    // Skip printing the return type if it's 'u', i.e. `()`.
+                    // Skip printing the return type if it's `u`, i.e. `()`.
                 } else {
                     when (val tryResult = thisRef.print(" -> ")) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
                     when (val tryResult = thisRef.printType()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
@@ -1317,7 +1317,7 @@ public open class Printer internal constructor(
      * A trait in a trait object may have some "existential projections"
      * (i.e. associated type bindings) after it, which should be printed
      * in the `<...>` of the trait, e.g. `dynamic Trait<T, U, Assoc = X>`.
-     * To this end, this method will keep the `<...>` of an 'I' path
+     * To this end, this method will keep the `<...>` of an `I` path
      * open, by omitting the `>`, and return `Ok(true)` in that case.
      */
     public open fun printPathMaybeOpenGenerics(): Result<Boolean, io.github.kotlinmania.rustlang.core.error.Error> {

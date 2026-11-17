@@ -990,7 +990,7 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      * check(x1.asDeref() == y1)
      * ```
      */
-    public open fun <Target> asDeref(): Result<Target, E> = this.asRef().map({ Deref.deref(it) })
+    public open fun asDeref(): Result<Target, E> = this.asRef().map(Deref::deref)
 
     /**
      * Converts from `Result<T, E>` (or `Result<T, E>`) to `Result<<T as DerefMut>.Target, E>`.
@@ -1970,4 +1970,7 @@ public fun <T, E, F> fromResidualResultTF(residual: Result<Nothing, E>): Result<
         }
     }
 
-public fun <T, E, F> fromResidualResultTF(destructuredArg0: Yeet<E>): Result<T, F> = Err(From.from(e))
+public fun <T, E, F> fromResidualResultTF(destructuredArg0: Yeet<E>): Result<T, F> {
+    val e = destructuredArg0.value
+    return Err(From.from(e))
+}

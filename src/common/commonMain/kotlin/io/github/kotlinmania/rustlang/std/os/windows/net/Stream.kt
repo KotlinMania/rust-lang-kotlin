@@ -1,14 +1,14 @@
 // port-lint: source os/windows/net/stream.rs
 package io.github.kotlinmania.rustlang.std.os.windows.net
 
+import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.io.IoSlice
-import io.github.kotlinmania.rustlang.std.io.Read
-import io.github.kotlinmania.rustlang.std.io.Write
 import io.github.kotlinmania.rustlang.std.net.Shutdown
 import io.github.kotlinmania.rustlang.std.os.windows.io.AsRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.AsSocket
@@ -64,14 +64,14 @@ public class DebugStruct(
  * use std.os.windows.net.UnixStream;
  * use std.io.prelude::*;
  *
- * fn main() -> std.io.Result<()> {
+ * fn main() -> std.io.Result<()> (
  *     let mut stream = UnixStream.connect("/path/to/my/socket")?;
  *     stream.writeAll(b"hello world")?;
  *     let mut response = String.new();
  *     stream.readToString(response)?;
- *     println("{response}");
+ *     println("(response)");
  *     Ok(())
- * }
+ * )
  * ```kotlin
  */
 public open class UnixStream(
@@ -111,11 +111,11 @@ public open class UnixStream(
      * @file:feature(windowsUnixDomainSockets)
      * use std.os.windows.net.UnixStream;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     let addr = socket.localAddr().expect("Couldn't get local address");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun localAddr(): Result<SocketAddr, io.github.kotlinmania.rustlang.std.io.error.Error> = SocketAddr.new({ addr, len -> getsockname(this.value.asRaw(), addr, len) })
@@ -128,11 +128,11 @@ public open class UnixStream(
      * @file:feature(windowsUnixDomainSockets)
      * use std.os.windows.net.UnixStream;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     let addr = socket.peerAddr().expect("Couldn't get peer address");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun peerAddr(): Result<SocketAddr, io.github.kotlinmania.rustlang.std.io.error.Error> = SocketAddr.new({ addr, len -> getpeername(this.value.asRaw(), addr, len) })
@@ -146,12 +146,12 @@ public open class UnixStream(
      * use std.os.windows.net.UnixStream;
      * use std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     socket.setReadTimeout(Some(Duration.new(1, 0))).expect("Couldn't set read timeout");
      *     assertEq(socket.readTimeout()?, Some(Duration.new(1, 0)));
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun readTimeout(): Result<Duration?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.timeout(SO_RCVTIMEO)
@@ -164,11 +164,11 @@ public open class UnixStream(
      * @file:feature(windowsUnixDomainSockets)
      * use std.os.windows.net.UnixStream;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     socket.setNonblocking(true).expect("Couldn't set nonblocking");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setNonblocking(nonblocking)
@@ -188,11 +188,11 @@ public open class UnixStream(
      * use std.os.windows.net.UnixStream;
      * use std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     socket.setReadTimeout(Some(Duration.new(1, 0))).expect("Couldn't set read timeout");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      *
      * An [Err] is returned if the zero [Duration] is passed to this
@@ -203,13 +203,13 @@ public open class UnixStream(
      * import std.os.windows.net.UnixStream;
      * import std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      * val socket = UnixStream.connect("/tmp/sock");
      * val result = socket.setReadTimeout(Some(Duration.new(0, 0)));
      * val err = result.unwrapErr();
      * assertEq(err.kind(), io.ErrorKind.InvalidInput);
      * Ok(())
-     * }
+     * )
      * ```
      */
     public open fun setReadTimeout(dur: Duration?): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setTimeout(dur, SO_RCVTIMEO)
@@ -229,12 +229,12 @@ public open class UnixStream(
      * use std.os.windows.net.UnixStream;
      * use std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     socket.setWriteTimeout(Some(Duration.new(1, 0)))
      *         .expect("Couldn't set write timeout");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      *
      * An [Err] is returned if the zero [Duration] is passed to this
@@ -245,13 +245,13 @@ public open class UnixStream(
      * import std.os.windows.net.UnixStream;
      * import std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      * val socket = UnixStream.connect("/tmp/sock");
      * val result = socket.setWriteTimeout(Some(Duration.new(0, 0)));
      * val err = result.unwrapErr();
      * assertEq(err.kind(), io.ErrorKind.InvalidInput);
      * Ok(())
-     * }
+     * )
      * ```
      */
     public open fun setWriteTimeout(dur: Duration?): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setTimeout(dur, SO_SNDTIMEO)
@@ -269,11 +269,11 @@ public open class UnixStream(
      * use std.os.windows.net.UnixStream;
      * use std.net.Shutdown;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     socket.shutdown(Shutdown.Both).expect("shutdown function failed");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun shutdown(how: Shutdown): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.shutdown(how)
@@ -286,16 +286,16 @@ public open class UnixStream(
      * @file:feature(windowsUnixDomainSockets)
      * use std.os.windows.net.UnixStream;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
-     *     if let Ok(Some(err)) = socket.takeError() {
-     *         println("Got error: {err:?}");
-     *     }
+     *     if let Ok(Some(err)) = socket.takeError() (
+     *         println("Got error: (err:?)");
+     *     )
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.takeError()
 
     /**
      * Creates a new independently owned handle to the underlying socket.
@@ -310,11 +310,11 @@ public open class UnixStream(
      * @file:feature(windowsUnixDomainSockets)
      * use std.os.windows.net.UnixStream;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     let sockCopy = socket.tryClone().expect("Couldn't clone socket");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun tryClone(): Result<UnixStream, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.duplicate().map({ UnixStream(it) })
@@ -328,13 +328,13 @@ public open class UnixStream(
      * use std.os.windows.net.UnixStream;
      * use std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     socket.setWriteTimeout(Some(Duration.new(1, 0)))
      *         .expect("Couldn't set write timeout");
      *     assertEq(socket.writeTimeout()?, Some(Duration.new(1, 0)));
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun writeTimeout(): Result<Duration?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.timeout(SO_SNDTIMEO)
@@ -384,13 +384,13 @@ public open class UnixStream(
          * @file:feature(windowsUnixDomainSockets)
          * use std.os.windows.net.UnixStream;
          *
-         * let socket = match UnixStream.connect("/tmp/sock") {
+         * let socket = match UnixStream.connect("/tmp/sock") (
          *     Ok(sock) => sock,
-         *     Err(e) => {
-         *         println("Couldn't connect: {e:?}");
+         *     Err(e) => (
+         *         println("Couldn't connect: (e:?)");
          *         return
-         *     }
-         * };
+         *     )
+         * );
          * ```kotlin
          */
         public fun connect(path: Path): Result<UnixStream, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -404,21 +404,21 @@ public open class UnixStream(
          * # Examples
          *
          * @file:feature(windowsUnixDomainSockets)
-         * use std.os.windows.net::{UnixListener, UnixStream};
+         * use std.os.windows.net::(UnixListener, UnixStream);
          *
-         * fn main() -> std.io.Result<()> {
+         * fn main() -> std.io.Result<()> (
          *     let listener = UnixListener.bind("/path/to/the/socket")?;
          *     let addr = listener.localAddr()?;
          *
-         *     let sock = match UnixStream.connectAddr(&addr) {
+         *     let sock = match UnixStream.connectAddr(&addr) (
          *         Ok(sock) => sock,
-         *         Err(e) => {
-         *             println("Couldn't connect: {e:?}");
+         *         Err(e) => (
+         *             println("Couldn't connect: (e:?)");
          *             return Err(e)
-         *         }
-         *     };
+         *         )
+         *     );
          *     Ok(())
-         * }
+         * )
          * ```kotlin
          */
         public fun connectAddr(socketAddr: SocketAddr): Result<UnixStream, io.github.kotlinmania.rustlang.std.io.error.Error> {

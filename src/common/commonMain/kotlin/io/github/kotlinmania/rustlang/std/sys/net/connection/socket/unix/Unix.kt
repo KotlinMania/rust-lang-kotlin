@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedBuf
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
@@ -62,7 +63,6 @@ import io.github.kotlinmania.rustlang.libc.wasi.POLLOUT
 import io.github.kotlinmania.rustlang.libc.wasi.SOCK_CLOEXEC
 import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
 import io.github.kotlinmania.rustlang.libc.wasi.TimeT
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.net.Shutdown
@@ -108,7 +108,7 @@ public open class Socket(
                 when (err) {
                     EINTR -> { continue }
                     EISCONN -> { return Result.Ok<Unit, Error>(Unit) }
-                    else -> { return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(err)) }
+                    else -> { return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(err)) }
                 }
             }
             return Result.Ok<Unit, Error>(Unit)
@@ -122,7 +122,7 @@ public open class Socket(
         pollfd.fd = this.asRawFd()
         pollfd.events = POLLOUT
         if (timeout1.asSecs() == 0 && timeout1.subsecNanos() == 0) {
-            return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.ZERO_TIMEOUT)
+            return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.ZERO_TIMEOUT)
         }
         val start = Instant.now()
         while (true) {
@@ -138,7 +138,7 @@ public open class Socket(
             val timeout4 = minOf(timeout3, Int.MAX_VALUE.toULong()).toInt()
             when (Poll(RustMutableReference(localStorageL175C8.asMutPtr(), localStorageL175C8.layout), 1, timeout4)) {
                 -1 -> {
-                    val err = io.github.kotlinmania.rustlang.std.io.Error.lastOsError()
+                    val err = io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError()
                     if (!err.isInterrupted()) {
                         return Result.Err<Unit, Error>(err)
                     }
@@ -250,7 +250,7 @@ public open class Socket(
                 else -> {
                     val dur1 = dur
                     if (dur1.asSecs() == 0 && dur1.subsecNanos() == 0) {
-                        return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.ZERO_TIMEOUT)
+                        return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.ZERO_TIMEOUT)
                     }
                     val secs =
                         if (dur1.asSecs() > TimeT.MAX_VALUE.toULong()) {
@@ -349,12 +349,12 @@ public open class Socket(
         return setsockopt(this, SOL_SOCKET, option, mark.toInt())
     }
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> {
-        val raw: CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_ERROR)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<io.github.kotlinmania.rustlang.std.io.Error?, Error>(tryResult.error) }
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> {
+        val raw: CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_ERROR)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<io.github.kotlinmania.rustlang.core.io.error.Error?, Error>(tryResult.error) }
         return if (raw == 0) {
-            Result.Ok<io.github.kotlinmania.rustlang.std.io.Error?, Error>(null)
+            Result.Ok<io.github.kotlinmania.rustlang.core.io.error.Error?, Error>(null)
         } else {
-            Result.Ok<io.github.kotlinmania.rustlang.std.io.Error?, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(raw))
+            Result.Ok<io.github.kotlinmania.rustlang.core.io.error.Error?, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(raw))
         }
     }
 
@@ -405,10 +405,10 @@ public fun cvtGai(err: CInt): Result<Unit, Error> {
     // We may need to trigger a glibc workaround. See onResolverFailure() for details.
     onResolverFailure()
     if (err == EAI_SYSTEM) {
-        return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
     }
     val detail = CStr.fromPtr(gaiStrerror(err)).toStringLossy()
-    return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.Uncategorized, "failed to lookup address information: $detail"))
+    return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.Uncategorized, "failed to lookup address information: $detail"))
 }
 
 // In versions of glibc prior to 2.26, there's a bug where the DNS resolver

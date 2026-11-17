@@ -75,14 +75,14 @@ public open class TcpStream(
 
     public open fun hopLimitV6(): Result<UByte, Error> = this.value
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value
 
     public open fun setNonblocking(arg0: Boolean): Result<Unit, Error> = this.value
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> connect(arg0: A): Result<TcpStream, Error> = unsupported()
+        public fun <Iter, A : ToSocketAddrs<Iter>> connect(arg0: A): Result<TcpStream, Error> = unsupported()
 
         public fun connectTimeout(arg0: SocketAddr, arg1: Duration): Result<TcpStream, Error> = unsupported()
     }
@@ -115,14 +115,14 @@ public open class TcpListener(
 
     public open fun onlyV6(): Result<Boolean, Error> = this.value
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value
 
     public open fun setNonblocking(arg0: Boolean): Result<Unit, Error> = this.value
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(arg0: A): Result<TcpListener, Error> = unsupported()
+        public fun <Iter, A : ToSocketAddrs<Iter>> bind(arg0: A): Result<TcpListener, Error> = unsupported()
     }
 }
 
@@ -191,7 +191,7 @@ public open class UdpSocket(
 
     public open fun multicastHopLimitV6(): Result<UByte, Error> = this.value
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value
 
     public open fun setNonblocking(arg0: Boolean): Result<Unit, Error> = this.value
 
@@ -201,12 +201,12 @@ public open class UdpSocket(
 
     public open fun send(arg0: List<UByte>): Result<Int, Error> = this.value
 
-    public open fun <Iter, A : ToSocketAddrs<Any?>> connect(arg0: A): Result<Unit, Error> = this.value
+    public open fun <Iter, A : ToSocketAddrs<Iter>> connect(arg0: A): Result<Unit, Error> = this.value
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(arg0: A): Result<UdpSocket, Error> = unsupported()
+        public fun <Iter, A : ToSocketAddrs<Iter>> bind(arg0: A): Result<UdpSocket, Error> = unsupported()
     }
 }
 

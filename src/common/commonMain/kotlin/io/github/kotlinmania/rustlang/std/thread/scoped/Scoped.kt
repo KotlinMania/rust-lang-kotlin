@@ -189,7 +189,7 @@ public open class ScopeData internal constructor(
         internal set
 
     public open fun incrementNumRunningThreads() {
-        // We check for 'overflow' with usize.Max / 2, to make sure there's no
+        // We check for `overflow` with usize.Max / 2, to make sure there's no
         // chance it overflows to 0, which would result in unsoundness.
         if (this.numRunningThreads.fetchAdd(1, Ordering.Relaxed) > Int.MAX_VALUE / 2) {
             // This can only reasonably happen by mem.forget()'ing a lot of ScopedJoinHandles.

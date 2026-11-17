@@ -4,7 +4,8 @@ package io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.corefounda
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -129,7 +130,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFRelease").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute(ptr)
+        val fnptr = transmuteWithLayouts<MutPtr, FnCallback>(ptr, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<FnCallback>())
         fnptr(cf)
     }
 
@@ -139,7 +140,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFGetTypeID").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute(ptr)
+        val fnptr = transmuteWithLayouts<MutPtr, FnCallback1>(ptr, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<FnCallback1>())
         return fnptr(cf)
     }
 
@@ -149,7 +150,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFDataCreateWithBytesNoCopy").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute(ptr)
+        val fnptr = transmuteWithLayouts<MutPtr, FnCallback2>(ptr, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<FnCallback2>())
         return fnptr(allocator, bytes, length, bytesDeallocator)
     }
 
@@ -159,7 +160,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFPropertyListCreateWithData").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute(ptr)
+        val fnptr = transmuteWithLayouts<MutPtr, FnCallback3>(ptr, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<FnCallback3>())
         return fnptr(allocator, data, options, format, error)
     }
 
@@ -169,7 +170,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFStringGetTypeID").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute(ptr)
+        val fnptr = transmuteWithLayouts<MutPtr, FnCallback4>(ptr, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<FnCallback4>())
         return fnptr()
     }
 
@@ -179,7 +180,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFStringCreateWithCStringNoCopy").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute(ptr)
+        val fnptr = transmuteWithLayouts<MutPtr, FnCallback5>(ptr, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<FnCallback5>())
         return fnptr(alloc, cStr, encoding, contentsDeallocator)
     }
 
@@ -189,7 +190,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFStringGetCString").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute(ptr)
+        val fnptr = transmuteWithLayouts<MutPtr, FnCallback6>(ptr, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<FnCallback6>())
         return fnptr(theString, buffer, bufferSize, encoding)
     }
 
@@ -199,7 +200,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFDictionaryGetTypeID").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute(ptr)
+        val fnptr = transmuteWithLayouts<MutPtr, FnCallback4>(ptr, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<FnCallback4>())
         return fnptr()
     }
 
@@ -209,7 +210,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFDictionaryGetValue").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute(ptr)
+        val fnptr = transmuteWithLayouts<MutPtr, FnCallback7>(ptr, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<FnCallback7>())
         return fnptr(theDict, key)
     }
 

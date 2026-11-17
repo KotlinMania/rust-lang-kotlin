@@ -17,7 +17,6 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
-import io.github.kotlinmania.rustlang.core.mem.transmuteUnchecked
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.checkedAbs
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
@@ -79,7 +78,7 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  *
  * (And, consequently, `Self.NonZeroInner` to `Self`.)
  */
-public interface ZeroablePrimitive<T, out NonZeroInner>
+public interface ZeroablePrimitive<out NonZeroInner>
 
 // Implement auto-traits manually based on `T` to avoid docs exposing
 // the `ZeroablePrimitive.NonZeroInner` implementation detail.
@@ -130,8 +129,8 @@ public interface ZeroablePrimitive<T, out NonZeroInner>
 public open class NonZero<T, NonZeroInner> internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<NonZeroInner> = UnresolvedTypeLayout(),
-) : fmt.LowerExp, fmt.UpperExp, Freeze, UseCloned<NonZero<T, NonZeroInner>>, TrivialClone<NonZero<T, NonZeroInner>>, StructuralPartialEq, BitOr<NonZero<T, NonZeroInner>, NonZero<T, NonZeroInner>>, BitOrAssign<NonZero<T, NonZeroInner>> {
-    public var field0: T.NonZeroInner
+) : Freeze, UseCloned<NonZero<T, NonZeroInner>>, TrivialClone<NonZero<T, NonZeroInner>>, StructuralPartialEq, BitOr<NonZero<T, NonZeroInner>, NonZero<T, NonZeroInner>>, BitOrAssign<NonZero<T, NonZeroInner>> {
+    public var field0: NonZeroInner
         get() = value
         set(v) {
             value = v
@@ -145,7 +144,7 @@ public open class NonZero<T, NonZeroInner> internal constructor(
 
     public fun pointerLayout(): TypeLayout<NonZero<T, NonZeroInner>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZero<T, NonZeroInner>(ptr, layout) }, { it.value })
 
-    public override fun fmt(f: StringBuilder): Result<Unit, Unit> = this.get().fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = this.get().fmt(f)
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = this.get().fmt(f)
 
@@ -183,17 +182,17 @@ public open class NonZero<T, NonZeroInner> internal constructor(
 
     public open fun max(other: NonZero<T, NonZeroInner>): NonZero<T, NonZeroInner> {
         // SAFETY: The maximum of two non-zero values is still non-zero.
-        return NonZero.newUnchecked(this.get().max(other.get()))
+        return NonZero.newUnchecked<NonZeroInner, T>(this.get().max(other.get()))
     }
 
     public open fun min(other: NonZero<T, NonZeroInner>): NonZero<T, NonZeroInner> {
         // SAFETY: The minimum of two non-zero values is still non-zero.
-        return NonZero.newUnchecked(this.get().min(other.get()))
+        return NonZero.newUnchecked<NonZeroInner, T>(this.get().min(other.get()))
     }
 
     public open fun clamp(min: NonZero<T, NonZeroInner>, max: NonZero<T, NonZeroInner>): NonZero<T, NonZeroInner> {
         // SAFETY: A non-zero value clamped between two non-zero values is still non-zero.
-        return NonZero.newUnchecked(this.get().clamp(min.get(), max.get()))
+        return NonZero.newUnchecked<NonZeroInner, T>(this.get().clamp(min.get(), max.get()))
     }
 
     public override fun hashCode(): Int {
@@ -204,20 +203,22 @@ public open class NonZero<T, NonZeroInner> internal constructor(
 
     public override fun bitor(rhs: NonZero<T, NonZeroInner>): NonZero<T, NonZeroInner> {
         // SAFETY: Bitwise OR of two non-zero values is still non-zero.
-        return NonZero.newUnchecked(this.get() or rhs.get())
+        return NonZero.newUnchecked<NonZeroInner, T>(this.get() or rhs.get())
     }
 
     public override fun bitor(rhs: T): NonZero<T, NonZeroInner> {
         // SAFETY: Bitwise OR of a non-zero value with anything is still non-zero.
-        return NonZero.newUnchecked(this.get() or rhs)
+        return NonZero.newUnchecked<NonZeroInner, T>(this.get() or rhs)
     }
 
     public override fun bitorAssign(rhs: NonZero<T, NonZeroInner>) {
-        this = this or rhs
+        var selfMut = this
+        selfMut = selfMut or rhs
     }
 
     public override fun bitorAssign(rhs: T) {
-        this = this or rhs
+        var selfMut = this
+        selfMut = selfMut or rhs
     }
 
     /**
@@ -250,7 +251,7 @@ public open class NonZero<T, NonZeroInner> internal constructor(
         //
         // SAFETY: `ZeroablePrimitive` guarantees that the size and bit validity
         // of `.0` is such that this reinterpret is sound.
-        return transmuteUnchecked(this)
+        return transmuteWithLayouts<NonZero<T, NonZeroInner>, T>(this, UnresolvedTypeLayout<NonZero<T, NonZeroInner>>(), UnresolvedTypeLayout<T>())
     }
 
     public companion object {
@@ -264,7 +265,7 @@ public open class NonZero<T, NonZeroInner> internal constructor(
         public fun <NonZeroInner, T> new(n: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): NonZero<T, NonZeroInner>? {
             // SAFETY: Memory layout optimization guarantees that `Option<NonZero<T>>` has
             // the same layout and size as `T`, with `0` representing `None`.
-            return transmuteWithLayouts(n, typeLayoutT, UnresolvedTypeLayout<NonZero<T, NonZeroInner>?>())
+            return transmuteWithLayouts<T, NonZero<T, NonZeroInner>?>(n, typeLayoutT, UnresolvedTypeLayout<NonZero<T, NonZeroInner>?>())
         }
 
         /**
@@ -276,7 +277,7 @@ public open class NonZero<T, NonZeroInner> internal constructor(
          * The value must not be zero.
          */
         public fun <NonZeroInner, T> newUnchecked(n: T): NonZero<T, NonZeroInner> =
-            when (val matchVal = NonZero.new(n)) {
+            when (val matchVal = NonZero.new<NonZeroInner, T>(n)) {
                 null -> {
                     // SAFETY: The caller guarantees that `n` is non-zero, so this is unreachable.
                     run {
@@ -339,7 +340,7 @@ public open class NonZero<T, NonZeroInner> internal constructor(
          * Implementation of `TryFrom<[T]> for &[NonZero<T>]`.
          */
         public fun <NonZeroInner, T> fromSlice(n: List<T>): List<NonZero<T, NonZeroInner>>? =
-            if (n.all({ x -> NonZero.new(x) != null })) {
+            if (n.all({ x -> NonZero.new<NonZeroInner, T>(x) != null })) {
                 // SAFETY: We explicitly checked that all elements are nonzero, and because of `repr(transparent)`
                 // the layout remains unchanged
                 linearSliceView(ConstPtr((n.asPtr()).rawAddress), n.size, UnresolvedTypeLayout<NonZero<T, NonZeroInner>>())
@@ -365,53 +366,53 @@ public fun <NonZeroInner, T> fromT(nonzero: NonZero<T, NonZeroInner>): T {
 // impl<a, T> From<&a [NonZero<T>]> for &a [T]
 // where
 // T: ZeroablePrimitive,
-// {
+// (
 // @inline
-// fn from(nonzero: &a [NonZero<T>]) -> &a [T] {
+// fn from(nonzero: &a [NonZero<T>]) -> &a [T] (
 // nonzero.asZeroable()
-// }
-// }
+// )
+// )
 // impl<T> [NonZero<T>]
 // where
 // T: ZeroablePrimitive,
-// {
+// (
 // /// Implementation of `From<[NonZero<T>]> for &[T]`.
 // @mustUse
 // @inline
-// fn asZeroable(&self) -> &[T] {
+// fn asZeroable(&self) -> &[T] (
 // // SAFETY: `repr(transparent)` ensures that `NonZero<T>` has same layout as `T`, and thus
 // //   `[NonZero<T>]` has same layout as `[T]`
-// unchecked { &*(slice.fromRawParts(self.asPtr().cast::<T>(), self.len())) }
-// }
-// }
+// unchecked ( &*(slice.fromRawParts(self.asPtr().cast::<T>(), self.len())) )
+// )
+// )
 //
 public fun <NonZeroInner, T> fromTArrayn(nonzero: List<NonZero<T, NonZeroInner>>, n: Int): List<T> = nonzero.intoZeroable()
 
-public fun tryFromNonZeroUByte(zeroable: UByte): Result<NonZero<UByte, NonZeroU8Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroUByte(zeroable: UByte): Result<NonZero<UByte, NonZeroU8Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroUShort(zeroable: UShort): Result<NonZero<UShort, NonZeroU16Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroUShort(zeroable: UShort): Result<NonZero<UShort, NonZeroU16Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroUInt(zeroable: UInt): Result<NonZero<UInt, NonZeroU32Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroUInt(zeroable: UInt): Result<NonZero<UInt, NonZeroU32Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroULong(zeroable: ULong): Result<NonZero<ULong, NonZeroU64Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroULong(zeroable: ULong): Result<NonZero<ULong, NonZeroU64Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroU128(zeroable: U128): Result<NonZero<U128, NonZeroU128Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroU128(zeroable: U128): Result<NonZero<U128, NonZeroU128Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroInt(zeroable: Int): Result<NonZero<Int, NonZeroUsizeInner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroInt(zeroable: Int): Result<NonZero<Int, NonZeroUsizeInner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroByte(zeroable: Byte): Result<NonZero<Byte, NonZeroI8Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroByte(zeroable: Byte): Result<NonZero<Byte, NonZeroI8Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroShort(zeroable: Short): Result<NonZero<Short, NonZeroI16Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroShort(zeroable: Short): Result<NonZero<Short, NonZeroI16Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroLong(zeroable: Long): Result<NonZero<Long, NonZeroI64Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroLong(zeroable: Long): Result<NonZero<Long, NonZeroI64Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroI128(zeroable: I128): Result<NonZero<I128, NonZeroI128Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroI128(zeroable: I128): Result<NonZero<I128, NonZeroI128Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroChar(zeroable: Char): Result<NonZero<Char, NonZeroCharInner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroChar(zeroable: Char): Result<NonZero<Char, NonZeroCharInner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun <NonZeroInner, T> tryFromNonZeroTSlice(zeroable: List<T>): Result<List<NonZero<T, NonZeroInner>>, TryFromIntError> = (NonZero.fromSlice(zeroable)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun <NonZeroInner, T> tryFromNonZeroTSlice(zeroable: List<T>): Result<List<NonZero<T, NonZeroInner>>, TryFromIntError> = (NonZero.fromSlice(zeroable)?.let { Result.Ok<List<NonZero>, TryFromIntError>(it) } ?: Result.Err<List<NonZero>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun <NonZeroInner, T> tryFromNonZeroTArrayn(zeroable: List<T>, n: Int): Result<List<NonZero<T, NonZeroInner>>, TryFromIntError> = (NonZero.fromArray(zeroable)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun <NonZeroInner, T> tryFromNonZeroTArrayn(zeroable: List<T>, n: Int): Result<List<NonZero<T, NonZeroInner>>, TryFromIntError> = (NonZero.fromArray(zeroable)?.let { Result.Ok<List<NonZero>, TryFromIntError>(it) } ?: Result.Err<List<NonZero>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
 /**
  * Implementation of `From<[NonZero<T>; N]> for [T; N]`.
@@ -1284,7 +1285,8 @@ public fun UByte.div(other: NonZero<UByte, NonZeroU8Inner>): UByte = (((this) / 
  * part of the exact result, and cannot panic.
  */
 public fun UByte.divAssign(other: NonZero<UByte, NonZeroU8Inner>) {
-    this = (this / other).toUByte()
+    var selfMut = this
+    selfMut = (selfMut / other).toUByte()
 }
 
 /**
@@ -1296,7 +1298,8 @@ public fun UByte.rem(other: NonZero<UByte, NonZeroU8Inner>): UByte = (((this) % 
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
 public fun UByte.remAssign(other: NonZero<UByte, NonZeroU8Inner>) {
-    this = (this % other).toUByte()
+    var selfMut = this
+    selfMut = (selfMut % other).toUByte()
 }
 
 /**
@@ -1491,7 +1494,8 @@ public fun UShort.div(other: NonZero<UShort, NonZeroU16Inner>): UShort = (((this
  * part of the exact result, and cannot panic.
  */
 public fun UShort.divAssign(other: NonZero<UShort, NonZeroU16Inner>) {
-    this = (this / other).toUShort()
+    var selfMut = this
+    selfMut = (selfMut / other).toUShort()
 }
 
 /**
@@ -1503,7 +1507,8 @@ public fun UShort.rem(other: NonZero<UShort, NonZeroU16Inner>): UShort = (((this
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
 public fun UShort.remAssign(other: NonZero<UShort, NonZeroU16Inner>) {
-    this = (this % other).toUShort()
+    var selfMut = this
+    selfMut = (selfMut % other).toUShort()
 }
 
 /**
@@ -1698,7 +1703,8 @@ public fun UInt.div(other: NonZero<UInt, NonZeroU32Inner>): UInt = ((this) / (ot
  * part of the exact result, and cannot panic.
  */
 public fun UInt.divAssign(other: NonZero<UInt, NonZeroU32Inner>) {
-    this = this / other
+    var selfMut = this
+    selfMut = selfMut / other
 }
 
 /**
@@ -1710,7 +1716,8 @@ public fun UInt.rem(other: NonZero<UInt, NonZeroU32Inner>): UInt = ((this) % (ot
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
 public fun UInt.remAssign(other: NonZero<UInt, NonZeroU32Inner>) {
-    this = this % other
+    var selfMut = this
+    selfMut = selfMut % other
 }
 
 /**
@@ -1905,7 +1912,8 @@ public fun ULong.div(other: NonZero<ULong, NonZeroU64Inner>): ULong = ((this) / 
  * part of the exact result, and cannot panic.
  */
 public fun ULong.divAssign(other: NonZero<ULong, NonZeroU64Inner>) {
-    this = this / other
+    var selfMut = this
+    selfMut = selfMut / other
 }
 
 /**
@@ -1917,7 +1925,8 @@ public fun ULong.rem(other: NonZero<ULong, NonZeroU64Inner>): ULong = ((this) % 
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
 public fun ULong.remAssign(other: NonZero<ULong, NonZeroU64Inner>) {
-    this = this % other
+    var selfMut = this
+    selfMut = selfMut % other
 }
 
 /**
@@ -2112,7 +2121,8 @@ public fun U128.div(other: NonZero<U128, NonZeroU128Inner>): U128 = ((this) / (o
  * part of the exact result, and cannot panic.
  */
 public fun U128.divAssign(other: NonZero<U128, NonZeroU128Inner>) {
-    this = this / other
+    var selfMut = this
+    selfMut = selfMut / other
 }
 
 /**
@@ -2124,7 +2134,8 @@ public fun U128.rem(other: NonZero<U128, NonZeroU128Inner>): U128 = ((this) % (o
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
 public fun U128.remAssign(other: NonZero<U128, NonZeroU128Inner>) {
-    this = this % other
+    var selfMut = this
+    selfMut = selfMut % other
 }
 
 /**
@@ -2319,7 +2330,8 @@ public fun Int.div(other: NonZero<Int, NonZeroUsizeInner>): Int = ((this) / (oth
  * part of the exact result, and cannot panic.
  */
 public fun Int.divAssign(other: NonZero<Int, NonZeroUsizeInner>) {
-    this = this / other
+    var selfMut = this
+    selfMut = selfMut / other
 }
 
 /**
@@ -2331,7 +2343,8 @@ public fun Int.rem(other: NonZero<Int, NonZeroUsizeInner>): Int = ((this) % (oth
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
 public fun Int.remAssign(other: NonZero<Int, NonZeroUsizeInner>) {
-    this = this % other
+    var selfMut = this
+    selfMut = selfMut % other
 }
 
 /**

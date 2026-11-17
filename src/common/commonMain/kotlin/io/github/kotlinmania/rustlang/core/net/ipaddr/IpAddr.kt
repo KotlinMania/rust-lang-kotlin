@@ -10,7 +10,8 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.net.displaybuffer.DisplayBuffer
 import io.github.kotlinmania.rustlang.core.ops.bit.BitAnd
 import io.github.kotlinmania.rustlang.core.ops.bit.BitAndAssign
@@ -53,7 +54,7 @@ public sealed class IpAddr {
     public fun rustEquals(other: IpAddr): Boolean = this == other
 
     /**
-     * Returns [trueVal] for the special 'unspecified' address.
+     * Returns [trueVal] for the special `unspecified` address.
      *
      * See the documentation for [Ipv4Addr.isUnspecified] and
      * [Ipv6Addr.isUnspecified] for more details.
@@ -618,7 +619,7 @@ public open class Ipv4Addr(
     public open fun asOctets(): UByteArray = this.octets
 
     /**
-     * Returns [trueVal] for the special 'unspecified' address (`0.0.0.0`).
+     * Returns [trueVal] for the special `unspecified` address (`0.0.0.0`).
      *
      * This property is defined in _UNIX Network Programming, Second Edition_,
      * W. Richard Stevens, p. 891; see also [ip7].
@@ -1368,13 +1369,13 @@ public open class Ipv6Addr(
     public open fun segments(): UShortArray {
         // All elements in `self.octets` must be big endian.
         // SAFETY: `[UByte; 16]` is always safe to reinterpret to `[UShort; 8]`.
-        val (a, b, c, d, e, f, g, h) = transmute(this.octets)
+        val (a, b, c, d, e, f, g, h) = transmuteWithLayouts<UByteArray, UShortArray>(this.octets, UnresolvedTypeLayout<UByteArray>(), PrimitiveArrayLayouts.uShortArray((8).toInt()))
         // We want native endian u16
         return listOf((((((a).toUInt() and 0xFFu) shl 8) or (((a).toUInt() shr 8) and 0xFFu)).toUShort()), (((((b).toUInt() and 0xFFu) shl 8) or (((b).toUInt() shr 8) and 0xFFu)).toUShort()), (((((c).toUInt() and 0xFFu) shl 8) or (((c).toUInt() shr 8) and 0xFFu)).toUShort()), (((((d).toUInt() and 0xFFu) shl 8) or (((d).toUInt() shr 8) and 0xFFu)).toUShort()), (((((e).toUInt() and 0xFFu) shl 8) or (((e).toUInt() shr 8) and 0xFFu)).toUShort()), (((((f).toUInt() and 0xFFu) shl 8) or (((f).toUInt() shr 8) and 0xFFu)).toUShort()), (((((g).toUInt() and 0xFFu) shl 8) or (((g).toUInt() shr 8) and 0xFFu)).toUShort()), (((((h).toUInt() and 0xFFu) shl 8) or (((h).toUInt() shr 8) and 0xFFu)).toUShort()))
     }
 
     /**
-     * Returns [trueVal] for the special 'unspecified' address (`.`).
+     * Returns [trueVal] for the special `unspecified` address (`.`).
      *
      * This property is defined in [IETF RFC 4291].
      *
@@ -2129,7 +2130,7 @@ public open class Ipv6Addr(
          */
         public fun new(a: UShort, b: UShort, c: UShort, d: UShort, e: UShort, f: UShort, g: UShort, h: UShort): Ipv6Addr {
             val addr16 = ushortArrayOf((((((a).toUInt() and 0xFFu) shl 8) or (((a).toUInt() shr 8) and 0xFFu)).toUShort()), (((((b).toUInt() and 0xFFu) shl 8) or (((b).toUInt() shr 8) and 0xFFu)).toUShort()), (((((c).toUInt() and 0xFFu) shl 8) or (((c).toUInt() shr 8) and 0xFFu)).toUShort()), (((((d).toUInt() and 0xFFu) shl 8) or (((d).toUInt() shr 8) and 0xFFu)).toUShort()), (((((e).toUInt() and 0xFFu) shl 8) or (((e).toUInt() shr 8) and 0xFFu)).toUShort()), (((((f).toUInt() and 0xFFu) shl 8) or (((f).toUInt() shr 8) and 0xFFu)).toUShort()), (((((g).toUInt() and 0xFFu) shl 8) or (((g).toUInt() shr 8) and 0xFFu)).toUShort()), (((((h).toUInt() and 0xFFu) shl 8) or (((h).toUInt() shr 8) and 0xFFu)).toUShort()))
-            return Ipv6Addr(octets = transmute(addr16))
+            return Ipv6Addr(octets = transmuteWithLayouts<UShortArray, UByteArray>(addr16, UnresolvedTypeLayout<UShortArray>(), PrimitiveArrayLayouts.uByteArray((16).toInt())))
         }
 
         /**

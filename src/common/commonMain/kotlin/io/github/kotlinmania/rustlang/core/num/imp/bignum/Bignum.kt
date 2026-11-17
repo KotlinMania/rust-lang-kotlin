@@ -102,7 +102,7 @@ public fun ULong.fullDivRem(other: ULong, borrow: ULong): Pair<ULong, ULong> {
 }
 
 /**
- * Table of powers of 5 representable in digits. Specifically, the largest {u8, u16, u32, u64} value
+ * Table of powers of 5 representable in digits. Specifically, the largest (u8, u16, u32, u64) value
  * that's a power of five, plus the corresponding exponent. Used in `mulPow5`.
  */
 public val SMALL_POW5: List<Pair<ULong, Int>> = listOf(Pair(125, 3), Pair(15625, 6), Pair(1220703125, 13), Pair(7450580596923828125, 27))

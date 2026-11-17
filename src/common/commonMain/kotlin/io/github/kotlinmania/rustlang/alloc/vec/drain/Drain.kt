@@ -114,7 +114,7 @@ public open class Drain<T, A : Allocator> internal constructor(
      *     var vec = mutableListOf('a', 'b', 'c')
      *     var drain = vec.drain(0 until 0)
      *     check(drain.next()!! == 'a')
-     *     // This call keeps 'b' and 'c' in the vec.
+     *     // This call keeps `b` and `c` in the vec.
      *     drain.keepRest()
      *     // If we wouldn't call `keepRest()`,
      *     // `vec` would be empty.

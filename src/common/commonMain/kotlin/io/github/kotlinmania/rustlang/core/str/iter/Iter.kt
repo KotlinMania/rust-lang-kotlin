@@ -47,19 +47,19 @@ import io.github.kotlinmania.rustlang.core.slice.iter.Split as SliceSplit
 // struct $reverseIterator($internalIterator);
 //
 // impl Iterator for $forwardIterator
-// { // internal ends up calling Searcher.nextMatch() }
+// ( // internal ends up calling Searcher.nextMatch() )
 //
 // impl DoubleEndedIterator for $forwardIterator
 //       where P.Searcher: DoubleEndedSearcher
-// { // internal ends up calling Searcher.nextMatchBack() }
+// ( // internal ends up calling Searcher.nextMatchBack() )
 //
 // impl Iterator for $reverseIterator
 //       where P.Searcher: ReverseSearcher
-// { // internal ends up calling Searcher.nextMatchBack() }
+// ( // internal ends up calling Searcher.nextMatchBack() )
 //
 // impl DoubleEndedIterator for $reverseIterator
 //       where P.Searcher: DoubleEndedSearcher
-// { // internal ends up calling Searcher.nextMatch() }
+// ( // internal ends up calling Searcher.nextMatch() )
 //
 // The internal one is defined outside the macro, and has almost the same
 // semantic as a DoubleEndedIterator by delegating to `pattern.Searcher` and
@@ -341,7 +341,7 @@ public open class CharIndices(
  */
 public open class Bytes internal constructor(
     valueCtorArg: Copied<ArrayDeque<UByte>>,
-) : TrustedLen<Bytes>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<UByte> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<UByte> {
     public var value: Copied<ArrayDeque<UByte>> = valueCtorArg
         internal set
 
@@ -409,14 +409,14 @@ public open class Bytes internal constructor(
     }
 }
 
-public open class SplitInternal<P : Pattern<Any?>>(
+public open class SplitInternal<P : Pattern<Searcher>, Searcher>(
     public var start: Int,
     public var end: Int,
     public var matcher: Searcher,
     public var allowTrailingEmpty: Boolean,
     public var finished: Boolean,
 ) {
-    public open fun clone(): SplitInternal<P> {
+    public open fun clone(): SplitInternal<P, Searcher> {
         val s = this
         return s.copy(matcher = s.matcher.clone())
     }
@@ -588,13 +588,13 @@ public open class SplitInternal<P : Pattern<Any?>>(
  *
  * [split]: str.split
  */
-public open class Split<P : Pattern<Any?>> internal constructor(
-    valueCtorArg: SplitInternal<P>,
+public open class Split<P : Pattern<Searcher>, Searcher> internal constructor(
+    valueCtorArg: SplitInternal<P, Searcher>,
 ) : Iterable<String> {
-    public var value: SplitInternal<P> = valueCtorArg
+    public var value: SplitInternal<P, Searcher> = valueCtorArg
         internal set
 
-    public var field0: SplitInternal<P>
+    public var field0: SplitInternal<P, Searcher>
         get() = value
         set(v) {
             value = v
@@ -613,7 +613,7 @@ public open class Split<P : Pattern<Any?>> internal constructor(
 
     public open fun next(): String? = this.value.next()
 
-    public open fun clone(): Split<P> = Split(this.value.clone())
+    public open fun clone(): Split<P, Searcher> = Split(this.value.clone())
 
     public open fun nextBack(): String? = this.value.nextBack()
 
@@ -639,9 +639,9 @@ public open class Split<P : Pattern<Any?>> internal constructor(
     public open fun remainder(): String? = this.value.remainder()
 
     public companion object {
-        public operator fun <P : Pattern<Any?>> invoke(
-            value: SplitInternal<P>,
-        ): Split<P> = Split<P>(
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
+            value: SplitInternal<P, Searcher>,
+        ): Split<P, Searcher> = Split<P, Searcher>(
             valueCtorArg = value,
         )
     }
@@ -652,13 +652,13 @@ public open class Split<P : Pattern<Any?>> internal constructor(
  *
  * [rsplit]: str.rsplit
  */
-public open class RSplit<P : Pattern<Any?>> internal constructor(
-    valueCtorArg: SplitInternal<P>,
+public open class RSplit<P : Pattern<Searcher>, Searcher> internal constructor(
+    valueCtorArg: SplitInternal<P, Searcher>,
 ) : Iterable<String> {
-    public var value: SplitInternal<P> = valueCtorArg
+    public var value: SplitInternal<P, Searcher> = valueCtorArg
         internal set
 
-    public var field0: SplitInternal<P>
+    public var field0: SplitInternal<P, Searcher>
         get() = value
         set(v) {
             value = v
@@ -677,7 +677,7 @@ public open class RSplit<P : Pattern<Any?>> internal constructor(
 
     public open fun next(): String? = this.value.nextBack()
 
-    public open fun clone(): RSplit<P> = RSplit(this.value.clone())
+    public open fun clone(): RSplit<P, Searcher> = RSplit(this.value.clone())
 
     public open fun nextBack(): String? = this.value.next()
 
@@ -703,9 +703,9 @@ public open class RSplit<P : Pattern<Any?>> internal constructor(
     public open fun remainder(): String? = this.value.remainder()
 
     public companion object {
-        public operator fun <P : Pattern<Any?>> invoke(
-            value: SplitInternal<P>,
-        ): RSplit<P> = RSplit<P>(
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
+            value: SplitInternal<P, Searcher>,
+        ): RSplit<P, Searcher> = RSplit<P, Searcher>(
             valueCtorArg = value,
         )
     }
@@ -716,13 +716,13 @@ public open class RSplit<P : Pattern<Any?>> internal constructor(
  *
  * [splitTerminator]: str.splitTerminator
  */
-public open class SplitTerminator<P : Pattern<Any?>> internal constructor(
-    valueCtorArg: SplitInternal<P>,
+public open class SplitTerminator<P : Pattern<Searcher>, Searcher> internal constructor(
+    valueCtorArg: SplitInternal<P, Searcher>,
 ) : Iterable<String> {
-    public var value: SplitInternal<P> = valueCtorArg
+    public var value: SplitInternal<P, Searcher> = valueCtorArg
         internal set
 
-    public var field0: SplitInternal<P>
+    public var field0: SplitInternal<P, Searcher>
         get() = value
         set(v) {
             value = v
@@ -741,7 +741,7 @@ public open class SplitTerminator<P : Pattern<Any?>> internal constructor(
 
     public open fun next(): String? = this.value.next()
 
-    public open fun clone(): SplitTerminator<P> = SplitTerminator(this.value.clone())
+    public open fun clone(): SplitTerminator<P, Searcher> = SplitTerminator(this.value.clone())
 
     public open fun nextBack(): String? = this.value.nextBack()
 
@@ -767,9 +767,9 @@ public open class SplitTerminator<P : Pattern<Any?>> internal constructor(
     public open fun remainder(): String? = this.value.remainder()
 
     public companion object {
-        public operator fun <P : Pattern<Any?>> invoke(
-            value: SplitInternal<P>,
-        ): SplitTerminator<P> = SplitTerminator<P>(
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
+            value: SplitInternal<P, Searcher>,
+        ): SplitTerminator<P, Searcher> = SplitTerminator<P, Searcher>(
             valueCtorArg = value,
         )
     }
@@ -780,13 +780,13 @@ public open class SplitTerminator<P : Pattern<Any?>> internal constructor(
  *
  * [rsplitTerminator]: str.rsplitTerminator
  */
-public open class RSplitTerminator<P : Pattern<Any?>> internal constructor(
-    valueCtorArg: SplitInternal<P>,
+public open class RSplitTerminator<P : Pattern<Searcher>, Searcher> internal constructor(
+    valueCtorArg: SplitInternal<P, Searcher>,
 ) : Iterable<String> {
-    public var value: SplitInternal<P> = valueCtorArg
+    public var value: SplitInternal<P, Searcher> = valueCtorArg
         internal set
 
-    public var field0: SplitInternal<P>
+    public var field0: SplitInternal<P, Searcher>
         get() = value
         set(v) {
             value = v
@@ -805,7 +805,7 @@ public open class RSplitTerminator<P : Pattern<Any?>> internal constructor(
 
     public open fun next(): String? = this.value.nextBack()
 
-    public open fun clone(): RSplitTerminator<P> = RSplitTerminator(this.value.clone())
+    public open fun clone(): RSplitTerminator<P, Searcher> = RSplitTerminator(this.value.clone())
 
     public open fun nextBack(): String? = this.value.next()
 
@@ -831,25 +831,25 @@ public open class RSplitTerminator<P : Pattern<Any?>> internal constructor(
     public open fun remainder(): String? = this.value.remainder()
 
     public companion object {
-        public operator fun <P : Pattern<Any?>> invoke(
-            value: SplitInternal<P>,
-        ): RSplitTerminator<P> = RSplitTerminator<P>(
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
+            value: SplitInternal<P, Searcher>,
+        ): RSplitTerminator<P, Searcher> = RSplitTerminator<P, Searcher>(
             valueCtorArg = value,
         )
     }
 }
 
-public open class SplitNInternal<P : Pattern<Any?>> internal constructor(
-    iterCtorArg: SplitInternal<P>,
+public open class SplitNInternal<P : Pattern<Searcher>, Searcher> internal constructor(
+    iterCtorArg: SplitInternal<P, Searcher>,
     /**
      * The number of splits remaining
      */
     public var count: Int,
 ) {
-    public var iter: SplitInternal<P> = iterCtorArg
+    public var iter: SplitInternal<P, Searcher> = iterCtorArg
         internal set
 
-    public open fun clone(): SplitNInternal<P> {
+    public open fun clone(): SplitNInternal<P, Searcher> {
         val s = this
         return s.copy(iter = s.iter.clone())
     }
@@ -885,10 +885,10 @@ public open class SplitNInternal<P : Pattern<Any?>> internal constructor(
     public open fun remainder(): String? = this.iter.remainder()
 
     public companion object {
-        public operator fun <P : Pattern<Any?>> invoke(
-            iter: SplitInternal<P>,
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
+            iter: SplitInternal<P, Searcher>,
             count: Int,
-        ): SplitNInternal<P> = SplitNInternal<P>(
+        ): SplitNInternal<P, Searcher> = SplitNInternal<P, Searcher>(
             iterCtorArg = iter,
             count = count,
         )
@@ -900,13 +900,13 @@ public open class SplitNInternal<P : Pattern<Any?>> internal constructor(
  *
  * [splitn]: str.splitn
  */
-public open class SplitN<P : Pattern<Any?>> internal constructor(
-    valueCtorArg: SplitNInternal<P>,
+public open class SplitN<P : Pattern<Searcher>, Searcher> internal constructor(
+    valueCtorArg: SplitNInternal<P, Searcher>,
 ) : Iterable<String> {
-    public var value: SplitNInternal<P> = valueCtorArg
+    public var value: SplitNInternal<P, Searcher> = valueCtorArg
         internal set
 
-    public var field0: SplitNInternal<P>
+    public var field0: SplitNInternal<P, Searcher>
         get() = value
         set(v) {
             value = v
@@ -925,7 +925,7 @@ public open class SplitN<P : Pattern<Any?>> internal constructor(
 
     public open fun next(): String? = this.value.next()
 
-    public open fun clone(): SplitN<P> = SplitN(this.value.clone())
+    public open fun clone(): SplitN<P, Searcher> = SplitN(this.value.clone())
 
     /**
      * Returns remainder of the split string.
@@ -949,9 +949,9 @@ public open class SplitN<P : Pattern<Any?>> internal constructor(
     public open fun remainder(): String? = this.value.remainder()
 
     public companion object {
-        public operator fun <P : Pattern<Any?>> invoke(
-            value: SplitNInternal<P>,
-        ): SplitN<P> = SplitN<P>(
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
+            value: SplitNInternal<P, Searcher>,
+        ): SplitN<P, Searcher> = SplitN<P, Searcher>(
             valueCtorArg = value,
         )
     }
@@ -962,13 +962,13 @@ public open class SplitN<P : Pattern<Any?>> internal constructor(
  *
  * [rsplitn]: str.rsplitn
  */
-public open class RSplitN<P : Pattern<Any?>> internal constructor(
-    valueCtorArg: SplitNInternal<P>,
+public open class RSplitN<P : Pattern<Searcher>, Searcher> internal constructor(
+    valueCtorArg: SplitNInternal<P, Searcher>,
 ) : Iterable<String> {
-    public var value: SplitNInternal<P> = valueCtorArg
+    public var value: SplitNInternal<P, Searcher> = valueCtorArg
         internal set
 
-    public var field0: SplitNInternal<P>
+    public var field0: SplitNInternal<P, Searcher>
         get() = value
         set(v) {
             value = v
@@ -987,7 +987,7 @@ public open class RSplitN<P : Pattern<Any?>> internal constructor(
 
     public open fun next(): String? = this.value.nextBack()
 
-    public open fun clone(): RSplitN<P> = RSplitN(this.value.clone())
+    public open fun clone(): RSplitN<P, Searcher> = RSplitN(this.value.clone())
 
     /**
      * Returns remainder of the split string.
@@ -1011,24 +1011,24 @@ public open class RSplitN<P : Pattern<Any?>> internal constructor(
     public open fun remainder(): String? = this.value.remainder()
 
     public companion object {
-        public operator fun <P : Pattern<Any?>> invoke(
-            value: SplitNInternal<P>,
-        ): RSplitN<P> = RSplitN<P>(
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
+            value: SplitNInternal<P, Searcher>,
+        ): RSplitN<P, Searcher> = RSplitN<P, Searcher>(
             valueCtorArg = value,
         )
     }
 }
 
-public open class MatchIndicesInternal<P : Pattern<Any?>>(
+public open class MatchIndicesInternal<P : Pattern<Searcher>, Searcher>(
     public var value: Searcher,
 ) {
-    public var field0: P.Searcher
+    public var field0: Searcher
         get() = value
         set(v) {
             value = v
         }
 
-    public open fun clone(): MatchIndicesInternal<P> {
+    public open fun clone(): MatchIndicesInternal<P, Searcher> {
         val s = this
         return MatchIndicesInternal(s.value.clone())
     }
@@ -1045,13 +1045,13 @@ public open class MatchIndicesInternal<P : Pattern<Any?>>(
  *
  * [matchIndices]: str.matchIndices
  */
-public open class MatchIndices<P : Pattern<Any?>> internal constructor(
-    valueCtorArg: MatchIndicesInternal<P>,
+public open class MatchIndices<P : Pattern<Searcher>, Searcher> internal constructor(
+    valueCtorArg: MatchIndicesInternal<P, Searcher>,
 ) : Iterable<Pair<Int, String>> {
-    public var value: MatchIndicesInternal<P> = valueCtorArg
+    public var value: MatchIndicesInternal<P, Searcher> = valueCtorArg
         internal set
 
-    public var field0: MatchIndicesInternal<P>
+    public var field0: MatchIndicesInternal<P, Searcher>
         get() = value
         set(v) {
             value = v
@@ -1070,14 +1070,14 @@ public open class MatchIndices<P : Pattern<Any?>> internal constructor(
 
     public open fun next(): Pair<Int, String>? = this.value.next()
 
-    public open fun clone(): MatchIndices<P> = MatchIndices(this.value.clone())
+    public open fun clone(): MatchIndices<P, Searcher> = MatchIndices(this.value.clone())
 
     public open fun nextBack(): Pair<Int, String>? = this.value.nextBack()
 
     public companion object {
-        public operator fun <P : Pattern<Any?>> invoke(
-            value: MatchIndicesInternal<P>,
-        ): MatchIndices<P> = MatchIndices<P>(
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
+            value: MatchIndicesInternal<P, Searcher>,
+        ): MatchIndices<P, Searcher> = MatchIndices<P, Searcher>(
             valueCtorArg = value,
         )
     }
@@ -1088,13 +1088,13 @@ public open class MatchIndices<P : Pattern<Any?>> internal constructor(
  *
  * [rmatchIndices]: str.rmatchIndices
  */
-public open class RMatchIndices<P : Pattern<Any?>> internal constructor(
-    valueCtorArg: MatchIndicesInternal<P>,
+public open class RMatchIndices<P : Pattern<Searcher>, Searcher> internal constructor(
+    valueCtorArg: MatchIndicesInternal<P, Searcher>,
 ) : Iterable<Pair<Int, String>> {
-    public var value: MatchIndicesInternal<P> = valueCtorArg
+    public var value: MatchIndicesInternal<P, Searcher> = valueCtorArg
         internal set
 
-    public var field0: MatchIndicesInternal<P>
+    public var field0: MatchIndicesInternal<P, Searcher>
         get() = value
         set(v) {
             value = v
@@ -1113,29 +1113,29 @@ public open class RMatchIndices<P : Pattern<Any?>> internal constructor(
 
     public open fun next(): Pair<Int, String>? = this.value.nextBack()
 
-    public open fun clone(): RMatchIndices<P> = RMatchIndices(this.value.clone())
+    public open fun clone(): RMatchIndices<P, Searcher> = RMatchIndices(this.value.clone())
 
     public open fun nextBack(): Pair<Int, String>? = this.value.next()
 
     public companion object {
-        public operator fun <P : Pattern<Any?>> invoke(
-            value: MatchIndicesInternal<P>,
-        ): RMatchIndices<P> = RMatchIndices<P>(
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
+            value: MatchIndicesInternal<P, Searcher>,
+        ): RMatchIndices<P, Searcher> = RMatchIndices<P, Searcher>(
             valueCtorArg = value,
         )
     }
 }
 
-public open class MatchesInternal<P : Pattern<Any?>>(
+public open class MatchesInternal<P : Pattern<Searcher>, Searcher>(
     public var value: Searcher,
 ) {
-    public var field0: P.Searcher
+    public var field0: Searcher
         get() = value
         set(v) {
             value = v
         }
 
-    public open fun clone(): MatchesInternal<P> {
+    public open fun clone(): MatchesInternal<P, Searcher> {
         val s = this
         return MatchesInternal(s.value.clone())
     }
@@ -1158,13 +1158,13 @@ public open class MatchesInternal<P : Pattern<Any?>>(
  *
  * [matches]: str.matches
  */
-public open class Matches<P : Pattern<Any?>> internal constructor(
-    valueCtorArg: MatchesInternal<P>,
+public open class Matches<P : Pattern<Searcher>, Searcher> internal constructor(
+    valueCtorArg: MatchesInternal<P, Searcher>,
 ) : Iterable<String> {
-    public var value: MatchesInternal<P> = valueCtorArg
+    public var value: MatchesInternal<P, Searcher> = valueCtorArg
         internal set
 
-    public var field0: MatchesInternal<P>
+    public var field0: MatchesInternal<P, Searcher>
         get() = value
         set(v) {
             value = v
@@ -1183,14 +1183,14 @@ public open class Matches<P : Pattern<Any?>> internal constructor(
 
     public open fun next(): String? = this.value.next()
 
-    public open fun clone(): Matches<P> = Matches(this.value.clone())
+    public open fun clone(): Matches<P, Searcher> = Matches(this.value.clone())
 
     public open fun nextBack(): String? = this.value.nextBack()
 
     public companion object {
-        public operator fun <P : Pattern<Any?>> invoke(
-            value: MatchesInternal<P>,
-        ): Matches<P> = Matches<P>(
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
+            value: MatchesInternal<P, Searcher>,
+        ): Matches<P, Searcher> = Matches<P, Searcher>(
             valueCtorArg = value,
         )
     }
@@ -1201,13 +1201,13 @@ public open class Matches<P : Pattern<Any?>> internal constructor(
  *
  * [rmatches]: str.rmatches
  */
-public open class RMatches<P : Pattern<Any?>> internal constructor(
-    valueCtorArg: MatchesInternal<P>,
+public open class RMatches<P : Pattern<Searcher>, Searcher> internal constructor(
+    valueCtorArg: MatchesInternal<P, Searcher>,
 ) : Iterable<String> {
-    public var value: MatchesInternal<P> = valueCtorArg
+    public var value: MatchesInternal<P, Searcher> = valueCtorArg
         internal set
 
-    public var field0: MatchesInternal<P>
+    public var field0: MatchesInternal<P, Searcher>
         get() = value
         set(v) {
             value = v
@@ -1226,14 +1226,14 @@ public open class RMatches<P : Pattern<Any?>> internal constructor(
 
     public open fun next(): String? = this.value.nextBack()
 
-    public open fun clone(): RMatches<P> = RMatches(this.value.clone())
+    public open fun clone(): RMatches<P, Searcher> = RMatches(this.value.clone())
 
     public open fun nextBack(): String? = this.value.next()
 
     public companion object {
-        public operator fun <P : Pattern<Any?>> invoke(
-            value: MatchesInternal<P>,
-        ): RMatches<P> = RMatches<P>(
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
+            value: MatchesInternal<P, Searcher>,
+        ): RMatches<P, Searcher> = RMatches<P, Searcher>(
             valueCtorArg = value,
         )
     }
@@ -1248,12 +1248,12 @@ public open class RMatches<P : Pattern<Any?>> internal constructor(
  * [lines]: str.lines
  */
 public open class Lines internal constructor(
-    valueCtorArg: Map<SplitInclusive<Char>, LinesMap>,
+    valueCtorArg: Map<SplitInclusive<Char, Searcher>, LinesMap>,
 ) : Iterable<String> {
-    public var value: Map<SplitInclusive<Char>, LinesMap> = valueCtorArg
+    public var value: Map<SplitInclusive<Char, Searcher>, LinesMap> = valueCtorArg
         internal set
 
-    public var field0: Map<SplitInclusive<Char>, LinesMap>
+    public var field0: Map<SplitInclusive<Char, Searcher>, LinesMap>
         get() = value
         set(v) {
             value = v
@@ -1299,7 +1299,7 @@ public open class Lines internal constructor(
 
     public companion object {
         public operator fun invoke(
-            value: Map<SplitInclusive<Char>, LinesMap>,
+            value: Map<SplitInclusive<Char, Searcher>, LinesMap>,
         ): Lines = Lines(
             valueCtorArg = value,
         )
@@ -1348,9 +1348,9 @@ public open class LinesAny(
  * [splitWhitespace]: str.splitWhitespace
  */
 public open class SplitWhitespace internal constructor(
-    innerCtorArg: Filter<Split<IsWhitespace>, IsNotEmpty>,
+    innerCtorArg: Filter<Split<IsWhitespace, Searcher>, IsNotEmpty>,
 ) : Iterable<String> {
-    public var inner: Filter<Split<IsWhitespace>, IsNotEmpty> = innerCtorArg
+    public var inner: Filter<Split<IsWhitespace, Searcher>, IsNotEmpty> = innerCtorArg
         internal set
 
     override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
@@ -1393,7 +1393,7 @@ public open class SplitWhitespace internal constructor(
 
     public companion object {
         public operator fun invoke(
-            inner: Filter<Split<IsWhitespace>, IsNotEmpty>,
+            inner: Filter<Split<IsWhitespace, Searcher>, IsNotEmpty>,
         ): SplitWhitespace = SplitWhitespace(
             innerCtorArg = inner,
         )
@@ -1481,13 +1481,13 @@ public open class SplitAsciiWhitespace internal constructor(
  *
  * [splitInclusive]: str.splitInclusive
  */
-public open class SplitInclusive<P : Pattern<Any?>> internal constructor(
-    valueCtorArg: SplitInternal<P>,
+public open class SplitInclusive<P : Pattern<Searcher>, Searcher> internal constructor(
+    valueCtorArg: SplitInternal<P, Searcher>,
 ) : Iterable<String> {
-    public var value: SplitInternal<P> = valueCtorArg
+    public var value: SplitInternal<P, Searcher> = valueCtorArg
         internal set
 
-    public var field0: SplitInternal<P>
+    public var field0: SplitInternal<P, Searcher>
         get() = value
         set(v) {
             value = v
@@ -1507,7 +1507,7 @@ public open class SplitInclusive<P : Pattern<Any?>> internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "SplitInclusive").field("0", this.value).finish()
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
-    public open fun clone(): SplitInclusive<P> = SplitInclusive(this.value.clone())
+    public open fun clone(): SplitInclusive<P, Searcher> = SplitInclusive(this.value.clone())
 
     public open fun nextBack(): String? = this.value.nextBackInclusive()
 
@@ -1533,9 +1533,9 @@ public open class SplitInclusive<P : Pattern<Any?>> internal constructor(
     public open fun remainder(): String? = this.value.remainder()
 
     public companion object {
-        public operator fun <P : Pattern<Any?>> invoke(
-            value: SplitInternal<P>,
-        ): SplitInclusive<P> = SplitInclusive<P>(
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
+            value: SplitInternal<P, Searcher>,
+        ): SplitInclusive<P, Searcher> = SplitInclusive<P, Searcher>(
             valueCtorArg = value,
         )
     }
@@ -1664,7 +1664,7 @@ public open class EscapeDebug internal constructor(
 
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
-    public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, Char) -> R): R where R : Try<R, Acc, Any?> = this.inner.tryFold(init, fold)
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Char) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryFold(init, fold)
 
     public open fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.inner.fold(init, fold)
 
@@ -1709,7 +1709,7 @@ public open class EscapeDefault internal constructor(
 
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
-    public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, Char) -> R): R where R : Try<R, Acc, Any?> = this.inner.tryFold(init, fold)
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Char) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryFold(init, fold)
 
     public open fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.inner.fold(init, fold)
 
@@ -1748,7 +1748,7 @@ public open class EscapeUnicode internal constructor(
 
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
-    public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, Char) -> R): R where R : Try<R, Acc, Any?> = this.inner.tryFold(init, fold)
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Char) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryFold(init, fold)
 
     public open fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.inner.fold(init, fold)
 

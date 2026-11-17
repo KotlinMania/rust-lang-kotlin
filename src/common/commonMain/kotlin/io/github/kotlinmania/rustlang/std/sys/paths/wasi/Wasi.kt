@@ -25,7 +25,7 @@ public fun getcwd(): Result<PathBuf, Error> {
                 buf.shrinkToFit()
                 return Result.Ok<PathBuf, Error>(PathBuf.from(OsString.fromVec(buf)))
             } else {
-                val error = io.github.kotlinmania.rustlang.std.io.Error.lastOsError()
+                val error = io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError()
                 if (error.rawOsError() != ERANGE) {
                     return Result.Err<PathBuf, Error>(error)
                 }
@@ -43,7 +43,7 @@ public fun chdir(p: path.Path): Result<Unit, Error> {
     val result = when (val tryResult = runPathWithCstr(p, { p1 -> Result.Ok(io.github.kotlinmania.rustlang.libc.chdir(p1.asPtr())) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
     return when (result == (0)) {
         true -> Result.Ok<Unit, Error>(Unit)
-        false -> Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        false -> Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
     }
 }
 

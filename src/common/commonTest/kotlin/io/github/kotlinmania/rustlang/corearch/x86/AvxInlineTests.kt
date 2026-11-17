@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.hint.blackBox
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -10,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 // Advanced Vector Extensions (AVX)
@@ -1405,13 +1406,13 @@ public fun testMm256Castsi256Ps() {
 public fun testMm256CastpdSi256() {
     val a = mm256SetrPd(1.0, 2.0, 3.0, 4.0)
     val r = mm256CastpdSi256(a)
-    assertEqM256d(transmute(r), a)
+    assertEqM256d(transmuteWithLayouts<M256i, Unit>(r, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<Unit>()), a)
 }
 
 public fun testMm256Castsi256Pd() {
     val a = mm256SetrEpi64x(1L, 2L, 3L, 4L)
     val r = mm256Castsi256Pd(a)
-    assertEqM256d(r, transmute(a))
+    assertEqM256d(r, transmuteWithLayouts<M256i, Unit>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<Unit>()))
 }
 
 public fun testMm256Castps256Ps128() {

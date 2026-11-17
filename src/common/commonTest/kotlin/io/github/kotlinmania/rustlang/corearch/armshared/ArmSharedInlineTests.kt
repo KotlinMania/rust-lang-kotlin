@@ -21,10 +21,10 @@ package io.github.kotlinmania.rustlang.corearch.armshared
 //
 // Section 10.1 of ACLE says:
 //
-// - "In the sequence of Arm architectures { v5, v5TE, v6, v6T2, v7 } each architecture includes
+// - "In the sequence of Arm architectures ( v5, v5TE, v6, v6T2, v7 ) each architecture includes
 //   its predecessor's instruction set."
 //
-// - "In the sequence of Thumb-only architectures { v6-M, v7-M, v7E-M } each architecture includes
+// - "In the sequence of Thumb-only architectures ( v6-M, v7-M, v7E-M ) each architecture includes
 //   its predecessor's instruction set."
 //
 // From that info and from looking at how LLVM features work (using custom targets) we can identify

@@ -305,7 +305,7 @@ public open class Iter(
         val localStorageL235C12 = AddressableArrayLocal.fromUByteArray(UByteArray(PATH_MAX.toInt()) { 0u.toUByte() })
         val buf by localStorageL235C12
         if (this.state != 0) {
-            // SAFETY: `self.state` is nonzero and comes from prior sysdir_{start|getNext}_search_path_enumeration call
+            // SAFETY: `self.state` is nonzero and comes from prior sysdir_(start|getNext)_search_path_enumeration call
             // SAFETY: sysdirGetNextSearchPathEnumeration will write at most `PATH_MAX` bytes to `path`
             this.state = sysdirGetNextSearchPathEnumeration(this.state, (localStorageL235C12.elementMutPtr(0)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })
         }

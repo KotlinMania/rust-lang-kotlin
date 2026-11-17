@@ -36,7 +36,7 @@ public sealed class Name {
     public data class Long(public var value: String) : Name()
     /**
      * A char representing the short name of an option.
-     * For example: 'h'
+     * For example: `h`
      */
     public data class Short(public var value: Char) : Name()
 

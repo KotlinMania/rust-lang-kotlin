@@ -17,7 +17,7 @@ import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.mem.typeinfo.TraitImpl
 import io.github.kotlinmania.rustlang.core.mem.typeinfo.TypeKind
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -552,7 +552,7 @@ public open class TypeId internal constructor(
     public open fun <T : TryAsDynCompatible> traitInfoOf(): TraitImpl<T>? {
         // SAFETY: The vtable was obtained for `T`, so it is guaranteed to be `DynMetadata<T>`.
         // The intrinsic can't infer this because it is designed to work with arbitrary TypeIds.
-        return transmute(this.traitInfoOfTraitTypeId(TypeId<T>()))
+        return transmuteWithLayouts<TraitImpl<ConstPtr>?, TraitImpl<T>?>(this.traitInfoOfTraitTypeId(TypeId<T>()), UnresolvedTypeLayout<TraitImpl<ConstPtr>?>(), UnresolvedTypeLayout<TraitImpl<T>?>())
     }
 
     /**
@@ -609,7 +609,7 @@ public open class TypeId internal constructor(
         // - It is correct to do so -- only hashing a subset of `self` is still
         // compatible with an `Eq` implementation that considers the entire
         // value, as ours does.
-        val data = readUnaligned(ConstPtr((ConstPtr((this.data.asPtr()).rawAddress)).rawAddress + ((1).toLong() * (PrimitiveLayouts.U64).strideBytes)))
+        val data = readUnaligned(ConstPtr((ConstPtr((this.data.asPtr()).rawAddress)).rawAddress + ((1).toLong() * (PrimitiveLayouts.U64).strideBytes)), typeLayoutT = PrimitiveLayouts.U64)
         state = 31 * state + (data).hashCode()
         return state
     }

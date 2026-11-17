@@ -47,7 +47,7 @@ public open class Ready<T>(
  * Creates a future that is immediately ready with a value.
  *
  * Futures created through this function are functionally similar to those
- * created through `async {}`. The main difference is that futures created
+ * created through `async ()`. The main difference is that futures created
  * through this function are named and implement `Unpin`.
  *
  * # Examples

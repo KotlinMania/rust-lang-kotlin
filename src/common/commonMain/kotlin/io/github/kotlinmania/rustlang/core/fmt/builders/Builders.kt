@@ -1096,7 +1096,7 @@ public open class DebugMap internal constructor(
                     this.fmt.append("\n")
                 }
                 val slot = null
-                this.state = Default.default()
+                this.state = PadAdapterState.default()
                 val writer = PadAdapter.wrap(this.fmt, slot, this.state)
                 when (val tryResult = key.fmt(writer)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure8 Result.Err(tryResult.error) }
                 writer.append(": ")
@@ -1380,7 +1380,7 @@ public open class DebugMap internal constructor(
 
 public fun debugMapNew(fmt: StringBuilder): DebugMap {
     val result = fmt.append("{")
-    return DebugMap(fmt = fmt, result = result, hasFields = false, hasKey = false, state = Default.default())
+    return DebugMap(fmt = fmt, result = result, hasFields = false, hasKey = false, state = PadAdapterState.default())
 }
 
 /**

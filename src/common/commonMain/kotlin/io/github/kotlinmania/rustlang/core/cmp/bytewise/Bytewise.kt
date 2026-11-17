@@ -17,7 +17,7 @@ package io.github.kotlinmania.rustlang.core.cmp.bytewise
  * - `Self` and `Rhs` have no padding.
  * - `Self` and `Rhs` have the same layout (size and alignment).
  * - Neither `Self` nor `Rhs` have provenance, so integer comparisons are correct.
- * - `<Self as PartialEq<Rhs>>.{ eq, ne }` are equivalent to comparing the bytes.
+ * - `<Self as PartialEq<Rhs>>.( eq, ne )` are equivalent to comparing the bytes.
  */
 public interface BytewiseEq<Rhs>
 

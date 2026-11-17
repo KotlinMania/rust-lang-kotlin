@@ -52,4 +52,4 @@ public open class FromIter<I>(
 /**
  * Converts an iterator into an async iterator.
  */
-public fun <Item, IntoIter, I> fromIter(iter: I): FromIter<IntoIter> = FromIter(iter = iter.iterator())
+public fun <I> fromIter(iter: I): FromIter<IntoIter> = FromIter(iter = iter.iterator())

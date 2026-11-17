@@ -3,6 +3,7 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.corearch.simd.I16x16
 import io.github.kotlinmania.rustlang.corearch.simd.I16x32
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8

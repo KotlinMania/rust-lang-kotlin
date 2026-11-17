@@ -59,8 +59,8 @@ public fun exp2(x: Double): Double {
     val p5 = Double.fromBits(0x3f55d88003875c74uL.toLong())
     // doubleT r, t, z;
     // uint32T ix, i0;
-    // union {double f; uint64T i;} u = {x};
-    // union {uint32T u; int32T i;} k;
+    // union (double f; uint64T i;) u = (x);
+    // union (uint32T u; int32T i;) k;
     val x1p1023 = Double.fromBits(0x7fe0000000000000uL.toLong())
     val x1p52 = Double.fromBits(0x4330000000000000uL.toLong())
     val v0x1p149 = Double.fromBits(0xb6a0000000000000uL.toLong())

@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
@@ -26,6 +26,7 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.deref.Deref
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefMut
 import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Residual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Yeet
 import io.github.kotlinmania.rustlang.core.panicking.panic
@@ -841,7 +842,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         // Here we assume that `offsetOf` always returns an offset to an
         // in-bounds and correctly aligned position for a `T` (even if in the
         // `None` case it's just padding).
-        return linearSliceView(ConstPtr((ConstPtr(((constPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), PrimitiveLayouts.U8)
+        return linearSliceView(ConstPtr((ConstPtr(((constPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), UnresolvedTypeLayout<Option<T>>())
     }
 
     /**
@@ -892,7 +893,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         // here. As with `asSlice`, the intrinsic always returns a pointer to
         // an in-bounds and correctly aligned position for a `T` (even if in
         // the `None` case it's just padding).
-        return linearMutSliceView(MutPtr((MutPtr(((mutPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(MutPtr((MutPtr(((mutPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), UnresolvedTypeLayout<Option<T>>())
     }
 
     // ////////////////////////////////////////////////////////////////////
@@ -1312,7 +1313,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * check(x1 == null)
      * ```
      */
-    public open fun <Target> asDeref(): Option<Target> = this.asRef().map({ Deref.deref(it) })
+    public open fun asDeref(): Option<Target> = this.asRef().map(Deref::deref)
 
     /**
      * Converts from `Option<T>` (or `Option<T>`) to `Option<T.Target>`.
@@ -1603,9 +1604,10 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * ```
      */
     public open fun insert(value: T): T {
-        this = Some(value)
+        var selfMut = this
+        selfMut = Some(value)
         // SAFETY: the code above just filled the option
-        return this.asMut().unwrapUnchecked()
+        return selfMut.asMut().unwrapUnchecked()
     }
 
     /**
@@ -1684,7 +1686,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
             // Note(const-Note): It would be nice if this weird trick were made obsolete
             // (though that is likely to be hard/wontfix).
             //
-            // It could also be expressed as `unchecked { core.ptr.write(self, Some(f())) }`, but
+            // It could also be expressed as `unchecked ( core.ptr.write(self, Some(f())) )`, but
             // no reason is currently known to use additional unchecked code here.
             forget(this.replace(f()))
         }
@@ -1719,13 +1721,14 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * }
      * ```
      */
-    public open fun <R> getOrTryInsertWith(f: () -> R): TryType where R : Try<R, T, Any?> {
-        if (this == null) {
-            this = Some(when (val tryResult = f()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) })
+    public open fun <Residual, R> getOrTryInsertWith(f: () -> R): TryType where R : Try<R, T, Residual> {
+        var selfMut = this
+        if (selfMut == null) {
+            selfMut = Some(when (val tryResult = f()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) })
         }
         // SAFETY: a `None` variant for `self` would have been replaced by a `Some`
         // variant in the code above.
-        return Try.fromOutput(this.asMut().unwrapUnchecked())
+        return Try.fromOutput(selfMut.asMut().unwrapUnchecked())
     }
 
     // ////////////////////////////////////////////////////////////////////
@@ -2233,7 +2236,7 @@ public fun <T> fromOptionT(o: Option<T>): Option<T> = o.asRef()
 // ////////////////////////////////////////////////////////////////////////
 public open class Item<A>(
     public var opt: Option<A>,
-) : TrustedLen<Item<A>>, Iterable<A> {
+) : TrustedLen, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@Item.next()) {
@@ -2266,7 +2269,7 @@ public open class Item<A>(
  */
 public open class Iter<A>(
     public var inner: Item<A>,
-) : TrustedLen<Iter<A>>, Iterable<A> {
+) : TrustedLen, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@Iter.next()) {
@@ -2294,7 +2297,7 @@ public open class Iter<A>(
  */
 public open class IterMut<A>(
     public var inner: Item<A>,
-) : TrustedLen<IterMut<A>>, Iterable<A> {
+) : TrustedLen, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@IterMut.next()) {
@@ -2320,7 +2323,7 @@ public open class IterMut<A>(
  */
 public open class IntoIter<A>(
     public var inner: Item<A>,
-) : TrustedLen<IntoIter<A>>, Iterable<A> {
+) : TrustedLen, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
@@ -2344,7 +2347,7 @@ public open class IntoIter<A>(
  */
 public open class OptionFlatten<A>(
     public var iter: Option<A>,
-) : TrustedLen<OptionFlatten<A>>, Iterable<Item> {
+) : TrustedLen, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@OptionFlatten.next()) {
@@ -2392,7 +2395,7 @@ public open class OptionFlatten<A>(
             null -> None
         }
 
-    public override fun <Acc> fold(init: Acc, fold: (Acc, A.Item) -> Acc): Acc =
+    public override fun <Acc> fold(init: Acc, fold: (Acc, Item) -> Acc): Acc =
         when (val matchVal = this.iter) {
             is Some -> {
                 val (iter) = matchVal
@@ -2401,7 +2404,7 @@ public open class OptionFlatten<A>(
             null -> init
         }
 
-    public override fun <Acc, R> tryFold(init: Acc, fold: (Acc, A.Item) -> R): R where R : Try<R, Acc, Any?> =
+    public override fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> =
         when (val matchVal = this.iter) {
             is Some -> {
                 val (iter) = matchVal
@@ -2455,7 +2458,7 @@ public open class OptionFlatten<A>(
             null -> None
         }
 
-    public open fun <Acc> rfold(init: Acc, fold: (Acc, A.Item) -> Acc): Acc =
+    public open fun <Acc> rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc =
         when (val matchVal = this.iter) {
             is Some -> {
                 val (iter) = matchVal
@@ -2464,7 +2467,7 @@ public open class OptionFlatten<A>(
             null -> init
         }
 
-    public open fun <Acc, R> tryRfold(init: Acc, fold: (Acc, A.Item) -> R): R where R : Try<R, Acc, Any?> =
+    public open fun <Residual, Acc, R> tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> =
         when (val matchVal = this.iter) {
             is Some -> {
                 val (iter) = matchVal

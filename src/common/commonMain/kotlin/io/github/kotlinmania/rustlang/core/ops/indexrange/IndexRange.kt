@@ -22,7 +22,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 public open class IndexRange(
     public var start: Int,
     public var end: Int,
-) : TrustedLen<IndexRange>, Iterable<Int> {
+) : TrustedLen, Iterable<Int> {
     override fun iterator(): Iterator<Int> = object : AbstractIterator<Int>() {
         override fun computeNext() {
             when (val v = this@IndexRange.next()) {
@@ -141,7 +141,7 @@ public open class IndexRange(
 
     public override fun <B> fold(init: B, f: (B, Int) -> B): B = this.tryFold(init, NeverShortCircuit.wrapMut2(f)).first
 
-    public override fun <B, R> tryFold(accum: B, f: (B, Int) -> R): R where R : Try<R, B, Any?> {
+    public override fun <Residual, B, R> tryFold(accum: B, f: (B, Int) -> R): R where R : Try<R, B, Residual> {
         var accum1 = accum
         // `Range` needs to check `start<end`, but thanks to our type invariant
         // we can loop on the stricter `start != end`.
@@ -169,7 +169,7 @@ public open class IndexRange(
 
     public open fun <B> rfold(init: B, f: (B, Int) -> B): B = this.tryRfold(init, NeverShortCircuit.wrapMut2(f)).first
 
-    public open fun <B, R> tryRfold(accum: B, f: (B, Int) -> R): R where R : Try<R, B, Any?> {
+    public open fun <Residual, B, R> tryRfold(accum: B, f: (B, Int) -> R): R where R : Try<R, B, Residual> {
         var accum1 = accum
         // `Range` needs to check `start<end`, but thanks to our type invariant
         // we can loop on the stricter `start != end`.

@@ -23,7 +23,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 //
 // [minnum-removal]: https://grouper.ieee.org/groups/msc/ANSI_IEEE-Std-754-2019/background/minNumMaxNumRemovalDemotionV3.pdf
 
-public fun <Int, SignedInt, F : Float<F, Any?, Any?>> fmin(x: F, y: F): F {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> fmin(x: F, y: F): F {
     val res =
         if (y.isNan() || (kmCompareValues(x, y) < 0)) {
             x

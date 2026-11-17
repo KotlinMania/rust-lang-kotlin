@@ -5,6 +5,7 @@ package io.github.kotlinmania.rustlang.corearch.s390x.vector
 
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf32
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
@@ -17,7 +18,7 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -29,7 +30,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 // [Reference Summary]: https://www.ibm.com/support/pages/sites/default/files/2021-05/SA22-7871-10.pdf
 // [IBM docs]: https://www.ibm.com/docs/en/zos/2.4.0?topic=support-vector-built-in-functions
 
-public fun ShuffleMask.asArray(n: Int): UIntArray = transmute(this)
+public fun ShuffleMask.asArray(n: Int): UIntArray = transmuteWithLayouts<ShuffleMask, UIntArray>(this, UnresolvedTypeLayout<ShuffleMask>(), UnresolvedTypeLayout<UIntArray>())
 
 public fun vecAddI32x4I32x4() {
     val x = VectorSignedInt.from(i32x4.new(1, 2, 3, 4))
@@ -910,12 +911,12 @@ public fun testVecAddcU128() {
     run {
         val a = U128.MAX_VALUE
         val b = U128(0x0uL, 0x1uL)
-        val d: U128 = transmute(vecAddcU128(transmute(a), transmute(b)))
+        val d: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecAddcU128(transmuteWithLayouts<U128, Unit>(a, UnresolvedTypeLayout<U128>(), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<U128, Unit>(b, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<Unit>())), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
         check(a.checkedAdd(b) == null)
         check(d == U128(0x0uL, 0x1uL))
         val a1 = U128(0x0uL, 0x1uL)
         val b1 = U128(0x0uL, 0x1uL)
-        val d1: U128 = transmute(vecAddcU128(transmute(a1), transmute(b1)))
+        val d1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecAddcU128(transmuteWithLayouts<U128, Unit>(a1, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<U128, Unit>(b1, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<Unit>())), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
         check(a1.checkedAdd(b1) != null)
         check(d1 == U128(0x0uL, 0x0uL))
     }
@@ -925,12 +926,12 @@ public fun testVecSubcU128() {
     run {
         val a = U128(0x0uL, 0x0uL)
         val b = U128(0x0uL, 0x1uL)
-        val d: U128 = transmute(vecSubcU128(transmute(a), transmute(b)))
+        val d: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecSubcU128(transmuteWithLayouts<U128, Unit>(a, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<U128, Unit>(b, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<Unit>())), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
         check(a.checkedSub(b) == null)
         check(d == U128(0x0uL, 0x0uL))
         val a1 = U128(0x0uL, 0x1uL)
         val b1 = U128(0x0uL, 0x1uL)
-        val d1: U128 = transmute(vecSubcU128(transmute(a1), transmute(b1)))
+        val d1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecSubcU128(transmuteWithLayouts<U128, Unit>(a1, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<U128, Unit>(b1, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<Unit>())), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
         check(a1.checkedSub(b1) != null)
         check(d1 == U128(0x0uL, 0x1uL))
     }
@@ -1003,11 +1004,11 @@ public fun testVecGfmsum2() {
 public fun testVecGfmsum128() {
     val a = VectorUnsignedLongLong(listOf(1, 2))
     val b = VectorUnsignedLongLong(listOf(3, 4))
-    val d: U128 = transmute(vecGfmsum128(a, b))
+    val d: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecGfmsum128(a, b), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
     check(d == U128(0x0uL, 0xbuL))
     val a1 = VectorUnsignedLongLong(listOf(0x0101010101010101, 0x0202020202020202))
     val b1 = VectorUnsignedLongLong(listOf(0x0404040404040404, 0x0505050505050505))
-    val d1: U128 = transmute(vecGfmsum128(a1, b1))
+    val d1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecGfmsum128(a1, b1), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
     check(d1 == U128(0xe000e000e000euL, 0xe000e000e000euL))
 }
 
@@ -1252,14 +1253,14 @@ public fun testVecMsumU128() {
     val a = VectorUnsignedLongLong(listOf(1, 2))
     val b = VectorUnsignedLongLong(listOf(3, 4))
     run {
-        val c: VectorUnsignedChar = transmute(U128(0x0uL, 0x64uL))
-        val d: U128 = transmute(vecMsumU128(a, b, c, U128(0x0uL, 0x0uL)))
+        val c: VectorUnsignedChar = transmuteWithLayouts<U128, VectorUnsignedChar>(U128(0x0uL, 0x64uL), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<VectorUnsignedChar>())
+        val d: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecMsumU128(a, b, c, U128(0x0uL, 0x0uL)), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
         check(d == (U128(0x0uL, 0x1uL) * U128(0x0uL, 0x3uL)) + (U128(0x0uL, 0x2uL) * U128(0x0uL, 0x4uL)) + U128(0x0uL, 0x64uL))
-        val d1: U128 = transmute(vecMsumU128(a, b, c, U128(0x0uL, 0x4uL)))
+        val d1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecMsumU128(a, b, c, U128(0x0uL, 0x4uL)), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
         check(d1 == (U128(0x0uL, 0x1uL) * U128(0x0uL, 0x3uL)) + (U128(0x0uL, 0x2uL) * U128(0x0uL, 0x4uL)) * U128(0x0uL, 0x2uL) + U128(0x0uL, 0x64uL))
-        val d2: U128 = transmute(vecMsumU128(a, b, c, U128(0x0uL, 0x8uL)))
+        val d2: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecMsumU128(a, b, c, U128(0x0uL, 0x8uL)), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
         check(d2 == (U128(0x0uL, 0x1uL) * U128(0x0uL, 0x3uL)) * U128(0x0uL, 0x2uL) + (U128(0x0uL, 0x2uL) * U128(0x0uL, 0x4uL)) + U128(0x0uL, 0x64uL))
-        val d3: U128 = transmute(vecMsumU128(a, b, c, U128(0x0uL, 0xcuL)))
+        val d3: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecMsumU128(a, b, c, U128(0x0uL, 0xcuL)), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
         check(d3 == (U128(0x0uL, 0x1uL) * U128(0x0uL, 0x3uL)) * U128(0x0uL, 0x2uL) + (U128(0x0uL, 0x2uL) * U128(0x0uL, 0x4uL)) * U128(0x0uL, 0x2uL) + U128(0x0uL, 0x64uL))
     }
 }

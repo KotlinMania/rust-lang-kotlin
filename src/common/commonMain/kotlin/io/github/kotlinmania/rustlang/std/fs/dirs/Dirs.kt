@@ -56,14 +56,14 @@ public open class HomeDirs(
      *
      * | OS | Path |
      * | -- | ---- |
-     * | [XDG] (Linux) | `$ { XDG_CACHE_HOME: - $ HOME /.cache }` |
+     * | [XDG] (Linux) | `$ ( XDG_CACHE_HOME: - $ HOME /.cache )` |
      * | [Darwin] (macOS) | [NSCachesDirectory] (`$ HOME / Library / Caches`) |
-     * | [Windows] | [{FolderidLocalAppData}] (`% LOCALAPPDATA %`) |
+     * | [Windows] | [(FolderidLocalAppData)] (`% LOCALAPPDATA %`) |
      *
      * Other paths can be configured via [`setCacheHome`](Self.setCacheHome).
      *
      * [NSCachesDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/cachesdirectory?language=objc
-     * [{FolderidLocalAppData}]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidLocalappdata
+     * [(FolderidLocalAppData)]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidLocalappdata
      */
     public open fun cacheHome(): Path? = this.cache
 
@@ -86,14 +86,14 @@ public open class HomeDirs(
      *
      * | OS | Path |
      * | -- | ---- |
-     * | [XDG] (Linux) | `$ { XDG_CONFIG_HOME: - $ HOME /.config }` |
+     * | [XDG] (Linux) | `$ ( XDG_CONFIG_HOME: - $ HOME /.config )` |
      * | [Darwin] (macOS) | [NSApplicationSupportDirectory] (`$ HOME / Library / Application Support`) |
-     * | [Windows] | [{FolderidRoamingAppData}] (`% APPDATA %`) |
+     * | [Windows] | [(FolderidRoamingAppData)] (`% APPDATA %`) |
      *
      * Other paths can be configured via [`setConfigHome`](Self.setConfigHome).
      *
      * [NSApplicationSupportDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/applicationsupportdirectory?language=objc
-     * [{FolderidRoamingAppData}]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidRoamingappdata
+     * [(FolderidRoamingAppData)]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidRoamingappdata
      */
     public open fun configHome(): Path? = this.config
 
@@ -117,14 +117,14 @@ public open class HomeDirs(
      *
      * | OS | Path |
      * | -- | ---- |
-     * | [XDG] (Linux) | `$ { XDG_DATA_HOME: - $ HOME /.local / share }` |
+     * | [XDG] (Linux) | `$ ( XDG_DATA_HOME: - $ HOME /.local / share )` |
      * | [Darwin] (macOS) | [NSApplicationSupportDirectory] (`$ HOME / Library / Application Support`) |
-     * | [Windows] | [{FolderidRoamingAppData}] (`% APPDATA %`) |
+     * | [Windows] | [(FolderidRoamingAppData)] (`% APPDATA %`) |
      *
      * Other paths can be configured via [`setDataHome`](Self.setDataHome).
      *
      * [NSApplicationSupportDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/applicationsupportdirectory?language=objc
-     * [{FolderidRoamingAppData}]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidRoamingappdata
+     * [(FolderidRoamingAppData)]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidRoamingappdata
      */
     public open fun dataHome(): Path? = this.data
 
@@ -148,14 +148,14 @@ public open class HomeDirs(
      *
      * | OS | Path |
      * | -- | ---- |
-     * | [XDG] (Linux) | `$ { XDG_STATE_HOME: - $ HOME /.local / state }` |
+     * | [XDG] (Linux) | `$ ( XDG_STATE_HOME: - $ HOME /.local / state )` |
      * | [Darwin] (macOS) | [NSApplicationSupportDirectory] (`$ HOME / Library / Application Support`) |
-     * | [Windows] | [{FolderidLocalAppData}] (`% LOCALAPPDATA %`) |
+     * | [Windows] | [(FolderidLocalAppData)] (`% LOCALAPPDATA %`) |
      *
      * Other paths can be configured via [`setStateHome`](Self.setStateHome).
      *
      * [NSApplicationSupportDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/applicationsupportdirectory?language=objc
-     * [{FolderidLocalAppData}]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidLocalappdata
+     * [(FolderidLocalAppData)]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidLocalappdata
      */
     public open fun stateHome(): Path? = this.state
 
@@ -218,7 +218,7 @@ public open class HomeDirs(
          * This is useful with the builder `set_ *` methods to create a `HomeDirs`
          * with exactly the directories you want, without any other defaults.
          */
-        public fun empty(): HomeDirs = HomeDirs(cache = null, config = null, data = null, state = null, extra = Default.default())
+        public fun empty(): HomeDirs = HomeDirs(cache = null, config = null, data = null, state = null, extra = ExtraHomeDirs.default())
     }
 }
 
@@ -265,12 +265,12 @@ public open class MediaDirs(
      * | -- | ---- |
      * | [XDG] (Linux) | `xdg - user - dir DESKTOP` (`$ HOME / Desktop`) |
      * | [Darwin] (macOS) | [NSDesktopDirectory] (`$ HOME / Desktop`) |
-     * | [Windows] | [{FolderidDesktop}] (`%USERPROFILE%\Desktop`) |
+     * | [Windows] | [(FolderidDesktop)] (`%USERPROFILE%\Desktop`) |
      *
      * Other paths can be configured via [`setDesktop`](Self.setDesktop).
      *
      * [NSDesktopDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/desktopdirectory?language=objc
-     * [{FolderidDesktop}]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidDesktop
+     * [(FolderidDesktop)]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidDesktop
      */
     public open fun desktop(): Path? = this.desktop
 
@@ -289,12 +289,12 @@ public open class MediaDirs(
      * | -- | ---- |
      * | [XDG] (Linux) | `xdg - user - dir DOCUMENTS` (`$ HOME / Documents`) |
      * | [Darwin] (macOS) | [NSDocumentDirectory] (`$ HOME / Documents`) |
-     * | [Windows] | [{FolderidDocuments}] (`%USERPROFILE%\Documents`) |
+     * | [Windows] | [(FolderidDocuments)] (`%USERPROFILE%\Documents`) |
      *
      * Other paths can be configured via [`setDocuments`](Self.setDocuments).
      *
      * [NSDocumentDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/documentdirectory?language=objc
-     * [{FolderidDocuments}]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidDocuments
+     * [(FolderidDocuments)]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidDocuments
      */
     public open fun documents(): Path? = this.documents
 
@@ -313,12 +313,12 @@ public open class MediaDirs(
      * | -- | ---- |
      * | [XDG] (Linux) | `xdg - user - dir DOWNLOAD` (`$ HOME / Downloads`) |
      * | [Darwin] (macOS) | [NSDownloadsDirectory] (`$ HOME / Downloads`) |
-     * | [Windows] | [{FolderidDownloads}] (`%USERPROFILE%\Downloads`) |
+     * | [Windows] | [(FolderidDownloads)] (`%USERPROFILE%\Downloads`) |
      *
      * Other paths can be configured via [`setDownloads`](Self.setDownloads).
      *
      * [NSDownloadsDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/downloadsdirectory?language=objc
-     * [{FolderidDownloads}]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidDownloads
+     * [(FolderidDownloads)]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidDownloads
      */
     public open fun downloads(): Path? = this.downloads
 
@@ -337,12 +337,12 @@ public open class MediaDirs(
      * | -- | ---- |
      * | [XDG] (Linux) | `xdg - user - dir MUSIC` (`$ HOME / Music`) |
      * | [Darwin] (macOS) | [NSMusicDirectory] (`$ HOME / Music`) |
-     * | [Windows] | [{FolderidMusic}] (`%USERPROFILE%\Music`) |
+     * | [Windows] | [(FolderidMusic)] (`%USERPROFILE%\Music`) |
      *
      * Other paths can be configured via [`setMusic`](Self.setMusic).
      *
      * [NSMusicDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/musicdirectory?language=objc
-     * [{FolderidMusic}]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidMusic
+     * [(FolderidMusic)]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidMusic
      */
     public open fun music(): Path? = this.music
 
@@ -361,12 +361,12 @@ public open class MediaDirs(
      * | -- | ---- |
      * | [XDG] (Linux) | `xdg - user - dir PICTURES` (`$ HOME / Pictures`) |
      * | [Darwin] (macOS) | [NSPicturesDirectory] (`$ HOME / Pictures`) |
-     * | [Windows] | [{FolderidPictures}] (`%USERPROFILE%\Pictures`) |
+     * | [Windows] | [(FolderidPictures)] (`%USERPROFILE%\Pictures`) |
      *
      * Other paths can be configured via [`setPictures`](Self.setPictures).
      *
      * [NSPicturesDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/picturesdirectory?language=objc
-     * [{FolderidPictures}]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidPictures
+     * [(FolderidPictures)]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidPictures
      */
     public open fun pictures(): Path? = this.pictures
 
@@ -385,12 +385,12 @@ public open class MediaDirs(
      * | -- | ---- |
      * | [XDG] (Linux) | `xdg - user - dir VIDEOS` (`$ HOME / Videos`) |
      * | [Darwin] (macOS) | [NSMoviesDirectory] (`$ HOME / Movies`) |
-     * | [Windows] | [{FolderidVideos}] (`%USERPROFILE%\Videos`) |
+     * | [Windows] | [(FolderidVideos)] (`%USERPROFILE%\Videos`) |
      *
      * Other paths can be configured via [`setVideos`](Self.setVideos).
      *
      * [NSMoviesDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/moviesdirectory?language=objc
-     * [{FolderidVideos}]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidVideos
+     * [(FolderidVideos)]: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid#folderidVideos
      */
     public open fun videos(): Path? = this.videos
 
@@ -479,6 +479,6 @@ public open class MediaDirs(
          * This is useful with the builder `set_ *` methods to create a `MediaDirs`
          * with exactly the directories you want, without any other defaults.
          */
-        public fun empty(): MediaDirs = MediaDirs(desktop = null, documents = null, downloads = null, music = null, pictures = null, videos = null, extra = Default.default())
+        public fun empty(): MediaDirs = MediaDirs(desktop = null, documents = null, downloads = null, music = null, pictures = null, videos = null, extra = ExtraMediaDirs.default())
     }
 }

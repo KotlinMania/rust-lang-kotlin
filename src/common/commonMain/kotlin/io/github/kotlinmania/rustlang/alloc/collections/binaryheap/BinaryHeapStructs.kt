@@ -1477,11 +1477,11 @@ public open class Iter<T>(
          * Creates an empty `binaryHeap.Iter`.
          *
          * ```kotlin
-         * val iter: Iter<UByte> = Default.default()
+         * val iter: Iter<UByte> = Iter.default()
          * check(iter.len() == 0)
          * ```
          */
-        public fun <T> default(): Iter<T> = Iter(iter = Default.default())
+        public fun <T> default(): Iter<T> = Iter(iter = ArrayDeque())
     }
 }
 
@@ -1531,11 +1531,11 @@ public open class IntoIter<T, A : Allocator>(
  * Creates an empty `binaryHeap.IntoIter`.
  *
  * ```kotlin
- * val iter: IntoIter<UByte> = Default.default()
+ * val iter: IntoIter<UByte> = IntoIter.default()
  * check(iter.len() == 0)
  * ```
  */
-public fun <T> defaultIntoIterT(): IntoIter<T, Global> = IntoIter(iter = Default.default())
+public fun <T> defaultIntoIterT(): IntoIter<T, Global> = IntoIter(iter = ArrayDeque())
 
 public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = NonZero.new(1)
 

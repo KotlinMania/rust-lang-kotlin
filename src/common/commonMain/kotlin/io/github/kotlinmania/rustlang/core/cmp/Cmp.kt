@@ -15,7 +15,6 @@ import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
 import io.github.kotlinmania.rustlang.core.intrinsics.integerMax
 import io.github.kotlinmania.rustlang.core.intrinsics.integerMin
 import io.github.kotlinmania.rustlang.core.intrinsics.threeWayCompare
-import io.github.kotlinmania.rustlang.core.marker.Tuple
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -1636,7 +1635,7 @@ public fun <T, K> minmaxByKey(v1: T, v2: T, f: (T) -> K): List<T> where K : Ord<
  * Cannot be an associated type as we require the empty tuple to implement this trait
  * for all types `T`.
  */
-public interface HomogeneousTuple<T> : Tuple
+public interface HomogeneousTuple<T>
 
 // Note: splat interacts poorly with the double linking of `core` in tests
 
@@ -1708,29 +1707,65 @@ public interface SmallestArgs<T, SelfType> : HomogeneousTuple<T> {
 
 public fun <T> smallestArgsSmallest(v1: T, tupleArg1: Unit): T where T : Ord<T> = v1
 
-public fun <T> smallestArgsSmallestT(v1: T, tupleArg1: T): T where T : Ord<T> = v1.min(x11)
+public fun <T> smallestArgsSmallestT(v1: T, tupleArg1: T): T where T : Ord<T> {
+    val x11 = tupleArg1
+    return v1.min(x11)
+}
 
-public fun <T> smallestArgsSmallestTT(v1: T, tupleArg1: Pair<T, T>): T where T : Ord<T> = v1.min(x10).min(x11)
+public fun <T> smallestArgsSmallestTT(v1: T, tupleArg1: Pair<T, T>): T where T : Ord<T> {
+    val (x10, x11) = tupleArg1
+    return v1.min(x10).min(x11)
+}
 
-public fun <T> smallestArgsSmallestTTT(v1: T, tupleArg1: Triple<T, T, T>): T where T : Ord<T> = v1.min(x9).min(x10).min(x11)
+public fun <T> smallestArgsSmallestTTT(v1: T, tupleArg1: Triple<T, T, T>): T where T : Ord<T> {
+    val (x9, x10, x11) = tupleArg1
+    return v1.min(x9).min(x10).min(x11)
+}
 
-public fun <T> smallestArgsSmallestTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.min(x8).min(x9).min(x10).min(x11)
+public fun <T> smallestArgsSmallestTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x8, x9, x10, x11) = tupleArg1
+    return v1.min(x8).min(x9).min(x10).min(x11)
+}
 
-public fun <T> smallestArgsSmallestTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.min(x7).min(x8).min(x9).min(x10).min(x11)
+public fun <T> smallestArgsSmallestTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x7, x8, x9, x10, x11) = tupleArg1
+    return v1.min(x7).min(x8).min(x9).min(x10).min(x11)
+}
 
-public fun <T> smallestArgsSmallestTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
+public fun <T> smallestArgsSmallestTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x6, x7, x8, x9, x10, x11) = tupleArg1
+    return v1.min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
+}
 
-public fun <T> smallestArgsSmallestTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
+public fun <T> smallestArgsSmallestTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x5, x6, x7, x8, x9, x10, x11) = tupleArg1
+    return v1.min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
+}
 
-public fun <T> smallestArgsSmallestTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.min(x4).min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
+public fun <T> smallestArgsSmallestTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
+    return v1.min(x4).min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
+}
 
-public fun <T> smallestArgsSmallestTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.min(x3).min(x4).min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
+public fun <T> smallestArgsSmallestTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x3, x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
+    return v1.min(x3).min(x4).min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
+}
 
-public fun <T> smallestArgsSmallestTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.min(x2).min(x3).min(x4).min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
+public fun <T> smallestArgsSmallestTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
+    return v1.min(x2).min(x3).min(x4).min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
+}
 
-public fun <T> smallestArgsSmallestTTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.min(x1).min(x2).min(x3).min(x4).min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
+public fun <T> smallestArgsSmallestTTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
+    return v1.min(x1).min(x2).min(x3).min(x4).min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
+}
 
-public fun <T> smallestArgsSmallestTTTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.min(x0).min(x1).min(x2).min(x3).min(x4).min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
+public fun <T> smallestArgsSmallestTTTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
+    return v1.min(x0).min(x1).min(x2).min(x3).min(x4).min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
+}
 
 // Note: splat interacts poorly with the double linking of `core` in tests
 
@@ -1802,29 +1837,65 @@ public interface LargestArgs<T, SelfType> : HomogeneousTuple<T> {
 
 public fun <T> largestArgsLargest(v1: T, tupleArg1: Unit): T where T : Ord<T> = v1
 
-public fun <T> largestArgsLargestT(v1: T, tupleArg1: T): T where T : Ord<T> = v1.max(x11)
+public fun <T> largestArgsLargestT(v1: T, tupleArg1: T): T where T : Ord<T> {
+    val x11 = tupleArg1
+    return v1.max(x11)
+}
 
-public fun <T> largestArgsLargestTT(v1: T, tupleArg1: Pair<T, T>): T where T : Ord<T> = v1.max(x10).max(x11)
+public fun <T> largestArgsLargestTT(v1: T, tupleArg1: Pair<T, T>): T where T : Ord<T> {
+    val (x10, x11) = tupleArg1
+    return v1.max(x10).max(x11)
+}
 
-public fun <T> largestArgsLargestTTT(v1: T, tupleArg1: Triple<T, T, T>): T where T : Ord<T> = v1.max(x9).max(x10).max(x11)
+public fun <T> largestArgsLargestTTT(v1: T, tupleArg1: Triple<T, T, T>): T where T : Ord<T> {
+    val (x9, x10, x11) = tupleArg1
+    return v1.max(x9).max(x10).max(x11)
+}
 
-public fun <T> largestArgsLargestTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.max(x8).max(x9).max(x10).max(x11)
+public fun <T> largestArgsLargestTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x8, x9, x10, x11) = tupleArg1
+    return v1.max(x8).max(x9).max(x10).max(x11)
+}
 
-public fun <T> largestArgsLargestTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.max(x7).max(x8).max(x9).max(x10).max(x11)
+public fun <T> largestArgsLargestTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x7, x8, x9, x10, x11) = tupleArg1
+    return v1.max(x7).max(x8).max(x9).max(x10).max(x11)
+}
 
-public fun <T> largestArgsLargestTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
+public fun <T> largestArgsLargestTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x6, x7, x8, x9, x10, x11) = tupleArg1
+    return v1.max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
+}
 
-public fun <T> largestArgsLargestTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
+public fun <T> largestArgsLargestTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x5, x6, x7, x8, x9, x10, x11) = tupleArg1
+    return v1.max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
+}
 
-public fun <T> largestArgsLargestTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.max(x4).max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
+public fun <T> largestArgsLargestTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
+    return v1.max(x4).max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
+}
 
-public fun <T> largestArgsLargestTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.max(x3).max(x4).max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
+public fun <T> largestArgsLargestTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x3, x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
+    return v1.max(x3).max(x4).max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
+}
 
-public fun <T> largestArgsLargestTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.max(x2).max(x3).max(x4).max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
+public fun <T> largestArgsLargestTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
+    return v1.max(x2).max(x3).max(x4).max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
+}
 
-public fun <T> largestArgsLargestTTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.max(x1).max(x2).max(x3).max(x4).max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
+public fun <T> largestArgsLargestTTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
+    return v1.max(x1).max(x2).max(x3).max(x4).max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
+}
 
-public fun <T> largestArgsLargestTTTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> = v1.max(x0).max(x1).max(x2).max(x3).max(x4).max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
+public fun <T> largestArgsLargestTTTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
+    val (x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
+    return v1.max(x0).max(x1).max(x2).max(x3).max(x4).max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
+}
 
 public fun Boolean.eq(other: Boolean): Boolean = this == other
 

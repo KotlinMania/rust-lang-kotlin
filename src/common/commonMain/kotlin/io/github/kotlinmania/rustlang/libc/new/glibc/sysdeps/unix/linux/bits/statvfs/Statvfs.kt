@@ -103,7 +103,7 @@ public open class Statvfs(
                 }
             }
 
-        public fun default(): Statvfs = Statvfs(fBsize = Default.default(), fFrsize = Default.default(), fBlocks = Default.default(), fBfree = Default.default(), fBavail = Default.default(), fFiles = Default.default(), fFfree = Default.default(), fFavail = Default.default(), fFsid = Default.default(), fUnused = Default.default(), fFlag = Default.default(), fNamemax = Default.default(), fType = Default.default(), fSpare = Default.default(), nonExhaustive = Unit)
+        public fun default(): Statvfs = Statvfs(fBsize = 0uL, fFrsize = 0uL, fBlocks = 0u, fBfree = 0u, fBavail = 0u, fFiles = 0u, fFfree = 0u, fFavail = 0u, fFsid = 0uL, fUnused = Statvfs.default(), fFlag = 0uL, fNamemax = 0uL, fType = 0u, fSpare = Default.default(), nonExhaustive = Unit)
     }
 }
 
@@ -198,6 +198,6 @@ public open class Statvfs64(
                 }
             }
 
-        public fun default(): Statvfs64 = Statvfs64(fBsize = Default.default(), fFrsize = Default.default(), fBlocks = Default.default(), fBfree = Default.default(), fBavail = Default.default(), fFiles = Default.default(), fFfree = Default.default(), fFavail = Default.default(), fFsid = Default.default(), fUnused = Default.default(), fFlag = Default.default(), fNamemax = Default.default(), fType = Default.default(), fSpare = Default.default(), nonExhaustive = Unit)
+        public fun default(): Statvfs64 = Statvfs64(fBsize = 0uL, fFrsize = 0uL, fBlocks = 0uL, fBfree = 0uL, fBavail = 0uL, fFiles = 0uL, fFfree = 0uL, fFavail = 0uL, fFsid = 0uL, fUnused = Statvfs64.default(), fFlag = 0uL, fNamemax = 0uL, fType = 0u, fSpare = Default.default(), nonExhaustive = Unit)
     }
 }

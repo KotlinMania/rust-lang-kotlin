@@ -30,7 +30,7 @@ public open class Thread internal constructor(
     public open fun join() {
         val rc = c.WaitForSingleObject(this.handle.asRawHandle(), c.INFINITE)
         if (rc == c.WAIT_FAILED) {
-            error("failed to join on thread: ${io.github.kotlinmania.rustlang.std.io.Error.lastOsError()}")
+            error("failed to join on thread: ${io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError()}")
         }
     }
 
@@ -76,7 +76,7 @@ public open class Thread internal constructor(
                     // The thread failed to start and as a result data was not consumed. Therefore, it is
                     // safe to reconstruct the box so that it gets deallocated.
                     (Box.fromRaw(data)).let { }
-                    Result.Err<Thread, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+                    Result.Err<Thread, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
                 }
             }
         }
@@ -91,7 +91,7 @@ public fun availableParallelism(): Result<NonZero<Int, NonZeroUsizeInner>, Error
             sysinfo.dwNumberOfProcessors.toInt()
         }
     return when (res) {
-        0 -> Result.Err<NonZero<Int, NonZeroUsizeInner>, Error>(io.github.kotlinmania.rustlang.std.io.Error.UNKNOWN_THREAD_COUNT)
+        0 -> Result.Err<NonZero<Int, NonZeroUsizeInner>, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.UNKNOWN_THREAD_COUNT)
         else -> {
             val cpus = res
             Result.Ok<NonZero<Int, NonZeroUsizeInner>, Error>(NonZero.newUnchecked<NonZeroUsizeInner, Int>(cpus))

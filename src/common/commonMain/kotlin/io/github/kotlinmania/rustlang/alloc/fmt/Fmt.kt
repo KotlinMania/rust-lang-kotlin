@@ -55,9 +55,9 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
 //
 // Each formatting argument is allowed to specify which value argument it's
 // referencing, and if omitted it is assumed to be "the next argument". For
-// example, the format string `{} {} {}` would take three parameters, and they
+// example, the format string `() () ()` would take three parameters, and they
 // would be formatted in the same order as they're given. The format string
-// `{ 2 } { 1 } { 0 }`, however, would format arguments in reverse order.
+// `( 2 ) ( 1 ) ( 0 )`, however, would format arguments in reverse order.
 //
 // Things can get a little tricky once you start intermingling the two types of
 // positional specifiers. The "next argument" specifier can be thought of as an
@@ -70,8 +70,8 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
 // ```
 //
 // The internal iterator over the argument has not been advanced by the time
-// the first `{}` is seen, so it prints the first argument. Then upon reaching
-// the second `{}`, the iterator has advanced forward to the second argument.
+// the first `()` is seen, so it prints the first argument. Then upon reaching
+// the second `()`, the iterator has advanced forward to the second argument.
 // Essentially, parameters that explicitly name their argument do not affect
 // parameters that do not name an argument in terms of positional specifiers.
 //
@@ -154,8 +154,8 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
 // space (see below).
 //
 // The width can also be provided dynamically by referencing another argument
-// with a `$` suffix. Use `{ : N $ }` to reference the Nth positional argument
-// (where N is an integer), or `{ : name $ }` to reference a named argument. The
+// with a `$` suffix. Use `( : N $ )` to reference the Nth positional argument
+// (where N is an integer), or `( : name $ )` to reference a named argument. The
 // referenced argument must be of type [usize]. Currently formatting will
 // panic if the width exceeds [u16.Max].
 //
@@ -228,7 +228,7 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
 //
 // * `0` - This is used to indicate for integer formats that the padding to `width` should
 //         both be done with a `0` character as well as be sign-aware. A format
-//         like `{ : 08 }` would yield `00000001` for the integer `1`, while the
+//         like `( : 08 )` would yield `00000001` for the integer `1`, while the
 //         same format would yield `- 0000001` for the integer `- 1`. Notice that
 //         the negative version has one fewer zero than the positive version.
 //         Note that padding zeros are always placed after the sign (if any)
@@ -261,33 +261,33 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
 //
 // 3. An asterisk `.*`:
 //
-//    `.*` means that this `{ ... }` is associated with *two* format inputs rather than one:
-//    - If a format string in the fashion of `{ : <spec>.* }` is used, then the first input holds
+//    `.*` means that this `( ... )` is associated with *two* format inputs rather than one:
+//    - If a format string in the fashion of `( : <spec>.* )` is used, then the first input holds
 //      the `Int` precision, and the second holds the value to print.
-//    - If a format string in the fashion of `{ <arg>: <spec>.* }` is used, then the `<arg>` part
+//    - If a format string in the fashion of `( <arg>: <spec>.* )` is used, then the `<arg>` part
 //      refers to the value to print, and the `precision` is taken like it was specified with an
-//      omitted positional parameter (`{}` instead of `{ <arg>: }`).
+//      omitted positional parameter (`()` instead of `( <arg>: )`).
 //
 // For example, the following calls all print the same thing `Hello x is 0.01000`:
 //
 // ```kotlin
-// // Hello {arg 0 ("x")} is {arg 1 (0.01) with precision specified inline (5)}
+// // Hello (arg 0 ("x")) is (arg 1 (0.01) with precision specified inline (5))
 // println("Hello " + ("x").toString() + " is " + (0.01).toString())
-// // Hello {arg 1 ("x")} is {arg 2 (0.01) with precision specified in arg 0 (5)}
+// // Hello (arg 1 ("x")) is (arg 2 (0.01) with precision specified in arg 0 (5))
 // println("Hello " + ("x").toString() + " is " + (0.01).toString())
-// // Hello {arg 0 ("x")} is {arg 2 (0.01) with precision specified in arg 1 (5)}
+// // Hello (arg 0 ("x")) is (arg 2 (0.01) with precision specified in arg 1 (5))
 // println("Hello " + ("x").toString() + " is " + (0.01).toString())
-// // Hello {next arg -> arg 0 ("x")} is {second of next two args -> arg 2 (0.01) with precision
-// // specified in first of next two args -> arg 1 (5)}
+// // Hello (next arg -> arg 0 ("x")) is (second of next two args -> arg 2 (0.01) with precision
+// // specified in first of next two args -> arg 1 (5))
 // println("Hello " + ("x").toString() + " is " + (5).toString())
-// // Hello {arg 1 ("x")} is {arg 2 (0.01) with precision
-// // specified in next arg -> arg 0 (5)}
+// // Hello (arg 1 ("x")) is (arg 2 (0.01) with precision
+// // specified in next arg -> arg 0 (5))
 // println("Hello " + ("x").toString() + " is " + (0.01).toString())
-// // Hello {next arg -> arg 0 ("x")} is {arg 2 (0.01) with precision
-// // specified in next arg -> arg 1 (5)}
+// // Hello (next arg -> arg 0 ("x")) is (arg 2 (0.01) with precision
+// // specified in next arg -> arg 1 (5))
 // println("Hello " + ("x").toString() + " is " + (0.01).toString())
-// // Hello {next arg -> arg 0 ("x")} is {arg "number" (0.01) with precision specified
-// // in arg "prec" (5)}
+// // Hello (next arg -> arg 0 ("x")) is (arg "number" (0.01) with precision specified
+// // in arg "prec" (5))
 // println("Hello " + ("x").toString() + " is " + (0.01).toString())
 // ```
 //
@@ -340,9 +340,9 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
 //
 // # Escaping
 //
-// The literal characters `{` and `}` may be included in a string by preceding
-// them with the same character. For example, the `{` character is escaped with
-// `{{` and the `}` character is escaped with `}}`.
+// The literal characters `(` and `)` may be included in a string by preceding
+// them with the same character. For example, the `(` character is escaped with
+// `((` and the `)` character is escaped with `))`.
 //
 // ```kotlin
 // check("Hello {}" == "Hello {}")
@@ -354,7 +354,7 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
 // To summarize, here you can find the full grammar of format strings.
 // The syntax for the formatting language used is drawn from other languages,
 // so it should not be too alien. Arguments are formatted with Python-like
-// syntax, meaning that arguments are surrounded by `{}` instead of the C-like
+// syntax, meaning that arguments are surrounded by `()` instead of the C-like
 // `%`. The actual grammar for the formatting syntax is:
 //
 // ```text
@@ -374,7 +374,7 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
 // parameter := argument '$'
 // ```
 // In the above grammar,
-// - `text` must not contain any `'{'` or `'}'` characters,
+// - `text` must not contain any `'('` or `')'` characters,
 // - `ws` is any character for which [char.isWhitespace] returns `true`, has no semantic
 //   meaning and is completely optional,
 // - `integer` is a decimal integer that may contain leading zeroes and must fit into an `Int` and
@@ -387,7 +387,7 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
 //
 // When requesting that an argument be formatted with a particular type, you
 // are actually requesting that an argument ascribes to a particular trait.
-// This allows multiple actual types to be formatted via `{ : x }` (like [i8] as
+// This allows multiple actual types to be formatted via `( : x )` (like [i8] as
 // well as [isize]). The current mapping of types to traits is:
 //
 // * *nothing* ⇒ [Display]
@@ -403,9 +403,9 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
 // * `E` ⇒ [UpperExp]
 //
 // What this means is that any type of argument which implements the
-// [`fmt.Binary`][Binary] trait can then be formatted with `{ : b }`. Implementations
+// [`fmt.Binary`][Binary] trait can then be formatted with `( : b )`. Implementations
 // are provided for these traits for a number of primitive types by the
-// standard library as well. If no format is specified (as in `{}` or `{ : 6 }`),
+// standard library as well. If no format is specified (as in `()` or `( : 6 )`),
 // then the format trait used is the [Display] trait.
 //
 // When implementing a format trait for your own type, you will have to
@@ -473,7 +473,7 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
 //     println("$myvector")
 //     // => "(3, 4)"
 //     println("$myvector")
-//     // => "Vector2D {x: 3, y:4}"
+//     // => "Vector2D (x: 3, y:4)"
 //     println("$myvector")
 //     // => "     5.000"
 // }

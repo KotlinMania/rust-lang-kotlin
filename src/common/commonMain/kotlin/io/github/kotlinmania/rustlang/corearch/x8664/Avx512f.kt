@@ -1,7 +1,8 @@
 // port-lint: source x86_64/avx512f.rs
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128
 import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128d
 import io.github.kotlinmania.rustlang.corearch.simd.F32x4
@@ -126,7 +127,7 @@ public fun mmCvtRoundi64Sd(a: M128d, b: Long, rounding: Int): M128d =
         }
         val a1 = a.asF64x2()
         val r = vcvtsi2sd64(a1, b, rounding)
-        transmute(r)
+        transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
 /**
@@ -147,7 +148,7 @@ public fun mmCvtRoundsi64Sd(a: M128d, b: Long, rounding: Int): M128d =
         }
         val a1 = a.asF64x2()
         val r = vcvtsi2sd64(a1, b, rounding)
-        transmute(r)
+        transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
 /**
@@ -168,7 +169,7 @@ public fun mmCvtRoundi64Ss(a: M128, b: Long, rounding: Int): M128 =
         }
         val a1 = a.asF32x4()
         val r = vcvtsi2ss64(a1, b, rounding)
-        transmute(r)
+        transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
 /**
@@ -189,7 +190,7 @@ public fun mmCvtRoundu64Sd(a: M128d, b: ULong, rounding: Int): M128d =
         }
         val a1 = a.asF64x2()
         val r = vcvtusi2sd64(a1, b, rounding)
-        transmute(r)
+        transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
 /**
@@ -210,7 +211,7 @@ public fun mmCvtRoundsi64Ss(a: M128, b: Long, rounding: Int): M128 =
         }
         val a1 = a.asF32x4()
         val r = vcvtsi2ss64(a1, b, rounding)
-        transmute(r)
+        transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
 /**
@@ -231,7 +232,7 @@ public fun mmCvtRoundu64Ss(a: M128, b: ULong, rounding: Int): M128 =
         }
         val a1 = a.asF32x4()
         val r = vcvtusi2ss64(a1, b, rounding)
-        transmute(r)
+        transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
 /**

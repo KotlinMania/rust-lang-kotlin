@@ -1,7 +1,6 @@
 // port-lint: source ops/function.rs
 package io.github.kotlinmania.rustlang.core.ops.function
 
-import io.github.kotlinmania.rustlang.core.marker.Tuple
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 
 // so that regex can rely that `String: !FnMut`
@@ -59,7 +58,7 @@ import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
  * check(callWithOne(double) == 2)
  * ```
  */
-public interface Fn<Args : Tuple> : FnMut<Args> {
+public interface Fn<Args, out Output> : FnMut<Args, Output> {
     /**
      * Performs the call operation.
      */
@@ -127,7 +126,7 @@ public interface Fn<Args : Tuple> : FnMut<Args> {
  * check(x == 5)
  * ```
  */
-public interface FnMut<Args : Tuple> : FnOnce<Args, Any?> {
+public interface FnMut<Args, out Output> : FnOnce<Args, Output> {
     /**
      * Performs the call operation.
      */
@@ -185,23 +184,23 @@ public interface FnMut<Args : Tuple> : FnOnce<Args, Any?> {
  * // `consumeAndReturnX` can no longer be invoked at this point
  * ```
  */
-public interface FnOnce<Args : Tuple, out Output> {
+public interface FnOnce<Args, out Output> {
     /**
      * Performs the call operation.
      */
     public fun callOnce(args: Args): Output
 }
 
-public fun <A : Tuple, F> F.callMut(args: A): Output where F : Fn<A> = this.call(args)
+public fun <Output, A, F> F.callMut(args: A): Output where F : Fn<A, Output> = this.call(args)
 
-public fun <A : Tuple, F> F.callOnce(args: A): Output where F : Fn<A> = this.call(args)
+public fun <Output, A, F> F.callOnce(args: A): Output where F : Fn<A, Output> = this.call(args)
 
-public fun <A : Tuple, F> F.callOnceA(args: A): Output where F : FnMut<A> = this.callMut(args)
+public fun <Output, A, F> F.callOnceA(args: A): Output where F : FnMut<A, Output> = this.callMut(args)
 
 /**
  * A common trait implemented by all function pointers and function definition types
  */
-public interface FnAddr<T> {
+public interface FnAddr {
     /**
      * Returns the address of the function pointer.
      */
@@ -216,7 +215,7 @@ public interface FnAddr<T> {
 /**
  * A common trait implemented by all function pointers.
  */
-public interface FnPtr<T> : FnAddr<T> {
+public interface FnPtr<T> : FnAddr {
     /**
      * Constructs a function pointer from a `NonNull` pointer.
      *

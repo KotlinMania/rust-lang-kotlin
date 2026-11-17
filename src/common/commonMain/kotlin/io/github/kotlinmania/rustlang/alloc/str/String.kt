@@ -106,7 +106,7 @@ public fun <B, T, S> joinGenericCopy(slice: List<S>, sep: List<T>): List<T> wher
     // to simplify implementation in specializeForLengths.
     // SAFETY: `sep` is a slice of `T`, so `sep.asPtr().cast()` is a valid pointer,
     // and `sep.len()` is the number of elements in the slice, so `fromRawParts` is safe.
-    val sepUninit = linearSliceView(sep.asPtr(), sep.size, PrimitiveLayouts.U8)
+    val sepUninit = linearSliceView(sep.asPtr(), sep.size, UnresolvedTypeLayout<T>())
     val iterUninit =
         iter.map({ it ->
             val it1 = it.borrow().asRef()
@@ -290,7 +290,7 @@ public fun String.intoBoxedBytes(): List<UByte> = this.into()
  * check(s == s.replace("cookie monster", "little lamb"))
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.replace(from: P, to: String): String {
+public fun <Searcher, P : Pattern<Searcher>> String.replace(from: P, to: String): String {
     // Fast path for replacing a single ASCII character with another.
     when (val matchVal2 = when (val matchVal = from.asUtf8Pattern()) {
         is Utf8Pattern.StringPattern -> {
@@ -378,7 +378,7 @@ public fun <Searcher, P : Pattern<Any?>> String.replace(from: P, to: String): St
  * check(s == s.replacen("cookie monster", "little lamb", 10))
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.replacen(pat: P, to: String, count: Int): String {
+public fun <Searcher, P : Pattern<Searcher>> String.replacen(pat: P, to: String, count: Int): String {
     // Hope to reduce the times of re-allocation
     var result = ""
     var lastEnd = 0
@@ -400,7 +400,7 @@ public fun <Searcher, P : Pattern<Any?>> String.replacen(pat: P, to: String, cou
 /**
  * Returns the lowercase equivalent of this string slice, as a new [String].
  *
- * 'Lowercase' is defined according to the terms of
+ * `Lowercase` is defined according to the terms of
  * [Chapter 3 (Conformance)](https://www.unicode.org/versions/latest/core-spec/chapter-3/#G34432)
  * of the Unicode standard.
  *
@@ -492,7 +492,7 @@ public fun String.toLowercase(): String {
  * Essentially, this consists of uppercasing the first cased letter
  * (with [char.toTitlecase]), and lowercasing everything that follows.
  *
- * 'Titlecase' is defined according to the terms of
+ * `Titlecase` is defined according to the terms of
  * [Chapter 3 (Conformance)](https://www.unicode.org/versions/latest/core-spec/chapter-3/#G34082)
  * of the Unicode standard.
  *
@@ -633,7 +633,7 @@ public fun String.wordToTitlecase(): String {
 /**
  * Returns the uppercase equivalent of this string slice, as a new [String].
  *
- * 'Uppercase' is defined according to the terms of
+ * `Uppercase` is defined according to the terms of
  * [Chapter 3 (Conformance)](https://www.unicode.org/versions/latest/core-spec/chapter-3/#G34431)
  * of the Unicode standard.
  *
@@ -859,7 +859,7 @@ public fun String.repeat(n: Int): String {
  * Returns a copy of this string where each character is mapped to its
  * ASCII upper case equivalent.
  *
- * ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
+ * ASCII letters `a` to `z` are mapped to `A` to `Z`,
  * but non-ASCII letters are unchanged.
  *
  * To uppercase the value in-place, use [makeAsciiUppercase].
@@ -888,7 +888,7 @@ public fun String.toAsciiUppercase(): String {
  * Returns a copy of this string where each character is mapped to its
  * ASCII lower case equivalent.
  *
- * ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
+ * ASCII letters `A` to `Z` are mapped to `a` to `z`,
  * but non-ASCII letters are unchanged.
  *
  * To lowercase the value in-place, use [makeAsciiLowercase].

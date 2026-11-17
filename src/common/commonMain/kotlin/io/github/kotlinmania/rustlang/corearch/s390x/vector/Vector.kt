@@ -5,15 +5,16 @@ package io.github.kotlinmania.rustlang.corearch.s390x.vector
 
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.overflowingAdd
 import io.github.kotlinmania.rustlang.core.num.overflowingSub
@@ -46,7 +47,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
  * s390x-specific 128-bit wide vector of sixteen packed `Byte`
  */
 public open class VectorSignedChar(
-    public var value: ByteArray,
+    public var value: ByteArray = ByteArray(16),
 ) {
     public var field0: ByteArray
         get() = value
@@ -94,17 +95,17 @@ public open class VectorSignedChar(
          */
         public fun splat(value: Byte): VectorSignedChar = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Byte>): VectorSignedChar = transmute(simd)
+        public fun from(simd: Simd<Byte>): VectorSignedChar = transmuteWithLayouts<Simd<Byte>, VectorSignedChar>(simd, UnresolvedTypeLayout<Simd<Byte>>(), VectorSignedChar.typeLayout())
     }
 }
 
-public fun fromSimdByte(simd: VectorSignedChar): Simd<Byte> = transmute(simd)
+public fun fromSimdByte(simd: VectorSignedChar): Simd<Byte> = transmuteWithLayouts<VectorSignedChar, Simd<Byte>>(simd, VectorSignedChar.typeLayout(), UnresolvedTypeLayout<Simd<Byte>>())
 
 /**
  * s390x-specific 128-bit wide vector of sixteen packed `UByte`
  */
 public open class VectorUnsignedChar(
-    public var value: UByteArray,
+    public var value: UByteArray = UByteArray(16),
 ) {
     public var field0: UByteArray
         get() = value
@@ -152,17 +153,17 @@ public open class VectorUnsignedChar(
          */
         public fun splat(value: UByte): VectorUnsignedChar = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UByte>): VectorUnsignedChar = transmute(simd)
+        public fun from(simd: Simd<UByte>): VectorUnsignedChar = transmuteWithLayouts<Simd<UByte>, VectorUnsignedChar>(simd, UnresolvedTypeLayout<Simd<UByte>>(), VectorUnsignedChar.typeLayout())
     }
 }
 
-public fun fromSimdUByte(simd: VectorUnsignedChar): Simd<UByte> = transmute(simd)
+public fun fromSimdUByte(simd: VectorUnsignedChar): Simd<UByte> = transmuteWithLayouts<VectorUnsignedChar, Simd<UByte>>(simd, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<Simd<UByte>>())
 
 /**
  * s390x-specific 128-bit wide vector mask of sixteen packed elements
  */
 public open class VectorBoolChar(
-    public var value: ByteArray,
+    public var value: ByteArray = ByteArray(16),
 ) {
     public var field0: ByteArray
         get() = value
@@ -210,19 +211,19 @@ public open class VectorBoolChar(
          */
         public fun splat(value: Byte): VectorBoolChar = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Byte>): VectorBoolChar = transmute(simd)
+        public fun from(simd: Simd<Byte>): VectorBoolChar = transmuteWithLayouts<Simd<Byte>, VectorBoolChar>(simd, UnresolvedTypeLayout<Simd<Byte>>(), VectorBoolChar.typeLayout())
 
-        public fun from(value: M8x16): VectorBoolChar = transmute(value)
+        public fun from(value: M8x16): VectorBoolChar = transmuteWithLayouts<M8x16, VectorBoolChar>(value, UnresolvedTypeLayout<M8x16>(), VectorBoolChar.typeLayout())
     }
 }
 
-public fun fromSimdByte(simd: VectorBoolChar): Simd<Byte> = transmute(simd)
+public fun fromSimdByte(simd: VectorBoolChar): Simd<Byte> = transmuteWithLayouts<VectorBoolChar, Simd<Byte>>(simd, VectorBoolChar.typeLayout(), UnresolvedTypeLayout<Simd<Byte>>())
 
 /**
  * s390x-specific 128-bit wide vector of eight packed `Short`
  */
 public open class VectorSignedShort(
-    public var value: ShortArray,
+    public var value: ShortArray = ShortArray(8),
 ) {
     public var field0: ShortArray
         get() = value
@@ -270,17 +271,17 @@ public open class VectorSignedShort(
          */
         public fun splat(value: Short): VectorSignedShort = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Short>): VectorSignedShort = transmute(simd)
+        public fun from(simd: Simd<Short>): VectorSignedShort = transmuteWithLayouts<Simd<Short>, VectorSignedShort>(simd, UnresolvedTypeLayout<Simd<Short>>(), VectorSignedShort.typeLayout())
     }
 }
 
-public fun fromSimdShort(simd: VectorSignedShort): Simd<Short> = transmute(simd)
+public fun fromSimdShort(simd: VectorSignedShort): Simd<Short> = transmuteWithLayouts<VectorSignedShort, Simd<Short>>(simd, VectorSignedShort.typeLayout(), UnresolvedTypeLayout<Simd<Short>>())
 
 /**
  * s390x-specific 128-bit wide vector of eight packed `UShort`
  */
 public open class VectorUnsignedShort(
-    public var value: UShortArray,
+    public var value: UShortArray = UShortArray(8),
 ) {
     public var field0: UShortArray
         get() = value
@@ -328,17 +329,17 @@ public open class VectorUnsignedShort(
          */
         public fun splat(value: UShort): VectorUnsignedShort = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UShort>): VectorUnsignedShort = transmute(simd)
+        public fun from(simd: Simd<UShort>): VectorUnsignedShort = transmuteWithLayouts<Simd<UShort>, VectorUnsignedShort>(simd, UnresolvedTypeLayout<Simd<UShort>>(), VectorUnsignedShort.typeLayout())
     }
 }
 
-public fun fromSimdUShort(simd: VectorUnsignedShort): Simd<UShort> = transmute(simd)
+public fun fromSimdUShort(simd: VectorUnsignedShort): Simd<UShort> = transmuteWithLayouts<VectorUnsignedShort, Simd<UShort>>(simd, VectorUnsignedShort.typeLayout(), UnresolvedTypeLayout<Simd<UShort>>())
 
 /**
  * s390x-specific 128-bit wide vector mask of eight packed elements
  */
 public open class VectorBoolShort(
-    public var value: ShortArray,
+    public var value: ShortArray = ShortArray(8),
 ) {
     public var field0: ShortArray
         get() = value
@@ -386,19 +387,19 @@ public open class VectorBoolShort(
          */
         public fun splat(value: Short): VectorBoolShort = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Short>): VectorBoolShort = transmute(simd)
+        public fun from(simd: Simd<Short>): VectorBoolShort = transmuteWithLayouts<Simd<Short>, VectorBoolShort>(simd, UnresolvedTypeLayout<Simd<Short>>(), VectorBoolShort.typeLayout())
 
-        public fun from(value: M16x8): VectorBoolShort = transmute(value)
+        public fun from(value: M16x8): VectorBoolShort = transmuteWithLayouts<M16x8, VectorBoolShort>(value, UnresolvedTypeLayout<M16x8>(), VectorBoolShort.typeLayout())
     }
 }
 
-public fun fromSimdShort(simd: VectorBoolShort): Simd<Short> = transmute(simd)
+public fun fromSimdShort(simd: VectorBoolShort): Simd<Short> = transmuteWithLayouts<VectorBoolShort, Simd<Short>>(simd, VectorBoolShort.typeLayout(), UnresolvedTypeLayout<Simd<Short>>())
 
 /**
  * s390x-specific 128-bit wide vector of four packed `Int`
  */
 public open class VectorSignedInt(
-    public var value: IntArray,
+    public var value: IntArray = IntArray(4),
 ) {
     public var field0: IntArray
         get() = value
@@ -446,17 +447,17 @@ public open class VectorSignedInt(
          */
         public fun splat(value: Int): VectorSignedInt = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Int>): VectorSignedInt = transmute(simd)
+        public fun from(simd: Simd<Int>): VectorSignedInt = transmuteWithLayouts<Simd<Int>, VectorSignedInt>(simd, UnresolvedTypeLayout<Simd<Int>>(), VectorSignedInt.typeLayout())
     }
 }
 
-public fun fromSimdInt(simd: VectorSignedInt): Simd<Int> = transmute(simd)
+public fun fromSimdInt(simd: VectorSignedInt): Simd<Int> = transmuteWithLayouts<VectorSignedInt, Simd<Int>>(simd, VectorSignedInt.typeLayout(), UnresolvedTypeLayout<Simd<Int>>())
 
 /**
  * s390x-specific 128-bit wide vector of four packed `UInt`
  */
 public open class VectorUnsignedInt(
-    public var value: UIntArray,
+    public var value: UIntArray = UIntArray(4),
 ) {
     public var field0: UIntArray
         get() = value
@@ -504,17 +505,17 @@ public open class VectorUnsignedInt(
          */
         public fun splat(value: UInt): VectorUnsignedInt = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UInt>): VectorUnsignedInt = transmute(simd)
+        public fun from(simd: Simd<UInt>): VectorUnsignedInt = transmuteWithLayouts<Simd<UInt>, VectorUnsignedInt>(simd, UnresolvedTypeLayout<Simd<UInt>>(), VectorUnsignedInt.typeLayout())
     }
 }
 
-public fun fromSimdUInt(simd: VectorUnsignedInt): Simd<UInt> = transmute(simd)
+public fun fromSimdUInt(simd: VectorUnsignedInt): Simd<UInt> = transmuteWithLayouts<VectorUnsignedInt, Simd<UInt>>(simd, VectorUnsignedInt.typeLayout(), UnresolvedTypeLayout<Simd<UInt>>())
 
 /**
  * s390x-specific 128-bit wide vector mask of four packed elements
  */
 public open class VectorBoolInt(
-    public var value: IntArray,
+    public var value: IntArray = IntArray(4),
 ) {
     public var field0: IntArray
         get() = value
@@ -562,19 +563,19 @@ public open class VectorBoolInt(
          */
         public fun splat(value: Int): VectorBoolInt = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Int>): VectorBoolInt = transmute(simd)
+        public fun from(simd: Simd<Int>): VectorBoolInt = transmuteWithLayouts<Simd<Int>, VectorBoolInt>(simd, UnresolvedTypeLayout<Simd<Int>>(), VectorBoolInt.typeLayout())
 
-        public fun from(value: M32x4): VectorBoolInt = transmute(value)
+        public fun from(value: M32x4): VectorBoolInt = transmuteWithLayouts<M32x4, VectorBoolInt>(value, UnresolvedTypeLayout<M32x4>(), VectorBoolInt.typeLayout())
     }
 }
 
-public fun fromSimdInt(simd: VectorBoolInt): Simd<Int> = transmute(simd)
+public fun fromSimdInt(simd: VectorBoolInt): Simd<Int> = transmuteWithLayouts<VectorBoolInt, Simd<Int>>(simd, VectorBoolInt.typeLayout(), UnresolvedTypeLayout<Simd<Int>>())
 
 /**
  * s390x-specific 128-bit wide vector of two packed `Long`
  */
 public open class VectorSignedLongLong(
-    public var value: LongArray,
+    public var value: LongArray = LongArray(2),
 ) {
     public var field0: LongArray
         get() = value
@@ -622,17 +623,17 @@ public open class VectorSignedLongLong(
          */
         public fun splat(value: Long): VectorSignedLongLong = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): VectorSignedLongLong = transmute(simd)
+        public fun from(simd: Simd<Long>): VectorSignedLongLong = transmuteWithLayouts<Simd<Long>, VectorSignedLongLong>(simd, UnresolvedTypeLayout<Simd<Long>>(), VectorSignedLongLong.typeLayout())
     }
 }
 
-public fun fromSimdLong(simd: VectorSignedLongLong): Simd<Long> = transmute(simd)
+public fun fromSimdLong(simd: VectorSignedLongLong): Simd<Long> = transmuteWithLayouts<VectorSignedLongLong, Simd<Long>>(simd, VectorSignedLongLong.typeLayout(), UnresolvedTypeLayout<Simd<Long>>())
 
 /**
  * s390x-specific 128-bit wide vector of two packed `ULong`
  */
 public open class VectorUnsignedLongLong(
-    public var value: ULongArray,
+    public var value: ULongArray = ULongArray(2),
 ) {
     public var field0: ULongArray
         get() = value
@@ -680,17 +681,17 @@ public open class VectorUnsignedLongLong(
          */
         public fun splat(value: ULong): VectorUnsignedLongLong = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<ULong>): VectorUnsignedLongLong = transmute(simd)
+        public fun from(simd: Simd<ULong>): VectorUnsignedLongLong = transmuteWithLayouts<Simd<ULong>, VectorUnsignedLongLong>(simd, UnresolvedTypeLayout<Simd<ULong>>(), VectorUnsignedLongLong.typeLayout())
     }
 }
 
-public fun fromSimdULong(simd: VectorUnsignedLongLong): Simd<ULong> = transmute(simd)
+public fun fromSimdULong(simd: VectorUnsignedLongLong): Simd<ULong> = transmuteWithLayouts<VectorUnsignedLongLong, Simd<ULong>>(simd, VectorUnsignedLongLong.typeLayout(), UnresolvedTypeLayout<Simd<ULong>>())
 
 /**
  * s390x-specific 128-bit wide vector mask of two packed elements
  */
 public open class VectorBoolLongLong(
-    public var value: LongArray,
+    public var value: LongArray = LongArray(2),
 ) {
     public var field0: LongArray
         get() = value
@@ -738,17 +739,17 @@ public open class VectorBoolLongLong(
          */
         public fun splat(value: Long): VectorBoolLongLong = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): VectorBoolLongLong = transmute(simd)
+        public fun from(simd: Simd<Long>): VectorBoolLongLong = transmuteWithLayouts<Simd<Long>, VectorBoolLongLong>(simd, UnresolvedTypeLayout<Simd<Long>>(), VectorBoolLongLong.typeLayout())
     }
 }
 
-public fun fromSimdLong(simd: VectorBoolLongLong): Simd<Long> = transmute(simd)
+public fun fromSimdLong(simd: VectorBoolLongLong): Simd<Long> = transmuteWithLayouts<VectorBoolLongLong, Simd<Long>>(simd, VectorBoolLongLong.typeLayout(), UnresolvedTypeLayout<Simd<Long>>())
 
 /**
  * s390x-specific 128-bit wide vector of four packed `Float`
  */
 public open class VectorFloat(
-    public var value: FloatArray,
+    public var value: FloatArray = FloatArray(4),
 ) {
     public var field0: FloatArray
         get() = value
@@ -796,17 +797,17 @@ public open class VectorFloat(
          */
         public fun splat(value: Float): VectorFloat = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Float>): VectorFloat = transmute(simd)
+        public fun from(simd: Simd<Float>): VectorFloat = transmuteWithLayouts<Simd<Float>, VectorFloat>(simd, UnresolvedTypeLayout<Simd<Float>>(), VectorFloat.typeLayout())
     }
 }
 
-public fun fromSimdFloat(simd: VectorFloat): Simd<Float> = transmute(simd)
+public fun fromSimdFloat(simd: VectorFloat): Simd<Float> = transmuteWithLayouts<VectorFloat, Simd<Float>>(simd, VectorFloat.typeLayout(), UnresolvedTypeLayout<Simd<Float>>())
 
 /**
  * s390x-specific 128-bit wide vector of two packed `Double`
  */
 public open class VectorDouble(
-    public var value: DoubleArray,
+    public var value: DoubleArray = DoubleArray(2),
 ) {
     public var field0: DoubleArray
         get() = value
@@ -854,17 +855,17 @@ public open class VectorDouble(
          */
         public fun splat(value: Double): VectorDouble = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): VectorDouble = transmute(simd)
+        public fun from(simd: Simd<Double>): VectorDouble = transmuteWithLayouts<Simd<Double>, VectorDouble>(simd, UnresolvedTypeLayout<Simd<Double>>(), VectorDouble.typeLayout())
     }
 }
 
-public fun fromSimdDouble(simd: VectorDouble): Simd<Double> = transmute(simd)
+public fun fromSimdDouble(simd: VectorDouble): Simd<Double> = transmuteWithLayouts<VectorDouble, Simd<Double>>(simd, VectorDouble.typeLayout(), UnresolvedTypeLayout<Simd<Double>>())
 
-public fun fromM8x16(value: VectorBoolChar): M8x16 = transmute(value)
+public fun fromM8x16(value: VectorBoolChar): M8x16 = transmuteWithLayouts<VectorBoolChar, M8x16>(value, VectorBoolChar.typeLayout(), UnresolvedTypeLayout<M8x16>())
 
-public fun fromM16x8(value: VectorBoolShort): M16x8 = transmute(value)
+public fun fromM16x8(value: VectorBoolShort): M16x8 = transmuteWithLayouts<VectorBoolShort, M16x8>(value, VectorBoolShort.typeLayout(), UnresolvedTypeLayout<M16x8>())
 
-public fun fromM32x4(value: VectorBoolInt): M32x4 = transmute(value)
+public fun fromM32x4(value: VectorBoolInt): M32x4 = transmuteWithLayouts<VectorBoolInt, M32x4>(value, VectorBoolInt.typeLayout(), UnresolvedTypeLayout<M32x4>())
 
 public open class PackedTuple<T, U>(
     public var x: T,
@@ -1244,7 +1245,7 @@ public expect fun maxnumV4f32(a: VectorFloat, b: VectorFloat): VectorFloat
 public expect fun maxnumV2f64(a: VectorDouble, b: VectorDouble): VectorDouble
 
 public open class ShuffleMask(
-    public var value: UIntArray,
+    public var value: UIntArray = UIntArray((N).toInt()),
 ) {
     public var field0: UIntArray
         get() = value
@@ -1274,7 +1275,7 @@ public open class ShuffleMask(
             }
 
         public fun reverse(n: Int): ShuffleMask {
-            val index = MutableList(n) { 0 }
+            val index = UIntArray(n) { 0u }
             var i = 0
             while (i < n) {
                 index[i] = (n - i - 1).toUInt()
@@ -1284,7 +1285,7 @@ public open class ShuffleMask(
         }
 
         public fun mergeLow(n: Int): ShuffleMask {
-            val mask = MutableList(n) { 0 }
+            val mask = UIntArray(n) { 0u }
             var i = n / 2
             var index = 0
             while (index < n) {
@@ -1297,7 +1298,7 @@ public open class ShuffleMask(
         }
 
         public fun mergeHigh(n: Int): ShuffleMask {
-            val mask = MutableList(n) { 0 }
+            val mask = UIntArray(n) { 0u }
             var i = 0
             var index = 0
             while (index < n) {
@@ -1310,7 +1311,7 @@ public open class ShuffleMask(
         }
 
         public fun even(n: Int): ShuffleMask {
-            val mask = MutableList(n) { 0 }
+            val mask = UIntArray(n) { 0u }
             var i = 0
             var index = 0
             while (index < n) {
@@ -1322,7 +1323,7 @@ public open class ShuffleMask(
         }
 
         public fun odd(n: Int): ShuffleMask {
-            val mask = MutableList(n) { 0 }
+            val mask = UIntArray(n) { 0u }
             var i = 1
             var index = 0
             while (index < n) {
@@ -1336,7 +1337,7 @@ public open class ShuffleMask(
         public fun pack(n: Int): ShuffleMask = ShuffleMask.odd()
 
         public fun unpackLow(n: Int): ShuffleMask {
-            val mask = MutableList(n) { 0 }
+            val mask = UIntArray(n) { 0u }
             var i = 0
             while (i < n) {
                 mask[i] = (n + i).toUInt()
@@ -1346,7 +1347,7 @@ public open class ShuffleMask(
         }
 
         public fun unpackHigh(n: Int): ShuffleMask {
-            val mask = MutableList(n) { 0 }
+            val mask = UIntArray(n) { 0u }
             var i = 0
             while (i < n) {
                 mask[i] = i.toUInt()
@@ -1414,12 +1415,12 @@ public fun <T : VectorNeg<T>> vecNeg(a: T): T = a.vecNeg()
 /**
  * Vector Add
  */
-public fun <T : VectorAdd<U, Any?>, U> vecAdd(a: T, b: U): Result = a.vecAdd(b)
+public fun <Result, T : VectorAdd<U, Result>, U> vecAdd(a: T, b: U): Result = a.vecAdd(b)
 
 /**
  * Vector Subtract
  */
-public fun <T : VectorSub<U, Any?>, U> vecSub(a: T, b: U): Result = a.vecSub(b)
+public fun <Result, T : VectorSub<U, Result>, U> vecSub(a: T, b: U): Result = a.vecSub(b)
 
 /**
  * Vector Multiply
@@ -1435,29 +1436,29 @@ public fun <T : VectorMul<T>> vecMul(a: T, b: T): T = a.vecMul(b)
 /**
  * Vector Count Leading Zeros
  */
-public fun <Result, T : CountBits<Any?>> vecCntlz(a: T): Result = a.vecCntlz()
+public fun <Result, T : CountBits<Result>> vecCntlz(a: T): Result = a.vecCntlz()
 
 /**
  * Vector Count Trailing Zeros
  */
-public fun <Result, T : CountBits<Any?>> vecCnttz(a: T): Result = a.vecCnttz()
+public fun <Result, T : CountBits<Result>> vecCnttz(a: T): Result = a.vecCnttz()
 
 /**
  * Vector Population Count
  *
  * Computes the population count (number of set bits) in each element of the input.
  */
-public fun <Result, T : CountBits<Any?>> vecPopcnt(a: T): Result = a.vecPopcnt()
+public fun <Result, T : CountBits<Result>> vecPopcnt(a: T): Result = a.vecPopcnt()
 
 /**
  * Vector Maximum
  */
-public fun <T : VectorMax<U, Any?>, U> vecMax(a: T, b: U): Result = a.vecMax(b)
+public fun <Result, T : VectorMax<U, Result>, U> vecMax(a: T, b: U): Result = a.vecMax(b)
 
 /**
  * Vector  Minimum
  */
-public fun <T : VectorMin<U, Any?>, U> vecMin(a: T, b: U): Result = a.vecMin(b)
+public fun <Result, T : VectorMin<U, Result>, U> vecMin(a: T, b: U): Result = a.vecMin(b)
 
 /**
  * Vector Absolute
@@ -1492,42 +1493,42 @@ public fun <T : VectorSplat<T>> vecSplat(a: T, imm: UInt): T = a.vecSplat()
 /**
  * Vector Splats
  */
-public fun <T : VectorSplats<U, Any?>, U> vecSplats(a: T): U = a.vecSplats()
+public fun <Result, T : VectorSplats<U, Result>, U> vecSplats(a: T): U = a.vecSplats()
 
 /**
  * Vector AND
  */
-public fun <T : VectorAnd<U, Any?>, U> vecAnd(a: T, b: U): Result = a.vecAnd(b)
+public fun <Result, T : VectorAnd<U, Result>, U> vecAnd(a: T, b: U): Result = a.vecAnd(b)
 
 /**
  * Vector OR
  */
-public fun <T : VectorOr<U, Any?>, U> vecOr(a: T, b: U): Result = a.vecOr(b)
+public fun <Result, T : VectorOr<U, Result>, U> vecOr(a: T, b: U): Result = a.vecOr(b)
 
 /**
  * Vector XOR
  */
-public fun <T : VectorXor<U, Any?>, U> vecXor(a: T, b: U): Result = a.vecXor(b)
+public fun <Result, T : VectorXor<U, Result>, U> vecXor(a: T, b: U): Result = a.vecXor(b)
 
 /**
  * Vector NOR
  */
-public fun <T : VectorNor<U, Any?>, U> vecNor(a: T, b: U): Result = a.vecNor(b)
+public fun <Result, T : VectorNor<U, Result>, U> vecNor(a: T, b: U): Result = a.vecNor(b)
 
 /**
  * Vector NAND
  */
-public fun <T : VectorNand<U, Any?>, U> vecNand(a: T, b: U): Result = a.vecNand(b)
+public fun <Result, T : VectorNand<U, Result>, U> vecNand(a: T, b: U): Result = a.vecNand(b)
 
 /**
  * Vector XNOR
  */
-public fun <T : VectorEqv<U, Any?>, U> vecEqv(a: T, b: U): Result = a.vecEqv(b)
+public fun <Result, T : VectorEqv<U, Result>, U> vecEqv(a: T, b: U): Result = a.vecEqv(b)
 
 /**
  * Vector ANDC
  */
-public fun <T : VectorAndc<U, Any?>, U> vecAndc(a: T, b: U): Result = a.vecAndc(b)
+public fun <Result, T : VectorAndc<U, Result>, U> vecAndc(a: T, b: U): Result = a.vecAndc(b)
 
 /**
  * Vector OR with Complement
@@ -1538,7 +1539,7 @@ public fun <T : VectorAndc<U, Any?>, U> vecAndc(a: T, b: U): Result = a.vecAndc(
  * ## Result value
  * r is the bitwise OR of a and the bitwise complement of b.
  */
-public fun <T : VectorOrc<U, Any?>, U> vecOrc(a: T, b: U): Result = a.vecOrc(b)
+public fun <Result, T : VectorOrc<U, Result>, U> vecOrc(a: T, b: U): Result = a.vecOrc(b)
 
 /**
  * Vector Floor
@@ -1629,42 +1630,42 @@ public fun <T : VectorRint<T>> vecRint(a: T): T = a.vecRint()
 /**
  * Vector Average
  */
-public fun <T : VectorAvg<U, Any?>, U> vecAvg(a: T, b: U): Result = a.vecAvg(b)
+public fun <Result, T : VectorAvg<U, Result>, U> vecAvg(a: T, b: U): Result = a.vecAvg(b)
 
 /**
  * Vector Shift Left
  */
-public fun <T : VectorSl<U, Any?>, U> vecSl(a: T, b: U): Result = a.vecSl(b)
+public fun <Result, T : VectorSl<U, Result>, U> vecSl(a: T, b: U): Result = a.vecSl(b)
 
 /**
  * Vector Shift Right
  */
-public fun <T : VectorSr<U, Any?>, U> vecSr(a: T, b: U): Result = a.vecSr(b)
+public fun <Result, T : VectorSr<U, Result>, U> vecSr(a: T, b: U): Result = a.vecSr(b)
 
 /**
  * Vector Shift Right Algebraic
  */
-public fun <T : VectorSra<U, Any?>, U> vecSra(a: T, b: U): Result = a.vecSra(b)
+public fun <Result, T : VectorSra<U, Result>, U> vecSra(a: T, b: U): Result = a.vecSra(b)
 
 /**
  * Vector Shift Left by Byte
  */
-public fun <T : VectorSlb<U, Any?>, U> vecSlb(a: T, b: U): Result = a.vecSlb(b)
+public fun <Result, T : VectorSlb<U, Result>, U> vecSlb(a: T, b: U): Result = a.vecSlb(b)
 
 /**
  * Vector Shift Right by Byte
  */
-public fun <T : VectorSrb<U, Any?>, U> vecSrb(a: T, b: U): Result = a.vecSrb(b)
+public fun <Result, T : VectorSrb<U, Result>, U> vecSrb(a: T, b: U): Result = a.vecSrb(b)
 
 /**
  * Vector Shift Right Algebraic by Byte
  */
-public fun <T : VectorSrab<U, Any?>, U> vecSrab(a: T, b: U): Result = a.vecSrab(b)
+public fun <Result, T : VectorSrab<U, Result>, U> vecSrab(a: T, b: U): Result = a.vecSrab(b)
 
 /**
  * Vector Element Rotate Left
  */
-public fun <T : VectorRl<U, T, Any?>, U> vecRl(a: T, b: U): Result = a.vecRl(b)
+public fun <Result, T : VectorRl<U, T, Result>, U> vecRl(a: T, b: U): Result = a.vecRl(b)
 
 /**
  * Vector Shift Left
@@ -1718,49 +1719,49 @@ public fun <T : VectorRevb<T>> vecRevb(a: T): T = a.vecRevb()
  *
  * Merges the most significant ("high") halves of two vectors.
  */
-public fun <Result, T : VectorMergeh<T, Any?>> vecMergeh(a: T, b: T): T = a.vecMergeh(b)
+public fun <Result, T : VectorMergeh<T, Result>> vecMergeh(a: T, b: T): T = a.vecMergeh(b)
 
 /**
  * Vector Merge Low
  *
  * Merges the least significant ("low") halves of two vectors.
  */
-public fun <Result, T : VectorMergel<T, Any?>> vecMergel(a: T, b: T): T = a.vecMergel(b)
+public fun <Result, T : VectorMergel<T, Result>> vecMergel(a: T, b: T): T = a.vecMergel(b)
 
 /**
  * Vector Pack
  */
-public fun <T : VectorPack<U, Any?>, U> vecPack(a: T, b: U): Result = a.vecPack(b)
+public fun <Result, T : VectorPack<U, Result>, U> vecPack(a: T, b: U): Result = a.vecPack(b)
 
 /**
  * Vector Pack Saturated
  */
-public fun <T : VectorPacks<U, Any?>, U> vecPacks(a: T, b: U): Result = a.vecPacks(b)
+public fun <Result, T : VectorPacks<U, Result>, U> vecPacks(a: T, b: U): Result = a.vecPacks(b)
 
 /**
  * Vector Pack Saturated Condition Code
  */
-public fun <Result, T : VectorPacksCC<T, Any?>> vecPacksCc(a: T, b: T): Pair<Result, Int> = a.vecPacksCc(b)
+public fun <Result, T : VectorPacksCC<T, Result>> vecPacksCc(a: T, b: T): Pair<Result, Int> = a.vecPacksCc(b)
 
 /**
  * Vector Pack Saturated Unsigned
  */
-public fun <T : VectorPacksu<U, Any?>, U> vecPacksu(a: T, b: U): Result = a.vecPacksu(b)
+public fun <Result, T : VectorPacksu<U, Result>, U> vecPacksu(a: T, b: U): Result = a.vecPacksu(b)
 
 /**
  * Vector Pack Saturated Unsigned Condition Code
  */
-public fun <Result, T : VectorPacksuCC<T, Any?>> vecPacksuCc(a: T, b: T): Pair<Result, Int> = a.vecPacksuCc(b)
+public fun <Result, T : VectorPacksuCC<T, Result>> vecPacksuCc(a: T, b: T): Pair<Result, Int> = a.vecPacksuCc(b)
 
 /**
  * Vector Unpack High
  */
-public fun <Result, T : VectorUnpackh<Any?>> vecUnpackh(a: T): Result = a.vecUnpackh()
+public fun <Result, T : VectorUnpackh<Result>> vecUnpackh(a: T): Result = a.vecUnpackh()
 
 /**
  * Vector Unpack Low
  */
-public fun <Result, T : VectorUnpackl<Any?>> vecUnpackl(a: T): Result = a.vecUnpackl()
+public fun <Result, T : VectorUnpackl<Result>> vecUnpackl(a: T): Result = a.vecUnpackl()
 
 /**
  * Vector Generate Byte Mask
@@ -1831,9 +1832,9 @@ public fun <T : VectorSum4<T>> vecSum4(a: T, b: T): VectorUnsignedInt = a.vecSum
  * This function operates on the vectors as 128-bit unsigned integers. It returns low 128 bits of a + b.
  */
 public fun vecAddU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar {
-    val a1: U128 = transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    val b1: U128 = transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    return transmuteWithLayouts(a1.wrappingAdd(b1), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
+    val a1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(a, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    val b1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(b, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    return transmuteWithLayouts<U128, VectorUnsignedChar>(a1.wrappingAdd(b1), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
 }
 
 /**
@@ -1844,9 +1845,9 @@ public fun vecAddU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsig
  * This function operates on the vectors as 128-bit unsigned integers. It returns low 128 bits of a - b.
  */
 public fun vecSubU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar {
-    val a1: U128 = transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    val b1: U128 = transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    return transmuteWithLayouts(a1.wrappingSub(b1), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
+    val a1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(a, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    val b1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(b, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    return transmuteWithLayouts<U128, VectorUnsignedChar>(a1.wrappingSub(b1), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
 }
 
 /**
@@ -1856,7 +1857,7 @@ public fun vecSubU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsig
  *
  * On each resulting element, the value is 0 if a borrow occurred, or 1 if no borrow occurred.
  */
-public fun <T : VectorSubc<U, Any?>, U> vecSubc(a: T, b: U): Result = a.vecSubc(b)
+public fun <Result, T : VectorSubc<U, Result>, U> vecSubc(a: T, b: U): Result = a.vecSubc(b)
 
 /**
  * Vector Subtract Carryout unsigned 128-bits
@@ -1866,42 +1867,42 @@ public fun <T : VectorSubc<U, Any?>, U> vecSubc(a: T, b: U): Result = a.vecSubc(
  * If no borrow occurred, the bit 127 of d is 1; otherwise it is set to 0. All other bits of d are 0.
  */
 public fun vecSubcU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar {
-    val a1: U128 = transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    val b1: U128 = transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    return transmuteWithLayouts((if (!a1.overflowingSub(b1).second) U128.ONE else U128.ZERO), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
+    val a1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(a, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    val b1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(b, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    return transmuteWithLayouts<U128, VectorUnsignedChar>((if (!a1.overflowingSub(b1).second) U128.ONE else U128.ZERO), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
 }
 
 /**
  * Vector Add Compute Carryout unsigned 128-bits
  */
 public fun vecAddcU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar {
-    val a1: U128 = transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    val b1: U128 = transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    return transmuteWithLayouts(U128.fromLong((a1.overflowingAdd(b1).second).toLong()), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
+    val a1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(a, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    val b1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(b, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    return transmuteWithLayouts<U128, VectorUnsignedChar>(U128.fromLong((a1.overflowingAdd(b1).second).toLong()), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
 }
 
 /**
  * Vector Add With Carry unsigned 128-bits
  */
 public fun vecAddeU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar {
-    val a1: U128 = transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    val b1: U128 = transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    val c1: U128 = transmuteWithLayouts(c, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
+    val a1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(a, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    val b1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(b, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    val c1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(c, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
     // Note(llvm) https://github.com/llvm/llvm-project/pull/153557
     // let (d, _carry) = a.carryingAdd(b, c & 1 != 0);
     // reinterpret(d)
-    return transmute(vacq(a1, b1, c1))
+    return transmuteWithLayouts<U128, VectorUnsignedChar>(vacq(a1, b1, c1), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
 }
 
 /**
  * Vector Add With Carry Compute Carry unsigned 128-bits
  */
 public fun vecAddecU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar {
-    val a1: U128 = transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    val b1: U128 = transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    val c1: U128 = transmuteWithLayouts(c, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
+    val a1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(a, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    val b1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(b, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    val c1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(c, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
     val (d, carry) = a1.carryingAdd(b1, c1 and U128(0x0uL, 0x1uL) != U128(0x0uL, 0x0uL))
-    return transmuteWithLayouts(U128.fromLong(carry.toLong()), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
+    return transmuteWithLayouts<U128, VectorUnsignedChar>(U128.fromLong(carry.toLong()), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
 }
 
 /**
@@ -1914,7 +1915,7 @@ public fun vecAddecU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorU
  *
  * Note: Only the borrow indication bit (127-bit) of c is used, and the other bits are ignored.
  */
-public fun vecSubeU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar = transmute(vsbiq(transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout()), transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout()), transmuteWithLayouts(c, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())))
+public fun vecSubeU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<U128, VectorUnsignedChar>(vsbiq(a, b, c), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
 
 /**
  * Vector Subtract with Carryout, Carryout
@@ -1927,7 +1928,7 @@ public fun vecSubeU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUn
  *
  * Note: Only the borrow indication bit (127-bit) of c is used, and the other bits are ignored.
  */
-public fun vecSubecU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar = transmute(vsbcbiq(transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout()), transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout()), transmuteWithLayouts(c, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())))
+public fun vecSubecU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<U128, VectorUnsignedChar>(vsbcbiq(a, b, c), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
 
 /**
  * Vector Splat Signed Byte
@@ -1972,94 +1973,94 @@ public fun vecSplatU64(imm: Short): VectorUnsignedLongLong = VectorUnsignedLongL
 /**
  * Vector Find Any Element Equal with Condition Code
  */
-public fun <T : VectorFindAnyEq<U, Any?>, U> vecFindAnyEq(a: T, b: U): Result = a.vecFindAnyEq(b)
+public fun <Result, T : VectorFindAnyEq<U, Result>, U> vecFindAnyEq(a: T, b: U): Result = a.vecFindAnyEq(b)
 
 /**
  * Vector Find Any Element Not Equal with Condition Code
  */
-public fun <T : VectorFindAnyNe<U, Any?>, U> vecFindAnyNe(a: T, b: U): Result = a.vecFindAnyNe(b)
+public fun <Result, T : VectorFindAnyNe<U, Result>, U> vecFindAnyNe(a: T, b: U): Result = a.vecFindAnyNe(b)
 
 /**
  * Vector Find Any Element Equal Index with Condition Code
  */
-public fun <T : VectorFindAnyEqIdx<U, Any?>, U> vecFindAnyEqIdx(a: T, b: U): Result = a.vecFindAnyEqIdx(b)
+public fun <Result, T : VectorFindAnyEqIdx<U, Result>, U> vecFindAnyEqIdx(a: T, b: U): Result = a.vecFindAnyEqIdx(b)
 
 /**
  * Vector Find Any Element Not Equal Index with Condition Code
  */
-public fun <T : VectorFindAnyNeIdx<U, Any?>, U> vecFindAnyNeIdx(a: T, b: U): Result = a.vecFindAnyNeIdx(b)
+public fun <Result, T : VectorFindAnyNeIdx<U, Result>, U> vecFindAnyNeIdx(a: T, b: U): Result = a.vecFindAnyNeIdx(b)
 
 /**
  * Vector Find Any Element Equal or Zero Index with Condition Code
  */
-public fun <T : VectorFindAnyEqOrZeroIdx<U, Any?>, U> vecFindAnyEqOr0Idx(a: T, b: U): Result = a.vecFindAnyEqOr0Idx(b)
+public fun <Result, T : VectorFindAnyEqOrZeroIdx<U, Result>, U> vecFindAnyEqOr0Idx(a: T, b: U): Result = a.vecFindAnyEqOr0Idx(b)
 
 /**
  * Vector Find Any Element Not Equal or Zero Index with Condition Code
  */
-public fun <T : VectorFindAnyNeOrZeroIdx<U, Any?>, U> vecFindAnyNeOr0Idx(a: T, b: U): Result = a.vecFindAnyNeOr0Idx(b)
+public fun <Result, T : VectorFindAnyNeOrZeroIdx<U, Result>, U> vecFindAnyNeOr0Idx(a: T, b: U): Result = a.vecFindAnyNeOr0Idx(b)
 
 /**
  * Vector Find Any Element Equal with Condition Code
  */
-public fun <T : VectorFindAnyEqCC<U, Any?>, U> vecFindAnyEqCc(a: T, b: U): Pair<Result, Int> = a.vecFindAnyEqCc(b)
+public fun <Result, T : VectorFindAnyEqCC<U, Result>, U> vecFindAnyEqCc(a: T, b: U): Pair<Result, Int> = a.vecFindAnyEqCc(b)
 
 /**
  * Vector Find Any Element Not Equal with Condition Code
  */
-public fun <T : VectorFindAnyNeCC<U, Any?>, U> vecFindAnyNeCc(a: T, b: U): Pair<Result, Int> = a.vecFindAnyNeCc(b)
+public fun <Result, T : VectorFindAnyNeCC<U, Result>, U> vecFindAnyNeCc(a: T, b: U): Pair<Result, Int> = a.vecFindAnyNeCc(b)
 
 /**
  * Vector Find Any Element Equal Index with Condition Code
  */
-public fun <T : VectorFindAnyEqIdxCC<U, Any?>, U> vecFindAnyEqIdxCc(a: T, b: U): Pair<Result, Int> = a.vecFindAnyEqIdxCc(b)
+public fun <Result, T : VectorFindAnyEqIdxCC<U, Result>, U> vecFindAnyEqIdxCc(a: T, b: U): Pair<Result, Int> = a.vecFindAnyEqIdxCc(b)
 
 /**
  * Vector Find Any Element Not Equal Index with Condition Code
  */
-public fun <T : VectorFindAnyNeIdxCC<U, Any?>, U> vecFindAnyNeIdxCc(a: T, b: U): Pair<Result, Int> = a.vecFindAnyNeIdxCc(b)
+public fun <Result, T : VectorFindAnyNeIdxCC<U, Result>, U> vecFindAnyNeIdxCc(a: T, b: U): Pair<Result, Int> = a.vecFindAnyNeIdxCc(b)
 
 /**
  * Vector Find Any Element Equal or Zero Index with Condition Code
  */
-public fun <T : VectorFindAnyEqOrZeroIdxCC<U, Any?>, U> vecFindAnyEqOr0IdxCc(a: T, b: U): Pair<Result, Int> = a.vecFindAnyEqOr0IdxCc(b)
+public fun <Result, T : VectorFindAnyEqOrZeroIdxCC<U, Result>, U> vecFindAnyEqOr0IdxCc(a: T, b: U): Pair<Result, Int> = a.vecFindAnyEqOr0IdxCc(b)
 
 /**
  * Vector Find Any Element Not Equal or Zero Index with Condition Code
  */
-public fun <T : VectorFindAnyNeOrZeroIdxCC<U, Any?>, U> vecFindAnyNeOr0IdxCc(a: T, b: U): Pair<Result, Int> = a.vecFindAnyNeOr0IdxCc(b)
+public fun <Result, T : VectorFindAnyNeOrZeroIdxCC<U, Result>, U> vecFindAnyNeOr0IdxCc(a: T, b: U): Pair<Result, Int> = a.vecFindAnyNeOr0IdxCc(b)
 
 /**
  * Vector Load
  */
-public fun <T : VectorLoad<T, Any?>> vecXl(offset: Int, ptr: ConstPtr, vecXlTFn: (Int, ConstPtr) -> T): T = vecXlTFn(offset, ptr)
+public fun <T : VectorLoad<T, ElementType>> vecXl(offset: Int, ptr: ConstPtr, vecXlTFn: (Int, ConstPtr) -> T): T = vecXlTFn(offset, ptr)
 
 /**
  * Vector Load Pair
  */
-public fun <ElementType, T : VectorLoadPair<T, Any?>> vecLoadPair(a: ElementType, b: ElementType, vecLoadPairTFn: (ElementType, ElementType) -> T): T = vecLoadPairTFn(a, b)
+public fun <ElementType, T : VectorLoadPair<T, ElementType>> vecLoadPair(a: ElementType, b: ElementType, vecLoadPairTFn: (ElementType, ElementType) -> T): T = vecLoadPairTFn(a, b)
 
 /**
  * Vector Load to Block Boundary
  */
-public fun <T : VectorLoad<T, Any?>> vecLoadBndry(ptr: ConstPtr, blockBoundary: UShort, vecLoadBndryTFn: (ConstPtr) -> MaybeUninit<T>): MaybeUninit<T> = vecLoadBndryTFn(ptr, blockBoundary)
+public fun <T : VectorLoad<T, ElementType>> vecLoadBndry(ptr: ConstPtr, blockBoundary: UShort, vecLoadBndryTFn: (ConstPtr) -> MaybeUninit<T>): MaybeUninit<T> = vecLoadBndryTFn(ptr, blockBoundary)
 
 /**
  * Vector Store
  */
-public fun <T : VectorStore<Any?>> vecXst(vector: T, offset: Int, ptr: MutPtr) {
+public fun <T : VectorStore<ElementType>> vecXst(vector: T, offset: Int, ptr: MutPtr) {
     vector.vecXst(offset, ptr)
 }
 
 /**
  * Vector Load with Length
  */
-public fun <T : VectorLoad<T, Any?>> vecLoadLen(ptr: ConstPtr, byteCount: UInt, vecLoadLenTFn: (ConstPtr, UInt) -> T): T = vecLoadLenTFn(ptr, byteCount)
+public fun <T : VectorLoad<T, ElementType>> vecLoadLen(ptr: ConstPtr, byteCount: UInt, vecLoadLenTFn: (ConstPtr, UInt) -> T): T = vecLoadLenTFn(ptr, byteCount)
 
 /**
  * Vector Store with Length
  */
-public fun <T : VectorStore<Any?>> vecStoreLen(vector: T, ptr: MutPtr, byteCount: UInt) {
+public fun <T : VectorStore<ElementType>> vecStoreLen(vector: T, ptr: MutPtr, byteCount: UInt) {
     vector.vecStoreLen(ptr, byteCount)
 }
 
@@ -2088,22 +2089,22 @@ public fun <T : VectorMadd<T>> vecMsub(a: T, b: T, c: T): T = a.vecMsub(b, c)
 /**
  * Vector Multiply and Add Even
  */
-public fun <Result, T : VectorMeadd<T, Any?>> vecMeadd(a: T, b: T, c: Result): Result = a.vecMeadd(b, c)
+public fun <Result, T : VectorMeadd<T, Result>> vecMeadd(a: T, b: T, c: Result): Result = a.vecMeadd(b, c)
 
 /**
  * Vector Multiply and Add Odd
  */
-public fun <Result, T : VectorMoadd<T, Any?>> vecMoadd(a: T, b: T, c: Result): Result = a.vecMoadd(b, c)
+public fun <Result, T : VectorMoadd<T, Result>> vecMoadd(a: T, b: T, c: Result): Result = a.vecMoadd(b, c)
 
 /**
  * Vector Multiply and Add High
  */
-public fun <Result, T : VectorMhadd<T, Any?>> vecMhadd(a: T, b: T, c: Result): Result = a.vecMhadd(b, c)
+public fun <Result, T : VectorMhadd<T, Result>> vecMhadd(a: T, b: T, c: Result): Result = a.vecMhadd(b, c)
 
 /**
  * Vector Multiply and Add Low
  */
-public fun <Result, T : VectorMladd<T, Any?>> vecMladd(a: T, b: T, c: Result): Result = a.vecMladd(b, c)
+public fun <Result, T : VectorMladd<T, Result>> vecMladd(a: T, b: T, c: Result): Result = a.vecMladd(b, c)
 
 /**
  * Vector Checksum
@@ -2133,17 +2134,17 @@ public fun <T : VectorGfmsum<U, T>, U> vecGfmsum(a: T, b: T): U = a.vecGfmsum(b)
 /**
  * Vector Galois Field Multiply Sum
  */
-public fun <Result, T : VectorGfmsumAccum<T, Any?>> vecGfmsumAccum(a: T, b: T, c: Result): Result = a.vecGfmsumAccum(b, c)
+public fun <Result, T : VectorGfmsumAccum<T, Result>> vecGfmsumAccum(a: T, b: T, c: Result): Result = a.vecGfmsumAccum(b, c)
 
 /**
  * Vector Galois Field Multiply Sum 128-bits
  */
-public fun vecGfmsum128(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong): VectorUnsignedChar = transmute(vgfmg(a, b))
+public fun vecGfmsum128(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong): VectorUnsignedChar = transmuteWithLayouts<U128, VectorUnsignedChar>(vgfmg(a, b), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
 
 /**
  * Vector Galois Field Multiply Sum and Accumulate 128-bits
  */
-public fun vecGfmsumAccum128(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong, c: VectorUnsignedChar): VectorUnsignedChar = transmute(vgfmag(a, b, transmuteWithLayouts(c, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())))
+public fun vecGfmsumAccum128(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong, c: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<U128, VectorUnsignedChar>(vgfmag(a, b, c), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
 
 /**
  * Vector Bit Permute
@@ -2153,7 +2154,7 @@ public fun vecBpermU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUns
 /**
  * Vector Gather Element
  */
-public fun <Offset, T : VectorGatherElement<T, Any?, Any?>> vecGatherElement(a: T, b: Offset, c: ConstPtr, d: UInt): T = a.vecGatherElement(b, c)
+public fun <Offset, T : VectorGatherElement<T, Element, Offset>> vecGatherElement(a: T, b: Offset, c: ConstPtr, d: UInt): T = a.vecGatherElement(b, c)
 
 /**
  * Vector Select
@@ -2205,7 +2206,7 @@ public val VEC_CLASS_FP_NOT_NORMAL: UInt = VEC_CLASS_FP_NAN or VEC_CLASS_FP_SUBN
  *
  * You can use the `__VEC_CLASS_FP_ *` constants as the argument for this operand
  */
-public fun <Result, T : VectorFpTestDataClass<Any?>> vecFpTestDataClass(a: T, c: MutPtr, cls: UInt): Result {
+public fun <Result, T : VectorFpTestDataClass<Result>> vecFpTestDataClass(a: T, c: MutPtr, cls: UInt): Result {
     val (x, y) = a.vecFpTestDataClass()
     (PrimitiveLayouts.I32).writeNative((c).rawAddress, y)
     return x
@@ -2214,27 +2215,27 @@ public fun <Result, T : VectorFpTestDataClass<Any?>> vecFpTestDataClass(a: T, c:
 /**
  * All Elements Not a Number
  */
-public fun <Result, T : VectorFpTestDataClass<Any?>> vecAllNan(a: T): Int = Int.from(a.vecFpTestDataClass().second == 0)
+public fun <Result, T : VectorFpTestDataClass<Result>> vecAllNan(a: T): Int = Int.from(a.vecFpTestDataClass().second == 0)
 
 /**
  * All Elements Numeric
  */
-public fun <Result, T : VectorFpTestDataClass<Any?>> vecAllNumeric(a: T): Int = Int.from(a.vecFpTestDataClass().second == 3)
+public fun <Result, T : VectorFpTestDataClass<Result>> vecAllNumeric(a: T): Int = Int.from(a.vecFpTestDataClass().second == 3)
 
 /**
  * Any Elements Not a Number
  */
-public fun <Result, T : VectorFpTestDataClass<Any?>> vecAnyNan(a: T): Int = Int.from(a.vecFpTestDataClass().second != 3)
+public fun <Result, T : VectorFpTestDataClass<Result>> vecAnyNan(a: T): Int = Int.from(a.vecFpTestDataClass().second != 3)
 
 /**
  * Any Elements Numeric
  */
-public fun <Result, T : VectorFpTestDataClass<Any?>> vecAnyNumeric(a: T): Int = Int.from(a.vecFpTestDataClass().second != 0)
+public fun <Result, T : VectorFpTestDataClass<Result>> vecAnyNumeric(a: T): Int = Int.from(a.vecFpTestDataClass().second != 0)
 
 /**
  * Vector Test under Mask
  */
-public fun <Mask, T : VectorTestMask<Any?>> vecTestMask(a: T, b: Mask): Int {
+public fun <Mask, T : VectorTestMask<Mask>> vecTestMask(a: T, b: Mask): Int {
     // I can't find much information about this, but this might just be a check for whether the
     // bitwise and of a and b is non-zero?
     return a.vecTestMask(b)
@@ -2286,12 +2287,12 @@ public fun vecExtendS64(a: VectorExtendSigned64): VectorSignedLongLong = a.vecEx
 /**
  * Vector Convert floating point to signed
  */
-public fun <Result, T : VectorSigned<Any?>> vecSigned(a: T): Result = a.vecSigned()
+public fun <Result, T : VectorSigned<Result>> vecSigned(a: T): Result = a.vecSigned()
 
 /**
  * Vector Convert floating point to unsigned
  */
-public fun <Result, T : VectorUnsigned<Any?>> vecUnsigned(a: T): Result = a.vecUnsigned()
+public fun <Result, T : VectorUnsigned<Result>> vecUnsigned(a: T): Result = a.vecUnsigned()
 
 /**
  * Vector Copy Until Zero
@@ -2313,7 +2314,7 @@ public fun vecMsumU128(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong, c: 
     }) {
         error("D needs to be one of 0, 4, 8, 12")
     }
-    return transmute(vmslg(a, b, transmuteWithLayouts(c, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout()), d))
+    return transmuteWithLayouts<U128, VectorUnsignedChar>(vmslg(a, b, c, d), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
 }
 
 /**
@@ -2359,27 +2360,27 @@ public fun <T : VectorSrdb<T>> vecSrdb(a: T, b: T, c: UInt): T {
 /**
  * Vector Compare Ranges
  */
-public fun <Result, T : VectorCompareRange<T, Any?>> vecCmprg(a: T, b: T, c: T): Result = a.vstrc(b, c)
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmprg(a: T, b: T, c: T): Result = a.vstrc(b, c)
 
 /**
  * Vector Compare Not in Ranges
  */
-public fun <Result, T : VectorCompareRange<T, Any?>> vecCmpnrg(a: T, b: T, c: T): Result = a.vstrc(b, c)
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrg(a: T, b: T, c: T): Result = a.vstrc(b, c)
 
 /**
  * Vector Compare Ranges Index
  */
-public fun <Result, T : VectorCompareRange<T, Any?>> vecCmprgIdx(a: T, b: T, c: T): Result = a.vstrc(b, c)
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmprgIdx(a: T, b: T, c: T): Result = a.vstrc(b, c)
 
 /**
  * Vector Compare Not in Ranges Index
  */
-public fun <Result, T : VectorCompareRange<T, Any?>> vecCmpnrgIdx(a: T, b: T, c: T): Result = a.vstrc(b, c)
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrgIdx(a: T, b: T, c: T): Result = a.vstrc(b, c)
 
 /**
  * Vector Compare Ranges with Condition Code
  */
-public fun <Result, T : VectorCompareRange<T, Any?>> vecCmprgCc(a: T, b: T, c: T, d: MutPtr): Result {
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmprgCc(a: T, b: T, c: T, d: MutPtr): Result {
     val (x, y) = a.vstrcs(b, c)
     (PrimitiveLayouts.I32).writeNative((d).rawAddress, y)
     return x
@@ -2388,7 +2389,7 @@ public fun <Result, T : VectorCompareRange<T, Any?>> vecCmprgCc(a: T, b: T, c: T
 /**
  * Vector Compare Not in Ranges with Condition Code
  */
-public fun <Result, T : VectorCompareRange<T, Any?>> vecCmpnrgCc(a: T, b: T, c: T, d: MutPtr): Result {
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrgCc(a: T, b: T, c: T, d: MutPtr): Result {
     val (x, y) = a.vstrcs(b, c)
     (PrimitiveLayouts.I32).writeNative((d).rawAddress, y)
     return x
@@ -2397,7 +2398,7 @@ public fun <Result, T : VectorCompareRange<T, Any?>> vecCmpnrgCc(a: T, b: T, c: 
 /**
  * Vector Compare Ranges Index with Condition Code
  */
-public fun <Result, T : VectorCompareRange<T, Any?>> vecCmprgIdxCc(a: T, b: T, c: T, d: MutPtr): Result {
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmprgIdxCc(a: T, b: T, c: T, d: MutPtr): Result {
     val (x, y) = a.vstrcs(b, c)
     (PrimitiveLayouts.I32).writeNative((d).rawAddress, y)
     return x
@@ -2406,7 +2407,7 @@ public fun <Result, T : VectorCompareRange<T, Any?>> vecCmprgIdxCc(a: T, b: T, c
 /**
  * Vector Compare Not in Ranges Index with Condition Code
  */
-public fun <Result, T : VectorCompareRange<T, Any?>> vecCmpnrgIdxCc(a: T, b: T, c: T, d: MutPtr): Result {
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrgIdxCc(a: T, b: T, c: T, d: MutPtr): Result {
     val (x, y) = a.vstrcs(b, c)
     (PrimitiveLayouts.I32).writeNative((d).rawAddress, y)
     return x
@@ -2415,17 +2416,17 @@ public fun <Result, T : VectorCompareRange<T, Any?>> vecCmpnrgIdxCc(a: T, b: T, 
 /**
  * Vector Compare Ranges or Zero Index
  */
-public fun <Result, T : VectorCompareRange<T, Any?>> vecCmprgOr0Idx(a: T, b: T, c: T): Result = a.vstrcz(b, c)
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmprgOr0Idx(a: T, b: T, c: T): Result = a.vstrcz(b, c)
 
 /**
  * Vector Compare Not in Ranges or Zero Index
  */
-public fun <Result, T : VectorCompareRange<T, Any?>> vecCmpnrgOr0Idx(a: T, b: T, c: T): Result = a.vstrcz(b, c)
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrgOr0Idx(a: T, b: T, c: T): Result = a.vstrcz(b, c)
 
 /**
  * Vector Compare Ranges or Zero Index with Condition Code
  */
-public fun <Result, T : VectorCompareRange<T, Any?>> vecCmprgOr0IdxCc(a: T, b: T, c: T, d: MutPtr): Result {
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmprgOr0IdxCc(a: T, b: T, c: T, d: MutPtr): Result {
     val (x, y) = a.vstrczs(b, c)
     (PrimitiveLayouts.I32).writeNative((d).rawAddress, y)
     return x
@@ -2434,7 +2435,7 @@ public fun <Result, T : VectorCompareRange<T, Any?>> vecCmprgOr0IdxCc(a: T, b: T
 /**
  * Vector Compare Not in Ranges or Zero Index with Condition Code
  */
-public fun <Result, T : VectorCompareRange<T, Any?>> vecCmpnrgOr0IdxCc(a: T, b: T, c: T, d: MutPtr): Result {
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrgOr0IdxCc(a: T, b: T, c: T, d: MutPtr): Result {
     val (x, y) = a.vstrczs(b, c)
     (PrimitiveLayouts.I32).writeNative((d).rawAddress, y)
     return x
@@ -2443,92 +2444,92 @@ public fun <Result, T : VectorCompareRange<T, Any?>> vecCmpnrgOr0IdxCc(a: T, b: 
 /**
  * Vector Compare Equal
  */
-public fun <Result, T : VectorEquality<T, Any?>> vecCmpeq(a: T, b: T): Result = a.vecCmpeq(b)
+public fun <Result, T : VectorEquality<T, Result>> vecCmpeq(a: T, b: T): Result = a.vecCmpeq(b)
 
 /**
  * Vector Compare Not Equal
  */
-public fun <Result, T : VectorEquality<T, Any?>> vecCmpne(a: T, b: T): Result = a.vecCmpne(b)
+public fun <Result, T : VectorEquality<T, Result>> vecCmpne(a: T, b: T): Result = a.vecCmpne(b)
 
 /**
  * Vector Compare Greater Than
  */
-public fun <Result, T : VectorComparePredicate<T, Any?>> vecCmpgt(a: T, b: T): Result = a.vecCmpgt(b)
+public fun <Result, T : VectorComparePredicate<T, Result>> vecCmpgt(a: T, b: T): Result = a.vecCmpgt(b)
 
 /**
  * Vector Compare Greater Than or Equal
  */
-public fun <Result, T : VectorComparePredicate<T, Any?>> vecCmpge(a: T, b: T): Result = a.vecCmpge(b)
+public fun <Result, T : VectorComparePredicate<T, Result>> vecCmpge(a: T, b: T): Result = a.vecCmpge(b)
 
 /**
  * Vector Compare Less
  */
-public fun <Result, T : VectorComparePredicate<T, Any?>> vecCmplt(a: T, b: T): Result = a.vecCmplt(b)
+public fun <Result, T : VectorComparePredicate<T, Result>> vecCmplt(a: T, b: T): Result = a.vecCmplt(b)
 
 /**
  * Vector Compare Less Than or Equal
  */
-public fun <Result, T : VectorComparePredicate<T, Any?>> vecCmple(a: T, b: T): Result = a.vecCmple(b)
+public fun <Result, T : VectorComparePredicate<T, Result>> vecCmple(a: T, b: T): Result = a.vecCmple(b)
 
 /**
  * Vector Compare Equal Index
  */
-public fun <Result, T : VectorEqualityIdx<T, Any?>> vecCmpeqIdx(a: T, b: T): Result = a.vecCmpeqIdx(b)
+public fun <Result, T : VectorEqualityIdx<T, Result>> vecCmpeqIdx(a: T, b: T): Result = a.vecCmpeqIdx(b)
 
 /**
  * Vector Compare Not Equal Index
  */
-public fun <Result, T : VectorEqualityIdx<T, Any?>> vecCmpneIdx(a: T, b: T): Result = a.vecCmpneIdx(b)
+public fun <Result, T : VectorEqualityIdx<T, Result>> vecCmpneIdx(a: T, b: T): Result = a.vecCmpneIdx(b)
 
 /**
  * Vector Compare Equal Index with Condition Code
  */
-public fun <Result, T : VectorEqualityIdx<T, Any?>> vecCmpeqIdxCc(a: T, b: T): Pair<Result, Int> = a.vecCmpeqIdxCc(b)
+public fun <Result, T : VectorEqualityIdx<T, Result>> vecCmpeqIdxCc(a: T, b: T): Pair<Result, Int> = a.vecCmpeqIdxCc(b)
 
 /**
  * Vector Compare Not Equal Index with Condition Code
  */
-public fun <Result, T : VectorEqualityIdx<T, Any?>> vecCmpneIdxCc(a: T, b: T): Pair<Result, Int> = a.vecCmpneIdxCc(b)
+public fun <Result, T : VectorEqualityIdx<T, Result>> vecCmpneIdxCc(a: T, b: T): Pair<Result, Int> = a.vecCmpneIdxCc(b)
 
 /**
  * Vector Compare Equal or Zero Index
  */
-public fun <Result, T : VectorEqualityIdx<T, Any?>> vecCmpeqOr0Idx(a: T, b: T): Result = a.vecCmpeqOr0Idx(b)
+public fun <Result, T : VectorEqualityIdx<T, Result>> vecCmpeqOr0Idx(a: T, b: T): Result = a.vecCmpeqOr0Idx(b)
 
 /**
  * Vector Compare Not Equal or Zero Index
  */
-public fun <Result, T : VectorEqualityIdx<T, Any?>> vecCmpneOr0Idx(a: T, b: T): Result = a.vecCmpneOr0Idx(b)
+public fun <Result, T : VectorEqualityIdx<T, Result>> vecCmpneOr0Idx(a: T, b: T): Result = a.vecCmpneOr0Idx(b)
 
 /**
  * Vector Compare Equal or Zero Index with Condition Code
  */
-public fun <Result, T : VectorEqualityIdx<T, Any?>> vecCmpeqOr0IdxCc(a: T, b: T): Pair<Result, Int> = a.vecCmpeqOr0IdxCc(b)
+public fun <Result, T : VectorEqualityIdx<T, Result>> vecCmpeqOr0IdxCc(a: T, b: T): Pair<Result, Int> = a.vecCmpeqOr0IdxCc(b)
 
 /**
  * Vector Compare Not Equal or Zero Index with Condition Code
  */
-public fun <Result, T : VectorEqualityIdx<T, Any?>> vecCmpneOr0IdxCc(a: T, b: T): Pair<Result, Int> = a.vecCmpneOr0IdxCc(b)
+public fun <Result, T : VectorEqualityIdx<T, Result>> vecCmpneOr0IdxCc(a: T, b: T): Pair<Result, Int> = a.vecCmpneOr0IdxCc(b)
 
 /**
  * All Elements Equal
  */
-public fun <Result, T : VectorEquality<T, Any?>> vecAllEq(a: T, b: T): Int = (run { val _simdArg0 = vecCmpeq(a, b); false }).toInt()
+public fun <Result, T : VectorEquality<T, Result>> vecAllEq(a: T, b: T): Int = (run { val _simdArg0 = vecCmpeq(a, b); false }).toInt()
 
 /**
  * All Elements Not Equal
  */
-public fun <Result, T : VectorEquality<T, Any?>> vecAllNe(a: T, b: T): Int = (run { val _simdArg0 = vecCmpne(a, b); false }).toInt()
+public fun <Result, T : VectorEquality<T, Result>> vecAllNe(a: T, b: T): Int = (run { val _simdArg0 = vecCmpne(a, b); false }).toInt()
 
 /**
  * Any Element Equal
  */
-public fun <Result, T : VectorEquality<T, Any?>> vecAnyEq(a: T, b: T): Int = (run { val _simdArg0 = vecCmpeq(a, b); false }).toInt()
+public fun <Result, T : VectorEquality<T, Result>> vecAnyEq(a: T, b: T): Int = (run { val _simdArg0 = vecCmpeq(a, b); false }).toInt()
 
 /**
  * Any Element Not Equal
  */
-public fun <Result, T : VectorEquality<T, Any?>> vecAnyNe(a: T, b: T): Int = (run { val _simdArg0 = vecCmpne(a, b); false }).toInt()
+public fun <Result, T : VectorEquality<T, Result>> vecAnyNe(a: T, b: T): Int = (run { val _simdArg0 = vecCmpne(a, b); false }).toInt()
 
 /**
  * All Elements Less Than
@@ -2613,22 +2614,22 @@ public fun <T : VectorCompare<T>> vecAnyNge(a: T, b: T): Int = vecAnyLt(a, b)
 /**
  * Vector Extract
  */
-public fun <ElementType, T : VectorExtract<T, Any?>> vecExtract(a: T, b: Int, vecExtractTFn: (T, Int) -> ElementType): ElementType = vecExtractTFn(a, b)
+public fun <ElementType, T : VectorExtract<T, ElementType>> vecExtract(a: T, b: Int, vecExtractTFn: (T, Int) -> ElementType): ElementType = vecExtractTFn(a, b)
 
 /**
  * Vector Insert
  */
-public fun <ElementType, T : VectorInsert<T, Any?>> vecInsert(a: ElementType, b: T, c: Int, vecInsertTFn: (ElementType, T, Int) -> T): T = vecInsertTFn(a, b, c)
+public fun <ElementType, T : VectorInsert<T, ElementType>> vecInsert(a: ElementType, b: T, c: Int, vecInsertTFn: (ElementType, T, Int) -> T): T = vecInsertTFn(a, b, c)
 
 /**
  * Vector Insert and Zero
  */
-public fun <T : VectorInsertAndZero<T, Any?>> vecInsertAndZero(a: ConstPtr, vecInsertAndZeroTFn: (ConstPtr) -> T): T = vecInsertAndZeroTFn(a)
+public fun <T : VectorInsertAndZero<T, ElementType>> vecInsertAndZero(a: ConstPtr, vecInsertAndZeroTFn: (ConstPtr) -> T): T = vecInsertAndZeroTFn(a)
 
 /**
  * Vector Promote
  */
-public fun <ElementType, T : VectorPromote<T, Any?>> vecPromote(a: ElementType, b: Int, vecPromoteTFn: (ElementType, Int) -> MaybeUninit<T>): MaybeUninit<T> = vecPromoteTFn(a, b)
+public fun <ElementType, T : VectorPromote<T, ElementType>> vecPromote(a: ElementType, b: Int, vecPromoteTFn: (ElementType, Int) -> MaybeUninit<T>): MaybeUninit<T> = vecPromoteTFn(a, b)
 
 /**
  * Converts the left-most half of `a` to a vector of single-precision numbers.

@@ -76,10 +76,10 @@ public typealias Source<I> = I.Source
  * }
  * ```
  *
- * This will print `('a', 1), ('b', 2), ('c', 3)`.
+ * This will print `(`a`, 1), (`b`, 2), (`c`, 3)`.
  *
  * Now consider this twist where we add a call to `rev`. This version will
- * print `('c', 1), ('b', 2), ('a', 3)`. Note that the letters are reversed,
+ * print `(`c`, 1), (`b`, 2), (`a`, 3)`. Note that the letters are reversed,
  * but the values of the counter still go in order. This is because `map()` is
  * still being called lazily on each item, but we are popping items off the
  * back of the vector now, instead of shifting them from the front.
@@ -98,7 +98,7 @@ public open class Map<I, F>(
     // Used for `SplitWhitespace` and `SplitAsciiWhitespace` `asStr` methods
     public var iter: I,
     public var f: F,
-) : TrustedFused, TrustedLen<Map<I, F>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, SourceIter<Source>, InPlaceIterable, Iterable<B> {
+) : TrustedFused, TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, SourceIter<Source>, InPlaceIterable, Iterable<B> {
     override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
         override fun computeNext() {
             when (val v = this@Map.next()) {
@@ -118,7 +118,7 @@ public open class Map<I, F>(
 
     public override fun sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
 
-    public override fun <Acc, R> tryFold(init: Acc, g: (Acc, B) -> R): R where R : Try<R, Acc, Any?> = this.iter.tryFold(init, mapTryFold(this.f, g))
+    public override fun <Residual, Acc, R> tryFold(init: Acc, g: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, mapTryFold(this.f, g))
 
     public override fun <Acc> fold(init: Acc, g: (Acc, B) -> Acc): Acc = this.iter.fold(init, mapFold(this.f, g))
 
@@ -130,7 +130,7 @@ public open class Map<I, F>(
 
     public open fun nextBack(): B? = this.iter.nextBack()?.let(this.f)
 
-    public open fun <Acc, R> tryRfold(init: Acc, g: (Acc, B) -> R): R where R : Try<R, Acc, Any?> = this.iter.tryRfold(init, mapTryFold(this.f, g))
+    public open fun <Residual, Acc, R> tryRfold(init: Acc, g: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, mapTryFold(this.f, g))
 
     public open fun <Acc> rfold(init: Acc, g: (Acc, B) -> Acc): Acc = this.iter.rfold(init, mapFold(this.f, g))
 

@@ -34,7 +34,7 @@ public open class Args(
 
     public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.iter.advanceBy(n)
 
-    public open fun <B, R> tryFold(init: B, f: (B, OsString) -> R): R where R : Try<B> = this.iter.tryFold(init, f)
+    public open fun <Residual, B, R> tryFold(init: B, f: (B, OsString) -> R): R where R : Try<B> = this.iter.tryFold(init, f)
 
     public open fun <B> fold(init: B, f: (B, OsString) -> B): B = this.iter.fold(init, f)
 

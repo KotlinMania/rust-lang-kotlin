@@ -97,7 +97,7 @@ public typealias Output<F> = F.Output
  * / **
  *  * Converts the output of a future to a string.
  *  * /
- * fun <Output, IntoFuture, Fut> futToString(fut: Fut): String where Fut : IntoFuture<Any?, Any?> {
+ * fun <Output, IntoFuture, Fut> futToString(fut: Fut): String where Fut : IntoFuture<Output, IntoFuture> {
  *     return "$fut"
  * }
  * ```
@@ -121,4 +121,4 @@ public interface IntoFuture<Output, out IntoFuture> {
     public fun intoFuture(): IntoFuture
 }
 
-public fun <Output, F : Future<Any?>> F.intoFuture(): F = this
+public fun <Output, F : Future<Output>> F.intoFuture(): F = this

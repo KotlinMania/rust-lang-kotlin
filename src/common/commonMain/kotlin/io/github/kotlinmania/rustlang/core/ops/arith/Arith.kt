@@ -979,7 +979,8 @@ public fun F128.neg(): F128 = -this
  *     public open fun clone(): Point = Point(x, y)
  *
  *     public open fun addAssign(other: Point) {
- *         this = Point(x = this.x + other.x, y = this.y + other.y)
+ *         var selfMut = this
+ *         selfMut = Point(x = selfMut.x + other.x, y = selfMut.y + other.y)
  *     }
  * }
  * var point = Point(x = 1, y = 0)
@@ -1129,7 +1130,8 @@ public fun F128.addAssignF128(other: F128) {
  *     public open fun clone(): Point = Point(x, y)
  *
  *     public open fun subAssign(other: Point) {
- *         this = Point(x = this.x - other.x, y = this.y - other.y)
+ *         var selfMut = this
+ *         selfMut = Point(x = selfMut.x - other.x, y = selfMut.y - other.y)
  *     }
  * }
  * var point = Point(x = 3, y = 3)

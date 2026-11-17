@@ -69,7 +69,7 @@ public fun hostname(): Result<OsString, Error> {
             // size and should be returned to the user.
             else -> {
                 val err = matchVal1
-                return Result.Err<OsString, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(err))
+                return Result.Err<OsString, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(err))
             }
         }
         // Resize the buffer (according to `List`s resizing rules) and try again.

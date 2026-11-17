@@ -45,6 +45,8 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.remov
                 val matchVal = pos.intoNode().forgetType().chooseParentKv()
                 when {
                     matchVal is Result.Ok && matchVal.value is Left -> {
+                        val valueVal = matchVal.value
+                        val (leftParentKv) = valueVal as Left
                         check(leftParentKv.rightChildLen() == MIN_LEN - 1)
                         if (leftParentKv.canMerge()) {
                             leftParentKv.mergeTrackingChildEdge(Right(idx), alloc.clone())
@@ -54,6 +56,8 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.remov
                         }
                     }
                     matchVal is Result.Ok && matchVal.value is Right -> {
+                        val valueVal1 = matchVal.value
+                        val (rightParentKv) = valueVal1 as Right
                         check(rightParentKv.leftChildLen() == MIN_LEN - 1)
                         if (rightParentKv.canMerge()) {
                             rightParentKv.mergeTrackingChildEdge(Left(idx), alloc.clone())

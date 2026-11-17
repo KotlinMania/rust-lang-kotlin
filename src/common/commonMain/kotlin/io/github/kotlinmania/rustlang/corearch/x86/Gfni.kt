@@ -1,7 +1,9 @@
 // port-lint: source x86/gfni.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 import io.github.kotlinmania.rustlang.corearch.simd.I8x32
 import io.github.kotlinmania.rustlang.corearch.simd.I8x64
@@ -49,7 +51,7 @@ public expect fun vgf2p8mulb128(a: I8x16, b: I8x16): I8x16
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_gf2p8mul_epi8)
  */
-public fun mm512Gf2p8mulEpi8(a: M512i, b: M512i): M512i = transmute(vgf2p8mulb512(a.asI8x64(), b.asI8x64()))
+public fun mm512Gf2p8mulEpi8(a: M512i, b: M512i): M512i = transmuteWithLayouts<I8x64, M512i>(vgf2p8mulb512(a.asI8x64(), b.asI8x64()), UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Performs a multiplication in GF(2^8) on the packed bytes.
@@ -85,7 +87,7 @@ public fun mm512MaskzGf2p8mulEpi8(k: Mmask64, a: M512i, b: M512i): M512i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_gf2p8mul_epi8)
  */
-public fun mm256Gf2p8mulEpi8(a: M256i, b: M256i): M256i = transmute(vgf2p8mulb256(a.asI8x32(), b.asI8x32()))
+public fun mm256Gf2p8mulEpi8(a: M256i, b: M256i): M256i = transmuteWithLayouts<I8x32, M256i>(vgf2p8mulb256(a.asI8x32(), b.asI8x32()), UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Performs a multiplication in GF(2^8) on the packed bytes.
@@ -121,7 +123,7 @@ public fun mm256MaskzGf2p8mulEpi8(k: Mmask32, a: M256i, b: M256i): M256i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_gf2p8mul_epi8)
  */
-public fun mmGf2p8mulEpi8(a: M128i, b: M128i): M128i = transmute(vgf2p8mulb128(a.asI8x16(), b.asI8x16()))
+public fun mmGf2p8mulEpi8(a: M128i, b: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vgf2p8mulb128(a.asI8x16(), b.asI8x16()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Performs a multiplication in GF(2^8) on the packed bytes.
@@ -168,7 +170,7 @@ public fun mm512Gf2p8affineEpi64Epi8(x: M512i, a: M512i, b: Int): M512i {
     val a1 = a.asI8x64()
     return run {
         val r = vgf2p8affineqb512(x1, a1, b)
-        transmute(r)
+        transmuteWithLayouts<I8x64, M512i>(r, UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
     }
 }
 
@@ -238,7 +240,7 @@ public fun mm256Gf2p8affineEpi64Epi8(x: M256i, a: M256i, b: Int): M256i {
     val a1 = a.asI8x32()
     return run {
         val r = vgf2p8affineqb256(x1, a1, b)
-        transmute(r)
+        transmuteWithLayouts<I8x32, M256i>(r, UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
     }
 }
 
@@ -308,7 +310,7 @@ public fun mmGf2p8affineEpi64Epi8(x: M128i, a: M128i, b: Int): M128i {
     val a1 = a.asI8x16()
     return run {
         val r = vgf2p8affineqb128(x1, a1, b)
-        transmute(r)
+        transmuteWithLayouts<I8x16, M128i>(r, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
     }
 }
 
@@ -380,7 +382,7 @@ public fun mm512Gf2p8affineinvEpi64Epi8(x: M512i, a: M512i, b: Int): M512i {
     val a1 = a.asI8x64()
     return run {
         val r = vgf2p8affineinvqb512(x1, a1, b)
-        transmute(r)
+        transmuteWithLayouts<I8x64, M512i>(r, UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
     }
 }
 
@@ -456,7 +458,7 @@ public fun mm256Gf2p8affineinvEpi64Epi8(x: M256i, a: M256i, b: Int): M256i {
     val a1 = a.asI8x32()
     return run {
         val r = vgf2p8affineinvqb256(x1, a1, b)
-        transmute(r)
+        transmuteWithLayouts<I8x32, M256i>(r, UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
     }
 }
 
@@ -532,7 +534,7 @@ public fun mmGf2p8affineinvEpi64Epi8(x: M128i, a: M128i, b: Int): M128i {
     val a1 = a.asI8x16()
     return run {
         val r = vgf2p8affineinvqb128(x1, a1, b)
-        transmute(r)
+        transmuteWithLayouts<I8x16, M128i>(r, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
     }
 }
 

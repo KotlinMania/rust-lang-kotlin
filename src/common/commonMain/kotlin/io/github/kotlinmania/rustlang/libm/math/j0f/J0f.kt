@@ -1,11 +1,11 @@
 // port-lint: source math/j0f.rs
 package io.github.kotlinmania.rustlang.libm.math.j0f
 
-import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.sqrt.sqrtf
 import io.github.kotlinmania.rustlang.libm.math.cosf.cosf
 import io.github.kotlinmania.rustlang.libm.math.fabs.fabsf
 import io.github.kotlinmania.rustlang.libm.math.logf.logf
 import io.github.kotlinmania.rustlang.libm.math.sinf.sinf
+import io.github.kotlinmania.rustlang.libm.math.sqrt.sqrtf
 
 public val INVSQRTPI: kotlin.Float = 5.6418961287e-01f
 

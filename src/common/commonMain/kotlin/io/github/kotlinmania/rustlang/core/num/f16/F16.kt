@@ -15,11 +15,11 @@ import io.github.kotlinmania.rustlang.core.intrinsics.maximumf16
 import io.github.kotlinmania.rustlang.core.intrinsics.minimumNumberNszF16
 import io.github.kotlinmania.rustlang.core.intrinsics.minimumf16
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.floatBinaryWithLayout
 import io.github.kotlinmania.rustlang.core.mem.floatFmaWithLayout
 import io.github.kotlinmania.rustlang.core.mem.floatPowiWithLayout
 import io.github.kotlinmania.rustlang.core.mem.floatUnaryWithLayout
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.FpCategory
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cbrtf
@@ -853,7 +853,7 @@ public inline fun <reified Int> F16.toIntStrict(): Int = (this.toIntChecked<Int>
  */
 public fun F16.toBits(): UShort {
     // SAFETY: `UShort` is a plain old datatype so we can always reinterpret to it.
-    return transmute(this)
+    return transmuteWithLayouts<F16, UShort>(this, UnresolvedTypeLayout<F16>(), PrimitiveLayouts.U16)
 }
 
 /**
@@ -900,7 +900,7 @@ public fun F16.toBits(): UShort {
 public fun F16.Companion.fromBits(v: UShort): F16 {
     // It turns out the safety issues with sNaN were overblown! Hooray!
     // SAFETY: `UShort` is a plain old datatype so we can always reinterpret from it.
-    return transmuteWithLayouts(v, PrimitiveLayouts.U16, PrimitiveLayouts.F16_LAYOUT)
+    return transmuteWithLayouts<UShort, F16>(v, PrimitiveLayouts.U16, PrimitiveLayouts.F16_LAYOUT)
 }
 
 /**
@@ -1170,14 +1170,15 @@ public fun F16.totalCmp(other: F16): Ordering {
  * ```
  */
 public fun F16.clamp(min: F16, max: F16): F16 {
+    var selfMut = this
     constAssert(min <= max, "min > max, or either was NaN", "min > max, or either was NaN. min = {min:?}, max = {max:?}", min, max)
-    if (this < min) {
-        this = min
+    if (selfMut < min) {
+        selfMut = min
     }
-    if (this > max) {
-        this = max
+    if (selfMut > max) {
+        selfMut = max
     }
-    return this
+    return selfMut
 }
 
 /**

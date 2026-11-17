@@ -401,7 +401,7 @@ public open class RawVecInner<A : Allocator> internal constructor(
             return Result.Err<Unit, TryReserveError>(CapacityOverflow.into())
         }
         // Nothing we can really do about these checks, sadly.
-        val requiredCap = when (val tryResult = (len.checkedAdd(additional)?.let { Result.Ok(it) } ?: Result.Err(CapacityOverflow))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
+        val requiredCap = when (val tryResult = (len.checkedAdd(additional)?.let { Result.Ok<Int, TryReserveError>(it) } ?: Result.Err<Int, TryReserveError>(CapacityOverflow))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
         // This guarantees exponential growth. The doubling cannot overflow
         // because `cap <= Long.MAX` and the type of `cap` is `Int`.
         val cap = max(this.cap.asInner() * 2, requiredCap)
@@ -628,7 +628,7 @@ public open class RawVecInner<A : Allocator> internal constructor(
             // 0, getting to here necessarily means the `RawVec` is overfull.
             return Result.Err<Unit, TryReserveError>(CapacityOverflow.into())
         }
-        val cap = when (val tryResult = (len.checkedAdd(additional)?.let { Result.Ok(it) } ?: Result.Err(CapacityOverflow))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
+        val cap = when (val tryResult = (len.checkedAdd(additional)?.let { Result.Ok<Int, TryReserveError>(it) } ?: Result.Err<Int, TryReserveError>(CapacityOverflow))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
         // SAFETY: preconditions passed to caller
         val ptr = when (val tryResult = this.finishGrow(cap, elemLayout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
         // SAFETY: `finishGrow` would have failed if `cap> Long.MAX`

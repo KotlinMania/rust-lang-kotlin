@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 
-public fun <Int, SignedInt, F : Float<F, Any?, Any?>> check(f: (F, F) -> F, cases: List<Triple<F, F, F>>) {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> check(f: (F, F) -> F, cases: List<Triple<F, F, F>>) {
     for ((x, y, expRes) in cases) {
         val value = f(x, y)
         run {

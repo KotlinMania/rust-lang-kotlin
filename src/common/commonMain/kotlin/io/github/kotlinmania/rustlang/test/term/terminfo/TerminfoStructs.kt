@@ -64,10 +64,10 @@ public open class TermInfo(
         public fun fromName(name: String): Result<TermInfo, Error> {
             if (false) {
                 // Avoid all the work of parsing the terminfo (it's pretty slow under Miri), and just
-                // assume that the standard color codes work (like e.g. the 'colored' crate).
-                return Result.Ok<TermInfo, Error>(TermInfo(names = Default.default(), bools = Default.default(), numbers = Default.default(), strings = Default.default()))
+                // assume that the standard color codes work (like e.g. the `colored` crate).
+                return Result.Ok<TermInfo, Error>(TermInfo(names = emptyList(), bools = Default.default(), numbers = Default.default(), strings = Default.default()))
             }
-            return (getDbpathForTerm(name)?.let { Result.Ok(it) } ?: Result.Err(Error.IoError(io.constError(ErrorKind.NotFound, "terminfo file not found")))).andThen({ p -> TermInfo.fromPath(p) })
+            return (getDbpathForTerm(name)?.let { Result.Ok<Option, Error>(it) } ?: Result.Err<Option, Error>(Error.IoError(io.constError(ErrorKind.NotFound, "terminfo file not found")))).andThen({ p -> TermInfo.fromPath(p) })
         }
 
         /**

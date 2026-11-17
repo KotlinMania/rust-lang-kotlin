@@ -53,35 +53,35 @@ public sealed class EscapeErrorKind {
      */
     public data object OutOfRangeHexEscape : EscapeErrorKind()
     /**
-     * '\u' not followed by '{'.
+     * '\u' not followed by '('.
      */
     public data object NoBraceInUnicodeEscape : EscapeErrorKind()
     /**
-     * Non-hexadecimal value in '\u{..}'.
+     * Non-hexadecimal value in '\u(..)'.
      */
     public data object InvalidCharInUnicodeEscape : EscapeErrorKind()
     /**
-     * '\u{}'
+     * '\u()'
      */
     public data object EmptyUnicodeEscape : EscapeErrorKind()
     /**
-     * No closing brace in '\u{..}', e.g. '\u{12'.
+     * No closing brace in '\u(..)', e.g. '\u(12'.
      */
     public data object UnclosedUnicodeEscape : EscapeErrorKind()
     /**
-     * '\u{_12}'
+     * '\u(_12)'
      */
     public data object LeadingUnderscoreUnicodeEscape : EscapeErrorKind()
     /**
-     * More than 6 characters in '\u{..}', e.g. '\u{10FFFF_FF}'
+     * More than 6 characters in '\u(..)', e.g. '\u(10FFFF_FF)'
      */
     public data object OverlongUnicodeEscape : EscapeErrorKind()
     /**
-     * Invalid in-bound unicode character code, e.g. '\u{DFFF}'.
+     * Invalid in-bound unicode character code, e.g. '\u(DFFF)'.
      */
     public data object LoneSurrogateUnicodeEscape : EscapeErrorKind()
     /**
-     * Out of bounds unicode character code, e.g. '\u{FFFFFF}'.
+     * Out of bounds unicode character code, e.g. '\u(FFFFFF)'.
      */
     public data object OutOfRangeUnicodeEscape : EscapeErrorKind()
     /**
@@ -236,7 +236,7 @@ public sealed class TokenTree {
      */
     public data class Punct(public var value: Punct) : TokenTree()
     /**
-     * A literal character (`'a'`), string (`"hello"`), number (`2.3`), etc.
+     * A literal character (``a``), string (`"hello"`), number (`2.3`), etc.
      */
     public data class Literal(public var value: Literal) : TokenTree()
 
@@ -371,7 +371,7 @@ public sealed class Delimiter {
      */
     public data object Parenthesis : Delimiter()
     /**
-     * `{ ... }`
+     * `( ... )`
      */
     public data object Brace : Delimiter()
     /**

@@ -26,7 +26,7 @@ public typealias Source<I> = I.Source
  */
 public open class Cloned<I>(
     public var it: I,
-) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen<Cloned<I>>, SourceIter<Source>, InPlaceIterable, Iterable<T> {
+) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen, SourceIter<Source>, InPlaceIterable, Iterable<T> {
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Cloned.next()) {
@@ -42,7 +42,7 @@ public open class Cloned<I>(
 
     public override fun sizeHint(): Pair<Int, Int?> = this.it.sizeHint()
 
-    public override fun <B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<R, B, Any?> = this.it.tryFold(init, cloneTryFold(f))
+    public override fun <Residual, B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> = this.it.tryFold(init, cloneTryFold(f))
 
     public override fun <Acc> fold(init: Acc, f: (Acc, T) -> Acc, cloneTFn: (T) -> T = { it }): Acc = this.it.map(cloneTFn).fold(init, f)
 
@@ -54,7 +54,7 @@ public open class Cloned<I>(
 
     public open fun nextBack(): T? = this.it.nextBack()
 
-    public open fun <B, R> tryRfold(init: B, f: (B, T) -> R): R where R : Try<R, B, Any?> = this.it.tryRfold(init, cloneTryFold(f))
+    public open fun <Residual, B, R> tryRfold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> = this.it.tryRfold(init, cloneTryFold(f))
 
     public open fun <Acc> rfold(init: Acc, f: (Acc, T) -> Acc, cloneTFn: (T) -> T = { it }): Acc = this.it.map(cloneTFn).rfold(init, f)
 

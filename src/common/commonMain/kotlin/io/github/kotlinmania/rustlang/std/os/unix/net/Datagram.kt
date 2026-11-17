@@ -72,14 +72,14 @@ public val MSG_NOSIGNAL: CInt = 0x0
  *
  * use std.os.unix.net.UnixDatagram;
  *
- * fn main() -> std.io.Result<()> {
+ * fn main() -> std.io.Result<()> (
  *     let socket = UnixDatagram.bind("/path/to/my/socket")?;
  *     socket.sendTo(b"hello world", "/path/to/other/socket")?;
  *     let mut buf = [0; 100];
  *     let (count, address) = socket.recvFrom(buf)?;
- *     println("socket {:?} sent {:?}", address, &buf[..count]);
+ *     println("socket (:?) sent (:?)", address, &buf[..count]);
  *     Ok(())
- * }
+ * )
  * ```kotlin
  */
 public open class UnixDatagram(
@@ -125,17 +125,17 @@ public open class UnixDatagram(
      *
      * use std.os.unix.net.UnixDatagram;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
-     *     match sock.connect("/path/to/the/socket") {
+     *     match sock.connect("/path/to/the/socket") (
      *         Ok(sock) => sock,
-     *         Err(e) => {
-     *             println("Couldn't connect: {e:?}");
+     *         Err(e) => (
+     *             println("Couldn't connect: (e:?)");
      *             return Err(e)
-     *         }
-     *     };
+     *         )
+     *     );
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun connect(path: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -151,22 +151,22 @@ public open class UnixDatagram(
      *
      * # Examples
      *
-     * use std.os.unix.net::{UnixDatagram};
+     * use std.os.unix.net::(UnixDatagram);
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let bound = UnixDatagram.bind("/path/to/socket")?;
      *     let addr = bound.localAddr()?;
      *
      *     let sock = UnixDatagram.unbound()?;
-     *     match sock.connectAddr(&addr) {
+     *     match sock.connectAddr(&addr) (
      *         Ok(sock) => sock,
-     *         Err(e) => {
-     *             println("Couldn't connect: {e:?}");
+     *         Err(e) => (
+     *             println("Couldn't connect: (e:?)");
      *             return Err(e)
-     *         }
-     *     };
+     *         )
+     *     );
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun connectAddr(socketAddr: SocketAddr): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -187,11 +187,11 @@ public open class UnixDatagram(
      *
      * use std.os.unix.net.UnixDatagram;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.bind("/path/to/the/socket")?;
      *     let sockCopy = sock.tryClone().expect("`UnixDatagram.tryClone` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun tryClone(): Result<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.duplicate().map({ UnixDatagram(it) })
@@ -203,11 +203,11 @@ public open class UnixDatagram(
      *
      * use std.os.unix.net.UnixDatagram;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.bind("/path/to/the/socket")?;
      *     let addr = sock.localAddr().expect("`UnixDatagram.localAddr` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun localAddr(): Result<SocketAddr, io.github.kotlinmania.rustlang.std.io.error.Error> = SocketAddr.new({ addr, len -> getsockname(this.asRawFd(), addr, len) })
@@ -223,13 +223,13 @@ public open class UnixDatagram(
      *
      * use std.os.unix.net.UnixDatagram;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
      *     sock.connect("/path/to/the/socket")?;
      *
      *     let addr = sock.peerAddr().expect("`UnixDatagram.peerAddr` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun peerAddr(): Result<SocketAddr, io.github.kotlinmania.rustlang.std.io.error.Error> = SocketAddr.new({ addr, len -> getpeername(this.asRawFd(), addr, len) })
@@ -260,13 +260,13 @@ public open class UnixDatagram(
      *
      * use std.os.unix.net.UnixDatagram;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
      *     let mut buf = vec[0; 10];
      *     let (size, sender) = sock.recvFrom(buf.asMutSlice())?;
-     *     println("received {size} bytes from {sender:?}");
+     *     println("received (size) bytes from (sender:?)");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun recvFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>, io.github.kotlinmania.rustlang.std.io.error.Error> = this.recvFromFlags(buf, 0)
@@ -280,12 +280,12 @@ public open class UnixDatagram(
      *
      * use std.os.unix.net.UnixDatagram;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.bind("/path/to/the/socket")?;
      *     let mut buf = vec[0; 10];
      *     sock.recv(buf.asMutSlice()).expect("`UnixDatagram.recv` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun recv(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.read(buf)
@@ -298,10 +298,10 @@ public open class UnixDatagram(
      * # Examples
      *
      * @file:feature(unixSocketAncillaryData)
-     * use std.os.unix.net::{UnixDatagram, SocketAncillary, AncillaryData};
+     * use std.os.unix.net::(UnixDatagram, SocketAncillary, AncillaryData);
      * use std.io.IoSliceMut;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
      *     let mut buf1 = [1; 8];
      *     let mut buf2 = [2; 16];
@@ -315,16 +315,16 @@ public open class UnixDatagram(
      *     let mut ancillaryBuffer = [0; 128];
      *     let mut ancillary = SocketAncillary.new(ancillaryBuffer[..]);
      *     let (size, _truncated, sender) = sock.recvVectoredWithAncillaryFrom(bufs, ancillary)?;
-     *     println("received {size}");
-     *     for ancillaryResult in ancillary.messages() {
-     *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() {
-     *             for fd in scmRights {
-     *                 println("receive file descriptor: {fd}");
-     *             }
-     *         }
-     *     }
+     *     println("received (size)");
+     *     for ancillaryResult in ancillary.messages() (
+     *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() (
+     *             for fd in scmRights (
+     *                 println("receive file descriptor: (fd)");
+     *             )
+     *         )
+     *     )
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun recvVectoredWithAncillaryFrom(bufs: MutableList<IoSliceMut>, ancillary: SocketAncillary): Result<Triple<Int, Boolean, SocketAddr>, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -341,10 +341,10 @@ public open class UnixDatagram(
      * # Examples
      *
      * @file:feature(unixSocketAncillaryData)
-     * use std.os.unix.net::{UnixDatagram, SocketAncillary, AncillaryData};
+     * use std.os.unix.net::(UnixDatagram, SocketAncillary, AncillaryData);
      * use std.io.IoSliceMut;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
      *     let mut buf1 = [1; 8];
      *     let mut buf2 = [2; 16];
@@ -358,16 +358,16 @@ public open class UnixDatagram(
      *     let mut ancillaryBuffer = [0; 128];
      *     let mut ancillary = SocketAncillary.new(ancillaryBuffer[..]);
      *     let (size, _truncated) = sock.recvVectoredWithAncillary(bufs, ancillary)?;
-     *     println("received {size}");
-     *     for ancillaryResult in ancillary.messages() {
-     *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() {
-     *             for fd in scmRights {
-     *                 println("receive file descriptor: {fd}");
-     *             }
-     *         }
-     *     }
+     *     println("received (size)");
+     *     for ancillaryResult in ancillary.messages() (
+     *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() (
+     *             for fd in scmRights (
+     *                 println("receive file descriptor: (fd)");
+     *             )
+     *         )
+     *     )
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun recvVectoredWithAncillary(bufs: MutableList<IoSliceMut>, ancillary: SocketAncillary): Result<Pair<Int, Boolean>, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -385,11 +385,11 @@ public open class UnixDatagram(
      *
      * use std.os.unix.net.UnixDatagram;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
      *     sock.sendTo(b"omelette au fromage", "/some/sock").expect("`UnixDatagram.sendTo` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun sendTo(buf: List<UByte>, path: Path): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -407,16 +407,16 @@ public open class UnixDatagram(
      *
      * # Examples
      *
-     * use std.os.unix.net::{UnixDatagram};
+     * use std.os.unix.net::(UnixDatagram);
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let bound = UnixDatagram.bind("/path/to/socket")?;
      *     let addr = bound.localAddr()?;
      *
      *     let sock = UnixDatagram.unbound()?;
      *     sock.sendToAddr(b"bacon egg and cheese", &addr).expect("`UnixDatagram.sendToAddr` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun sendToAddr(buf: List<UByte>, socketAddr: SocketAddr): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -438,12 +438,12 @@ public open class UnixDatagram(
      *
      * use std.os.unix.net.UnixDatagram;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
      *     sock.connect("/some/sock").expect("`UnixDatagram.connect` should not fail");
      *     sock.send(b"omelette au fromage").expect("`UnixDatagram` is not connected");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun send(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.write(buf)
@@ -456,10 +456,10 @@ public open class UnixDatagram(
      * # Examples
      *
      * @file:feature(unixSocketAncillaryData)
-     * use std.os.unix.net::{UnixDatagram, SocketAncillary};
+     * use std.os.unix.net::(UnixDatagram, SocketAncillary);
      * use std.io.IoSlice;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
      *     let buf1 = [1; 8];
      *     let buf2 = [2; 16];
@@ -476,7 +476,7 @@ public open class UnixDatagram(
      *     sock.sendVectoredWithAncillaryTo(bufs, ancillary, "/some/sock")
      *         .expect("`UnixDatagram.sendVectoredWithAncillaryTo` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun sendVectoredWithAncillaryTo(bufs: List<IoSlice>, ancillary: SocketAncillary, path: Path): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = sendVectoredWithAncillaryTo(this.value, path, bufs, ancillary)
@@ -489,10 +489,10 @@ public open class UnixDatagram(
      * # Examples
      *
      * @file:feature(unixSocketAncillaryData)
-     * use std.os.unix.net::{UnixDatagram, SocketAncillary};
+     * use std.os.unix.net::(UnixDatagram, SocketAncillary);
      * use std.io.IoSlice;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
      *     let buf1 = [1; 8];
      *     let buf2 = [2; 16];
@@ -509,7 +509,7 @@ public open class UnixDatagram(
      *     sock.sendVectoredWithAncillary(bufs, ancillary)
      *         .expect("`UnixDatagram.sendVectoredWithAncillary` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun sendVectoredWithAncillary(bufs: List<IoSlice>, ancillary: SocketAncillary): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = sendVectoredWithAncillaryTo(this.value, null, bufs, ancillary)
@@ -529,12 +529,12 @@ public open class UnixDatagram(
      * use std.os.unix.net.UnixDatagram;
      * use std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
      *     sock.setReadTimeout(Some(Duration.new(1, 0)))
      *         .expect("`UnixDatagram.setReadTimeout` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      *
      * An [Err] is returned if the zero [Duration] is passed to this
@@ -544,13 +544,13 @@ public open class UnixDatagram(
      * import std.os.unix.net.UnixDatagram;
      * import std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      * val socket = UnixDatagram.unbound();
      * val result = socket.setReadTimeout(Some(Duration.new(0, 0)));
      * val err = result.unwrapErr();
      * assertEq(err.kind(), io.ErrorKind.InvalidInput);
      * Ok(())
-     * }
+     * )
      * ```
      */
     public open fun setReadTimeout(timeout: Duration?): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setTimeout(timeout, SO_RCVTIMEO)
@@ -570,12 +570,12 @@ public open class UnixDatagram(
      * use std.os.unix.net.UnixDatagram;
      * use std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
      *     sock.setWriteTimeout(Some(Duration.new(1, 0)))
      *         .expect("`UnixDatagram.setWriteTimeout` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      *
      * An [Err] is returned if the zero [Duration] is passed to this
@@ -585,13 +585,13 @@ public open class UnixDatagram(
      * import std.os.unix.net.UnixDatagram;
      * import std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      * val socket = UnixDatagram.unbound();
      * val result = socket.setWriteTimeout(Some(Duration.new(0, 0)));
      * val err = result.unwrapErr();
      * assertEq(err.kind(), io.ErrorKind.InvalidInput);
      * Ok(())
-     * }
+     * )
      * ```
      */
     public open fun setWriteTimeout(timeout: Duration?): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setTimeout(timeout, SO_SNDTIMEO)
@@ -604,13 +604,13 @@ public open class UnixDatagram(
      * use std.os.unix.net.UnixDatagram;
      * use std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
      *     sock.setReadTimeout(Some(Duration.new(1, 0)))
      *         .expect("`UnixDatagram.setReadTimeout` should not fail");
      *     assertEq(sock.readTimeout()?, Some(Duration.new(1, 0)));
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun readTimeout(): Result<Duration?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.timeout(SO_RCVTIMEO)
@@ -623,13 +623,13 @@ public open class UnixDatagram(
      * use std.os.unix.net.UnixDatagram;
      * use std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
      *     sock.setWriteTimeout(Some(Duration.new(1, 0)))
      *         .expect("`UnixDatagram.setWriteTimeout` should not fail");
      *     assertEq(sock.writeTimeout()?, Some(Duration.new(1, 0)));
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun writeTimeout(): Result<Duration?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.timeout(SO_SNDTIMEO)
@@ -641,11 +641,11 @@ public open class UnixDatagram(
      *
      * use std.os.unix.net.UnixDatagram;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
      *     sock.setNonblocking(true).expect("`UnixDatagram.setNonblocking` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setNonblocking(nonblocking)
@@ -656,11 +656,11 @@ public open class UnixDatagram(
      * @file:feature(unixSetMark)
      * use std.os.unix.net.UnixDatagram;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
      *     sock.setMark(32)?;
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun setMark(mark: UInt): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setMark(mark)
@@ -672,16 +672,16 @@ public open class UnixDatagram(
      *
      * use std.os.unix.net.UnixDatagram;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
-     *     if let Ok(Some(err)) = sock.takeError() {
-     *         println("Got error: {err:?}");
-     *     }
+     *     if let Ok(Some(err)) = sock.takeError() (
+     *         println("Got error: (err:?)");
+     *     )
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.takeError()
 
     /**
      * Shut down the read, write, or both halves of this connection.
@@ -693,11 +693,11 @@ public open class UnixDatagram(
      * use std.os.unix.net.UnixDatagram;
      * use std.net.Shutdown;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixDatagram.unbound()?;
      *     sock.shutdown(Shutdown.Both).expect("`UnixDatagram.shutdown` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun shutdown(how: Shutdown): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.shutdown(how)
@@ -716,12 +716,12 @@ public open class UnixDatagram(
      *
      * use std.os.unix.net.UnixDatagram;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixDatagram.bind("/tmp/sock")?;
      *     let mut buf = [0; 10];
      *     let len = socket.peek(buf).expect("`UnixDatagram.peek` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun peek(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.peek(buf)
@@ -746,12 +746,12 @@ public open class UnixDatagram(
      *
      * use std.os.unix.net.UnixDatagram;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixDatagram.bind("/tmp/sock")?;
      *     let mut buf = [0; 10];
      *     let (len, addr) = socket.peekFrom(buf).expect("peek failed");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun peekFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>, io.github.kotlinmania.rustlang.std.io.error.Error> = this.recvFromFlags(buf, MSG_PEEK)
@@ -772,13 +772,13 @@ public open class UnixDatagram(
          *
          * use std.os.unix.net.UnixDatagram;
          *
-         * let sock = match UnixDatagram.bind("/path/to/the/socket") {
+         * let sock = match UnixDatagram.bind("/path/to/the/socket") (
          *     Ok(sock) => sock,
-         *     Err(e) => {
-         *         println("Couldn't bind: {e:?}");
+         *     Err(e) => (
+         *         println("Couldn't bind: (e:?)");
          *         return
-         *     }
-         * };
+         *     )
+         * );
          * ```kotlin
          */
         public fun bind(path: Path): Result<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -795,20 +795,20 @@ public open class UnixDatagram(
          *
          * # Examples
          *
-         * use std.os.unix.net::{SocketAddr, UnixDatagram};
+         * use std.os.unix.net::(SocketAddr, UnixDatagram);
          *
-         * fn main() -> std.io.Result<()> {
+         * fn main() -> std.io.Result<()> (
          *     let addr = SocketAddr.fromPathname("path/to/socket")?;
          *
-         *     let sock = match UnixDatagram.bindAddr(&addr) {
+         *     let sock = match UnixDatagram.bindAddr(&addr) (
          *         Ok(sock) => sock,
-         *         Err(err) => {
-         *             println("Couldn't bind: {err:?}");
+         *         Err(err) => (
+         *             println("Couldn't bind: (err:?)");
          *             return Err(err);
-         *         }
-         *     };
+         *         )
+         *     );
          *     Ok(())
-         * }
+         * )
          * ```kotlin
          */
         public fun bindAddr(socketAddr: SocketAddr): Result<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -826,13 +826,13 @@ public open class UnixDatagram(
          *
          * use std.os.unix.net.UnixDatagram;
          *
-         * let sock = match UnixDatagram.unbound() {
+         * let sock = match UnixDatagram.unbound() (
          *     Ok(sock) => sock,
-         *     Err(e) => {
-         *         println("Couldn't unbound: {e:?}");
+         *     Err(e) => (
+         *         println("Couldn't unbound: (e:?)");
          *         return
-         *     }
-         * };
+         *     )
+         * );
          * ```kotlin
          */
         public fun unbound(): Result<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -849,13 +849,13 @@ public open class UnixDatagram(
          *
          * use std.os.unix.net.UnixDatagram;
          *
-         * let (sock1, sock2) = match UnixDatagram.pair() {
+         * let (sock1, sock2) = match UnixDatagram.pair() (
          *     Ok((sock1, sock2)) => (sock1, sock2),
-         *     Err(e) => {
-         *         println("Couldn't unbound: {e:?}");
+         *     Err(e) => (
+         *         println("Couldn't unbound: (e:?)");
          *         return
-         *     }
-         * };
+         *     )
+         * );
          * ```kotlin
          */
         public fun pair(): Result<Pair<UnixDatagram, UnixDatagram>, io.github.kotlinmania.rustlang.std.io.error.Error> {

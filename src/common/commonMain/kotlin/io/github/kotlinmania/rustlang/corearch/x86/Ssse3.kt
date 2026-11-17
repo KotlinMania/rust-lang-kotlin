@@ -3,7 +3,10 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8
 import io.github.kotlinmania.rustlang.corearch.simd.I32x4
@@ -88,7 +91,7 @@ public fun mmAbsEpi32(a: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_shuffle_epi8)
  */
-public fun mmShuffleEpi8(a: M128i, b: M128i): M128i = transmute(pshufb128(a.asU8x16(), b.asU8x16()))
+public fun mmShuffleEpi8(a: M128i, b: M128i): M128i = transmuteWithLayouts<U8x16, M128i>(pshufb128(a.asU8x16(), b.asU8x16()), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Concatenate 16-byte blocks in `a` and `b` into a 32-byte temporary result,
@@ -124,7 +127,7 @@ public fun mmAlignrEpi8(a: M128i, b: M128i, imm8: Int): M128i {
         }
     return run {
         val r: I8x16 = run { val _simdArg0 = b1.asI8x16(); val _simdArg1 = a1.asI8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(mask(imm8.toUInt(), 0u), mask(imm8.toUInt(), 1u), mask(imm8.toUInt(), 2u), mask(imm8.toUInt(), 3u), mask(imm8.toUInt(), 4u), mask(imm8.toUInt(), 5u), mask(imm8.toUInt(), 6u), mask(imm8.toUInt(), 7u), mask(imm8.toUInt(), 8u), mask(imm8.toUInt(), 9u), mask(imm8.toUInt(), 10u), mask(imm8.toUInt(), 11u), mask(imm8.toUInt(), 12u), mask(imm8.toUInt(), 13u), mask(imm8.toUInt(), 14u), mask(imm8.toUInt(), 15u))); _simdArg0 }
-        transmute(r)
+        transmuteWithLayouts<I8x16, M128i>(r, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
     }
 }
 
@@ -236,7 +239,7 @@ public fun mmHsubEpi32(a: M128i, b: M128i): M128i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maddubs_epi16)
  */
-public fun mmMaddubsEpi16(a: M128i, b: M128i): M128i = transmute(pmaddubsw128(a.asU8x16(), b.asI8x16()))
+public fun mmMaddubsEpi16(a: M128i, b: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(pmaddubsw128(a.asU8x16(), b.asI8x16()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiplies packed 16-bit signed integer values, truncate the 32-bit
@@ -245,7 +248,7 @@ public fun mmMaddubsEpi16(a: M128i, b: M128i): M128i = transmute(pmaddubsw128(a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mulhrs_epi16)
  */
-public fun mmMulhrsEpi16(a: M128i, b: M128i): M128i = transmute(pmulhrsw128(a.asI16x8(), b.asI16x8()))
+public fun mmMulhrsEpi16(a: M128i, b: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(pmulhrsw128(a.asI16x8(), b.asI16x8()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Negates packed 8-bit integers in `a` when the corresponding signed 8-bit
@@ -255,7 +258,7 @@ public fun mmMulhrsEpi16(a: M128i, b: M128i): M128i = transmute(pmulhrsw128(a.as
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sign_epi8)
  */
-public fun mmSignEpi8(a: M128i, b: M128i): M128i = transmute(psignb128(a.asI8x16(), b.asI8x16()))
+public fun mmSignEpi8(a: M128i, b: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(psignb128(a.asI8x16(), b.asI8x16()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Negates packed 16-bit integers in `a` when the corresponding signed 16-bit
@@ -265,7 +268,7 @@ public fun mmSignEpi8(a: M128i, b: M128i): M128i = transmute(psignb128(a.asI8x16
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sign_epi16)
  */
-public fun mmSignEpi16(a: M128i, b: M128i): M128i = transmute(psignw128(a.asI16x8(), b.asI16x8()))
+public fun mmSignEpi16(a: M128i, b: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(psignw128(a.asI16x8(), b.asI16x8()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Negates packed 32-bit integers in `a` when the corresponding signed 32-bit
@@ -275,7 +278,7 @@ public fun mmSignEpi16(a: M128i, b: M128i): M128i = transmute(psignw128(a.asI16x
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sign_epi32)
  */
-public fun mmSignEpi32(a: M128i, b: M128i): M128i = transmute(psignd128(a.asI32x4(), b.asI32x4()))
+public fun mmSignEpi32(a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(psignd128(a.asI32x4(), b.asI32x4()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 public expect fun pshufb128(a: U8x16, b: U8x16): U8x16
 

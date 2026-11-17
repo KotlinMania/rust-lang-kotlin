@@ -7,9 +7,9 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -27,7 +27,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
  * MIPS-specific 128-bit wide vector of 16 packed `Byte`.
  */
 public open class V16i8(
-    public var value: ByteArray,
+    public var value: ByteArray = ByteArray(16),
 ) {
     public var field0: ByteArray
         get() = value
@@ -75,17 +75,17 @@ public open class V16i8(
          */
         public fun splat(value: Byte): V16i8 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Byte>): V16i8 = transmute(simd)
+        public fun from(simd: Simd<Byte>): V16i8 = transmuteWithLayouts<Simd<Byte>, V16i8>(simd, UnresolvedTypeLayout<Simd<Byte>>(), V16i8.typeLayout())
     }
 }
 
-public fun fromSimdByte(simd: V16i8): Simd<Byte> = transmute(simd)
+public fun fromSimdByte(simd: V16i8): Simd<Byte> = transmuteWithLayouts<V16i8, Simd<Byte>>(simd, V16i8.typeLayout(), UnresolvedTypeLayout<Simd<Byte>>())
 
 /**
  * MIPS-specific 128-bit wide vector of 8 packed `Short`.
  */
 public open class V8i16(
-    public var value: ShortArray,
+    public var value: ShortArray = ShortArray(8),
 ) {
     public var field0: ShortArray
         get() = value
@@ -133,17 +133,17 @@ public open class V8i16(
          */
         public fun splat(value: Short): V8i16 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Short>): V8i16 = transmute(simd)
+        public fun from(simd: Simd<Short>): V8i16 = transmuteWithLayouts<Simd<Short>, V8i16>(simd, UnresolvedTypeLayout<Simd<Short>>(), V8i16.typeLayout())
     }
 }
 
-public fun fromSimdShort(simd: V8i16): Simd<Short> = transmute(simd)
+public fun fromSimdShort(simd: V8i16): Simd<Short> = transmuteWithLayouts<V8i16, Simd<Short>>(simd, V8i16.typeLayout(), UnresolvedTypeLayout<Simd<Short>>())
 
 /**
  * MIPS-specific 128-bit wide vector of 4 packed `Int`.
  */
 public open class V4i32(
-    public var value: IntArray,
+    public var value: IntArray = IntArray(4),
 ) {
     public var field0: IntArray
         get() = value
@@ -191,17 +191,17 @@ public open class V4i32(
          */
         public fun splat(value: Int): V4i32 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Int>): V4i32 = transmute(simd)
+        public fun from(simd: Simd<Int>): V4i32 = transmuteWithLayouts<Simd<Int>, V4i32>(simd, UnresolvedTypeLayout<Simd<Int>>(), V4i32.typeLayout())
     }
 }
 
-public fun fromSimdInt(simd: V4i32): Simd<Int> = transmute(simd)
+public fun fromSimdInt(simd: V4i32): Simd<Int> = transmuteWithLayouts<V4i32, Simd<Int>>(simd, V4i32.typeLayout(), UnresolvedTypeLayout<Simd<Int>>())
 
 /**
  * MIPS-specific 128-bit wide vector of 2 packed `Long`.
  */
 public open class V2i64(
-    public var value: LongArray,
+    public var value: LongArray = LongArray(2),
 ) {
     public var field0: LongArray
         get() = value
@@ -249,17 +249,17 @@ public open class V2i64(
          */
         public fun splat(value: Long): V2i64 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): V2i64 = transmute(simd)
+        public fun from(simd: Simd<Long>): V2i64 = transmuteWithLayouts<Simd<Long>, V2i64>(simd, UnresolvedTypeLayout<Simd<Long>>(), V2i64.typeLayout())
     }
 }
 
-public fun fromSimdLong(simd: V2i64): Simd<Long> = transmute(simd)
+public fun fromSimdLong(simd: V2i64): Simd<Long> = transmuteWithLayouts<V2i64, Simd<Long>>(simd, V2i64.typeLayout(), UnresolvedTypeLayout<Simd<Long>>())
 
 /**
  * MIPS-specific 128-bit wide vector of 16 packed `UByte`.
  */
 public open class V16u8(
-    public var value: UByteArray,
+    public var value: UByteArray = UByteArray(16),
 ) {
     public var field0: UByteArray
         get() = value
@@ -307,17 +307,17 @@ public open class V16u8(
          */
         public fun splat(value: UByte): V16u8 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UByte>): V16u8 = transmute(simd)
+        public fun from(simd: Simd<UByte>): V16u8 = transmuteWithLayouts<Simd<UByte>, V16u8>(simd, UnresolvedTypeLayout<Simd<UByte>>(), V16u8.typeLayout())
     }
 }
 
-public fun fromSimdUByte(simd: V16u8): Simd<UByte> = transmute(simd)
+public fun fromSimdUByte(simd: V16u8): Simd<UByte> = transmuteWithLayouts<V16u8, Simd<UByte>>(simd, V16u8.typeLayout(), UnresolvedTypeLayout<Simd<UByte>>())
 
 /**
  * MIPS-specific 128-bit wide vector of 8 packed `UShort`.
  */
 public open class V8u16(
-    public var value: UShortArray,
+    public var value: UShortArray = UShortArray(8),
 ) {
     public var field0: UShortArray
         get() = value
@@ -365,17 +365,17 @@ public open class V8u16(
          */
         public fun splat(value: UShort): V8u16 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UShort>): V8u16 = transmute(simd)
+        public fun from(simd: Simd<UShort>): V8u16 = transmuteWithLayouts<Simd<UShort>, V8u16>(simd, UnresolvedTypeLayout<Simd<UShort>>(), V8u16.typeLayout())
     }
 }
 
-public fun fromSimdUShort(simd: V8u16): Simd<UShort> = transmute(simd)
+public fun fromSimdUShort(simd: V8u16): Simd<UShort> = transmuteWithLayouts<V8u16, Simd<UShort>>(simd, V8u16.typeLayout(), UnresolvedTypeLayout<Simd<UShort>>())
 
 /**
  * MIPS-specific 128-bit wide vector of 4 packed `UInt`.
  */
 public open class V4u32(
-    public var value: UIntArray,
+    public var value: UIntArray = UIntArray(4),
 ) {
     public var field0: UIntArray
         get() = value
@@ -423,17 +423,17 @@ public open class V4u32(
          */
         public fun splat(value: UInt): V4u32 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UInt>): V4u32 = transmute(simd)
+        public fun from(simd: Simd<UInt>): V4u32 = transmuteWithLayouts<Simd<UInt>, V4u32>(simd, UnresolvedTypeLayout<Simd<UInt>>(), V4u32.typeLayout())
     }
 }
 
-public fun fromSimdUInt(simd: V4u32): Simd<UInt> = transmute(simd)
+public fun fromSimdUInt(simd: V4u32): Simd<UInt> = transmuteWithLayouts<V4u32, Simd<UInt>>(simd, V4u32.typeLayout(), UnresolvedTypeLayout<Simd<UInt>>())
 
 /**
  * MIPS-specific 128-bit wide vector of 2 packed `ULong`.
  */
 public open class V2u64(
-    public var value: ULongArray,
+    public var value: ULongArray = ULongArray(2),
 ) {
     public var field0: ULongArray
         get() = value
@@ -481,14 +481,14 @@ public open class V2u64(
          */
         public fun splat(value: ULong): V2u64 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<ULong>): V2u64 = transmute(simd)
+        public fun from(simd: Simd<ULong>): V2u64 = transmuteWithLayouts<Simd<ULong>, V2u64>(simd, UnresolvedTypeLayout<Simd<ULong>>(), V2u64.typeLayout())
     }
 }
 
-public fun fromSimdULong(simd: V2u64): Simd<ULong> = transmute(simd)
+public fun fromSimdULong(simd: V2u64): Simd<ULong> = transmuteWithLayouts<V2u64, Simd<ULong>>(simd, V2u64.typeLayout(), UnresolvedTypeLayout<Simd<ULong>>())
 
 public open class V4f32(
-    public var value: FloatArray,
+    public var value: FloatArray = FloatArray(4),
 ) {
     public var field0: FloatArray
         get() = value
@@ -536,17 +536,17 @@ public open class V4f32(
          */
         public fun splat(value: Float): V4f32 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Float>): V4f32 = transmute(simd)
+        public fun from(simd: Simd<Float>): V4f32 = transmuteWithLayouts<Simd<Float>, V4f32>(simd, UnresolvedTypeLayout<Simd<Float>>(), V4f32.typeLayout())
     }
 }
 
-public fun fromSimdFloat(simd: V4f32): Simd<Float> = transmute(simd)
+public fun fromSimdFloat(simd: V4f32): Simd<Float> = transmuteWithLayouts<V4f32, Simd<Float>>(simd, V4f32.typeLayout(), UnresolvedTypeLayout<Simd<Float>>())
 
 /**
  * MIPS-specific 128-bit wide vector of 2 packed `Double`.
  */
 public open class V2f64(
-    public var value: DoubleArray,
+    public var value: DoubleArray = DoubleArray(2),
 ) {
     public var field0: DoubleArray
         get() = value
@@ -594,11 +594,11 @@ public open class V2f64(
          */
         public fun splat(value: Double): V2f64 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): V2f64 = transmute(simd)
+        public fun from(simd: Simd<Double>): V2f64 = transmuteWithLayouts<Simd<Double>, V2f64>(simd, UnresolvedTypeLayout<Simd<Double>>(), V2f64.typeLayout())
     }
 }
 
-public fun fromSimdDouble(simd: V2f64): Simd<Double> = transmute(simd)
+public fun fromSimdDouble(simd: V2f64): Simd<Double> = transmuteWithLayouts<V2f64, Simd<Double>>(simd, V2f64.typeLayout(), UnresolvedTypeLayout<Simd<Double>>())
 
 public expect fun msaAddAB(a: V16i8, b: V16i8): V16i8
 
@@ -1670,7 +1670,7 @@ public expect fun msaXoriB(a: V16u8, b: Int): V16u8
  * are added to the absolute values of the elements in vector `b` (sixteen signed 8-bit integer numbers).
  * The result is written to vector (sixteen signed 8-bit integer numbers).
  */
-public fun msaAddAB(a: V16i8, b: V16i8): V16i8 = msaAddAB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaAddAB(a: V16i8, b: V16i8): V16i8 = msaAddAB(a, b)
 
 /**
  * Vector Add Absolute Values
@@ -1679,7 +1679,7 @@ public fun msaAddAB(a: V16i8, b: V16i8): V16i8 = msaAddAB(a, transmuteWithLayout
  * are added to the absolute values of the elements in vector `b` (eight signed 16-bit integer numbers).
  * The result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaAddAH(a: V8i16, b: V8i16): V8i16 = msaAddAH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaAddAH(a: V8i16, b: V8i16): V8i16 = msaAddAH(a, b)
 
 /**
  * Vector Add Absolute Values
@@ -1688,7 +1688,7 @@ public fun msaAddAH(a: V8i16, b: V8i16): V8i16 = msaAddAH(a, transmuteWithLayout
  * are added to the absolute values of the elements in vector `b` (four signed 32-bit integer numbers).
  * The result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaAddAW(a: V4i32, b: V4i32): V4i32 = msaAddAW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaAddAW(a: V4i32, b: V4i32): V4i32 = msaAddAW(a, b)
 
 /**
  * Vector Add Absolute Values
@@ -1697,7 +1697,7 @@ public fun msaAddAW(a: V4i32, b: V4i32): V4i32 = msaAddAW(a, transmuteWithLayout
  * are added to the absolute values of the elements in vector `b` (two signed 64-bit integer numbers).
  * The result is written to vector (two signed 64-bit integer numbers).
  */
-public fun msaAddAD(a: V2i64, b: V2i64): V2i64 = msaAddAD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaAddAD(a: V2i64, b: V2i64): V2i64 = msaAddAD(a, b)
 
 /**
  * Signed Saturated Vector Saturated Add of Absolute Values
@@ -1706,7 +1706,7 @@ public fun msaAddAD(a: V2i64, b: V2i64): V2i64 = msaAddAD(a, transmuteWithLayout
  * are added to the absolute values of the elements in vector `b` (sixteen signed 8-bit integer numbers).
  * The saturated signed result is written to vector (sixteen signed 8-bit integer numbers).
  */
-public fun msaAddsAB(a: V16i8, b: V16i8): V16i8 = msaAddsAB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaAddsAB(a: V16i8, b: V16i8): V16i8 = msaAddsAB(a, b)
 
 /**
  * Vector Saturated Add of Absolute Values
@@ -1715,7 +1715,7 @@ public fun msaAddsAB(a: V16i8, b: V16i8): V16i8 = msaAddsAB(a, transmuteWithLayo
  * are added to the absolute values of the elements in vector `b` (eight signed 16-bit integer numbers).
  * The saturated signed result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaAddsAH(a: V8i16, b: V8i16): V8i16 = msaAddsAH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaAddsAH(a: V8i16, b: V8i16): V8i16 = msaAddsAH(a, b)
 
 /**
  * Vector Saturated Add of Absolute Values
@@ -1724,7 +1724,7 @@ public fun msaAddsAH(a: V8i16, b: V8i16): V8i16 = msaAddsAH(a, transmuteWithLayo
  * are added to the absolute values of the elements in vector `b` (four signed 32-bit integer numbers).
  * The saturated signed result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaAddsAW(a: V4i32, b: V4i32): V4i32 = msaAddsAW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaAddsAW(a: V4i32, b: V4i32): V4i32 = msaAddsAW(a, b)
 
 /**
  * Vector Saturated Add of Absolute Values
@@ -1733,7 +1733,7 @@ public fun msaAddsAW(a: V4i32, b: V4i32): V4i32 = msaAddsAW(a, transmuteWithLayo
  * are added to the absolute values of the elements in vector `b` (two signed 64-bit integer numbers).
  * The saturated signed result is written to vector (two signed 64-bit integer numbers).
  */
-public fun msaAddsAD(a: V2i64, b: V2i64): V2i64 = msaAddsAD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaAddsAD(a: V2i64, b: V2i64): V2i64 = msaAddsAD(a, b)
 
 /**
  * Vector Signed Saturated Add of Signed Values
@@ -1743,7 +1743,7 @@ public fun msaAddsAD(a: V2i64, b: V2i64): V2i64 = msaAddsAD(a, transmuteWithLayo
  * Signed arithmetic is performed and overflows clamp to the largest and/or smallest
  * representable signed values before writing the result to vector (sixteen signed 8-bit integer numbers).
  */
-public fun msaAddsSB(a: V16i8, b: V16i8): V16i8 = msaAddsSB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaAddsSB(a: V16i8, b: V16i8): V16i8 = msaAddsSB(a, b)
 
 /**
  * Vector Signed Saturated Add of Signed Values
@@ -1753,7 +1753,7 @@ public fun msaAddsSB(a: V16i8, b: V16i8): V16i8 = msaAddsSB(a, transmuteWithLayo
  * Signed arithmetic is performed and overflows clamp to the largest and/or smallest
  * representable signed values before writing the result to vector (eight signed 16-bit integer numbers).
  */
-public fun msaAddsSH(a: V8i16, b: V8i16): V8i16 = msaAddsSH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaAddsSH(a: V8i16, b: V8i16): V8i16 = msaAddsSH(a, b)
 
 /**
  * Vector Signed Saturated Add of Signed Values
@@ -1763,7 +1763,7 @@ public fun msaAddsSH(a: V8i16, b: V8i16): V8i16 = msaAddsSH(a, transmuteWithLayo
  * Signed arithmetic is performed and overflows clamp to the largest and/or smallest
  * representable signed values before writing the result to vector (four signed 32-bit integer numbers).
  */
-public fun msaAddsSW(a: V4i32, b: V4i32): V4i32 = msaAddsSW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaAddsSW(a: V4i32, b: V4i32): V4i32 = msaAddsSW(a, b)
 
 /**
  * Vector Signed Saturated Add of Signed Values
@@ -1773,7 +1773,7 @@ public fun msaAddsSW(a: V4i32, b: V4i32): V4i32 = msaAddsSW(a, transmuteWithLayo
  * Signed arithmetic is performed and overflows clamp to the largest and/or smallest
  * representable signed values before writing the result to vector (two signed 64-bit integer numbers).
  */
-public fun msaAddsSD(a: V2i64, b: V2i64): V2i64 = msaAddsSD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaAddsSD(a: V2i64, b: V2i64): V2i64 = msaAddsSD(a, b)
 
 /**
  * Vector Unsigned Saturated Add of Unsigned Values
@@ -1783,7 +1783,7 @@ public fun msaAddsSD(a: V2i64, b: V2i64): V2i64 = msaAddsSD(a, transmuteWithLayo
  * Signed arithmetic is performed and overflows clamp to the largest and/or smallest
  * representable signed values before writing the result to vector (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaAddsUB(a: V16u8, b: V16u8): V16u8 = msaAddsUB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()))
+public fun msaAddsUB(a: V16u8, b: V16u8): V16u8 = msaAddsUB(a, b)
 
 /**
  * Vector Unsigned Saturated Add of Unsigned Values
@@ -1793,7 +1793,7 @@ public fun msaAddsUB(a: V16u8, b: V16u8): V16u8 = msaAddsUB(a, transmuteWithLayo
  * Signed arithmetic is performed and overflows clamp to the largest and/or smallest
  * representable signed values before writing the result to vector (eight unsigned 16-bit integer numbers).
  */
-public fun msaAddsUH(a: V8u16, b: V8u16): V8u16 = msaAddsUH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8u16.typeLayout()))
+public fun msaAddsUH(a: V8u16, b: V8u16): V8u16 = msaAddsUH(a, b)
 
 /**
  * Vector Unsigned Saturated Add of Unsigned Values
@@ -1803,7 +1803,7 @@ public fun msaAddsUH(a: V8u16, b: V8u16): V8u16 = msaAddsUH(a, transmuteWithLayo
  * Signed arithmetic is performed and overflows clamp to the largest and/or smallest
  * representable signed values before writing the result to vector (four unsigned 32-bit integer numbers).
  */
-public fun msaAddsUW(a: V4u32, b: V4u32): V4u32 = msaAddsUW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4u32.typeLayout()))
+public fun msaAddsUW(a: V4u32, b: V4u32): V4u32 = msaAddsUW(a, b)
 
 /**
  * Vector Unsigned Saturated Add of Unsigned Values
@@ -1813,7 +1813,7 @@ public fun msaAddsUW(a: V4u32, b: V4u32): V4u32 = msaAddsUW(a, transmuteWithLayo
  * Signed arithmetic is performed and overflows clamp to the largest and/or smallest
  * representable signed values before writing the result to vector (two unsigned 64-bit integer numbers).
  */
-public fun msaAddsUD(a: V2u64, b: V2u64): V2u64 = msaAddsUD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2u64.typeLayout()))
+public fun msaAddsUD(a: V2u64, b: V2u64): V2u64 = msaAddsUD(a, b)
 
 /**
  * Vector Add
@@ -1822,7 +1822,7 @@ public fun msaAddsUD(a: V2u64, b: V2u64): V2u64 = msaAddsUD(a, transmuteWithLayo
  * are added to the elements in vector `b` (sixteen signed 8-bit integer numbers).
  * The result is written to vector (sixteen signed 8-bit integer numbers).
  */
-public fun msaAddvB(a: V16i8, b: V16i8): V16i8 = msaAddvB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaAddvB(a: V16i8, b: V16i8): V16i8 = msaAddvB(a, b)
 
 /**
  * Vector Add
@@ -1831,7 +1831,7 @@ public fun msaAddvB(a: V16i8, b: V16i8): V16i8 = msaAddvB(a, transmuteWithLayout
  * are added to the elements in vector `b` (eight signed 16-bit integer numbers).
  * The result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaAddvH(a: V8i16, b: V8i16): V8i16 = msaAddvH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaAddvH(a: V8i16, b: V8i16): V8i16 = msaAddvH(a, b)
 
 /**
  * Vector Add
@@ -1840,7 +1840,7 @@ public fun msaAddvH(a: V8i16, b: V8i16): V8i16 = msaAddvH(a, transmuteWithLayout
  * are added to the elements in vector `b` (four signed 32-bit integer numbers).
  * The result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaAddvW(a: V4i32, b: V4i32): V4i32 = msaAddvW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaAddvW(a: V4i32, b: V4i32): V4i32 = msaAddvW(a, b)
 
 /**
  * Vector Add
@@ -1849,7 +1849,7 @@ public fun msaAddvW(a: V4i32, b: V4i32): V4i32 = msaAddvW(a, transmuteWithLayout
  * are added to the elements in vector `b` (two signed 64-bit integer numbers).
  * The result is written to vector (two signed 64-bit integer numbers).
  */
-public fun msaAddvD(a: V2i64, b: V2i64): V2i64 = msaAddvD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaAddvD(a: V2i64, b: V2i64): V2i64 = msaAddvD(a, b)
 
 /**
  * Immediate Add
@@ -1915,7 +1915,7 @@ public fun msaAddviD(a: V2i64, imm5: Int): V2i64 {
  * in a bitwise logical AND operation.
  * The result is written to vector (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaAndV(a: V16u8, b: V16u8): V16u8 = msaAndV(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()))
+public fun msaAndV(a: V16u8, b: V16u8): V16u8 = msaAndV(a, b)
 
 /**
  * Immediate Logical And
@@ -1938,7 +1938,7 @@ public fun msaAndiB(a: V16u8, imm8: Int): V16u8 {
  * are subtracted from the signed elements in vector `b` (sixteen signed 8-bit integer numbers).
  * The absolute value of the signed result is written to vector (sixteen signed 8-bit integer numbers).
  */
-public fun msaAsubSB(a: V16i8, b: V16i8): V16i8 = msaAsubSB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaAsubSB(a: V16i8, b: V16i8): V16i8 = msaAsubSB(a, b)
 
 /**
  * Vector Absolute Values of Signed Subtract
@@ -1947,7 +1947,7 @@ public fun msaAsubSB(a: V16i8, b: V16i8): V16i8 = msaAsubSB(a, transmuteWithLayo
  * are subtracted from the signed elements in vector `b` (eight signed 16-bit integer numbers).
  * The absolute value of the signed result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaAsubSH(a: V8i16, b: V8i16): V8i16 = msaAsubSH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaAsubSH(a: V8i16, b: V8i16): V8i16 = msaAsubSH(a, b)
 
 /**
  * Vector Absolute Values of Signed Subtract
@@ -1956,7 +1956,7 @@ public fun msaAsubSH(a: V8i16, b: V8i16): V8i16 = msaAsubSH(a, transmuteWithLayo
  * are subtracted from the signed elements in vector `b` (four signed 32-bit integer numbers).
  * The absolute value of the signed result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaAsubSW(a: V4i32, b: V4i32): V4i32 = msaAsubSW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaAsubSW(a: V4i32, b: V4i32): V4i32 = msaAsubSW(a, b)
 
 /**
  * Vector Absolute Values of Signed Subtract
@@ -1965,7 +1965,7 @@ public fun msaAsubSW(a: V4i32, b: V4i32): V4i32 = msaAsubSW(a, transmuteWithLayo
  * are subtracted from the signed elements in vector `b` (two signed 64-bit integer numbers).
  * The absolute value of the signed result is written to vector (two signed 64-bit integer numbers).
  */
-public fun msaAsubSD(a: V2i64, b: V2i64): V2i64 = msaAsubSD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaAsubSD(a: V2i64, b: V2i64): V2i64 = msaAsubSD(a, b)
 
 /**
  * Vector Absolute Values of Unsigned Subtract
@@ -1974,7 +1974,7 @@ public fun msaAsubSD(a: V2i64, b: V2i64): V2i64 = msaAsubSD(a, transmuteWithLayo
  * are subtracted from the unsigned elements in vector `b` (sixteen unsigned 8-bit integer numbers).
  * The absolute value of the unsigned result is written to vector (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaAsubUB(a: V16u8, b: V16u8): V16u8 = msaAsubUB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()))
+public fun msaAsubUB(a: V16u8, b: V16u8): V16u8 = msaAsubUB(a, b)
 
 /**
  * Vector Absolute Values of Unsigned Subtract
@@ -1983,7 +1983,7 @@ public fun msaAsubUB(a: V16u8, b: V16u8): V16u8 = msaAsubUB(a, transmuteWithLayo
  * are subtracted from the unsigned elements in vector `b` (eight unsigned 16-bit integer numbers).
  * The absolute value of the unsigned result is written to vector (eight unsigned 16-bit integer numbers).
  */
-public fun msaAsubUH(a: V8u16, b: V8u16): V8u16 = msaAsubUH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8u16.typeLayout()))
+public fun msaAsubUH(a: V8u16, b: V8u16): V8u16 = msaAsubUH(a, b)
 
 /**
  * Vector Absolute Values of Unsigned Subtract
@@ -1992,7 +1992,7 @@ public fun msaAsubUH(a: V8u16, b: V8u16): V8u16 = msaAsubUH(a, transmuteWithLayo
  * are subtracted from the unsigned elements in vector `b` (four unsigned 32-bit integer numbers).
  * The absolute value of the unsigned result is written to vector (four unsigned 32-bit integer numbers).
  */
-public fun msaAsubUW(a: V4u32, b: V4u32): V4u32 = msaAsubUW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4u32.typeLayout()))
+public fun msaAsubUW(a: V4u32, b: V4u32): V4u32 = msaAsubUW(a, b)
 
 /**
  * Vector Absolute Values of Unsigned Subtract
@@ -2001,7 +2001,7 @@ public fun msaAsubUW(a: V4u32, b: V4u32): V4u32 = msaAsubUW(a, transmuteWithLayo
  * are subtracted from the unsigned elements in vector `b` (two unsigned 64-bit integer numbers).
  * The absolute value of the unsigned result is written to vector (two unsigned 64-bit integer numbers).
  */
-public fun msaAsubUD(a: V2u64, b: V2u64): V2u64 = msaAsubUD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2u64.typeLayout()))
+public fun msaAsubUD(a: V2u64, b: V2u64): V2u64 = msaAsubUD(a, b)
 
 /**
  * Vector Signed Average
@@ -2012,7 +2012,7 @@ public fun msaAsubUD(a: V2u64, b: V2u64): V2u64 = msaAsubUD(a, transmuteWithLayo
  * Signed division by 2 (or arithmetic shift right by one bit) is performed before
  * writing the result to vector (sixteen signed 8-bit integer numbers).
  */
-public fun msaAveSB(a: V16i8, b: V16i8): V16i8 = msaAveSB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaAveSB(a: V16i8, b: V16i8): V16i8 = msaAveSB(a, b)
 
 /**
  * Vector Signed Average
@@ -2023,7 +2023,7 @@ public fun msaAveSB(a: V16i8, b: V16i8): V16i8 = msaAveSB(a, transmuteWithLayout
  * Signed division by 2 (or arithmetic shift right by one bit) is performed before
  * writing the result to vector (eight signed 16-bit integer numbers).
  */
-public fun msaAveSH(a: V8i16, b: V8i16): V8i16 = msaAveSH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaAveSH(a: V8i16, b: V8i16): V8i16 = msaAveSH(a, b)
 
 /**
  * Vector Signed Average
@@ -2034,7 +2034,7 @@ public fun msaAveSH(a: V8i16, b: V8i16): V8i16 = msaAveSH(a, transmuteWithLayout
  * Signed division by 2 (or arithmetic shift right by one bit) is performed before
  * writing the result to vector (four signed 32-bit integer numbers).
  */
-public fun msaAveSW(a: V4i32, b: V4i32): V4i32 = msaAveSW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaAveSW(a: V4i32, b: V4i32): V4i32 = msaAveSW(a, b)
 
 /**
  * Vector Signed Average
@@ -2045,7 +2045,7 @@ public fun msaAveSW(a: V4i32, b: V4i32): V4i32 = msaAveSW(a, transmuteWithLayout
  * Signed division by 2 (or arithmetic shift right by one bit) is performed before
  * writing the result to vector (two signed 64-bit integer numbers).
  */
-public fun msaAveSD(a: V2i64, b: V2i64): V2i64 = msaAveSD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaAveSD(a: V2i64, b: V2i64): V2i64 = msaAveSD(a, b)
 
 /**
  * Vector Unsigned Average
@@ -2056,7 +2056,7 @@ public fun msaAveSD(a: V2i64, b: V2i64): V2i64 = msaAveSD(a, transmuteWithLayout
  * Unsigned division by 2 (or logical shift right by one bit) is performed before
  * writing the result to vector (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaAveUB(a: V16u8, b: V16u8): V16u8 = msaAveUB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()))
+public fun msaAveUB(a: V16u8, b: V16u8): V16u8 = msaAveUB(a, b)
 
 /**
  * Vector Unsigned Average
@@ -2067,7 +2067,7 @@ public fun msaAveUB(a: V16u8, b: V16u8): V16u8 = msaAveUB(a, transmuteWithLayout
  * Unsigned division by 2 (or logical shift right by one bit) is performed before
  * writing the result to vector (eight unsigned 16-bit integer numbers).
  */
-public fun msaAveUH(a: V8u16, b: V8u16): V8u16 = msaAveUH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8u16.typeLayout()))
+public fun msaAveUH(a: V8u16, b: V8u16): V8u16 = msaAveUH(a, b)
 
 /**
  * Vector Unsigned Average
@@ -2078,7 +2078,7 @@ public fun msaAveUH(a: V8u16, b: V8u16): V8u16 = msaAveUH(a, transmuteWithLayout
  * Unsigned division by 2 (or logical shift right by one bit) is performed before
  * writing the result to vector (four unsigned 32-bit integer numbers).
  */
-public fun msaAveUW(a: V4u32, b: V4u32): V4u32 = msaAveUW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4u32.typeLayout()))
+public fun msaAveUW(a: V4u32, b: V4u32): V4u32 = msaAveUW(a, b)
 
 /**
  * Vector Unsigned Average
@@ -2089,7 +2089,7 @@ public fun msaAveUW(a: V4u32, b: V4u32): V4u32 = msaAveUW(a, transmuteWithLayout
  * Unsigned division by 2 (or logical shift right by one bit) is performed before
  * writing the result to vector (two unsigned 64-bit integer numbers).
  */
-public fun msaAveUD(a: V2u64, b: V2u64): V2u64 = msaAveUD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2u64.typeLayout()))
+public fun msaAveUD(a: V2u64, b: V2u64): V2u64 = msaAveUD(a, b)
 
 /**
  * Vector Signed Average Rounded
@@ -2101,7 +2101,7 @@ public fun msaAveUD(a: V2u64, b: V2u64): V2u64 = msaAveUD(a, transmuteWithLayout
  * Signed division by 2 (or arithmetic shift right by one bit) is performed before
  * writing the result to vector (sixteen signed 8-bit integer numbers).
  */
-public fun msaAverSB(a: V16i8, b: V16i8): V16i8 = msaAverSB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaAverSB(a: V16i8, b: V16i8): V16i8 = msaAverSB(a, b)
 
 /**
  * Vector Signed Average Rounded
@@ -2113,7 +2113,7 @@ public fun msaAverSB(a: V16i8, b: V16i8): V16i8 = msaAverSB(a, transmuteWithLayo
  * Signed division by 2 (or arithmetic shift right by one bit) is performed before
  * writing the result to vector (eight signed 16-bit integer numbers).
  */
-public fun msaAverSH(a: V8i16, b: V8i16): V8i16 = msaAverSH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaAverSH(a: V8i16, b: V8i16): V8i16 = msaAverSH(a, b)
 
 /**
  * Vector Signed Average Rounded
@@ -2125,7 +2125,7 @@ public fun msaAverSH(a: V8i16, b: V8i16): V8i16 = msaAverSH(a, transmuteWithLayo
  * Signed division by 2 (or arithmetic shift right by one bit) is performed before
  * writing the result to vector (four signed 32-bit integer numbers).
  */
-public fun msaAverSW(a: V4i32, b: V4i32): V4i32 = msaAverSW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaAverSW(a: V4i32, b: V4i32): V4i32 = msaAverSW(a, b)
 
 /**
  * Vector Signed Average Rounded
@@ -2137,7 +2137,7 @@ public fun msaAverSW(a: V4i32, b: V4i32): V4i32 = msaAverSW(a, transmuteWithLayo
  * Signed division by 2 (or arithmetic shift right by one bit) is performed before
  * writing the result to vector (two signed 64-bit integer numbers).
  */
-public fun msaAverSD(a: V2i64, b: V2i64): V2i64 = msaAverSD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaAverSD(a: V2i64, b: V2i64): V2i64 = msaAverSD(a, b)
 
 /**
  * Vector Unsigned Average Rounded
@@ -2149,7 +2149,7 @@ public fun msaAverSD(a: V2i64, b: V2i64): V2i64 = msaAverSD(a, transmuteWithLayo
  * Unsigned division by 2 (or logical shift right by one bit) is performed before
  * writing the result to vector (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaAverUB(a: V16u8, b: V16u8): V16u8 = msaAverUB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()))
+public fun msaAverUB(a: V16u8, b: V16u8): V16u8 = msaAverUB(a, b)
 
 /**
  * Vector Unsigned Average Rounded
@@ -2161,7 +2161,7 @@ public fun msaAverUB(a: V16u8, b: V16u8): V16u8 = msaAverUB(a, transmuteWithLayo
  * Unsigned division by 2 (or logical shift right by one bit) is performed before
  * writing the result to vector (eight unsigned 16-bit integer numbers).
  */
-public fun msaAverUH(a: V8u16, b: V8u16): V8u16 = msaAverUH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8u16.typeLayout()))
+public fun msaAverUH(a: V8u16, b: V8u16): V8u16 = msaAverUH(a, b)
 
 /**
  * Vector Unsigned Average Rounded
@@ -2173,7 +2173,7 @@ public fun msaAverUH(a: V8u16, b: V8u16): V8u16 = msaAverUH(a, transmuteWithLayo
  * Unsigned division by 2 (or logical shift right by one bit) is performed before
  * writing the result to vector (four unsigned 32-bit integer numbers).
  */
-public fun msaAverUW(a: V4u32, b: V4u32): V4u32 = msaAverUW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4u32.typeLayout()))
+public fun msaAverUW(a: V4u32, b: V4u32): V4u32 = msaAverUW(a, b)
 
 /**
  * Vector Unsigned Average Rounded
@@ -2185,7 +2185,7 @@ public fun msaAverUW(a: V4u32, b: V4u32): V4u32 = msaAverUW(a, transmuteWithLayo
  * Unsigned division by 2 (or logical shift right by one bit) is performed before
  * writing the result to vector (two unsigned 64-bit integer numbers).
  */
-public fun msaAverUD(a: V2u64, b: V2u64): V2u64 = msaAverUD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2u64.typeLayout()))
+public fun msaAverUD(a: V2u64, b: V2u64): V2u64 = msaAverUD(a, b)
 
 /**
  * Vector Bit Clear
@@ -2195,7 +2195,7 @@ public fun msaAverUD(a: V2u64, b: V2u64): V2u64 = msaAverUD(a, transmuteWithLayo
  * modulo the size of the element in bits.
  * The result is written to vector (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaBclrB(a: V16u8, b: V16u8): V16u8 = msaBclrB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()))
+public fun msaBclrB(a: V16u8, b: V16u8): V16u8 = msaBclrB(a, b)
 
 /**
  * Vector Bit Clear
@@ -2205,7 +2205,7 @@ public fun msaBclrB(a: V16u8, b: V16u8): V16u8 = msaBclrB(a, transmuteWithLayout
  * modulo the size of the element in bits.
  * The result is written to vector (eight unsigned 16-bit integer numbers).
  */
-public fun msaBclrH(a: V8u16, b: V8u16): V8u16 = msaBclrH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8u16.typeLayout()))
+public fun msaBclrH(a: V8u16, b: V8u16): V8u16 = msaBclrH(a, b)
 
 /**
  * Vector Bit Clear
@@ -2215,7 +2215,7 @@ public fun msaBclrH(a: V8u16, b: V8u16): V8u16 = msaBclrH(a, transmuteWithLayout
  * modulo the size of the element in bits.
  * The result is written to vector (four unsigned 32-bit integer numbers).
  */
-public fun msaBclrW(a: V4u32, b: V4u32): V4u32 = msaBclrW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4u32.typeLayout()))
+public fun msaBclrW(a: V4u32, b: V4u32): V4u32 = msaBclrW(a, b)
 
 /**
  * Vector Bit Clear
@@ -2225,7 +2225,7 @@ public fun msaBclrW(a: V4u32, b: V4u32): V4u32 = msaBclrW(a, transmuteWithLayout
  * modulo the size of the element in bits.
  * The result is written to vector (two unsigned 64-bit integer numbers).
  */
-public fun msaBclrD(a: V2u64, b: V2u64): V2u64 = msaBclrD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2u64.typeLayout()))
+public fun msaBclrD(a: V2u64, b: V2u64): V2u64 = msaBclrD(a, b)
 
 /**
  * Immediate Bit Clear
@@ -2291,7 +2291,7 @@ public fun msaBclriD(a: V2u64, imm6: Int): V2u64 {
  * The number of bits to copy is given by the elements in vector `c` (sixteen unsigned 8-bit integer numbers)
  * modulo the size of the element in bits plus 1.
  */
-public fun msaBinslB(a: V16u8, b: V16u8, c: V16u8): V16u8 = msaBinslB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()), c)
+public fun msaBinslB(a: V16u8, b: V16u8, c: V16u8): V16u8 = msaBinslB(a, b, c)
 
 /**
  * Vector Bit Insert Left
@@ -2301,7 +2301,7 @@ public fun msaBinslB(a: V16u8, b: V16u8, c: V16u8): V16u8 = msaBinslB(a, transmu
  * The number of bits to copy is given by the elements in vector `c` (eight unsigned 16-bit integer numbers)
  * modulo the size of the element in bits plus 1.
  */
-public fun msaBinslH(a: V8u16, b: V8u16, c: V8u16): V8u16 = msaBinslH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8u16.typeLayout()), c)
+public fun msaBinslH(a: V8u16, b: V8u16, c: V8u16): V8u16 = msaBinslH(a, b, c)
 
 /**
  * Vector Bit Insert Left
@@ -2311,7 +2311,7 @@ public fun msaBinslH(a: V8u16, b: V8u16, c: V8u16): V8u16 = msaBinslH(a, transmu
  * The number of bits to copy is given by the elements in vector `c` (four unsigned 32-bit integer numbers)
  * modulo the size of the element in bits plus 1.
  */
-public fun msaBinslW(a: V4u32, b: V4u32, c: V4u32): V4u32 = msaBinslW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4u32.typeLayout()), c)
+public fun msaBinslW(a: V4u32, b: V4u32, c: V4u32): V4u32 = msaBinslW(a, b, c)
 
 /**
  * Vector Bit Insert Left
@@ -2321,7 +2321,7 @@ public fun msaBinslW(a: V4u32, b: V4u32, c: V4u32): V4u32 = msaBinslW(a, transmu
  * The number of bits to copy is given by the elements in vector `c` (two unsigned 64-bit integer numbers)
  * modulo the size of the element in bits plus 1.
  */
-public fun msaBinslD(a: V2u64, b: V2u64, c: V2u64): V2u64 = msaBinslD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2u64.typeLayout()), c)
+public fun msaBinslD(a: V2u64, b: V2u64, c: V2u64): V2u64 = msaBinslD(a, b, c)
 
 /**
  * Immediate Bit Insert Left
@@ -2334,7 +2334,7 @@ public fun msaBinsliB(a: V16u8, b: V16u8, imm3: Int): V16u8 {
     run {
         check(0 <= imm3 && imm3 < (1 shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return msaBinsliB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()), imm3)
+    return msaBinsliB(a, b, imm3)
 }
 
 /**
@@ -2348,7 +2348,7 @@ public fun msaBinsliH(a: V8u16, b: V8u16, imm4: Int): V8u16 {
     run {
         check(0 <= imm4 && imm4 < (1 shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return msaBinsliH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8u16.typeLayout()), imm4)
+    return msaBinsliH(a, b, imm4)
 }
 
 /**
@@ -2362,7 +2362,7 @@ public fun msaBinsliW(a: V4u32, b: V4u32, imm5: Int): V4u32 {
     run {
         check(0 <= imm5 && imm5 < (1 shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return msaBinsliW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4u32.typeLayout()), imm5)
+    return msaBinsliW(a, b, imm5)
 }
 
 /**
@@ -2376,7 +2376,7 @@ public fun msaBinsliD(a: V2u64, b: V2u64, imm6: Int): V2u64 {
     run {
         check(0 <= imm6 && imm6 < (1 shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return msaBinsliD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2u64.typeLayout()), imm6)
+    return msaBinsliD(a, b, imm6)
 }
 
 /**
@@ -2387,7 +2387,7 @@ public fun msaBinsliD(a: V2u64, b: V2u64, imm6: Int): V2u64 {
  * The number of bits to copy is given by the elements in vector `c` (sixteen unsigned 8-bit integer numbers)
  * modulo the size of the element in bits plus 1.
  */
-public fun msaBinsrB(a: V16u8, b: V16u8, c: V16u8): V16u8 = msaBinsrB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()), c)
+public fun msaBinsrB(a: V16u8, b: V16u8, c: V16u8): V16u8 = msaBinsrB(a, b, c)
 
 /**
  * Vector Bit Insert Right
@@ -2397,7 +2397,7 @@ public fun msaBinsrB(a: V16u8, b: V16u8, c: V16u8): V16u8 = msaBinsrB(a, transmu
  * The number of bits to copy is given by the elements in vector `c` (eight unsigned 16-bit integer numbers)
  * modulo the size of the element in bits plus 1.
  */
-public fun msaBinsrH(a: V8u16, b: V8u16, c: V8u16): V8u16 = msaBinsrH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8u16.typeLayout()), c)
+public fun msaBinsrH(a: V8u16, b: V8u16, c: V8u16): V8u16 = msaBinsrH(a, b, c)
 
 /**
  * Vector Bit Insert Right
@@ -2407,7 +2407,7 @@ public fun msaBinsrH(a: V8u16, b: V8u16, c: V8u16): V8u16 = msaBinsrH(a, transmu
  * The number of bits to copy is given by the elements in vector `c` (four unsigned 32-bit integer numbers)
  * modulo the size of the element in bits plus 1.
  */
-public fun msaBinsrW(a: V4u32, b: V4u32, c: V4u32): V4u32 = msaBinsrW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4u32.typeLayout()), c)
+public fun msaBinsrW(a: V4u32, b: V4u32, c: V4u32): V4u32 = msaBinsrW(a, b, c)
 
 /**
  * Vector Bit Insert Right
@@ -2417,7 +2417,7 @@ public fun msaBinsrW(a: V4u32, b: V4u32, c: V4u32): V4u32 = msaBinsrW(a, transmu
  * The number of bits to copy is given by the elements in vector `c` (two unsigned 64-bit integer numbers)
  * modulo the size of the element in bits plus 1.
  */
-public fun msaBinsrD(a: V2u64, b: V2u64, c: V2u64): V2u64 = msaBinsrD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2u64.typeLayout()), c)
+public fun msaBinsrD(a: V2u64, b: V2u64, c: V2u64): V2u64 = msaBinsrD(a, b, c)
 
 /**
  * Immediate Bit Insert Right
@@ -2430,7 +2430,7 @@ public fun msaBinsriB(a: V16u8, b: V16u8, imm3: Int): V16u8 {
     run {
         check(0 <= imm3 && imm3 < (1 shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return msaBinsriB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()), imm3)
+    return msaBinsriB(a, b, imm3)
 }
 
 /**
@@ -2444,7 +2444,7 @@ public fun msaBinsriH(a: V8u16, b: V8u16, imm4: Int): V8u16 {
     run {
         check(0 <= imm4 && imm4 < (1 shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return msaBinsriH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8u16.typeLayout()), imm4)
+    return msaBinsriH(a, b, imm4)
 }
 
 /**
@@ -2458,7 +2458,7 @@ public fun msaBinsriW(a: V4u32, b: V4u32, imm5: Int): V4u32 {
     run {
         check(0 <= imm5 && imm5 < (1 shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return msaBinsriW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4u32.typeLayout()), imm5)
+    return msaBinsriW(a, b, imm5)
 }
 
 /**
@@ -2472,7 +2472,7 @@ public fun msaBinsriD(a: V2u64, b: V2u64, imm6: Int): V2u64 {
     run {
         check(0 <= imm6 && imm6 < (1 shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return msaBinsriD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2u64.typeLayout()), imm6)
+    return msaBinsriD(a, b, imm6)
 }
 
 /**
@@ -2483,7 +2483,7 @@ public fun msaBinsriD(a: V2u64, b: V2u64, imm6: Int): V2u64 {
  * (sixteen unsigned 8-bit integer numbers) are 1 and leaves unchanged all destination bits
  * for which the corresponding target bits are 0.
  */
-public fun msaBmnzV(a: V16u8, b: V16u8, c: V16u8): V16u8 = msaBmnzV(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()), c)
+public fun msaBmnzV(a: V16u8, b: V16u8, c: V16u8): V16u8 = msaBmnzV(a, b, c)
 
 /**
  * Immediate Bit Move If Not Zero
@@ -2496,7 +2496,7 @@ public fun msaBmnziB(a: V16u8, b: V16u8, imm8: Int): V16u8 {
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return msaBmnziB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()), imm8)
+    return msaBmnziB(a, b, imm8)
 }
 
 /**
@@ -2507,7 +2507,7 @@ public fun msaBmnziB(a: V16u8, b: V16u8, imm8: Int): V16u8 {
  * (sixteen unsigned 8-bit integer numbers) are 0 and leaves unchanged all destination bits
  * for which the corresponding target bits are 1.
  */
-public fun msaBmzV(a: V16u8, b: V16u8, c: V16u8): V16u8 = msaBmzV(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()), c)
+public fun msaBmzV(a: V16u8, b: V16u8, c: V16u8): V16u8 = msaBmzV(a, b, c)
 
 /**
  * Immediate Bit Move If Zero
@@ -2520,7 +2520,7 @@ public fun msaBmziB(a: V16u8, b: V16u8, imm8: Int): V16u8 {
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return msaBmziB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()), imm8)
+    return msaBmziB(a, b, imm8)
 }
 
 /**
@@ -2531,7 +2531,7 @@ public fun msaBmziB(a: V16u8, b: V16u8, imm8: Int): V16u8 {
  * modulo the size of the element in bits.
  * The result is written to vector (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaBnegB(a: V16u8, b: V16u8): V16u8 = msaBnegB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()))
+public fun msaBnegB(a: V16u8, b: V16u8): V16u8 = msaBnegB(a, b)
 
 /**
  * Vector Bit Negate
@@ -2541,7 +2541,7 @@ public fun msaBnegB(a: V16u8, b: V16u8): V16u8 = msaBnegB(a, transmuteWithLayout
  * modulo the size of the element in bits.
  * The result is written to vector (eight unsigned 16-bit integer numbers).
  */
-public fun msaBnegH(a: V8u16, b: V8u16): V8u16 = msaBnegH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8u16.typeLayout()))
+public fun msaBnegH(a: V8u16, b: V8u16): V8u16 = msaBnegH(a, b)
 
 /**
  * Vector Bit Negate
@@ -2551,7 +2551,7 @@ public fun msaBnegH(a: V8u16, b: V8u16): V8u16 = msaBnegH(a, transmuteWithLayout
  * modulo the size of the element in bits.
  * The result is written to vector (four unsigned 32-bit integer numbers).
  */
-public fun msaBnegW(a: V4u32, b: V4u32): V4u32 = msaBnegW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4u32.typeLayout()))
+public fun msaBnegW(a: V4u32, b: V4u32): V4u32 = msaBnegW(a, b)
 
 /**
  * Vector Bit Negate
@@ -2561,7 +2561,7 @@ public fun msaBnegW(a: V4u32, b: V4u32): V4u32 = msaBnegW(a, transmuteWithLayout
  * modulo the size of the element in bits.
  * The result is written to vector (two unsigned 64-bit integer numbers).
  */
-public fun msaBnegD(a: V2u64, b: V2u64): V2u64 = msaBnegD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2u64.typeLayout()))
+public fun msaBnegD(a: V2u64, b: V2u64): V2u64 = msaBnegD(a, b)
 
 /**
  * Immediate Bit Negate
@@ -2663,7 +2663,7 @@ public fun msaBnzV(a: V16u8): Int = msaBnzV(a)
  * into destination vector `a` (eight unsigned 16-bit integer numbers) based on the corresponding bit in `a`:
  * if 0 copies the bit from `b`, if 1 copies the bit from `c`.
  */
-public fun msaBselV(a: V16u8, b: V16u8, c: V16u8): V16u8 = msaBselV(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()), c)
+public fun msaBselV(a: V16u8, b: V16u8, c: V16u8): V16u8 = msaBselV(a, b, c)
 
 /**
  * Immediate Bit Select
@@ -2676,7 +2676,7 @@ public fun msaBseliB(a: V16u8, b: V16u8, imm8: Int): V16u8 {
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return msaBseliB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()), imm8)
+    return msaBseliB(a, b, imm8)
 }
 
 /**
@@ -2687,7 +2687,7 @@ public fun msaBseliB(a: V16u8, b: V16u8, imm8: Int): V16u8 {
  * modulo the size of the element in bits.
  * The result is written to vector (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaBsetB(a: V16u8, b: V16u8): V16u8 = msaBsetB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()))
+public fun msaBsetB(a: V16u8, b: V16u8): V16u8 = msaBsetB(a, b)
 
 /**
  * Vector Bit Set
@@ -2697,7 +2697,7 @@ public fun msaBsetB(a: V16u8, b: V16u8): V16u8 = msaBsetB(a, transmuteWithLayout
  * modulo the size of the element in bits.
  * The result is written to vector (eight unsigned 16-bit integer numbers).
  */
-public fun msaBsetH(a: V8u16, b: V8u16): V8u16 = msaBsetH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8u16.typeLayout()))
+public fun msaBsetH(a: V8u16, b: V8u16): V8u16 = msaBsetH(a, b)
 
 /**
  * Vector Bit Set
@@ -2707,7 +2707,7 @@ public fun msaBsetH(a: V8u16, b: V8u16): V8u16 = msaBsetH(a, transmuteWithLayout
  * modulo the size of the element in bits.
  * The result is written to vector (four unsigned 32-bit integer numbers).
  */
-public fun msaBsetW(a: V4u32, b: V4u32): V4u32 = msaBsetW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4u32.typeLayout()))
+public fun msaBsetW(a: V4u32, b: V4u32): V4u32 = msaBsetW(a, b)
 
 /**
  * Vector Bit Set
@@ -2717,7 +2717,7 @@ public fun msaBsetW(a: V4u32, b: V4u32): V4u32 = msaBsetW(a, transmuteWithLayout
  * modulo the size of the element in bits.
  * The result is written to vector (two unsigned 64-bit integer numbers).
  */
-public fun msaBsetD(a: V2u64, b: V2u64): V2u64 = msaBsetD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2u64.typeLayout()))
+public fun msaBsetD(a: V2u64, b: V2u64): V2u64 = msaBsetD(a, b)
 
 /**
  * Immediate Bit Set
@@ -2818,7 +2818,7 @@ public fun msaBzV(a: V16u8): Int = msaBzV(a)
  * if the corresponding `a` (sixteen signed 8-bit integer numbers) and `b` (sixteen signed 8-bit integer numbers)
  * elements are equal, otherwise set all bits to 0.
  */
-public fun msaCeqB(a: V16i8, b: V16i8): V16i8 = msaCeqB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaCeqB(a: V16i8, b: V16i8): V16i8 = msaCeqB(a, b)
 
 /**
  * Vector Compare Equal
@@ -2827,7 +2827,7 @@ public fun msaCeqB(a: V16i8, b: V16i8): V16i8 = msaCeqB(a, transmuteWithLayouts(
  * if the corresponding `a` (eight signed 16-bit integer numbers) and `b` (eight signed 16-bit integer numbers)
  * elements are equal, otherwise set all bits to 0.
  */
-public fun msaCeqH(a: V8i16, b: V8i16): V8i16 = msaCeqH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaCeqH(a: V8i16, b: V8i16): V8i16 = msaCeqH(a, b)
 
 /**
  * Vector Compare Equal
@@ -2836,7 +2836,7 @@ public fun msaCeqH(a: V8i16, b: V8i16): V8i16 = msaCeqH(a, transmuteWithLayouts(
  * if the corresponding `a` (four signed 32-bit integer numbers) and `b` (four signed 32-bit integer numbers)
  * elements are equal, otherwise set all bits to 0.
  */
-public fun msaCeqW(a: V4i32, b: V4i32): V4i32 = msaCeqW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaCeqW(a: V4i32, b: V4i32): V4i32 = msaCeqW(a, b)
 
 /**
  * Vector Compare Equal
@@ -2845,7 +2845,7 @@ public fun msaCeqW(a: V4i32, b: V4i32): V4i32 = msaCeqW(a, transmuteWithLayouts(
  * if the corresponding `a` (two signed 64-bit integer numbers) and `b` (two signed 64-bit integer numbers)
  * elements are equal, otherwise set all bits to 0.
  */
-public fun msaCeqD(a: V2i64, b: V2i64): V2i64 = msaCeqD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaCeqD(a: V2i64, b: V2i64): V2i64 = msaCeqD(a, b)
 
 /**
  * Immediate Compare Equal
@@ -2925,7 +2925,7 @@ public fun msaCfcmsa(imm5: Int): Int {
  * are signed less than or equal to `b` (sixteen signed 8-bit integer numbers) element.
  * Otherwise set all bits to 0.
  */
-public fun msaCleSB(a: V16i8, b: V16i8): V16i8 = msaCleSB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaCleSB(a: V16i8, b: V16i8): V16i8 = msaCleSB(a, b)
 
 /**
  * Vector Compare Signed Less Than or Equal
@@ -2935,7 +2935,7 @@ public fun msaCleSB(a: V16i8, b: V16i8): V16i8 = msaCleSB(a, transmuteWithLayout
  * are signed less than or equal to `b` (eight signed 16-bit integer numbers) element.
  * Otherwise set all bits to 0.
  */
-public fun msaCleSH(a: V8i16, b: V8i16): V8i16 = msaCleSH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaCleSH(a: V8i16, b: V8i16): V8i16 = msaCleSH(a, b)
 
 /**
  * Vector Compare Signed Less Than or Equal
@@ -2945,7 +2945,7 @@ public fun msaCleSH(a: V8i16, b: V8i16): V8i16 = msaCleSH(a, transmuteWithLayout
  * are signed less than or equal to `b` (four signed 32-bit integer numbers) element.
  * Otherwise set all bits to 0.
  */
-public fun msaCleSW(a: V4i32, b: V4i32): V4i32 = msaCleSW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaCleSW(a: V4i32, b: V4i32): V4i32 = msaCleSW(a, b)
 
 /**
  * Vector Compare Signed Less Than or Equal
@@ -2955,7 +2955,7 @@ public fun msaCleSW(a: V4i32, b: V4i32): V4i32 = msaCleSW(a, transmuteWithLayout
  * are signed less than or equal to `b` (two signed 64-bit integer numbers) element.
  * Otherwise set all bits to 0.
  */
-public fun msaCleSD(a: V2i64, b: V2i64): V2i64 = msaCleSD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaCleSD(a: V2i64, b: V2i64): V2i64 = msaCleSD(a, b)
 
 /**
  * Vector Compare Unsigned Less Than or Equal
@@ -2965,7 +2965,7 @@ public fun msaCleSD(a: V2i64, b: V2i64): V2i64 = msaCleSD(a, transmuteWithLayout
  * are unsigned less than or equal to `b` (sixteen unsigned 8-bit integer numbers) element.
  * Otherwise set all bits to 0.
  */
-public fun msaCleUB(a: V16u8, b: V16u8): V16i8 = msaCleUB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16i8.typeLayout()))
+public fun msaCleUB(a: V16u8, b: V16u8): V16i8 = msaCleUB(a, transmuteWithLayouts<V16u8, V16i8>(b, V16u8.typeLayout(), V16i8.typeLayout()))
 
 /**
  * Vector Compare Unsigned Less Than or Equal
@@ -2975,7 +2975,7 @@ public fun msaCleUB(a: V16u8, b: V16u8): V16i8 = msaCleUB(a, transmuteWithLayout
  * are unsigned less than or equal to `b` (eight unsigned 16-bit integer numbers) element.
  * Otherwise set all bits to 0.
  */
-public fun msaCleUH(a: V8u16, b: V8u16): V8i16 = msaCleUH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8i16.typeLayout()))
+public fun msaCleUH(a: V8u16, b: V8u16): V8i16 = msaCleUH(a, transmuteWithLayouts<V8u16, V8i16>(b, V8u16.typeLayout(), V8i16.typeLayout()))
 
 /**
  * Vector Compare Unsigned Less Than or Equal
@@ -2985,7 +2985,7 @@ public fun msaCleUH(a: V8u16, b: V8u16): V8i16 = msaCleUH(a, transmuteWithLayout
  * are unsigned less than or equal to `b` (four unsigned 32-bit integer numbers) element.
  * Otherwise set all bits to 0.
  */
-public fun msaCleUW(a: V4u32, b: V4u32): V4i32 = msaCleUW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4i32.typeLayout()))
+public fun msaCleUW(a: V4u32, b: V4u32): V4i32 = msaCleUW(a, transmuteWithLayouts<V4u32, V4i32>(b, V4u32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Compare Unsigned Less Than or Equal
@@ -2995,7 +2995,7 @@ public fun msaCleUW(a: V4u32, b: V4u32): V4i32 = msaCleUW(a, transmuteWithLayout
  * are unsigned less than or equal to `b` (two unsigned 64-bit integer numbers) element.
  * Otherwise set all bits to 0.
  */
-public fun msaCleUD(a: V2u64, b: V2u64): V2i64 = msaCleUD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2i64.typeLayout()))
+public fun msaCleUD(a: V2u64, b: V2u64): V2i64 = msaCleUD(a, transmuteWithLayouts<V2u64, V2i64>(b, V2u64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Immediate Compare Signed Less Than or Equal
@@ -3125,7 +3125,7 @@ public fun msaCleiUD(a: V2u64, imm5: Int): V2i64 {
  * are signed less than `b` (sixteen signed 8-bit integer numbers) element.
  * Otherwise set all bits to 0.
  */
-public fun msaCltSB(a: V16i8, b: V16i8): V16i8 = msaCltSB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaCltSB(a: V16i8, b: V16i8): V16i8 = msaCltSB(a, b)
 
 /**
  * Vector Compare Signed Less Than
@@ -3135,7 +3135,7 @@ public fun msaCltSB(a: V16i8, b: V16i8): V16i8 = msaCltSB(a, transmuteWithLayout
  * are signed less than `b` (eight signed 16-bit integer numbers) element.
  * Otherwise set all bits to 0.
  */
-public fun msaCltSH(a: V8i16, b: V8i16): V8i16 = msaCltSH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaCltSH(a: V8i16, b: V8i16): V8i16 = msaCltSH(a, b)
 
 /**
  * Vector Compare Signed Less Than
@@ -3145,7 +3145,7 @@ public fun msaCltSH(a: V8i16, b: V8i16): V8i16 = msaCltSH(a, transmuteWithLayout
  * are signed less than `b` (four signed 32-bit integer numbers) element.
  * Otherwise set all bits to 0.
  */
-public fun msaCltSW(a: V4i32, b: V4i32): V4i32 = msaCltSW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaCltSW(a: V4i32, b: V4i32): V4i32 = msaCltSW(a, b)
 
 /**
  * Vector Compare Signed Less Than
@@ -3155,7 +3155,7 @@ public fun msaCltSW(a: V4i32, b: V4i32): V4i32 = msaCltSW(a, transmuteWithLayout
  * are signed less than `b` (two signed 64-bit integer numbers) element.
  * Otherwise set all bits to 0.
  */
-public fun msaCltSD(a: V2i64, b: V2i64): V2i64 = msaCltSD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaCltSD(a: V2i64, b: V2i64): V2i64 = msaCltSD(a, b)
 
 /**
  * Vector Compare Unsigned Less Than
@@ -3165,7 +3165,7 @@ public fun msaCltSD(a: V2i64, b: V2i64): V2i64 = msaCltSD(a, transmuteWithLayout
  * are unsigned less than `b` (sixteen unsigned 8-bit integer numbers) element.
  * Otherwise set all bits to 0.
  */
-public fun msaCltUB(a: V16u8, b: V16u8): V16i8 = msaCltUB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16i8.typeLayout()))
+public fun msaCltUB(a: V16u8, b: V16u8): V16i8 = msaCltUB(a, transmuteWithLayouts<V16u8, V16i8>(b, V16u8.typeLayout(), V16i8.typeLayout()))
 
 /**
  * Vector Compare Unsigned Less Than
@@ -3175,7 +3175,7 @@ public fun msaCltUB(a: V16u8, b: V16u8): V16i8 = msaCltUB(a, transmuteWithLayout
  * are unsigned less than `b` (eight unsigned 16-bit integer numbers) element.
  * Otherwise set all bits to 0.
  */
-public fun msaCltUH(a: V8u16, b: V8u16): V8i16 = msaCltUH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8i16.typeLayout()))
+public fun msaCltUH(a: V8u16, b: V8u16): V8i16 = msaCltUH(a, transmuteWithLayouts<V8u16, V8i16>(b, V8u16.typeLayout(), V8i16.typeLayout()))
 
 /**
  * Vector Compare Unsigned Less Than
@@ -3185,7 +3185,7 @@ public fun msaCltUH(a: V8u16, b: V8u16): V8i16 = msaCltUH(a, transmuteWithLayout
  * are unsigned less than `b` (four unsigned 32-bit integer numbers) element.
  * Otherwise set all bits to 0.
  */
-public fun msaCltUW(a: V4u32, b: V4u32): V4i32 = msaCltUW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4i32.typeLayout()))
+public fun msaCltUW(a: V4u32, b: V4u32): V4i32 = msaCltUW(a, transmuteWithLayouts<V4u32, V4i32>(b, V4u32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Compare Unsigned Less Than
@@ -3195,7 +3195,7 @@ public fun msaCltUW(a: V4u32, b: V4u32): V4i32 = msaCltUW(a, transmuteWithLayout
  * are unsigned less than `b` (two unsigned 64-bit integer numbers) element.
  * Otherwise set all bits to 0.
  */
-public fun msaCltUD(a: V2u64, b: V2u64): V2i64 = msaCltUD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2i64.typeLayout()))
+public fun msaCltUD(a: V2u64, b: V2u64): V2i64 = msaCltUD(a, transmuteWithLayouts<V2u64, V2i64>(b, V2u64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Immediate Compare Signed Less Than
@@ -3443,7 +3443,7 @@ public fun msaCtcmsa(a: Int, imm5: Int) {
  * are divided by signed integer elements in vector `b` (sixteen signed 8-bit integer numbers).
  * The result is written to vector (sixteen signed 8-bit integer numbers).
  */
-public fun msaDivSB(a: V16i8, b: V16i8): V16i8 = msaDivSB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaDivSB(a: V16i8, b: V16i8): V16i8 = msaDivSB(a, b)
 
 /**
  * Vector Signed Divide
@@ -3452,7 +3452,7 @@ public fun msaDivSB(a: V16i8, b: V16i8): V16i8 = msaDivSB(a, transmuteWithLayout
  * are divided by signed integer elements in vector `b` (eight signed 16-bit integer numbers).
  * The result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaDivSH(a: V8i16, b: V8i16): V8i16 = msaDivSH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaDivSH(a: V8i16, b: V8i16): V8i16 = msaDivSH(a, b)
 
 /**
  * Vector Signed Divide
@@ -3461,7 +3461,7 @@ public fun msaDivSH(a: V8i16, b: V8i16): V8i16 = msaDivSH(a, transmuteWithLayout
  * are divided by signed integer elements in vector `b` (four signed 32-bit integer numbers).
  * The result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaDivSW(a: V4i32, b: V4i32): V4i32 = msaDivSW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaDivSW(a: V4i32, b: V4i32): V4i32 = msaDivSW(a, b)
 
 /**
  * Vector Signed Divide
@@ -3470,7 +3470,7 @@ public fun msaDivSW(a: V4i32, b: V4i32): V4i32 = msaDivSW(a, transmuteWithLayout
  * are divided by signed integer elements in vector `b` (two signed 64-bit integer numbers).
  * The result is written to vector (two signed 64-bit integer numbers).
  */
-public fun msaDivSD(a: V2i64, b: V2i64): V2i64 = msaDivSD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaDivSD(a: V2i64, b: V2i64): V2i64 = msaDivSD(a, b)
 
 /**
  * Vector Unsigned Divide
@@ -3479,7 +3479,7 @@ public fun msaDivSD(a: V2i64, b: V2i64): V2i64 = msaDivSD(a, transmuteWithLayout
  * are divided by unsigned integer elements in vector `b` (sixteen unsigned 8-bit integer numbers).
  * The result is written to vector (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaDivUB(a: V16u8, b: V16u8): V16u8 = msaDivUB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()))
+public fun msaDivUB(a: V16u8, b: V16u8): V16u8 = msaDivUB(a, b)
 
 /**
  * Vector Unsigned Divide
@@ -3488,7 +3488,7 @@ public fun msaDivUB(a: V16u8, b: V16u8): V16u8 = msaDivUB(a, transmuteWithLayout
  * are divided by unsigned integer elements in vector `b` (eight unsigned 16-bit integer numbers).
  * The result is written to vector (eight unsigned 16-bit integer numbers).
  */
-public fun msaDivUH(a: V8u16, b: V8u16): V8u16 = msaDivUH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8u16.typeLayout()))
+public fun msaDivUH(a: V8u16, b: V8u16): V8u16 = msaDivUH(a, b)
 
 /**
  * Vector Unsigned Divide
@@ -3497,7 +3497,7 @@ public fun msaDivUH(a: V8u16, b: V8u16): V8u16 = msaDivUH(a, transmuteWithLayout
  * are divided by unsigned integer elements in vector `b` (four unsigned 32-bit integer numbers).
  * The result is written to vector (four unsigned 32-bit integer numbers).
  */
-public fun msaDivUW(a: V4u32, b: V4u32): V4u32 = msaDivUW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4u32.typeLayout()))
+public fun msaDivUW(a: V4u32, b: V4u32): V4u32 = msaDivUW(a, b)
 
 /**
  * Vector Unsigned Divide
@@ -3506,7 +3506,7 @@ public fun msaDivUW(a: V4u32, b: V4u32): V4u32 = msaDivUW(a, transmuteWithLayout
  * are divided by unsigned integer elements in vector `b` (two unsigned 64-bit integer numbers).
  * The result is written to vector (two unsigned 64-bit integer numbers).
  */
-public fun msaDivUD(a: V2u64, b: V2u64): V2u64 = msaDivUD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2u64.typeLayout()))
+public fun msaDivUD(a: V2u64, b: V2u64): V2u64 = msaDivUD(a, b)
 
 /**
  * Vector Signed Dot Product
@@ -3517,7 +3517,7 @@ public fun msaDivUD(a: V2u64, b: V2u64): V2u64 = msaDivUD(a, transmuteWithLayout
  * adjacent odd/even elements are added and stored to the destination
  * vector (eight signed 16-bit integer numbers).
  */
-public fun msaDotpSH(a: V16i8, b: V16i8): V8i16 = msaDotpSH(a, transmuteWithLayouts(b, V16i8.typeLayout(), V8i16.typeLayout()))
+public fun msaDotpSH(a: V16i8, b: V16i8): V8i16 = msaDotpSH(a, transmuteWithLayouts<V16i8, V8i16>(b, V16i8.typeLayout(), V8i16.typeLayout()))
 
 /**
  * Vector Signed Dot Product
@@ -3528,7 +3528,7 @@ public fun msaDotpSH(a: V16i8, b: V16i8): V8i16 = msaDotpSH(a, transmuteWithLayo
  * adjacent odd/even elements are added and stored to the destination
  * vector (four signed 32-bit integer numbers).
  */
-public fun msaDotpSW(a: V8i16, b: V8i16): V4i32 = msaDotpSW(a, transmuteWithLayouts(b, V8i16.typeLayout(), V4i32.typeLayout()))
+public fun msaDotpSW(a: V8i16, b: V8i16): V4i32 = msaDotpSW(a, transmuteWithLayouts<V8i16, V4i32>(b, V8i16.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Signed Dot Product
@@ -3539,7 +3539,7 @@ public fun msaDotpSW(a: V8i16, b: V8i16): V4i32 = msaDotpSW(a, transmuteWithLayo
  * adjacent odd/even elements are added and stored to the destination
  * vector (two signed 64-bit integer numbers).
  */
-public fun msaDotpSD(a: V4i32, b: V4i32): V2i64 = msaDotpSD(a, transmuteWithLayouts(b, V4i32.typeLayout(), V2i64.typeLayout()))
+public fun msaDotpSD(a: V4i32, b: V4i32): V2i64 = msaDotpSD(a, transmuteWithLayouts<V4i32, V2i64>(b, V4i32.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Unsigned Dot Product
@@ -3550,7 +3550,7 @@ public fun msaDotpSD(a: V4i32, b: V4i32): V2i64 = msaDotpSD(a, transmuteWithLayo
  * adjacent odd/even elements are added and stored to the destination
  * vector (eight unsigned 16-bit integer numbers).
  */
-public fun msaDotpUH(a: V16u8, b: V16u8): V8u16 = msaDotpUH(a, transmuteWithLayouts(b, V16u8.typeLayout(), V8u16.typeLayout()))
+public fun msaDotpUH(a: V16u8, b: V16u8): V8u16 = msaDotpUH(a, transmuteWithLayouts<V16u8, V8u16>(b, V16u8.typeLayout(), V8u16.typeLayout()))
 
 /**
  * Vector Unsigned Dot Product
@@ -3561,7 +3561,7 @@ public fun msaDotpUH(a: V16u8, b: V16u8): V8u16 = msaDotpUH(a, transmuteWithLayo
  * adjacent odd/even elements are added and stored to the destination
  * vector (four unsigned 32-bit integer numbers).
  */
-public fun msaDotpUW(a: V8u16, b: V8u16): V4u32 = msaDotpUW(a, transmuteWithLayouts(b, V8u16.typeLayout(), V4u32.typeLayout()))
+public fun msaDotpUW(a: V8u16, b: V8u16): V4u32 = msaDotpUW(a, transmuteWithLayouts<V8u16, V4u32>(b, V8u16.typeLayout(), V4u32.typeLayout()))
 
 /**
  * Vector Unsigned Dot Product
@@ -3572,7 +3572,7 @@ public fun msaDotpUW(a: V8u16, b: V8u16): V4u32 = msaDotpUW(a, transmuteWithLayo
  * adjacent odd/even elements are added and stored to the destination
  * vector (two unsigned 64-bit integer numbers).
  */
-public fun msaDotpUD(a: V4u32, b: V4u32): V2u64 = msaDotpUD(a, transmuteWithLayouts(b, V4u32.typeLayout(), V2u64.typeLayout()))
+public fun msaDotpUD(a: V4u32, b: V4u32): V2u64 = msaDotpUD(a, transmuteWithLayouts<V4u32, V2u64>(b, V4u32.typeLayout(), V2u64.typeLayout()))
 
 /**
  * Vector Signed Dot Product and Add
@@ -3582,7 +3582,7 @@ public fun msaDotpUD(a: V4u32, b: V4u32): V2u64 = msaDotpUD(a, transmuteWithLayo
  * producing a result twice the size of the input operands. The multiplication results
  * of adjacent odd/even elements are added to the vector `a` (eight signed 16-bit integer numbers).
  */
-public fun msaDpaddSH(a: V8i16, b: V16i8, c: V16i8): V8i16 = msaDpaddSH(a, transmuteWithLayouts(b, V16i8.typeLayout(), V8i16.typeLayout()), c)
+public fun msaDpaddSH(a: V8i16, b: V16i8, c: V16i8): V8i16 = msaDpaddSH(a, transmuteWithLayouts<V16i8, V8i16>(b, V16i8.typeLayout(), V8i16.typeLayout()), c)
 
 /**
  * Vector Signed Dot Product and Add
@@ -3592,7 +3592,7 @@ public fun msaDpaddSH(a: V8i16, b: V16i8, c: V16i8): V8i16 = msaDpaddSH(a, trans
  * producing a result twice the size of the input operands. The multiplication results
  * of adjacent odd/even elements are added to the vector `a` (four signed 32-bit integer numbers).
  */
-public fun msaDpaddSW(a: V4i32, b: V8i16, c: V8i16): V4i32 = msaDpaddSW(a, transmuteWithLayouts(b, V8i16.typeLayout(), V4i32.typeLayout()), c)
+public fun msaDpaddSW(a: V4i32, b: V8i16, c: V8i16): V4i32 = msaDpaddSW(a, transmuteWithLayouts<V8i16, V4i32>(b, V8i16.typeLayout(), V4i32.typeLayout()), c)
 
 /**
  * Vector Signed Dot Product and Add
@@ -3602,7 +3602,7 @@ public fun msaDpaddSW(a: V4i32, b: V8i16, c: V8i16): V4i32 = msaDpaddSW(a, trans
  * producing a result twice the size of the input operands. The multiplication results
  * of adjacent odd/even elements are added to the vector `a` (two signed 64-bit integer numbers).
  */
-public fun msaDpaddSD(a: V2i64, b: V4i32, c: V4i32): V2i64 = msaDpaddSD(a, transmuteWithLayouts(b, V4i32.typeLayout(), V2i64.typeLayout()), c)
+public fun msaDpaddSD(a: V2i64, b: V4i32, c: V4i32): V2i64 = msaDpaddSD(a, transmuteWithLayouts<V4i32, V2i64>(b, V4i32.typeLayout(), V2i64.typeLayout()), c)
 
 /**
  * Vector Unsigned Dot Product and Add
@@ -3612,7 +3612,7 @@ public fun msaDpaddSD(a: V2i64, b: V4i32, c: V4i32): V2i64 = msaDpaddSD(a, trans
  * producing a result twice the size of the input operands. The multiplication results
  * of adjacent odd/even elements are added to the vector `a` (eight unsigned 16-bit integer numbers).
  */
-public fun msaDpaddUH(a: V8u16, b: V16u8, c: V16u8): V8u16 = msaDpaddUH(a, transmuteWithLayouts(b, V16u8.typeLayout(), V8u16.typeLayout()), c)
+public fun msaDpaddUH(a: V8u16, b: V16u8, c: V16u8): V8u16 = msaDpaddUH(a, transmuteWithLayouts<V16u8, V8u16>(b, V16u8.typeLayout(), V8u16.typeLayout()), c)
 
 /**
  * Vector Unsigned Dot Product and Add
@@ -3622,7 +3622,7 @@ public fun msaDpaddUH(a: V8u16, b: V16u8, c: V16u8): V8u16 = msaDpaddUH(a, trans
  * producing a result twice the size of the input operands. The multiplication results
  * of adjacent odd/even elements are added to the vector `a` (four unsigned 32-bit integer numbers).
  */
-public fun msaDpaddUW(a: V4u32, b: V8u16, c: V8u16): V4u32 = msaDpaddUW(a, transmuteWithLayouts(b, V8u16.typeLayout(), V4u32.typeLayout()), c)
+public fun msaDpaddUW(a: V4u32, b: V8u16, c: V8u16): V4u32 = msaDpaddUW(a, transmuteWithLayouts<V8u16, V4u32>(b, V8u16.typeLayout(), V4u32.typeLayout()), c)
 
 /**
  * Vector Unsigned Dot Product and Add
@@ -3632,7 +3632,7 @@ public fun msaDpaddUW(a: V4u32, b: V8u16, c: V8u16): V4u32 = msaDpaddUW(a, trans
  * producing a result twice the size of the input operands. The multiplication results
  * of adjacent odd/even elements are added to the vector `a` (two unsigned 64-bit integer numbers).
  */
-public fun msaDpaddUD(a: V2u64, b: V4u32, c: V4u32): V2u64 = msaDpaddUD(a, transmuteWithLayouts(b, V4u32.typeLayout(), V2u64.typeLayout()), c)
+public fun msaDpaddUD(a: V2u64, b: V4u32, c: V4u32): V2u64 = msaDpaddUD(a, transmuteWithLayouts<V4u32, V2u64>(b, V4u32.typeLayout(), V2u64.typeLayout()), c)
 
 /**
  * Vector Signed Dot Product and Add
@@ -3643,7 +3643,7 @@ public fun msaDpaddUD(a: V2u64, b: V4u32, c: V4u32): V2u64 = msaDpaddUD(a, trans
  * of adjacent odd/even elements are subtracted from the integer elements in vector `a`
  * (eight signed 16-bit integer numbers).
  */
-public fun msaDpsubSH(a: V8i16, b: V16i8, c: V16i8): V8i16 = msaDpsubSH(a, transmuteWithLayouts(b, V16i8.typeLayout(), V8i16.typeLayout()), c)
+public fun msaDpsubSH(a: V8i16, b: V16i8, c: V16i8): V8i16 = msaDpsubSH(a, transmuteWithLayouts<V16i8, V8i16>(b, V16i8.typeLayout(), V8i16.typeLayout()), c)
 
 /**
  * Vector Signed Dot Product and Add
@@ -3654,7 +3654,7 @@ public fun msaDpsubSH(a: V8i16, b: V16i8, c: V16i8): V8i16 = msaDpsubSH(a, trans
  * of adjacent odd/even elements are subtracted from the integer elements in vector `a`
  * (four signed 32-bit integer numbers).
  */
-public fun msaDpsubSW(a: V4i32, b: V8i16, c: V8i16): V4i32 = msaDpsubSW(a, transmuteWithLayouts(b, V8i16.typeLayout(), V4i32.typeLayout()), c)
+public fun msaDpsubSW(a: V4i32, b: V8i16, c: V8i16): V4i32 = msaDpsubSW(a, transmuteWithLayouts<V8i16, V4i32>(b, V8i16.typeLayout(), V4i32.typeLayout()), c)
 
 /**
  * Vector Signed Dot Product and Add
@@ -3665,7 +3665,7 @@ public fun msaDpsubSW(a: V4i32, b: V8i16, c: V8i16): V4i32 = msaDpsubSW(a, trans
  * of adjacent odd/even elements are subtracted from the integer elements in vector `a`
  * (two signed 64-bit integer numbers).
  */
-public fun msaDpsubSD(a: V2i64, b: V4i32, c: V4i32): V2i64 = msaDpsubSD(a, transmuteWithLayouts(b, V4i32.typeLayout(), V2i64.typeLayout()), c)
+public fun msaDpsubSD(a: V2i64, b: V4i32, c: V4i32): V2i64 = msaDpsubSD(a, transmuteWithLayouts<V4i32, V2i64>(b, V4i32.typeLayout(), V2i64.typeLayout()), c)
 
 /**
  * Vector Unsigned Dot Product and Add
@@ -3676,7 +3676,7 @@ public fun msaDpsubSD(a: V2i64, b: V4i32, c: V4i32): V2i64 = msaDpsubSD(a, trans
  * of adjacent odd/even elements are subtracted from the integer elements in vector `a`
  * (eight signed 16-bit integer numbers).
  */
-public fun msaDpsubUH(a: V8i16, b: V16u8, c: V16u8): V8i16 = msaDpsubUH(a, transmuteWithLayouts(b, V16u8.typeLayout(), V8i16.typeLayout()), c)
+public fun msaDpsubUH(a: V8i16, b: V16u8, c: V16u8): V8i16 = msaDpsubUH(a, transmuteWithLayouts<V16u8, V8i16>(b, V16u8.typeLayout(), V8i16.typeLayout()), c)
 
 /**
  * Vector Unsigned Dot Product and Add
@@ -3687,7 +3687,7 @@ public fun msaDpsubUH(a: V8i16, b: V16u8, c: V16u8): V8i16 = msaDpsubUH(a, trans
  * of adjacent odd/even elements are subtracted from the integer elements in vector `a`
  * (four signed 32-bit integer numbers).
  */
-public fun msaDpsubUW(a: V4i32, b: V8u16, c: V8u16): V4i32 = msaDpsubUW(a, transmuteWithLayouts(b, V8u16.typeLayout(), V4i32.typeLayout()), c)
+public fun msaDpsubUW(a: V4i32, b: V8u16, c: V8u16): V4i32 = msaDpsubUW(a, transmuteWithLayouts<V8u16, V4i32>(b, V8u16.typeLayout(), V4i32.typeLayout()), c)
 
 /**
  * Vector Unsigned Dot Product and Add
@@ -3698,7 +3698,7 @@ public fun msaDpsubUW(a: V4i32, b: V8u16, c: V8u16): V4i32 = msaDpsubUW(a, trans
  * of adjacent odd/even elements are subtracted from the integer elements in vector `a`
  * (two signed 64-bit integer numbers).
  */
-public fun msaDpsubUD(a: V2i64, b: V4u32, c: V4u32): V2i64 = msaDpsubUD(a, transmuteWithLayouts(b, V4u32.typeLayout(), V2i64.typeLayout()), c)
+public fun msaDpsubUD(a: V2i64, b: V4u32, c: V4u32): V2i64 = msaDpsubUD(a, transmuteWithLayouts<V4u32, V2i64>(b, V4u32.typeLayout(), V2i64.typeLayout()), c)
 
 /**
  * Vector Floating-Point Addition
@@ -3707,7 +3707,7 @@ public fun msaDpsubUD(a: V2i64, b: V4u32, c: V4u32): V2i64 = msaDpsubUD(a, trans
  * are added to the floating-point elements in `bc` (four 32-bit floating point numbers).
  * The result is written to vector (four 32-bit floating point numbers).
  */
-public fun msaFaddW(a: V4f32, b: V4f32): V4f32 = msaFaddW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4f32.typeLayout()))
+public fun msaFaddW(a: V4f32, b: V4f32): V4f32 = msaFaddW(a, b)
 
 /**
  * Vector Floating-Point Addition
@@ -3716,7 +3716,7 @@ public fun msaFaddW(a: V4f32, b: V4f32): V4f32 = msaFaddW(a, transmuteWithLayout
  * are added to the floating-point elements in `bc` (two 64-bit floating point numbers).
  * The result is written to vector (two 64-bit floating point numbers).
  */
-public fun msaFaddD(a: V2f64, b: V2f64): V2f64 = msaFaddD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2f64.typeLayout()))
+public fun msaFaddD(a: V2f64, b: V2f64): V2f64 = msaFaddD(a, b)
 
 /**
  * Vector Floating-Point Quiet Compare Always False
@@ -3725,7 +3725,7 @@ public fun msaFaddD(a: V2f64, b: V2f64): V2f64 = msaFaddD(a, transmuteWithLayout
  * Signaling NaN elements in `a` (four 32-bit floating point numbers)
  * or `b` (four 32-bit floating point numbers) signal Invalid Operation exception.
  */
-public fun msaFcafW(a: V4f32, b: V4f32): V4i32 = msaFcafW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFcafW(a: V4f32, b: V4f32): V4i32 = msaFcafW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Always False
@@ -3734,7 +3734,7 @@ public fun msaFcafW(a: V4f32, b: V4f32): V4i32 = msaFcafW(a, transmuteWithLayout
  * Signaling NaN elements in `a` (two 64-bit floating point numbers)
  * or `b` (two 64-bit floating point numbers) signal Invalid Operation exception.
  */
-public fun msaFcafD(a: V2f64, b: V2f64): V2i64 = msaFcafD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFcafD(a: V2f64, b: V2f64): V2i64 = msaFcafD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Equal
@@ -3744,7 +3744,7 @@ public fun msaFcafD(a: V2f64, b: V2f64): V2i64 = msaFcafD(a, transmuteWithLayout
  * and `b` (four 32-bit floating point numbers) elements are ordered and equal,
  * otherwise set all bits to 0.
  */
-public fun msaFceqW(a: V4f32, b: V4f32): V4i32 = msaFceqW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFceqW(a: V4f32, b: V4f32): V4i32 = msaFceqW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Equal
@@ -3754,7 +3754,7 @@ public fun msaFceqW(a: V4f32, b: V4f32): V4i32 = msaFceqW(a, transmuteWithLayout
  * and `b` (two 64-bit floating point numbers) elements are ordered and equal,
  * otherwise set all bits to 0.
  */
-public fun msaFceqD(a: V2f64, b: V2f64): V2i64 = msaFceqD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFceqD(a: V2f64, b: V2f64): V2i64 = msaFceqD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Class Mask
@@ -3788,7 +3788,7 @@ public fun msaFclassD(a: V2f64): V2i64 = msaFclassD(a)
  * and either less than or equal to `b` (four 32-bit floating point numbers) elements,
  * otherwise set all bits to 0.
  */
-public fun msaFcleW(a: V4f32, b: V4f32): V4i32 = msaFcleW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFcleW(a: V4f32, b: V4f32): V4i32 = msaFcleW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Less or Equal
@@ -3798,7 +3798,7 @@ public fun msaFcleW(a: V4f32, b: V4f32): V4i32 = msaFcleW(a, transmuteWithLayout
  * and either less than or equal to `b` (two 64-bit floating point numbers) elements,
  * otherwise set all bits to 0.
  */
-public fun msaFcleD(a: V2f64, b: V2f64): V2i64 = msaFcleD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFcleD(a: V2f64, b: V2f64): V2i64 = msaFcleD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Less Than
@@ -3808,7 +3808,7 @@ public fun msaFcleD(a: V2f64, b: V2f64): V2i64 = msaFcleD(a, transmuteWithLayout
  * and less than `b` (four 32-bit floating point numbers) elements,
  * otherwise set all bits to 0.
  */
-public fun msaFcltW(a: V4f32, b: V4f32): V4i32 = msaFcltW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFcltW(a: V4f32, b: V4f32): V4i32 = msaFcltW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Less Than
@@ -3818,7 +3818,7 @@ public fun msaFcltW(a: V4f32, b: V4f32): V4i32 = msaFcltW(a, transmuteWithLayout
  * and less than `b` (two 64-bit floating point numbers) elements,
  * otherwise set all bits to 0.
  */
-public fun msaFcltD(a: V2f64, b: V2f64): V2i64 = msaFcltD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFcltD(a: V2f64, b: V2f64): V2i64 = msaFcltD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Not Equal
@@ -3828,7 +3828,7 @@ public fun msaFcltD(a: V2f64, b: V2f64): V2i64 = msaFcltD(a, transmuteWithLayout
  * `b` (four 32-bit floating point numbers) elements are ordered and not equal,
  * otherwise set all bits to 0.
  */
-public fun msaFcneW(a: V4f32, b: V4f32): V4i32 = msaFcneW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFcneW(a: V4f32, b: V4f32): V4i32 = msaFcneW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Not Equal
@@ -3838,7 +3838,7 @@ public fun msaFcneW(a: V4f32, b: V4f32): V4i32 = msaFcneW(a, transmuteWithLayout
  * `b` (two 64-bit floating point numbers) elements are ordered and not equal,
  * otherwise set all bits to 0.
  */
-public fun msaFcneD(a: V2f64, b: V2f64): V2i64 = msaFcneD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFcneD(a: V2f64, b: V2f64): V2i64 = msaFcneD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Ordered
@@ -3848,7 +3848,7 @@ public fun msaFcneD(a: V2f64, b: V2f64): V2i64 = msaFcneD(a, transmuteWithLayout
  * `b` (four 32-bit floating point numbers) elements are ordered, i.e. both elements are not NaN values,
  * otherwise set all bits to 0.
  */
-public fun msaFcorW(a: V4f32, b: V4f32): V4i32 = msaFcorW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFcorW(a: V4f32, b: V4f32): V4i32 = msaFcorW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Ordered
@@ -3858,7 +3858,7 @@ public fun msaFcorW(a: V4f32, b: V4f32): V4i32 = msaFcorW(a, transmuteWithLayout
  * `b` (two 64-bit floating point numbers) elements are ordered, i.e. both elements are not NaN values,
  * otherwise set all bits to 0.
  */
-public fun msaFcorD(a: V2f64, b: V2f64): V2i64 = msaFcorD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFcorD(a: V2f64, b: V2f64): V2i64 = msaFcorD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Unordered or Equal
@@ -3868,7 +3868,7 @@ public fun msaFcorD(a: V2f64, b: V2f64): V2i64 = msaFcorD(a, transmuteWithLayout
  * `b` (four 32-bit floating point numbers) elements are unordered or equal,
  * otherwise set all bits to 0.
  */
-public fun msaFcueqW(a: V4f32, b: V4f32): V4i32 = msaFcueqW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFcueqW(a: V4f32, b: V4f32): V4i32 = msaFcueqW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Unordered or Equal
@@ -3878,7 +3878,7 @@ public fun msaFcueqW(a: V4f32, b: V4f32): V4i32 = msaFcueqW(a, transmuteWithLayo
  * `b` (two 64-bit floating point numbers) elements are unordered or equal,
  * otherwise set all bits to 0.
  */
-public fun msaFcueqD(a: V2f64, b: V2f64): V2i64 = msaFcueqD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFcueqD(a: V2f64, b: V2f64): V2i64 = msaFcueqD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Unordered or Less or Equal
@@ -3888,7 +3888,7 @@ public fun msaFcueqD(a: V2f64, b: V2f64): V2i64 = msaFcueqD(a, transmuteWithLayo
  * are unordered or less than or equal to `b` (four 32-bit floating point numbers) elements,
  * otherwise set all bits to 0.
  */
-public fun msaFculeW(a: V4f32, b: V4f32): V4i32 = msaFculeW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFculeW(a: V4f32, b: V4f32): V4i32 = msaFculeW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Unordered or Less or Equal
@@ -3898,7 +3898,7 @@ public fun msaFculeW(a: V4f32, b: V4f32): V4i32 = msaFculeW(a, transmuteWithLayo
  * are unordered or less than or equal to `b` (two 64-bit floating point numbers) elements,
  * otherwise set all bits to 0.
  */
-public fun msaFculeD(a: V2f64, b: V2f64): V2i64 = msaFculeD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFculeD(a: V2f64, b: V2f64): V2i64 = msaFculeD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Unordered or Less Than
@@ -3908,7 +3908,7 @@ public fun msaFculeD(a: V2f64, b: V2f64): V2i64 = msaFculeD(a, transmuteWithLayo
  * are unordered or less than `b` (four 32-bit floating point numbers) elements,
  * otherwise set all bits to 0.
  */
-public fun msaFcultW(a: V4f32, b: V4f32): V4i32 = msaFcultW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFcultW(a: V4f32, b: V4f32): V4i32 = msaFcultW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Unordered or Less Than
@@ -3918,7 +3918,7 @@ public fun msaFcultW(a: V4f32, b: V4f32): V4i32 = msaFcultW(a, transmuteWithLayo
  * are unordered or less than `b` (two 64-bit floating point numbers) elements,
  * otherwise set all bits to 0.
  */
-public fun msaFcultD(a: V2f64, b: V2f64): V2i64 = msaFcultD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFcultD(a: V2f64, b: V2f64): V2i64 = msaFcultD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Unordered
@@ -3928,7 +3928,7 @@ public fun msaFcultD(a: V2f64, b: V2f64): V2i64 = msaFcultD(a, transmuteWithLayo
  * and `b` (four 32-bit floating point numbers) elements are unordered,
  * i.e. at least one element is a NaN value, otherwise set all bits to 0.
  */
-public fun msaFcunW(a: V4f32, b: V4f32): V4i32 = msaFcunW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFcunW(a: V4f32, b: V4f32): V4i32 = msaFcunW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Unordered
@@ -3938,7 +3938,7 @@ public fun msaFcunW(a: V4f32, b: V4f32): V4i32 = msaFcunW(a, transmuteWithLayout
  * and `b` (two 64-bit floating point numbers) elements are unordered,
  * i.e. at least one element is a NaN value, otherwise set all bits to 0.
  */
-public fun msaFcunD(a: V2f64, b: V2f64): V2i64 = msaFcunD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFcunD(a: V2f64, b: V2f64): V2i64 = msaFcunD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Unordered or Not Equal
@@ -3948,7 +3948,7 @@ public fun msaFcunD(a: V2f64, b: V2f64): V2i64 = msaFcunD(a, transmuteWithLayout
  * and `b` (four 32-bit floating point numbers) elements are unordered or not equal,
  * otherwise set all bits to 0.
  */
-public fun msaFcuneW(a: V4f32, b: V4f32): V4i32 = msaFcuneW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFcuneW(a: V4f32, b: V4f32): V4i32 = msaFcuneW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Quiet Compare Unordered or Not Equal
@@ -3958,7 +3958,7 @@ public fun msaFcuneW(a: V4f32, b: V4f32): V4i32 = msaFcuneW(a, transmuteWithLayo
  * and `b` (two 64-bit floating point numbers) elements are unordered or not equal,
  * otherwise set all bits to 0.
  */
-public fun msaFcuneD(a: V2f64, b: V2f64): V2i64 = msaFcuneD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFcuneD(a: V2f64, b: V2f64): V2i64 = msaFcuneD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Division
@@ -3967,7 +3967,7 @@ public fun msaFcuneD(a: V2f64, b: V2f64): V2i64 = msaFcuneD(a, transmuteWithLayo
  * are divided by the floating-point elements in vector `b` (four 32-bit floating point numbers).
  * The result is written to vector (four 32-bit floating point numbers).
  */
-public fun msaFdivW(a: V4f32, b: V4f32): V4f32 = msaFdivW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4f32.typeLayout()))
+public fun msaFdivW(a: V4f32, b: V4f32): V4f32 = msaFdivW(a, b)
 
 /**
  * Vector Floating-Point Division
@@ -3976,7 +3976,7 @@ public fun msaFdivW(a: V4f32, b: V4f32): V4f32 = msaFdivW(a, transmuteWithLayout
  * are divided by the floating-point elements in vector `b` (two 64-bit floating point numbers).
  * The result is written to vector (two 64-bit floating point numbers).
  */
-public fun msaFdivD(a: V2f64, b: V2f64): V2f64 = msaFdivD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2f64.typeLayout()))
+public fun msaFdivD(a: V2f64, b: V2f64): V2f64 = msaFdivD(a, b)
 
 // Note: 16-bit float
 // /// Vector Floating-Point Down-Convert Interchange Format
@@ -3989,9 +3989,9 @@ public fun msaFdivD(a: V2f64, b: V2f64): V2f64 = msaFdivD(a, transmuteWithLayout
 // @inline
 // @targetFeature(enable = "msa")
 // @cfgAttr(test, assertInstr(fexdo.h))
-// @unstable(feature = "stdarchMips", issue = "111198") pub unchecked fn __msa_fexdo_h(a: v4f32, b: v4f32) -> f16x8 {
+// @unstable(feature = "stdarchMips", issue = "111198") pub unchecked fn __msa_fexdo_h(a: v4f32, b: v4f32) -> f16x8 (
 // msaFexdoH(a, mem.transmute(b))
-// }
+// )
 
 /**
  * Vector Floating-Point Down-Convert Interchange Format
@@ -4001,7 +4001,7 @@ public fun msaFdivD(a: V2f64, b: V2f64): V2f64 = msaFdivD(a, transmuteWithLayout
  * to a smaller interchange format, i.e. from 64-bit to 32-bit, or from 32-bit to 16-bit.
  * The result is written to vector (four 32-bit floating point numbers).
  */
-public fun msaFexdoW(a: V2f64, b: V2f64): V4f32 = msaFexdoW(a, transmuteWithLayouts(b, V2f64.typeLayout(), V4f32.typeLayout()))
+public fun msaFexdoW(a: V2f64, b: V2f64): V4f32 = msaFexdoW(a, transmuteWithLayouts<V2f64, V4f32>(b, V2f64.typeLayout(), V4f32.typeLayout()))
 
 /**
  * Vector Floating-Point Down-Convert Interchange Format
@@ -4011,7 +4011,7 @@ public fun msaFexdoW(a: V2f64, b: V2f64): V4f32 = msaFexdoW(a, transmuteWithLayo
  * (four signed 32-bit integer numbers).
  * The result is written to vector (four 32-bit floating point numbers).
  */
-public fun msaFexp2W(a: V4f32, b: V4i32): V4f32 = msaFexp2W(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4f32.typeLayout()))
+public fun msaFexp2W(a: V4f32, b: V4i32): V4f32 = msaFexp2W(a, transmuteWithLayouts<V4i32, V4f32>(b, V4i32.typeLayout(), V4f32.typeLayout()))
 
 /**
  * Vector Floating-Point Down-Convert Interchange Format
@@ -4021,7 +4021,7 @@ public fun msaFexp2W(a: V4f32, b: V4i32): V4f32 = msaFexp2W(a, transmuteWithLayo
  * (two signed 64-bit integer numbers).
  * The result is written to vector (two 64-bit floating point numbers).
  */
-public fun msaFexp2D(a: V2f64, b: V2i64): V2f64 = msaFexp2D(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2f64.typeLayout()))
+public fun msaFexp2D(a: V2f64, b: V2i64): V2f64 = msaFexp2D(a, transmuteWithLayouts<V2i64, V2f64>(b, V2i64.typeLayout(), V2f64.typeLayout()))
 
 // Note: 16-bit float
 // /// Vector Floating-Point Up-Convert Interchange Format Left
@@ -4034,9 +4034,9 @@ public fun msaFexp2D(a: V2f64, b: V2i64): V2f64 = msaFexp2D(a, transmuteWithLayo
 // @inline
 // @targetFeature(enable = "msa")
 // @cfgAttr(test, assertInstr(fexupl.w))
-// @unstable(feature = "stdarchMips", issue = "111198") pub unchecked fn __msa_fexupl_w(a: f16x8) -> v4f32 {
+// @unstable(feature = "stdarchMips", issue = "111198") pub unchecked fn __msa_fexupl_w(a: f16x8) -> v4f32 (
 // msaFexuplW(a)
-// }
+// )
 
 /**
  * Vector Floating-Point Up-Convert Interchange Format Left
@@ -4059,9 +4059,9 @@ public fun msaFexuplD(a: V4f32): V2f64 = msaFexuplD(a)
 // @inline
 // @targetFeature(enable = "msa")
 // @cfgAttr(test, assertInstr(fexupr.w))
-// @unstable(feature = "stdarchMips", issue = "111198") pub unchecked fn __msa_fexupr_w(a: f16x8) -> v4f32 {
+// @unstable(feature = "stdarchMips", issue = "111198") pub unchecked fn __msa_fexupr_w(a: f16x8) -> v4f32 (
 // msaFexuprW(a)
-// }
+// )
 
 /**
  * Vector Floating-Point Up-Convert Interchange Format Left
@@ -4210,7 +4210,7 @@ public fun msaFlog2D(a: V2f64): V2f64 = msaFlog2D(a)
  * multiplied by floating-point elements in vector `c` (four 32-bit floating point numbers)
  * are added to the floating-point elements in vector `a` (four 32-bit floating point numbers).
  */
-public fun msaFmaddW(a: V4f32, b: V4f32, c: V4f32): V4f32 = msaFmaddW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4f32.typeLayout()), c)
+public fun msaFmaddW(a: V4f32, b: V4f32, c: V4f32): V4f32 = msaFmaddW(a, b, c)
 
 /**
  * Vector Floating-Point Multiply-Add
@@ -4219,7 +4219,7 @@ public fun msaFmaddW(a: V4f32, b: V4f32, c: V4f32): V4f32 = msaFmaddW(a, transmu
  * multiplied by floating-point elements in vector `c` (two 64-bit floating point numbers)
  * are added to the floating-point elements in vector `a` (two 64-bit floating point numbers).
  */
-public fun msaFmaddD(a: V2f64, b: V2f64, c: V2f64): V2f64 = msaFmaddD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2f64.typeLayout()), c)
+public fun msaFmaddD(a: V2f64, b: V2f64, c: V2f64): V2f64 = msaFmaddD(a, b, c)
 
 /**
  * Vector Floating-Point Maximum
@@ -4228,7 +4228,7 @@ public fun msaFmaddD(a: V2f64, b: V2f64, c: V2f64): V2f64 = msaFmaddD(a, transmu
  * (four 32-bit floating point numbers) and vector `b` (four 32-bit floating point numbers)
  * are written to vector (four 32-bit floating point numbers).
  */
-public fun msaFmaxW(a: V4f32, b: V4f32): V4f32 = msaFmaxW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4f32.typeLayout()))
+public fun msaFmaxW(a: V4f32, b: V4f32): V4f32 = msaFmaxW(a, b)
 
 /**
  * Vector Floating-Point Maximum
@@ -4237,7 +4237,7 @@ public fun msaFmaxW(a: V4f32, b: V4f32): V4f32 = msaFmaxW(a, transmuteWithLayout
  * (two 64-bit floating point numbers) and vector `b` (two 64-bit floating point numbers)
  * are written to vector (two 64-bit floating point numbers).
  */
-public fun msaFmaxD(a: V2f64, b: V2f64): V2f64 = msaFmaxD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2f64.typeLayout()))
+public fun msaFmaxD(a: V2f64, b: V2f64): V2f64 = msaFmaxD(a, b)
 
 /**
  * Vector Floating-Point Maximum Based on Absolute Values
@@ -4247,7 +4247,7 @@ public fun msaFmaxD(a: V2f64, b: V2f64): V2f64 = msaFmaxD(a, transmuteWithLayout
  * and vector `b` (four 32-bit floating point numbers)
  * are written to vector (four 32-bit floating point numbers).
  */
-public fun msaFmaxAW(a: V4f32, b: V4f32): V4f32 = msaFmaxAW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4f32.typeLayout()))
+public fun msaFmaxAW(a: V4f32, b: V4f32): V4f32 = msaFmaxAW(a, b)
 
 /**
  * Vector Floating-Point Maximum Based on Absolute Values
@@ -4257,7 +4257,7 @@ public fun msaFmaxAW(a: V4f32, b: V4f32): V4f32 = msaFmaxAW(a, transmuteWithLayo
  * and vector `b` (two 64-bit floating point numbers)
  * are written to vector (two 64-bit floating point numbers).
  */
-public fun msaFmaxAD(a: V2f64, b: V2f64): V2f64 = msaFmaxAD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2f64.typeLayout()))
+public fun msaFmaxAD(a: V2f64, b: V2f64): V2f64 = msaFmaxAD(a, b)
 
 /**
  * Vector Floating-Point Minimum
@@ -4266,7 +4266,7 @@ public fun msaFmaxAD(a: V2f64, b: V2f64): V2f64 = msaFmaxAD(a, transmuteWithLayo
  * (four 32-bit floating point numbers) and vector `b` (four 32-bit floating point numbers)
  * are written to vector (four 32-bit floating point numbers).
  */
-public fun msaFminW(a: V4f32, b: V4f32): V4f32 = msaFminW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4f32.typeLayout()))
+public fun msaFminW(a: V4f32, b: V4f32): V4f32 = msaFminW(a, b)
 
 /**
  * Vector Floating-Point Minimum
@@ -4275,7 +4275,7 @@ public fun msaFminW(a: V4f32, b: V4f32): V4f32 = msaFminW(a, transmuteWithLayout
  * (two 64-bit floating point numbers) and vector `b` (two 64-bit floating point numbers)
  * are written to vector (two 64-bit floating point numbers).
  */
-public fun msaFminD(a: V2f64, b: V2f64): V2f64 = msaFminD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2f64.typeLayout()))
+public fun msaFminD(a: V2f64, b: V2f64): V2f64 = msaFminD(a, b)
 
 /**
  * Vector Floating-Point Minimum Based on Absolute Values
@@ -4285,7 +4285,7 @@ public fun msaFminD(a: V2f64, b: V2f64): V2f64 = msaFminD(a, transmuteWithLayout
  * and vector `b` (four 32-bit floating point numbers)
  * are written to vector (four 32-bit floating point numbers).
  */
-public fun msaFminAW(a: V4f32, b: V4f32): V4f32 = msaFminAW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4f32.typeLayout()))
+public fun msaFminAW(a: V4f32, b: V4f32): V4f32 = msaFminAW(a, b)
 
 /**
  * Vector Floating-Point Minimum Based on Absolute Values
@@ -4295,7 +4295,7 @@ public fun msaFminAW(a: V4f32, b: V4f32): V4f32 = msaFminAW(a, transmuteWithLayo
  * and vector `b` (two 64-bit floating point numbers)
  * are written to vector (two 64-bit floating point numbers).
  */
-public fun msaFminAD(a: V2f64, b: V2f64): V2f64 = msaFminAD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2f64.typeLayout()))
+public fun msaFminAD(a: V2f64, b: V2f64): V2f64 = msaFminAD(a, b)
 
 /**
  * Vector Floating-Point Multiply-Sub
@@ -4304,7 +4304,7 @@ public fun msaFminAD(a: V2f64, b: V2f64): V2f64 = msaFminAD(a, transmuteWithLayo
  * multiplied by floating-point elements in vector `c` (four 32-bit floating point numbers)
  * are subtracted from the floating-point elements in vector `a` (four 32-bit floating point numbers).
  */
-public fun msaFmsubW(a: V4f32, b: V4f32, c: V4f32): V4f32 = msaFmsubW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4f32.typeLayout()), c)
+public fun msaFmsubW(a: V4f32, b: V4f32, c: V4f32): V4f32 = msaFmsubW(a, b, c)
 
 /**
  * Vector Floating-Point Multiply-Sub
@@ -4313,7 +4313,7 @@ public fun msaFmsubW(a: V4f32, b: V4f32, c: V4f32): V4f32 = msaFmsubW(a, transmu
  * multiplied by floating-point elements in vector `c` (two 64-bit floating point numbers)
  * are subtracted from the floating-point elements in vector `a` (two 64-bit floating point numbers).
  */
-public fun msaFmsubD(a: V2f64, b: V2f64, c: V2f64): V2f64 = msaFmsubD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2f64.typeLayout()), c)
+public fun msaFmsubD(a: V2f64, b: V2f64, c: V2f64): V2f64 = msaFmsubD(a, b, c)
 
 /**
  * Vector Floating-Point Multiplication
@@ -4321,7 +4321,7 @@ public fun msaFmsubD(a: V2f64, b: V2f64, c: V2f64): V2f64 = msaFmsubD(a, transmu
  * The floating-point elements in vector `a` (four 32-bit floating point numbers) are
  * multiplied by floating-point elements in vector `b` (four 32-bit floating point numbers).
  */
-public fun msaFmulW(a: V4f32, b: V4f32): V4f32 = msaFmulW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4f32.typeLayout()))
+public fun msaFmulW(a: V4f32, b: V4f32): V4f32 = msaFmulW(a, b)
 
 /**
  * Vector Floating-Point Multiplication
@@ -4329,7 +4329,7 @@ public fun msaFmulW(a: V4f32, b: V4f32): V4f32 = msaFmulW(a, transmuteWithLayout
  * The floating-point elements in vector `a` (two 64-bit floating point numbers) are
  * multiplied by floating-point elements in vector `b` (two 64-bit floating point numbers).
  */
-public fun msaFmulD(a: V2f64, b: V2f64): V2f64 = msaFmulD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2f64.typeLayout()))
+public fun msaFmulD(a: V2f64, b: V2f64): V2f64 = msaFmulD(a, b)
 
 /**
  * Vector Floating-Point Round to Integer
@@ -4389,7 +4389,7 @@ public fun msaFrsqrtD(a: V2f64): V2f64 = msaFrsqrtD(a)
  * or `b` (four 32-bit floating point numbers) signal Invalid Operation exception.
  * In case of a floating-point exception, the default result has all bits set to 0.
  */
-public fun msaFsafW(a: V4f32, b: V4f32): V4i32 = msaFsafW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFsafW(a: V4f32, b: V4f32): V4i32 = msaFsafW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Always False
@@ -4399,7 +4399,7 @@ public fun msaFsafW(a: V4f32, b: V4f32): V4i32 = msaFsafW(a, transmuteWithLayout
  * or `b` (two 64-bit floating point numbers) signal Invalid Operation exception.
  * In case of a floating-point exception, the default result has all bits set to 0.
  */
-public fun msaFsafD(a: V2f64, b: V2f64): V2i64 = msaFsafD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFsafD(a: V2f64, b: V2f64): V2i64 = msaFsafD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Equal
@@ -4408,7 +4408,7 @@ public fun msaFsafD(a: V2f64, b: V2f64): V2i64 = msaFsafD(a, transmuteWithLayout
  * if the corresponding `a` (four 32-bit floating point numbers)
  * and `b` (four 32-bit floating point numbers) elements are equal, otherwise set all bits to 0.
  */
-public fun msaFseqW(a: V4f32, b: V4f32): V4i32 = msaFseqW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFseqW(a: V4f32, b: V4f32): V4i32 = msaFseqW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Equal
@@ -4417,7 +4417,7 @@ public fun msaFseqW(a: V4f32, b: V4f32): V4i32 = msaFseqW(a, transmuteWithLayout
  * if the corresponding `a` (two 64-bit floating point numbers)
  * and `b` (two 64-bit floating point numbers) elements are equal, otherwise set all bits to 0.
  */
-public fun msaFseqD(a: V2f64, b: V2f64): V2i64 = msaFseqD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFseqD(a: V2f64, b: V2f64): V2i64 = msaFseqD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Less or Equal
@@ -4426,7 +4426,7 @@ public fun msaFseqD(a: V2f64, b: V2f64): V2i64 = msaFseqD(a, transmuteWithLayout
  * if the corresponding `a` (four 32-bit floating point numbers) elements
  * are less than or equal to `b` (four 32-bit floating point numbers) elements, otherwise set all bits to 0.
  */
-public fun msaFsleW(a: V4f32, b: V4f32): V4i32 = msaFsleW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFsleW(a: V4f32, b: V4f32): V4i32 = msaFsleW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Less or Equal
@@ -4435,7 +4435,7 @@ public fun msaFsleW(a: V4f32, b: V4f32): V4i32 = msaFsleW(a, transmuteWithLayout
  * if the corresponding `a` (two 64-bit floating point numbers) elements
  * are less than or equal to `b` (two 64-bit floating point numbers) elements, otherwise set all bits to 0.
  */
-public fun msaFsleD(a: V2f64, b: V2f64): V2i64 = msaFsleD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFsleD(a: V2f64, b: V2f64): V2i64 = msaFsleD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Less Than
@@ -4444,7 +4444,7 @@ public fun msaFsleD(a: V2f64, b: V2f64): V2i64 = msaFsleD(a, transmuteWithLayout
  * if the corresponding `a` (four 32-bit floating point numbers) elements
  * are less than `b` (four 32-bit floating point numbers) elements, otherwise set all bits to 0.
  */
-public fun msaFsltW(a: V4f32, b: V4f32): V4i32 = msaFsltW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFsltW(a: V4f32, b: V4f32): V4i32 = msaFsltW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Less Than
@@ -4453,7 +4453,7 @@ public fun msaFsltW(a: V4f32, b: V4f32): V4i32 = msaFsltW(a, transmuteWithLayout
  * if the corresponding `a` (two 64-bit floating point numbers) elements
  * are less than `b` (two 64-bit floating point numbers) elements, otherwise set all bits to 0.
  */
-public fun msaFsltD(a: V2f64, b: V2f64): V2i64 = msaFsltD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFsltD(a: V2f64, b: V2f64): V2i64 = msaFsltD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Not Equal
@@ -4462,7 +4462,7 @@ public fun msaFsltD(a: V2f64, b: V2f64): V2i64 = msaFsltD(a, transmuteWithLayout
  * if the corresponding `a` (four 32-bit floating point numbers) and
  * `b` (four 32-bit floating point numbers) elements are not equal, otherwise set all bits to 0.
  */
-public fun msaFsneW(a: V4f32, b: V4f32): V4i32 = msaFsneW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFsneW(a: V4f32, b: V4f32): V4i32 = msaFsneW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Not Equal
@@ -4471,7 +4471,7 @@ public fun msaFsneW(a: V4f32, b: V4f32): V4i32 = msaFsneW(a, transmuteWithLayout
  * if the corresponding `a` (two 64-bit floating point numbers) and
  * `b` (two 64-bit floating point numbers) elements are not equal, otherwise set all bits to 0.
  */
-public fun msaFsneD(a: V2f64, b: V2f64): V2i64 = msaFsneD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFsneD(a: V2f64, b: V2f64): V2i64 = msaFsneD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Ordered
@@ -4481,7 +4481,7 @@ public fun msaFsneD(a: V2f64, b: V2f64): V2i64 = msaFsneD(a, transmuteWithLayout
  * `b` (four 32-bit floating point numbers) elements are ordered,
  * i.e. both elements are not NaN values, otherwise set all bits to 0.
  */
-public fun msaFsorW(a: V4f32, b: V4f32): V4i32 = msaFsorW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFsorW(a: V4f32, b: V4f32): V4i32 = msaFsorW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Ordered
@@ -4491,7 +4491,7 @@ public fun msaFsorW(a: V4f32, b: V4f32): V4i32 = msaFsorW(a, transmuteWithLayout
  * `b` (two 64-bit floating point numbers) elements are ordered,
  * i.e. both elements are not NaN values, otherwise set all bits to 0.
  */
-public fun msaFsorD(a: V2f64, b: V2f64): V2i64 = msaFsorD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFsorD(a: V2f64, b: V2f64): V2i64 = msaFsorD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Square Root
@@ -4519,7 +4519,7 @@ public fun msaFsqrtD(a: V2f64): V2f64 = msaFsqrtD(a)
  * (four 32-bit floating point numbers).
  * The result is written to vector (four 32-bit floating point numbers).
  */
-public fun msaFsubW(a: V4f32, b: V4f32): V4f32 = msaFsubW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4f32.typeLayout()))
+public fun msaFsubW(a: V4f32, b: V4f32): V4f32 = msaFsubW(a, b)
 
 /**
  * Vector Floating-Point Subtraction
@@ -4529,7 +4529,7 @@ public fun msaFsubW(a: V4f32, b: V4f32): V4f32 = msaFsubW(a, transmuteWithLayout
  * (two 64-bit floating point numbers).
  * The result is written to vector (two 64-bit floating point numbers).
  */
-public fun msaFsubD(a: V2f64, b: V2f64): V2f64 = msaFsubD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2f64.typeLayout()))
+public fun msaFsubD(a: V2f64, b: V2f64): V2f64 = msaFsubD(a, b)
 
 /**
  * Vector Floating-Point Signaling Compare Ordered
@@ -4539,7 +4539,7 @@ public fun msaFsubD(a: V2f64, b: V2f64): V2f64 = msaFsubD(a, transmuteWithLayout
  * `b` (four 32-bit floating point numbers) elements are unordered or equal,
  * otherwise set all bits to 0.
  */
-public fun msaFsueqW(a: V4f32, b: V4f32): V4i32 = msaFsueqW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFsueqW(a: V4f32, b: V4f32): V4i32 = msaFsueqW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Ordered
@@ -4549,7 +4549,7 @@ public fun msaFsueqW(a: V4f32, b: V4f32): V4i32 = msaFsueqW(a, transmuteWithLayo
  * `b` (two 64-bit floating point numbers) elements are unordered or equal,
  * otherwise set all bits to 0.
  */
-public fun msaFsueqD(a: V2f64, b: V2f64): V2i64 = msaFsueqD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFsueqD(a: V2f64, b: V2f64): V2i64 = msaFsueqD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Unordered or Less or Equal
@@ -4559,7 +4559,7 @@ public fun msaFsueqD(a: V2f64, b: V2f64): V2i64 = msaFsueqD(a, transmuteWithLayo
  * unordered or less than or equal to `b` (four 32-bit floating point numbers) elements,
  * otherwise set all bits to 0.
  */
-public fun msaFsuleW(a: V4f32, b: V4f32): V4i32 = msaFsuleW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFsuleW(a: V4f32, b: V4f32): V4i32 = msaFsuleW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Unordered or Less or Equal
@@ -4569,7 +4569,7 @@ public fun msaFsuleW(a: V4f32, b: V4f32): V4i32 = msaFsuleW(a, transmuteWithLayo
  * unordered or less than or equal to `b` (two 64-bit floating point numbers) elements,
  * otherwise set all bits to 0.
  */
-public fun msaFsuleD(a: V2f64, b: V2f64): V2i64 = msaFsuleD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFsuleD(a: V2f64, b: V2f64): V2i64 = msaFsuleD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Unordered or Less Than
@@ -4579,7 +4579,7 @@ public fun msaFsuleD(a: V2f64, b: V2f64): V2i64 = msaFsuleD(a, transmuteWithLayo
  * are unordered or less than `b` (four 32-bit floating point numbers) elements,
  * otherwise set all bits to 0.
  */
-public fun msaFsultW(a: V4f32, b: V4f32): V4i32 = msaFsultW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFsultW(a: V4f32, b: V4f32): V4i32 = msaFsultW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Unordered or Less Than
@@ -4589,7 +4589,7 @@ public fun msaFsultW(a: V4f32, b: V4f32): V4i32 = msaFsultW(a, transmuteWithLayo
  * are unordered or less than `b` (two 64-bit floating point numbers) elements,
  * otherwise set all bits to 0.
  */
-public fun msaFsultD(a: V2f64, b: V2f64): V2i64 = msaFsultD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFsultD(a: V2f64, b: V2f64): V2i64 = msaFsultD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Unordered
@@ -4599,7 +4599,7 @@ public fun msaFsultD(a: V2f64, b: V2f64): V2i64 = msaFsultD(a, transmuteWithLayo
  * `b` (four 32-bit floating point numbers) elements are unordered,
  * i.e. at least one element is a NaN value, otherwise set all bits to 0.
  */
-public fun msaFsunW(a: V4f32, b: V4f32): V4i32 = msaFsunW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFsunW(a: V4f32, b: V4f32): V4i32 = msaFsunW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Unordered
@@ -4609,7 +4609,7 @@ public fun msaFsunW(a: V4f32, b: V4f32): V4i32 = msaFsunW(a, transmuteWithLayout
  * `b` (two 64-bit floating point numbers) elements are unordered,
  * i.e. at least one element is a NaN value, otherwise set all bits to 0.
  */
-public fun msaFsunD(a: V2f64, b: V2f64): V2i64 = msaFsunD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFsunD(a: V2f64, b: V2f64): V2i64 = msaFsunD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Unordered or Not Equal
@@ -4619,7 +4619,7 @@ public fun msaFsunD(a: V2f64, b: V2f64): V2i64 = msaFsunD(a, transmuteWithLayout
  * `b` (four 32-bit floating point numbers) elements are unordered or not equal,
  * otherwise set all bits to 0.
  */
-public fun msaFsuneW(a: V4f32, b: V4f32): V4i32 = msaFsuneW(a, transmuteWithLayouts(b, V4f32.typeLayout(), V4i32.typeLayout()))
+public fun msaFsuneW(a: V4f32, b: V4f32): V4i32 = msaFsuneW(a, transmuteWithLayouts<V4f32, V4i32>(b, V4f32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Signaling Compare Unordered or Not Equal
@@ -4629,7 +4629,7 @@ public fun msaFsuneW(a: V4f32, b: V4f32): V4i32 = msaFsuneW(a, transmuteWithLayo
  * `b` (two 64-bit floating point numbers) elements are unordered or not equal,
  * otherwise set all bits to 0.
  */
-public fun msaFsuneD(a: V2f64, b: V2f64): V2i64 = msaFsuneD(a, transmuteWithLayouts(b, V2f64.typeLayout(), V2i64.typeLayout()))
+public fun msaFsuneD(a: V2f64, b: V2f64): V2i64 = msaFsuneD(a, transmuteWithLayouts<V2f64, V2i64>(b, V2f64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Floating-Point Convert to Signed Integer
@@ -4680,7 +4680,7 @@ public fun msaFtintUD(a: V2f64): V2u64 = msaFtintUD(a)
  * representation, or from 32-bit floating-point to 16-bit Q15 fixed-point representation.
  * The result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaFtqH(a: V4f32, b: V4f32): V8i16 = msaFtqH(a, transmuteWithLayouts(b, V4f32.typeLayout(), V8i16.typeLayout()))
+public fun msaFtqH(a: V4f32, b: V4f32): V8i16 = msaFtqH(a, transmuteWithLayouts<V4f32, V8i16>(b, V4f32.typeLayout(), V8i16.typeLayout()))
 
 /**
  * Vector Floating-Point Convert to Fixed-Point
@@ -4691,7 +4691,7 @@ public fun msaFtqH(a: V4f32, b: V4f32): V8i16 = msaFtqH(a, transmuteWithLayouts(
  * representation, or from 32-bit floating-point to 16-bit Q15 fixed-point representation.
  * The result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaFtqW(a: V2f64, b: V2f64): V4i32 = msaFtqW(a, transmuteWithLayouts(b, V2f64.typeLayout(), V4i32.typeLayout()))
+public fun msaFtqW(a: V2f64, b: V2f64): V4i32 = msaFtqW(a, transmuteWithLayouts<V2f64, V4i32>(b, V2f64.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Floating-Point Truncate and Convert to Signed Integer
@@ -4737,7 +4737,7 @@ public fun msaFtruncUD(a: V2f64): V2u64 = msaFtruncUD(a)
  * producing a result twice the size of the input operands.
  * The result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaHaddSH(a: V16i8, b: V16i8): V8i16 = msaHaddSH(a, transmuteWithLayouts(b, V16i8.typeLayout(), V8i16.typeLayout()))
+public fun msaHaddSH(a: V16i8, b: V16i8): V8i16 = msaHaddSH(a, transmuteWithLayouts<V16i8, V8i16>(b, V16i8.typeLayout(), V8i16.typeLayout()))
 
 /**
  * Vector Signed Horizontal Add
@@ -4747,7 +4747,7 @@ public fun msaHaddSH(a: V16i8, b: V16i8): V8i16 = msaHaddSH(a, transmuteWithLayo
  * producing a result twice the size of the input operands.
  * The result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaHaddSW(a: V8i16, b: V8i16): V4i32 = msaHaddSW(a, transmuteWithLayouts(b, V8i16.typeLayout(), V4i32.typeLayout()))
+public fun msaHaddSW(a: V8i16, b: V8i16): V4i32 = msaHaddSW(a, transmuteWithLayouts<V8i16, V4i32>(b, V8i16.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Signed Horizontal Add
@@ -4757,7 +4757,7 @@ public fun msaHaddSW(a: V8i16, b: V8i16): V4i32 = msaHaddSW(a, transmuteWithLayo
  * producing a result twice the size of the input operands.
  * The result is written to vector (two signed 64-bit integer numbers).
  */
-public fun msaHaddSD(a: V4i32, b: V4i32): V2i64 = msaHaddSD(a, transmuteWithLayouts(b, V4i32.typeLayout(), V2i64.typeLayout()))
+public fun msaHaddSD(a: V4i32, b: V4i32): V2i64 = msaHaddSD(a, transmuteWithLayouts<V4i32, V2i64>(b, V4i32.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Unsigned Horizontal Add
@@ -4767,7 +4767,7 @@ public fun msaHaddSD(a: V4i32, b: V4i32): V2i64 = msaHaddSD(a, transmuteWithLayo
  * producing a result twice the size of the input operands.
  * The result is written to vector (eight unsigned 16-bit integer numbers).
  */
-public fun msaHaddUH(a: V16u8, b: V16u8): V8u16 = msaHaddUH(a, transmuteWithLayouts(b, V16u8.typeLayout(), V8u16.typeLayout()))
+public fun msaHaddUH(a: V16u8, b: V16u8): V8u16 = msaHaddUH(a, transmuteWithLayouts<V16u8, V8u16>(b, V16u8.typeLayout(), V8u16.typeLayout()))
 
 /**
  * Vector Unsigned Horizontal Add
@@ -4777,7 +4777,7 @@ public fun msaHaddUH(a: V16u8, b: V16u8): V8u16 = msaHaddUH(a, transmuteWithLayo
  * producing a result twice the size of the input operands.
  * The result is written to vector (four unsigned 32-bit integer numbers).
  */
-public fun msaHaddUW(a: V8u16, b: V8u16): V4u32 = msaHaddUW(a, transmuteWithLayouts(b, V8u16.typeLayout(), V4u32.typeLayout()))
+public fun msaHaddUW(a: V8u16, b: V8u16): V4u32 = msaHaddUW(a, transmuteWithLayouts<V8u16, V4u32>(b, V8u16.typeLayout(), V4u32.typeLayout()))
 
 /**
  * Vector Unsigned Horizontal Add
@@ -4787,7 +4787,7 @@ public fun msaHaddUW(a: V8u16, b: V8u16): V4u32 = msaHaddUW(a, transmuteWithLayo
  * producing a result twice the size of the input operands.
  * The result is written to vector (two unsigned 64-bit integer numbers).
  */
-public fun msaHaddUD(a: V4u32, b: V4u32): V2u64 = msaHaddUD(a, transmuteWithLayouts(b, V4u32.typeLayout(), V2u64.typeLayout()))
+public fun msaHaddUD(a: V4u32, b: V4u32): V2u64 = msaHaddUD(a, transmuteWithLayouts<V4u32, V2u64>(b, V4u32.typeLayout(), V2u64.typeLayout()))
 
 /**
  * Vector Signed Horizontal Subtract
@@ -4797,7 +4797,7 @@ public fun msaHaddUD(a: V4u32, b: V4u32): V2u64 = msaHaddUD(a, transmuteWithLayo
  * producing a result twice the size of the input operands.
  * The result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaHsubSH(a: V16i8, b: V16i8): V8i16 = msaHsubSH(a, transmuteWithLayouts(b, V16i8.typeLayout(), V8i16.typeLayout()))
+public fun msaHsubSH(a: V16i8, b: V16i8): V8i16 = msaHsubSH(a, transmuteWithLayouts<V16i8, V8i16>(b, V16i8.typeLayout(), V8i16.typeLayout()))
 
 /**
  * Vector Signed Horizontal Subtract
@@ -4807,7 +4807,7 @@ public fun msaHsubSH(a: V16i8, b: V16i8): V8i16 = msaHsubSH(a, transmuteWithLayo
  * producing a result twice the size of the input operands.
  * The result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaHsubSW(a: V8i16, b: V8i16): V4i32 = msaHsubSW(a, transmuteWithLayouts(b, V8i16.typeLayout(), V4i32.typeLayout()))
+public fun msaHsubSW(a: V8i16, b: V8i16): V4i32 = msaHsubSW(a, transmuteWithLayouts<V8i16, V4i32>(b, V8i16.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Signed Horizontal Subtract
@@ -4817,7 +4817,7 @@ public fun msaHsubSW(a: V8i16, b: V8i16): V4i32 = msaHsubSW(a, transmuteWithLayo
  * producing a result twice the size of the input operands.
  * The result is written to vector (two signed 64-bit integer numbers).
  */
-public fun msaHsubSD(a: V4i32, b: V4i32): V2i64 = msaHsubSD(a, transmuteWithLayouts(b, V4i32.typeLayout(), V2i64.typeLayout()))
+public fun msaHsubSD(a: V4i32, b: V4i32): V2i64 = msaHsubSD(a, transmuteWithLayouts<V4i32, V2i64>(b, V4i32.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Unsigned Horizontal Subtract
@@ -4827,7 +4827,7 @@ public fun msaHsubSD(a: V4i32, b: V4i32): V2i64 = msaHsubSD(a, transmuteWithLayo
  * producing a result twice the size of the input operands.
  * The result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaHsubUH(a: V16u8, b: V16u8): V8i16 = msaHsubUH(a, transmuteWithLayouts(b, V16u8.typeLayout(), V8i16.typeLayout()))
+public fun msaHsubUH(a: V16u8, b: V16u8): V8i16 = msaHsubUH(a, transmuteWithLayouts<V16u8, V8i16>(b, V16u8.typeLayout(), V8i16.typeLayout()))
 
 /**
  * Vector Unsigned Horizontal Subtract
@@ -4837,7 +4837,7 @@ public fun msaHsubUH(a: V16u8, b: V16u8): V8i16 = msaHsubUH(a, transmuteWithLayo
  * producing a result twice the size of the input operands.
  * The result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaHsubUW(a: V8u16, b: V8u16): V4i32 = msaHsubUW(a, transmuteWithLayouts(b, V8u16.typeLayout(), V4i32.typeLayout()))
+public fun msaHsubUW(a: V8u16, b: V8u16): V4i32 = msaHsubUW(a, transmuteWithLayouts<V8u16, V4i32>(b, V8u16.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Unsigned Horizontal Subtract
@@ -4847,7 +4847,7 @@ public fun msaHsubUW(a: V8u16, b: V8u16): V4i32 = msaHsubUW(a, transmuteWithLayo
  * producing a result twice the size of the input operands.
  * The result is written to vector (two signed 64-bit integer numbers).
  */
-public fun msaHsubUD(a: V4u32, b: V4u32): V2i64 = msaHsubUD(a, transmuteWithLayouts(b, V4u32.typeLayout(), V2i64.typeLayout()))
+public fun msaHsubUD(a: V4u32, b: V4u32): V2i64 = msaHsubUD(a, transmuteWithLayouts<V4u32, V2i64>(b, V4u32.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Interleave Even
@@ -4857,7 +4857,7 @@ public fun msaHsubUD(a: V4u32, b: V4u32): V2i64 = msaHsubUD(a, transmuteWithLayo
  * (sixteen signed 8-bit integer numbers)
  * alternating one element from `a` with one element from `b`.
  */
-public fun msaIlvevB(a: V16i8, b: V16i8): V16i8 = msaIlvevB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaIlvevB(a: V16i8, b: V16i8): V16i8 = msaIlvevB(a, b)
 
 /**
  * Vector Interleave Even
@@ -4867,7 +4867,7 @@ public fun msaIlvevB(a: V16i8, b: V16i8): V16i8 = msaIlvevB(a, transmuteWithLayo
  * (eight signed 16-bit integer numbers)
  * alternating one element from `a` with one element from `b`.
  */
-public fun msaIlvevH(a: V8i16, b: V8i16): V8i16 = msaIlvevH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaIlvevH(a: V8i16, b: V8i16): V8i16 = msaIlvevH(a, b)
 
 /**
  * Vector Interleave Even
@@ -4877,7 +4877,7 @@ public fun msaIlvevH(a: V8i16, b: V8i16): V8i16 = msaIlvevH(a, transmuteWithLayo
  * (four signed 32-bit integer numbers)
  * alternating one element from `a` with one element from `b`.
  */
-public fun msaIlvevW(a: V4i32, b: V4i32): V4i32 = msaIlvevW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaIlvevW(a: V4i32, b: V4i32): V4i32 = msaIlvevW(a, b)
 
 /**
  * Vector Interleave Even
@@ -4887,7 +4887,7 @@ public fun msaIlvevW(a: V4i32, b: V4i32): V4i32 = msaIlvevW(a, transmuteWithLayo
  * (two signed 64-bit integer numbers)
  * alternating one element from `a` with one element from `b`.
  */
-public fun msaIlvevD(a: V2i64, b: V2i64): V2i64 = msaIlvevD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaIlvevD(a: V2i64, b: V2i64): V2i64 = msaIlvevD(a, b)
 
 /**
  * Vector Interleave Left
@@ -4897,7 +4897,7 @@ public fun msaIlvevD(a: V2i64, b: V2i64): V2i64 = msaIlvevD(a, transmuteWithLayo
  * (sixteen signed 8-bit integer numbers)
  * alternating one element from `a` with one element from `b`.
  */
-public fun msaIlvlB(a: V16i8, b: V16i8): V16i8 = msaIlvlB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaIlvlB(a: V16i8, b: V16i8): V16i8 = msaIlvlB(a, b)
 
 /**
  * Vector Interleave Left
@@ -4907,7 +4907,7 @@ public fun msaIlvlB(a: V16i8, b: V16i8): V16i8 = msaIlvlB(a, transmuteWithLayout
  * (eight signed 16-bit integer numbers)
  * alternating one element from `a` with one element from `b`.
  */
-public fun msaIlvlH(a: V8i16, b: V8i16): V8i16 = msaIlvlH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaIlvlH(a: V8i16, b: V8i16): V8i16 = msaIlvlH(a, b)
 
 /**
  * Vector Interleave Left
@@ -4917,7 +4917,7 @@ public fun msaIlvlH(a: V8i16, b: V8i16): V8i16 = msaIlvlH(a, transmuteWithLayout
  * (four signed 32-bit integer numbers)
  * alternating one element from `a` with one element from `b`.
  */
-public fun msaIlvlW(a: V4i32, b: V4i32): V4i32 = msaIlvlW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaIlvlW(a: V4i32, b: V4i32): V4i32 = msaIlvlW(a, b)
 
 /**
  * Vector Interleave Left
@@ -4927,7 +4927,7 @@ public fun msaIlvlW(a: V4i32, b: V4i32): V4i32 = msaIlvlW(a, transmuteWithLayout
  * (two signed 64-bit integer numbers)
  * alternating one element from `a` with one element from `b`.
  */
-public fun msaIlvlD(a: V2i64, b: V2i64): V2i64 = msaIlvlD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaIlvlD(a: V2i64, b: V2i64): V2i64 = msaIlvlD(a, b)
 
 /**
  * Vector Interleave Odd
@@ -4937,7 +4937,7 @@ public fun msaIlvlD(a: V2i64, b: V2i64): V2i64 = msaIlvlD(a, transmuteWithLayout
  * (sixteen signed 8-bit integer numbers)
  * alternating one element from `a` with one element from `b`.
  */
-public fun msaIlvodB(a: V16i8, b: V16i8): V16i8 = msaIlvodB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaIlvodB(a: V16i8, b: V16i8): V16i8 = msaIlvodB(a, b)
 
 /**
  * Vector Interleave Odd
@@ -4947,7 +4947,7 @@ public fun msaIlvodB(a: V16i8, b: V16i8): V16i8 = msaIlvodB(a, transmuteWithLayo
  * (eight signed 16-bit integer numbers)
  * alternating one element from `a` with one element from `b`.
  */
-public fun msaIlvodH(a: V8i16, b: V8i16): V8i16 = msaIlvodH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaIlvodH(a: V8i16, b: V8i16): V8i16 = msaIlvodH(a, b)
 
 /**
  * Vector Interleave Odd
@@ -4957,7 +4957,7 @@ public fun msaIlvodH(a: V8i16, b: V8i16): V8i16 = msaIlvodH(a, transmuteWithLayo
  * (four signed 32-bit integer numbers)
  * alternating one element from `a` with one element from `b`.
  */
-public fun msaIlvodW(a: V4i32, b: V4i32): V4i32 = msaIlvodW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaIlvodW(a: V4i32, b: V4i32): V4i32 = msaIlvodW(a, b)
 
 /**
  * Vector Interleave Odd
@@ -4967,7 +4967,7 @@ public fun msaIlvodW(a: V4i32, b: V4i32): V4i32 = msaIlvodW(a, transmuteWithLayo
  * (two signed 64-bit integer numbers)
  * alternating one element from `a` with one element from `b`.
  */
-public fun msaIlvodD(a: V2i64, b: V2i64): V2i64 = msaIlvodD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaIlvodD(a: V2i64, b: V2i64): V2i64 = msaIlvodD(a, b)
 
 /**
  * Vector Interleave Right
@@ -4977,7 +4977,7 @@ public fun msaIlvodD(a: V2i64, b: V2i64): V2i64 = msaIlvodD(a, transmuteWithLayo
  * (sixteen signed 8-bit integer numbers)
  * alternating one element from `a` with one element from `b`.
  */
-public fun msaIlvrB(a: V16i8, b: V16i8): V16i8 = msaIlvrB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaIlvrB(a: V16i8, b: V16i8): V16i8 = msaIlvrB(a, b)
 
 /**
  * Vector Interleave Right
@@ -4987,7 +4987,7 @@ public fun msaIlvrB(a: V16i8, b: V16i8): V16i8 = msaIlvrB(a, transmuteWithLayout
  * (eight signed 16-bit integer numbers)
  * alternating one element from `a` with one element from `b`.
  */
-public fun msaIlvrH(a: V8i16, b: V8i16): V8i16 = msaIlvrH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaIlvrH(a: V8i16, b: V8i16): V8i16 = msaIlvrH(a, b)
 
 /**
  * Vector Interleave Right
@@ -4997,7 +4997,7 @@ public fun msaIlvrH(a: V8i16, b: V8i16): V8i16 = msaIlvrH(a, transmuteWithLayout
  * (four signed 32-bit integer numbers)
  * alternating one element from `a` with one element from `b`.
  */
-public fun msaIlvrW(a: V4i32, b: V4i32): V4i32 = msaIlvrW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaIlvrW(a: V4i32, b: V4i32): V4i32 = msaIlvrW(a, b)
 
 /**
  * Vector Interleave Right
@@ -5007,7 +5007,7 @@ public fun msaIlvrW(a: V4i32, b: V4i32): V4i32 = msaIlvrW(a, transmuteWithLayout
  * (two signed 64-bit integer numbers)
  * alternating one element from `a` with one element from `b`.
  */
-public fun msaIlvrD(a: V2i64, b: V2i64): V2i64 = msaIlvrD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaIlvrD(a: V2i64, b: V2i64): V2i64 = msaIlvrD(a, b)
 
 /**
  * GPR Insert Element
@@ -5251,7 +5251,7 @@ public fun msaLdiD(immS10: Int): V2i64 {
  * The multiplication result is not saturated, i.e. exact (-1) * (-1) = 1 is added to the destination.
  * The saturated fixed-point results are stored to vector `a`.
  */
-public fun msaMaddQH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMaddQH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()), c)
+public fun msaMaddQH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMaddQH(a, b, c)
 
 /**
  * Vector Fixed-Point Multiply and Add
@@ -5262,7 +5262,7 @@ public fun msaMaddQH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMaddQH(a, transmu
  * The multiplication result is not saturated, i.e. exact (-1) * (-1) = 1 is added to the destination.
  * The saturated fixed-point results are stored to vector `a`.
  */
-public fun msaMaddQW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMaddQW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()), c)
+public fun msaMaddQW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMaddQW(a, b, c)
 
 /**
  * Vector Fixed-Point Multiply and Add Rounded
@@ -5273,7 +5273,7 @@ public fun msaMaddQW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMaddQW(a, transmu
  * The multiplication result is not saturated, i.e. exact (-1) * (-1) = 1 is added to the destination.
  * The rounded and saturated fixed-point results are stored to vector `a`.
  */
-public fun msaMaddrQH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMaddrQH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()), c)
+public fun msaMaddrQH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMaddrQH(a, b, c)
 
 /**
  * Vector Fixed-Point Multiply and Add Rounded
@@ -5284,7 +5284,7 @@ public fun msaMaddrQH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMaddrQH(a, trans
  * The multiplication result is not saturated, i.e. exact (-1) * (-1) = 1 is added to the destination.
  * The rounded and saturated fixed-point results are stored to vector `a`.
  */
-public fun msaMaddrQW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMaddrQW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()), c)
+public fun msaMaddrQW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMaddrQW(a, b, c)
 
 /**
  * Vector Multiply and Add
@@ -5294,7 +5294,7 @@ public fun msaMaddrQW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMaddrQW(a, trans
  * and added to the integer elements in vector `a` (sixteen signed 8-bit integer numbers).
  * The most significant half of the multiplication result is discarded.
  */
-public fun msaMaddvB(a: V16i8, b: V16i8, c: V16i8): V16i8 = msaMaddvB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()), c)
+public fun msaMaddvB(a: V16i8, b: V16i8, c: V16i8): V16i8 = msaMaddvB(a, b, c)
 
 /**
  * Vector Multiply and Add
@@ -5304,7 +5304,7 @@ public fun msaMaddvB(a: V16i8, b: V16i8, c: V16i8): V16i8 = msaMaddvB(a, transmu
  * and added to the integer elements in vector `a` (eight signed 16-bit integer numbers).
  * The most significant half of the multiplication result is discarded.
  */
-public fun msaMaddvH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMaddvH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()), c)
+public fun msaMaddvH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMaddvH(a, b, c)
 
 /**
  * Vector Multiply and Add
@@ -5314,7 +5314,7 @@ public fun msaMaddvH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMaddvH(a, transmu
  * and added to the integer elements in vector `a` (four signed 32-bit integer numbers).
  * The most significant half of the multiplication result is discarded.
  */
-public fun msaMaddvW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMaddvW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()), c)
+public fun msaMaddvW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMaddvW(a, b, c)
 
 /**
  * Vector Multiply and Add
@@ -5324,7 +5324,7 @@ public fun msaMaddvW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMaddvW(a, transmu
  * and added to the integer elements in vector `a` (two signed 64-bit integer numbers).
  * The most significant half of the multiplication result is discarded.
  */
-public fun msaMaddvD(a: V2i64, b: V2i64, c: V2i64): V2i64 = msaMaddvD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()), c)
+public fun msaMaddvD(a: V2i64, b: V2i64, c: V2i64): V2i64 = msaMaddvD(a, b, c)
 
 /**
  * Vector Maximum Based on Absolute Values
@@ -5334,7 +5334,7 @@ public fun msaMaddvD(a: V2i64, b: V2i64, c: V2i64): V2i64 = msaMaddvD(a, transmu
  * `b` (sixteen signed 8-bit integer numbers) are written to vector
  * (sixteen signed 8-bit integer numbers).
  */
-public fun msaMaxAB(a: V16i8, b: V16i8): V16i8 = msaMaxAB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaMaxAB(a: V16i8, b: V16i8): V16i8 = msaMaxAB(a, b)
 
 /**
  * Vector Maximum Based on Absolute Values
@@ -5344,7 +5344,7 @@ public fun msaMaxAB(a: V16i8, b: V16i8): V16i8 = msaMaxAB(a, transmuteWithLayout
  * `b` (eight signed 16-bit integer numbers) are written to vector
  * (eight signed 16-bit integer numbers).
  */
-public fun msaMaxAH(a: V8i16, b: V8i16): V8i16 = msaMaxAH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaMaxAH(a: V8i16, b: V8i16): V8i16 = msaMaxAH(a, b)
 
 /**
  * Vector Maximum Based on Absolute Values
@@ -5354,7 +5354,7 @@ public fun msaMaxAH(a: V8i16, b: V8i16): V8i16 = msaMaxAH(a, transmuteWithLayout
  * `b` (four signed 32-bit integer numbers) are written to vector
  * (four signed 32-bit integer numbers).
  */
-public fun msaMaxAW(a: V4i32, b: V4i32): V4i32 = msaMaxAW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaMaxAW(a: V4i32, b: V4i32): V4i32 = msaMaxAW(a, b)
 
 /**
  * Vector Maximum Based on Absolute Values
@@ -5364,7 +5364,7 @@ public fun msaMaxAW(a: V4i32, b: V4i32): V4i32 = msaMaxAW(a, transmuteWithLayout
  * `b` (two signed 64-bit integer numbers) are written to vector
  * (two signed 64-bit integer numbers).
  */
-public fun msaMaxAD(a: V2i64, b: V2i64): V2i64 = msaMaxAD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaMaxAD(a: V2i64, b: V2i64): V2i64 = msaMaxAD(a, b)
 
 /**
  * Vector Signed Maximum
@@ -5373,7 +5373,7 @@ public fun msaMaxAD(a: V2i64, b: V2i64): V2i64 = msaMaxAD(a, transmuteWithLayout
  * and signed elements in vector `b` (sixteen signed 8-bit integer numbers) are written to vector
  * (sixteen signed 8-bit integer numbers).
  */
-public fun msaMaxSB(a: V16i8, b: V16i8): V16i8 = msaMaxSB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaMaxSB(a: V16i8, b: V16i8): V16i8 = msaMaxSB(a, b)
 
 /**
  * Vector Signed Maximum
@@ -5382,7 +5382,7 @@ public fun msaMaxSB(a: V16i8, b: V16i8): V16i8 = msaMaxSB(a, transmuteWithLayout
  * and signed elements in vector `b` (eight signed 16-bit integer numbers) are written to vector
  * (eight signed 16-bit integer numbers).
  */
-public fun msaMaxSH(a: V8i16, b: V8i16): V8i16 = msaMaxSH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaMaxSH(a: V8i16, b: V8i16): V8i16 = msaMaxSH(a, b)
 
 /**
  * Vector Signed Maximum
@@ -5391,7 +5391,7 @@ public fun msaMaxSH(a: V8i16, b: V8i16): V8i16 = msaMaxSH(a, transmuteWithLayout
  * and signed elements in vector `b` (four signed 32-bit integer numbers) are written to vector
  * (four signed 32-bit integer numbers).
  */
-public fun msaMaxSW(a: V4i32, b: V4i32): V4i32 = msaMaxSW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaMaxSW(a: V4i32, b: V4i32): V4i32 = msaMaxSW(a, b)
 
 /**
  * Vector Signed Maximum
@@ -5400,7 +5400,7 @@ public fun msaMaxSW(a: V4i32, b: V4i32): V4i32 = msaMaxSW(a, transmuteWithLayout
  * and signed elements in vector `b` (two signed 64-bit integer numbers) are written to vector
  * (two signed 64-bit integer numbers).
  */
-public fun msaMaxSD(a: V2i64, b: V2i64): V2i64 = msaMaxSD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaMaxSD(a: V2i64, b: V2i64): V2i64 = msaMaxSD(a, b)
 
 /**
  * Vector Unsigned Maximum
@@ -5409,7 +5409,7 @@ public fun msaMaxSD(a: V2i64, b: V2i64): V2i64 = msaMaxSD(a, transmuteWithLayout
  * and unsigned elements in vector `b` (sixteen unsigned 8-bit integer numbers) are written to vector
  * (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaMaxUB(a: V16u8, b: V16u8): V16u8 = msaMaxUB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()))
+public fun msaMaxUB(a: V16u8, b: V16u8): V16u8 = msaMaxUB(a, b)
 
 /**
  * Vector Unsigned Maximum
@@ -5418,7 +5418,7 @@ public fun msaMaxUB(a: V16u8, b: V16u8): V16u8 = msaMaxUB(a, transmuteWithLayout
  * and unsigned elements in vector `b` (eight unsigned 16-bit integer numbers) are written to vector
  * (eight unsigned 16-bit integer numbers).
  */
-public fun msaMaxUH(a: V8u16, b: V8u16): V8u16 = msaMaxUH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8u16.typeLayout()))
+public fun msaMaxUH(a: V8u16, b: V8u16): V8u16 = msaMaxUH(a, b)
 
 /**
  * Vector Unsigned Maximum
@@ -5427,7 +5427,7 @@ public fun msaMaxUH(a: V8u16, b: V8u16): V8u16 = msaMaxUH(a, transmuteWithLayout
  * and unsigned elements in vector `b` (four unsigned 32-bit integer numbers) are written to vector
  * (four unsigned 32-bit integer numbers).
  */
-public fun msaMaxUW(a: V4u32, b: V4u32): V4u32 = msaMaxUW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4u32.typeLayout()))
+public fun msaMaxUW(a: V4u32, b: V4u32): V4u32 = msaMaxUW(a, b)
 
 /**
  * Vector Unsigned Maximum
@@ -5436,7 +5436,7 @@ public fun msaMaxUW(a: V4u32, b: V4u32): V4u32 = msaMaxUW(a, transmuteWithLayout
  * and unsigned elements in vector `b` (two unsigned 64-bit integer numbers) are written to vector
  * (two unsigned 64-bit integer numbers).
  */
-public fun msaMaxUD(a: V2u64, b: V2u64): V2u64 = msaMaxUD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2u64.typeLayout()))
+public fun msaMaxUD(a: V2u64, b: V2u64): V2u64 = msaMaxUD(a, b)
 
 /**
  * Immediate Signed Maximum
@@ -5558,7 +5558,7 @@ public fun msaMaxiUD(a: V2u64, imm5: Int): V2u64 {
  * `b` (sixteen signed 8-bit integer numbers) are written to vector
  * (sixteen signed 8-bit integer numbers).
  */
-public fun msaMinAB(a: V16i8, b: V16i8): V16i8 = msaMinAB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaMinAB(a: V16i8, b: V16i8): V16i8 = msaMinAB(a, b)
 
 /**
  * Vector Minimum Based on Absolute Value
@@ -5568,7 +5568,7 @@ public fun msaMinAB(a: V16i8, b: V16i8): V16i8 = msaMinAB(a, transmuteWithLayout
  * `b` (eight signed 16-bit integer numbers) are written to vector
  * (eight signed 16-bit integer numbers).
  */
-public fun msaMinAH(a: V8i16, b: V8i16): V8i16 = msaMinAH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaMinAH(a: V8i16, b: V8i16): V8i16 = msaMinAH(a, b)
 
 /**
  * Vector Minimum Based on Absolute Value
@@ -5578,7 +5578,7 @@ public fun msaMinAH(a: V8i16, b: V8i16): V8i16 = msaMinAH(a, transmuteWithLayout
  * `b` (four signed 32-bit integer numbers) are written to vector
  * (four signed 32-bit integer numbers).
  */
-public fun msaMinAW(a: V4i32, b: V4i32): V4i32 = msaMinAW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaMinAW(a: V4i32, b: V4i32): V4i32 = msaMinAW(a, b)
 
 /**
  * Vector Minimum Based on Absolute Value
@@ -5588,7 +5588,7 @@ public fun msaMinAW(a: V4i32, b: V4i32): V4i32 = msaMinAW(a, transmuteWithLayout
  * `b` (two signed 64-bit integer numbers) are written to vector
  * (two signed 64-bit integer numbers).
  */
-public fun msaMinAD(a: V2i64, b: V2i64): V2i64 = msaMinAD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaMinAD(a: V2i64, b: V2i64): V2i64 = msaMinAD(a, b)
 
 /**
  * Vector Signed Minimum
@@ -5597,7 +5597,7 @@ public fun msaMinAD(a: V2i64, b: V2i64): V2i64 = msaMinAD(a, transmuteWithLayout
  * and signed elements in vector `b` (sixteen signed 8-bit integer numbers) are written to vector
  * (sixteen signed 8-bit integer numbers).
  */
-public fun msaMinSB(a: V16i8, b: V16i8): V16i8 = msaMinSB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaMinSB(a: V16i8, b: V16i8): V16i8 = msaMinSB(a, b)
 
 /**
  * Vector Signed Minimum
@@ -5606,7 +5606,7 @@ public fun msaMinSB(a: V16i8, b: V16i8): V16i8 = msaMinSB(a, transmuteWithLayout
  * and signed elements in vector `b` (eight signed 16-bit integer numbers) are written to vector
  * (eight signed 16-bit integer numbers).
  */
-public fun msaMinSH(a: V8i16, b: V8i16): V8i16 = msaMinSH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaMinSH(a: V8i16, b: V8i16): V8i16 = msaMinSH(a, b)
 
 /**
  * Vector Signed Minimum
@@ -5615,7 +5615,7 @@ public fun msaMinSH(a: V8i16, b: V8i16): V8i16 = msaMinSH(a, transmuteWithLayout
  * and signed elements in vector `b` (four signed 32-bit integer numbers) are written to vector
  * (four signed 32-bit integer numbers).
  */
-public fun msaMinSW(a: V4i32, b: V4i32): V4i32 = msaMinSW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaMinSW(a: V4i32, b: V4i32): V4i32 = msaMinSW(a, b)
 
 /**
  * Vector Signed Minimum
@@ -5624,7 +5624,7 @@ public fun msaMinSW(a: V4i32, b: V4i32): V4i32 = msaMinSW(a, transmuteWithLayout
  * and signed elements in vector `b` (two signed 64-bit integer numbers) are written to vector
  * (two signed 64-bit integer numbers).
  */
-public fun msaMinSD(a: V2i64, b: V2i64): V2i64 = msaMinSD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaMinSD(a: V2i64, b: V2i64): V2i64 = msaMinSD(a, b)
 
 /**
  * Immediate Signed Minimum
@@ -5689,7 +5689,7 @@ public fun msaMiniSD(a: V2i64, immS5: Int): V2i64 {
  * and unsigned elements in vector `b` (sixteen unsigned 8-bit integer numbers) are written to vector
  * (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaMinUB(a: V16u8, b: V16u8): V16u8 = msaMinUB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()))
+public fun msaMinUB(a: V16u8, b: V16u8): V16u8 = msaMinUB(a, b)
 
 /**
  * Vector Unsigned Minimum
@@ -5698,7 +5698,7 @@ public fun msaMinUB(a: V16u8, b: V16u8): V16u8 = msaMinUB(a, transmuteWithLayout
  * and unsigned elements in vector `b` (eight unsigned 16-bit integer numbers) are written to vector
  * (eight unsigned 16-bit integer numbers).
  */
-public fun msaMinUH(a: V8u16, b: V8u16): V8u16 = msaMinUH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8u16.typeLayout()))
+public fun msaMinUH(a: V8u16, b: V8u16): V8u16 = msaMinUH(a, b)
 
 /**
  * Vector Unsigned Minimum
@@ -5707,7 +5707,7 @@ public fun msaMinUH(a: V8u16, b: V8u16): V8u16 = msaMinUH(a, transmuteWithLayout
  * and unsigned elements in vector `b` (four unsigned 32-bit integer numbers) are written to vector
  * (four unsigned 32-bit integer numbers).
  */
-public fun msaMinUW(a: V4u32, b: V4u32): V4u32 = msaMinUW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4u32.typeLayout()))
+public fun msaMinUW(a: V4u32, b: V4u32): V4u32 = msaMinUW(a, b)
 
 /**
  * Vector Unsigned Minimum
@@ -5716,7 +5716,7 @@ public fun msaMinUW(a: V4u32, b: V4u32): V4u32 = msaMinUW(a, transmuteWithLayout
  * and unsigned elements in vector `b` (two unsigned 64-bit integer numbers) are written to vector
  * (two unsigned 64-bit integer numbers).
  */
-public fun msaMinUD(a: V2u64, b: V2u64): V2u64 = msaMinUD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2u64.typeLayout()))
+public fun msaMinUD(a: V2u64, b: V2u64): V2u64 = msaMinUD(a, b)
 
 /**
  * Immediate Unsigned Minimum
@@ -5783,7 +5783,7 @@ public fun msaMiniUD(a: V2u64, imm5: Int): V2u64 {
  * (sixteen signed 8-bit integer numbers). If a divisor element vector `b` is zero,
  * the result value is UNPREDICTABLE.
  */
-public fun msaModSB(a: V16i8, b: V16i8): V16i8 = msaModSB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaModSB(a: V16i8, b: V16i8): V16i8 = msaModSB(a, b)
 
 /**
  * Vector Signed Modulo
@@ -5794,7 +5794,7 @@ public fun msaModSB(a: V16i8, b: V16i8): V16i8 = msaModSB(a, transmuteWithLayout
  * (eight signed 16-bit integer numbers). If a divisor element vector `b` is zero,
  * the result value is UNPREDICTABLE.
  */
-public fun msaModSH(a: V8i16, b: V8i16): V8i16 = msaModSH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaModSH(a: V8i16, b: V8i16): V8i16 = msaModSH(a, b)
 
 /**
  * Vector Signed Modulo
@@ -5805,7 +5805,7 @@ public fun msaModSH(a: V8i16, b: V8i16): V8i16 = msaModSH(a, transmuteWithLayout
  * (four signed 32-bit integer numbers). If a divisor element vector `b` is zero,
  * the result value is UNPREDICTABLE.
  */
-public fun msaModSW(a: V4i32, b: V4i32): V4i32 = msaModSW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaModSW(a: V4i32, b: V4i32): V4i32 = msaModSW(a, b)
 
 /**
  * Vector Signed Modulo
@@ -5816,7 +5816,7 @@ public fun msaModSW(a: V4i32, b: V4i32): V4i32 = msaModSW(a, transmuteWithLayout
  * (two signed 64-bit integer numbers). If a divisor element vector `b` is zero,
  * the result value is UNPREDICTABLE.
  */
-public fun msaModSD(a: V2i64, b: V2i64): V2i64 = msaModSD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaModSD(a: V2i64, b: V2i64): V2i64 = msaModSD(a, b)
 
 /**
  * Vector Unsigned Modulo
@@ -5827,7 +5827,7 @@ public fun msaModSD(a: V2i64, b: V2i64): V2i64 = msaModSD(a, transmuteWithLayout
  * (sixteen unsigned 8-bit integer numbers). If a divisor element vector `b` is zero,
  * the result value is UNPREDICTABLE.
  */
-public fun msaModUB(a: V16u8, b: V16u8): V16u8 = msaModUB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()))
+public fun msaModUB(a: V16u8, b: V16u8): V16u8 = msaModUB(a, b)
 
 /**
  * Vector Unsigned Modulo
@@ -5838,7 +5838,7 @@ public fun msaModUB(a: V16u8, b: V16u8): V16u8 = msaModUB(a, transmuteWithLayout
  * (eight unsigned 16-bit integer numbers). If a divisor element vector `b` is zero,
  * the result value is UNPREDICTABLE.
  */
-public fun msaModUH(a: V8u16, b: V8u16): V8u16 = msaModUH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8u16.typeLayout()))
+public fun msaModUH(a: V8u16, b: V8u16): V8u16 = msaModUH(a, b)
 
 /**
  * Vector Unsigned Modulo
@@ -5849,7 +5849,7 @@ public fun msaModUH(a: V8u16, b: V8u16): V8u16 = msaModUH(a, transmuteWithLayout
  * (four unsigned 32-bit integer numbers). If a divisor element vector `b` is zero,
  * the result value is UNPREDICTABLE.
  */
-public fun msaModUW(a: V4u32, b: V4u32): V4u32 = msaModUW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4u32.typeLayout()))
+public fun msaModUW(a: V4u32, b: V4u32): V4u32 = msaModUW(a, b)
 
 /**
  * Vector Unsigned Modulo
@@ -5860,7 +5860,7 @@ public fun msaModUW(a: V4u32, b: V4u32): V4u32 = msaModUW(a, transmuteWithLayout
  * (two unsigned 64-bit integer numbers). If a divisor element vector `b` is zero,
  * the result value is UNPREDICTABLE.
  */
-public fun msaModUD(a: V2u64, b: V2u64): V2u64 = msaModUD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2u64.typeLayout()))
+public fun msaModUD(a: V2u64, b: V2u64): V2u64 = msaModUD(a, b)
 
 /**
  * Vector Move
@@ -5880,7 +5880,7 @@ public fun msaMoveV(a: V16i8): V16i8 = msaMoveV(a)
  * i.e. exact (-1) * (-1) = 1 is subtracted from the destination.
  * The saturated fixed-point results are stored back to vector `a`.
  */
-public fun msaMsubQH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMsubQH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()), c)
+public fun msaMsubQH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMsubQH(a, b, c)
 
 /**
  * Vector Fixed-Point Multiply and Subtract
@@ -5892,7 +5892,7 @@ public fun msaMsubQH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMsubQH(a, transmu
  * i.e. exact (-1) * (-1) = 1 is subtracted from the destination.
  * The saturated fixed-point results are stored back to vector `a`.
  */
-public fun msaMsubQW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMsubQW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()), c)
+public fun msaMsubQW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMsubQW(a, b, c)
 
 /**
  * Vector Fixed-Point Multiply and Subtract Rounded
@@ -5904,7 +5904,7 @@ public fun msaMsubQW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMsubQW(a, transmu
  * i.e. exact (-1) * (-1) = 1 is subtracted from the destination.
  * The rounded and saturated fixed-point results are stored back to vector `a`.
  */
-public fun msaMsubrQH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMsubrQH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()), c)
+public fun msaMsubrQH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMsubrQH(a, b, c)
 
 /**
  * Vector Fixed-Point Multiply and Subtract Rounded
@@ -5916,7 +5916,7 @@ public fun msaMsubrQH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMsubrQH(a, trans
  * i.e. exact (-1) * (-1) = 1 is subtracted from the destination.
  * The rounded and saturated fixed-point results are stored back to vector `a`.
  */
-public fun msaMsubrQW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMsubrQW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()), c)
+public fun msaMsubrQW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMsubrQW(a, b, c)
 
 /**
  * Vector Multiply and Subtract
@@ -5926,7 +5926,7 @@ public fun msaMsubrQW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMsubrQW(a, trans
  * and subtracted from the integer elements in vector `a` (sixteen signed 8-bit integer numbers).
  * The most significant half of the multiplication result is discarded.
  */
-public fun msaMsubvB(a: V16i8, b: V16i8, c: V16i8): V16i8 = msaMsubvB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()), c)
+public fun msaMsubvB(a: V16i8, b: V16i8, c: V16i8): V16i8 = msaMsubvB(a, b, c)
 
 /**
  * Vector Multiply and Subtract
@@ -5936,7 +5936,7 @@ public fun msaMsubvB(a: V16i8, b: V16i8, c: V16i8): V16i8 = msaMsubvB(a, transmu
  * and subtracted from the integer elements in vector `a` (eight signed 16-bit integer numbers).
  * The most significant half of the multiplication result is discarded.
  */
-public fun msaMsubvH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMsubvH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()), c)
+public fun msaMsubvH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMsubvH(a, b, c)
 
 /**
  * Vector Multiply and Subtract
@@ -5946,7 +5946,7 @@ public fun msaMsubvH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaMsubvH(a, transmu
  * and subtracted from the integer elements in vector `a` (four signed 32-bit integer numbers).
  * The most significant half of the multiplication result is discarded.
  */
-public fun msaMsubvW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMsubvW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()), c)
+public fun msaMsubvW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMsubvW(a, b, c)
 
 /**
  * Vector Multiply and Subtract
@@ -5956,7 +5956,7 @@ public fun msaMsubvW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaMsubvW(a, transmu
  * and subtracted from the integer elements in vector `a` (two signed 64-bit integer numbers).
  * The most significant half of the multiplication result is discarded.
  */
-public fun msaMsubvD(a: V2i64, b: V2i64, c: V2i64): V2i64 = msaMsubvD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()), c)
+public fun msaMsubvD(a: V2i64, b: V2i64, c: V2i64): V2i64 = msaMsubvD(a, b, c)
 
 /**
  * Vector Fixed-Point Multiply
@@ -5965,7 +5965,7 @@ public fun msaMsubvD(a: V2i64, b: V2i64, c: V2i64): V2i64 = msaMsubvD(a, transmu
  * multiplied by fixed-point elements in vector `b` (eight signed 16-bit integer numbers).
  * The result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaMulQH(a: V8i16, b: V8i16): V8i16 = msaMulQH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaMulQH(a: V8i16, b: V8i16): V8i16 = msaMulQH(a, b)
 
 /**
  * Vector Fixed-Point Multiply
@@ -5974,7 +5974,7 @@ public fun msaMulQH(a: V8i16, b: V8i16): V8i16 = msaMulQH(a, transmuteWithLayout
  * multiplied by fixed-point elements in vector `b` (four signed 32-bit integer numbers).
  * The result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaMulQW(a: V4i32, b: V4i32): V4i32 = msaMulQW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaMulQW(a: V4i32, b: V4i32): V4i32 = msaMulQW(a, b)
 
 /**
  * Vector Fixed-Point Multiply Rounded
@@ -5983,7 +5983,7 @@ public fun msaMulQW(a: V4i32, b: V4i32): V4i32 = msaMulQW(a, transmuteWithLayout
  * multiplied by fixed-point elements in vector `b` (eight signed 16-bit integer numbers).
  * The rounded result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaMulrQH(a: V8i16, b: V8i16): V8i16 = msaMulrQH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaMulrQH(a: V8i16, b: V8i16): V8i16 = msaMulrQH(a, b)
 
 /**
  * Vector Fixed-Point Multiply Rounded
@@ -5992,7 +5992,7 @@ public fun msaMulrQH(a: V8i16, b: V8i16): V8i16 = msaMulrQH(a, transmuteWithLayo
  * multiplied by fixed-point elements in vector `b` (four signed 32-bit integer numbers).
  * The rounded result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaMulrQW(a: V4i32, b: V4i32): V4i32 = msaMulrQW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaMulrQW(a: V4i32, b: V4i32): V4i32 = msaMulrQW(a, b)
 
 /**
  * Vector Multiply
@@ -6002,7 +6002,7 @@ public fun msaMulrQW(a: V4i32, b: V4i32): V4i32 = msaMulrQW(a, transmuteWithLayo
  * The result is written to vector (sixteen signed 8-bit integer numbers).
  * The most significant half of the multiplication result is discarded.
  */
-public fun msaMulvB(a: V16i8, b: V16i8): V16i8 = msaMulvB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaMulvB(a: V16i8, b: V16i8): V16i8 = msaMulvB(a, b)
 
 /**
  * Vector Multiply
@@ -6012,7 +6012,7 @@ public fun msaMulvB(a: V16i8, b: V16i8): V16i8 = msaMulvB(a, transmuteWithLayout
  * The result is written to vector (eight signed 16-bit integer numbers).
  * The most significant half of the multiplication result is discarded.
  */
-public fun msaMulvH(a: V8i16, b: V8i16): V8i16 = msaMulvH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaMulvH(a: V8i16, b: V8i16): V8i16 = msaMulvH(a, b)
 
 /**
  * Vector Multiply
@@ -6022,7 +6022,7 @@ public fun msaMulvH(a: V8i16, b: V8i16): V8i16 = msaMulvH(a, transmuteWithLayout
  * The result is written to vector (four signed 32-bit integer numbers).
  * The most significant half of the multiplication result is discarded.
  */
-public fun msaMulvW(a: V4i32, b: V4i32): V4i32 = msaMulvW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaMulvW(a: V4i32, b: V4i32): V4i32 = msaMulvW(a, b)
 
 /**
  * Vector Multiply
@@ -6032,7 +6032,7 @@ public fun msaMulvW(a: V4i32, b: V4i32): V4i32 = msaMulvW(a, transmuteWithLayout
  * The result is written to vector (two signed 64-bit integer numbers).
  * The most significant half of the multiplication result is discarded.
  */
-public fun msaMulvD(a: V2i64, b: V2i64): V2i64 = msaMulvD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaMulvD(a: V2i64, b: V2i64): V2i64 = msaMulvD(a, b)
 
 /**
  * Vector Leading Ones Count
@@ -6106,7 +6106,7 @@ public fun msaNlzcD(a: V2i64): V2i64 = msaNlzcD(a)
  * in a bitwise logical NOR operation. The result is written to vector
  * (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaNorV(a: V16u8, b: V16u8): V16u8 = msaNorV(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()))
+public fun msaNorV(a: V16u8, b: V16u8): V16u8 = msaNorV(a, b)
 
 /**
  * Immediate Logical Negated Or
@@ -6131,7 +6131,7 @@ public fun msaNoriB(a: V16u8, imm8: Int): V16u8 {
  * in a bitwise logical OR operation. The result is written to vector
  * (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaOrV(a: V16u8, b: V16u8): V16u8 = msaOrV(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()))
+public fun msaOrV(a: V16u8, b: V16u8): V16u8 = msaOrV(a, b)
 
 /**
  * Immediate Logical Or
@@ -6155,7 +6155,7 @@ public fun msaOriB(a: V16u8, imm8: Int): V16u8 {
  * are copied to the left half of the result vector and even elements in vector `b`
  * (sixteen signed 8-bit integer numbers) are copied to the right half of the result vector.
  */
-public fun msaPckevB(a: V16i8, b: V16i8): V16i8 = msaPckevB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaPckevB(a: V16i8, b: V16i8): V16i8 = msaPckevB(a, b)
 
 /**
  * Vector Pack Even
@@ -6164,7 +6164,7 @@ public fun msaPckevB(a: V16i8, b: V16i8): V16i8 = msaPckevB(a, transmuteWithLayo
  * are copied to the left half of the result vector and even elements in vector `b`
  * (eight signed 16-bit integer numbers) are copied to the right half of the result vector.
  */
-public fun msaPckevH(a: V8i16, b: V8i16): V8i16 = msaPckevH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaPckevH(a: V8i16, b: V8i16): V8i16 = msaPckevH(a, b)
 
 /**
  * Vector Pack Even
@@ -6173,7 +6173,7 @@ public fun msaPckevH(a: V8i16, b: V8i16): V8i16 = msaPckevH(a, transmuteWithLayo
  * are copied to the left half of the result vector and even elements in vector `b`
  * (four signed 32-bit integer numbers) are copied to the right half of the result vector.
  */
-public fun msaPckevW(a: V4i32, b: V4i32): V4i32 = msaPckevW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaPckevW(a: V4i32, b: V4i32): V4i32 = msaPckevW(a, b)
 
 /**
  * Vector Pack Even
@@ -6182,7 +6182,7 @@ public fun msaPckevW(a: V4i32, b: V4i32): V4i32 = msaPckevW(a, transmuteWithLayo
  * are copied to the left half of the result vector and even elements in vector `b`
  * (two signed 64-bit integer numbers) are copied to the right half of the result vector.
  */
-public fun msaPckevD(a: V2i64, b: V2i64): V2i64 = msaPckevD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaPckevD(a: V2i64, b: V2i64): V2i64 = msaPckevD(a, b)
 
 /**
  * Vector Pack Odd
@@ -6191,7 +6191,7 @@ public fun msaPckevD(a: V2i64, b: V2i64): V2i64 = msaPckevD(a, transmuteWithLayo
  * are copied to the left half of the result vector and odd elements in vector `b`
  * (sixteen signed 8-bit integer numbers) are copied to the right half of the result vector.
  */
-public fun msaPckodB(a: V16i8, b: V16i8): V16i8 = msaPckodB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaPckodB(a: V16i8, b: V16i8): V16i8 = msaPckodB(a, b)
 
 /**
  * Vector Pack Odd
@@ -6200,7 +6200,7 @@ public fun msaPckodB(a: V16i8, b: V16i8): V16i8 = msaPckodB(a, transmuteWithLayo
  * are copied to the left half of the result vector and odd elements in vector `b`
  * (eight signed 16-bit integer numbers) are copied to the right half of the result vector.
  */
-public fun msaPckodH(a: V8i16, b: V8i16): V8i16 = msaPckodH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaPckodH(a: V8i16, b: V8i16): V8i16 = msaPckodH(a, b)
 
 /**
  * Vector Pack Odd
@@ -6209,7 +6209,7 @@ public fun msaPckodH(a: V8i16, b: V8i16): V8i16 = msaPckodH(a, transmuteWithLayo
  * are copied to the left half of the result vector and odd elements in vector `b`
  * (four signed 32-bit integer numbers) are copied to the right half of the result vector.
  */
-public fun msaPckodW(a: V4i32, b: V4i32): V4i32 = msaPckodW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaPckodW(a: V4i32, b: V4i32): V4i32 = msaPckodW(a, b)
 
 /**
  * Vector Pack Odd
@@ -6218,7 +6218,7 @@ public fun msaPckodW(a: V4i32, b: V4i32): V4i32 = msaPckodW(a, transmuteWithLayo
  * are copied to the left half of the result vector and odd elements in vector `b`
  * (two signed 64-bit integer numbers) are copied to the right half of the result vector.
  */
-public fun msaPckodD(a: V2i64, b: V2i64): V2i64 = msaPckodD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaPckodD(a: V2i64, b: V2i64): V2i64 = msaPckodD(a, b)
 
 /**
  * Vector Population Count
@@ -6423,7 +6423,7 @@ public fun msaShfW(a: V4i32, imm8: Int): V4i32 {
  * GPR `c` value is interpreted modulo the number of columns in destination rectangle,
  * or equivalently, the number of data format df elements in the destination vector.
  */
-public fun msaSldB(a: V16i8, b: V16i8, c: Int): V16i8 = msaSldB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()), c)
+public fun msaSldB(a: V16i8, b: V16i8, c: Int): V16i8 = msaSldB(a, b, c)
 
 /**
  * GPR Columns Slide
@@ -6439,7 +6439,7 @@ public fun msaSldB(a: V16i8, b: V16i8, c: Int): V16i8 = msaSldB(a, transmuteWith
  * GPR `c` value is interpreted modulo the number of columns in destination rectangle,
  * or equivalently, the number of data format df elements in the destination vector.
  */
-public fun msaSldH(a: V8i16, b: V8i16, c: Int): V8i16 = msaSldH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()), c)
+public fun msaSldH(a: V8i16, b: V8i16, c: Int): V8i16 = msaSldH(a, b, c)
 
 /**
  * GPR Columns Slide
@@ -6455,7 +6455,7 @@ public fun msaSldH(a: V8i16, b: V8i16, c: Int): V8i16 = msaSldH(a, transmuteWith
  * GPR `c` value is interpreted modulo the number of columns in destination rectangle,
  * or equivalently, the number of data format df elements in the destination vector.
  */
-public fun msaSldW(a: V4i32, b: V4i32, c: Int): V4i32 = msaSldW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()), c)
+public fun msaSldW(a: V4i32, b: V4i32, c: Int): V4i32 = msaSldW(a, b, c)
 
 /**
  * GPR Columns Slide
@@ -6471,7 +6471,7 @@ public fun msaSldW(a: V4i32, b: V4i32, c: Int): V4i32 = msaSldW(a, transmuteWith
  * GPR `c` value is interpreted modulo the number of columns in destination rectangle,
  * or equivalently, the number of data format df elements in the destination vector.
  */
-public fun msaSldD(a: V2i64, b: V2i64, c: Int): V2i64 = msaSldD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()), c)
+public fun msaSldD(a: V2i64, b: V2i64, c: Int): V2i64 = msaSldD(a, b, c)
 
 /**
  * Immediate Columns Slide
@@ -6489,7 +6489,7 @@ public fun msaSldiB(a: V16i8, b: V16i8, imm4: Int): V16i8 {
     run {
         check(0 <= imm4 && imm4 < (1 shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return msaSldiB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()), imm4)
+    return msaSldiB(a, b, imm4)
 }
 
 /**
@@ -6508,7 +6508,7 @@ public fun msaSldiH(a: V8i16, b: V8i16, imm3: Int): V8i16 {
     run {
         check(0 <= imm3 && imm3 < (1 shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return msaSldiH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()), imm3)
+    return msaSldiH(a, b, imm3)
 }
 
 /**
@@ -6527,7 +6527,7 @@ public fun msaSldiW(a: V4i32, b: V4i32, imm2: Int): V4i32 {
     run {
         check(0 <= imm2 && imm2 < (1 shl 2)) { "IMM2 doesn't fit in 2 bits (unsigned)" }
     }
-    return msaSldiW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()), imm2)
+    return msaSldiW(a, b, imm2)
 }
 
 /**
@@ -6546,7 +6546,7 @@ public fun msaSldiD(a: V2i64, b: V2i64, imm1: Int): V2i64 {
     run {
         check(0 <= imm1 && imm1 < (1 shl 1)) { "IMM1 doesn't fit in 1 bits (unsigned)" }
     }
-    return msaSldiD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()), imm1)
+    return msaSldiD(a, b, imm1)
 }
 
 /**
@@ -6557,7 +6557,7 @@ public fun msaSldiD(a: V2i64, b: V2i64, imm1: Int): V2i64 {
  * (sixteen signed 8-bit integer numbers) specify modulo the size of the
  * element in bits. The result is written to vector (sixteen signed 8-bit integer numbers).
  */
-public fun msaSllB(a: V16i8, b: V16i8): V16i8 = msaSllB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaSllB(a: V16i8, b: V16i8): V16i8 = msaSllB(a, b)
 
 /**
  * Vector Shift Left
@@ -6567,7 +6567,7 @@ public fun msaSllB(a: V16i8, b: V16i8): V16i8 = msaSllB(a, transmuteWithLayouts(
  * (eight signed 16-bit integer numbers) specify modulo the size of the
  * element in bits. The result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaSllH(a: V8i16, b: V8i16): V8i16 = msaSllH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaSllH(a: V8i16, b: V8i16): V8i16 = msaSllH(a, b)
 
 /**
  * Vector Shift Left
@@ -6577,7 +6577,7 @@ public fun msaSllH(a: V8i16, b: V8i16): V8i16 = msaSllH(a, transmuteWithLayouts(
  * (four signed 32-bit integer numbers) specify modulo the size of the
  * element in bits. The result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaSllW(a: V4i32, b: V4i32): V4i32 = msaSllW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaSllW(a: V4i32, b: V4i32): V4i32 = msaSllW(a, b)
 
 /**
  * Vector Shift Left
@@ -6587,7 +6587,7 @@ public fun msaSllW(a: V4i32, b: V4i32): V4i32 = msaSllW(a, transmuteWithLayouts(
  * (two signed 64-bit integer numbers) specify modulo the size of the
  * element in bits. The result is written to vector (two signed 64-bit integer numbers).
  */
-public fun msaSllD(a: V2i64, b: V2i64): V2i64 = msaSllD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaSllD(a: V2i64, b: V2i64): V2i64 = msaSllD(a, b)
 
 /**
  * Immediate Shift Left
@@ -6653,7 +6653,7 @@ public fun msaSlliD(a: V2i64, imm1: Int): V2i64 {
  * (sixteen signed 8-bit integer numbers) GPR `b` value is interpreted
  * modulo the number of data format df elements in the destination vector.
  */
-public fun msaSplatB(a: V16i8, b: Int): V16i8 = msaSplatB(a, transmuteWithLayouts(b, PrimitiveLayouts.I32, V16i8.typeLayout()))
+public fun msaSplatB(a: V16i8, b: Int): V16i8 = msaSplatB(a, transmuteWithLayouts<Int, V16i8>(b, PrimitiveLayouts.I32, V16i8.typeLayout()))
 
 /**
  * GPR Element Splat
@@ -6663,7 +6663,7 @@ public fun msaSplatB(a: V16i8, b: Int): V16i8 = msaSplatB(a, transmuteWithLayout
  * (eight signed 16-bit integer numbers) GPR `b` value is interpreted
  * modulo the number of data format df elements in the destination vector.
  */
-public fun msaSplatH(a: V8i16, b: Int): V8i16 = msaSplatH(a, transmuteWithLayouts(b, PrimitiveLayouts.I32, V8i16.typeLayout()))
+public fun msaSplatH(a: V8i16, b: Int): V8i16 = msaSplatH(a, transmuteWithLayouts<Int, V8i16>(b, PrimitiveLayouts.I32, V8i16.typeLayout()))
 
 /**
  * GPR Element Splat
@@ -6673,7 +6673,7 @@ public fun msaSplatH(a: V8i16, b: Int): V8i16 = msaSplatH(a, transmuteWithLayout
  * (four signed 32-bit integer numbers) GPR `b` value is interpreted
  * modulo the number of data format df elements in the destination vector.
  */
-public fun msaSplatW(a: V4i32, b: Int): V4i32 = msaSplatW(a, transmuteWithLayouts(b, PrimitiveLayouts.I32, V4i32.typeLayout()))
+public fun msaSplatW(a: V4i32, b: Int): V4i32 = msaSplatW(a, transmuteWithLayouts<Int, V4i32>(b, PrimitiveLayouts.I32, V4i32.typeLayout()))
 
 /**
  * GPR Element Splat
@@ -6683,7 +6683,7 @@ public fun msaSplatW(a: V4i32, b: Int): V4i32 = msaSplatW(a, transmuteWithLayout
  * (two signed 64-bit integer numbers) GPR `b` value is interpreted
  * modulo the number of data format df elements in the destination vector.
  */
-public fun msaSplatD(a: V2i64, b: Int): V2i64 = msaSplatD(a, transmuteWithLayouts(b, PrimitiveLayouts.I32, V2i64.typeLayout()))
+public fun msaSplatD(a: V2i64, b: Int): V2i64 = msaSplatD(a, transmuteWithLayouts<Int, V2i64>(b, PrimitiveLayouts.I32, V2i64.typeLayout()))
 
 /**
  * Immediate Element Splat
@@ -6745,7 +6745,7 @@ public fun msaSplatiD(a: V2i64, imm1: Int): V2i64 {
  * (sixteen signed 8-bit integer numbers) specify modulo the size of the
  * element in bits.The result is written to vector (sixteen signed 8-bit integer numbers).
  */
-public fun msaSraB(a: V16i8, b: V16i8): V16i8 = msaSraB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaSraB(a: V16i8, b: V16i8): V16i8 = msaSraB(a, b)
 
 /**
  * Vector Shift Right Arithmetic
@@ -6755,7 +6755,7 @@ public fun msaSraB(a: V16i8, b: V16i8): V16i8 = msaSraB(a, transmuteWithLayouts(
  * (eight signed 16-bit integer numbers) specify modulo the size of the
  * element in bits.The result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaSraH(a: V8i16, b: V8i16): V8i16 = msaSraH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaSraH(a: V8i16, b: V8i16): V8i16 = msaSraH(a, b)
 
 /**
  * Vector Shift Right Arithmetic
@@ -6765,7 +6765,7 @@ public fun msaSraH(a: V8i16, b: V8i16): V8i16 = msaSraH(a, transmuteWithLayouts(
  * (four signed 32-bit integer numbers) specify modulo the size of the
  * element in bits.The result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaSraW(a: V4i32, b: V4i32): V4i32 = msaSraW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaSraW(a: V4i32, b: V4i32): V4i32 = msaSraW(a, b)
 
 /**
  * Vector Shift Right Arithmetic
@@ -6775,7 +6775,7 @@ public fun msaSraW(a: V4i32, b: V4i32): V4i32 = msaSraW(a, transmuteWithLayouts(
  * (two signed 64-bit integer numbers) specify modulo the size of the
  * element in bits.The result is written to vector (two signed 64-bit integer numbers).
  */
-public fun msaSraD(a: V2i64, b: V2i64): V2i64 = msaSraD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaSraD(a: V2i64, b: V2i64): V2i64 = msaSraD(a, b)
 
 /**
  * Immediate Shift Right Arithmetic
@@ -6842,7 +6842,7 @@ public fun msaSraiD(a: V2i64, imm6: Int): V2i64 {
  * element in bits.The most significant discarded bit is added to the shifted
  * value (for rounding) and the result is written to vector (sixteen signed 8-bit integer numbers).
  */
-public fun msaSrarB(a: V16i8, b: V16i8): V16i8 = msaSrarB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaSrarB(a: V16i8, b: V16i8): V16i8 = msaSrarB(a, b)
 
 /**
  * Vector Shift Right Arithmetic Rounded
@@ -6853,7 +6853,7 @@ public fun msaSrarB(a: V16i8, b: V16i8): V16i8 = msaSrarB(a, transmuteWithLayout
  * element in bits.The most significant discarded bit is added to the shifted
  * value (for rounding) and the result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaSrarH(a: V8i16, b: V8i16): V8i16 = msaSrarH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaSrarH(a: V8i16, b: V8i16): V8i16 = msaSrarH(a, b)
 
 /**
  * Vector Shift Right Arithmetic Rounded
@@ -6864,7 +6864,7 @@ public fun msaSrarH(a: V8i16, b: V8i16): V8i16 = msaSrarH(a, transmuteWithLayout
  * element in bits.The most significant discarded bit is added to the shifted
  * value (for rounding) and the result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaSrarW(a: V4i32, b: V4i32): V4i32 = msaSrarW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaSrarW(a: V4i32, b: V4i32): V4i32 = msaSrarW(a, b)
 
 /**
  * Vector Shift Right Arithmetic Rounded
@@ -6875,7 +6875,7 @@ public fun msaSrarW(a: V4i32, b: V4i32): V4i32 = msaSrarW(a, transmuteWithLayout
  * element in bits.The most significant discarded bit is added to the shifted
  * value (for rounding) and the result is written to vector (two signed 64-bit integer numbers).
  */
-public fun msaSrarD(a: V2i64, b: V2i64): V2i64 = msaSrarD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaSrarD(a: V2i64, b: V2i64): V2i64 = msaSrarD(a, b)
 
 /**
  * Immediate Shift Right Arithmetic Rounded
@@ -6945,7 +6945,7 @@ public fun msaSrariD(a: V2i64, imm6: Int): V2i64 {
  * (sixteen signed 8-bit integer numbers) specify modulo the size of the
  * element in bits.The result is written to vector (sixteen signed 8-bit integer numbers).
  */
-public fun msaSrlB(a: V16i8, b: V16i8): V16i8 = msaSrlB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaSrlB(a: V16i8, b: V16i8): V16i8 = msaSrlB(a, b)
 
 /**
  * Vector Shift Right Logical
@@ -6955,7 +6955,7 @@ public fun msaSrlB(a: V16i8, b: V16i8): V16i8 = msaSrlB(a, transmuteWithLayouts(
  * (eight signed 16-bit integer numbers) specify modulo the size of the
  * element in bits.The result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaSrlH(a: V8i16, b: V8i16): V8i16 = msaSrlH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaSrlH(a: V8i16, b: V8i16): V8i16 = msaSrlH(a, b)
 
 /**
  * Vector Shift Right Logical
@@ -6965,7 +6965,7 @@ public fun msaSrlH(a: V8i16, b: V8i16): V8i16 = msaSrlH(a, transmuteWithLayouts(
  * (four signed 32-bit integer numbers) specify modulo the size of the
  * element in bits.The result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaSrlW(a: V4i32, b: V4i32): V4i32 = msaSrlW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaSrlW(a: V4i32, b: V4i32): V4i32 = msaSrlW(a, b)
 
 /**
  * Vector Shift Right Logical
@@ -6975,7 +6975,7 @@ public fun msaSrlW(a: V4i32, b: V4i32): V4i32 = msaSrlW(a, transmuteWithLayouts(
  * (two signed 64-bit integer numbers) specify modulo the size of the
  * element in bits.The result is written to vector (two signed 64-bit integer numbers).
  */
-public fun msaSrlD(a: V2i64, b: V2i64): V2i64 = msaSrlD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaSrlD(a: V2i64, b: V2i64): V2i64 = msaSrlD(a, b)
 
 /**
  * Immediate Shift Right Logical
@@ -7042,7 +7042,7 @@ public fun msaSrliD(a: V2i64, imm1: Int): V2i64 {
  * element in bits.The most significant discarded bit is added to the shifted
  * value (for rounding) and the result is written to vector (sixteen signed 8-bit integer numbers).
  */
-public fun msaSrlrB(a: V16i8, b: V16i8): V16i8 = msaSrlrB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaSrlrB(a: V16i8, b: V16i8): V16i8 = msaSrlrB(a, b)
 
 /**
  * Vector Shift Right Logical Rounded
@@ -7053,7 +7053,7 @@ public fun msaSrlrB(a: V16i8, b: V16i8): V16i8 = msaSrlrB(a, transmuteWithLayout
  * element in bits.The most significant discarded bit is added to the shifted
  * value (for rounding) and the result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaSrlrH(a: V8i16, b: V8i16): V8i16 = msaSrlrH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaSrlrH(a: V8i16, b: V8i16): V8i16 = msaSrlrH(a, b)
 
 /**
  * Vector Shift Right Logical Rounded
@@ -7064,7 +7064,7 @@ public fun msaSrlrH(a: V8i16, b: V8i16): V8i16 = msaSrlrH(a, transmuteWithLayout
  * element in bits.The most significant discarded bit is added to the shifted
  * value (for rounding) and the result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaSrlrW(a: V4i32, b: V4i32): V4i32 = msaSrlrW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaSrlrW(a: V4i32, b: V4i32): V4i32 = msaSrlrW(a, b)
 
 /**
  * Vector Shift Right Logical Rounded
@@ -7075,7 +7075,7 @@ public fun msaSrlrW(a: V4i32, b: V4i32): V4i32 = msaSrlrW(a, transmuteWithLayout
  * element in bits.The most significant discarded bit is added to the shifted
  * value (for rounding) and the result is written to vector (two signed 64-bit integer numbers).
  */
-public fun msaSrlrD(a: V2i64, b: V2i64): V2i64 = msaSrlrD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaSrlrD(a: V2i64, b: V2i64): V2i64 = msaSrlrD(a, b)
 
 /**
  * Immediate Shift Right Logical Rounded
@@ -7210,7 +7210,7 @@ public fun msaStD(a: V2i64, memAddr: MutPtr, immS13: Int) {
  * Signed arithmetic is performed and overflows clamp to the largest and/or smallest
  * representable signed values before writing the result to vector (sixteen signed 8-bit integer numbers).
  */
-public fun msaSubsSB(a: V16i8, b: V16i8): V16i8 = msaSubsSB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaSubsSB(a: V16i8, b: V16i8): V16i8 = msaSubsSB(a, b)
 
 /**
  * Vector Signed Saturated Subtract of Signed Values
@@ -7220,7 +7220,7 @@ public fun msaSubsSB(a: V16i8, b: V16i8): V16i8 = msaSubsSB(a, transmuteWithLayo
  * Signed arithmetic is performed and overflows clamp to the largest and/or smallest
  * representable signed values before writing the result to vector (eight signed 16-bit integer numbers).
  */
-public fun msaSubsSH(a: V8i16, b: V8i16): V8i16 = msaSubsSH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaSubsSH(a: V8i16, b: V8i16): V8i16 = msaSubsSH(a, b)
 
 /**
  * Vector Signed Saturated Subtract of Signed Values
@@ -7230,7 +7230,7 @@ public fun msaSubsSH(a: V8i16, b: V8i16): V8i16 = msaSubsSH(a, transmuteWithLayo
  * Signed arithmetic is performed and overflows clamp to the largest and/or smallest
  * representable signed values before writing the result to vector (four signed 32-bit integer numbers).
  */
-public fun msaSubsSW(a: V4i32, b: V4i32): V4i32 = msaSubsSW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaSubsSW(a: V4i32, b: V4i32): V4i32 = msaSubsSW(a, b)
 
 /**
  * Vector Signed Saturated Subtract of Signed Values
@@ -7240,7 +7240,7 @@ public fun msaSubsSW(a: V4i32, b: V4i32): V4i32 = msaSubsSW(a, transmuteWithLayo
  * Signed arithmetic is performed and overflows clamp to the largest and/or smallest
  * representable signed values before writing the result to vector (two signed 64-bit integer numbers).
  */
-public fun msaSubsSD(a: V2i64, b: V2i64): V2i64 = msaSubsSD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaSubsSD(a: V2i64, b: V2i64): V2i64 = msaSubsSD(a, b)
 
 /**
  * Vector Unsigned Saturated Subtract of Unsigned Values
@@ -7250,7 +7250,7 @@ public fun msaSubsSD(a: V2i64, b: V2i64): V2i64 = msaSubsSD(a, transmuteWithLayo
  * Unsigned arithmetic is performed and under-flows clamp to 0 before writing
  * the result to vector (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaSubsUB(a: V16u8, b: V16u8): V16u8 = msaSubsUB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()))
+public fun msaSubsUB(a: V16u8, b: V16u8): V16u8 = msaSubsUB(a, b)
 
 /**
  * Vector Unsigned Saturated Subtract of Unsigned Values
@@ -7260,7 +7260,7 @@ public fun msaSubsUB(a: V16u8, b: V16u8): V16u8 = msaSubsUB(a, transmuteWithLayo
  * Unsigned arithmetic is performed and under-flows clamp to 0 before writing
  * the result to vector (eight unsigned 16-bit integer numbers).
  */
-public fun msaSubsUH(a: V8u16, b: V8u16): V8u16 = msaSubsUH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8u16.typeLayout()))
+public fun msaSubsUH(a: V8u16, b: V8u16): V8u16 = msaSubsUH(a, b)
 
 /**
  * Vector Unsigned Saturated Subtract of Unsigned Values
@@ -7270,7 +7270,7 @@ public fun msaSubsUH(a: V8u16, b: V8u16): V8u16 = msaSubsUH(a, transmuteWithLayo
  * Unsigned arithmetic is performed and under-flows clamp to 0 before writing
  * the result to vector (four unsigned 32-bit integer numbers).
  */
-public fun msaSubsUW(a: V4u32, b: V4u32): V4u32 = msaSubsUW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4u32.typeLayout()))
+public fun msaSubsUW(a: V4u32, b: V4u32): V4u32 = msaSubsUW(a, b)
 
 /**
  * Vector Unsigned Saturated Subtract of Unsigned Values
@@ -7280,7 +7280,7 @@ public fun msaSubsUW(a: V4u32, b: V4u32): V4u32 = msaSubsUW(a, transmuteWithLayo
  * Unsigned arithmetic is performed and under-flows clamp to 0 before writing
  * the result to vector (two unsigned 64-bit integer numbers).
  */
-public fun msaSubsUD(a: V2u64, b: V2u64): V2u64 = msaSubsUD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2u64.typeLayout()))
+public fun msaSubsUD(a: V2u64, b: V2u64): V2u64 = msaSubsUD(a, b)
 
 /**
  * Vector Unsigned Saturated Subtract of Signed from Unsigned
@@ -7290,7 +7290,7 @@ public fun msaSubsUD(a: V2u64, b: V2u64): V2u64 = msaSubsUD(a, transmuteWithLayo
  * The signed result is unsigned saturated and written to
  * to vector (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaSubsusUB(a: V16u8, b: V16i8): V16u8 = msaSubsusUB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16u8.typeLayout()))
+public fun msaSubsusUB(a: V16u8, b: V16i8): V16u8 = msaSubsusUB(a, transmuteWithLayouts<V16i8, V16u8>(b, V16i8.typeLayout(), V16u8.typeLayout()))
 
 /**
  * Vector Unsigned Saturated Subtract of Signed from Unsigned
@@ -7300,7 +7300,7 @@ public fun msaSubsusUB(a: V16u8, b: V16i8): V16u8 = msaSubsusUB(a, transmuteWith
  * The signed result is unsigned saturated and written to
  * to vector (eight unsigned 16-bit integer numbers).
  */
-public fun msaSubsusUH(a: V8u16, b: V8i16): V8u16 = msaSubsusUH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8u16.typeLayout()))
+public fun msaSubsusUH(a: V8u16, b: V8i16): V8u16 = msaSubsusUH(a, transmuteWithLayouts<V8i16, V8u16>(b, V8i16.typeLayout(), V8u16.typeLayout()))
 
 /**
  * Vector Unsigned Saturated Subtract of Signed from Unsigned
@@ -7310,7 +7310,7 @@ public fun msaSubsusUH(a: V8u16, b: V8i16): V8u16 = msaSubsusUH(a, transmuteWith
  * The signed result is unsigned saturated and written to
  * to vector (four unsigned 32-bit integer numbers).
  */
-public fun msaSubsusUW(a: V4u32, b: V4i32): V4u32 = msaSubsusUW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4u32.typeLayout()))
+public fun msaSubsusUW(a: V4u32, b: V4i32): V4u32 = msaSubsusUW(a, transmuteWithLayouts<V4i32, V4u32>(b, V4i32.typeLayout(), V4u32.typeLayout()))
 
 /**
  * Vector Unsigned Saturated Subtract of Signed from Unsigned
@@ -7320,7 +7320,7 @@ public fun msaSubsusUW(a: V4u32, b: V4i32): V4u32 = msaSubsusUW(a, transmuteWith
  * The signed result is unsigned saturated and written to
  * to vector (two unsigned 64-bit integer numbers).
  */
-public fun msaSubsusUD(a: V2u64, b: V2i64): V2u64 = msaSubsusUD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2u64.typeLayout()))
+public fun msaSubsusUD(a: V2u64, b: V2i64): V2u64 = msaSubsusUD(a, transmuteWithLayouts<V2i64, V2u64>(b, V2i64.typeLayout(), V2u64.typeLayout()))
 
 /**
  * Vector Signed Saturated Subtract of Unsigned Values
@@ -7330,7 +7330,7 @@ public fun msaSubsusUD(a: V2u64, b: V2i64): V2u64 = msaSubsusUD(a, transmuteWith
  * The signed result is signed saturated and written to
  * to vector (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaSubsuuSB(a: V16u8, b: V16u8): V16i8 = msaSubsuuSB(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16i8.typeLayout()))
+public fun msaSubsuuSB(a: V16u8, b: V16u8): V16i8 = msaSubsuuSB(a, transmuteWithLayouts<V16u8, V16i8>(b, V16u8.typeLayout(), V16i8.typeLayout()))
 
 /**
  * Vector Signed Saturated Subtract of Unsigned Values
@@ -7340,7 +7340,7 @@ public fun msaSubsuuSB(a: V16u8, b: V16u8): V16i8 = msaSubsuuSB(a, transmuteWith
  * The signed result is signed saturated and written to
  * to vector (eight unsigned 16-bit integer numbers).
  */
-public fun msaSubsuuSH(a: V8u16, b: V8u16): V8i16 = msaSubsuuSH(a, transmuteWithLayouts(b, V8u16.typeLayout(), V8i16.typeLayout()))
+public fun msaSubsuuSH(a: V8u16, b: V8u16): V8i16 = msaSubsuuSH(a, transmuteWithLayouts<V8u16, V8i16>(b, V8u16.typeLayout(), V8i16.typeLayout()))
 
 /**
  * Vector Signed Saturated Subtract of Unsigned Values
@@ -7350,7 +7350,7 @@ public fun msaSubsuuSH(a: V8u16, b: V8u16): V8i16 = msaSubsuuSH(a, transmuteWith
  * The signed result is signed saturated and written to
  * to vector (four unsigned 32-bit integer numbers).
  */
-public fun msaSubsuuSW(a: V4u32, b: V4u32): V4i32 = msaSubsuuSW(a, transmuteWithLayouts(b, V4u32.typeLayout(), V4i32.typeLayout()))
+public fun msaSubsuuSW(a: V4u32, b: V4u32): V4i32 = msaSubsuuSW(a, transmuteWithLayouts<V4u32, V4i32>(b, V4u32.typeLayout(), V4i32.typeLayout()))
 
 /**
  * Vector Signed Saturated Subtract of Unsigned Values
@@ -7360,7 +7360,7 @@ public fun msaSubsuuSW(a: V4u32, b: V4u32): V4i32 = msaSubsuuSW(a, transmuteWith
  * The signed result is signed saturated and written to
  * to vector (two unsigned 64-bit integer numbers).
  */
-public fun msaSubsuuSD(a: V2u64, b: V2u64): V2i64 = msaSubsuuSD(a, transmuteWithLayouts(b, V2u64.typeLayout(), V2i64.typeLayout()))
+public fun msaSubsuuSD(a: V2u64, b: V2u64): V2i64 = msaSubsuuSD(a, transmuteWithLayouts<V2u64, V2i64>(b, V2u64.typeLayout(), V2i64.typeLayout()))
 
 /**
  * Vector Subtract
@@ -7369,7 +7369,7 @@ public fun msaSubsuuSD(a: V2u64, b: V2u64): V2i64 = msaSubsuuSD(a, transmuteWith
  * are subtracted from the elements in vector `a` (sixteen signed 8-bit integer numbers).
  * The result is written to vector (sixteen signed 8-bit integer numbers).
  */
-public fun msaSubvB(a: V16i8, b: V16i8): V16i8 = msaSubvB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()))
+public fun msaSubvB(a: V16i8, b: V16i8): V16i8 = msaSubvB(a, b)
 
 /**
  * Vector Subtract
@@ -7378,7 +7378,7 @@ public fun msaSubvB(a: V16i8, b: V16i8): V16i8 = msaSubvB(a, transmuteWithLayout
  * are subtracted from the elements in vector `a` (eight signed 16-bit integer numbers).
  * The result is written to vector (eight signed 16-bit integer numbers).
  */
-public fun msaSubvH(a: V8i16, b: V8i16): V8i16 = msaSubvH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()))
+public fun msaSubvH(a: V8i16, b: V8i16): V8i16 = msaSubvH(a, b)
 
 /**
  * Vector Subtract
@@ -7387,7 +7387,7 @@ public fun msaSubvH(a: V8i16, b: V8i16): V8i16 = msaSubvH(a, transmuteWithLayout
  * are subtracted from the elements in vector `a` (four signed 32-bit integer numbers).
  * The result is written to vector (four signed 32-bit integer numbers).
  */
-public fun msaSubvW(a: V4i32, b: V4i32): V4i32 = msaSubvW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()))
+public fun msaSubvW(a: V4i32, b: V4i32): V4i32 = msaSubvW(a, b)
 
 /**
  * Vector Subtract
@@ -7396,7 +7396,7 @@ public fun msaSubvW(a: V4i32, b: V4i32): V4i32 = msaSubvW(a, transmuteWithLayout
  * are subtracted from the elements in vector `a` (two signed 64-bit integer numbers).
  * The result is written to vector (two signed 64-bit integer numbers).
  */
-public fun msaSubvD(a: V2i64, b: V2i64): V2i64 = msaSubvD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()))
+public fun msaSubvD(a: V2i64, b: V2i64): V2i64 = msaSubvD(a, b)
 
 /**
  * Immediate Subtract
@@ -7465,7 +7465,7 @@ public fun msaSubviD(a: V2i64, imm5: Int): V2i64 {
  * the concatenated vectors `b`, `a` specify the index of the source element.
  * If bit 6 or bit 7 is 1, there will be no copy, but rather the destination element is set to 0.
  */
-public fun msaVshfB(a: V16i8, b: V16i8, c: V16i8): V16i8 = msaVshfB(a, transmuteWithLayouts(b, V16i8.typeLayout(), V16i8.typeLayout()), c)
+public fun msaVshfB(a: V16i8, b: V16i8, c: V16i8): V16i8 = msaVshfB(a, b, c)
 
 /**
  * Vector Data Preserving Shuffle
@@ -7478,7 +7478,7 @@ public fun msaVshfB(a: V16i8, b: V16i8, c: V16i8): V16i8 = msaVshfB(a, transmute
  * the concatenated vectors `b`, `a` specify the index of the source element.
  * If bit 6 or bit 7 is 1, there will be no copy, but rather the destination element is set to 0.
  */
-public fun msaVshfH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaVshfH(a, transmuteWithLayouts(b, V8i16.typeLayout(), V8i16.typeLayout()), c)
+public fun msaVshfH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaVshfH(a, b, c)
 
 /**
  * Vector Data Preserving Shuffle
@@ -7491,7 +7491,7 @@ public fun msaVshfH(a: V8i16, b: V8i16, c: V8i16): V8i16 = msaVshfH(a, transmute
  * the concatenated vectors `b`, `a` specify the index of the source element.
  * If bit 6 or bit 7 is 1, there will be no copy, but rather the destination element is set to 0.
  */
-public fun msaVshfW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaVshfW(a, transmuteWithLayouts(b, V4i32.typeLayout(), V4i32.typeLayout()), c)
+public fun msaVshfW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaVshfW(a, b, c)
 
 /**
  * Vector Data Preserving Shuffle
@@ -7504,7 +7504,7 @@ public fun msaVshfW(a: V4i32, b: V4i32, c: V4i32): V4i32 = msaVshfW(a, transmute
  * the concatenated vectors `b`, `a` specify the index of the source element.
  * If bit 6 or bit 7 is 1, there will be no copy, but rather the destination element is set to 0.
  */
-public fun msaVshfD(a: V2i64, b: V2i64, c: V2i64): V2i64 = msaVshfD(a, transmuteWithLayouts(b, V2i64.typeLayout(), V2i64.typeLayout()), c)
+public fun msaVshfD(a: V2i64, b: V2i64, c: V2i64): V2i64 = msaVshfD(a, b, c)
 
 /**
  * Vector Logical Exclusive Or
@@ -7514,7 +7514,7 @@ public fun msaVshfD(a: V2i64, b: V2i64, c: V2i64): V2i64 = msaVshfD(a, transmute
  * in a bitwise logical XOR operation. The result is written to vector
  * (sixteen unsigned 8-bit integer numbers).
  */
-public fun msaXorV(a: V16u8, b: V16u8): V16u8 = msaXorV(a, transmuteWithLayouts(b, V16u8.typeLayout(), V16u8.typeLayout()))
+public fun msaXorV(a: V16u8, b: V16u8): V16u8 = msaXorV(a, b)
 
 /**
  * Immediate Logical Exclusive Or

@@ -94,7 +94,7 @@ public fun panicNounwindFmt(fmt: fmt.Arguments, forceNoBacktrace: Boolean): Noth
  * The underlying implementation of core's `panic` macro when no formatting is used.
  */
 public fun panic(expr: String): Nothing {
-    // Use Arguments.fromStr instead of formatArgs("{expr}") to potentially
+    // Use Arguments.fromStr instead of formatArgs("(expr)") to potentially
     // reduce size overhead. The formatArgs macro uses str's Display trait to
     // write expr, which calls Formatter.pad, which must accommodate string
     // truncation and padding (even though none is used here). Using

@@ -123,7 +123,7 @@ public open class IpMreq(
                 }
             }
 
-        public fun default(): IpMreq = IpMreq(imrMultiaddr = Default.default(), imrInterface = Default.default())
+        public fun default(): IpMreq = IpMreq(imrMultiaddr = InAddr.default(), imrInterface = InAddr.default())
     }
 }
 
@@ -164,7 +164,7 @@ public open class IpMreqn(
                 }
             }
 
-        public fun default(): IpMreqn = IpMreqn(imrMultiaddr = Default.default(), imrAddress = Default.default(), imrIfindex = Default.default())
+        public fun default(): IpMreqn = IpMreqn(imrMultiaddr = InAddr.default(), imrAddress = InAddr.default(), imrIfindex = 0)
     }
 }
 
@@ -205,7 +205,7 @@ public open class IpMreqSource(
                 }
             }
 
-        public fun default(): IpMreqSource = IpMreqSource(imrMultiaddr = Default.default(), imrSourceaddr = Default.default(), imrInterface = Default.default())
+        public fun default(): IpMreqSource = IpMreqSource(imrMultiaddr = InAddr.default(), imrSourceaddr = InAddr.default(), imrInterface = InAddr.default())
     }
 }
 
@@ -243,7 +243,7 @@ public open class Aiocb internal constructor(
             aioLioOpcode = aioLioOpcode,
         )
 
-        public fun default(): Aiocb = Aiocb(aioFildes = Default.default(), aioOffset = Default.default(), aioBuf = MutPtr(0L), aioNbytes = Default.default(), aioReqprio = Default.default(), aioSigevent = Default.default(), aioLioOpcode = Default.default())
+        public fun default(): Aiocb = Aiocb(aioFildes = 0, aioOffset = 0L, aioBuf = MutPtr(0L), aioNbytes = 0uL, aioReqprio = 0, aioSigevent = Sigevent.default(), aioLioOpcode = 0)
     }
 }
 
@@ -377,7 +377,7 @@ public open class GlobT internal constructor(
             nonExhaustive = nonExhaustive,
         )
 
-        public fun default(): GlobT = GlobT(glPathc = Default.default(), unused1 = Default.default(), glOffs = Default.default(), unused2 = Default.default(), glPathv = MutPtr(0L), unused3 = Default.default(), unused4 = Default.default(), unused5 = Default.default(), unused6 = Default.default(), unused7 = Default.default(), unused8 = Default.default(), nonExhaustive = Unit)
+        public fun default(): GlobT = GlobT(glPathc = 0uL, unused1 = 0, glOffs = 0uL, unused2 = 0, glPathv = MutPtr(0L), unused3 = MutPtr(0L), unused4 = MutPtr(0L), unused5 = MutPtr(0L), unused6 = MutPtr(0L), unused7 = MutPtr(0L), unused8 = MutPtr(0L), nonExhaustive = Unit)
     }
 }
 
@@ -487,7 +487,7 @@ public open class Tm internal constructor(
             tmZoneCtorArg = tmZone,
         )
 
-        public fun default(): Tm = Tm(tmSec = Default.default(), tmMin = Default.default(), tmHour = Default.default(), tmMday = Default.default(), tmMon = Default.default(), tmYear = Default.default(), tmWday = Default.default(), tmYday = Default.default(), tmIsdst = Default.default(), tmGmtoff = Default.default(), tmZone = MutPtr(0L))
+        public fun default(): Tm = Tm(tmSec = 0, tmMin = 0, tmHour = 0, tmMday = 0, tmMon = 0, tmYear = 0, tmWday = 0, tmYday = 0, tmIsdst = 0, tmGmtoff = 0L, tmZone = MutPtr(0L))
     }
 }
 
@@ -582,7 +582,7 @@ public open class Addrinfo internal constructor(
             aiNextCtorArg = aiNext,
         )
 
-        public fun default(): Addrinfo = Addrinfo(aiFlags = Default.default(), aiFamily = Default.default(), aiSocktype = Default.default(), aiProtocol = Default.default(), aiAddrlen = Default.default(), aiCanonname = MutPtr(0L), aiAddr = MutPtr(0L), aiNext = MutPtr(0L))
+        public fun default(): Addrinfo = Addrinfo(aiFlags = 0, aiFamily = 0, aiSocktype = 0, aiProtocol = 0, aiAddrlen = 0u, aiCanonname = MutPtr(0L), aiAddr = MutPtr(0L), aiNext = MutPtr(0L))
     }
 }
 
@@ -617,7 +617,7 @@ public open class MachTimebaseInfo(
                 }
             }
 
-        public fun default(): MachTimebaseInfo = MachTimebaseInfo(numer = Default.default(), denom = Default.default())
+        public fun default(): MachTimebaseInfo = MachTimebaseInfo(numer = 0u, denom = 0u)
     }
 }
 
@@ -753,7 +753,7 @@ public open class Stat(
                 }
             }
 
-        public fun default(): Stat = Stat(stDev = Default.default(), stMode = Default.default(), stNlink = Default.default(), stIno = Default.default(), stUid = Default.default(), stGid = Default.default(), stRdev = Default.default(), stAtime = Default.default(), stAtimeNsec = Default.default(), stMtime = Default.default(), stMtimeNsec = Default.default(), stCtime = Default.default(), stCtimeNsec = Default.default(), stBirthtime = Default.default(), stBirthtimeNsec = Default.default(), stSize = Default.default(), stBlocks = Default.default(), stBlksize = Default.default(), stFlags = Default.default(), stGen = Default.default(), stLspare = Default.default(), stQspare = Default.default())
+        public fun default(): Stat = Stat(stDev = 0, stMode = 0u, stNlink = 0u, stIno = 0uL, stUid = 0u, stGid = 0u, stRdev = 0, stAtime = 0L, stAtimeNsec = 0L, stMtime = 0L, stMtimeNsec = 0L, stCtime = 0L, stCtimeNsec = 0L, stBirthtime = 0L, stBirthtimeNsec = 0L, stSize = 0L, stBlocks = 0L, stBlksize = 0, stFlags = 0u, stGen = 0u, stLspare = 0, stQspare = Default.default())
     }
 }
 
@@ -872,7 +872,7 @@ public open class SiginfoT internal constructor(
             nonExhaustive = nonExhaustive,
         )
 
-        public fun default(): SiginfoT = SiginfoT(siSigno = Default.default(), siErrno = Default.default(), siCode = Default.default(), siPid = Default.default(), siUid = Default.default(), siStatus = Default.default(), siAddr = MutPtr(0L), pad = Default.default(), nonExhaustive = Unit)
+        public fun default(): SiginfoT = SiginfoT(siSigno = 0, siErrno = 0, siCode = 0, siPid = 0, siUid = 0u, siStatus = 0, siAddr = MutPtr(0L), pad = Default.default(), nonExhaustive = Unit)
     }
 }
 
@@ -914,7 +914,7 @@ public open class Sigaction(
                 }
             }
 
-        public fun default(): Sigaction = Sigaction(saSigaction = Default.default(), saMask = Default.default(), saFlags = Default.default())
+        public fun default(): Sigaction = Sigaction(saSigaction = 0uL, saMask = SigsetT.default(), saFlags = 0)
     }
 }
 
@@ -968,7 +968,7 @@ public open class StackT internal constructor(
             ssFlags = ssFlags,
         )
 
-        public fun default(): StackT = StackT(ssSp = MutPtr(0L), ssSize = Default.default(), ssFlags = Default.default())
+        public fun default(): StackT = StackT(ssSp = MutPtr(0L), ssSize = 0uL, ssFlags = 0)
     }
 }
 
@@ -1019,7 +1019,7 @@ public open class FstoreT(
                 }
             }
 
-        public fun default(): FstoreT = FstoreT(fstFlags = Default.default(), fstPosmode = Default.default(), fstOffset = Default.default(), fstLength = Default.default(), fstBytesalloc = Default.default())
+        public fun default(): FstoreT = FstoreT(fstFlags = 0u, fstPosmode = 0, fstOffset = 0L, fstLength = 0L, fstBytesalloc = 0L)
     }
 }
 
@@ -1068,7 +1068,7 @@ public open class FpunchholeT(
                 }
             }
 
-        public fun default(): FpunchholeT = FpunchholeT(fpFlags = Default.default(), reserved = Default.default(), fpOffset = Default.default(), fpLength = Default.default())
+        public fun default(): FpunchholeT = FpunchholeT(fpFlags = 0u, reserved = 0u, fpOffset = 0L, fpLength = 0L)
     }
 }
 
@@ -1104,7 +1104,7 @@ public open class FtrimactivefileT(
                 }
             }
 
-        public fun default(): FtrimactivefileT = FtrimactivefileT(ftaOffset = Default.default(), ftaLength = Default.default())
+        public fun default(): FtrimactivefileT = FtrimactivefileT(ftaOffset = 0L, ftaLength = 0L)
     }
 }
 
@@ -1150,7 +1150,7 @@ public open class FspecreadT(
                 }
             }
 
-        public fun default(): FspecreadT = FspecreadT(fsrFlags = Default.default(), reserved = Default.default(), fsrOffset = Default.default(), fsrLength = Default.default())
+        public fun default(): FspecreadT = FspecreadT(fsrFlags = 0u, reserved = 0u, fsrOffset = 0L, fsrLength = 0L)
     }
 }
 
@@ -1186,7 +1186,7 @@ public open class Radvisory(
                 }
             }
 
-        public fun default(): Radvisory = Radvisory(raOffset = Default.default(), raCount = Default.default())
+        public fun default(): Radvisory = Radvisory(raOffset = 0L, raCount = 0)
     }
 }
 
@@ -1267,7 +1267,7 @@ public open class Statvfs(
                 }
             }
 
-        public fun default(): Statvfs = Statvfs(fBsize = Default.default(), fFrsize = Default.default(), fBlocks = Default.default(), fBfree = Default.default(), fBavail = Default.default(), fFiles = Default.default(), fFfree = Default.default(), fFavail = Default.default(), fFsid = Default.default(), fFlag = Default.default(), fNamemax = Default.default())
+        public fun default(): Statvfs = Statvfs(fBsize = 0uL, fFrsize = 0uL, fBlocks = 0u, fBfree = 0u, fBavail = 0u, fFiles = 0u, fFfree = 0u, fFavail = 0u, fFsid = 0uL, fFlag = 0uL, fNamemax = 0uL)
     }
 }
 
@@ -1388,7 +1388,7 @@ public open class SockaddrIn(
                 }
             }
 
-        public fun default(): SockaddrIn = SockaddrIn(sinLen = Default.default(), sinFamily = Default.default(), sinPort = Default.default(), sinAddr = Default.default(), sinZero = Default.default())
+        public fun default(): SockaddrIn = SockaddrIn(sinLen = 0u, sinFamily = 0u, sinPort = 0u, sinAddr = InAddr.default(), sinZero = Default.default())
     }
 }
 
@@ -1449,7 +1449,7 @@ public open class Kevent64S(
                 }
             }
 
-        public fun default(): Kevent64S = Kevent64S(ident = Default.default(), filter = Default.default(), flags = Default.default(), fflags = Default.default(), data = Default.default(), udata = Default.default(), ext = Default.default())
+        public fun default(): Kevent64S = Kevent64S(ident = 0uL, filter = 0, flags = 0u, fflags = 0u, data = 0L, udata = 0uL, ext = Default.default())
     }
 }
 
@@ -1525,7 +1525,7 @@ public open class Dqblk(
                 }
             }
 
-        public fun default(): Dqblk = Dqblk(dqbBhardlimit = Default.default(), dqbBsoftlimit = Default.default(), dqbCurbytes = Default.default(), dqbIhardlimit = Default.default(), dqbIsoftlimit = Default.default(), dqbCurinodes = Default.default(), dqbBtime = Default.default(), dqbItime = Default.default(), dqbId = Default.default(), dqbSpare = Default.default())
+        public fun default(): Dqblk = Dqblk(dqbBhardlimit = 0uL, dqbBsoftlimit = 0uL, dqbCurbytes = 0uL, dqbIhardlimit = 0u, dqbIsoftlimit = 0u, dqbCurinodes = 0u, dqbBtime = 0u, dqbItime = 0u, dqbId = 0u, dqbSpare = Default.default())
     }
 }
 
@@ -1542,7 +1542,7 @@ public open class IfMsghdr(
     public open fun clone(): IfMsghdr = IfMsghdr(ifmMsglen, ifmVersion, ifmType, ifmAddrs, ifmFlags, ifmIndex, ifmData)
 
     public companion object {
-        public fun default(): IfMsghdr = IfMsghdr(ifmMsglen = Default.default(), ifmVersion = Default.default(), ifmType = Default.default(), ifmAddrs = Default.default(), ifmFlags = Default.default(), ifmIndex = Default.default(), ifmData = Default.default())
+        public fun default(): IfMsghdr = IfMsghdr(ifmMsglen = 0u, ifmVersion = 0u, ifmType = 0u, ifmAddrs = 0, ifmFlags = 0, ifmIndex = 0u, ifmData = IfData.default())
     }
 }
 
@@ -1603,7 +1603,7 @@ public open class IfaMsghdr(
                 }
             }
 
-        public fun default(): IfaMsghdr = IfaMsghdr(ifamMsglen = Default.default(), ifamVersion = Default.default(), ifamType = Default.default(), ifamAddrs = Default.default(), ifamFlags = Default.default(), ifamIndex = Default.default(), ifamMetric = Default.default())
+        public fun default(): IfaMsghdr = IfaMsghdr(ifamMsglen = 0u, ifamVersion = 0u, ifamType = 0u, ifamAddrs = 0, ifamFlags = 0, ifamIndex = 0u, ifamMetric = 0)
     }
 }
 
@@ -1659,7 +1659,7 @@ public open class IfmaMsghdr(
                 }
             }
 
-        public fun default(): IfmaMsghdr = IfmaMsghdr(ifmamMsglen = Default.default(), ifmamVersion = Default.default(), ifmamType = Default.default(), ifmamAddrs = Default.default(), ifmamFlags = Default.default(), ifmamIndex = Default.default())
+        public fun default(): IfmaMsghdr = IfmaMsghdr(ifmamMsglen = 0u, ifmamVersion = 0u, ifmamType = 0u, ifmamAddrs = 0, ifmamFlags = 0, ifmamIndex = 0u)
     }
 }
 
@@ -1720,7 +1720,7 @@ public open class IfmaMsghdr2(
                 }
             }
 
-        public fun default(): IfmaMsghdr2 = IfmaMsghdr2(ifmamMsglen = Default.default(), ifmamVersion = Default.default(), ifmamType = Default.default(), ifmamAddrs = Default.default(), ifmamFlags = Default.default(), ifmamIndex = Default.default(), ifmamRefcount = Default.default())
+        public fun default(): IfmaMsghdr2 = IfmaMsghdr2(ifmamMsglen = 0u, ifmamVersion = 0u, ifmamType = 0u, ifmamAddrs = 0, ifmamFlags = 0, ifmamIndex = 0u, ifmamRefcount = 0)
     }
 }
 
@@ -1810,7 +1810,7 @@ public open class RtMetrics(
                 }
             }
 
-        public fun default(): RtMetrics = RtMetrics(rmxLocks = Default.default(), rmxMtu = Default.default(), rmxHopcount = Default.default(), rmxExpire = Default.default(), rmxRecvpipe = Default.default(), rmxSendpipe = Default.default(), rmxSsthresh = Default.default(), rmxRtt = Default.default(), rmxRttvar = Default.default(), rmxPksent = Default.default(), rmxState = Default.default(), rmxFiller = Default.default())
+        public fun default(): RtMetrics = RtMetrics(rmxLocks = 0u, rmxMtu = 0u, rmxHopcount = 0u, rmxExpire = 0, rmxRecvpipe = 0u, rmxSendpipe = 0u, rmxSsthresh = 0u, rmxRtt = 0u, rmxRttvar = 0u, rmxPksent = 0u, rmxState = 0u, rmxFiller = Default.default())
     }
 }
 
@@ -1895,7 +1895,7 @@ public open class RtMsghdr(
                 }
             }
 
-        public fun default(): RtMsghdr = RtMsghdr(rtmMsglen = Default.default(), rtmVersion = Default.default(), rtmType = Default.default(), rtmIndex = Default.default(), rtmFlags = Default.default(), rtmAddrs = Default.default(), rtmPid = Default.default(), rtmSeq = Default.default(), rtmErrno = Default.default(), rtmUse = Default.default(), rtmInits = Default.default(), rtmRmx = Default.default())
+        public fun default(): RtMsghdr = RtMsghdr(rtmMsglen = 0u, rtmVersion = 0u, rtmType = 0u, rtmIndex = 0u, rtmFlags = 0, rtmAddrs = 0, rtmPid = 0, rtmSeq = 0, rtmErrno = 0, rtmUse = 0, rtmInits = 0u, rtmRmx = RtMetrics.default())
     }
 }
 
@@ -1980,7 +1980,7 @@ public open class RtMsghdr2(
                 }
             }
 
-        public fun default(): RtMsghdr2 = RtMsghdr2(rtmMsglen = Default.default(), rtmVersion = Default.default(), rtmType = Default.default(), rtmIndex = Default.default(), rtmFlags = Default.default(), rtmAddrs = Default.default(), rtmRefcnt = Default.default(), rtmParentflags = Default.default(), rtmReserved = Default.default(), rtmUse = Default.default(), rtmInits = Default.default(), rtmRmx = Default.default())
+        public fun default(): RtMsghdr2 = RtMsghdr2(rtmMsglen = 0u, rtmVersion = 0u, rtmType = 0u, rtmIndex = 0u, rtmFlags = 0, rtmAddrs = 0, rtmRefcnt = 0, rtmParentflags = 0, rtmReserved = 0, rtmUse = 0, rtmInits = 0u, rtmRmx = RtMetrics.default())
     }
 }
 
@@ -2043,7 +2043,7 @@ public open class Termios(
                 }
             }
 
-        public fun default(): Termios = Termios(cIflag = Default.default(), cOflag = Default.default(), cCflag = Default.default(), cLflag = Default.default(), cCc = Default.default(), cIspeed = Default.default(), cOspeed = Default.default())
+        public fun default(): Termios = Termios(cIflag = 0uL, cOflag = 0uL, cCflag = 0uL, cLflag = 0uL, cCc = Default.default(), cIspeed = 0uL, cOspeed = 0uL)
     }
 }
 
@@ -2094,7 +2094,7 @@ public open class Flock(
                 }
             }
 
-        public fun default(): Flock = Flock(lStart = Default.default(), lLen = Default.default(), lPid = Default.default(), lType = Default.default(), lWhence = Default.default())
+        public fun default(): Flock = Flock(lStart = 0L, lLen = 0L, lPid = 0, lType = 0, lWhence = 0)
     }
 }
 
@@ -2158,7 +2158,7 @@ public open class SfHdtr internal constructor(
             trlCnt = trlCnt,
         )
 
-        public fun default(): SfHdtr = SfHdtr(headers = MutPtr(0L), hdrCnt = Default.default(), trailers = MutPtr(0L), trlCnt = Default.default())
+        public fun default(): SfHdtr = SfHdtr(headers = MutPtr(0L), hdrCnt = 0, trailers = MutPtr(0L), trlCnt = 0)
     }
 }
 
@@ -2386,7 +2386,7 @@ public open class Lconv internal constructor(
             intNSignPosn = intNSignPosn,
         )
 
-        public fun default(): Lconv = Lconv(decimalPoint = MutPtr(0L), thousandsSep = MutPtr(0L), grouping = MutPtr(0L), intCurrSymbol = MutPtr(0L), currencySymbol = MutPtr(0L), monDecimalPoint = MutPtr(0L), monThousandsSep = MutPtr(0L), monGrouping = MutPtr(0L), positiveSign = MutPtr(0L), negativeSign = MutPtr(0L), intFracDigits = Default.default(), fracDigits = Default.default(), pCsPrecedes = Default.default(), pSepBySpace = Default.default(), nCsPrecedes = Default.default(), nSepBySpace = Default.default(), pSignPosn = Default.default(), nSignPosn = Default.default(), intPCsPrecedes = Default.default(), intNCsPrecedes = Default.default(), intPSepBySpace = Default.default(), intNSepBySpace = Default.default(), intPSignPosn = Default.default(), intNSignPosn = Default.default())
+        public fun default(): Lconv = Lconv(decimalPoint = MutPtr(0L), thousandsSep = MutPtr(0L), grouping = MutPtr(0L), intCurrSymbol = MutPtr(0L), currencySymbol = MutPtr(0L), monDecimalPoint = MutPtr(0L), monThousandsSep = MutPtr(0L), monGrouping = MutPtr(0L), positiveSign = MutPtr(0L), negativeSign = MutPtr(0L), intFracDigits = 0u, fracDigits = 0u, pCsPrecedes = 0u, pSepBySpace = 0u, nCsPrecedes = 0u, nSepBySpace = 0u, pSignPosn = 0u, nSignPosn = 0u, intPCsPrecedes = 0u, intNCsPrecedes = 0u, intPSepBySpace = 0u, intNSepBySpace = 0u, intPSignPosn = 0u, intNSignPosn = 0u)
     }
 }
 
@@ -2501,7 +2501,7 @@ public open class ProcTaskinfo(
                 }
             }
 
-        public fun default(): ProcTaskinfo = ProcTaskinfo(ptiVirtualSize = Default.default(), ptiResidentSize = Default.default(), ptiTotalUser = Default.default(), ptiTotalSystem = Default.default(), ptiThreadsUser = Default.default(), ptiThreadsSystem = Default.default(), ptiPolicy = Default.default(), ptiFaults = Default.default(), ptiPageins = Default.default(), ptiCowFaults = Default.default(), ptiMessagesSent = Default.default(), ptiMessagesReceived = Default.default(), ptiSyscallsMach = Default.default(), ptiSyscallsUnix = Default.default(), ptiCsw = Default.default(), ptiThreadnum = Default.default(), ptiNumrunning = Default.default(), ptiPriority = Default.default())
+        public fun default(): ProcTaskinfo = ProcTaskinfo(ptiVirtualSize = 0uL, ptiResidentSize = 0uL, ptiTotalUser = 0uL, ptiTotalSystem = 0uL, ptiThreadsUser = 0uL, ptiThreadsSystem = 0uL, ptiPolicy = 0, ptiFaults = 0, ptiPageins = 0, ptiCowFaults = 0, ptiMessagesSent = 0, ptiMessagesReceived = 0, ptiSyscallsMach = 0, ptiSyscallsUnix = 0, ptiCsw = 0, ptiThreadnum = 0, ptiNumrunning = 0, ptiPriority = 0)
     }
 }
 
@@ -2646,7 +2646,7 @@ public open class ProcBsdinfo(
                 }
             }
 
-        public fun default(): ProcBsdinfo = ProcBsdinfo(pbiFlags = Default.default(), pbiStatus = Default.default(), pbiXstatus = Default.default(), pbiPid = Default.default(), pbiPpid = Default.default(), pbiUid = Default.default(), pbiGid = Default.default(), pbiRuid = Default.default(), pbiRgid = Default.default(), pbiSvuid = Default.default(), pbiSvgid = Default.default(), rfu1 = Default.default(), pbiComm = Default.default(), pbiName = Default.default(), pbiNfiles = Default.default(), pbiPgid = Default.default(), pbiPjobc = Default.default(), eTdev = Default.default(), eTpgid = Default.default(), pbiNice = Default.default(), pbiStartTvsec = Default.default(), pbiStartTvusec = Default.default())
+        public fun default(): ProcBsdinfo = ProcBsdinfo(pbiFlags = 0u, pbiStatus = 0u, pbiXstatus = 0u, pbiPid = 0u, pbiPpid = 0u, pbiUid = 0u, pbiGid = 0u, pbiRuid = 0u, pbiRgid = 0u, pbiSvuid = 0u, pbiSvgid = 0u, rfu1 = 0u, pbiComm = Default.default(), pbiName = Default.default(), pbiNfiles = 0u, pbiPgid = 0u, pbiPjobc = 0u, eTdev = 0u, eTpgid = 0u, pbiNice = 0, pbiStartTvsec = 0uL, pbiStartTvusec = 0uL)
     }
 }
 
@@ -2789,7 +2789,7 @@ public open class ProcBsdshortinfo(
                 }
             }
 
-        public fun default(): ProcBsdshortinfo = ProcBsdshortinfo(pbsiPid = Default.default(), pbsiPpid = Default.default(), pbsiPgid = Default.default(), pbsiStatus = Default.default(), pbsiComm = Default.default(), pbsiFlags = Default.default(), pbsiUid = Default.default(), pbsiGid = Default.default(), pbsiRuid = Default.default(), pbsiRgid = Default.default(), pbsiSvuid = Default.default(), pbsiSvgid = Default.default(), pbsiRfu = Default.default(), nonExhaustive = Unit)
+        public fun default(): ProcBsdshortinfo = ProcBsdshortinfo(pbsiPid = 0u, pbsiPpid = 0u, pbsiPgid = 0u, pbsiStatus = 0u, pbsiComm = Default.default(), pbsiFlags = 0u, pbsiUid = 0u, pbsiGid = 0u, pbsiRuid = 0u, pbsiRgid = 0u, pbsiSvuid = 0u, pbsiSvgid = 0u, pbsiRfu = 0u, nonExhaustive = Unit)
     }
 }
 
@@ -2825,7 +2825,7 @@ public open class ProcTaskallinfo(
                 }
             }
 
-        public fun default(): ProcTaskallinfo = ProcTaskallinfo(pbsd = Default.default(), ptinfo = Default.default())
+        public fun default(): ProcTaskallinfo = ProcTaskallinfo(pbsd = ProcBsdinfo.default(), ptinfo = ProcTaskinfo.default())
     }
 }
 
@@ -2876,7 +2876,7 @@ public open class XswUsage(
                 }
             }
 
-        public fun default(): XswUsage = XswUsage(xsuTotal = Default.default(), xsuAvail = Default.default(), xsuUsed = Default.default(), xsuPagesize = Default.default(), xsuEncrypted = Default.default())
+        public fun default(): XswUsage = XswUsage(xsuTotal = 0uL, xsuAvail = 0uL, xsuUsed = 0uL, xsuPagesize = 0u, xsuEncrypted = 0)
     }
 }
 
@@ -2922,7 +2922,7 @@ public open class Xucred(
                 }
             }
 
-        public fun default(): Xucred = Xucred(crVersion = Default.default(), crUid = Default.default(), crNgroups = Default.default(), crGroups = Default.default())
+        public fun default(): Xucred = Xucred(crVersion = 0u, crUid = 0u, crNgroups = 0, crGroups = Default.default())
     }
 }
 
@@ -2982,7 +2982,7 @@ public open class MachHeader(
                 }
             }
 
-        public fun default(): MachHeader = MachHeader(magic = Default.default(), cputype = Default.default(), cpusubtype = Default.default(), filetype = Default.default(), ncmds = Default.default(), sizeofcmds = Default.default(), flags = Default.default())
+        public fun default(): MachHeader = MachHeader(magic = 0u, cputype = 0, cpusubtype = 0, filetype = 0u, ncmds = 0u, sizeofcmds = 0u, flags = 0u)
     }
 }
 
@@ -3047,7 +3047,7 @@ public open class MachHeader64(
                 }
             }
 
-        public fun default(): MachHeader64 = MachHeader64(magic = Default.default(), cputype = Default.default(), cpusubtype = Default.default(), filetype = Default.default(), ncmds = Default.default(), sizeofcmds = Default.default(), flags = Default.default(), reserved = Default.default())
+        public fun default(): MachHeader64 = MachHeader64(magic = 0u, cputype = 0, cpusubtype = 0, filetype = 0u, ncmds = 0u, sizeofcmds = 0u, flags = 0u, reserved = 0u)
     }
 }
 
@@ -3128,7 +3128,7 @@ public open class SegmentCommand(
                 }
             }
 
-        public fun default(): SegmentCommand = SegmentCommand(cmd = Default.default(), cmdsize = Default.default(), segname = Default.default(), vmaddr = Default.default(), vmsize = Default.default(), fileoff = Default.default(), filesize = Default.default(), maxprot = Default.default(), initprot = Default.default(), nsects = Default.default(), flags = Default.default())
+        public fun default(): SegmentCommand = SegmentCommand(cmd = 0u, cmdsize = 0u, segname = Default.default(), vmaddr = 0u, vmsize = 0u, fileoff = 0u, filesize = 0u, maxprot = 0, initprot = 0, nsects = 0u, flags = 0u)
     }
 }
 
@@ -3209,7 +3209,7 @@ public open class SegmentCommand64(
                 }
             }
 
-        public fun default(): SegmentCommand64 = SegmentCommand64(cmd = Default.default(), cmdsize = Default.default(), segname = Default.default(), vmaddr = Default.default(), vmsize = Default.default(), fileoff = Default.default(), filesize = Default.default(), maxprot = Default.default(), initprot = Default.default(), nsects = Default.default(), flags = Default.default())
+        public fun default(): SegmentCommand64 = SegmentCommand64(cmd = 0u, cmdsize = 0u, segname = Default.default(), vmaddr = 0uL, vmsize = 0uL, fileoff = 0uL, filesize = 0uL, maxprot = 0, initprot = 0, nsects = 0u, flags = 0u)
     }
 }
 
@@ -3245,7 +3245,7 @@ public open class LoadCommand(
                 }
             }
 
-        public fun default(): LoadCommand = LoadCommand(cmd = Default.default(), cmdsize = Default.default())
+        public fun default(): LoadCommand = LoadCommand(cmd = 0u, cmdsize = 0u)
     }
 }
 
@@ -3311,7 +3311,7 @@ public open class SockaddrDl(
                 }
             }
 
-        public fun default(): SockaddrDl = SockaddrDl(sdlLen = Default.default(), sdlFamily = Default.default(), sdlIndex = Default.default(), sdlType = Default.default(), sdlNlen = Default.default(), sdlAlen = Default.default(), sdlSlen = Default.default(), sdlData = Default.default())
+        public fun default(): SockaddrDl = SockaddrDl(sdlLen = 0u, sdlFamily = 0u, sdlIndex = 0u, sdlType = 0u, sdlNlen = 0u, sdlAlen = 0u, sdlSlen = 0u, sdlData = Default.default())
     }
 }
 
@@ -3371,7 +3371,7 @@ public open class SockaddrInarp(
                 }
             }
 
-        public fun default(): SockaddrInarp = SockaddrInarp(sinLen = Default.default(), sinFamily = Default.default(), sinPort = Default.default(), sinAddr = Default.default(), sinSrcaddr = Default.default(), sinTos = Default.default(), sinOther = Default.default())
+        public fun default(): SockaddrInarp = SockaddrInarp(sinLen = 0u, sinFamily = 0u, sinPort = 0u, sinAddr = InAddr.default(), sinSrcaddr = InAddr.default(), sinTos = 0u, sinOther = 0u)
     }
 }
 
@@ -3426,7 +3426,7 @@ public open class SockaddrCtl(
                 }
             }
 
-        public fun default(): SockaddrCtl = SockaddrCtl(scLen = Default.default(), scFamily = Default.default(), ssSysaddr = Default.default(), scId = Default.default(), scUnit = Default.default(), scReserved = Default.default())
+        public fun default(): SockaddrCtl = SockaddrCtl(scLen = 0u, scFamily = 0u, ssSysaddr = 0u, scId = 0u, scUnit = 0u, scReserved = Default.default())
     }
 }
 
@@ -3467,7 +3467,7 @@ public open class InPktinfo(
                 }
             }
 
-        public fun default(): InPktinfo = InPktinfo(ipiIfindex = Default.default(), ipiSpecDst = Default.default(), ipiAddr = Default.default())
+        public fun default(): InPktinfo = InPktinfo(ipiIfindex = 0u, ipiSpecDst = InAddr.default(), ipiAddr = InAddr.default())
     }
 }
 
@@ -3479,7 +3479,7 @@ public open class In6Pktinfo(
     public open fun clone(): In6Pktinfo = In6Pktinfo(ipi6Addr, ipi6Ifindex)
 
     public companion object {
-        public fun default(): In6Pktinfo = In6Pktinfo(ipi6Addr = Default.default(), ipi6Ifindex = Default.default())
+        public fun default(): In6Pktinfo = In6Pktinfo(ipi6Addr = In6Addr.default(), ipi6Ifindex = 0u)
     }
 }
 
@@ -3540,7 +3540,7 @@ public open class IpcPerm(
                 }
             }
 
-        public fun default(): IpcPerm = IpcPerm(uid = Default.default(), gid = Default.default(), cuid = Default.default(), cgid = Default.default(), mode = Default.default(), seq = Default.default(), key = Default.default())
+        public fun default(): IpcPerm = IpcPerm(uid = 0u, gid = 0u, cuid = 0u, cgid = 0u, mode = 0u, seq = 0u, key = 0)
     }
 }
 
@@ -3581,7 +3581,7 @@ public open class Sembuf(
                 }
             }
 
-        public fun default(): Sembuf = Sembuf(semNum = Default.default(), semOp = Default.default(), semFlg = Default.default())
+        public fun default(): Sembuf = Sembuf(semNum = 0u, semOp = 0, semFlg = 0)
     }
 }
 
@@ -3631,7 +3631,7 @@ public open class Arphdr(
                 }
             }
 
-        public fun default(): Arphdr = Arphdr(arHrd = Default.default(), arPro = Default.default(), arHln = Default.default(), arPln = Default.default(), arOp = Default.default())
+        public fun default(): Arphdr = Arphdr(arHrd = 0u, arPro = 0u, arHln = 0u, arPln = 0u, arOp = 0u)
     }
 }
 
@@ -3662,7 +3662,7 @@ public open class InAddr(
                 }
             }
 
-        public fun default(): InAddr = InAddr(sAddr = Default.default())
+        public fun default(): InAddr = InAddr(sAddr = 0u)
     }
 }
 
@@ -3702,7 +3702,7 @@ public open class SockaddrNdrv(
                 }
             }
 
-        public fun default(): SockaddrNdrv = SockaddrNdrv(sndLen = Default.default(), sndFamily = Default.default(), sndName = Default.default())
+        public fun default(): SockaddrNdrv = SockaddrNdrv(sndLen = 0u, sndFamily = 0u, sndName = Default.default())
     }
 }
 
@@ -3775,7 +3775,7 @@ public open class SaEndpointsT internal constructor(
             saeDstaddrlen = saeDstaddrlen,
         )
 
-        public fun default(): SaEndpointsT = SaEndpointsT(saeSrcif = Default.default(), saeSrcaddr = MutPtr(0L), saeSrcaddrlen = Default.default(), saeDstaddr = MutPtr(0L), saeDstaddrlen = Default.default())
+        public fun default(): SaEndpointsT = SaEndpointsT(saeSrcif = 0u, saeSrcaddr = MutPtr(0L), saeSrcaddrlen = 0u, saeDstaddr = MutPtr(0L), saeDstaddrlen = 0u)
     }
 }
 
@@ -3886,7 +3886,7 @@ public open class Timex(
                 }
             }
 
-        public fun default(): Timex = Timex(modes = Default.default(), offset = Default.default(), freq = Default.default(), maxerror = Default.default(), esterror = Default.default(), status = Default.default(), constant = Default.default(), precision = Default.default(), tolerance = Default.default(), ppsfreq = Default.default(), jitter = Default.default(), shift = Default.default(), stabil = Default.default(), jitcnt = Default.default(), calcnt = Default.default(), errcnt = Default.default(), stbcnt = Default.default())
+        public fun default(): Timex = Timex(modes = 0u, offset = 0L, freq = 0L, maxerror = 0L, esterror = 0L, status = 0, constant = 0L, precision = 0L, tolerance = 0L, ppsfreq = 0L, jitter = 0L, shift = 0, stabil = 0L, jitcnt = 0L, calcnt = 0L, errcnt = 0L, stbcnt = 0L)
     }
 }
 
@@ -3901,7 +3901,7 @@ public open class Ntptimeval(
     public open fun clone(): Ntptimeval = Ntptimeval(time, maxerror, esterror, tai, timeState)
 
     public companion object {
-        public fun default(): Ntptimeval = Ntptimeval(time = Default.default(), maxerror = Default.default(), esterror = Default.default(), tai = Default.default(), timeState = Default.default())
+        public fun default(): Ntptimeval = Ntptimeval(time = Timespec.default(), maxerror = 0L, esterror = 0L, tai = 0L, timeState = 0)
     }
 }
 
@@ -3932,7 +3932,7 @@ public open class ThreadStandardPolicy(
                 }
             }
 
-        public fun default(): ThreadStandardPolicy = ThreadStandardPolicy(noData = Default.default())
+        public fun default(): ThreadStandardPolicy = ThreadStandardPolicy(noData = 0u)
     }
 }
 
@@ -3963,7 +3963,7 @@ public open class ThreadExtendedPolicy(
                 }
             }
 
-        public fun default(): ThreadExtendedPolicy = ThreadExtendedPolicy(timeshare = Default.default())
+        public fun default(): ThreadExtendedPolicy = ThreadExtendedPolicy(timeshare = 0)
     }
 }
 
@@ -4009,7 +4009,7 @@ public open class ThreadTimeConstraintPolicy(
                 }
             }
 
-        public fun default(): ThreadTimeConstraintPolicy = ThreadTimeConstraintPolicy(period = Default.default(), computation = Default.default(), constraint = Default.default(), preemptible = Default.default())
+        public fun default(): ThreadTimeConstraintPolicy = ThreadTimeConstraintPolicy(period = 0u, computation = 0u, constraint = 0u, preemptible = 0)
     }
 }
 
@@ -4040,7 +4040,7 @@ public open class ThreadPrecedencePolicy(
                 }
             }
 
-        public fun default(): ThreadPrecedencePolicy = ThreadPrecedencePolicy(importance = Default.default())
+        public fun default(): ThreadPrecedencePolicy = ThreadPrecedencePolicy(importance = 0)
     }
 }
 
@@ -4071,7 +4071,7 @@ public open class ThreadAffinityPolicy(
                 }
             }
 
-        public fun default(): ThreadAffinityPolicy = ThreadAffinityPolicy(affinityTag = Default.default())
+        public fun default(): ThreadAffinityPolicy = ThreadAffinityPolicy(affinityTag = 0)
     }
 }
 
@@ -4102,7 +4102,7 @@ public open class ThreadBackgroundPolicy(
                 }
             }
 
-        public fun default(): ThreadBackgroundPolicy = ThreadBackgroundPolicy(priority = Default.default())
+        public fun default(): ThreadBackgroundPolicy = ThreadBackgroundPolicy(priority = 0)
     }
 }
 
@@ -4133,7 +4133,7 @@ public open class ThreadLatencyQosPolicy(
                 }
             }
 
-        public fun default(): ThreadLatencyQosPolicy = ThreadLatencyQosPolicy(threadLatencyQosTier = Default.default())
+        public fun default(): ThreadLatencyQosPolicy = ThreadLatencyQosPolicy(threadLatencyQosTier = 0)
     }
 }
 
@@ -4164,7 +4164,7 @@ public open class ThreadThroughputQosPolicy(
                 }
             }
 
-        public fun default(): ThreadThroughputQosPolicy = ThreadThroughputQosPolicy(threadThroughputQosTier = Default.default())
+        public fun default(): ThreadThroughputQosPolicy = ThreadThroughputQosPolicy(threadThroughputQosTier = 0)
     }
 }
 
@@ -4210,7 +4210,7 @@ public open class MallocStatisticsT(
                 }
             }
 
-        public fun default(): MallocStatisticsT = MallocStatisticsT(blocksInUse = Default.default(), sizeInUse = Default.default(), maxSizeInUse = Default.default(), sizeAllocated = Default.default())
+        public fun default(): MallocStatisticsT = MallocStatisticsT(blocksInUse = 0u, sizeInUse = 0uL, maxSizeInUse = 0uL, sizeAllocated = 0uL)
     }
 }
 
@@ -4261,7 +4261,7 @@ public open class Mstats(
                 }
             }
 
-        public fun default(): Mstats = Mstats(bytesTotal = Default.default(), chunksUsed = Default.default(), bytesUsed = Default.default(), chunksFree = Default.default(), bytesFree = Default.default())
+        public fun default(): Mstats = Mstats(bytesTotal = 0uL, chunksUsed = 0uL, bytesUsed = 0uL, chunksFree = 0uL, bytesFree = 0uL)
     }
 }
 
@@ -4297,7 +4297,7 @@ public open class VmRangeT(
                 }
             }
 
-        public fun default(): VmRangeT = VmRangeT(address = Default.default(), size = Default.default())
+        public fun default(): VmRangeT = VmRangeT(address = 0uL, size = 0uL)
     }
 }
 
@@ -4427,7 +4427,7 @@ public open class VinfoStat(
                 }
             }
 
-        public fun default(): VinfoStat = VinfoStat(vstDev = Default.default(), vstMode = Default.default(), vstNlink = Default.default(), vstIno = Default.default(), vstUid = Default.default(), vstGid = Default.default(), vstAtime = Default.default(), vstAtimensec = Default.default(), vstMtime = Default.default(), vstMtimensec = Default.default(), vstCtime = Default.default(), vstCtimensec = Default.default(), vstBirthtime = Default.default(), vstBirthtimensec = Default.default(), vstSize = Default.default(), vstBlocks = Default.default(), vstBlksize = Default.default(), vstFlags = Default.default(), vstGen = Default.default(), vstRdev = Default.default(), vstQspare = Default.default())
+        public fun default(): VinfoStat = VinfoStat(vstDev = 0u, vstMode = 0u, vstNlink = 0u, vstIno = 0uL, vstUid = 0u, vstGid = 0u, vstAtime = 0L, vstAtimensec = 0L, vstMtime = 0L, vstMtimensec = 0L, vstCtime = 0L, vstCtimensec = 0L, vstBirthtime = 0L, vstBirthtimensec = 0L, vstSize = 0L, vstBlocks = 0L, vstBlksize = 0, vstFlags = 0u, vstGen = 0u, vstRdev = 0u, vstQspare = Default.default())
     }
 }
 
@@ -4440,7 +4440,7 @@ public open class VnodeInfo(
     public open fun clone(): VnodeInfo = VnodeInfo(viStat, viType, viPad, viFsid)
 
     public companion object {
-        public fun default(): VnodeInfo = VnodeInfo(viStat = Default.default(), viType = Default.default(), viPad = Default.default(), viFsid = Default.default())
+        public fun default(): VnodeInfo = VnodeInfo(viStat = VinfoStat.default(), viType = 0, viPad = 0, viFsid = FsidT.default())
     }
 }
 
@@ -4453,7 +4453,7 @@ public open class VnodeInfoPath(
     public open fun clone(): VnodeInfoPath = VnodeInfoPath(vipVi, vipPath)
 
     public companion object {
-        public fun default(): VnodeInfoPath = VnodeInfoPath(vipVi = Default.default(), vipPath = Default.default())
+        public fun default(): VnodeInfoPath = VnodeInfoPath(vipVi = VnodeInfo.default(), vipPath = emptyList())
     }
 }
 
@@ -4464,7 +4464,7 @@ public open class ProcVnodepathinfo(
     public open fun clone(): ProcVnodepathinfo = ProcVnodepathinfo(pviCdir, pviRdir)
 
     public companion object {
-        public fun default(): ProcVnodepathinfo = ProcVnodepathinfo(pviCdir = Default.default(), pviRdir = Default.default())
+        public fun default(): ProcVnodepathinfo = ProcVnodepathinfo(pviCdir = VnodeInfoPath.default(), pviRdir = VnodeInfoPath.default())
     }
 }
 
@@ -4565,7 +4565,7 @@ public open class VmStatistics(
                 }
             }
 
-        public fun default(): VmStatistics = VmStatistics(freeCount = Default.default(), activeCount = Default.default(), inactiveCount = Default.default(), wireCount = Default.default(), zeroFillCount = Default.default(), reactivations = Default.default(), pageins = Default.default(), pageouts = Default.default(), faults = Default.default(), cowFaults = Default.default(), lookups = Default.default(), hits = Default.default(), purgeableCount = Default.default(), purges = Default.default(), speculativeCount = Default.default())
+        public fun default(): VmStatistics = VmStatistics(freeCount = 0u, activeCount = 0u, inactiveCount = 0u, wireCount = 0u, zeroFillCount = 0u, reactivations = 0u, pageins = 0u, pageouts = 0u, faults = 0u, cowFaults = 0u, lookups = 0u, hits = 0u, purgeableCount = 0u, purges = 0u, speculativeCount = 0u)
     }
 }
 
@@ -4601,7 +4601,7 @@ public open class TaskThreadTimesInfo(
                 }
             }
 
-        public fun default(): TaskThreadTimesInfo = TaskThreadTimesInfo(userTime = Default.default(), systemTime = Default.default())
+        public fun default(): TaskThreadTimesInfo = TaskThreadTimesInfo(userTime = TimeValueT.default(), systemTime = TimeValueT.default())
     }
 }
 
@@ -4682,7 +4682,7 @@ public open class RusageInfoV0(
                 }
             }
 
-        public fun default(): RusageInfoV0 = RusageInfoV0(riUuid = Default.default(), riUserTime = Default.default(), riSystemTime = Default.default(), riPkgIdleWkups = Default.default(), riInterruptWkups = Default.default(), riPageins = Default.default(), riWiredSize = Default.default(), riResidentSize = Default.default(), riPhysFootprint = Default.default(), riProcStartAbstime = Default.default(), riProcExitAbstime = Default.default())
+        public fun default(): RusageInfoV0 = RusageInfoV0(riUuid = Default.default(), riUserTime = 0uL, riSystemTime = 0uL, riPkgIdleWkups = 0uL, riInterruptWkups = 0uL, riPageins = 0uL, riWiredSize = 0uL, riResidentSize = 0uL, riPhysFootprint = 0uL, riProcStartAbstime = 0uL, riProcExitAbstime = 0uL)
     }
 }
 
@@ -4793,7 +4793,7 @@ public open class RusageInfoV1(
                 }
             }
 
-        public fun default(): RusageInfoV1 = RusageInfoV1(riUuid = Default.default(), riUserTime = Default.default(), riSystemTime = Default.default(), riPkgIdleWkups = Default.default(), riInterruptWkups = Default.default(), riPageins = Default.default(), riWiredSize = Default.default(), riResidentSize = Default.default(), riPhysFootprint = Default.default(), riProcStartAbstime = Default.default(), riProcExitAbstime = Default.default(), riChildUserTime = Default.default(), riChildSystemTime = Default.default(), riChildPkgIdleWkups = Default.default(), riChildInterruptWkups = Default.default(), riChildPageins = Default.default(), riChildElapsedAbstime = Default.default())
+        public fun default(): RusageInfoV1 = RusageInfoV1(riUuid = Default.default(), riUserTime = 0uL, riSystemTime = 0uL, riPkgIdleWkups = 0uL, riInterruptWkups = 0uL, riPageins = 0uL, riWiredSize = 0uL, riResidentSize = 0uL, riPhysFootprint = 0uL, riProcStartAbstime = 0uL, riProcExitAbstime = 0uL, riChildUserTime = 0uL, riChildSystemTime = 0uL, riChildPkgIdleWkups = 0uL, riChildInterruptWkups = 0uL, riChildPageins = 0uL, riChildElapsedAbstime = 0uL)
     }
 }
 
@@ -4914,7 +4914,7 @@ public open class RusageInfoV2(
                 }
             }
 
-        public fun default(): RusageInfoV2 = RusageInfoV2(riUuid = Default.default(), riUserTime = Default.default(), riSystemTime = Default.default(), riPkgIdleWkups = Default.default(), riInterruptWkups = Default.default(), riPageins = Default.default(), riWiredSize = Default.default(), riResidentSize = Default.default(), riPhysFootprint = Default.default(), riProcStartAbstime = Default.default(), riProcExitAbstime = Default.default(), riChildUserTime = Default.default(), riChildSystemTime = Default.default(), riChildPkgIdleWkups = Default.default(), riChildInterruptWkups = Default.default(), riChildPageins = Default.default(), riChildElapsedAbstime = Default.default(), riDiskioBytesread = Default.default(), riDiskioByteswritten = Default.default())
+        public fun default(): RusageInfoV2 = RusageInfoV2(riUuid = Default.default(), riUserTime = 0uL, riSystemTime = 0uL, riPkgIdleWkups = 0uL, riInterruptWkups = 0uL, riPageins = 0uL, riWiredSize = 0uL, riResidentSize = 0uL, riPhysFootprint = 0uL, riProcStartAbstime = 0uL, riProcExitAbstime = 0uL, riChildUserTime = 0uL, riChildSystemTime = 0uL, riChildPkgIdleWkups = 0uL, riChildInterruptWkups = 0uL, riChildPageins = 0uL, riChildElapsedAbstime = 0uL, riDiskioBytesread = 0uL, riDiskioByteswritten = 0uL)
     }
 }
 
@@ -5080,7 +5080,7 @@ public open class RusageInfoV3(
                 }
             }
 
-        public fun default(): RusageInfoV3 = RusageInfoV3(riUuid = Default.default(), riUserTime = Default.default(), riSystemTime = Default.default(), riPkgIdleWkups = Default.default(), riInterruptWkups = Default.default(), riPageins = Default.default(), riWiredSize = Default.default(), riResidentSize = Default.default(), riPhysFootprint = Default.default(), riProcStartAbstime = Default.default(), riProcExitAbstime = Default.default(), riChildUserTime = Default.default(), riChildSystemTime = Default.default(), riChildPkgIdleWkups = Default.default(), riChildInterruptWkups = Default.default(), riChildPageins = Default.default(), riChildElapsedAbstime = Default.default(), riDiskioBytesread = Default.default(), riDiskioByteswritten = Default.default(), riCpuTimeQosDefault = Default.default(), riCpuTimeQosMaintenance = Default.default(), riCpuTimeQosBackground = Default.default(), riCpuTimeQosUtility = Default.default(), riCpuTimeQosLegacy = Default.default(), riCpuTimeQosUserInitiated = Default.default(), riCpuTimeQosUserInteractive = Default.default(), riBilledSystemTime = Default.default(), riServicedSystemTime = Default.default())
+        public fun default(): RusageInfoV3 = RusageInfoV3(riUuid = Default.default(), riUserTime = 0uL, riSystemTime = 0uL, riPkgIdleWkups = 0uL, riInterruptWkups = 0uL, riPageins = 0uL, riWiredSize = 0uL, riResidentSize = 0uL, riPhysFootprint = 0uL, riProcStartAbstime = 0uL, riProcExitAbstime = 0uL, riChildUserTime = 0uL, riChildSystemTime = 0uL, riChildPkgIdleWkups = 0uL, riChildInterruptWkups = 0uL, riChildPageins = 0uL, riChildElapsedAbstime = 0uL, riDiskioBytesread = 0uL, riDiskioByteswritten = 0uL, riCpuTimeQosDefault = 0uL, riCpuTimeQosMaintenance = 0uL, riCpuTimeQosBackground = 0uL, riCpuTimeQosUtility = 0uL, riCpuTimeQosLegacy = 0uL, riCpuTimeQosUserInitiated = 0uL, riCpuTimeQosUserInteractive = 0uL, riBilledSystemTime = 0uL, riServicedSystemTime = 0uL)
     }
 }
 
@@ -5286,7 +5286,7 @@ public open class RusageInfoV4(
                 }
             }
 
-        public fun default(): RusageInfoV4 = RusageInfoV4(riUuid = Default.default(), riUserTime = Default.default(), riSystemTime = Default.default(), riPkgIdleWkups = Default.default(), riInterruptWkups = Default.default(), riPageins = Default.default(), riWiredSize = Default.default(), riResidentSize = Default.default(), riPhysFootprint = Default.default(), riProcStartAbstime = Default.default(), riProcExitAbstime = Default.default(), riChildUserTime = Default.default(), riChildSystemTime = Default.default(), riChildPkgIdleWkups = Default.default(), riChildInterruptWkups = Default.default(), riChildPageins = Default.default(), riChildElapsedAbstime = Default.default(), riDiskioBytesread = Default.default(), riDiskioByteswritten = Default.default(), riCpuTimeQosDefault = Default.default(), riCpuTimeQosMaintenance = Default.default(), riCpuTimeQosBackground = Default.default(), riCpuTimeQosUtility = Default.default(), riCpuTimeQosLegacy = Default.default(), riCpuTimeQosUserInitiated = Default.default(), riCpuTimeQosUserInteractive = Default.default(), riBilledSystemTime = Default.default(), riServicedSystemTime = Default.default(), riLogicalWrites = Default.default(), riLifetimeMaxPhysFootprint = Default.default(), riInstructions = Default.default(), riCycles = Default.default(), riBilledEnergy = Default.default(), riServicedEnergy = Default.default(), riIntervalMaxPhysFootprint = Default.default(), riRunnableTime = Default.default())
+        public fun default(): RusageInfoV4 = RusageInfoV4(riUuid = Default.default(), riUserTime = 0uL, riSystemTime = 0uL, riPkgIdleWkups = 0uL, riInterruptWkups = 0uL, riPageins = 0uL, riWiredSize = 0uL, riResidentSize = 0uL, riPhysFootprint = 0uL, riProcStartAbstime = 0uL, riProcExitAbstime = 0uL, riChildUserTime = 0uL, riChildSystemTime = 0uL, riChildPkgIdleWkups = 0uL, riChildInterruptWkups = 0uL, riChildPageins = 0uL, riChildElapsedAbstime = 0uL, riDiskioBytesread = 0uL, riDiskioByteswritten = 0uL, riCpuTimeQosDefault = 0uL, riCpuTimeQosMaintenance = 0uL, riCpuTimeQosBackground = 0uL, riCpuTimeQosUtility = 0uL, riCpuTimeQosLegacy = 0uL, riCpuTimeQosUserInitiated = 0uL, riCpuTimeQosUserInteractive = 0uL, riBilledSystemTime = 0uL, riServicedSystemTime = 0uL, riLogicalWrites = 0uL, riLifetimeMaxPhysFootprint = 0uL, riInstructions = 0uL, riCycles = 0uL, riBilledEnergy = 0uL, riServicedEnergy = 0uL, riIntervalMaxPhysFootprint = 0uL, riRunnableTime = 0uL)
     }
 }
 
@@ -5322,7 +5322,7 @@ public open class ImageOffset(
                 }
             }
 
-        public fun default(): ImageOffset = ImageOffset(uuid = Default.default(), offset = Default.default())
+        public fun default(): ImageOffset = ImageOffset(uuid = UByteArray(0), offset = 0u)
     }
 }
 
@@ -5383,7 +5383,7 @@ public open class Attrlist(
                 }
             }
 
-        public fun default(): Attrlist = Attrlist(bitmapcount = Default.default(), reserved = Default.default(), commonattr = Default.default(), volattr = Default.default(), dirattr = Default.default(), fileattr = Default.default(), forkattr = Default.default())
+        public fun default(): Attrlist = Attrlist(bitmapcount = 0u, reserved = 0u, commonattr = 0u, volattr = 0u, dirattr = 0u, fileattr = 0u, forkattr = 0u)
     }
 }
 
@@ -5419,7 +5419,7 @@ public open class AttrreferenceT(
                 }
             }
 
-        public fun default(): AttrreferenceT = AttrreferenceT(attrDataoffset = Default.default(), attrLength = Default.default())
+        public fun default(): AttrreferenceT = AttrreferenceT(attrDataoffset = 0, attrLength = 0u)
     }
 }
 
@@ -5455,7 +5455,7 @@ public open class VolCapabilitiesAttrT(
                 }
             }
 
-        public fun default(): VolCapabilitiesAttrT = VolCapabilitiesAttrT(capabilities = Default.default(), valid = Default.default())
+        public fun default(): VolCapabilitiesAttrT = VolCapabilitiesAttrT(capabilities = UIntArray(0), valid = UIntArray(0))
     }
 }
 
@@ -5506,7 +5506,7 @@ public open class AttributeSetT(
                 }
             }
 
-        public fun default(): AttributeSetT = AttributeSetT(commonattr = Default.default(), volattr = Default.default(), dirattr = Default.default(), fileattr = Default.default(), forkattr = Default.default())
+        public fun default(): AttributeSetT = AttributeSetT(commonattr = 0u, volattr = 0u, dirattr = 0u, fileattr = 0u, forkattr = 0u)
     }
 }
 
@@ -5542,7 +5542,7 @@ public open class VolAttributesAttrT(
                 }
             }
 
-        public fun default(): VolAttributesAttrT = VolAttributesAttrT(validattr = Default.default(), nativeattr = Default.default())
+        public fun default(): VolAttributesAttrT = VolAttributesAttrT(validattr = AttributeSetT.default(), nativeattr = AttributeSetT.default())
     }
 }
 
@@ -5767,7 +5767,7 @@ public open class TcpConnectionInfo(
                 }
             }
 
-        public fun default(): TcpConnectionInfo = TcpConnectionInfo(tcpiState = Default.default(), tcpiSndWscale = Default.default(), tcpiRcvWscale = Default.default(), pad1 = Default.default(), tcpiOptions = Default.default(), tcpiFlags = Default.default(), tcpiRto = Default.default(), tcpiMaxseg = Default.default(), tcpiSndSsthresh = Default.default(), tcpiSndCwnd = Default.default(), tcpiSndWnd = Default.default(), tcpiSndSbbytes = Default.default(), tcpiRcvWnd = Default.default(), tcpiRttcur = Default.default(), tcpiSrtt = Default.default(), tcpiRttvar = Default.default(), tcpiTfoCookieReq = Default.default(), tcpiTfoCookieRcv = Default.default(), tcpiTfoSynLoss = Default.default(), tcpiTfoSynDataSent = Default.default(), tcpiTfoSynDataAcked = Default.default(), tcpiTfoSynDataRcv = Default.default(), tcpiTfoCookieReqRcv = Default.default(), tcpiTfoCookieSent = Default.default(), tcpiTfoCookieInvalid = Default.default(), tcpiTfoCookieWrong = Default.default(), tcpiTfoNoCookieRcv = Default.default(), tcpiTfoHeuristicsDisable = Default.default(), tcpiTfoSendBlackhole = Default.default(), tcpiTfoRecvBlackhole = Default.default(), tcpiTfoOnebyteProxy = Default.default(), pad2 = Default.default(), tcpiTxpackets = Default.default(), tcpiTxbytes = Default.default(), tcpiTxretransmitbytes = Default.default(), tcpiRxpackets = Default.default(), tcpiRxbytes = Default.default(), tcpiRxoutoforderbytes = Default.default(), tcpiRxretransmitpackets = Default.default(), nonExhaustive = Unit)
+        public fun default(): TcpConnectionInfo = TcpConnectionInfo(tcpiState = 0u, tcpiSndWscale = 0u, tcpiRcvWscale = 0u, pad1 = 0u, tcpiOptions = 0u, tcpiFlags = 0u, tcpiRto = 0u, tcpiMaxseg = 0u, tcpiSndSsthresh = 0u, tcpiSndCwnd = 0u, tcpiSndWnd = 0u, tcpiSndSbbytes = 0u, tcpiRcvWnd = 0u, tcpiRttcur = 0u, tcpiSrtt = 0u, tcpiRttvar = 0u, tcpiTfoCookieReq = 0u, tcpiTfoCookieRcv = 0u, tcpiTfoSynLoss = 0u, tcpiTfoSynDataSent = 0u, tcpiTfoSynDataAcked = 0u, tcpiTfoSynDataRcv = 0u, tcpiTfoCookieReqRcv = 0u, tcpiTfoCookieSent = 0u, tcpiTfoCookieInvalid = 0u, tcpiTfoCookieWrong = 0u, tcpiTfoNoCookieRcv = 0u, tcpiTfoHeuristicsDisable = 0u, tcpiTfoSendBlackhole = 0u, tcpiTfoRecvBlackhole = 0u, tcpiTfoOnebyteProxy = 0u, pad2 = 0u, tcpiTxpackets = 0uL, tcpiTxbytes = 0uL, tcpiTxretransmitbytes = 0uL, tcpiRxpackets = 0uL, tcpiRxbytes = 0uL, tcpiRxoutoforderbytes = 0uL, tcpiRxretransmitpackets = 0uL, nonExhaustive = Unit)
     }
 }
 
@@ -5812,7 +5812,7 @@ public open class In6Addrlifetime(
                 }
             }
 
-        public fun default(): In6Addrlifetime = In6Addrlifetime(ia6tExpire = Default.default(), ia6tPreferred = Default.default(), ia6tVltime = Default.default(), ia6tPltime = Default.default())
+        public fun default(): In6Addrlifetime = In6Addrlifetime(ia6tExpire = 0L, ia6tPreferred = 0L, ia6tVltime = 0u, ia6tPltime = 0u)
     }
 }
 
@@ -5962,7 +5962,7 @@ public open class In6Ifstat(
                 }
             }
 
-        public fun default(): In6Ifstat = In6Ifstat(ifs6InReceive = Default.default(), ifs6InHdrerr = Default.default(), ifs6InToobig = Default.default(), ifs6InNoroute = Default.default(), ifs6InAddrerr = Default.default(), ifs6InProtounknown = Default.default(), ifs6InTruncated = Default.default(), ifs6InDiscard = Default.default(), ifs6InDeliver = Default.default(), ifs6OutForward = Default.default(), ifs6OutRequest = Default.default(), ifs6OutDiscard = Default.default(), ifs6OutFragok = Default.default(), ifs6OutFragfail = Default.default(), ifs6OutFragcreat = Default.default(), ifs6ReassReqd = Default.default(), ifs6ReassOk = Default.default(), ifs6AtmfragRcvd = Default.default(), ifs6ReassFail = Default.default(), ifs6InMcast = Default.default(), ifs6OutMcast = Default.default(), ifs6CantfowardIcmp6 = Default.default(), ifs6AddrExpiryCnt = Default.default(), ifs6PfxExpiryCnt = Default.default(), ifs6DefrtrExpiryCnt = Default.default())
+        public fun default(): In6Ifstat = In6Ifstat(ifs6InReceive = 0uL, ifs6InHdrerr = 0uL, ifs6InToobig = 0uL, ifs6InNoroute = 0uL, ifs6InAddrerr = 0uL, ifs6InProtounknown = 0uL, ifs6InTruncated = 0uL, ifs6InDiscard = 0uL, ifs6InDeliver = 0uL, ifs6OutForward = 0uL, ifs6OutRequest = 0uL, ifs6OutDiscard = 0uL, ifs6OutFragok = 0uL, ifs6OutFragfail = 0uL, ifs6OutFragcreat = 0uL, ifs6ReassReqd = 0uL, ifs6ReassOk = 0uL, ifs6AtmfragRcvd = 0uL, ifs6ReassFail = 0uL, ifs6InMcast = 0uL, ifs6OutMcast = 0uL, ifs6CantfowardIcmp6 = 0uL, ifs6AddrExpiryCnt = 0uL, ifs6PfxExpiryCnt = 0uL, ifs6DefrtrExpiryCnt = 0uL)
     }
 }
 
@@ -6157,7 +6157,7 @@ public open class Icmp6Ifstat(
                 }
             }
 
-        public fun default(): Icmp6Ifstat = Icmp6Ifstat(ifs6InMsg = Default.default(), ifs6InError = Default.default(), ifs6InDstunreach = Default.default(), ifs6InAdminprohib = Default.default(), ifs6InTimeexceed = Default.default(), ifs6InParamprob = Default.default(), ifs6InPkttoobig = Default.default(), ifs6InEcho = Default.default(), ifs6InEchoreply = Default.default(), ifs6InRoutersolicit = Default.default(), ifs6InRouteradvert = Default.default(), ifs6InNeighborsolicit = Default.default(), ifs6InNeighboradvert = Default.default(), ifs6InRedirect = Default.default(), ifs6InMldquery = Default.default(), ifs6InMldreport = Default.default(), ifs6InMlddone = Default.default(), ifs6OutMsg = Default.default(), ifs6OutError = Default.default(), ifs6OutDstunreach = Default.default(), ifs6OutAdminprohib = Default.default(), ifs6OutTimeexceed = Default.default(), ifs6OutParamprob = Default.default(), ifs6OutPkttoobig = Default.default(), ifs6OutEcho = Default.default(), ifs6OutEchoreply = Default.default(), ifs6OutRoutersolicit = Default.default(), ifs6OutRouteradvert = Default.default(), ifs6OutNeighborsolicit = Default.default(), ifs6OutNeighboradvert = Default.default(), ifs6OutRedirect = Default.default(), ifs6OutMldquery = Default.default(), ifs6OutMldreport = Default.default(), ifs6OutMlddone = Default.default())
+        public fun default(): Icmp6Ifstat = Icmp6Ifstat(ifs6InMsg = 0uL, ifs6InError = 0uL, ifs6InDstunreach = 0uL, ifs6InAdminprohib = 0uL, ifs6InTimeexceed = 0uL, ifs6InParamprob = 0uL, ifs6InPkttoobig = 0uL, ifs6InEcho = 0uL, ifs6InEchoreply = 0uL, ifs6InRoutersolicit = 0uL, ifs6InRouteradvert = 0uL, ifs6InNeighborsolicit = 0uL, ifs6InNeighboradvert = 0uL, ifs6InRedirect = 0uL, ifs6InMldquery = 0uL, ifs6InMldreport = 0uL, ifs6InMlddone = 0uL, ifs6OutMsg = 0uL, ifs6OutError = 0uL, ifs6OutDstunreach = 0uL, ifs6OutAdminprohib = 0uL, ifs6OutTimeexceed = 0uL, ifs6OutParamprob = 0uL, ifs6OutPkttoobig = 0uL, ifs6OutEcho = 0uL, ifs6OutEchoreply = 0uL, ifs6OutRoutersolicit = 0uL, ifs6OutRouteradvert = 0uL, ifs6OutNeighborsolicit = 0uL, ifs6OutNeighboradvert = 0uL, ifs6OutRedirect = 0uL, ifs6OutMldquery = 0uL, ifs6OutMldreport = 0uL, ifs6OutMlddone = 0uL)
     }
 }
 
@@ -6229,7 +6229,7 @@ public open class Ifmibdata(
     public open fun clone(): Ifmibdata = Ifmibdata(ifmdName, ifmdPcount, ifmdFlags, ifmdSndLen, ifmdSndMaxlen, ifmdSndDrops, ifmdFiller, ifmdData)
 
     public companion object {
-        public fun default(): Ifmibdata = Ifmibdata(ifmdName = Default.default(), ifmdPcount = Default.default(), ifmdFlags = Default.default(), ifmdSndLen = Default.default(), ifmdSndMaxlen = Default.default(), ifmdSndDrops = Default.default(), ifmdFiller = Default.default(), ifmdData = Default.default())
+        public fun default(): Ifmibdata = Ifmibdata(ifmdName = Default.default(), ifmdPcount = 0u, ifmdFlags = 0u, ifmdSndLen = 0u, ifmdSndMaxlen = 0u, ifmdSndDrops = 0u, ifmdFiller = Default.default(), ifmdData = IfData64.default())
     }
 }
 
@@ -6334,7 +6334,7 @@ public open class IfsIso88023(
                 }
             }
 
-        public fun default(): IfsIso88023 = IfsIso88023(dot3StatsAlignmentErrors = Default.default(), dot3StatsFCSErrors = Default.default(), dot3StatsSingleCollisionFrames = Default.default(), dot3StatsMultipleCollisionFrames = Default.default(), dot3StatsSQETestErrors = Default.default(), dot3StatsDeferredTransmissions = Default.default(), dot3StatsLateCollisions = Default.default(), dot3StatsExcessiveCollisions = Default.default(), dot3StatsInternalMacTransmitErrors = Default.default(), dot3StatsCarrierSenseErrors = Default.default(), dot3StatsFrameTooLongs = Default.default(), dot3StatsInternalMacReceiveErrors = Default.default(), dot3StatsEtherChipSet = Default.default(), dot3StatsMissedFrames = Default.default(), dot3StatsCollFrequencies = Default.default(), dot3Compliance = Default.default())
+        public fun default(): IfsIso88023 = IfsIso88023(dot3StatsAlignmentErrors = 0u, dot3StatsFCSErrors = 0u, dot3StatsSingleCollisionFrames = 0u, dot3StatsMultipleCollisionFrames = 0u, dot3StatsSQETestErrors = 0u, dot3StatsDeferredTransmissions = 0u, dot3StatsLateCollisions = 0u, dot3StatsExcessiveCollisions = 0u, dot3StatsInternalMacTransmitErrors = 0u, dot3StatsCarrierSenseErrors = 0u, dot3StatsFrameTooLongs = 0u, dot3StatsInternalMacReceiveErrors = 0u, dot3StatsEtherChipSet = 0u, dot3StatsMissedFrames = 0u, dot3StatsCollFrequencies = Default.default(), dot3Compliance = 0u)
     }
 }
 
@@ -6369,7 +6369,7 @@ public open class CtlInfo(
                 }
             }
 
-        public fun default(): CtlInfo = CtlInfo(ctlId = Default.default(), ctlName = UByteArray(MAX_KCTL_NAME) { 0u.toUByte() })
+        public fun default(): CtlInfo = CtlInfo(ctlId = 0u, ctlName = UByteArray(MAX_KCTL_NAME) { 0u.toUByte() })
     }
 }
 
@@ -6404,7 +6404,7 @@ public open class ProcFdinfo(
                 }
             }
 
-        public fun default(): ProcFdinfo = ProcFdinfo(procFd = Default.default(), procFdtype = Default.default())
+        public fun default(): ProcFdinfo = ProcFdinfo(procFd = 0, procFdtype = 0u)
     }
 }
 
@@ -6478,7 +6478,7 @@ public open class Kevent internal constructor(
             udataCtorArg = udata,
         )
 
-        public fun default(): Kevent = Kevent(ident = Default.default(), filter = Default.default(), flags = Default.default(), fflags = Default.default(), data = Default.default(), udata = MutPtr(0L))
+        public fun default(): Kevent = Kevent(ident = 0uL, filter = 0, flags = 0u, fflags = 0u, data = 0L, udata = MutPtr(0L))
     }
 }
 
@@ -6544,7 +6544,7 @@ public open class SemidDs(
                 }
             }
 
-        public fun default(): SemidDs = SemidDs(semPerm = Default.default(), semBase = Default.default(), semNsems = Default.default(), semOtime = Default.default(), semPad1 = Default.default(), semCtime = Default.default(), semPad2 = Default.default(), semPad3 = Default.default())
+        public fun default(): SemidDs = SemidDs(semPerm = IpcPerm.default(), semBase = 0, semNsems = 0u, semOtime = 0L, semPad1 = 0, semCtime = 0L, semPad2 = 0, semPad3 = Default.default())
     }
 }
 
@@ -6641,7 +6641,7 @@ public open class ShmidDs internal constructor(
             shmInternalCtorArg = shmInternal,
         )
 
-        public fun default(): ShmidDs = ShmidDs(shmPerm = Default.default(), shmSegsz = Default.default(), shmLpid = Default.default(), shmCpid = Default.default(), shmNattch = Default.default(), shmAtime = Default.default(), shmDtime = Default.default(), shmCtime = Default.default(), shmInternal = MutPtr(0L))
+        public fun default(): ShmidDs = ShmidDs(shmPerm = IpcPerm.default(), shmSegsz = 0uL, shmLpid = 0, shmCpid = 0, shmNattch = 0u, shmAtime = 0L, shmDtime = 0L, shmCtime = 0L, shmInternal = MutPtr(0L))
     }
 }
 
@@ -6721,7 +6721,7 @@ public open class ProcThreadinfo(
                 }
             }
 
-        public fun default(): ProcThreadinfo = ProcThreadinfo(pthUserTime = Default.default(), pthSystemTime = Default.default(), pthCpuUsage = Default.default(), pthPolicy = Default.default(), pthRunState = Default.default(), pthFlags = Default.default(), pthSleepTime = Default.default(), pthCurpri = Default.default(), pthPriority = Default.default(), pthMaxpriority = Default.default(), pthName = UByteArray(MAXTHREADNAMESIZE) { 0u.toUByte() })
+        public fun default(): ProcThreadinfo = ProcThreadinfo(pthUserTime = 0uL, pthSystemTime = 0uL, pthCpuUsage = 0, pthPolicy = 0, pthRunState = 0, pthFlags = 0, pthSleepTime = 0, pthCurpri = 0, pthPriority = 0, pthMaxpriority = 0, pthName = UByteArray(MAXTHREADNAMESIZE) { 0u.toUByte() })
     }
 }
 
@@ -6748,7 +6748,7 @@ public open class Statfs(
     public open fun clone(): Statfs = Statfs(fBsize, fIosize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFsid, fOwner, fType, fFlags, fFssubtype, fFstypename, fMntonname, fMntfromname, fFlagsExt, fReserved)
 
     public companion object {
-        public fun default(): Statfs = Statfs(fBsize = Default.default(), fIosize = Default.default(), fBlocks = Default.default(), fBfree = Default.default(), fBavail = Default.default(), fFiles = Default.default(), fFfree = Default.default(), fFsid = Default.default(), fOwner = Default.default(), fType = Default.default(), fFlags = Default.default(), fFssubtype = Default.default(), fFstypename = UByteArray(16) { 0u.toUByte() }, fMntonname = UByteArray(1024) { 0u.toUByte() }, fMntfromname = UByteArray(1024) { 0u.toUByte() }, fFlagsExt = Default.default(), fReserved = Default.default())
+        public fun default(): Statfs = Statfs(fBsize = 0u, fIosize = 0, fBlocks = 0uL, fBfree = 0uL, fBavail = 0uL, fFiles = 0uL, fFfree = 0uL, fFsid = FsidT.default(), fOwner = 0u, fType = 0u, fFlags = 0u, fFssubtype = 0u, fFstypename = UByteArray(16) { 0u.toUByte() }, fMntonname = UByteArray(1024) { 0u.toUByte() }, fMntfromname = UByteArray(1024) { 0u.toUByte() }, fFlagsExt = 0u, fReserved = Default.default())
     }
 }
 
@@ -6804,7 +6804,7 @@ public open class Dirent(
                 }
             }
 
-        public fun default(): Dirent = Dirent(dIno = Default.default(), dSeekoff = Default.default(), dReclen = Default.default(), dNamlen = Default.default(), dType = Default.default(), dName = UByteArray(1024) { 0u.toUByte() })
+        public fun default(): Dirent = Dirent(dIno = 0uL, dSeekoff = 0uL, dReclen = 0u, dNamlen = 0u, dType = 0u, dName = UByteArray(1024) { 0u.toUByte() })
     }
 }
 
@@ -6859,7 +6859,7 @@ public open class SockaddrStorage(
                 }
             }
 
-        public fun default(): SockaddrStorage = SockaddrStorage(ssLen = Default.default(), ssFamily = Default.default(), ssPad1 = Default.default(), ssAlign = Default.default(), ssPad2 = UByteArray(112) { 0u.toUByte() }, nonExhaustive = Unit)
+        public fun default(): SockaddrStorage = SockaddrStorage(ssLen = 0u, ssFamily = 0u, ssPad1 = Default.default(), ssAlign = 0L, ssPad2 = UByteArray(112) { 0u.toUByte() }, nonExhaustive = Unit)
     }
 }
 
@@ -6894,7 +6894,7 @@ public open class GroupReq(
                 }
             }
 
-        public fun default(): GroupReq = GroupReq(grInterface = Default.default(), grGroup = Default.default())
+        public fun default(): GroupReq = GroupReq(grInterface = 0u, grGroup = SockaddrStorage.default())
     }
 }
 
@@ -6934,7 +6934,7 @@ public open class GroupSourceReq(
                 }
             }
 
-        public fun default(): GroupSourceReq = GroupSourceReq(gsrInterface = Default.default(), gsrGroup = Default.default(), gsrSource = Default.default())
+        public fun default(): GroupSourceReq = GroupSourceReq(gsrInterface = 0u, gsrGroup = SockaddrStorage.default(), gsrSource = SockaddrStorage.default())
     }
 }
 
@@ -6952,7 +6952,7 @@ public open class Utmpx(
     public open fun clone(): Utmpx = Utmpx(utUser, utId, utLine, utPid, utType, utTv, utHost, utPad, nonExhaustive)
 
     public companion object {
-        public fun default(): Utmpx = Utmpx(utUser = UByteArray(UTX_USERSIZE) { 0u.toUByte() }, utId = Default.default(), utLine = Default.default(), utPid = Default.default(), utType = Default.default(), utTv = Default.default(), utHost = UByteArray(UTX_HOSTSIZE) { 0u.toUByte() }, utPad = Default.default(), nonExhaustive = Unit)
+        public fun default(): Utmpx = Utmpx(utUser = UByteArray(UTX_USERSIZE) { 0u.toUByte() }, utId = Default.default(), utLine = Default.default(), utPid = 0, utType = 0, utTv = Timeval.default(), utHost = UByteArray(UTX_HOSTSIZE) { 0u.toUByte() }, utPad = Default.default(), nonExhaustive = Unit)
     }
 }
 
@@ -6989,7 +6989,7 @@ public open class Sigevent internal constructor(
             nonExhaustive = nonExhaustive,
         )
 
-        public fun default(): Sigevent = Sigevent(sigevNotify = Default.default(), sigevSigno = Default.default(), sigevValue = Default.default(), unused1 = Default.default(), sigevNotifyAttributes = MutPtr(0L), nonExhaustive = Unit)
+        public fun default(): Sigevent = Sigevent(sigevNotify = 0, sigevSigno = 0, sigevValue = Sigval.default(), unused1 = MutPtr(0L), sigevNotifyAttributes = MutPtr(0L), nonExhaustive = Unit)
     }
 }
 
@@ -7071,7 +7071,7 @@ public open class ProcessorBasicInfo(
                 }
             }
 
-        public fun default(): ProcessorBasicInfo = ProcessorBasicInfo(cpuType = Default.default(), cpuSubtype = Default.default(), running = Default.default(), slotNum = Default.default(), isMaster = Default.default())
+        public fun default(): ProcessorBasicInfo = ProcessorBasicInfo(cpuType = 0, cpuSubtype = 0, running = 0, slotNum = 0, isMaster = 0)
     }
 }
 
@@ -7107,7 +7107,7 @@ public open class ProcessorSetBasicInfo(
                 }
             }
 
-        public fun default(): ProcessorSetBasicInfo = ProcessorSetBasicInfo(processorCount = Default.default(), defaultPolicy = Default.default())
+        public fun default(): ProcessorSetBasicInfo = ProcessorSetBasicInfo(processorCount = 0, defaultPolicy = 0)
     }
 }
 
@@ -7153,7 +7153,7 @@ public open class ProcessorSetLoadInfo(
                 }
             }
 
-        public fun default(): ProcessorSetLoadInfo = ProcessorSetLoadInfo(taskCount = Default.default(), threadCount = Default.default(), loadAverage = Default.default(), machFactor = Default.default())
+        public fun default(): ProcessorSetLoadInfo = ProcessorSetLoadInfo(taskCount = 0, threadCount = 0, loadAverage = 0, machFactor = 0)
     }
 }
 
@@ -7189,7 +7189,7 @@ public open class TimeValueT(
                 }
             }
 
-        public fun default(): TimeValueT = TimeValueT(seconds = Default.default(), microseconds = Default.default())
+        public fun default(): TimeValueT = TimeValueT(seconds = 0, microseconds = 0)
     }
 }
 
@@ -7255,7 +7255,7 @@ public open class ThreadBasicInfo(
                 }
             }
 
-        public fun default(): ThreadBasicInfo = ThreadBasicInfo(userTime = Default.default(), systemTime = Default.default(), cpuUsage = Default.default(), policy = Default.default(), runState = Default.default(), flags = Default.default(), suspendCount = Default.default(), sleepTime = Default.default())
+        public fun default(): ThreadBasicInfo = ThreadBasicInfo(userTime = TimeValueT.default(), systemTime = TimeValueT.default(), cpuUsage = 0, policy = 0, runState = 0, flags = 0, suspendCount = 0, sleepTime = 0)
     }
 }
 
@@ -7296,7 +7296,7 @@ public open class ThreadIdentifierInfo(
                 }
             }
 
-        public fun default(): ThreadIdentifierInfo = ThreadIdentifierInfo(threadId = Default.default(), threadHandle = Default.default(), dispatchQaddr = Default.default())
+        public fun default(): ThreadIdentifierInfo = ThreadIdentifierInfo(threadId = 0uL, threadHandle = 0uL, dispatchQaddr = 0uL)
     }
 }
 
@@ -7377,7 +7377,7 @@ public open class ThreadExtendedInfo(
                 }
             }
 
-        public fun default(): ThreadExtendedInfo = ThreadExtendedInfo(pthUserTime = Default.default(), pthSystemTime = Default.default(), pthCpuUsage = Default.default(), pthPolicy = Default.default(), pthRunState = Default.default(), pthFlags = Default.default(), pthSleepTime = Default.default(), pthCurpri = Default.default(), pthPriority = Default.default(), pthMaxpriority = Default.default(), pthName = UByteArray(MAXTHREADNAMESIZE) { 0u.toUByte() })
+        public fun default(): ThreadExtendedInfo = ThreadExtendedInfo(pthUserTime = 0uL, pthSystemTime = 0uL, pthCpuUsage = 0, pthPolicy = 0, pthRunState = 0, pthFlags = 0, pthSleepTime = 0, pthCurpri = 0, pthPriority = 0, pthMaxpriority = 0, pthName = UByteArray(MAXTHREADNAMESIZE) { 0u.toUByte() })
     }
 }
 
@@ -7411,7 +7411,7 @@ public open class IfData64(
     public open fun clone(): IfData64 = IfData64(ifiType, ifiTypelen, ifiPhysical, ifiAddrlen, ifiHdrlen, ifiRecvquota, ifiXmitquota, ifiUnused1, ifiMtu, ifiMetric, ifiBaudrate, ifiIpackets, ifiIerrors, ifiOpackets, ifiOerrors, ifiCollisions, ifiIbytes, ifiObytes, ifiImcasts, ifiOmcasts, ifiIqdrops, ifiNoproto, ifiRecvtiming, ifiXmittiming, ifiLastchange)
 
     public companion object {
-        public fun default(): IfData64 = IfData64(ifiType = Default.default(), ifiTypelen = Default.default(), ifiPhysical = Default.default(), ifiAddrlen = Default.default(), ifiHdrlen = Default.default(), ifiRecvquota = Default.default(), ifiXmitquota = Default.default(), ifiUnused1 = Default.default(), ifiMtu = Default.default(), ifiMetric = Default.default(), ifiBaudrate = Default.default(), ifiIpackets = Default.default(), ifiIerrors = Default.default(), ifiOpackets = Default.default(), ifiOerrors = Default.default(), ifiCollisions = Default.default(), ifiIbytes = Default.default(), ifiObytes = Default.default(), ifiImcasts = Default.default(), ifiOmcasts = Default.default(), ifiIqdrops = Default.default(), ifiNoproto = Default.default(), ifiRecvtiming = Default.default(), ifiXmittiming = Default.default(), ifiLastchange = Default.default())
+        public fun default(): IfData64 = IfData64(ifiType = 0u, ifiTypelen = 0u, ifiPhysical = 0u, ifiAddrlen = 0u, ifiHdrlen = 0u, ifiRecvquota = 0u, ifiXmitquota = 0u, ifiUnused1 = 0u, ifiMtu = 0u, ifiMetric = 0u, ifiBaudrate = 0uL, ifiIpackets = 0uL, ifiIerrors = 0uL, ifiOpackets = 0uL, ifiOerrors = 0uL, ifiCollisions = 0uL, ifiIbytes = 0uL, ifiObytes = 0uL, ifiImcasts = 0uL, ifiOmcasts = 0uL, ifiIqdrops = 0uL, ifiNoproto = 0uL, ifiRecvtiming = 0u, ifiXmittiming = 0u, ifiLastchange = Timeval32.default())
     }
 }
 
@@ -7431,7 +7431,7 @@ public open class IfMsghdr2(
     public open fun clone(): IfMsghdr2 = IfMsghdr2(ifmMsglen, ifmVersion, ifmType, ifmAddrs, ifmFlags, ifmIndex, ifmSndLen, ifmSndMaxlen, ifmSndDrops, ifmTimer, ifmData)
 
     public companion object {
-        public fun default(): IfMsghdr2 = IfMsghdr2(ifmMsglen = Default.default(), ifmVersion = Default.default(), ifmType = Default.default(), ifmAddrs = Default.default(), ifmFlags = Default.default(), ifmIndex = Default.default(), ifmSndLen = Default.default(), ifmSndMaxlen = Default.default(), ifmSndDrops = Default.default(), ifmTimer = Default.default(), ifmData = Default.default())
+        public fun default(): IfMsghdr2 = IfMsghdr2(ifmMsglen = 0u, ifmVersion = 0u, ifmType = 0u, ifmAddrs = 0, ifmFlags = 0, ifmIndex = 0u, ifmSndLen = 0, ifmSndMaxlen = 0, ifmSndDrops = 0, ifmTimer = 0, ifmData = IfData64.default())
     }
 }
 
@@ -7491,7 +7491,7 @@ public open class MachTaskBasicInfo(
                 }
             }
 
-        public fun default(): MachTaskBasicInfo = MachTaskBasicInfo(virtualSize = Default.default(), residentSize = Default.default(), residentSizeMax = Default.default(), userTime = Default.default(), systemTime = Default.default(), policy = Default.default(), suspendCount = Default.default())
+        public fun default(): MachTaskBasicInfo = MachTaskBasicInfo(virtualSize = 0uL, residentSize = 0uL, residentSizeMax = 0uL, userTime = TimeValueT.default(), systemTime = TimeValueT.default(), policy = 0, suspendCount = 0)
     }
 }
 
@@ -7531,7 +7531,7 @@ public open class Log2phys(
                 }
             }
 
-        public fun default(): Log2phys = Log2phys(l2pFlags = Default.default(), l2pContigbytes = Default.default(), l2pDevoffset = Default.default())
+        public fun default(): Log2phys = Log2phys(l2pFlags = 0u, l2pContigbytes = 0L, l2pDevoffset = 0L)
     }
 }
 
@@ -7566,7 +7566,7 @@ public open class OsUnfairLockS(
                 }
             }
 
-        public fun default(): OsUnfairLockS = OsUnfairLockS(osUnfairLockOpaque = Default.default(), nonExhaustive = Unit)
+        public fun default(): OsUnfairLockS = OsUnfairLockS(osUnfairLockOpaque = 0u, nonExhaustive = Unit)
     }
 }
 
@@ -7616,7 +7616,7 @@ public open class SockaddrVm(
                 }
             }
 
-        public fun default(): SockaddrVm = SockaddrVm(svmLen = Default.default(), svmFamily = Default.default(), svmReserved1 = Default.default(), svmPort = Default.default(), svmCid = Default.default())
+        public fun default(): SockaddrVm = SockaddrVm(svmLen = 0u, svmFamily = 0u, svmReserved1 = 0u, svmPort = 0u, svmCid = 0u)
     }
 }
 
@@ -7657,7 +7657,7 @@ public open class Ifdevmtu(
                 }
             }
 
-        public fun default(): Ifdevmtu = Ifdevmtu(ifdmCurrent = Default.default(), ifdmMin = Default.default(), ifdmMax = Default.default())
+        public fun default(): Ifdevmtu = Ifdevmtu(ifdmCurrent = 0, ifdmMin = 0, ifdmMax = 0)
     }
 }
 
@@ -7669,7 +7669,7 @@ public open class Ifkpi(
     public open fun clone(): Ifkpi = Ifkpi(ifkModuleId, ifkType, ifkData)
 
     public companion object {
-        public fun default(): Ifkpi = Ifkpi(ifkModuleId = Default.default(), ifkType = Default.default(), ifkData = Default.default())
+        public fun default(): Ifkpi = Ifkpi(ifkModuleId = 0u, ifkType = 0u, ifkData = CAnonymousIfkData.default())
     }
 }
 
@@ -7681,7 +7681,7 @@ public open class Ifreq(
     public open fun clone(): Ifreq = Ifreq(ifrName, ifrIfru)
 
     public companion object {
-        public fun default(): Ifreq = Ifreq(ifrName = Default.default(), ifrIfru = Default.default())
+        public fun default(): Ifreq = Ifreq(ifrName = Default.default(), ifrIfru = CAnonymousIfrIfru.default())
     }
 }
 
@@ -7695,7 +7695,7 @@ public open class Ifaliasreq(
     public open fun clone(): Ifaliasreq = Ifaliasreq(ifraName, ifraAddr, ifraBroadaddr, ifraMask, nonExhaustive)
 
     public companion object {
-        public fun default(): Ifaliasreq = Ifaliasreq(ifraName = Default.default(), ifraAddr = Default.default(), ifraBroadaddr = Default.default(), ifraMask = Default.default(), nonExhaustive = Unit)
+        public fun default(): Ifaliasreq = Ifaliasreq(ifraName = Default.default(), ifraAddr = Sockaddr.default(), ifraBroadaddr = Sockaddr.default(), ifraMask = Sockaddr.default(), nonExhaustive = Unit)
     }
 }
 
@@ -7706,7 +7706,7 @@ public open class In6Ifreq(
     public open fun clone(): In6Ifreq = In6Ifreq(ifrName, ifrIfru)
 
     public companion object {
-        public fun default(): In6Ifreq = In6Ifreq(ifrName = Default.default(), ifrIfru = Default.default())
+        public fun default(): In6Ifreq = In6Ifreq(ifrName = Default.default(), ifrIfru = CAnonymousIfrIfru6.default())
     }
 }
 
@@ -7730,7 +7730,7 @@ public open class Ifconf(
     }
 
     public companion object {
-        public fun default(): Ifconf = Ifconf(ifcLen = Default.default(), ifcIfcu = Default.default())
+        public fun default(): Ifconf = Ifconf(ifcLen = 0, ifcIfcu = CAnonymousIfcIfcu.default())
     }
 }
 

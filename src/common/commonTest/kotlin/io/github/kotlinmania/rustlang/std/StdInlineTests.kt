@@ -71,7 +71,7 @@ package io.github.kotlinmania.rustlang.std
 // (rarely useful).
 //
 // Note the documentation for the primitives [str] and [`[T]`][prim@slice] (also
-// called 'slice'). Many method calls on [String] and [Vec.T] are actually
+// called `slice`). Many method calls on [String] and [Vec.T] are actually
 // calls to methods on [str] and [`[T]`][prim@slice] respectively, via [deref
 // coercions][deref-coercions].
 //

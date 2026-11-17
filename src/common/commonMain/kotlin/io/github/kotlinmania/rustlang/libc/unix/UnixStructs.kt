@@ -108,7 +108,7 @@ public open class Group internal constructor(
             grMemCtorArg = grMem,
         )
 
-        public fun default(): Group = Group(grName = MutPtr(0L), grPasswd = MutPtr(0L), grGid = Default.default(), grMem = MutPtr(0L))
+        public fun default(): Group = Group(grName = MutPtr(0L), grPasswd = MutPtr(0L), grGid = 0u, grMem = MutPtr(0L))
     }
 }
 
@@ -144,7 +144,7 @@ public open class Utimbuf(
                 }
             }
 
-        public fun default(): Utimbuf = Utimbuf(actime = Default.default(), modtime = Default.default())
+        public fun default(): Utimbuf = Utimbuf(actime = 0L, modtime = 0L)
     }
 }
 
@@ -180,7 +180,7 @@ public open class Timeval(
                 }
             }
 
-        public fun default(): Timeval = Timeval(tvSec = Default.default(), tvUsec = Default.default())
+        public fun default(): Timeval = Timeval(tvSec = 0L, tvUsec = 0L)
     }
 }
 
@@ -220,7 +220,7 @@ public open class Timespec(
                 }
             }
 
-        public fun default(): Timespec = Timespec(tvSec = Default.default(), pad0 = Default.default(), tvNsec = Default.default())
+        public fun default(): Timespec = Timespec(tvSec = 0L, pad0 = 0u, tvNsec = 0L)
     }
 }
 
@@ -256,7 +256,7 @@ public open class Rlimit(
                 }
             }
 
-        public fun default(): Rlimit = Rlimit(rlimCur = Default.default(), rlimMax = Default.default())
+        public fun default(): Rlimit = Rlimit(rlimCur = 0uL, rlimMax = 0uL)
     }
 }
 
@@ -367,7 +367,7 @@ public open class Rusage(
                 }
             }
 
-        public fun default(): Rusage = Rusage(ruUtime = Default.default(), ruStime = Default.default(), ruMaxrss = Default.default(), pad1 = Default.default(), ruIxrss = Default.default(), pad2 = Default.default(), ruIdrss = Default.default(), pad3 = Default.default(), ruIsrss = Default.default(), pad4 = Default.default(), ruMinflt = Default.default(), pad5 = Default.default(), ruMajflt = Default.default(), pad6 = Default.default(), ruNswap = Default.default(), pad7 = Default.default(), ruInblock = Default.default(), pad8 = Default.default(), ruOublock = Default.default(), pad9 = Default.default(), ruMsgsnd = Default.default(), pad10 = Default.default(), ruMsgrcv = Default.default(), pad11 = Default.default(), ruNsignals = Default.default(), pad12 = Default.default(), ruNvcsw = Default.default(), pad13 = Default.default(), ruNivcsw = Default.default(), pad14 = Default.default(), reserved = Default.default())
+        public fun default(): Rusage = Rusage(ruUtime = Timeval.default(), ruStime = Timeval.default(), ruMaxrss = 0L, pad1 = Rusage.default(), ruIxrss = 0L, pad2 = Rusage.default(), ruIdrss = 0L, pad3 = Rusage.default(), ruIsrss = 0L, pad4 = Rusage.default(), ruMinflt = 0L, pad5 = Rusage.default(), ruMajflt = 0L, pad6 = Rusage.default(), ruNswap = 0L, pad7 = Rusage.default(), ruInblock = 0L, pad8 = Rusage.default(), ruOublock = 0L, pad9 = Rusage.default(), ruMsgsnd = 0L, pad10 = Rusage.default(), ruMsgrcv = 0L, pad11 = Rusage.default(), ruNsignals = 0L, pad12 = Rusage.default(), ruNvcsw = 0L, pad13 = Rusage.default(), ruNivcsw = 0L, pad14 = Rusage.default(), reserved = Default.default())
     }
 }
 
@@ -378,7 +378,7 @@ public open class Ipv6Mreq(
     public open fun clone(): Ipv6Mreq = Ipv6Mreq(ipv6mrMultiaddr, ipv6mrInterface)
 
     public companion object {
-        public fun default(): Ipv6Mreq = Ipv6Mreq(ipv6mrMultiaddr = Default.default(), ipv6mrInterface = Default.default())
+        public fun default(): Ipv6Mreq = Ipv6Mreq(ipv6mrMultiaddr = In6Addr.default(), ipv6mrInterface = 0)
     }
 }
 
@@ -451,7 +451,7 @@ public open class Hostent internal constructor(
             hAddrListCtorArg = hAddrList,
         )
 
-        public fun default(): Hostent = Hostent(hName = MutPtr(0L), hAliases = MutPtr(0L), hAddrtype = Default.default(), hLength = Default.default(), hAddrList = MutPtr(0L))
+        public fun default(): Hostent = Hostent(hName = MutPtr(0L), hAliases = MutPtr(0L), hAddrtype = 0, hLength = 0, hAddrList = MutPtr(0L))
     }
 }
 
@@ -498,7 +498,7 @@ public open class Iovec internal constructor(
             iovLen = iovLen,
         )
 
-        public fun default(): Iovec = Iovec(iovBase = MutPtr(0L), iovLen = Default.default())
+        public fun default(): Iovec = Iovec(iovBase = MutPtr(0L), iovLen = 0uL)
     }
 }
 
@@ -538,7 +538,7 @@ public open class Pollfd(
                 }
             }
 
-        public fun default(): Pollfd = Pollfd(fd = Default.default(), events = Default.default(), revents = Default.default())
+        public fun default(): Pollfd = Pollfd(fd = 0, events = 0, revents = 0)
     }
 }
 
@@ -584,7 +584,7 @@ public open class Winsize(
                 }
             }
 
-        public fun default(): Winsize = Winsize(wsRow = Default.default(), wsCol = Default.default(), wsXpixel = Default.default(), wsYpixel = Default.default())
+        public fun default(): Winsize = Winsize(wsRow = 0u, wsCol = 0u, wsXpixel = 0u, wsYpixel = 0u)
     }
 }
 
@@ -619,7 +619,7 @@ public open class Linger(
                 }
             }
 
-        public fun default(): Linger = Linger(lOnoff = Default.default(), lLinger = Default.default())
+        public fun default(): Linger = Linger(lOnoff = 0, lLinger = 0)
     }
 }
 
@@ -695,7 +695,7 @@ public open class Itimerval(
                 }
             }
 
-        public fun default(): Itimerval = Itimerval(itInterval = Default.default(), itValue = Default.default())
+        public fun default(): Itimerval = Itimerval(itInterval = Timeval.default(), itValue = Timeval.default())
     }
 }
 
@@ -741,7 +741,7 @@ public open class Tms(
                 }
             }
 
-        public fun default(): Tms = Tms(tmsUtime = Default.default(), tmsStime = Default.default(), tmsCutime = Default.default(), tmsCstime = Default.default())
+        public fun default(): Tms = Tms(tmsUtime = 0uL, tmsStime = 0uL, tmsCutime = 0uL, tmsCstime = 0uL)
     }
 }
 
@@ -808,7 +808,7 @@ public open class Servent internal constructor(
             sProtoCtorArg = sProto,
         )
 
-        public fun default(): Servent = Servent(sName = MutPtr(0L), sAliases = MutPtr(0L), sPort = Default.default(), sProto = MutPtr(0L))
+        public fun default(): Servent = Servent(sName = MutPtr(0L), sAliases = MutPtr(0L), sPort = 0, sProto = MutPtr(0L))
     }
 }
 
@@ -865,7 +865,7 @@ public open class Protoent internal constructor(
             pProto = pProto,
         )
 
-        public fun default(): Protoent = Protoent(pName = MutPtr(0L), pAliases = MutPtr(0L), pProto = Default.default())
+        public fun default(): Protoent = Protoent(pName = MutPtr(0L), pAliases = MutPtr(0L), pProto = 0)
     }
 }
 

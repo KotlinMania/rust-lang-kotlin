@@ -392,7 +392,7 @@ public fun getKnownFolderPath(id: c.Guid): Result<PathBuf?, Error> {
             }
             else -> {
                 // Miscellaneous error
-                Result.Err<PathBuf?, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(hr))
+                Result.Err<PathBuf?, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(hr))
             }
         }
     // SAFETY: The caller is responsible for freeing the path returned by

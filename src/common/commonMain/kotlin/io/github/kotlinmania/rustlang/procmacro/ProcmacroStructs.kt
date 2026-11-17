@@ -136,7 +136,7 @@ public open class TokenStream(
      * considered errors, is unspecified and may change in the future.
      */
     public open fun expandExpr(): Result<TokenStream, ExpandError> {
-        val stream = when (val tryResult = (this.value?.let { Result.Ok(it) } ?: Result.Err(ExpandError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<TokenStream, ExpandError>(tryResult.error) }
+        val stream = when (val tryResult = (this.value?.let { Result.Ok<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, ExpandError>(it) } ?: Result.Err<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, ExpandError>(ExpandError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<TokenStream, ExpandError>(tryResult.error) }
         return run {
             val matchVal = BridgeMethods.tsExpandExpr(stream)
             when (matchVal) { is Result.Ok -> {
@@ -824,7 +824,7 @@ public open class Ident internal constructor(
 
 /**
  * A literal string (`"hello"`), byte string (`b"hello"`), C string (`c"hello"`),
- * character (`'a'`), byte character (`b'a'`), an integer or floating point number
+ * character (``a``), byte character (`b'a'`), an integer or floating point number
  * with or without a suffix (`1`, `1u8`, `2.3`, `2.3f32`).
  * Boolean literals like `true` and `false` do not belong here, they are `Ident`s.
  */
@@ -859,9 +859,9 @@ public open class Literal internal constructor(
     // occur elsewhere when the source text is printed.
     // Note(SergioBenitez): there is no way for the user to know what
     // `self.span()` actually maps to, so this method can currently only be
-    // called blindly. For example, `toString()` for the character 'c' returns
-    // "'\u{63}'"; there is no way for the user to know whether the source text
-    // was 'c' or whether it was '\u{63}'.
+    // called blindly. For example, `toString()` for the character `c` returns
+    // "'\u(63)'"; there is no way for the user to know whether the source text
+    // was `c` or whether it was '\u(63)'.
 
     /**
      * Returns a `Span` that is a subset of `self.span()` containing only the
@@ -986,9 +986,15 @@ public open class Literal internal constructor(
                 val buf = ArrayList(symbol.len())
                 unescapeCStr(symbol, { span, res -> when {
                     res is Result.Ok && res.value is MixedUnit.Char -> {
+                        val valueVal = res.value
+                        val (c) = valueVal as MixedUnit.Char
                         buf.addAll(c.get().encodeUtf8(List(4) { 0 }).encodeToByteArray().map { it.toUByte() })
                     }
-                    res is Result.Ok && res.value is MixedUnit.HighByte -> buf.add(b.get())
+                    res is Result.Ok && res.value is MixedUnit.HighByte -> {
+                        val valueVal1 = res.value
+                        val (b) = valueVal1 as MixedUnit.HighByte
+                        buf.add(b.get())
+                    }
                     else -> {
                         val err = res.error
                         if (err.isFatal()) {

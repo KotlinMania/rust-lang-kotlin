@@ -57,16 +57,25 @@ public fun demangle(s: String): Demangle {
                     val matchVal2 = io.github.kotlinmania.rustlang.rustcdemangle.v0.demangle(s1)
                     when {
                         matchVal2 is Result.Ok -> {
-                            suffix = s1
-                            DemangleStyle.v0(d)
+                            val valueVal = matchVal2.value
+                            val d1 = valueVal.first
+                            val s3 = valueVal.second
+                            suffix = s3
+                            DemangleStyle.v0(d1)
                         }
                         // Note(eddyb) would it make sense to treat an unknown-validity
                         // symbol (e.g. one that errored with `RecursedTooDeep`) as
                         // v0-mangled, and have the error show up in the demangling?
                         // (that error already gets past this initial check, and therefore
                         // will show up in the demangling, if hidden behind a backref)
-                        matchVal2 is Result.Err && matchVal2.error == ParseError.Invalid -> null
-                        else -> null
+                        matchVal2 is Result.Err && matchVal2.error == ParseError.Invalid -> {
+                            val errorVal = matchVal2.error
+                            null
+                        }
+                        else -> {
+                            val errorVal1 = matchVal2.error
+                            null
+                        }
                     }
                 }
             } }

@@ -5,6 +5,7 @@ package io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring
 
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
@@ -13,7 +14,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
@@ -23,7 +23,7 @@ import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Slice
 // https://docs.rs/compilerBuiltins/latest/compilerBuiltins/probestack/index.html
 public val MAX_STACK_ALLOCATION: Int = 384
 
-public val NUL_ERR: io.github.kotlinmania.rustlang.std.io.Error = constError(ErrorKind.InvalidInput, "file name contained an unexpected NUL byte")
+public val NUL_ERR: io.github.kotlinmania.rustlang.core.io.error.Error = constError(ErrorKind.InvalidInput, "file name contained an unexpected NUL byte")
 
 public fun <T> runPathWithCstr(path: Path, f: (CStr) -> Result<T, Error>): Result<T, Error> = runWithCstr(path.asOsStr().asEncodedBytes(), f)
 
@@ -46,7 +46,7 @@ public fun <T> runWithCstrStack(bytes: List<UByte>, f: (CStr) -> Result<T, Error
     val buf = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     val bufPtr = mutPtrFromRustCast(buf.asMutPtr())
     run {
-        ptr.copyNonoverlapping(bytes.asPtr(), bufPtr, bytes.size)
+        ptr.copyNonoverlapping(bytes.asPtr(), bufPtr, bytes.size, typeLayoutT = PrimitiveLayouts.U8)
         (PrimitiveLayouts.U8).writeNative((MutPtr((bufPtr).rawAddress + ((bytes.size).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress, 0)
     }
     return run {

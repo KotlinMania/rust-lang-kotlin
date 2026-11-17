@@ -55,7 +55,7 @@ public open class Padding<T> internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         // Taken from `MaybeUninit`s debug implementation
-        // NB: there is no `.padFmt` so we can't use a simpler `formatArgs("Padding<{..}>").
+        // NB: there is no `.padFmt` so we can't use a simpler `formatArgs("Padding<(..)>").
         val fullName = "Padding"
         val prefixLen = (fullName.indexOf("Padding").takeIf { it >= 0 })!!
         return run { f.append(fullName.substring(prefixLen)); Result.Ok(Unit) }

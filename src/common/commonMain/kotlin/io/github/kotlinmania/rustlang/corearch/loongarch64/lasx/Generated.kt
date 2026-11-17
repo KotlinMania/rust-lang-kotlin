@@ -1,7 +1,9 @@
 // port-lint: source loongarch64/lasx/generated.rs
 package io.github.kotlinmania.rustlang.corearch.loongarch64.lasx
 
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128
@@ -937,664 +939,664 @@ public expect fun lasxInsert128Lo(a: V4i64, b: V2i64): V4i64
 
 public expect fun lasxInsert128Hi(a: V4i64, b: V2i64): V4i64
 
-public fun lasxXvsrarB(a: M256i, b: M256i): M256i = transmute(lasxXvsrarB(transmute(a), transmute(b)))
+public fun lasxXvsrarB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvsrarB(a, b), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsrarH(a: M256i, b: M256i): M256i = transmute(lasxXvsrarH(transmute(a), transmute(b)))
+public fun lasxXvsrarH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvsrarH(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsrarW(a: M256i, b: M256i): M256i = transmute(lasxXvsrarW(transmute(a), transmute(b)))
+public fun lasxXvsrarW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvsrarW(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsrarD(a: M256i, b: M256i): M256i = transmute(lasxXvsrarD(transmute(a), transmute(b)))
+public fun lasxXvsrarD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvsrarD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
 public fun lasxXvsrariB(a: M256i, imm3: UInt): M256i {
     run {
         check(0u <= imm3 && imm3 < (1u shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return transmute(lasxXvsrariB(transmute(a), imm3))
+    return transmuteWithLayouts<V32i8, M256i>(lasxXvsrariB(a, imm3), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrariH(a: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvsrariH(transmute(a), imm4))
+    return transmuteWithLayouts<V16i16, M256i>(lasxXvsrariH(a, imm4), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrariW(a: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvsrariW(transmute(a), imm5))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvsrariW(a, imm5), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrariD(a: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvsrariD(transmute(a), imm6))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvsrariD(a, imm6), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
-public fun lasxXvsrlrB(a: M256i, b: M256i): M256i = transmute(lasxXvsrlrB(transmute(a), transmute(b)))
+public fun lasxXvsrlrB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvsrlrB(a, b), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsrlrH(a: M256i, b: M256i): M256i = transmute(lasxXvsrlrH(transmute(a), transmute(b)))
+public fun lasxXvsrlrH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvsrlrH(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsrlrW(a: M256i, b: M256i): M256i = transmute(lasxXvsrlrW(transmute(a), transmute(b)))
+public fun lasxXvsrlrW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvsrlrW(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsrlrD(a: M256i, b: M256i): M256i = transmute(lasxXvsrlrD(transmute(a), transmute(b)))
+public fun lasxXvsrlrD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvsrlrD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
 public fun lasxXvsrlriB(a: M256i, imm3: UInt): M256i {
     run {
         check(0u <= imm3 && imm3 < (1u shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return transmute(lasxXvsrlriB(transmute(a), imm3))
+    return transmuteWithLayouts<V32i8, M256i>(lasxXvsrlriB(a, imm3), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrlriH(a: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvsrlriH(transmute(a), imm4))
+    return transmuteWithLayouts<V16i16, M256i>(lasxXvsrlriH(a, imm4), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrlriW(a: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvsrlriW(transmute(a), imm5))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvsrlriW(a, imm5), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrlriD(a: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvsrlriD(transmute(a), imm6))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvsrlriD(a, imm6), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvbitclriB(a: M256i, imm3: UInt): M256i {
     run {
         check(0u <= imm3 && imm3 < (1u shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return transmute(lasxXvbitclriB(transmute(a), imm3))
+    return transmuteWithLayouts<V32u8, M256i>(lasxXvbitclriB(a, imm3), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvbitclriH(a: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvbitclriH(transmute(a), imm4))
+    return transmuteWithLayouts<V16u16, M256i>(lasxXvbitclriH(a, imm4), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvbitclriW(a: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvbitclriW(transmute(a), imm5))
+    return transmuteWithLayouts<V8u32, M256i>(lasxXvbitclriW(a, imm5), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvbitclriD(a: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvbitclriD(transmute(a), imm6))
+    return transmuteWithLayouts<V4u64, M256i>(lasxXvbitclriD(a, imm6), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvbitsetiB(a: M256i, imm3: UInt): M256i {
     run {
         check(0u <= imm3 && imm3 < (1u shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return transmute(lasxXvbitsetiB(transmute(a), imm3))
+    return transmuteWithLayouts<V32u8, M256i>(lasxXvbitsetiB(a, imm3), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvbitsetiH(a: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvbitsetiH(transmute(a), imm4))
+    return transmuteWithLayouts<V16u16, M256i>(lasxXvbitsetiH(a, imm4), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvbitsetiW(a: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvbitsetiW(transmute(a), imm5))
+    return transmuteWithLayouts<V8u32, M256i>(lasxXvbitsetiW(a, imm5), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvbitsetiD(a: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvbitsetiD(transmute(a), imm6))
+    return transmuteWithLayouts<V4u64, M256i>(lasxXvbitsetiD(a, imm6), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvbitreviB(a: M256i, imm3: UInt): M256i {
     run {
         check(0u <= imm3 && imm3 < (1u shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return transmute(lasxXvbitreviB(transmute(a), imm3))
+    return transmuteWithLayouts<V32u8, M256i>(lasxXvbitreviB(a, imm3), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvbitreviH(a: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvbitreviH(transmute(a), imm4))
+    return transmuteWithLayouts<V16u16, M256i>(lasxXvbitreviH(a, imm4), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvbitreviW(a: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvbitreviW(transmute(a), imm5))
+    return transmuteWithLayouts<V8u32, M256i>(lasxXvbitreviW(a, imm5), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvbitreviD(a: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvbitreviD(transmute(a), imm6))
+    return transmuteWithLayouts<V4u64, M256i>(lasxXvbitreviD(a, imm6), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsubiBu(a: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvsubiBu(transmute(a), imm5))
+    return transmuteWithLayouts<V32i8, M256i>(lasxXvsubiBu(a, imm5), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsubiHu(a: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvsubiHu(transmute(a), imm5))
+    return transmuteWithLayouts<V16i16, M256i>(lasxXvsubiHu(a, imm5), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsubiWu(a: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvsubiWu(transmute(a), imm5))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvsubiWu(a, imm5), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsubiDu(a: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvsubiDu(transmute(a), imm5))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvsubiDu(a, imm5), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsatB(a: M256i, imm3: UInt): M256i {
     run {
         check(0u <= imm3 && imm3 < (1u shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return transmute(lasxXvsatB(transmute(a), imm3))
+    return transmuteWithLayouts<V32i8, M256i>(lasxXvsatB(a, imm3), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsatH(a: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvsatH(transmute(a), imm4))
+    return transmuteWithLayouts<V16i16, M256i>(lasxXvsatH(a, imm4), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsatW(a: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvsatW(transmute(a), imm5))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvsatW(a, imm5), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsatD(a: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvsatD(transmute(a), imm6))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvsatD(a, imm6), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsatBu(a: M256i, imm3: UInt): M256i {
     run {
         check(0u <= imm3 && imm3 < (1u shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return transmute(lasxXvsatBu(transmute(a), imm3))
+    return transmuteWithLayouts<V32u8, M256i>(lasxXvsatBu(a, imm3), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsatHu(a: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvsatHu(transmute(a), imm4))
+    return transmuteWithLayouts<V16u16, M256i>(lasxXvsatHu(a, imm4), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsatWu(a: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvsatWu(transmute(a), imm5))
+    return transmuteWithLayouts<V8u32, M256i>(lasxXvsatWu(a, imm5), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsatDu(a: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvsatDu(transmute(a), imm6))
+    return transmuteWithLayouts<V4u64, M256i>(lasxXvsatDu(a, imm6), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 }
 
-public fun lasxXvdivB(a: M256i, b: M256i): M256i = transmute(lasxXvdivB(transmute(a), transmute(b)))
+public fun lasxXvdivB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvdivB(a, b), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvdivH(a: M256i, b: M256i): M256i = transmute(lasxXvdivH(transmute(a), transmute(b)))
+public fun lasxXvdivH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvdivH(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvdivW(a: M256i, b: M256i): M256i = transmute(lasxXvdivW(transmute(a), transmute(b)))
+public fun lasxXvdivW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvdivW(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvdivD(a: M256i, b: M256i): M256i = transmute(lasxXvdivD(transmute(a), transmute(b)))
+public fun lasxXvdivD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvdivD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvdivBu(a: M256i, b: M256i): M256i = transmute(lasxXvdivBu(transmute(a), transmute(b)))
+public fun lasxXvdivBu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32u8, M256i>(lasxXvdivBu(a, b), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvdivHu(a: M256i, b: M256i): M256i = transmute(lasxXvdivHu(transmute(a), transmute(b)))
+public fun lasxXvdivHu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16u16, M256i>(lasxXvdivHu(a, b), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvdivWu(a: M256i, b: M256i): M256i = transmute(lasxXvdivWu(transmute(a), transmute(b)))
+public fun lasxXvdivWu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8u32, M256i>(lasxXvdivWu(a, b), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvdivDu(a: M256i, b: M256i): M256i = transmute(lasxXvdivDu(transmute(a), transmute(b)))
+public fun lasxXvdivDu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4u64, M256i>(lasxXvdivDu(a, b), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvhaddwHB(a: M256i, b: M256i): M256i = transmute(lasxXvhaddwHB(transmute(a), transmute(b)))
+public fun lasxXvhaddwHB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvhaddwHB(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvhaddwWH(a: M256i, b: M256i): M256i = transmute(lasxXvhaddwWH(transmute(a), transmute(b)))
+public fun lasxXvhaddwWH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvhaddwWH(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvhaddwDW(a: M256i, b: M256i): M256i = transmute(lasxXvhaddwDW(transmute(a), transmute(b)))
+public fun lasxXvhaddwDW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvhaddwDW(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvhaddwHuBu(a: M256i, b: M256i): M256i = transmute(lasxXvhaddwHuBu(transmute(a), transmute(b)))
+public fun lasxXvhaddwHuBu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16u16, M256i>(lasxXvhaddwHuBu(a, b), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvhaddwWuHu(a: M256i, b: M256i): M256i = transmute(lasxXvhaddwWuHu(transmute(a), transmute(b)))
+public fun lasxXvhaddwWuHu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8u32, M256i>(lasxXvhaddwWuHu(a, b), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvhaddwDuWu(a: M256i, b: M256i): M256i = transmute(lasxXvhaddwDuWu(transmute(a), transmute(b)))
+public fun lasxXvhaddwDuWu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4u64, M256i>(lasxXvhaddwDuWu(a, b), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvhsubwHB(a: M256i, b: M256i): M256i = transmute(lasxXvhsubwHB(transmute(a), transmute(b)))
+public fun lasxXvhsubwHB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvhsubwHB(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvhsubwWH(a: M256i, b: M256i): M256i = transmute(lasxXvhsubwWH(transmute(a), transmute(b)))
+public fun lasxXvhsubwWH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvhsubwWH(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvhsubwDW(a: M256i, b: M256i): M256i = transmute(lasxXvhsubwDW(transmute(a), transmute(b)))
+public fun lasxXvhsubwDW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvhsubwDW(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvhsubwHuBu(a: M256i, b: M256i): M256i = transmute(lasxXvhsubwHuBu(transmute(a), transmute(b)))
+public fun lasxXvhsubwHuBu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvhsubwHuBu(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvhsubwWuHu(a: M256i, b: M256i): M256i = transmute(lasxXvhsubwWuHu(transmute(a), transmute(b)))
+public fun lasxXvhsubwWuHu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvhsubwWuHu(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvhsubwDuWu(a: M256i, b: M256i): M256i = transmute(lasxXvhsubwDuWu(transmute(a), transmute(b)))
+public fun lasxXvhsubwDuWu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvhsubwDuWu(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmodB(a: M256i, b: M256i): M256i = transmute(lasxXvmodB(transmute(a), transmute(b)))
+public fun lasxXvmodB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvmodB(a, b), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmodH(a: M256i, b: M256i): M256i = transmute(lasxXvmodH(transmute(a), transmute(b)))
+public fun lasxXvmodH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvmodH(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmodW(a: M256i, b: M256i): M256i = transmute(lasxXvmodW(transmute(a), transmute(b)))
+public fun lasxXvmodW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvmodW(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmodD(a: M256i, b: M256i): M256i = transmute(lasxXvmodD(transmute(a), transmute(b)))
+public fun lasxXvmodD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmodD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmodBu(a: M256i, b: M256i): M256i = transmute(lasxXvmodBu(transmute(a), transmute(b)))
+public fun lasxXvmodBu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32u8, M256i>(lasxXvmodBu(a, b), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmodHu(a: M256i, b: M256i): M256i = transmute(lasxXvmodHu(transmute(a), transmute(b)))
+public fun lasxXvmodHu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16u16, M256i>(lasxXvmodHu(a, b), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmodWu(a: M256i, b: M256i): M256i = transmute(lasxXvmodWu(transmute(a), transmute(b)))
+public fun lasxXvmodWu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8u32, M256i>(lasxXvmodWu(a, b), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmodDu(a: M256i, b: M256i): M256i = transmute(lasxXvmodDu(transmute(a), transmute(b)))
+public fun lasxXvmodDu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4u64, M256i>(lasxXvmodDu(a, b), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvshufB(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvshufB(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvshufB(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvshufB(a, b, c), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvshufH(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvshufH(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvshufH(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvshufH(a, b, c), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvshufW(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvshufW(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvshufW(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvshufW(a, b, c), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvshufD(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvshufD(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvshufD(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvshufD(a, b, c), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
 public fun lasxXvandiB(a: M256i, imm8: UInt): M256i {
     run {
         check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(lasxXvandiB(transmute(a), imm8))
+    return transmuteWithLayouts<V32u8, M256i>(lasxXvandiB(a, imm8), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvoriB(a: M256i, imm8: UInt): M256i {
     run {
         check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(lasxXvoriB(transmute(a), imm8))
+    return transmuteWithLayouts<V32u8, M256i>(lasxXvoriB(a, imm8), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvnoriB(a: M256i, imm8: UInt): M256i {
     run {
         check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(lasxXvnoriB(transmute(a), imm8))
+    return transmuteWithLayouts<V32u8, M256i>(lasxXvnoriB(a, imm8), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvxoriB(a: M256i, imm8: UInt): M256i {
     run {
         check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(lasxXvxoriB(transmute(a), imm8))
+    return transmuteWithLayouts<V32u8, M256i>(lasxXvxoriB(a, imm8), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 }
 
-public fun lasxXvbitselV(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvbitselV(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvbitselV(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V32u8, M256i>(lasxXvbitselV(a, b, c), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 
 public fun lasxXvbitseliB(a: M256i, b: M256i, imm8: UInt): M256i {
     run {
         check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(lasxXvbitseliB(transmute(a), transmute(b), imm8))
+    return transmuteWithLayouts<V32u8, M256i>(lasxXvbitseliB(a, b, imm8), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 }
 
-public fun lasxXvcloB(a: M256i): M256i = transmute(lasxXvcloB(transmute(a)))
+public fun lasxXvcloB(a: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvcloB(a), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvcloH(a: M256i): M256i = transmute(lasxXvcloH(transmute(a)))
+public fun lasxXvcloH(a: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvcloH(a), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvcloW(a: M256i): M256i = transmute(lasxXvcloW(transmute(a)))
+public fun lasxXvcloW(a: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvcloW(a), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvcloD(a: M256i): M256i = transmute(lasxXvcloD(transmute(a)))
+public fun lasxXvcloD(a: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvcloD(a), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcvtHS(a: M256, b: M256): M256i = transmute(lasxXvfcvtHS(transmute(a), transmute(b)))
+public fun lasxXvfcvtHS(a: M256, b: M256): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvfcvtHS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcvtSD(a: M256d, b: M256d): M256 = transmute(lasxXvfcvtSD(transmute(a), transmute(b)))
+public fun lasxXvfcvtSD(a: M256d, b: M256d): M256 = transmuteWithLayouts<V8f32, M256>(lasxXvfcvtSD(transmuteWithLayouts<M256d, M256>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256>()), transmuteWithLayouts<M256d, M256>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256>())), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxXvfminS(a: M256, b: M256): M256 = transmute(lasxXvfminS(transmute(a), transmute(b)))
+public fun lasxXvfminS(a: M256, b: M256): M256 = transmuteWithLayouts<V8f32, M256>(lasxXvfminS(a, b), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxXvfminD(a: M256d, b: M256d): M256d = transmute(lasxXvfminD(transmute(a), transmute(b)))
+public fun lasxXvfminD(a: M256d, b: M256d): M256d = transmuteWithLayouts<V4f64, M256d>(lasxXvfminD(a, b), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxXvfminaS(a: M256, b: M256): M256 = transmute(lasxXvfminaS(transmute(a), transmute(b)))
+public fun lasxXvfminaS(a: M256, b: M256): M256 = transmuteWithLayouts<V8f32, M256>(lasxXvfminaS(a, b), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxXvfminaD(a: M256d, b: M256d): M256d = transmute(lasxXvfminaD(transmute(a), transmute(b)))
+public fun lasxXvfminaD(a: M256d, b: M256d): M256d = transmuteWithLayouts<V4f64, M256d>(lasxXvfminaD(a, b), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxXvfmaxS(a: M256, b: M256): M256 = transmute(lasxXvfmaxS(transmute(a), transmute(b)))
+public fun lasxXvfmaxS(a: M256, b: M256): M256 = transmuteWithLayouts<V8f32, M256>(lasxXvfmaxS(a, b), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxXvfmaxD(a: M256d, b: M256d): M256d = transmute(lasxXvfmaxD(transmute(a), transmute(b)))
+public fun lasxXvfmaxD(a: M256d, b: M256d): M256d = transmuteWithLayouts<V4f64, M256d>(lasxXvfmaxD(a, b), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxXvfmaxaS(a: M256, b: M256): M256 = transmute(lasxXvfmaxaS(transmute(a), transmute(b)))
+public fun lasxXvfmaxaS(a: M256, b: M256): M256 = transmuteWithLayouts<V8f32, M256>(lasxXvfmaxaS(a, b), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxXvfmaxaD(a: M256d, b: M256d): M256d = transmute(lasxXvfmaxaD(transmute(a), transmute(b)))
+public fun lasxXvfmaxaD(a: M256d, b: M256d): M256d = transmuteWithLayouts<V4f64, M256d>(lasxXvfmaxaD(a, b), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxXvfclassS(a: M256): M256i = transmute(lasxXvfclassS(transmute(a)))
+public fun lasxXvfclassS(a: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfclassS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfclassD(a: M256d): M256i = transmute(lasxXvfclassD(transmute(a)))
+public fun lasxXvfclassD(a: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfclassD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfrecipeS(a: M256): M256 = transmute(lasxXvfrecipeS(transmute(a)))
+public fun lasxXvfrecipeS(a: M256): M256 = transmuteWithLayouts<V8f32, M256>(lasxXvfrecipeS(a), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxXvfrecipeD(a: M256d): M256d = transmute(lasxXvfrecipeD(transmute(a)))
+public fun lasxXvfrecipeD(a: M256d): M256d = transmuteWithLayouts<V4f64, M256d>(lasxXvfrecipeD(a), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxXvfrsqrteS(a: M256): M256 = transmute(lasxXvfrsqrteS(transmute(a)))
+public fun lasxXvfrsqrteS(a: M256): M256 = transmuteWithLayouts<V8f32, M256>(lasxXvfrsqrteS(a), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxXvfrsqrteD(a: M256d): M256d = transmute(lasxXvfrsqrteD(transmute(a)))
+public fun lasxXvfrsqrteD(a: M256d): M256d = transmuteWithLayouts<V4f64, M256d>(lasxXvfrsqrteD(a), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxXvfrintS(a: M256): M256 = transmute(lasxXvfrintS(transmute(a)))
+public fun lasxXvfrintS(a: M256): M256 = transmuteWithLayouts<V8f32, M256>(lasxXvfrintS(a), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxXvfrintD(a: M256d): M256d = transmute(lasxXvfrintD(transmute(a)))
+public fun lasxXvfrintD(a: M256d): M256d = transmuteWithLayouts<V4f64, M256d>(lasxXvfrintD(a), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxXvflogbS(a: M256): M256 = transmute(lasxXvflogbS(transmute(a)))
+public fun lasxXvflogbS(a: M256): M256 = transmuteWithLayouts<V8f32, M256>(lasxXvflogbS(a), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxXvflogbD(a: M256d): M256d = transmute(lasxXvflogbD(transmute(a)))
+public fun lasxXvflogbD(a: M256d): M256d = transmuteWithLayouts<V4f64, M256d>(lasxXvflogbD(a), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxXvfcvthSH(a: M256i): M256 = transmute(lasxXvfcvthSH(transmute(a)))
+public fun lasxXvfcvthSH(a: M256i): M256 = transmuteWithLayouts<V8f32, M256>(lasxXvfcvthSH(transmuteWithLayouts<M256i, M256>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M256>())), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxXvfcvthDS(a: M256): M256d = transmute(lasxXvfcvthDS(transmute(a)))
+public fun lasxXvfcvthDS(a: M256): M256d = transmuteWithLayouts<V4f64, M256d>(lasxXvfcvthDS(transmuteWithLayouts<M256, M256d>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256d>())), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxXvfcvtlSH(a: M256i): M256 = transmute(lasxXvfcvtlSH(transmute(a)))
+public fun lasxXvfcvtlSH(a: M256i): M256 = transmuteWithLayouts<V8f32, M256>(lasxXvfcvtlSH(transmuteWithLayouts<M256i, M256>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M256>())), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxXvfcvtlDS(a: M256): M256d = transmute(lasxXvfcvtlDS(transmute(a)))
+public fun lasxXvfcvtlDS(a: M256): M256d = transmuteWithLayouts<V4f64, M256d>(lasxXvfcvtlDS(transmuteWithLayouts<M256, M256d>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256d>())), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxXvftintWS(a: M256): M256i = transmute(lasxXvftintWS(transmute(a)))
+public fun lasxXvftintWS(a: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvftintWS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintLD(a: M256d): M256i = transmute(lasxXvftintLD(transmute(a)))
+public fun lasxXvftintLD(a: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvftintLD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintWuS(a: M256): M256i = transmute(lasxXvftintWuS(transmute(a)))
+public fun lasxXvftintWuS(a: M256): M256i = transmuteWithLayouts<V8u32, M256i>(lasxXvftintWuS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintLuD(a: M256d): M256i = transmute(lasxXvftintLuD(transmute(a)))
+public fun lasxXvftintLuD(a: M256d): M256i = transmuteWithLayouts<V4u64, M256i>(lasxXvftintLuD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrzWS(a: M256): M256i = transmute(lasxXvftintrzWS(transmute(a)))
+public fun lasxXvftintrzWS(a: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvftintrzWS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrzLD(a: M256d): M256i = transmute(lasxXvftintrzLD(transmute(a)))
+public fun lasxXvftintrzLD(a: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvftintrzLD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrzWuS(a: M256): M256i = transmute(lasxXvftintrzWuS(transmute(a)))
+public fun lasxXvftintrzWuS(a: M256): M256i = transmuteWithLayouts<V8u32, M256i>(lasxXvftintrzWuS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrzLuD(a: M256d): M256i = transmute(lasxXvftintrzLuD(transmute(a)))
+public fun lasxXvftintrzLuD(a: M256d): M256i = transmuteWithLayouts<V4u64, M256i>(lasxXvftintrzLuD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvffintSW(a: M256i): M256 = transmute(lasxXvffintSW(transmute(a)))
+public fun lasxXvffintSW(a: M256i): M256 = transmuteWithLayouts<V8f32, M256>(lasxXvffintSW(transmuteWithLayouts<M256i, M256>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M256>())), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxXvffintDL(a: M256i): M256d = transmute(lasxXvffintDL(transmute(a)))
+public fun lasxXvffintDL(a: M256i): M256d = transmuteWithLayouts<V4f64, M256d>(lasxXvffintDL(transmuteWithLayouts<M256i, M256d>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M256d>())), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxXvffintSWu(a: M256i): M256 = transmute(lasxXvffintSWu(transmute(a)))
+public fun lasxXvffintSWu(a: M256i): M256 = transmuteWithLayouts<V8f32, M256>(lasxXvffintSWu(transmuteWithLayouts<M256i, M256>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M256>())), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxXvffintDLu(a: M256i): M256d = transmute(lasxXvffintDLu(transmute(a)))
+public fun lasxXvffintDLu(a: M256i): M256d = transmuteWithLayouts<V4f64, M256d>(lasxXvffintDLu(transmuteWithLayouts<M256i, M256d>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M256d>())), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxXvreplveB(a: M256i, b: Int): M256i = transmute(lasxXvreplveB(transmute(a), transmute(b)))
+public fun lasxXvreplveB(a: M256i, b: Int): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvreplveB(a, transmuteWithLayouts<Int, M256i>(b, PrimitiveLayouts.I32, UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvreplveH(a: M256i, b: Int): M256i = transmute(lasxXvreplveH(transmute(a), transmute(b)))
+public fun lasxXvreplveH(a: M256i, b: Int): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvreplveH(a, transmuteWithLayouts<Int, M256i>(b, PrimitiveLayouts.I32, UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvreplveW(a: M256i, b: Int): M256i = transmute(lasxXvreplveW(transmute(a), transmute(b)))
+public fun lasxXvreplveW(a: M256i, b: Int): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvreplveW(a, transmuteWithLayouts<Int, M256i>(b, PrimitiveLayouts.I32, UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvreplveD(a: M256i, b: Int): M256i = transmute(lasxXvreplveD(transmute(a), transmute(b)))
+public fun lasxXvreplveD(a: M256i, b: Int): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvreplveD(a, transmuteWithLayouts<Int, M256i>(b, PrimitiveLayouts.I32, UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
 public fun lasxXvpermiW(a: M256i, b: M256i, imm8: UInt): M256i {
     run {
         check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(lasxXvpermiW(transmute(a), transmute(b), imm8))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvpermiW(a, b, imm8), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsllwilHB(a: M256i, imm3: UInt): M256i {
     run {
         check(0u <= imm3 && imm3 < (1u shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return transmute(lasxXvsllwilHB(transmute(a), imm3))
+    return transmuteWithLayouts<V16i16, M256i>(lasxXvsllwilHB(a, imm3), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsllwilWH(a: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvsllwilWH(transmute(a), imm4))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvsllwilWH(a, imm4), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsllwilDW(a: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvsllwilDW(transmute(a), imm5))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvsllwilDW(a, imm5), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsllwilHuBu(a: M256i, imm3: UInt): M256i {
     run {
         check(0u <= imm3 && imm3 < (1u shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return transmute(lasxXvsllwilHuBu(transmute(a), imm3))
+    return transmuteWithLayouts<V16u16, M256i>(lasxXvsllwilHuBu(a, imm3), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsllwilWuHu(a: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvsllwilWuHu(transmute(a), imm4))
+    return transmuteWithLayouts<V8u32, M256i>(lasxXvsllwilWuHu(a, imm4), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsllwilDuWu(a: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvsllwilDuWu(transmute(a), imm5))
+    return transmuteWithLayouts<V4u64, M256i>(lasxXvsllwilDuWu(a, imm5), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 }
 
-public fun lasxXvsranBH(a: M256i, b: M256i): M256i = transmute(lasxXvsranBH(transmute(a), transmute(b)))
+public fun lasxXvsranBH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvsranBH(a, b), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsranHW(a: M256i, b: M256i): M256i = transmute(lasxXvsranHW(transmute(a), transmute(b)))
+public fun lasxXvsranHW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvsranHW(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsranWD(a: M256i, b: M256i): M256i = transmute(lasxXvsranWD(transmute(a), transmute(b)))
+public fun lasxXvsranWD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvsranWD(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssranBH(a: M256i, b: M256i): M256i = transmute(lasxXvssranBH(transmute(a), transmute(b)))
+public fun lasxXvssranBH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvssranBH(a, b), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssranHW(a: M256i, b: M256i): M256i = transmute(lasxXvssranHW(transmute(a), transmute(b)))
+public fun lasxXvssranHW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvssranHW(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssranWD(a: M256i, b: M256i): M256i = transmute(lasxXvssranWD(transmute(a), transmute(b)))
+public fun lasxXvssranWD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvssranWD(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssranBuH(a: M256i, b: M256i): M256i = transmute(lasxXvssranBuH(transmute(a), transmute(b)))
+public fun lasxXvssranBuH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32u8, M256i>(lasxXvssranBuH(a, b), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssranHuW(a: M256i, b: M256i): M256i = transmute(lasxXvssranHuW(transmute(a), transmute(b)))
+public fun lasxXvssranHuW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16u16, M256i>(lasxXvssranHuW(a, b), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssranWuD(a: M256i, b: M256i): M256i = transmute(lasxXvssranWuD(transmute(a), transmute(b)))
+public fun lasxXvssranWuD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8u32, M256i>(lasxXvssranWuD(a, b), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsrarnBH(a: M256i, b: M256i): M256i = transmute(lasxXvsrarnBH(transmute(a), transmute(b)))
+public fun lasxXvsrarnBH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvsrarnBH(a, b), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsrarnHW(a: M256i, b: M256i): M256i = transmute(lasxXvsrarnHW(transmute(a), transmute(b)))
+public fun lasxXvsrarnHW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvsrarnHW(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsrarnWD(a: M256i, b: M256i): M256i = transmute(lasxXvsrarnWD(transmute(a), transmute(b)))
+public fun lasxXvsrarnWD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvsrarnWD(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrarnBH(a: M256i, b: M256i): M256i = transmute(lasxXvssrarnBH(transmute(a), transmute(b)))
+public fun lasxXvssrarnBH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvssrarnBH(a, b), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrarnHW(a: M256i, b: M256i): M256i = transmute(lasxXvssrarnHW(transmute(a), transmute(b)))
+public fun lasxXvssrarnHW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvssrarnHW(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrarnWD(a: M256i, b: M256i): M256i = transmute(lasxXvssrarnWD(transmute(a), transmute(b)))
+public fun lasxXvssrarnWD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvssrarnWD(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrarnBuH(a: M256i, b: M256i): M256i = transmute(lasxXvssrarnBuH(transmute(a), transmute(b)))
+public fun lasxXvssrarnBuH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32u8, M256i>(lasxXvssrarnBuH(a, b), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrarnHuW(a: M256i, b: M256i): M256i = transmute(lasxXvssrarnHuW(transmute(a), transmute(b)))
+public fun lasxXvssrarnHuW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16u16, M256i>(lasxXvssrarnHuW(a, b), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrarnWuD(a: M256i, b: M256i): M256i = transmute(lasxXvssrarnWuD(transmute(a), transmute(b)))
+public fun lasxXvssrarnWuD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8u32, M256i>(lasxXvssrarnWuD(a, b), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsrlnBH(a: M256i, b: M256i): M256i = transmute(lasxXvsrlnBH(transmute(a), transmute(b)))
+public fun lasxXvsrlnBH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvsrlnBH(a, b), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsrlnHW(a: M256i, b: M256i): M256i = transmute(lasxXvsrlnHW(transmute(a), transmute(b)))
+public fun lasxXvsrlnHW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvsrlnHW(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsrlnWD(a: M256i, b: M256i): M256i = transmute(lasxXvsrlnWD(transmute(a), transmute(b)))
+public fun lasxXvsrlnWD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvsrlnWD(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrlnBuH(a: M256i, b: M256i): M256i = transmute(lasxXvssrlnBuH(transmute(a), transmute(b)))
+public fun lasxXvssrlnBuH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32u8, M256i>(lasxXvssrlnBuH(a, b), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrlnHuW(a: M256i, b: M256i): M256i = transmute(lasxXvssrlnHuW(transmute(a), transmute(b)))
+public fun lasxXvssrlnHuW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16u16, M256i>(lasxXvssrlnHuW(a, b), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrlnWuD(a: M256i, b: M256i): M256i = transmute(lasxXvssrlnWuD(transmute(a), transmute(b)))
+public fun lasxXvssrlnWuD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8u32, M256i>(lasxXvssrlnWuD(a, b), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsrlrnBH(a: M256i, b: M256i): M256i = transmute(lasxXvsrlrnBH(transmute(a), transmute(b)))
+public fun lasxXvsrlrnBH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvsrlrnBH(a, b), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsrlrnHW(a: M256i, b: M256i): M256i = transmute(lasxXvsrlrnHW(transmute(a), transmute(b)))
+public fun lasxXvsrlrnHW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvsrlrnHW(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsrlrnWD(a: M256i, b: M256i): M256i = transmute(lasxXvsrlrnWD(transmute(a), transmute(b)))
+public fun lasxXvsrlrnWD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvsrlrnWD(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrlrnBuH(a: M256i, b: M256i): M256i = transmute(lasxXvssrlrnBuH(transmute(a), transmute(b)))
+public fun lasxXvssrlrnBuH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32u8, M256i>(lasxXvssrlrnBuH(a, b), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrlrnHuW(a: M256i, b: M256i): M256i = transmute(lasxXvssrlrnHuW(transmute(a), transmute(b)))
+public fun lasxXvssrlrnHuW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16u16, M256i>(lasxXvssrlrnHuW(a, b), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrlrnWuD(a: M256i, b: M256i): M256i = transmute(lasxXvssrlrnWuD(transmute(a), transmute(b)))
+public fun lasxXvssrlrnWuD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8u32, M256i>(lasxXvssrlrnWuD(a, b), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 
 public fun lasxXvfrstpiB(a: M256i, b: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvfrstpiB(transmute(a), transmute(b), imm5))
+    return transmuteWithLayouts<V32i8, M256i>(lasxXvfrstpiB(a, b, imm5), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvfrstpiH(a: M256i, b: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvfrstpiH(transmute(a), transmute(b), imm5))
+    return transmuteWithLayouts<V16i16, M256i>(lasxXvfrstpiH(a, b, imm5), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 }
 
-public fun lasxXvfrstpB(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvfrstpB(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvfrstpB(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvfrstpB(a, b, c), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfrstpH(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvfrstpH(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvfrstpH(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvfrstpH(a, b, c), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
 public fun lasxXvshuf4iD(a: M256i, b: M256i, imm8: UInt): M256i {
     run {
         check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(lasxXvshuf4iD(transmute(a), transmute(b), imm8))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvshuf4iD(a, b, imm8), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvextrinsB(a: M256i, b: M256i, imm8: UInt): M256i {
     run {
         check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(lasxXvextrinsB(transmute(a), transmute(b), imm8))
+    return transmuteWithLayouts<V32i8, M256i>(lasxXvextrinsB(a, b, imm8), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvextrinsH(a: M256i, b: M256i, imm8: UInt): M256i {
     run {
         check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(lasxXvextrinsH(transmute(a), transmute(b), imm8))
+    return transmuteWithLayouts<V16i16, M256i>(lasxXvextrinsH(a, b, imm8), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvextrinsW(a: M256i, b: M256i, imm8: UInt): M256i {
     run {
         check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(lasxXvextrinsW(transmute(a), transmute(b), imm8))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvextrinsW(a, b, imm8), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvextrinsD(a: M256i, b: M256i, imm8: UInt): M256i {
     run {
         check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(lasxXvextrinsD(transmute(a), transmute(b), imm8))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvextrinsD(a, b, imm8), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
-public fun lasxXvmskltzB(a: M256i): M256i = transmute(lasxXvmskltzB(transmute(a)))
+public fun lasxXvmskltzB(a: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvmskltzB(a), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmskltzH(a: M256i): M256i = transmute(lasxXvmskltzH(transmute(a)))
+public fun lasxXvmskltzH(a: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvmskltzH(a), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmskltzW(a: M256i): M256i = transmute(lasxXvmskltzW(transmute(a)))
+public fun lasxXvmskltzW(a: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvmskltzW(a), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmskltzD(a: M256i): M256i = transmute(lasxXvmskltzD(transmute(a)))
+public fun lasxXvmskltzD(a: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmskltzD(a), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsigncovB(a: M256i, b: M256i): M256i = transmute(lasxXvsigncovB(transmute(a), transmute(b)))
+public fun lasxXvsigncovB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvsigncovB(a, b), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsigncovH(a: M256i, b: M256i): M256i = transmute(lasxXvsigncovH(transmute(a), transmute(b)))
+public fun lasxXvsigncovH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvsigncovH(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsigncovW(a: M256i, b: M256i): M256i = transmute(lasxXvsigncovW(transmute(a), transmute(b)))
+public fun lasxXvsigncovW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvsigncovW(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsigncovD(a: M256i, b: M256i): M256i = transmute(lasxXvsigncovD(transmute(a), transmute(b)))
+public fun lasxXvsigncovD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvsigncovD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrneWS(a: M256): M256i = transmute(lasxXvftintrneWS(transmute(a)))
+public fun lasxXvftintrneWS(a: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvftintrneWS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrneLD(a: M256d): M256i = transmute(lasxXvftintrneLD(transmute(a)))
+public fun lasxXvftintrneLD(a: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvftintrneLD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrpWS(a: M256): M256i = transmute(lasxXvftintrpWS(transmute(a)))
+public fun lasxXvftintrpWS(a: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvftintrpWS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrpLD(a: M256d): M256i = transmute(lasxXvftintrpLD(transmute(a)))
+public fun lasxXvftintrpLD(a: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvftintrpLD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrmWS(a: M256): M256i = transmute(lasxXvftintrmWS(transmute(a)))
+public fun lasxXvftintrmWS(a: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvftintrmWS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrmLD(a: M256d): M256i = transmute(lasxXvftintrmLD(transmute(a)))
+public fun lasxXvftintrmLD(a: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvftintrmLD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintWD(a: M256d, b: M256d): M256i = transmute(lasxXvftintWD(transmute(a), transmute(b)))
+public fun lasxXvftintWD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvftintWD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvffintSL(a: M256i, b: M256i): M256 = transmute(lasxXvffintSL(transmute(a), transmute(b)))
+public fun lasxXvffintSL(a: M256i, b: M256i): M256 = transmuteWithLayouts<V8f32, M256>(lasxXvffintSL(transmuteWithLayouts<M256i, M256>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M256>()), transmuteWithLayouts<M256i, M256>(b, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M256>())), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxXvftintrzWD(a: M256d, b: M256d): M256i = transmute(lasxXvftintrzWD(transmute(a), transmute(b)))
+public fun lasxXvftintrzWD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvftintrzWD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrpWD(a: M256d, b: M256d): M256i = transmute(lasxXvftintrpWD(transmute(a), transmute(b)))
+public fun lasxXvftintrpWD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvftintrpWD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrmWD(a: M256d, b: M256d): M256i = transmute(lasxXvftintrmWD(transmute(a), transmute(b)))
+public fun lasxXvftintrmWD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvftintrmWD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrneWD(a: M256d, b: M256d): M256i = transmute(lasxXvftintrneWD(transmute(a), transmute(b)))
+public fun lasxXvftintrneWD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvftintrneWD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftinthLS(a: M256): M256i = transmute(lasxXvftinthLS(transmute(a)))
+public fun lasxXvftinthLS(a: M256): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvftinthLS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintlLS(a: M256): M256i = transmute(lasxXvftintlLS(transmute(a)))
+public fun lasxXvftintlLS(a: M256): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvftintlLS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvffinthDW(a: M256i): M256d = transmute(lasxXvffinthDW(transmute(a)))
+public fun lasxXvffinthDW(a: M256i): M256d = transmuteWithLayouts<V4f64, M256d>(lasxXvffinthDW(transmuteWithLayouts<M256i, M256d>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M256d>())), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxXvffintlDW(a: M256i): M256d = transmute(lasxXvffintlDW(transmute(a)))
+public fun lasxXvffintlDW(a: M256i): M256d = transmuteWithLayouts<V4f64, M256d>(lasxXvffintlDW(transmuteWithLayouts<M256i, M256d>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M256d>())), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxXvftintrzhLS(a: M256): M256i = transmute(lasxXvftintrzhLS(transmute(a)))
+public fun lasxXvftintrzhLS(a: M256): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvftintrzhLS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrzlLS(a: M256): M256i = transmute(lasxXvftintrzlLS(transmute(a)))
+public fun lasxXvftintrzlLS(a: M256): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvftintrzlLS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrphLS(a: M256): M256i = transmute(lasxXvftintrphLS(transmute(a)))
+public fun lasxXvftintrphLS(a: M256): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvftintrphLS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrplLS(a: M256): M256i = transmute(lasxXvftintrplLS(transmute(a)))
+public fun lasxXvftintrplLS(a: M256): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvftintrplLS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrmhLS(a: M256): M256i = transmute(lasxXvftintrmhLS(transmute(a)))
+public fun lasxXvftintrmhLS(a: M256): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvftintrmhLS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrmlLS(a: M256): M256i = transmute(lasxXvftintrmlLS(transmute(a)))
+public fun lasxXvftintrmlLS(a: M256): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvftintrmlLS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrnehLS(a: M256): M256i = transmute(lasxXvftintrnehLS(transmute(a)))
+public fun lasxXvftintrnehLS(a: M256): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvftintrnehLS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvftintrnelLS(a: M256): M256i = transmute(lasxXvftintrnelLS(transmute(a)))
+public fun lasxXvftintrnelLS(a: M256): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvftintrnelLS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfrintrneS(a: M256): M256 = transmute(lasxXvfrintrneS(transmute(a)))
+public fun lasxXvfrintrneS(a: M256): M256 = transmuteWithLayouts<V8f32, M256>(lasxXvfrintrneS(a), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxXvfrintrneD(a: M256d): M256d = transmute(lasxXvfrintrneD(transmute(a)))
+public fun lasxXvfrintrneD(a: M256d): M256d = transmuteWithLayouts<V4f64, M256d>(lasxXvfrintrneD(a), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
 public fun lasxXvstelmB(a: M256i, memAddr: MutPtr, immS8: Int, imm4: UInt) {
     run {
@@ -1603,7 +1605,7 @@ public fun lasxXvstelmB(a: M256i, memAddr: MutPtr, immS8: Int, imm4: UInt) {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    lasxXvstelmB(transmute(a), memAddr, immS8, imm4)
+    lasxXvstelmB(transmuteWithLayouts<M256i, Unit>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<Unit>()), memAddr, immS8, imm4)
 }
 
 public fun lasxXvstelmH(a: M256i, memAddr: MutPtr, immS8: Int, imm3: UInt) {
@@ -1613,7 +1615,7 @@ public fun lasxXvstelmH(a: M256i, memAddr: MutPtr, immS8: Int, imm3: UInt) {
     run {
         check(0u <= imm3 && imm3 < (1u shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    lasxXvstelmH(transmute(a), memAddr, immS8, imm3)
+    lasxXvstelmH(transmuteWithLayouts<M256i, Unit>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<Unit>()), memAddr, immS8, imm3)
 }
 
 public fun lasxXvstelmW(a: M256i, memAddr: MutPtr, immS8: Int, imm2: UInt) {
@@ -1623,7 +1625,7 @@ public fun lasxXvstelmW(a: M256i, memAddr: MutPtr, immS8: Int, imm2: UInt) {
     run {
         check(0u <= imm2 && imm2 < (1u shl 2)) { "IMM2 doesn't fit in 2 bits (unsigned)" }
     }
-    lasxXvstelmW(transmute(a), memAddr, immS8, imm2)
+    lasxXvstelmW(transmuteWithLayouts<M256i, Unit>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<Unit>()), memAddr, immS8, imm2)
 }
 
 public fun lasxXvstelmD(a: M256i, memAddr: MutPtr, immS8: Int, imm1: UInt) {
@@ -1633,819 +1635,819 @@ public fun lasxXvstelmD(a: M256i, memAddr: MutPtr, immS8: Int, imm1: UInt) {
     run {
         check(0u <= imm1 && imm1 < (1u shl 1)) { "IMM1 doesn't fit in 1 bits (unsigned)" }
     }
-    lasxXvstelmD(transmute(a), memAddr, immS8, imm1)
+    lasxXvstelmD(transmuteWithLayouts<M256i, Unit>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<Unit>()), memAddr, immS8, imm1)
 }
 
 public fun lasxXvinsve0W(a: M256i, b: M256i, imm3: UInt): M256i {
     run {
         check(0u <= imm3 && imm3 < (1u shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return transmute(lasxXvinsve0W(transmute(a), transmute(b), imm3))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvinsve0W(a, b, imm3), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvinsve0D(a: M256i, b: M256i, imm2: UInt): M256i {
     run {
         check(0u <= imm2 && imm2 < (1u shl 2)) { "IMM2 doesn't fit in 2 bits (unsigned)" }
     }
-    return transmute(lasxXvinsve0D(transmute(a), transmute(b), imm2))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvinsve0D(a, b, imm2), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvpickveW(a: M256i, imm3: UInt): M256i {
     run {
         check(0u <= imm3 && imm3 < (1u shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return transmute(lasxXvpickveW(transmute(a), imm3))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvpickveW(a, imm3), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvpickveD(a: M256i, imm2: UInt): M256i {
     run {
         check(0u <= imm2 && imm2 < (1u shl 2)) { "IMM2 doesn't fit in 2 bits (unsigned)" }
     }
-    return transmute(lasxXvpickveD(transmute(a), imm2))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvpickveD(a, imm2), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
-public fun lasxXvssrlrnBH(a: M256i, b: M256i): M256i = transmute(lasxXvssrlrnBH(transmute(a), transmute(b)))
+public fun lasxXvssrlrnBH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvssrlrnBH(a, b), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrlrnHW(a: M256i, b: M256i): M256i = transmute(lasxXvssrlrnHW(transmute(a), transmute(b)))
+public fun lasxXvssrlrnHW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvssrlrnHW(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrlrnWD(a: M256i, b: M256i): M256i = transmute(lasxXvssrlrnWD(transmute(a), transmute(b)))
+public fun lasxXvssrlrnWD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvssrlrnWD(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrlnBH(a: M256i, b: M256i): M256i = transmute(lasxXvssrlnBH(transmute(a), transmute(b)))
+public fun lasxXvssrlnBH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvssrlnBH(a, b), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrlnHW(a: M256i, b: M256i): M256i = transmute(lasxXvssrlnHW(transmute(a), transmute(b)))
+public fun lasxXvssrlnHW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvssrlnHW(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvssrlnWD(a: M256i, b: M256i): M256i = transmute(lasxXvssrlnWD(transmute(a), transmute(b)))
+public fun lasxXvssrlnWD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvssrlnWD(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvextlQuDu(a: M256i): M256i = transmute(lasxXvextlQuDu(transmute(a)))
+public fun lasxXvextlQuDu(a: M256i): M256i = transmuteWithLayouts<V4u64, M256i>(lasxXvextlQuDu(a), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxVext2xvHB(a: M256i): M256i = transmute(lasxVext2xvHB(transmute(a)))
+public fun lasxVext2xvHB(a: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxVext2xvHB(a), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxVext2xvWH(a: M256i): M256i = transmute(lasxVext2xvWH(transmute(a)))
+public fun lasxVext2xvWH(a: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxVext2xvWH(a), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxVext2xvDW(a: M256i): M256i = transmute(lasxVext2xvDW(transmute(a)))
+public fun lasxVext2xvDW(a: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxVext2xvDW(a), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxVext2xvWB(a: M256i): M256i = transmute(lasxVext2xvWB(transmute(a)))
+public fun lasxVext2xvWB(a: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxVext2xvWB(a), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxVext2xvDH(a: M256i): M256i = transmute(lasxVext2xvDH(transmute(a)))
+public fun lasxVext2xvDH(a: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxVext2xvDH(a), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxVext2xvDB(a: M256i): M256i = transmute(lasxVext2xvDB(transmute(a)))
+public fun lasxVext2xvDB(a: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxVext2xvDB(a), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxVext2xvHuBu(a: M256i): M256i = transmute(lasxVext2xvHuBu(transmute(a)))
+public fun lasxVext2xvHuBu(a: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxVext2xvHuBu(a), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxVext2xvWuHu(a: M256i): M256i = transmute(lasxVext2xvWuHu(transmute(a)))
+public fun lasxVext2xvWuHu(a: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxVext2xvWuHu(a), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxVext2xvDuWu(a: M256i): M256i = transmute(lasxVext2xvDuWu(transmute(a)))
+public fun lasxVext2xvDuWu(a: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxVext2xvDuWu(a), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxVext2xvWuBu(a: M256i): M256i = transmute(lasxVext2xvWuBu(transmute(a)))
+public fun lasxVext2xvWuBu(a: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxVext2xvWuBu(a), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxVext2xvDuHu(a: M256i): M256i = transmute(lasxVext2xvDuHu(transmute(a)))
+public fun lasxVext2xvDuHu(a: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxVext2xvDuHu(a), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxVext2xvDuBu(a: M256i): M256i = transmute(lasxVext2xvDuBu(transmute(a)))
+public fun lasxVext2xvDuBu(a: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxVext2xvDuBu(a), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
 public fun lasxXvpermiQ(a: M256i, b: M256i, imm8: UInt): M256i {
     run {
         check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(lasxXvpermiQ(transmute(a), transmute(b), imm8))
+    return transmuteWithLayouts<V32i8, M256i>(lasxXvpermiQ(a, b, imm8), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvpermiD(a: M256i, imm8: UInt): M256i {
     run {
         check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(lasxXvpermiD(transmute(a), imm8))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvpermiD(a, imm8), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
-public fun lasxXvpermW(a: M256i, b: M256i): M256i = transmute(lasxXvpermW(transmute(a), transmute(b)))
+public fun lasxXvpermW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvpermW(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
 public fun lasxXvldreplB(memAddr: ConstPtr, immS12: Int): M256i {
     run {
         check((-1 shl (12 - 1).toInt()) - 1 <= immS12 && immS12 < (1 shl (12 - 1).toInt())) { "IMM_S12 doesn't fit in 12 bits (signed)" }
     }
-    return transmute(lasxXvldreplB(memAddr, immS12))
+    return transmuteWithLayouts<V32i8, M256i>(lasxXvldreplB(memAddr, immS12), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvldreplH(memAddr: ConstPtr, immS11: Int): M256i {
     run {
         check((-1 shl (11 - 1).toInt()) - 1 <= immS11 && immS11 < (1 shl (11 - 1).toInt())) { "IMM_S11 doesn't fit in 11 bits (signed)" }
     }
-    return transmute(lasxXvldreplH(memAddr, immS11))
+    return transmuteWithLayouts<V16i16, M256i>(lasxXvldreplH(memAddr, immS11), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvldreplW(memAddr: ConstPtr, immS10: Int): M256i {
     run {
         check((-1 shl (10 - 1).toInt()) - 1 <= immS10 && immS10 < (1 shl (10 - 1).toInt())) { "IMM_S10 doesn't fit in 10 bits (signed)" }
     }
-    return transmute(lasxXvldreplW(memAddr, immS10))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvldreplW(memAddr, immS10), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvldreplD(memAddr: ConstPtr, immS9: Int): M256i {
     run {
         check((-1 shl (9 - 1).toInt()) - 1 <= immS9 && immS9 < (1 shl (9 - 1).toInt())) { "IMM_S9 doesn't fit in 9 bits (signed)" }
     }
-    return transmute(lasxXvldreplD(memAddr, immS9))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvldreplD(memAddr, immS9), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
-public fun lasxXvaddwevQD(a: M256i, b: M256i): M256i = transmute(lasxXvaddwevQD(transmute(a), transmute(b)))
+public fun lasxXvaddwevQD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvaddwevQD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwevDW(a: M256i, b: M256i): M256i = transmute(lasxXvaddwevDW(transmute(a), transmute(b)))
+public fun lasxXvaddwevDW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvaddwevDW(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwevWH(a: M256i, b: M256i): M256i = transmute(lasxXvaddwevWH(transmute(a), transmute(b)))
+public fun lasxXvaddwevWH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvaddwevWH(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwevHB(a: M256i, b: M256i): M256i = transmute(lasxXvaddwevHB(transmute(a), transmute(b)))
+public fun lasxXvaddwevHB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvaddwevHB(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwevQDu(a: M256i, b: M256i): M256i = transmute(lasxXvaddwevQDu(transmute(a), transmute(b)))
+public fun lasxXvaddwevQDu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvaddwevQDu(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwevDWu(a: M256i, b: M256i): M256i = transmute(lasxXvaddwevDWu(transmute(a), transmute(b)))
+public fun lasxXvaddwevDWu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvaddwevDWu(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwevWHu(a: M256i, b: M256i): M256i = transmute(lasxXvaddwevWHu(transmute(a), transmute(b)))
+public fun lasxXvaddwevWHu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvaddwevWHu(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwevHBu(a: M256i, b: M256i): M256i = transmute(lasxXvaddwevHBu(transmute(a), transmute(b)))
+public fun lasxXvaddwevHBu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvaddwevHBu(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubwevQD(a: M256i, b: M256i): M256i = transmute(lasxXvsubwevQD(transmute(a), transmute(b)))
+public fun lasxXvsubwevQD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvsubwevQD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubwevDW(a: M256i, b: M256i): M256i = transmute(lasxXvsubwevDW(transmute(a), transmute(b)))
+public fun lasxXvsubwevDW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvsubwevDW(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubwevWH(a: M256i, b: M256i): M256i = transmute(lasxXvsubwevWH(transmute(a), transmute(b)))
+public fun lasxXvsubwevWH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvsubwevWH(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubwevHB(a: M256i, b: M256i): M256i = transmute(lasxXvsubwevHB(transmute(a), transmute(b)))
+public fun lasxXvsubwevHB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvsubwevHB(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubwevQDu(a: M256i, b: M256i): M256i = transmute(lasxXvsubwevQDu(transmute(a), transmute(b)))
+public fun lasxXvsubwevQDu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvsubwevQDu(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubwevDWu(a: M256i, b: M256i): M256i = transmute(lasxXvsubwevDWu(transmute(a), transmute(b)))
+public fun lasxXvsubwevDWu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvsubwevDWu(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubwevWHu(a: M256i, b: M256i): M256i = transmute(lasxXvsubwevWHu(transmute(a), transmute(b)))
+public fun lasxXvsubwevWHu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvsubwevWHu(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubwevHBu(a: M256i, b: M256i): M256i = transmute(lasxXvsubwevHBu(transmute(a), transmute(b)))
+public fun lasxXvsubwevHBu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvsubwevHBu(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwevQD(a: M256i, b: M256i): M256i = transmute(lasxXvmulwevQD(transmute(a), transmute(b)))
+public fun lasxXvmulwevQD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmulwevQD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwevDW(a: M256i, b: M256i): M256i = transmute(lasxXvmulwevDW(transmute(a), transmute(b)))
+public fun lasxXvmulwevDW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmulwevDW(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwevWH(a: M256i, b: M256i): M256i = transmute(lasxXvmulwevWH(transmute(a), transmute(b)))
+public fun lasxXvmulwevWH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvmulwevWH(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwevHB(a: M256i, b: M256i): M256i = transmute(lasxXvmulwevHB(transmute(a), transmute(b)))
+public fun lasxXvmulwevHB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvmulwevHB(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwevQDu(a: M256i, b: M256i): M256i = transmute(lasxXvmulwevQDu(transmute(a), transmute(b)))
+public fun lasxXvmulwevQDu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmulwevQDu(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwevDWu(a: M256i, b: M256i): M256i = transmute(lasxXvmulwevDWu(transmute(a), transmute(b)))
+public fun lasxXvmulwevDWu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmulwevDWu(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwevWHu(a: M256i, b: M256i): M256i = transmute(lasxXvmulwevWHu(transmute(a), transmute(b)))
+public fun lasxXvmulwevWHu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvmulwevWHu(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwevHBu(a: M256i, b: M256i): M256i = transmute(lasxXvmulwevHBu(transmute(a), transmute(b)))
+public fun lasxXvmulwevHBu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvmulwevHBu(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwodQD(a: M256i, b: M256i): M256i = transmute(lasxXvaddwodQD(transmute(a), transmute(b)))
+public fun lasxXvaddwodQD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvaddwodQD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwodDW(a: M256i, b: M256i): M256i = transmute(lasxXvaddwodDW(transmute(a), transmute(b)))
+public fun lasxXvaddwodDW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvaddwodDW(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwodWH(a: M256i, b: M256i): M256i = transmute(lasxXvaddwodWH(transmute(a), transmute(b)))
+public fun lasxXvaddwodWH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvaddwodWH(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwodHB(a: M256i, b: M256i): M256i = transmute(lasxXvaddwodHB(transmute(a), transmute(b)))
+public fun lasxXvaddwodHB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvaddwodHB(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwodQDu(a: M256i, b: M256i): M256i = transmute(lasxXvaddwodQDu(transmute(a), transmute(b)))
+public fun lasxXvaddwodQDu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvaddwodQDu(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwodDWu(a: M256i, b: M256i): M256i = transmute(lasxXvaddwodDWu(transmute(a), transmute(b)))
+public fun lasxXvaddwodDWu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvaddwodDWu(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwodWHu(a: M256i, b: M256i): M256i = transmute(lasxXvaddwodWHu(transmute(a), transmute(b)))
+public fun lasxXvaddwodWHu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvaddwodWHu(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwodHBu(a: M256i, b: M256i): M256i = transmute(lasxXvaddwodHBu(transmute(a), transmute(b)))
+public fun lasxXvaddwodHBu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvaddwodHBu(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubwodQD(a: M256i, b: M256i): M256i = transmute(lasxXvsubwodQD(transmute(a), transmute(b)))
+public fun lasxXvsubwodQD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvsubwodQD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubwodDW(a: M256i, b: M256i): M256i = transmute(lasxXvsubwodDW(transmute(a), transmute(b)))
+public fun lasxXvsubwodDW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvsubwodDW(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubwodWH(a: M256i, b: M256i): M256i = transmute(lasxXvsubwodWH(transmute(a), transmute(b)))
+public fun lasxXvsubwodWH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvsubwodWH(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubwodHB(a: M256i, b: M256i): M256i = transmute(lasxXvsubwodHB(transmute(a), transmute(b)))
+public fun lasxXvsubwodHB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvsubwodHB(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubwodQDu(a: M256i, b: M256i): M256i = transmute(lasxXvsubwodQDu(transmute(a), transmute(b)))
+public fun lasxXvsubwodQDu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvsubwodQDu(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubwodDWu(a: M256i, b: M256i): M256i = transmute(lasxXvsubwodDWu(transmute(a), transmute(b)))
+public fun lasxXvsubwodDWu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvsubwodDWu(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubwodWHu(a: M256i, b: M256i): M256i = transmute(lasxXvsubwodWHu(transmute(a), transmute(b)))
+public fun lasxXvsubwodWHu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvsubwodWHu(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubwodHBu(a: M256i, b: M256i): M256i = transmute(lasxXvsubwodHBu(transmute(a), transmute(b)))
+public fun lasxXvsubwodHBu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvsubwodHBu(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwodQD(a: M256i, b: M256i): M256i = transmute(lasxXvmulwodQD(transmute(a), transmute(b)))
+public fun lasxXvmulwodQD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmulwodQD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwodDW(a: M256i, b: M256i): M256i = transmute(lasxXvmulwodDW(transmute(a), transmute(b)))
+public fun lasxXvmulwodDW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmulwodDW(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwodWH(a: M256i, b: M256i): M256i = transmute(lasxXvmulwodWH(transmute(a), transmute(b)))
+public fun lasxXvmulwodWH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvmulwodWH(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwodHB(a: M256i, b: M256i): M256i = transmute(lasxXvmulwodHB(transmute(a), transmute(b)))
+public fun lasxXvmulwodHB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvmulwodHB(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwodQDu(a: M256i, b: M256i): M256i = transmute(lasxXvmulwodQDu(transmute(a), transmute(b)))
+public fun lasxXvmulwodQDu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmulwodQDu(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwodDWu(a: M256i, b: M256i): M256i = transmute(lasxXvmulwodDWu(transmute(a), transmute(b)))
+public fun lasxXvmulwodDWu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmulwodDWu(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwodWHu(a: M256i, b: M256i): M256i = transmute(lasxXvmulwodWHu(transmute(a), transmute(b)))
+public fun lasxXvmulwodWHu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvmulwodWHu(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwodHBu(a: M256i, b: M256i): M256i = transmute(lasxXvmulwodHBu(transmute(a), transmute(b)))
+public fun lasxXvmulwodHBu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvmulwodHBu(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwevDWuW(a: M256i, b: M256i): M256i = transmute(lasxXvaddwevDWuW(transmute(a), transmute(b)))
+public fun lasxXvaddwevDWuW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvaddwevDWuW(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwevWHuH(a: M256i, b: M256i): M256i = transmute(lasxXvaddwevWHuH(transmute(a), transmute(b)))
+public fun lasxXvaddwevWHuH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvaddwevWHuH(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwevHBuB(a: M256i, b: M256i): M256i = transmute(lasxXvaddwevHBuB(transmute(a), transmute(b)))
+public fun lasxXvaddwevHBuB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvaddwevHBuB(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwevDWuW(a: M256i, b: M256i): M256i = transmute(lasxXvmulwevDWuW(transmute(a), transmute(b)))
+public fun lasxXvmulwevDWuW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmulwevDWuW(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwevWHuH(a: M256i, b: M256i): M256i = transmute(lasxXvmulwevWHuH(transmute(a), transmute(b)))
+public fun lasxXvmulwevWHuH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvmulwevWHuH(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwevHBuB(a: M256i, b: M256i): M256i = transmute(lasxXvmulwevHBuB(transmute(a), transmute(b)))
+public fun lasxXvmulwevHBuB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvmulwevHBuB(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwodDWuW(a: M256i, b: M256i): M256i = transmute(lasxXvaddwodDWuW(transmute(a), transmute(b)))
+public fun lasxXvaddwodDWuW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvaddwodDWuW(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwodWHuH(a: M256i, b: M256i): M256i = transmute(lasxXvaddwodWHuH(transmute(a), transmute(b)))
+public fun lasxXvaddwodWHuH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvaddwodWHuH(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwodHBuB(a: M256i, b: M256i): M256i = transmute(lasxXvaddwodHBuB(transmute(a), transmute(b)))
+public fun lasxXvaddwodHBuB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvaddwodHBuB(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwodDWuW(a: M256i, b: M256i): M256i = transmute(lasxXvmulwodDWuW(transmute(a), transmute(b)))
+public fun lasxXvmulwodDWuW(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmulwodDWuW(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwodWHuH(a: M256i, b: M256i): M256i = transmute(lasxXvmulwodWHuH(transmute(a), transmute(b)))
+public fun lasxXvmulwodWHuH(a: M256i, b: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvmulwodWHuH(a, b), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwodHBuB(a: M256i, b: M256i): M256i = transmute(lasxXvmulwodHBuB(transmute(a), transmute(b)))
+public fun lasxXvmulwodHBuB(a: M256i, b: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvmulwodHBuB(a, b), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvhaddwQD(a: M256i, b: M256i): M256i = transmute(lasxXvhaddwQD(transmute(a), transmute(b)))
+public fun lasxXvhaddwQD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvhaddwQD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvhaddwQuDu(a: M256i, b: M256i): M256i = transmute(lasxXvhaddwQuDu(transmute(a), transmute(b)))
+public fun lasxXvhaddwQuDu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4u64, M256i>(lasxXvhaddwQuDu(a, b), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvhsubwQD(a: M256i, b: M256i): M256i = transmute(lasxXvhsubwQD(transmute(a), transmute(b)))
+public fun lasxXvhsubwQD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvhsubwQD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvhsubwQuDu(a: M256i, b: M256i): M256i = transmute(lasxXvhsubwQuDu(transmute(a), transmute(b)))
+public fun lasxXvhsubwQuDu(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4u64, M256i>(lasxXvhsubwQuDu(a, b), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwevQD(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwevQD(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwevQD(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmaddwevQD(a, b, c), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwevDW(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwevDW(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwevDW(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmaddwevDW(a, b, c), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwevWH(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwevWH(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwevWH(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvmaddwevWH(a, b, c), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwevHB(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwevHB(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwevHB(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvmaddwevHB(a, b, c), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwevQDu(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwevQDu(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwevQDu(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V4u64, M256i>(lasxXvmaddwevQDu(a, b, c), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwevDWu(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwevDWu(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwevDWu(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V4u64, M256i>(lasxXvmaddwevDWu(a, b, c), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwevWHu(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwevWHu(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwevWHu(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V8u32, M256i>(lasxXvmaddwevWHu(a, b, c), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwevHBu(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwevHBu(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwevHBu(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V16u16, M256i>(lasxXvmaddwevHBu(a, b, c), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwodQD(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwodQD(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwodQD(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmaddwodQD(a, b, c), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwodDW(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwodDW(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwodDW(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmaddwodDW(a, b, c), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwodWH(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwodWH(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwodWH(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvmaddwodWH(a, b, c), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwodHB(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwodHB(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwodHB(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvmaddwodHB(a, b, c), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwodQDu(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwodQDu(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwodQDu(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V4u64, M256i>(lasxXvmaddwodQDu(a, b, c), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwodDWu(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwodDWu(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwodDWu(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V4u64, M256i>(lasxXvmaddwodDWu(a, b, c), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwodWHu(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwodWHu(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwodWHu(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V8u32, M256i>(lasxXvmaddwodWHu(a, b, c), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwodHBu(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwodHBu(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwodHBu(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V16u16, M256i>(lasxXvmaddwodHBu(a, b, c), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwevQDuD(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwevQDuD(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwevQDuD(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmaddwevQDuD(a, b, c), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwevDWuW(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwevDWuW(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwevDWuW(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmaddwevDWuW(a, b, c), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwevWHuH(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwevWHuH(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwevWHuH(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvmaddwevWHuH(a, b, c), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwevHBuB(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwevHBuB(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwevHBuB(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvmaddwevHBuB(a, b, c), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwodQDuD(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwodQDuD(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwodQDuD(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmaddwodQDuD(a, b, c), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwodDWuW(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwodDWuW(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwodDWuW(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmaddwodDWuW(a, b, c), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwodWHuH(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwodWHuH(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwodWHuH(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvmaddwodWHuH(a, b, c), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmaddwodHBuB(a: M256i, b: M256i, c: M256i): M256i = transmute(lasxXvmaddwodHBuB(transmute(a), transmute(b), transmute(c)))
+public fun lasxXvmaddwodHBuB(a: M256i, b: M256i, c: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvmaddwodHBuB(a, b, c), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddQ(a: M256i, b: M256i): M256i = transmute(lasxXvaddQ(transmute(a), transmute(b)))
+public fun lasxXvaddQ(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvaddQ(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvsubQ(a: M256i, b: M256i): M256i = transmute(lasxXvsubQ(transmute(a), transmute(b)))
+public fun lasxXvsubQ(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvsubQ(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwevQDuD(a: M256i, b: M256i): M256i = transmute(lasxXvaddwevQDuD(transmute(a), transmute(b)))
+public fun lasxXvaddwevQDuD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvaddwevQDuD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvaddwodQDuD(a: M256i, b: M256i): M256i = transmute(lasxXvaddwodQDuD(transmute(a), transmute(b)))
+public fun lasxXvaddwodQDuD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvaddwodQDuD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwevQDuD(a: M256i, b: M256i): M256i = transmute(lasxXvmulwevQDuD(transmute(a), transmute(b)))
+public fun lasxXvmulwevQDuD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmulwevQDuD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmulwodQDuD(a: M256i, b: M256i): M256i = transmute(lasxXvmulwodQDuD(transmute(a), transmute(b)))
+public fun lasxXvmulwodQDuD(a: M256i, b: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvmulwodQDuD(a, b), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmskgezB(a: M256i): M256i = transmute(lasxXvmskgezB(transmute(a)))
+public fun lasxXvmskgezB(a: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvmskgezB(a), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvmsknzB(a: M256i): M256i = transmute(lasxXvmsknzB(transmute(a)))
+public fun lasxXvmsknzB(a: M256i): M256i = transmuteWithLayouts<V32i8, M256i>(lasxXvmsknzB(a), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvexthHB(a: M256i): M256i = transmute(lasxXvexthHB(transmute(a)))
+public fun lasxXvexthHB(a: M256i): M256i = transmuteWithLayouts<V16i16, M256i>(lasxXvexthHB(a), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvexthWH(a: M256i): M256i = transmute(lasxXvexthWH(transmute(a)))
+public fun lasxXvexthWH(a: M256i): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvexthWH(a), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvexthDW(a: M256i): M256i = transmute(lasxXvexthDW(transmute(a)))
+public fun lasxXvexthDW(a: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvexthDW(a), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvexthQD(a: M256i): M256i = transmute(lasxXvexthQD(transmute(a)))
+public fun lasxXvexthQD(a: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvexthQD(a), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvexthHuBu(a: M256i): M256i = transmute(lasxXvexthHuBu(transmute(a)))
+public fun lasxXvexthHuBu(a: M256i): M256i = transmuteWithLayouts<V16u16, M256i>(lasxXvexthHuBu(a), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvexthWuHu(a: M256i): M256i = transmute(lasxXvexthWuHu(transmute(a)))
+public fun lasxXvexthWuHu(a: M256i): M256i = transmuteWithLayouts<V8u32, M256i>(lasxXvexthWuHu(a), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvexthDuWu(a: M256i): M256i = transmute(lasxXvexthDuWu(transmute(a)))
+public fun lasxXvexthDuWu(a: M256i): M256i = transmuteWithLayouts<V4u64, M256i>(lasxXvexthDuWu(a), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvexthQuDu(a: M256i): M256i = transmute(lasxXvexthQuDu(transmute(a)))
+public fun lasxXvexthQuDu(a: M256i): M256i = transmuteWithLayouts<V4u64, M256i>(lasxXvexthQuDu(a), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvextlQD(a: M256i): M256i = transmute(lasxXvextlQD(transmute(a)))
+public fun lasxXvextlQD(a: M256i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvextlQD(a), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
 public fun lasxXvsrlniBH(a: M256i, b: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvsrlniBH(transmute(a), transmute(b), imm4))
+    return transmuteWithLayouts<V32i8, M256i>(lasxXvsrlniBH(a, b, imm4), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrlniHW(a: M256i, b: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvsrlniHW(transmute(a), transmute(b), imm5))
+    return transmuteWithLayouts<V16i16, M256i>(lasxXvsrlniHW(a, b, imm5), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrlniWD(a: M256i, b: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvsrlniWD(transmute(a), transmute(b), imm6))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvsrlniWD(a, b, imm6), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrlniDQ(a: M256i, b: M256i, imm7: UInt): M256i {
     run {
         check(0u <= imm7 && imm7 < (1u shl 7)) { "IMM7 doesn't fit in 7 bits (unsigned)" }
     }
-    return transmute(lasxXvsrlniDQ(transmute(a), transmute(b), imm7))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvsrlniDQ(a, b, imm7), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrlrniBH(a: M256i, b: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvsrlrniBH(transmute(a), transmute(b), imm4))
+    return transmuteWithLayouts<V32i8, M256i>(lasxXvsrlrniBH(a, b, imm4), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrlrniHW(a: M256i, b: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvsrlrniHW(transmute(a), transmute(b), imm5))
+    return transmuteWithLayouts<V16i16, M256i>(lasxXvsrlrniHW(a, b, imm5), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrlrniWD(a: M256i, b: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvsrlrniWD(transmute(a), transmute(b), imm6))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvsrlrniWD(a, b, imm6), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrlrniDQ(a: M256i, b: M256i, imm7: UInt): M256i {
     run {
         check(0u <= imm7 && imm7 < (1u shl 7)) { "IMM7 doesn't fit in 7 bits (unsigned)" }
     }
-    return transmute(lasxXvsrlrniDQ(transmute(a), transmute(b), imm7))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvsrlrniDQ(a, b, imm7), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrlniBH(a: M256i, b: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvssrlniBH(transmute(a), transmute(b), imm4))
+    return transmuteWithLayouts<V32i8, M256i>(lasxXvssrlniBH(a, b, imm4), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrlniHW(a: M256i, b: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvssrlniHW(transmute(a), transmute(b), imm5))
+    return transmuteWithLayouts<V16i16, M256i>(lasxXvssrlniHW(a, b, imm5), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrlniWD(a: M256i, b: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvssrlniWD(transmute(a), transmute(b), imm6))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvssrlniWD(a, b, imm6), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrlniDQ(a: M256i, b: M256i, imm7: UInt): M256i {
     run {
         check(0u <= imm7 && imm7 < (1u shl 7)) { "IMM7 doesn't fit in 7 bits (unsigned)" }
     }
-    return transmute(lasxXvssrlniDQ(transmute(a), transmute(b), imm7))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvssrlniDQ(a, b, imm7), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrlniBuH(a: M256i, b: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvssrlniBuH(transmute(a), transmute(b), imm4))
+    return transmuteWithLayouts<V32u8, M256i>(lasxXvssrlniBuH(a, b, imm4), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrlniHuW(a: M256i, b: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvssrlniHuW(transmute(a), transmute(b), imm5))
+    return transmuteWithLayouts<V16u16, M256i>(lasxXvssrlniHuW(a, b, imm5), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrlniWuD(a: M256i, b: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvssrlniWuD(transmute(a), transmute(b), imm6))
+    return transmuteWithLayouts<V8u32, M256i>(lasxXvssrlniWuD(a, b, imm6), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrlniDuQ(a: M256i, b: M256i, imm7: UInt): M256i {
     run {
         check(0u <= imm7 && imm7 < (1u shl 7)) { "IMM7 doesn't fit in 7 bits (unsigned)" }
     }
-    return transmute(lasxXvssrlniDuQ(transmute(a), transmute(b), imm7))
+    return transmuteWithLayouts<V4u64, M256i>(lasxXvssrlniDuQ(a, b, imm7), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrlrniBH(a: M256i, b: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvssrlrniBH(transmute(a), transmute(b), imm4))
+    return transmuteWithLayouts<V32i8, M256i>(lasxXvssrlrniBH(a, b, imm4), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrlrniHW(a: M256i, b: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvssrlrniHW(transmute(a), transmute(b), imm5))
+    return transmuteWithLayouts<V16i16, M256i>(lasxXvssrlrniHW(a, b, imm5), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrlrniWD(a: M256i, b: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvssrlrniWD(transmute(a), transmute(b), imm6))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvssrlrniWD(a, b, imm6), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrlrniDQ(a: M256i, b: M256i, imm7: UInt): M256i {
     run {
         check(0u <= imm7 && imm7 < (1u shl 7)) { "IMM7 doesn't fit in 7 bits (unsigned)" }
     }
-    return transmute(lasxXvssrlrniDQ(transmute(a), transmute(b), imm7))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvssrlrniDQ(a, b, imm7), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrlrniBuH(a: M256i, b: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvssrlrniBuH(transmute(a), transmute(b), imm4))
+    return transmuteWithLayouts<V32u8, M256i>(lasxXvssrlrniBuH(a, b, imm4), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrlrniHuW(a: M256i, b: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvssrlrniHuW(transmute(a), transmute(b), imm5))
+    return transmuteWithLayouts<V16u16, M256i>(lasxXvssrlrniHuW(a, b, imm5), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrlrniWuD(a: M256i, b: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvssrlrniWuD(transmute(a), transmute(b), imm6))
+    return transmuteWithLayouts<V8u32, M256i>(lasxXvssrlrniWuD(a, b, imm6), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrlrniDuQ(a: M256i, b: M256i, imm7: UInt): M256i {
     run {
         check(0u <= imm7 && imm7 < (1u shl 7)) { "IMM7 doesn't fit in 7 bits (unsigned)" }
     }
-    return transmute(lasxXvssrlrniDuQ(transmute(a), transmute(b), imm7))
+    return transmuteWithLayouts<V4u64, M256i>(lasxXvssrlrniDuQ(a, b, imm7), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsraniBH(a: M256i, b: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvsraniBH(transmute(a), transmute(b), imm4))
+    return transmuteWithLayouts<V32i8, M256i>(lasxXvsraniBH(a, b, imm4), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsraniHW(a: M256i, b: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvsraniHW(transmute(a), transmute(b), imm5))
+    return transmuteWithLayouts<V16i16, M256i>(lasxXvsraniHW(a, b, imm5), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsraniWD(a: M256i, b: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvsraniWD(transmute(a), transmute(b), imm6))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvsraniWD(a, b, imm6), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsraniDQ(a: M256i, b: M256i, imm7: UInt): M256i {
     run {
         check(0u <= imm7 && imm7 < (1u shl 7)) { "IMM7 doesn't fit in 7 bits (unsigned)" }
     }
-    return transmute(lasxXvsraniDQ(transmute(a), transmute(b), imm7))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvsraniDQ(a, b, imm7), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrarniBH(a: M256i, b: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvsrarniBH(transmute(a), transmute(b), imm4))
+    return transmuteWithLayouts<V32i8, M256i>(lasxXvsrarniBH(a, b, imm4), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrarniHW(a: M256i, b: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvsrarniHW(transmute(a), transmute(b), imm5))
+    return transmuteWithLayouts<V16i16, M256i>(lasxXvsrarniHW(a, b, imm5), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrarniWD(a: M256i, b: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvsrarniWD(transmute(a), transmute(b), imm6))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvsrarniWD(a, b, imm6), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvsrarniDQ(a: M256i, b: M256i, imm7: UInt): M256i {
     run {
         check(0u <= imm7 && imm7 < (1u shl 7)) { "IMM7 doesn't fit in 7 bits (unsigned)" }
     }
-    return transmute(lasxXvsrarniDQ(transmute(a), transmute(b), imm7))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvsrarniDQ(a, b, imm7), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssraniBH(a: M256i, b: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvssraniBH(transmute(a), transmute(b), imm4))
+    return transmuteWithLayouts<V32i8, M256i>(lasxXvssraniBH(a, b, imm4), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssraniHW(a: M256i, b: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvssraniHW(transmute(a), transmute(b), imm5))
+    return transmuteWithLayouts<V16i16, M256i>(lasxXvssraniHW(a, b, imm5), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssraniWD(a: M256i, b: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvssraniWD(transmute(a), transmute(b), imm6))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvssraniWD(a, b, imm6), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssraniDQ(a: M256i, b: M256i, imm7: UInt): M256i {
     run {
         check(0u <= imm7 && imm7 < (1u shl 7)) { "IMM7 doesn't fit in 7 bits (unsigned)" }
     }
-    return transmute(lasxXvssraniDQ(transmute(a), transmute(b), imm7))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvssraniDQ(a, b, imm7), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssraniBuH(a: M256i, b: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvssraniBuH(transmute(a), transmute(b), imm4))
+    return transmuteWithLayouts<V32u8, M256i>(lasxXvssraniBuH(a, b, imm4), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssraniHuW(a: M256i, b: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvssraniHuW(transmute(a), transmute(b), imm5))
+    return transmuteWithLayouts<V16u16, M256i>(lasxXvssraniHuW(a, b, imm5), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssraniWuD(a: M256i, b: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvssraniWuD(transmute(a), transmute(b), imm6))
+    return transmuteWithLayouts<V8u32, M256i>(lasxXvssraniWuD(a, b, imm6), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssraniDuQ(a: M256i, b: M256i, imm7: UInt): M256i {
     run {
         check(0u <= imm7 && imm7 < (1u shl 7)) { "IMM7 doesn't fit in 7 bits (unsigned)" }
     }
-    return transmute(lasxXvssraniDuQ(transmute(a), transmute(b), imm7))
+    return transmuteWithLayouts<V4u64, M256i>(lasxXvssraniDuQ(a, b, imm7), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrarniBH(a: M256i, b: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvssrarniBH(transmute(a), transmute(b), imm4))
+    return transmuteWithLayouts<V32i8, M256i>(lasxXvssrarniBH(a, b, imm4), UnresolvedTypeLayout<V32i8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrarniHW(a: M256i, b: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvssrarniHW(transmute(a), transmute(b), imm5))
+    return transmuteWithLayouts<V16i16, M256i>(lasxXvssrarniHW(a, b, imm5), UnresolvedTypeLayout<V16i16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrarniWD(a: M256i, b: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvssrarniWD(transmute(a), transmute(b), imm6))
+    return transmuteWithLayouts<V8i32, M256i>(lasxXvssrarniWD(a, b, imm6), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrarniDQ(a: M256i, b: M256i, imm7: UInt): M256i {
     run {
         check(0u <= imm7 && imm7 < (1u shl 7)) { "IMM7 doesn't fit in 7 bits (unsigned)" }
     }
-    return transmute(lasxXvssrarniDQ(transmute(a), transmute(b), imm7))
+    return transmuteWithLayouts<V4i64, M256i>(lasxXvssrarniDQ(a, b, imm7), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrarniBuH(a: M256i, b: M256i, imm4: UInt): M256i {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(lasxXvssrarniBuH(transmute(a), transmute(b), imm4))
+    return transmuteWithLayouts<V32u8, M256i>(lasxXvssrarniBuH(a, b, imm4), UnresolvedTypeLayout<V32u8>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrarniHuW(a: M256i, b: M256i, imm5: UInt): M256i {
     run {
         check(0u <= imm5 && imm5 < (1u shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return transmute(lasxXvssrarniHuW(transmute(a), transmute(b), imm5))
+    return transmuteWithLayouts<V16u16, M256i>(lasxXvssrarniHuW(a, b, imm5), UnresolvedTypeLayout<V16u16>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrarniWuD(a: M256i, b: M256i, imm6: UInt): M256i {
     run {
         check(0u <= imm6 && imm6 < (1u shl 6)) { "IMM6 doesn't fit in 6 bits (unsigned)" }
     }
-    return transmute(lasxXvssrarniWuD(transmute(a), transmute(b), imm6))
+    return transmuteWithLayouts<V8u32, M256i>(lasxXvssrarniWuD(a, b, imm6), UnresolvedTypeLayout<V8u32>(), UnresolvedTypeLayout<M256i>())
 }
 
 public fun lasxXvssrarniDuQ(a: M256i, b: M256i, imm7: UInt): M256i {
     run {
         check(0u <= imm7 && imm7 < (1u shl 7)) { "IMM7 doesn't fit in 7 bits (unsigned)" }
     }
-    return transmute(lasxXvssrarniDuQ(transmute(a), transmute(b), imm7))
+    return transmuteWithLayouts<V4u64, M256i>(lasxXvssrarniDuQ(a, b, imm7), UnresolvedTypeLayout<V4u64>(), UnresolvedTypeLayout<M256i>())
 }
 
-public fun lasxXbnzB(a: M256i): Int = transmute(lasxXbnzB(transmute(a)))
+public fun lasxXbnzB(a: M256i): Int = lasxXbnzB(transmuteWithLayouts<M256i, Int>(a, UnresolvedTypeLayout<M256i>(), PrimitiveLayouts.I32))
 
-public fun lasxXbnzD(a: M256i): Int = transmute(lasxXbnzD(transmute(a)))
+public fun lasxXbnzD(a: M256i): Int = lasxXbnzD(transmuteWithLayouts<M256i, Int>(a, UnresolvedTypeLayout<M256i>(), PrimitiveLayouts.I32))
 
-public fun lasxXbnzH(a: M256i): Int = transmute(lasxXbnzH(transmute(a)))
+public fun lasxXbnzH(a: M256i): Int = lasxXbnzH(transmuteWithLayouts<M256i, Int>(a, UnresolvedTypeLayout<M256i>(), PrimitiveLayouts.I32))
 
-public fun lasxXbnzV(a: M256i): Int = transmute(lasxXbnzV(transmute(a)))
+public fun lasxXbnzV(a: M256i): Int = lasxXbnzV(transmuteWithLayouts<M256i, Int>(a, UnresolvedTypeLayout<M256i>(), PrimitiveLayouts.I32))
 
-public fun lasxXbnzW(a: M256i): Int = transmute(lasxXbnzW(transmute(a)))
+public fun lasxXbnzW(a: M256i): Int = lasxXbnzW(transmuteWithLayouts<M256i, Int>(a, UnresolvedTypeLayout<M256i>(), PrimitiveLayouts.I32))
 
-public fun lasxXbzB(a: M256i): Int = transmute(lasxXbzB(transmute(a)))
+public fun lasxXbzB(a: M256i): Int = lasxXbzB(transmuteWithLayouts<M256i, Int>(a, UnresolvedTypeLayout<M256i>(), PrimitiveLayouts.I32))
 
-public fun lasxXbzD(a: M256i): Int = transmute(lasxXbzD(transmute(a)))
+public fun lasxXbzD(a: M256i): Int = lasxXbzD(transmuteWithLayouts<M256i, Int>(a, UnresolvedTypeLayout<M256i>(), PrimitiveLayouts.I32))
 
-public fun lasxXbzH(a: M256i): Int = transmute(lasxXbzH(transmute(a)))
+public fun lasxXbzH(a: M256i): Int = lasxXbzH(transmuteWithLayouts<M256i, Int>(a, UnresolvedTypeLayout<M256i>(), PrimitiveLayouts.I32))
 
-public fun lasxXbzV(a: M256i): Int = transmute(lasxXbzV(transmute(a)))
+public fun lasxXbzV(a: M256i): Int = lasxXbzV(transmuteWithLayouts<M256i, Int>(a, UnresolvedTypeLayout<M256i>(), PrimitiveLayouts.I32))
 
-public fun lasxXbzW(a: M256i): Int = transmute(lasxXbzW(transmute(a)))
+public fun lasxXbzW(a: M256i): Int = lasxXbzW(transmuteWithLayouts<M256i, Int>(a, UnresolvedTypeLayout<M256i>(), PrimitiveLayouts.I32))
 
-public fun lasxXvfcmpCafD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpCafD(transmute(a), transmute(b)))
+public fun lasxXvfcmpCafD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpCafD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCafS(a: M256, b: M256): M256i = transmute(lasxXvfcmpCafS(transmute(a), transmute(b)))
+public fun lasxXvfcmpCafS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpCafS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCeqD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpCeqD(transmute(a), transmute(b)))
+public fun lasxXvfcmpCeqD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpCeqD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCeqS(a: M256, b: M256): M256i = transmute(lasxXvfcmpCeqS(transmute(a), transmute(b)))
+public fun lasxXvfcmpCeqS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpCeqS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCleD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpCleD(transmute(a), transmute(b)))
+public fun lasxXvfcmpCleD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpCleD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCleS(a: M256, b: M256): M256i = transmute(lasxXvfcmpCleS(transmute(a), transmute(b)))
+public fun lasxXvfcmpCleS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpCleS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCltD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpCltD(transmute(a), transmute(b)))
+public fun lasxXvfcmpCltD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpCltD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCltS(a: M256, b: M256): M256i = transmute(lasxXvfcmpCltS(transmute(a), transmute(b)))
+public fun lasxXvfcmpCltS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpCltS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCneD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpCneD(transmute(a), transmute(b)))
+public fun lasxXvfcmpCneD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpCneD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCneS(a: M256, b: M256): M256i = transmute(lasxXvfcmpCneS(transmute(a), transmute(b)))
+public fun lasxXvfcmpCneS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpCneS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCorD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpCorD(transmute(a), transmute(b)))
+public fun lasxXvfcmpCorD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpCorD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCorS(a: M256, b: M256): M256i = transmute(lasxXvfcmpCorS(transmute(a), transmute(b)))
+public fun lasxXvfcmpCorS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpCorS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCueqD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpCueqD(transmute(a), transmute(b)))
+public fun lasxXvfcmpCueqD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpCueqD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCueqS(a: M256, b: M256): M256i = transmute(lasxXvfcmpCueqS(transmute(a), transmute(b)))
+public fun lasxXvfcmpCueqS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpCueqS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCuleD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpCuleD(transmute(a), transmute(b)))
+public fun lasxXvfcmpCuleD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpCuleD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCuleS(a: M256, b: M256): M256i = transmute(lasxXvfcmpCuleS(transmute(a), transmute(b)))
+public fun lasxXvfcmpCuleS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpCuleS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCultD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpCultD(transmute(a), transmute(b)))
+public fun lasxXvfcmpCultD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpCultD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCultS(a: M256, b: M256): M256i = transmute(lasxXvfcmpCultS(transmute(a), transmute(b)))
+public fun lasxXvfcmpCultS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpCultS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCunD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpCunD(transmute(a), transmute(b)))
+public fun lasxXvfcmpCunD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpCunD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCuneD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpCuneD(transmute(a), transmute(b)))
+public fun lasxXvfcmpCuneD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpCuneD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCuneS(a: M256, b: M256): M256i = transmute(lasxXvfcmpCuneS(transmute(a), transmute(b)))
+public fun lasxXvfcmpCuneS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpCuneS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpCunS(a: M256, b: M256): M256i = transmute(lasxXvfcmpCunS(transmute(a), transmute(b)))
+public fun lasxXvfcmpCunS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpCunS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSafD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpSafD(transmute(a), transmute(b)))
+public fun lasxXvfcmpSafD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpSafD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSafS(a: M256, b: M256): M256i = transmute(lasxXvfcmpSafS(transmute(a), transmute(b)))
+public fun lasxXvfcmpSafS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpSafS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSeqD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpSeqD(transmute(a), transmute(b)))
+public fun lasxXvfcmpSeqD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpSeqD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSeqS(a: M256, b: M256): M256i = transmute(lasxXvfcmpSeqS(transmute(a), transmute(b)))
+public fun lasxXvfcmpSeqS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpSeqS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSleD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpSleD(transmute(a), transmute(b)))
+public fun lasxXvfcmpSleD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpSleD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSleS(a: M256, b: M256): M256i = transmute(lasxXvfcmpSleS(transmute(a), transmute(b)))
+public fun lasxXvfcmpSleS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpSleS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSltD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpSltD(transmute(a), transmute(b)))
+public fun lasxXvfcmpSltD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpSltD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSltS(a: M256, b: M256): M256i = transmute(lasxXvfcmpSltS(transmute(a), transmute(b)))
+public fun lasxXvfcmpSltS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpSltS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSneD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpSneD(transmute(a), transmute(b)))
+public fun lasxXvfcmpSneD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpSneD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSneS(a: M256, b: M256): M256i = transmute(lasxXvfcmpSneS(transmute(a), transmute(b)))
+public fun lasxXvfcmpSneS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpSneS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSorD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpSorD(transmute(a), transmute(b)))
+public fun lasxXvfcmpSorD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpSorD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSorS(a: M256, b: M256): M256i = transmute(lasxXvfcmpSorS(transmute(a), transmute(b)))
+public fun lasxXvfcmpSorS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpSorS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSueqD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpSueqD(transmute(a), transmute(b)))
+public fun lasxXvfcmpSueqD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpSueqD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSueqS(a: M256, b: M256): M256i = transmute(lasxXvfcmpSueqS(transmute(a), transmute(b)))
+public fun lasxXvfcmpSueqS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpSueqS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSuleD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpSuleD(transmute(a), transmute(b)))
+public fun lasxXvfcmpSuleD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpSuleD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSuleS(a: M256, b: M256): M256i = transmute(lasxXvfcmpSuleS(transmute(a), transmute(b)))
+public fun lasxXvfcmpSuleS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpSuleS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSultD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpSultD(transmute(a), transmute(b)))
+public fun lasxXvfcmpSultD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpSultD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSultS(a: M256, b: M256): M256i = transmute(lasxXvfcmpSultS(transmute(a), transmute(b)))
+public fun lasxXvfcmpSultS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpSultS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSunD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpSunD(transmute(a), transmute(b)))
+public fun lasxXvfcmpSunD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpSunD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSuneD(a: M256d, b: M256d): M256i = transmute(lasxXvfcmpSuneD(transmute(a), transmute(b)))
+public fun lasxXvfcmpSuneD(a: M256d, b: M256d): M256i = transmuteWithLayouts<V4i64, M256i>(lasxXvfcmpSuneD(transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256d, M256i>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSuneS(a: M256, b: M256): M256i = transmute(lasxXvfcmpSuneS(transmute(a), transmute(b)))
+public fun lasxXvfcmpSuneS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpSuneS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxXvfcmpSunS(a: M256, b: M256): M256i = transmute(lasxXvfcmpSunS(transmute(a), transmute(b)))
+public fun lasxXvfcmpSunS(a: M256, b: M256): M256i = transmuteWithLayouts<V8i32, M256i>(lasxXvfcmpSunS(transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M256, M256i>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V8i32>(), UnresolvedTypeLayout<M256i>())
 
 public fun lasxXvpickveDF(a: M256d, imm2: UInt): M256d {
     run {
         check(0u <= imm2 && imm2 < (1u shl 2)) { "IMM2 doesn't fit in 2 bits (unsigned)" }
     }
-    return transmute(lasxXvpickveDF(transmute(a), imm2))
+    return transmuteWithLayouts<V4f64, M256d>(lasxXvpickveDF(a, imm2), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 }
 
 public fun lasxXvpickveWF(a: M256, imm3: UInt): M256 {
     run {
         check(0u <= imm3 && imm3 < (1u shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return transmute(lasxXvpickveWF(transmute(a), imm3))
+    return transmuteWithLayouts<V8f32, M256>(lasxXvpickveWF(a, imm3), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 }
 
-public fun lasxCast128S(a: M128): M256 = transmute(lasxCast128S(transmute(a)))
+public fun lasxCast128S(a: M128): M256 = transmuteWithLayouts<V8f32, M256>(lasxCast128S(transmuteWithLayouts<M128, M256>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M256>())), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxCast128D(a: M128d): M256d = transmute(lasxCast128D(transmute(a)))
+public fun lasxCast128D(a: M128d): M256d = transmuteWithLayouts<V4f64, M256d>(lasxCast128D(transmuteWithLayouts<M128d, M256d>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M256d>())), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxCast128(a: M128i): M256i = transmute(lasxCast128(transmute(a)))
+public fun lasxCast128(a: M128i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxCast128(transmuteWithLayouts<M128i, M256i>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxConcat128S(a: M128, b: M128): M256 = transmute(lasxConcat128S(transmute(a), transmute(b)))
+public fun lasxConcat128S(a: M128, b: M128): M256 = transmuteWithLayouts<V8f32, M256>(lasxConcat128S(transmuteWithLayouts<M128, M256>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M256>()), transmuteWithLayouts<M128, M256>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M256>())), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxConcat128D(a: M128d, b: M128d): M256d = transmute(lasxConcat128D(transmute(a), transmute(b)))
+public fun lasxConcat128D(a: M128d, b: M128d): M256d = transmuteWithLayouts<V4f64, M256d>(lasxConcat128D(transmuteWithLayouts<M128d, M256d>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M256d>()), transmuteWithLayouts<M128d, M256d>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M256d>())), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxConcat128(a: M128i, b: M128i): M256i = transmute(lasxConcat128(transmute(a), transmute(b)))
+public fun lasxConcat128(a: M128i, b: M128i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxConcat128(transmuteWithLayouts<M128i, M256i>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M256i>()), transmuteWithLayouts<M128i, M256i>(b, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxExtract128LoS(a: M256): M128 = transmute(lasxExtract128LoS(transmute(a)))
+public fun lasxExtract128LoS(a: M256): M128 = transmuteWithLayouts<V4f32, M128>(lasxExtract128LoS(transmuteWithLayouts<M256, M128>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M128>())), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lasxExtract128HiS(a: M256): M128 = transmute(lasxExtract128HiS(transmute(a)))
+public fun lasxExtract128HiS(a: M256): M128 = transmuteWithLayouts<V4f32, M128>(lasxExtract128HiS(transmuteWithLayouts<M256, M128>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M128>())), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lasxExtract128LoD(a: M256d): M128d = transmute(lasxExtract128LoD(transmute(a)))
+public fun lasxExtract128LoD(a: M256d): M128d = transmuteWithLayouts<V2f64, M128d>(lasxExtract128LoD(transmuteWithLayouts<M256d, M128d>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M128d>())), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
-public fun lasxExtract128HiD(a: M256d): M128d = transmute(lasxExtract128HiD(transmute(a)))
+public fun lasxExtract128HiD(a: M256d): M128d = transmuteWithLayouts<V2f64, M128d>(lasxExtract128HiD(transmuteWithLayouts<M256d, M128d>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M128d>())), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
-public fun lasxExtract128Lo(a: M256i): M128i = transmute(lasxExtract128Lo(transmute(a)))
+public fun lasxExtract128Lo(a: M256i): M128i = transmuteWithLayouts<V2i64, M128i>(lasxExtract128Lo(transmuteWithLayouts<M256i, M128i>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lasxExtract128Hi(a: M256i): M128i = transmute(lasxExtract128Hi(transmute(a)))
+public fun lasxExtract128Hi(a: M256i): M128i = transmuteWithLayouts<V2i64, M128i>(lasxExtract128Hi(transmuteWithLayouts<M256i, M128i>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lasxInsert128LoS(a: M256, b: M128): M256 = transmute(lasxInsert128LoS(transmute(a), transmute(b)))
+public fun lasxInsert128LoS(a: M256, b: M128): M256 = transmuteWithLayouts<V8f32, M256>(lasxInsert128LoS(a, transmuteWithLayouts<M128, M256>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M256>())), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxInsert128HiS(a: M256, b: M128): M256 = transmute(lasxInsert128HiS(transmute(a), transmute(b)))
+public fun lasxInsert128HiS(a: M256, b: M128): M256 = transmuteWithLayouts<V8f32, M256>(lasxInsert128HiS(a, transmuteWithLayouts<M128, M256>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M256>())), UnresolvedTypeLayout<V8f32>(), UnresolvedTypeLayout<M256>())
 
-public fun lasxInsert128LoD(a: M256d, b: M128d): M256d = transmute(lasxInsert128LoD(transmute(a), transmute(b)))
+public fun lasxInsert128LoD(a: M256d, b: M128d): M256d = transmuteWithLayouts<V4f64, M256d>(lasxInsert128LoD(a, transmuteWithLayouts<M128d, M256d>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M256d>())), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxInsert128HiD(a: M256d, b: M128d): M256d = transmute(lasxInsert128HiD(transmute(a), transmute(b)))
+public fun lasxInsert128HiD(a: M256d, b: M128d): M256d = transmuteWithLayouts<V4f64, M256d>(lasxInsert128HiD(a, transmuteWithLayouts<M128d, M256d>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M256d>())), UnresolvedTypeLayout<V4f64>(), UnresolvedTypeLayout<M256d>())
 
-public fun lasxInsert128Lo(a: M256i, b: M128i): M256i = transmute(lasxInsert128Lo(transmute(a), transmute(b)))
+public fun lasxInsert128Lo(a: M256i, b: M128i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxInsert128Lo(a, transmuteWithLayouts<M128i, M256i>(b, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())
 
-public fun lasxInsert128Hi(a: M256i, b: M128i): M256i = transmute(lasxInsert128Hi(transmute(a), transmute(b)))
+public fun lasxInsert128Hi(a: M256i, b: M128i): M256i = transmuteWithLayouts<V4i64, M256i>(lasxInsert128Hi(a, transmuteWithLayouts<M128i, M256i>(b, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M256i>())), UnresolvedTypeLayout<V4i64>(), UnresolvedTypeLayout<M256i>())

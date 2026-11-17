@@ -2096,7 +2096,7 @@ public open class Iter<T>(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public companion object {
-        public fun <T> default(): Iter<T> = Iter(inner = Default.default(), marker = Unit)
+        public fun <T> default(): Iter<T> = Iter(inner = RawIter.default(), marker = Unit)
     }
 }
 
@@ -2147,7 +2147,7 @@ public open class IterMut<T>(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
     public companion object {
-        public fun <T> default(): IterMut<T> = IterMut(inner = Default.default(), marker = Unit)
+        public fun <T> default(): IterMut<T> = IterMut(inner = RawIter.default(), marker = Unit)
     }
 }
 
@@ -2245,7 +2245,7 @@ public open class UnsafeIter<T>(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
     public companion object {
-        public fun <T> default(): UnsafeIter<T> = UnsafeIter(inner = Default.default(), marker = Unit)
+        public fun <T> default(): UnsafeIter<T> = UnsafeIter(inner = RawIter.default(), marker = Unit)
     }
 }
 
@@ -2283,7 +2283,7 @@ public open class IterBuckets<T>(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public companion object {
-        public fun <T> default(): IterBuckets<T> = IterBuckets(inner = Default.default(), marker = Unit)
+        public fun <T> default(): IterBuckets<T> = IterBuckets(inner = FullBucketsIndices.default(), marker = Unit)
     }
 }
 
@@ -2328,7 +2328,7 @@ public open class IterHash<T>(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public companion object {
-        public fun <T> default(): IterHash<T> = IterHash(inner = Default.default(), marker = Unit)
+        public fun <T> default(): IterHash<T> = IterHash(inner = RawIterHash.default(), marker = Unit)
     }
 }
 
@@ -2370,7 +2370,7 @@ public open class IterHashMut<T>(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(IterHash(inner = this.inner.clone(), marker = Unit)).finish()
 
     public companion object {
-        public fun <T> default(): IterHashMut<T> = IterHashMut(inner = Default.default(), marker = Unit)
+        public fun <T> default(): IterHashMut<T> = IterHashMut(inner = RawIterHash.default(), marker = Unit)
     }
 }
 
@@ -2400,7 +2400,7 @@ public open class IterHashBuckets<T>(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public companion object {
-        public fun <T> default(): IterHashBuckets<T> = IterHashBuckets(inner = Default.default(), marker = Unit)
+        public fun <T> default(): IterHashBuckets<T> = IterHashBuckets(inner = RawIterHashIndices.default(), marker = Unit)
     }
 }
 
@@ -2451,7 +2451,7 @@ public open class IntoIter<T, A> internal constructor(
             innerCtorArg = inner,
         )
 
-        public fun <T, A> default(): IntoIter<T, A> where A : Allocator = IntoIter(inner = Default.default())
+        public fun <T, A> default(): IntoIter<T, A> where A : Allocator = IntoIter(inner = RawIntoIter.default())
     }
 }
 

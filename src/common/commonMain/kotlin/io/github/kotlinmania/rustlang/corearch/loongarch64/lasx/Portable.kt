@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.loongarch64.lasx
 
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.loongarch64.simd.SimdExt
 import io.github.kotlinmania.rustlang.corearch.loongarch64.simd.simdExtSplat
@@ -81,7 +82,7 @@ public fun <T> simdExtShuf4iH(a: T, i: UInt): T = run { val _simdArg0 = a; val _
 
 public fun <T> simdExtShuf4iW(a: T, i: UInt): T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(((i shr 0) and 3u) + 0u, ((i shr 2) and 3u) + 0u, ((i shr 4) and 3u) + 0u, ((i shr 6) and 3u) + 0u, ((i shr 0) and 3u) + 4u, ((i shr 2) and 3u) + 4u, ((i shr 4) and 3u) + 4u, ((i shr 6) and 3u) + 4u)); _simdArg0 }
 
-public fun <Elem, T : SimdExt<T, Any?>> simdExtBsll(a: T, i: UInt): T {
+public fun <Elem, T : SimdExt<T, Elem>> simdExtBsll(a: T, i: UInt): T {
     val z = simdExtSplat(0L)
     return when (i and 0xfu) {
         0 -> {
@@ -136,7 +137,7 @@ public fun <Elem, T : SimdExt<T, Any?>> simdExtBsll(a: T, i: UInt): T {
     }
 }
 
-public fun <Elem, T : SimdExt<T, Any?>> simdExtBsrl(a: T, i: UInt): T {
+public fun <Elem, T : SimdExt<T, Elem>> simdExtBsrl(a: T, i: UInt): T {
     val z = simdExtSplat(0L)
     return when (i and 0xfu) {
         0 -> {

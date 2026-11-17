@@ -14,7 +14,7 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -156,7 +156,7 @@ public fun ConstPtr.addr(): Int {
     // reinterpret semantics, it relies on sysroot crates having special status.
     // SAFETY: Pointer-to-integer transmutes are valid (if you are okay with losing the
     // provenance).
-    return transmute(ConstPtr((this).rawAddress))
+    return transmuteWithLayouts<MutPtr, Int>(ConstPtr((this).rawAddress), PrimitiveLayouts.mutPtrLayout(64L), PrimitiveLayouts.USIZE64)
 }
 
 /**
@@ -165,7 +165,7 @@ public fun ConstPtr.addr(): Int {
  *
  * This is equivalent to `self as Int`, which semantically discards provenance information.
  * Furthermore, this (like the `as` cast) has the implicit side-effect of marking the
- * provenance as 'exposed', so on platforms that support it you can later call
+ * provenance as `exposed`, so on platforms that support it you can later call
  * [withExposedProvenance] to reconstitute the original pointer including its provenance.
  *
  * Due to its inherent ambiguity, [withExposedProvenance] may not be supported by tools
@@ -175,7 +175,7 @@ public fun ConstPtr.addr(): Int {
  *
  * On most platforms this will produce a value with the same bytes as the original pointer,
  * because all the bytes are dedicated to describing the address. Platforms which need to store
- * additional information in the pointer may not support this operation, since the 'expose'
+ * additional information in the pointer may not support this operation, since the `expose`
  * side-effect which is required for [withExposedProvenance] to work is typically not
  * available.
  *
@@ -1383,7 +1383,7 @@ public fun ConstPtr.asArray(n: Int): ConstPtr? =
  * }
  * ```
  */
-public fun <T, I> ConstPtr.getUnchecked(index: I): ConstPtr where I : SliceIndex<List<T>, Any?> {
+public fun <Output, T, I> ConstPtr.getUnchecked(index: I): ConstPtr where I : SliceIndex<List<T>, Output> {
     // SAFETY: the caller ensures that `self` is dereferenceable and `index` in-bounds.
     return index.getUnchecked(this)
 }

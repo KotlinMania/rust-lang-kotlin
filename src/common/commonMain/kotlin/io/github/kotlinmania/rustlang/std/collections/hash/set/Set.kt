@@ -919,7 +919,7 @@ public open class HashSet<T, S, A : Allocator> internal constructor(
  * val set: MutableSet<Int> = mutableSetOf()
  * ```
  */
-public fun <T> HashSet.Companion.new(): HashSet<T, RandomState, Global> = Default.default()
+public fun <T> HashSet.Companion.new(): HashSet<T, RandomState, Global> = HashSet.default()
 
 /**
  * Creates an empty `HashSet` with at least the specified capacity.
@@ -935,7 +935,7 @@ public fun <T> HashSet.Companion.new(): HashSet<T, RandomState, Global> = Defaul
  * check(set.capacity() >= 10)
  * ```
  */
-public fun <T> HashSet.Companion.withCapacity(capacity: Int): HashSet<T, RandomState, Global> = HashSet.withCapacityAndHasher(capacity, Default.default())
+public fun <T> HashSet.Companion.withCapacity(capacity: Int): HashSet<T, RandomState, Global> = HashSet.withCapacityAndHasher(capacity, HashSet.default())
 
 /**
  * Creates an empty `HashSet` in the provided allocator.
@@ -950,7 +950,7 @@ public fun <T> HashSet.Companion.withCapacity(capacity: Int): HashSet<T, RandomS
  * val set: MutableSet<Int> = HashSet.newIn(Global)
  * ```
  */
-public fun <T, A : Allocator> HashSet.Companion.newIn(alloc: A): HashSet<T, RandomState, A> = HashSet.withHasherIn(Default.default(), alloc)
+public fun <T, A : Allocator> HashSet.Companion.newIn(alloc: A): HashSet<T, RandomState, A> = HashSet.withHasherIn(HashSet.default(), alloc)
 
 /**
  * Creates an empty `HashSet` with at least the specified capacity.
@@ -967,7 +967,7 @@ public fun <T, A : Allocator> HashSet.Companion.newIn(alloc: A): HashSet<T, Rand
  * val set: MutableSet<Int> = HashSet.withCapacityIn(10, Global)
  * ```
  */
-public fun <T, A : Allocator> HashSet.Companion.withCapacityIn(capacity: Int, alloc: A): HashSet<T, RandomState, A> = HashSet.withCapacityAndHasherIn(capacity, Default.default(), alloc)
+public fun <T, A : Allocator> HashSet.Companion.withCapacityIn(capacity: Int, alloc: A): HashSet<T, RandomState, A> = HashSet.withCapacityAndHasherIn(capacity, HashSet.default(), alloc)
 
 /**
  * Creates a new empty hash set which will use the given hasher to hash
@@ -1197,7 +1197,7 @@ public open class Iter<K>(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public companion object {
-        public fun <K> default(): Iter<K> = Iter(base = Default.default())
+        public fun <K> default(): Iter<K> = Iter(base = Iter.default())
     }
 }
 
@@ -1252,7 +1252,7 @@ public open class IntoIter<K, A : Allocator> internal constructor(
     }
 }
 
-public fun <K> defaultIntoIterK(): IntoIter<K, Global> = IntoIter(base = Default.default())
+public fun <K> defaultIntoIterK(): IntoIter<K, Global> = IntoIter(base = IntoIter.default())
 
 /**
  * A draining iterator over the items of a `HashSet`.

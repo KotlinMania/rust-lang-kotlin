@@ -58,30 +58,30 @@ public class DebugStruct(
  * # Examples
  *
  * use std.thread;
- * use std.os.unix.net::{UnixStream, UnixListener};
+ * use std.os.unix.net::(UnixStream, UnixListener);
  *
- * fn handleClient(stream: UnixStream) {
+ * fn handleClient(stream: UnixStream) (
  *     // ...
- * }
+ * )
  *
- * fn main() -> std.io.Result<()> {
+ * fn main() -> std.io.Result<()> (
  *     let listener = UnixListener.bind("/path/to/the/socket")?;
  *
  *     // accept connections and process them, spawning a new thread for each one
- *     for stream in listener.incoming() {
- *         match stream {
- *             Ok(stream) => {
+ *     for stream in listener.incoming() (
+ *         match stream (
+ *             Ok(stream) => (
  *                 // connection succeeded
  *                 thread.spawn(|| handleClient(stream));
- *             }
- *             Err(err) => {
+ *             )
+ *             Err(err) => (
  *                 // connection failed
  *                 break;
- *             }
- *         }
- *     }
+ *             )
+ *         )
+ *     )
  *     Ok(())
- * }
+ * )
  * ```kotlin
  */
 public open class UnixListener(
@@ -117,15 +117,15 @@ public open class UnixListener(
      *
      * use std.os.unix.net.UnixListener;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let listener = UnixListener.bind("/path/to/the/socket")?;
      *
-     *     match listener.accept() {
-     *         Ok((socket, addr)) => println("Got a client: {addr:?}"),
-     *         Err(e) => println("accept function failed: {e:?}"),
-     *     }
+     *     match listener.accept() (
+     *         Ok((socket, addr)) => println("Got a client: (addr:?)"),
+     *         Err(e) => println("accept function failed: (e:?)"),
+     *     )
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun accept(): Result<Pair<UnixStream, SocketAddr>, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -149,11 +149,11 @@ public open class UnixListener(
      *
      * use std.os.unix.net.UnixListener;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let listener = UnixListener.bind("/path/to/the/socket")?;
      *     let listenerCopy = listener.tryClone().expect("`UnixListener.tryClone` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun tryClone(): Result<UnixListener, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.duplicate().map({ UnixListener(it) })
@@ -165,11 +165,11 @@ public open class UnixListener(
      *
      * use std.os.unix.net.UnixListener;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let listener = UnixListener.bind("/path/to/the/socket")?;
      *     let addr = listener.localAddr().expect("`UnixListener.localAddr` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun localAddr(): Result<SocketAddr, io.github.kotlinmania.rustlang.std.io.error.Error> = SocketAddr.new({ addr, len -> getsockname(this.asRawFd(), addr, len) })
@@ -187,11 +187,11 @@ public open class UnixListener(
      *
      * use std.os.unix.net.UnixListener;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let listener = UnixListener.bind("/path/to/the/socket")?;
      *     listener.setNonblocking(true).expect("`UnixListener.setNonblocking` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setNonblocking(nonblocking)
@@ -203,20 +203,20 @@ public open class UnixListener(
      *
      * use std.os.unix.net.UnixListener;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let listener = UnixListener.bind("/tmp/sock")?;
      *
-     *     if let Ok(Some(err)) = listener.takeError() {
-     *         println("Got error: {err:?}");
-     *     }
+     *     if let Ok(Some(err)) = listener.takeError() (
+     *         println("Got error: (err:?)");
+     *     )
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      *
      * On Redox this always returns `None`.
      * ```
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.takeError()
 
     /**
      * Returns an iterator over incoming connections.
@@ -227,27 +227,27 @@ public open class UnixListener(
      * # Examples
      *
      * use std.thread;
-     * use std.os.unix.net::{UnixStream, UnixListener};
+     * use std.os.unix.net::(UnixStream, UnixListener);
      *
-     * fn handleClient(stream: UnixStream) {
+     * fn handleClient(stream: UnixStream) (
      *     // ...
-     * }
+     * )
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let listener = UnixListener.bind("/path/to/the/socket")?;
      *
-     *     for stream in listener.incoming() {
-     *         match stream {
-     *             Ok(stream) => {
+     *     for stream in listener.incoming() (
+     *         match stream (
+     *             Ok(stream) => (
      *                 thread.spawn(|| handleClient(stream));
-     *             }
-     *             Err(err) => {
+     *             )
+     *             Err(err) => (
      *                 break;
-     *             }
-     *         }
-     *     }
+     *             )
+     *         )
+     *     )
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun incoming(): Incoming = Incoming(listener = this)
@@ -268,13 +268,13 @@ public open class UnixListener(
          *
          * use std.os.unix.net.UnixListener;
          *
-         * let listener = match UnixListener.bind("/path/to/the/socket") {
+         * let listener = match UnixListener.bind("/path/to/the/socket") (
          *     Ok(sock) => sock,
-         *     Err(e) => {
-         *         println("Couldn't connect: {e:?}");
+         *     Err(e) => (
+         *         println("Couldn't connect: (e:?)");
          *         return
-         *     }
-         * };
+         *     )
+         * );
          * ```kotlin
          */
         public fun bind(path: Path): Result<UnixListener, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -292,20 +292,20 @@ public open class UnixListener(
          *
          * # Examples
          *
-         * use std.os.unix.net::{SocketAddr, UnixListener};
+         * use std.os.unix.net::(SocketAddr, UnixListener);
          *
-         * fn main() -> std.io.Result<()> {
+         * fn main() -> std.io.Result<()> (
          *     let addr = SocketAddr.fromPathname("path/to/socket")?;
          *
-         *     let listener = match UnixListener.bindAddr(&addr) {
+         *     let listener = match UnixListener.bindAddr(&addr) (
          *         Ok(sock) => sock,
-         *         Err(err) => {
-         *             println("Couldn't bind: {err:?}");
+         *         Err(err) => (
+         *             println("Couldn't bind: (err:?)");
          *             return Err(err);
-         *         }
-         *     };
+         *         )
+         *     );
          *     Ok(())
-         * }
+         * )
          * ```kotlin
          */
         public fun bindAddr(socketAddr: SocketAddr): Result<UnixListener, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -336,27 +336,27 @@ public fun fromOwnedFd(listener: UnixListener): OwnedFd = listener.value.intoInn
  * # Examples
  *
  * use std.thread;
- * use std.os.unix.net::{UnixStream, UnixListener};
+ * use std.os.unix.net::(UnixStream, UnixListener);
  *
- * fn handleClient(stream: UnixStream) {
+ * fn handleClient(stream: UnixStream) (
  *     // ...
- * }
+ * )
  *
- * fn main() -> std.io.Result<()> {
+ * fn main() -> std.io.Result<()> (
  *     let listener = UnixListener.bind("/path/to/the/socket")?;
  *
- *     for stream in listener.incoming() {
- *         match stream {
- *             Ok(stream) => {
+ *     for stream in listener.incoming() (
+ *         match stream (
+ *             Ok(stream) => (
  *                 thread.spawn(|| handleClient(stream));
- *             }
- *             Err(err) => {
+ *             )
+ *             Err(err) => (
  *                 break;
- *             }
- *         }
- *     }
+ *             )
+ *         )
+ *     )
  *     Ok(())
- * }
+ * )
  * ```kotlin
  */
 public open class Incoming(

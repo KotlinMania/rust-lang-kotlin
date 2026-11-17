@@ -1,6 +1,7 @@
 // port-lint: tests x86/sse41.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 
 // Streaming SIMD Extensions 4.1 (SSE4.1)

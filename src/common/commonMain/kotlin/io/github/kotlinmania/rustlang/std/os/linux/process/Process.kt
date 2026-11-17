@@ -33,7 +33,7 @@ import io.github.kotlinmania.rustlang.std.sys.process.unix.pidfd.PidFd as InnerP
  * # Examples
  *
  * @file:feature(linuxPidfd)
- * use std.os.linux.process::{CommandExt, ChildExt};
+ * use std.os.linux.process::(CommandExt, ChildExt);
  * use std.process.Command;
  *
  * let mut child = Command.new("echo")

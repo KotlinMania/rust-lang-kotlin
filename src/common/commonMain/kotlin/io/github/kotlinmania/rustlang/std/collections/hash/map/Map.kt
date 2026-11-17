@@ -906,7 +906,11 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
                     Result.Ok<V, OccupiedError<K, V, A>>(value1)
                 }
                 else -> {
-                    Result.Err<V, OccupiedError<K, V, A>>(OccupiedError(entry = OccupiedEntry(base = entry), key = key, value = value))
+                    val errorVal = matchVal.error
+                    val entry = errorVal.entry
+                    val key1 = errorVal.key
+                    val value2 = errorVal.value
+                    Result.Err<V, OccupiedError<K, V, A>>(OccupiedError(entry = OccupiedEntry(base = entry), key = key1, value = value2))
                 }
             }
         }
@@ -999,6 +1003,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
     }
 
     public open fun extendOne(tupleArg0: Pair<K, V>) {
+        val (k, v) = tupleArg0
         this.base.insert(k, v)
     }
 
@@ -1011,6 +1016,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
     }
 
     public open fun extendOneKV(tupleArg0: Pair<K, V>) {
+        val (k, v) = tupleArg0
         this.base.insert(k, v)
     }
 
@@ -1099,7 +1105,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
  * var map: MutableMap<String, Int> = mutableMapOf()
  * ```
  */
-public fun <K, V> HashMap.Companion.new(): HashMap<K, V, RandomState, Global> = Default.default()
+public fun <K, V> HashMap.Companion.new(): HashMap<K, V, RandomState, Global> = HashMap.default()
 
 /**
  * Creates an empty `HashMap` with at least the specified capacity.
@@ -1114,7 +1120,7 @@ public fun <K, V> HashMap.Companion.new(): HashMap<K, V, RandomState, Global> = 
  * var map: MutableMap<String, Int> = mutableMapOf()
  * ```
  */
-public fun <K, V> HashMap.Companion.withCapacity(capacity: Int): HashMap<K, V, RandomState, Global> = HashMap.withCapacityAndHasher(capacity, Default.default())
+public fun <K, V> HashMap.Companion.withCapacity(capacity: Int): HashMap<K, V, RandomState, Global> = HashMap.withCapacityAndHasher(capacity, HashMap.default())
 
 /**
  * Creates an empty `HashMap` using the given allocator.
@@ -1130,7 +1136,7 @@ public fun <K, V> HashMap.Companion.withCapacity(capacity: Int): HashMap<K, V, R
  * val map: MutableMap<Int, Int> = HashMap.newIn(Global)
  * ```
  */
-public fun <K, V, A : Allocator> HashMap.Companion.newIn(alloc: A): HashMap<K, V, RandomState, A> = HashMap.withHasherIn(Default.default(), alloc)
+public fun <K, V, A : Allocator> HashMap.Companion.newIn(alloc: A): HashMap<K, V, RandomState, A> = HashMap.withHasherIn(HashMap.default(), alloc)
 
 /**
  * Creates an empty `HashMap` with at least the specified capacity using
@@ -1148,7 +1154,7 @@ public fun <K, V, A : Allocator> HashMap.Companion.newIn(alloc: A): HashMap<K, V
  * val map: MutableMap<Int, Int> = HashMap.withCapacityIn(10, Global)
  * ```
  */
-public fun <K, V, A : Allocator> HashMap.Companion.withCapacityIn(capacity: Int, alloc: A): HashMap<K, V, RandomState, A> = HashMap.withCapacityAndHasherIn(capacity, Default.default(), alloc)
+public fun <K, V, A : Allocator> HashMap.Companion.withCapacityIn(capacity: Int, alloc: A): HashMap<K, V, RandomState, A> = HashMap.withCapacityAndHasherIn(capacity, HashMap.default(), alloc)
 
 /**
  * Creates an empty `HashMap` which will use the given hash builder to hash
@@ -1281,7 +1287,7 @@ public open class Iter<K, V>(
     public open fun len(): Int = this.base.len()
 
     public companion object {
-        public fun <K, V> default(): Iter<K, V> = Iter(base = Default.default())
+        public fun <K, V> default(): Iter<K, V> = Iter(base = Iter.default())
     }
 }
 
@@ -1330,7 +1336,7 @@ public open class IterMut<K, V>(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
     public companion object {
-        public fun <K, V> default(): IterMut<K, V> = IterMut(base = Default.default())
+        public fun <K, V> default(): IterMut<K, V> = IterMut(base = IterMut.default())
     }
 }
 
@@ -1390,7 +1396,7 @@ public open class IntoIter<K, V, A : Allocator> internal constructor(
     }
 }
 
-public fun <K, V> defaultIntoIterKV(): IntoIter<K, V, Global> = IntoIter(base = Default.default())
+public fun <K, V> defaultIntoIterKV(): IntoIter<K, V, Global> = IntoIter(base = IntoIter.default())
 
 /**
  * An iterator over the keys of a `HashMap`.
@@ -1435,7 +1441,7 @@ public open class Keys<K, V>(
     public open fun len(): Int = this.inner.len()
 
     public companion object {
-        public fun <K, V> default(): Keys<K, V> = Keys(inner = Default.default())
+        public fun <K, V> default(): Keys<K, V> = Keys(inner = Iter.default())
     }
 }
 
@@ -1482,7 +1488,7 @@ public open class Values<K, V>(
     public open fun len(): Int = this.inner.len()
 
     public companion object {
-        public fun <K, V> default(): Values<K, V> = Values(inner = Default.default())
+        public fun <K, V> default(): Values<K, V> = Values(inner = Iter.default())
     }
 }
 
@@ -1624,7 +1630,7 @@ public open class ValuesMut<K, V>(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, value) -> value })).finish()
 
     public companion object {
-        public fun <K, V> default(): ValuesMut<K, V> = ValuesMut(inner = Default.default())
+        public fun <K, V> default(): ValuesMut<K, V> = ValuesMut(inner = IterMut.default())
     }
 }
 
@@ -1679,7 +1685,7 @@ public open class IntoKeys<K, V, A : Allocator> internal constructor(
     }
 }
 
-public fun <K, V> defaultIntoKeysKV(): IntoKeys<K, V, Global> = IntoKeys(inner = Default.default())
+public fun <K, V> defaultIntoKeysKV(): IntoKeys<K, V, Global> = IntoKeys(inner = IntoIter.default())
 
 /**
  * An owning iterator over the values of a `HashMap`.
@@ -1732,7 +1738,7 @@ public open class IntoValues<K, V, A : Allocator> internal constructor(
     }
 }
 
-public fun <K, V> defaultIntoValuesKV(): IntoValues<K, V, Global> = IntoValues(inner = Default.default())
+public fun <K, V> defaultIntoValuesKV(): IntoValues<K, V, Global> = IntoValues(inner = IntoIter.default())
 
 /**
  * A view into a single entry in a map, which may either be vacant or occupied.

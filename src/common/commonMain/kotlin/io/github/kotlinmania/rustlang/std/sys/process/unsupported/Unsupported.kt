@@ -163,7 +163,7 @@ public open class Command(
         }
 
     public companion object {
-        public fun new(program: OsStr): Command = Command(program = program.toOwned(), args = mutableListOf(program.toOwned()), env = Default.default(), cwd = null, stdin = null, stdout = null, stderr = null)
+        public fun new(program: OsStr): Command = Command(program = program.toOwned(), args = mutableListOf(program.toOwned()), env = CommandEnv.default(), cwd = null, stdin = null, stdout = null, stderr = null)
     }
 }
 

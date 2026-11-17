@@ -15,6 +15,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
@@ -163,7 +164,7 @@ public open class Buf internal constructor(
         public fun withCapacity(capacity: Int, fieldLayout: TypeLayout<Wtf8Buf> = UnresolvedTypeLayout()): Buf = Buf(inner = Wtf8Buf.withCapacity(capacity), fieldLayout = fieldLayout)
 
         public fun fromBox(boxed: Slice, fieldLayout: TypeLayout<Wtf8Buf> = UnresolvedTypeLayout()): Buf {
-            val inner: Wtf8 = transmute(boxed)
+            val inner: Wtf8 = transmuteWithLayouts<Slice, Wtf8>(boxed, UnresolvedTypeLayout<Slice>(), UnresolvedTypeLayout<Wtf8>())
             return Buf(inner = Wtf8Buf.fromBox(inner), fieldLayout = fieldLayout)
         }
     }

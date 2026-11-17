@@ -52,9 +52,9 @@ public fun String.eq(other: String): Boolean = this.encodeToByteArray().map { it
  */
 public fun String.partialCmp(other: String): Ordering? = this.cmp(other)
 
-public fun <I> String.index(index: I): Output where I : SliceIndex<String, Any?> = index.index(this)
+public fun <Output, I> String.index(index: I): Output where I : SliceIndex<String, Output> = index.index(this)
 
-public fun <I> String.indexMut(index: I): Output where I : SliceIndex<String, Any?> = index.indexMut(this)
+public fun <Output, I> String.indexMut(index: I): Output where I : SliceIndex<String, Output> = index.indexMut(this)
 
 /**
  * Implements substring slicing with syntax `self[..]` or `self[..]`.

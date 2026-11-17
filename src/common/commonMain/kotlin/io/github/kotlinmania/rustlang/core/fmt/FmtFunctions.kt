@@ -147,7 +147,7 @@ public fun write(output: Write, fmt: Arguments): Result {
             // Having this as a separate case improves performance for the common case.
             // SAFETY: We can assume the template only refers to arguments that exist.
             run {
-                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, FormattingOptions.new()))) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
+                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, FormattingOptions.new()))) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
             }
             argIndex += 1
         } else {
@@ -190,7 +190,7 @@ public fun write(output: Write, fmt: Arguments): Result {
             }
             // SAFETY: We can assume the template only refers to arguments that exist.
             run {
-                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, opt))) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
+                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, opt))) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
             }
             argIndex += 1
         }
@@ -292,14 +292,14 @@ public fun <T> ConstPtr.fmt(f: Formatter, typeLayoutT: TypeLayout<T> = Unresolve
     }
 }
 
-public fun <T> MutPtr.fmt(f: Formatter, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result = (constPtrFromRustCast((typeLayoutT).readNative((this).rawAddress))).fmt(f)
+public fun <T> MutPtr.fmt(f: Formatter, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result = f.append(((constPtrFromRustCast((typeLayoutT).readNative((this).rawAddress)))).toString())
 
-public fun <T> T.fmt(f: Formatter): Result = (constPtrFromRustCast(this)).fmt(f)
+public fun <T> T.fmt(f: Formatter): Result = f.append(((constPtrFromRustCast(this))).toString())
 
 // Implementation of Display/Debug for various core types
-public fun ConstPtr.fmt(f: Formatter): Result = this.fmt(f)
+public fun ConstPtr.fmt(f: Formatter): Result = f.append((this).toString())
 
-public fun MutPtr.fmt(f: Formatter): Result = this.fmt(f)
+public fun MutPtr.fmt(f: Formatter): Result = f.append((this).toString())
 
 public fun <E : Debug, D : Debug, C : Debug, B : Debug, A : Debug, Z : Debug, Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmt(f: Formatter): Result {
     val builder = DebugTuple(f, "")

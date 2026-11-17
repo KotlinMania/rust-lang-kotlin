@@ -1,23 +1,23 @@
 // port-lint: source fs.rs
 package io.github.kotlinmania.rustlang.std.fs
 
+import io.github.kotlinmania.rustlang.alloc.io.buffered.bufreader.BufReader
+import io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter.BufWriter
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.io.IoHandle
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.seek.Seek
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
+import io.github.kotlinmania.rustlang.core.io.seek.streamLenDefault
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.BufReader
-import io.github.kotlinmania.rustlang.std.io.BufWriter
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.defaultReadToEnd
 import io.github.kotlinmania.rustlang.std.io.defaultReadToString
-import io.github.kotlinmania.rustlang.std.io.streamLenDefault
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.AsInner
@@ -1714,7 +1714,7 @@ public open class Metadata(
      * use std.path.Path;
      * use std.os.unix.fs.symlink;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let linkPath = Path.new("link");
      *     symlink("/originDoesNotExist/", linkPath)?;
      *
@@ -1722,7 +1722,7 @@ public open class Metadata(
      *
      *     assert(metadata.isSymlink());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun isSymlink(): Boolean = this.fileType().isSymlink()
@@ -2785,7 +2785,10 @@ public open class DirBuilder(
             run {
                 val matchVal = this.inner.mkdir(ancestor)
                 when {
-                    matchVal is Result.Ok -> { break }
+                    matchVal is Result.Ok -> {
+                        val valueVal = matchVal.value
+                        break
+                    }
                     matchVal is Result.Err && (matchVal as Result.Err).error.kind() == ErrorKind.NotFound -> {
                         val e = matchVal.error
                         uncreatedDirs += 1
@@ -3368,7 +3371,7 @@ public fun copy(from: Path, to: Path): Result<ULong, io.github.kotlinmania.rustl
  * limited to just these cases:
  *
  * * The `original` path is not a file or doesn't exist.
- * * The 'link' path already exists.
+ * * The `link` path already exists.
  *
  * # Examples
  *

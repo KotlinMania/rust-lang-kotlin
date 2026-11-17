@@ -120,8 +120,9 @@ public sealed class IndexResult {
  * in a `BTreeMap` is.
  */
 public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.BorrowType, K, V, Q> NodeRef<BorrowType, K, V, LeafOrInternal>.searchTree(key: Q): SearchResult<BorrowType, K, V, LeafOrInternal, Leaf> where K : Borrow<Q> {
+    var selfMut = this
     while (true) {
-        this = when (val matchVal = this.searchNode(key)) {
+        selfMut = when (val matchVal = selfMut.searchNode(key)) {
             is Found -> {
                 val (handle) = matchVal
                 return Found(handle)
@@ -161,6 +162,7 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
  * The result is meaningful only if the tree is ordered by key.
  */
 public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.BorrowType, K, V, Q, R> NodeRef<BorrowType, K, V, LeafOrInternal>.searchTreeForBifurcation(range: R, isSetValVFn: () -> V): Result<List<Any?>, Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>> where K : Borrow<Q>, R : RangeBounds<Q> {
+    var selfMut = this
     // Determine if map or set is being searched
     val isSet = isSetValVFn()
     // Inlining these variables should be avoided. We assume the bounds reported by `range`
@@ -193,14 +195,14 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
     var lowerBound = SearchBound.fromRange(start)
     var upperBound = SearchBound.fromRange(end)
     while (true) {
-        val (lowerEdgeIdx, lowerChildBound) = this.findLowerBoundIndex(lowerBound)
-        val (upperEdgeIdx, upperChildBound) = this.findUpperBoundIndex(upperBound, lowerEdgeIdx)
+        val (lowerEdgeIdx, lowerChildBound) = selfMut.findLowerBoundIndex(lowerBound)
+        val (upperEdgeIdx, upperChildBound) = selfMut.findUpperBoundIndex(upperBound, lowerEdgeIdx)
         if (lowerEdgeIdx < upperEdgeIdx) {
-            return Result.Ok<List<Any?>, Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>>(listOf(this, lowerEdgeIdx, upperEdgeIdx, lowerChildBound, upperChildBound))
+            return Result.Ok<List<Any?>, Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>>(listOf(selfMut, lowerEdgeIdx, upperEdgeIdx, lowerChildBound, upperChildBound))
         }
         check(lowerEdgeIdx == upperEdgeIdx)
         // ignore-tidy-undocumented-unchecked
-        val commonEdge = Handle.newEdge(this, lowerEdgeIdx)
+        val commonEdge = Handle.newEdge(selfMut, lowerEdgeIdx)
         when (val matchVal1 = commonEdge.force()) {
             is io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf -> {
                 val (commonEdge1) = matchVal1
@@ -208,7 +210,7 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
             }
             is Internal -> {
                 val (commonEdge2) = matchVal1
-                this = commonEdge2.descend()
+                selfMut = commonEdge2.descend()
                 lowerBound = lowerChildBound
                 upperBound = upperChildBound
             }

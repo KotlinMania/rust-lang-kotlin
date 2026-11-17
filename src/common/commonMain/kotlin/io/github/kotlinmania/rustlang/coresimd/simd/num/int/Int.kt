@@ -15,7 +15,7 @@ public interface SimdInt<SelfType, out Mask, out Scalar, out Unsigned, out Cast>
      * This follows the semantics of Rust's `as` conversion for casting integers (wrapping to
      * other integer types, and saturating to float types).
      */
-    public fun <T : SimdCast> cast(): Cast
+    public fun <Mask, T : SimdCast<Mask>> cast(): Cast
 
     /**
      * Lanewise saturating add.
@@ -235,7 +235,7 @@ public interface SimdInt<SelfType, out Mask, out Scalar, out Unsigned, out Cast>
     public fun trailingOnes(): Unsigned
 }
 
-public fun <T : SimdCast> Simd<Byte>.cast(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
+public fun <Mask, T : SimdCast<Mask>> Simd<Byte>.cast(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
 
 public fun Simd<Byte>.saturatingAdd(second: Simd<Byte>, n: Int): Simd<Byte> = run { val _simdArg0 = this; val _simdArg1 = second; _simdArg0 }
 

@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.time.unix
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -14,7 +15,6 @@ import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.KernReturnT
 import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_MONOTONIC
 import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_REALTIME
 import io.github.kotlinmania.rustlang.libc.wasi.ClockidT
-import io.github.kotlinmania.rustlang.std.io.Error
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.Timespec
 

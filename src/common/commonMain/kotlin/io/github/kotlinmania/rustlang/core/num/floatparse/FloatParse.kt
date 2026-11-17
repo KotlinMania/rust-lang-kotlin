@@ -21,7 +21,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * * '.5', or, equivalently, '0.5'
  * * '7'
  * * '007'
- * * 'inf', '-inf', '+infinity', 'NaN'
+ * * `inf`, '-inf', '+infinity', `NaN`
  *
  * Note that alphabetical characters are not case-sensitive.
  *
@@ -33,7 +33,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * lowercased will result in an [Ok] being returned:
  *
  * ```kotlin
- * Float  ::= Sign? ( 'inf' | 'infinity' | 'nan' | Number )
+ * Float  ::= Sign? ( `inf` | `infinity` | `nan` | Number )
  * Number ::= ( Digit+ |
  * Digit + '.' Digit * |
  *              Digit* '.' Digit+ ) Exp?
@@ -72,7 +72,7 @@ public fun fromStrF16(src: String): Result<F16, ParseFloatError> = dec2flt.dec2f
  * * '.5', or, equivalently, '0.5'
  * * '7'
  * * '007'
- * * 'inf', '-inf', '+infinity', 'NaN'
+ * * `inf`, '-inf', '+infinity', `NaN`
  *
  * Note that alphabetical characters are not case-sensitive.
  *
@@ -84,7 +84,7 @@ public fun fromStrF16(src: String): Result<F16, ParseFloatError> = dec2flt.dec2f
  * lowercased will result in an [Ok] being returned:
  *
  * ```kotlin
- * Float  ::= Sign? ( 'inf' | 'infinity' | 'nan' | Number )
+ * Float  ::= Sign? ( `inf` | `infinity` | `nan` | Number )
  * Number ::= ( Digit+ |
  * Digit + '.' Digit * |
  *              Digit* '.' Digit+ ) Exp?
@@ -123,7 +123,7 @@ public fun fromStrFloat(src: String): Result<kotlin.Float, ParseFloatError> = de
  * * '.5', or, equivalently, '0.5'
  * * '7'
  * * '007'
- * * 'inf', '-inf', '+infinity', 'NaN'
+ * * `inf`, '-inf', '+infinity', `NaN`
  *
  * Note that alphabetical characters are not case-sensitive.
  *
@@ -135,7 +135,7 @@ public fun fromStrFloat(src: String): Result<kotlin.Float, ParseFloatError> = de
  * lowercased will result in an [Ok] being returned:
  *
  * ```kotlin
- * Float  ::= Sign? ( 'inf' | 'infinity' | 'nan' | Number )
+ * Float  ::= Sign? ( `inf` | `infinity` | `nan` | Number )
  * Number ::= ( Digit+ |
  * Digit + '.' Digit * |
  *              Digit* '.' Digit+ ) Exp?

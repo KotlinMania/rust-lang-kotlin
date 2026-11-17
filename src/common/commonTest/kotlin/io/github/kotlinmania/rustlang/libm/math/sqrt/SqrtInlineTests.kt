@@ -15,7 +15,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 /**
  * Test behavior specified in IEEE 754 `squareRoot`.
  */
-public fun <Int, SignedInt, ISet1, ISet2, D, F> specTest() where F : Float<F, Any?, Any?>, F : SqrtHelper<F, Any?, Any?> {
+public fun <Int, SignedInt, ISet1, ISet2, D, OtherSign, Unsigned, F> specTest() where F : Float<F, Int, SignedInt>, F : SqrtHelper<F, ISet1, ISet2, Int, SignedInt> {
     // Values that should return a NaN and raise invalid
     val nan = listOf(F.NEG_INFINITY, F.NEG_ONE, F.NAN, F.MIN)
     // Values that return unaltered

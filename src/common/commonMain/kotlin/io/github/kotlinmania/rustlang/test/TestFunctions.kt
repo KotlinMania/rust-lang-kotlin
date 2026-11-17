@@ -55,12 +55,12 @@ public fun testMain(args: List<String>, tests: List<TestDescAndFn>): ExitCode {
 public fun testMainInner(args: List<String>, tests: TestList, options: Options?): ExitCode {
     var opts =
         when (val matchVal = parseOpts(args)) {
-            is Result.Ok -> {
-                val o = (matchVal as Result.Ok).value
+            is Result.Ok<*, *> -> {
+                val o = (matchVal as Result.Ok<*, *>).value
                 o
             }
-            is Result.Err -> {
-                val msg = (matchVal as Result.Err).error
+            is Result.Err<*, *> -> {
+                val msg = (matchVal as Result.Err<*, *>).error
                 println("error: $msg")
                 return ERROR_EXIT_CODE.into()
             }
@@ -124,8 +124,13 @@ public fun testMainInner(args: List<String>, tests: TestList, options: Options?)
         // Prevent Valgrind from reporting reachable blocks in users' unit tests.
         (panic.takeHook()).let { }
         when {
-            res is Result.Ok && res.value == true -> {}
-            res is Result.Ok && res.value == false -> { return ExitCode.from(ERROR_EXIT_CODE) }
+            res is Result.Ok && res.value == true -> {
+                val valueVal = res.value
+            }
+            res is Result.Ok && res.value == false -> {
+                val valueVal1 = res.value
+                return ExitCode.from(ERROR_EXIT_CODE)
+            }
             else -> {
                 val e1 = res.error
                 println("error: io error when listing tests: $e")
@@ -221,12 +226,12 @@ public fun testMainEnvArgsAbort(tests: List<TestDescAndFn>): ExitCode {
 public fun printMergedDoctestsTimes(args: List<String>, totalTime: Double, compilationTime: Double) {
     val opts =
         when (val matchVal = parseOpts(args)) {
-            is Result.Ok -> {
-                val o = (matchVal as Result.Ok).value
+            is Result.Ok<*, *> -> {
+                val o = (matchVal as Result.Ok<*, *>).value
                 o
             }
-            is Result.Err -> {
-                val msg = (matchVal as Result.Err).error
+            is Result.Err<*, *> -> {
+                val msg = (matchVal as Result.Err<*, *>).error
                 println("error: $msg")
                 exit(ERROR_EXIT_CODE.into())
             }
@@ -403,7 +408,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
                         }
                         when {
                             res is Result.Err && res.error == RecvTimeoutError.Timeout -> {
-                                // Result is not yet ready, continue waiting.
+                                val errorVal = res.error
                             }
                             else -> {
                                 // We've got a result, stop the loop.
@@ -659,11 +664,19 @@ public fun runTestInProcess(id: TestId, desc: TestDesc, nocapture: Boolean, repo
 
 public fun <T, E> foldErr(result: Result<Result<T, E>, RustAny>): Result<T, RustAny> =
     when {
-        result is Result.Ok && result.value is Result.Err -> Result.Err<T, RustAny>(e)
-        result is Result.Ok && result.value is Result.Ok -> Result.Ok<T, RustAny>(v)
-        else -> {
-            val e = result.error
+        result is Result.Ok && result.value is Result.Err -> {
+            val valueVal = result.value
+            val e = (valueVal as Result.Err).error
             Result.Err<T, RustAny>(e)
+        }
+        result is Result.Ok && result.value is Result.Ok -> {
+            val valueVal1 = result.value
+            val v = (valueVal1 as Result.Ok).value
+            Result.Ok<T, RustAny>(v)
+        }
+        else -> {
+            val e1 = result.error
+            Result.Err<T, RustAny>(e1)
         }
     }
 

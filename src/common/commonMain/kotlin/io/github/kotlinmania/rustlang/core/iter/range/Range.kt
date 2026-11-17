@@ -78,7 +78,7 @@ public interface Step<T> {
      * For any `a`, `n`, and `m`:
      *
      * * `Step.forwardChecked(a, n).andThen(| x | Step.forwardChecked(x, m)) == Step.forwardChecked(a, m).andThen(| x | Step.forwardChecked(x, n))`
-     * * `Step.forwardChecked(a, n).andThen(| x | Step.forwardChecked(x, m)) == try { Step.forwardChecked(a, n.checkedAdd(m)) }`
+     * * `Step.forwardChecked(a, n).andThen(| x | Step.forwardChecked(x, m)) == try ( Step.forwardChecked(a, n.checkedAdd(m)) )`
      *
      * For any `a` and `n`:
      *
@@ -109,7 +109,7 @@ public interface Step<T> {
      *
      * For any `a` and `n`:
      *
-     * * `Step.forwardOverflowing(a, n) == (0 .. n).fold((a, false), |(x, y), _ | { val (s, o) = Step.forwardOverflowing(x, 1); (s, y || o) })`
+     * * `Step.forwardOverflowing(a, n) == (0 .. n).fold((a, false), |(x, y), _ | ( val (s, o) = Step.forwardOverflowing(x, 1); (s, y || o) ))`
      *   * Corollary: `Step.forwardOverflowing(a, 0) == (a, false)`
      */
     public fun forwardOverflowing(start: T, count: Int): Pair<T, Boolean>
@@ -177,7 +177,7 @@ public interface Step<T> {
      * For any `a`, `n`, and `m`:
      *
      * * `Step.backwardChecked(a, n).andThen(| x | Step.backwardChecked(x, m)) == n.checkedAdd(m).andThen(| x | Step.backwardChecked(a, x))`
-     * * `Step.backwardChecked(a, n).andThen(| x | Step.backwardChecked(x, m)) == try { Step.backwardChecked(a, n.checkedAdd(m)) }`
+     * * `Step.backwardChecked(a, n).andThen(| x | Step.backwardChecked(x, m)) == try ( Step.backwardChecked(a, n.checkedAdd(m)) )`
      *
      * For any `a` and `n`:
      *
@@ -208,7 +208,7 @@ public interface Step<T> {
      *
      * For any `a` and `n`:
      *
-     * * `Step.backwardOverflowing(a, n) == (0 .. n).fold((a, false), |(x, y), _ | { val (s, o) = Step.backwardOverflowing(x, 1); (s, y || o) })`
+     * * `Step.backwardOverflowing(a, n) == (0 .. n).fold((a, false), |(x, y), _ | ( val (s, o) = Step.backwardOverflowing(x, 1); (s, y || o) ))`
      *   * Corollary: `Step.backwardOverflowing(a, 0) == (a, false)`
      */
     public fun backwardOverflowing(start: T, count: Int): Pair<T, Boolean>
@@ -1810,12 +1810,12 @@ public fun <A : Step<A>> RangeFrom<A>.nth(n: Int): A? {
 // Safety: See above implementation for `ops.Range<A>`
 
 public interface RangeInclusiveIteratorImpl<Item> {
-    public fun <B, R> specTryFold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Any?>
+    public fun <Residual, B, R> specTryFold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Residual>
 
-    public fun <B, R> specTryRfold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Any?>
+    public fun <Residual, B, R> specTryRfold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Residual>
 }
 
-public fun <A : Step<A>, B, R> RangeInclusive<A>.specTryFold(init: B, f: (B, A) -> R): R where R : Try<R, B, Any?> {
+public fun <Residual, A : Step<A>, B, R> RangeInclusive<A>.specTryFold(init: B, f: (B, A) -> R): R where R : Try<R, B, Residual> {
     if (this.isEmpty()) {
         return init
     }
@@ -1832,7 +1832,7 @@ public fun <A : Step<A>, B, R> RangeInclusive<A>.specTryFold(init: B, f: (B, A) 
     return accum
 }
 
-public fun <A : Step<A>, B, R> RangeInclusive<A>.specTryRfold(init: B, f: (B, A) -> R): R where R : Try<R, B, Any?> {
+public fun <Residual, A : Step<A>, B, R> RangeInclusive<A>.specTryRfold(init: B, f: (B, A) -> R): R where R : Try<R, B, Residual> {
     if (this.isEmpty()) {
         return init
     }
@@ -1849,7 +1849,7 @@ public fun <A : Step<A>, B, R> RangeInclusive<A>.specTryRfold(init: B, f: (B, A)
     return accum
 }
 
-public fun <T : TrustedStep<T>, B, R> RangeInclusive<T>.specTryFold(init: B, f: (B, T) -> R): R where R : Try<R, B, Any?> {
+public fun <Residual, T : TrustedStep<T>, B, R> RangeInclusive<T>.specTryFold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> {
     if (this.isEmpty()) {
         return init
     }
@@ -1867,7 +1867,7 @@ public fun <T : TrustedStep<T>, B, R> RangeInclusive<T>.specTryFold(init: B, f: 
     return accum
 }
 
-public fun <T : TrustedStep<T>, B, R> RangeInclusive<T>.specTryRfold(init: B, f: (B, T) -> R): R where R : Try<R, B, Any?> {
+public fun <Residual, T : TrustedStep<T>, B, R> RangeInclusive<T>.specTryRfold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> {
     if (this.isEmpty()) {
         return init
     }
@@ -1924,7 +1924,7 @@ public fun <A : Step<A>> RangeInclusive<A>.nth(n: Int): A? {
     }
 }
 
-public fun <A : Step<A>, B, R> RangeInclusive<A>.tryFold(init: B, f: (B, A) -> R): R where R : Try<R, B, Any?> = this.specTryFold(init, f)
+public fun <Residual, A : Step<A>, B, R> RangeInclusive<A>.tryFold(init: B, f: (B, A) -> R): R where R : Try<R, B, Residual> = this.specTryFold(init, f)
 
 public fun <A : Step<A>, Aaa> RangeInclusive<A>.fold(init: Aaa, fold: (Aaa, A) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
 
@@ -1960,7 +1960,7 @@ public fun <A : Step<A>> RangeInclusive<A>.nthBack(n: Int): A? {
     }
 }
 
-public fun <A : Step<A>, B, R> RangeInclusive<A>.tryRfold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Any?> = this.specTryRfold(init, f)
+public fun <Residual, A : Step<A>, B, R> RangeInclusive<A>.tryRfold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Residual> = this.specTryRfold(init, f)
 
 public fun <A : Step<A>, Aaa> RangeInclusive<A>.rfold(init: Aaa, fold: (Aaa, Item) -> Aaa): Aaa = this.tryRfold(init, NeverShortCircuit.wrapMut2(fold)).first
 

@@ -34,7 +34,7 @@ public class DebugTuple(
  * Core of an iterator that merges the output of two strictly ascending iterators,
  * for instance a union or a symmetric difference.
  */
-public open class MergeIterInner<I> internal constructor(
+public open class MergeIterInner<I, Item> internal constructor(
     public var a: I,
     public var b: I,
     peekedCtorArg: Peeked<I>?,
@@ -42,7 +42,7 @@ public open class MergeIterInner<I> internal constructor(
     public var peeked: Peeked<I>? = peekedCtorArg
         internal set
 
-    public open fun clone(): MergeIterInner<I> = MergeIterInner(a = this.a.clone(), b = this.b.clone(), peeked = this.peeked)
+    public open fun clone(): MergeIterInner<I, Item> = MergeIterInner(a = this.a.clone(), b = this.b.clone(), peeked = this.peeked)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "MergeIterInner").field(this.a).field(this.b).field(this.peeked).finish()
 
@@ -55,7 +55,7 @@ public open class MergeIterInner<I> internal constructor(
      * contains a value, iteration has finished and subsequent calls will
      * return the same empty pair.
      */
-    public open fun nexts(cmp: (I.Item, I.Item) -> Ordering): Pair<Item?, Item?> {
+    public open fun nexts(cmp: (Item, Item) -> Ordering): Pair<Item?, Item?> {
         var aNext: Any?
         var bNext: Any?
         when (val matchVal = this.peeked.also { this.peeked = null }) {
@@ -97,11 +97,11 @@ public open class MergeIterInner<I> internal constructor(
         }
 
     public companion object {
-        public operator fun <I> invoke(
+        public operator fun <I, Item> invoke(
             a: I,
             b: I,
             peeked: Peeked<I>?,
-        ): MergeIterInner<I> = MergeIterInner<I>(
+        ): MergeIterInner<I, Item> = MergeIterInner<I, Item>(
             a = a,
             b = b,
             peekedCtorArg = peeked,
@@ -110,7 +110,7 @@ public open class MergeIterInner<I> internal constructor(
         /**
          * Creates a new core for an iterator merging a pair of sources.
          */
-        public fun <Item, I> new(a: I, b: I): MergeIterInner<I> = MergeIterInner(a = a, b = b, peeked = null)
+        public fun <I> new(a: I, b: I): MergeIterInner<I, Item> = MergeIterInner(a = a, b = b, peeked = null)
     }
 }
 
@@ -118,7 +118,7 @@ public open class MergeIterInner<I> internal constructor(
  * Benchmarks faster than wrapping both iterators in a Peekable,
  * probably because we can afford to impose a FusedIterator bound.
  */
-public sealed class Peeked<I> {
-    public data class A<I>(public var value: Item) : Peeked<I>()
-    public data class B<I>(public var value: Item) : Peeked<I>()
+public sealed class Peeked<I, Item> {
+    public data class A<I, Item>(public var value: Item) : Peeked<I, Item>()
+    public data class B<I, Item>(public var value: Item) : Peeked<I, Item>()
 }

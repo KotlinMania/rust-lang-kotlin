@@ -16,7 +16,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.inttraits.MinInt
  *  - for any `x` and nonzero `y`: `x.widenMul(y).checkedNarrowingDivRem(y) == Some((x, 0))`,
  *  - and for any `r in 0 .. y`: `x.carryingMul(y, r).checkedNarrowingDivRem(y) == Some((x, r))`,
  */
-public interface NarrowingDiv<T> : DInt<T, Any?>, MinInt<T, Any?, T> {
+public interface NarrowingDiv<T, H, out OtherSign, out Unsigned> : DInt<T, H, OtherSign, Unsigned>, MinInt<T, OtherSign, T> {
     /**
      * Computes `(self / n, self % n))`
      *
@@ -88,7 +88,7 @@ public fun U256.uncheckedNarrowingDivRem(n: H): Pair<H, H> {
  * # Safety
  * Requires that `n.leadingZeros() == 0` and `a<n`.
  */
-public fun <D, U> divThreeDigitsByTwo(a0: U, a: D, n: D): Pair<U, D> where U : HInt<U, Any?> {
+public fun <D, OtherSign, Unsigned, H, U> divThreeDigitsByTwo(a0: U, a: D, n: D): Pair<U, D> where U : HInt<U, D, OtherSign, Unsigned> {
     if (n.leadingZeros() > 0u || a >= n) {
         unreachableUnchecked()
     }

@@ -31,7 +31,7 @@ public interface SimdFloat<SelfType, out Mask, Scalar, Bits, out Cast> {
      * check(floatsAgain == Simd.fromArray(listOf(1.0, -4.0, 2147483647.0, 0.0)))
      * ```
      */
-    public fun <T : SimdCast> cast(): Cast
+    public fun <Mask, T : SimdCast<Mask>> cast(): Cast
 
     /**
      * Rounds toward zero and converts to the same-width integer type, assuming that
@@ -49,7 +49,7 @@ public interface SimdFloat<SelfType, out Mask, Scalar, Bits, out Cast> {
      *
      * [cast]: Simd.cast
      */
-    public fun <I : SimdCast> toIntUnchecked(): Cast
+    public fun <Mask, I : SimdCast<Mask>> toIntUnchecked(): Cast
 
     /**
      * Raw transmutation to an unsigned integer vector type with the
@@ -232,9 +232,9 @@ public interface SimdFloat<SelfType, out Mask, Scalar, Bits, out Cast> {
     public fun reduceMin(): Scalar
 }
 
-public fun <T : SimdCast> Simd<F16>.cast(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
+public fun <Mask, T : SimdCast<Mask>> Simd<F16>.cast(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
 
-public fun <I : SimdCast> Simd<F16>.toIntUnchecked(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
+public fun <Mask, I : SimdCast<Mask>> Simd<F16>.toIntUnchecked(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
 
 public fun Simd<F16>.toBits(n: Int): Simd<UShort> {
     check(sizeOf<Simd<F16>>(typeLayoutT = UnresolvedTypeLayout<Simd<F16>>()) == sizeOf<Simd<UShort>>(typeLayoutT = UnresolvedTypeLayout<Simd<UShort>>()))

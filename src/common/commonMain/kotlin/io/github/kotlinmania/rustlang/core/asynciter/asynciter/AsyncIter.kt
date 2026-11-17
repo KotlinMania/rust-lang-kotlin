@@ -114,4 +114,4 @@ public interface IntoAsyncIterator<Item, out IntoAsyncIter> {
     public fun intoAsyncIter(): IntoAsyncIter
 }
 
-public fun <Item, I : AsyncIterator<Any?>> I.intoAsyncIter(): I = this
+public fun <Item, I : AsyncIterator<Item>> I.intoAsyncIter(): I = this

@@ -27,23 +27,23 @@ public interface SocketAddrExt {
      *
      * # Examples
      *
-     * use std.os.unix.net::{UnixListener, SocketAddr};
+     * use std.os.unix.net::(UnixListener, SocketAddr);
      * @cfg(targetOs = "linux")
      * use std.os.linux.net.SocketAddrExt;
      * @cfg(targetOs = "android")
      * use std.os.android.net.SocketAddrExt;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let addr = SocketAddr.fromAbstractName(b"hidden")?;
-     *     let listener = match UnixListener.bindAddr(&addr) {
+     *     let listener = match UnixListener.bindAddr(&addr) (
      *         Ok(sock) => sock,
-     *         Err(err) => {
-     *             println("Couldn't bind: {err:?}");
+     *         Err(err) => (
+     *             println("Couldn't bind: (err:?)");
      *             return Err(err);
-     *         }
-     *     };
+     *         )
+     *     );
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun fromAbstractName(name: List<UByte>): Result<SocketAddr, Error>
@@ -53,20 +53,20 @@ public interface SocketAddrExt {
      *
      * # Examples
      *
-     * use std.os.unix.net::{UnixListener, SocketAddr};
+     * use std.os.unix.net::(UnixListener, SocketAddr);
      * @cfg(targetOs = "linux")
      * use std.os.linux.net.SocketAddrExt;
      * @cfg(targetOs = "android")
      * use std.os.android.net.SocketAddrExt;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let name = b"hidden";
      *     let nameAddr = SocketAddr.fromAbstractName(name)?;
      *     let socket = UnixListener.bindAddr(&nameAddr)?;
      *     let localAddr = socket.localAddr().expect("Couldn't get local address");
      *     assertEq(localAddr.asAbstractName(), Some(&name[..]));
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun asAbstractName(): List<UByte>?

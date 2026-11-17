@@ -22,7 +22,7 @@ public interface Swizzle {
         return run { val _simdArg0 = vector; val _simdArg1 = vector; val _simdArg2 = run {
             // The index list needs to be returned as a vector.
             open class SimdShuffleIdx(
-                public var value: UIntArray,
+                public var value: UIntArray = UIntArray((LEN).toInt()),
             ) {
                 public var field0: UIntArray
                     get() = value
@@ -30,7 +30,7 @@ public interface Swizzle {
                         value = v
                     }
             }
-            val output = MutableList((N).toInt()) { 0 }
+            val output = UIntArray((N).toInt()) { 0u }
             var i = 0
             while (i < N) {
                 val index = Swizzle.INDEX[i]
@@ -54,7 +54,7 @@ public interface Swizzle {
         return run { val _simdArg0 = first; val _simdArg1 = second; val _simdArg2 = run {
             // The index list needs to be returned as a vector.
             open class SimdShuffleIdx(
-                public var value: UIntArray,
+                public var value: UIntArray = UIntArray((LEN).toInt()),
             ) {
                 public var field0: UIntArray
                     get() = value
@@ -62,7 +62,7 @@ public interface Swizzle {
                         value = v
                     }
             }
-            val output = MutableList((N).toInt()) { 0 }
+            val output = UIntArray((N).toInt()) { 0u }
             var i = 0
             while (i < N) {
                 val index = Swizzle.INDEX[i]
@@ -80,9 +80,9 @@ public interface Swizzle {
      *
      * Element `i` of the output is `mask[Self.INDEX[i]]`.
      */
-    public fun <T> swizzleMask(mask: Mask<T>, m: Int): Mask<T> where T : MaskElement<T> {
+    public fun <Mask, Unsigned, T> swizzleMask(mask: Mask<T>, m: Int): Mask<T> where T : MaskElement<T, Mask, Unsigned> {
         // SAFETY: all elements of this mask come from another mask
-        return Mask.fromSimdUnchecked(this.swizzle(mask.toSimd()))
+        return fromSimdUnchecked(this.swizzle(mask.toSimd()))
     }
 
     /**
@@ -91,9 +91,9 @@ public interface Swizzle {
      * Element `i` of the output is `concat[Self.INDEX[i]]`, where `concat` is the concatenation of
      * `first` and `second`.
      */
-    public fun <T> concatSwizzleMask(first: Mask<T>, second: Mask<T>, m: Int): Mask<T> where T : MaskElement<T> {
+    public fun <Mask, Unsigned, T> concatSwizzleMask(first: Mask<T>, second: Mask<T>, m: Int): Mask<T> where T : MaskElement<T, Mask, Unsigned> {
         // SAFETY: all elements of this mask come from another mask
-        return Mask.fromSimdUnchecked(this.concatSwizzle(first.toSimd(), second.toSimd()))
+        return fromSimdUnchecked(this.concatSwizzle(first.toSimd(), second.toSimd()))
     }
 }
 
@@ -361,9 +361,9 @@ public fun <Mask, T> Simd<T>.extract(n: Int, start: Int, len: Int): Simd<T> {
 /**
  * Reverse the order of the elements in the mask.
  */
-public fun <T> Mask<T>.reverse(n: Int): Mask<T> where T : MaskElement<T> {
+public fun <Mask, Unsigned, T> Mask<T>.reverse(n: Int): Mask<T> where T : MaskElement<T, Mask, Unsigned> {
     // Safety: swizzles are safe for masks
-    return Mask.fromSimdUnchecked(this.toSimd().reverse())
+    return fromSimdUnchecked(this.toSimd().reverse())
 }
 
 /**
@@ -371,9 +371,9 @@ public fun <T> Mask<T>.reverse(n: Int): Mask<T> where T : MaskElement<T> {
  * while the last `self.len() - OFFSET` elements move to the front. After calling `rotateElementsLeft`,
  * the element previously at index `OFFSET` will become the first element in the slice.
  */
-public fun <T> Mask<T>.rotateElementsLeft(n: Int, offset: Int): Mask<T> where T : MaskElement<T> {
+public fun <Mask, Unsigned, T> Mask<T>.rotateElementsLeft(n: Int, offset: Int): Mask<T> where T : MaskElement<T, Mask, Unsigned> {
     // Safety: swizzles are safe for masks
-    return Mask.fromSimdUnchecked(this.toSimd().rotateElementsLeft())
+    return fromSimdUnchecked(this.toSimd().rotateElementsLeft())
 }
 
 /**
@@ -381,18 +381,18 @@ public fun <T> Mask<T>.rotateElementsLeft(n: Int, offset: Int): Mask<T> where T 
  * the end while the last `OFFSET` elements move to the front. After calling `rotateElementsRight`,
  * the element previously at index `self.len() - OFFSET` will become the first element in the slice.
  */
-public fun <T> Mask<T>.rotateElementsRight(n: Int, offset: Int): Mask<T> where T : MaskElement<T> {
+public fun <Mask, Unsigned, T> Mask<T>.rotateElementsRight(n: Int, offset: Int): Mask<T> where T : MaskElement<T, Mask, Unsigned> {
     // Safety: swizzles are safe for masks
-    return Mask.fromSimdUnchecked(this.toSimd().rotateElementsRight())
+    return fromSimdUnchecked(this.toSimd().rotateElementsRight())
 }
 
 /**
  * Shifts the mask elements to the left by `OFFSET`, filling in with
  * `padding` from the right.
  */
-public fun <T> Mask<T>.shiftElementsLeft(padding: Boolean, n: Int, offset: Int): Mask<T> where T : MaskElement<T> {
+public fun <Mask, Unsigned, T> Mask<T>.shiftElementsLeft(padding: Boolean, n: Int, offset: Int): Mask<T> where T : MaskElement<T, Mask, Unsigned> {
     // Safety: swizzles are safe for masks
-    return Mask.fromSimdUnchecked(this.toSimd().shiftElementsLeft(if (padding) {
+    return fromSimdUnchecked(this.toSimd().shiftElementsLeft(if (padding) {
         T.TRUE
     } else {
         T.FALSE
@@ -403,9 +403,9 @@ public fun <T> Mask<T>.shiftElementsLeft(padding: Boolean, n: Int, offset: Int):
  * Shifts the mask elements to the right by `OFFSET`, filling in with
  * `padding` from the left.
  */
-public fun <T> Mask<T>.shiftElementsRight(padding: Boolean, n: Int, offset: Int): Mask<T> where T : MaskElement<T> {
+public fun <Mask, Unsigned, T> Mask<T>.shiftElementsRight(padding: Boolean, n: Int, offset: Int): Mask<T> where T : MaskElement<T, Mask, Unsigned> {
     // Safety: swizzles are safe for masks
-    return Mask.fromSimdUnchecked(this.toSimd().shiftElementsRight(if (padding) {
+    return fromSimdUnchecked(this.toSimd().shiftElementsRight(if (padding) {
         T.TRUE
     } else {
         T.FALSE
@@ -428,10 +428,10 @@ public fun <T> Mask<T>.shiftElementsRight(padding: Boolean, n: Int, offset: Int)
  * check(y.toArray() == booleanArrayOf(false, true, true, true))
  * ```
  */
-public fun <T> Mask<T>.interleave(other: Mask<T>, n: Int): Pair<Mask<T>, Mask<T>> where T : MaskElement<T> {
+public fun <Mask, Unsigned, T> Mask<T>.interleave(other: Mask<T>, n: Int): Pair<Mask<T>, Mask<T>> where T : MaskElement<T, Mask, Unsigned> {
     val (lo, hi) = this.toSimd().interleave(other.toSimd())
     // Safety: swizzles are safe for masks
-    return Pair(Mask.fromSimdUnchecked(lo), Mask.fromSimdUnchecked(hi))
+    return Pair(fromSimdUnchecked(lo), fromSimdUnchecked(hi))
 }
 
 /**
@@ -453,10 +453,10 @@ public fun <T> Mask<T>.interleave(other: Mask<T>, n: Int): Pair<Mask<T>, Mask<T>
  * check(y.toArray() == booleanArrayOf(true, true, false, true))
  * ```
  */
-public fun <T> Mask<T>.deinterleave(other: Mask<T>, n: Int): Pair<Mask<T>, Mask<T>> where T : MaskElement<T> {
+public fun <Mask, Unsigned, T> Mask<T>.deinterleave(other: Mask<T>, n: Int): Pair<Mask<T>, Mask<T>> where T : MaskElement<T, Mask, Unsigned> {
     val (even, odd) = this.toSimd().deinterleave(other.toSimd())
     // Safety: swizzles are safe for masks
-    return Pair(Mask.fromSimdUnchecked(even), Mask.fromSimdUnchecked(odd))
+    return Pair(fromSimdUnchecked(even), fromSimdUnchecked(odd))
 }
 
 /**
@@ -471,9 +471,9 @@ public fun <T> Mask<T>.deinterleave(other: Mask<T>, n: Int): Pair<Mask<T>, Mask<
  * check(x.resize(true).toArray() == booleanArrayOf(false, true))
  * ```
  */
-public fun <T> Mask<T>.resize(value: Boolean, n: Int, m: Int): Mask<T> where T : MaskElement<T> {
+public fun <Mask, Unsigned, T> Mask<T>.resize(value: Boolean, n: Int, m: Int): Mask<T> where T : MaskElement<T, Mask, Unsigned> {
     // Safety: swizzles are safe for masks
-    return Mask.fromSimdUnchecked(this.toSimd().resize(if (value) {
+    return fromSimdUnchecked(this.toSimd().resize(if (value) {
         T.TRUE
     } else {
         T.FALSE
@@ -488,7 +488,7 @@ public fun <T> Mask<T>.resize(value: Boolean, n: Int, m: Int): Mask<T> where T :
  * check((x, extract, 1) == (2 > Unit.toArray()))
  * ```
  */
-public fun <T> Mask<T>.extract(n: Int, start: Int, len: Int): Mask<T> where T : MaskElement<T> {
+public fun <Mask, Unsigned, T> Mask<T>.extract(n: Int, start: Int, len: Int): Mask<T> where T : MaskElement<T, Mask, Unsigned> {
     // Safety: swizzles are safe for masks
-    return Mask.fromSimdUnchecked(this.toSimd().extract())
+    return fromSimdUnchecked(this.toSimd().extract())
 }

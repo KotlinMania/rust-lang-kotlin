@@ -74,9 +74,9 @@ public fun msysTtyOn(handle: BorrowedHandle): Boolean {
         }
     // Get the file name only.
     val name = (s1.rsplit({ unit -> unit == 92u.toUShort() }).next() ?: s1)
-    // This checks whether 'pty' exists in the file name, which indicates that
+    // This checks whether `pty` exists in the file name, which indicates that
     // a pseudo-terminal is attached. To mitigate against false positives
-    // (e.g., an actual file name that contains 'pty'), we also require that
+    // (e.g., an actual file name that contains `pty`), we also require that
     // the file name begins with either the strings msys-' or cygwin-'.)
     //
     // Lambdas are used to allow the compiler to short-circuit the isPty check.

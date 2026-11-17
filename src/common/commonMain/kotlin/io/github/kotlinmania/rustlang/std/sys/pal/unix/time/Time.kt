@@ -1,6 +1,8 @@
 // port-lint: source sys/pal/unix/time.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.time
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
@@ -13,8 +15,6 @@ import io.github.kotlinmania.rustlang.libc.clockGettime
 import io.github.kotlinmania.rustlang.libc.timespec.default
 import io.github.kotlinmania.rustlang.libc.wasi.ClockidT
 import io.github.kotlinmania.rustlang.libc.wasi.TimeT
-import io.github.kotlinmania.rustlang.std.io.Error
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 

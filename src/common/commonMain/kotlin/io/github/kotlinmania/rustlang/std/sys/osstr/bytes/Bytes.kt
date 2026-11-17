@@ -16,6 +16,7 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
@@ -155,7 +156,7 @@ public open class Buf internal constructor(
         public fun withCapacity(capacity: Int, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): Buf = Buf(inner = ArrayList(capacity), fieldLayout = fieldLayout)
 
         public fun fromBox(boxed: Slice, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): Buf {
-            val inner: List<UByte> = transmute(boxed)
+            val inner: List<UByte> = transmuteWithLayouts<Slice, List<UByte>>(boxed, UnresolvedTypeLayout<Slice>(), UnresolvedTypeLayout<List<UByte>>())
             return Buf(inner = inner.intoVec(), fieldLayout = fieldLayout)
         }
     }
@@ -271,13 +272,13 @@ public open class Slice internal constructor(
 
         public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): Slice = Slice(fieldStorage, fieldLayout)
 
-        public fun fromEncodedBytesUnchecked(s: List<UByte>): Slice = transmute(s)
+        public fun fromEncodedBytesUnchecked(s: List<UByte>): Slice = transmuteWithLayouts<List<UByte>, Slice>(s, UnresolvedTypeLayout<List<UByte>>(), UnresolvedTypeLayout<Slice>())
 
         public fun fromStr(s: String): Slice = Slice.fromEncodedBytesUnchecked(s.encodeToByteArray().map { it.toUByte() })
 
         public fun emptyBox(): Slice {
-            val boxed: List<UByte> = Default.default()
-            return transmute(boxed)
+            val boxed: List<UByte> = emptyList()
+            return transmuteWithLayouts<List<UByte>, Slice>(boxed, UnresolvedTypeLayout<List<UByte>>(), UnresolvedTypeLayout<Slice>())
         }
     }
 }

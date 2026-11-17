@@ -16,7 +16,7 @@ public typealias Pe = ImageNtHeaders64
 public fun Mapping.Companion.new(path: Path): Mapping? {
     val map = (mmap(path) ?: return null)
     return Mapping.mk(map, closure@{ data, stash ->
-        Context.new(stash, when (val tryResult = Object.parse(data)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }, null, null)
+        Context.new(stash, when (val tryResult = Object.parse(data)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }, null, null)
     })
 }
 

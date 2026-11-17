@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -28,7 +29,6 @@ import io.github.kotlinmania.rustlang.std.env.consts.EXE_EXTENSION
 import io.github.kotlinmania.rustlang.std.env.consts.EXE_SUFFIX
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
 import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
@@ -374,7 +374,7 @@ public open class Command(
     }
 
     public companion object {
-        public fun new(program: OsStr): Command = Command(program = program.toOsString(), args = mutableListOf(), env = Default.default(), cwd = null, flags = 0u, showWindow = null, detach = false, stdin = null, stdout = null, stderr = null, forceQuotesEnabled = false, startupinfoFullscreen = false, startupinfoUntrustedSource = false, startupinfoForceFeedback = null, inheritHandles = true, desktop = null)
+        public fun new(program: OsStr): Command = Command(program = program.toOsString(), args = mutableListOf(), env = CommandEnv.default(), cwd = null, flags = 0u, showWindow = null, detach = false, stdin = null, stdout = null, stderr = null, forceQuotesEnabled = false, startupinfoFullscreen = false, startupinfoUntrustedSource = false, startupinfoForceFeedback = null, inheritHandles = true, desktop = null)
     }
 }
 
@@ -624,13 +624,17 @@ public fun searchPaths(parentPaths: () -> OsString?, childPaths: OsStr?, exists:
         run {
             val matchVal3 = fillUtf16Buf({ buf, size -> c.GetSystemDirectoryW(buf, size) }, { buf -> exists(PathBuf.from(OsString.fromWide(buf))) })
             if (matchVal3 is Result.Ok && matchVal3.value != null) {
-                return path
+                val valueVal = matchVal3.value
+                val path3 = valueVal
+                return path3
             }
         }
         run {
             val matchVal4 = fillUtf16Buf({ buf, size -> c.GetWindowsDirectoryW(buf, size) }, { buf -> exists(PathBuf.from(OsString.fromWide(buf))) })
             if (matchVal4 is Result.Ok && matchVal4.value != null) {
-                return path
+                val valueVal1 = matchVal4.value
+                val path4 = valueVal1
+                return path4
             }
         }
     }
@@ -639,12 +643,12 @@ public fun searchPaths(parentPaths: () -> OsString?, childPaths: OsStr?, exists:
         null -> {}
         else -> {
             val parentPaths1 = matchVal5
-            for (path3 in Env.splitPaths(parentPaths1).filter({ p -> !p.asOsStr().isEmpty() })) {
-                when (val matchVal6 = exists(path3)) {
+            for (path5 in Env.splitPaths(parentPaths1).filter({ p -> !p.asOsStr().isEmpty() })) {
+                when (val matchVal6 = exists(path5)) {
                     null -> {}
                     else -> {
-                        val path4 = matchVal6
-                        return path4
+                        val path6 = matchVal6
+                        return path6
                     }
                 }
             }
@@ -730,7 +734,7 @@ public open class Process internal constructor(
                 c.waitTimeout -> {
                     return Result.Ok<ExitStatus?, Error>(null)
                 }
-                else -> { return Result.Err<ExitStatus?, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError()) }
+                else -> { return Result.Err<ExitStatus?, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError()) }
             }
             val localStorageL768C12 = AddressableLocal(0, PrimitiveLayouts.I32)
             val status by localStorageL768C12

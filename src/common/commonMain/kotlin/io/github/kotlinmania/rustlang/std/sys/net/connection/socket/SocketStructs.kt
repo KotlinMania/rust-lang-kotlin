@@ -233,7 +233,7 @@ public open class TcpStream(
         return Result.Ok<UByte, Error>(raw.toUByte())
     }
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.inner.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.inner.takeError()
 
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> = this.inner.setNonblocking(nonblocking)
 
@@ -265,7 +265,7 @@ public open class TcpStream(
     }
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> connect(addr: A): Result<TcpStream, Error> {
+        public fun <Iter, A : ToSocketAddrs<Iter>> connect(addr: A): Result<TcpStream, Error> {
             fun inner(addr1: SocketAddr): Result<TcpStream, Error> {
                 val sock = when (val tryResult = Socket.new(addrFamily(addr1), c.SOCK_STREAM)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<TcpStream, Error>(tryResult.error) }
                 when (val tryResult = sock.connect(addr1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<TcpStream, Error>(tryResult.error) }
@@ -286,6 +286,7 @@ public open class TcpStream(
                 val matchVal = sock.connect(addr)
                 when {
                     matchVal is Result.Ok -> {
+                        val valueVal = matchVal.value
                         when (val tryResult = sock.setNonblocking(false)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<TcpStream, Error>(tryResult.error) }
                         return Result.Ok<TcpStream, Error>(TcpStream(inner = sock))
                     }
@@ -356,7 +357,7 @@ public open class TcpListener(
         return Result.Ok<Boolean, Error>((raw != 0).toUByte())
     }
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.inner.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.inner.takeError()
 
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> = this.inner.setNonblocking(nonblocking)
 
@@ -379,7 +380,7 @@ public open class TcpListener(
     }
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(addr: A): Result<TcpListener, Error> {
+        public fun <Iter, A : ToSocketAddrs<Iter>> bind(addr: A): Result<TcpListener, Error> {
             fun inner(addr1: SocketAddr): Result<TcpListener, Error> {
                 val sock = when (val tryResult = Socket.new(addrFamily(addr1), c.SOCK_STREAM)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<TcpListener, Error>(tryResult.error) }
                 // On platforms with Berkeley-derived sockets, this allows to quickly
@@ -439,7 +440,7 @@ public open class UdpSocket(
 
     public open fun sendTo(buf: List<UByte>, dst: SocketAddr): Result<Int, Error> {
         if (buf.size > MAX_SEND_LEN) {
-            return Result.Err<Int, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(c.EMSGSIZE))
+            return Result.Err<Int, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(c.EMSGSIZE))
         }
         val (dst1, dstlen) = socketAddrToC(dst)
         val ret = when (val tryResult = cvt(c.sendto(this.inner.asRaw(), (buf.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, buf.size, MSG_NOSIGNAL, dst1.asPtr(), dstlen))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }
@@ -471,7 +472,7 @@ public open class UdpSocket(
     }
 
     public open fun setMulticastTtlV4(multicastTtlV4: UInt): Result<Unit, Error> {
-        val ttl: UByte = when (val tryResult = multicastTtlV4.tryInto().mapErr({ io.github.kotlinmania.rustlang.std.io.Error.from(ErrorKind.InvalidInput) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        val ttl: UByte = when (val tryResult = multicastTtlV4.tryInto().mapErr({ io.github.kotlinmania.rustlang.core.io.error.Error.from(ErrorKind.InvalidInput) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         return setsockopt(this.inner, c.IPPROTO_IP, c.IP_MULTICAST_TTL, ttl, typeLayoutT = UnresolvedTypeLayout<CUchar>())
     }
 
@@ -528,7 +529,7 @@ public open class UdpSocket(
         return Result.Ok<UByte, Error>(raw.toUByte())
     }
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.inner.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.inner.takeError()
 
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> = this.inner.setNonblocking(nonblocking)
 
@@ -538,13 +539,13 @@ public open class UdpSocket(
 
     public open fun send(buf: List<UByte>): Result<Int, Error> {
         if (buf.size > MAX_SEND_LEN) {
-            return Result.Err<Int, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(c.EMSGSIZE))
+            return Result.Err<Int, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(c.EMSGSIZE))
         }
         val ret = when (val tryResult = cvt(c.send(this.inner.asRaw(), (buf.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, buf.size, MSG_NOSIGNAL))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }
         return Result.Ok<Int, Error>(ret.toInt())
     }
 
-    public open fun <Iter, A : ToSocketAddrs<Any?>> connect(addr: A): Result<Unit, Error> {
+    public open fun <Iter, A : ToSocketAddrs<Iter>> connect(addr: A): Result<Unit, Error> {
         fun inner(thisRef: UdpSocket, addr1: SocketAddr): Result<Unit, Error> {
             val (addr2, len) = socketAddrToC(addr1)
             return cvtR({ c.connect(thisRef.inner.asRaw(), addr2.asPtr(), len) }).map({ Unit })
@@ -571,7 +572,7 @@ public open class UdpSocket(
     }
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(addr: A): Result<UdpSocket, Error> {
+        public fun <Iter, A : ToSocketAddrs<Iter>> bind(addr: A): Result<UdpSocket, Error> {
             fun inner(addr1: SocketAddr): Result<UdpSocket, Error> {
                 val sock = when (val tryResult = Socket.new(addrFamily(addr1), c.SOCK_DGRAM)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UdpSocket, Error>(tryResult.error) }
                 val (addr2, len) = socketAddrToC(addr1)

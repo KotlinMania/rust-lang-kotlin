@@ -105,7 +105,7 @@ public fun parseOpts(args: List<String>): OptRes? {
 // Implementation of `parseOpts` that doesn't care about help message
 // and returns a `Result`.
 public fun parseOptsImpl(matches: Matches): OptRes {
-    val allowUnstable = when (val tryResult = getAllowUnstable(matches)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+    val allowUnstable = when (val tryResult = getAllowUnstable(matches)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     // Unstable flags
     val forceRunInProcess = run {
         val opt = matches.optPresent("force-run-in-process")
@@ -128,9 +128,9 @@ public fun parseOptsImpl(matches: Matches): OptRes {
         }
         opt2
     }
-    val timeOptions = when (val tryResult = getTimeOptions(matches, allowUnstable)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-    val shuffle = when (val tryResult = getShuffle(matches, allowUnstable)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-    val shuffleSeed = when (val tryResult = getShuffleSeed(matches, allowUnstable)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+    val timeOptions = when (val tryResult = getTimeOptions(matches, allowUnstable)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+    val shuffle = when (val tryResult = getShuffle(matches, allowUnstable)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+    val shuffleSeed = when (val tryResult = getShuffleSeed(matches, allowUnstable)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     val includeIgnored = matches.optPresent("include-ignored")
     val quiet = matches.optPresent("quiet")
     val exact = matches.optPresent("exact")
@@ -138,13 +138,13 @@ public fun parseOptsImpl(matches: Matches): OptRes {
     val skip = matches.optStrs("skip")
     val benchBenchmarks = matches.optPresent("bench")
     val runTests = !benchBenchmarks || matches.optPresent("test")
-    val logfile = when (val tryResult = getLogFile(matches)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-    val runIgnored = when (val tryResult = getRunIgnored(matches, includeIgnored)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+    val logfile = when (val tryResult = getLogFile(matches)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+    val runIgnored = when (val tryResult = getRunIgnored(matches, includeIgnored)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     val filters = matches.free.clone()
-    val nocapture = when (val tryResult = getNocapture(matches)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-    val testThreads = when (val tryResult = getTestThreads(matches)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-    val color = when (val tryResult = getColorConfig(matches)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-    val format = when (val tryResult = getFormat(matches, quiet, allowUnstable)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+    val nocapture = when (val tryResult = getNocapture(matches)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+    val testThreads = when (val tryResult = getTestThreads(matches)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+    val color = when (val tryResult = getColorConfig(matches)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+    val format = when (val tryResult = getFormat(matches, quiet, allowUnstable)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     val options = Options.new().displayOutput(matches.optPresent("show-output"))
     if (logfile != null) {
         stderr().append("warning: `--logfile` is deprecated")
@@ -223,7 +223,7 @@ public fun getShuffleSeed(matches: Matches, allowUnstable: Boolean): OptPartRes<
             else -> {
                 val nStr = matchVal
                 run {
-                    val matchVal1 = (nStr.toULongOrNull()?.let { Result.Ok(it) } ?: Result.Err("failed to parse ULong"))
+                    val matchVal1 = (nStr.toULongOrNull()?.let { Result.Ok<ULong, String>(it) } ?: Result.Err<ULong, String>("failed to parse ULong"))
                     when (matchVal1) { is Result.Ok -> {
                         val n = matchVal1.value
                         n
@@ -240,7 +240,7 @@ public fun getShuffleSeed(matches: Matches, allowUnstable: Boolean): OptPartRes<
             when (matchVal2) { is Result.Ok -> {
                 val value = matchVal2.value
                 run {
-                    val matchVal3 = (value.toULongOrNull()?.let { Result.Ok(it) } ?: Result.Err("failed to parse ULong"))
+                    val matchVal3 = (value.toULongOrNull()?.let { Result.Ok<ULong, String>(it) } ?: Result.Err<ULong, String>("failed to parse ULong"))
                     when (matchVal3) { is Result.Ok -> {
                         val n1 = matchVal3.value
                         n1
@@ -260,9 +260,12 @@ public fun getTestThreads(matches: Matches): OptPartRes<Int?> {
     var lastTestThreads = null
     for (nStr in matches.optStrs("test-threads")) {
         lastTestThreads = run {
-            val matchVal = (nStr.toIntOrNull()?.let { Result.Ok(it) } ?: Result.Err("failed to parse Int"))
+            val matchVal = (nStr.toIntOrNull()?.let { Result.Ok<Int, String>(it) } ?: Result.Err<Int, String>("failed to parse Int"))
             when {
-                matchVal is Result.Ok && matchVal.value == 0 -> { return Result.Err("argument for --test-threads must not be 0".toString()) }
+                matchVal is Result.Ok && matchVal.value == 0 -> {
+                    val valueVal = matchVal.value
+                    return Result.Err("argument for --test-threads must not be 0".toString())
+                }
                 matchVal is Result.Ok -> {
                     val n = matchVal.value
                     n

@@ -16,9 +16,9 @@ public interface SpecExtend<T, I> {
 public fun <T, I, A : Allocator> VecDeque<T, A>.specExtend(iter: I) where I : Iterator<T> {
     // This function should be the moral equivalent of:
     //
-    // for item in iter {
+    // for item in iter (
     // self.pushBack(item);
-    // }
+    // )
     while (true) {
         val matchVal = iter.next()
         if (matchVal == null) break
@@ -85,9 +85,9 @@ public interface SpecExtendFront<T, I> {
 public fun <T, I, A : Allocator> VecDeque<T, A>.specExtendFront(iter: I) where I : Iterator<T> {
     // This function should be the moral equivalent of:
     //
-    // for item in iter {
+    // for item in iter (
     // self.pushFront(item);
-    // }
+    // )
     while (true) {
         val matchVal = iter.next()
         if (matchVal == null) break

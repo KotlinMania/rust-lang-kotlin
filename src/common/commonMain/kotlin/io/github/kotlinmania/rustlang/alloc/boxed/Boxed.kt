@@ -18,9 +18,8 @@ import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.error.Request
-import io.github.kotlinmania.rustlang.core.fmt.Pointer
 import io.github.kotlinmania.rustlang.core.future.future.Future
-import io.github.kotlinmania.rustlang.core.marker.Tuple
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
@@ -28,8 +27,7 @@ import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.transmute
-import io.github.kotlinmania.rustlang.core.mem.transmuteUnchecked
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ops.asyncfunction.AsyncFn
 import io.github.kotlinmania.rustlang.core.ops.asyncfunction.AsyncFnMut
 import io.github.kotlinmania.rustlang.core.ops.asyncfunction.AsyncFnOnce
@@ -54,7 +52,7 @@ import io.github.kotlinmania.rustlang.core.task.wake.Context
 
 // The `Holder<T>` type for heap allocation.
 //
-// [Box.T], casually referred to as a 'box', provides the simplest form of
+// [Box.T], casually referred to as a `box`, provides the simplest form of
 // heap allocation in Rust. Boxes provide ownership for this allocation, and
 // drop their contents when they go out of scope. Boxes also ensure that they
 // never allocate more than `Long.MAX` bytes.
@@ -277,7 +275,7 @@ public fun <T> fromNonNullT(value: BoxRaw<T>): NonNull = value.asNonNullPtr()
 public open class Box<T, A : Allocator>(
     public var field0: BoxRaw<T>,
     public var field1: A,
-) : Pointer, DerefPure, LegacyReceiver, PinSafePointer, Borrow<T>, BorrowMut<T>, AsRef<T>, AsMut<T>, Allocator, AllocatorNightly {
+) : DerefPure, LegacyReceiver, PinSafePointer, Borrow<T>, BorrowMut<T>, AsRef<T>, AsMut<T>, Allocator, AllocatorNightly {
     public open fun drop() {
         // the T in the Holder is dropped by the compiler before the destructor is run
         val ptr = this.field0
@@ -436,7 +434,7 @@ public open class Box<T, A : Allocator>(
 
     public open fun fmtPointer(f: StringBuilder): Result<Unit, Error> {
         val ptr: ConstPtr = this
-        return Pointer.fmt(ptr, f)
+        return run { f.append((ptr).toString()); Result.Ok(Unit) }
     }
 
     public open fun deref(): T = this
@@ -846,7 +844,7 @@ public open class Box<T, A : Allocator>(
          * }
          * ```
          */
-        public fun <Output, Residual, T, A : Allocator, R> tryMap(thisRef: Box<T, A>, f: (T) -> R, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): TryType where R : Try<Any?, Any?> {
+        public fun <Output, Residual, T, A : Allocator, R> tryMap(thisRef: Box<T, A>, f: (T) -> R, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): TryType where R : Try<Output, Residual> {
             val (value, allocation) = Box.take(thisRef)
             val (raw, alloc) = Box.intoNonNullWithAllocator(allocation)
             return if (sizeOf<T>(typeLayoutT = typeLayoutT) == sizeOf<Output>(typeLayoutT = UnresolvedTypeLayout<Output>()) && alignOf<T>(typeLayoutT = typeLayoutT) == alignOf<Output>(typeLayoutT = UnresolvedTypeLayout<Output>())) {
@@ -1511,7 +1509,7 @@ public fun <T> Box.Companion.new(x: T, typeLayoutT: TypeLayout<T> = UnresolvedTy
     // SAFETY: we just allocated the box to store `x`.
     (typeLayoutT).writeNative(ptr.rawAddress, x)
     // SAFETY: we just initialized the memory `ptr` points to.
-    return transmute(ptr)
+    return transmuteWithLayouts<MutPtr, Box<T, Global>>(ptr, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Box<T, Global>>())
 }
 
 // even without panics, this helps for Miri backtraces
@@ -1534,7 +1532,7 @@ public fun <T> Box.Companion.newUninit(typeLayoutT: TypeLayout<T> = UnresolvedTy
     // `Holder.new`).
     // SAFETY:
     // - If `allocate` succeeds, the returned pointer exactly matches what `Holder` needs.
-    return transmute(boxNewUninit(Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt())))
+    return transmuteWithLayouts<MutPtr, Box<MaybeUninit<T>, Global>>(boxNewUninit(Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt())), UnresolvedTypeLayout<MutPtr>(), UnresolvedTypeLayout<Box<MaybeUninit<T>, Global>>())
 }
 
 /**
@@ -2005,7 +2003,7 @@ public fun <T, A : Allocator> Box<MaybeUninit<T>, A>.assumeInit(typeLayoutT: Typ
     // This is used in the `vec` macro, so we optimize for minimal IR generation
     // even in debug builds.
     // SAFETY: `Holder<T>` and `Holder<MaybeUninit<T>>` have the same layout.
-    return transmuteUnchecked(this)
+    return transmuteWithLayouts<Box<MaybeUninit<T>, A>, Box<T, A>>(this, UnresolvedTypeLayout<Box<MaybeUninit<T>, A>>(), UnresolvedTypeLayout<Box<T, A>>())
 }
 
 /**
@@ -2395,24 +2393,25 @@ public fun <T, A : Allocator> Box<List<T>, A>.clone(): Box<List<T>, A> {
  * ```
  */
 public fun <T, A : Allocator> Box<List<T>, A>.cloneFrom(source: Box<List<T>, A>) {
-    if (this.len() == source.len()) {
-        this.cloneFromSlice(source)
+    var selfMut = this
+    if (selfMut.len() == source.len()) {
+        selfMut.cloneFromSlice(source)
     } else {
-        this = source.clone()
+        selfMut = source.clone()
     }
 }
 
-public fun <Args : Tuple, F : FnOnce<Args>, A : Allocator> Box<F, A>.callOnce(args: Args, callOnceFFn: (Box<F, A>, Args) -> Output): Output = callOnceFFn(this, args)
+public fun <Args, F : FnOnce<Args>, A : Allocator> Box<F, A>.callOnce(args: Args, callOnceFFn: (Box<F, A>, Args) -> Output): Output = callOnceFFn(this, args)
 
-public fun <Args : Tuple, F : FnMut<Args>, A : Allocator> Box<F, A>.callMut(args: Args, callMutFFn: (Box<F, A>, Args) -> Output): Output = callMutFFn(this, args)
+public fun <Args, F : FnMut<Args>, A : Allocator> Box<F, A>.callMut(args: Args, callMutFFn: (Box<F, A>, Args) -> Output): Output = callMutFFn(this, args)
 
-public fun <Args : Tuple, F : Fn<Args>, A : Allocator> Box<F, A>.call(args: Args, callFFn: (Box<F, A>, Args) -> Output): Output = callFFn(this, args)
+public fun <Args, F : Fn<Args>, A : Allocator> Box<F, A>.call(args: Args, callFFn: (Box<F, A>, Args) -> Output): Output = callFFn(this, args)
 
-public fun <Args : Tuple, F : AsyncFnOnce<Args>, A : Allocator> Box<F, A>.asyncCallOnce(args: Args, asyncCallOnceFFn: (Box<F, A>, Args) -> CallOnceFuture): CallOnceFuture = asyncCallOnceFFn(this, args)
+public fun <Args, F : AsyncFnOnce<Args>, A : Allocator> Box<F, A>.asyncCallOnce(args: Args, asyncCallOnceFFn: (Box<F, A>, Args) -> CallOnceFuture): CallOnceFuture = asyncCallOnceFFn(this, args)
 
-public fun <Args : Tuple, F : AsyncFnMut<Args>, A : Allocator> Box<F, A>.asyncCallMut(args: Args, asyncCallMutFFn: (Box<F, A>, Args) -> CallRefFuture): CallRefFuture = asyncCallMutFFn(this, args)
+public fun <Args, F : AsyncFnMut<Args>, A : Allocator> Box<F, A>.asyncCallMut(args: Args, asyncCallMutFFn: (Box<F, A>, Args) -> CallRefFuture): CallRefFuture = asyncCallMutFFn(this, args)
 
-public fun <Args : Tuple, F : AsyncFn<Args>, A : Allocator> Box<F, A>.asyncCall(args: Args, asyncCallFFn: (Box<F, A>, Args) -> CallRefFuture): CallRefFuture = asyncCallFFn(this, args)
+public fun <Args, F : AsyncFn<Args>, A : Allocator> Box<F, A>.asyncCall(args: Args, asyncCallFFn: (Box<F, A>, Args) -> CallRefFuture): CallRefFuture = asyncCallFFn(this, args)
 
 // It is quite crucial that we only allow the `Global` allocator here.
 // Handling arbitrary custom allocators (which can affect the `Holder` layout heavily!)
@@ -2422,7 +2421,7 @@ public fun <G : Coroutine<R>, R, A : Allocator> Box<G, A>.resume(arg: R, resumeG
 
 public fun <G : Coroutine<R>, R, A : Allocator> Pin<Box<G, A>>.resume(arg: R, resumeGFn: (Any?, R) -> CoroutineState<Yield, Return>): CoroutineState<Yield, Return> where A : StaticAllocator = resumeGFn(this.asMut(), arg)
 
-public fun <Output, F : Future<Any?>, A : Allocator> Box<F, A>.poll(cx: Context, pollFFn: (Any?, Context) -> Poll<Output>): Poll<Output> = pollFFn(Pin.new(this), cx)
+public fun <Output, F : Future<Output>, A : Allocator> Box<F, A>.poll(cx: Context, pollFFn: (Any?, Context) -> Poll<Output>): Poll<Output> = pollFFn(Pin.new(this), cx)
 
 public fun <E, A : Allocator> Box<E, A>.cause(): Any? = Error.cause(this)
 

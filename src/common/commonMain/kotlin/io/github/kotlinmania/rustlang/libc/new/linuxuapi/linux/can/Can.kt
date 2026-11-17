@@ -114,7 +114,7 @@ public open class CanFrame(
                 }
             }
 
-        public fun default(): CanFrame = CanFrame(canId = Default.default(), canDlc = Default.default(), pad = Default.default(), res0 = Default.default(), len8Dlc = Default.default(), data = Default.default(), nonExhaustive = Unit)
+        public fun default(): CanFrame = CanFrame(canId = 0u, canDlc = 0u, pad = 0u, res0 = 0u, len8Dlc = 0u, data = Default.default(), nonExhaustive = Unit)
     }
 }
 
@@ -181,7 +181,7 @@ public open class CanfdFrame(
                 }
             }
 
-        public fun default(): CanfdFrame = CanfdFrame(canId = Default.default(), len = Default.default(), flags = Default.default(), res0 = Default.default(), res1 = Default.default(), data = UByteArray(CANFD_MAX_DLEN) { 0u.toUByte() }, nonExhaustive = Unit)
+        public fun default(): CanfdFrame = CanfdFrame(canId = 0u, len = 0u, flags = 0u, res0 = 0u, res1 = 0u, data = UByteArray(CANFD_MAX_DLEN) { 0u.toUByte() }, nonExhaustive = Unit)
     }
 }
 
@@ -240,7 +240,7 @@ public open class CanxlFrame(
                 }
             }
 
-        public fun default(): CanxlFrame = CanxlFrame(prio = Default.default(), flags = Default.default(), sdt = Default.default(), len = Default.default(), af = Default.default(), data = UByteArray(CANXL_MAX_DLEN) { 0u.toUByte() })
+        public fun default(): CanxlFrame = CanxlFrame(prio = 0u, flags = 0u, sdt = 0u, len = 0u, af = 0u, data = UByteArray(CANXL_MAX_DLEN) { 0u.toUByte() })
     }
 }
 
@@ -285,7 +285,7 @@ public open class SockaddrCan(
     public open fun clone(): SockaddrCan = SockaddrCan(canFamily, canIfindex, canAddr)
 
     public companion object {
-        public fun default(): SockaddrCan = SockaddrCan(canFamily = Default.default(), canIfindex = Default.default(), canAddr = CAnonymousSockaddrCanCanAddr())
+        public fun default(): SockaddrCan = SockaddrCan(canFamily = 0u, canIfindex = 0, canAddr = CAnonymousSockaddrCanCanAddr())
     }
 }
 
@@ -325,7 +325,7 @@ public open class CAnonymousSockaddrCanTp(
                 }
             }
 
-        public fun default(): CAnonymousSockaddrCanTp = CAnonymousSockaddrCanTp(rxId = Default.default(), txId = Default.default())
+        public fun default(): CAnonymousSockaddrCanTp = CAnonymousSockaddrCanTp(rxId = 0u, txId = 0u)
     }
 }
 
@@ -365,7 +365,7 @@ public open class CAnonymousSockaddrCanJ1939(
                 }
             }
 
-        public fun default(): CAnonymousSockaddrCanJ1939 = CAnonymousSockaddrCanJ1939(name = Default.default(), pgn = Default.default(), addr = Default.default())
+        public fun default(): CAnonymousSockaddrCanJ1939 = CAnonymousSockaddrCanJ1939(name = 0uL, pgn = 0u, addr = 0u)
     }
 }
 
@@ -400,7 +400,7 @@ public open class CanFilter(
                 }
             }
 
-        public fun default(): CanFilter = CanFilter(canId = Default.default(), canMask = Default.default())
+        public fun default(): CanFilter = CanFilter(canId = 0u, canMask = 0u)
     }
 }
 
