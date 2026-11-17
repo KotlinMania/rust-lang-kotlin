@@ -481,35 +481,34 @@ public open class AssertParamIsCopy<T>(
  *
  * @feature(cloneToUninit)
  * public fun doctestEntry(): Result<Unit> {
- *     open class MyDst<T>(public var label: String, public var contents: T) : CloneToUninit {
- *         public open fun cloneToUninit(dest: MutPtr) {
- *             // The offset of `self.contents` is dynamic because it depends on the alignment of T
- *             // which can be dynamic (if `T = dynamic SomeTrait`). Therefore, we have to obtain it
- *             // dynamically by examining `self`, rather than using `offsetOf`.
+ *     open class MyDst<T>(public var label: String, public var contents: T)
+ *     fun <T : CloneToUninit> MyDst<T>.cloneToUninit(dest: MutPtr) {
+ *         // The offset of `self.contents` is dynamic because it depends on the alignment of T
+ *         // which can be dynamic (if `T = dynamic SomeTrait`). Therefore, we have to obtain it
+ *         // dynamically by examining `self`, rather than using `offsetOf`.
+ *         //
+ *         // SAFETY: `self` by definition points somewhere before `self.contents` in the same
+ *         // allocation.
+ *         val offsetOfContents = (addrOf(this.contents)).byteOffsetFromUnsigned(this)
+ *         // Clone the *sized* fields of `self` (just one, in this example).
+ *         // (By cloning this first and storing it temporarily in a local variable, we avoid
+ *         // leaking it in case of any panic, using the ordinary automatic cleanup of local
+ *         // variables. Such a leak would be sound, but undesirable.)
+ *         val label = this.label.clone()
+ *         // SAFETY: The caller must provide a `dest` such that these field offsets are valid
+ *         // to write to.
+ *         run {
+ *             // Clone the unsized field directly from `self` to `dest`.
+ *             this.contents.cloneToUninit(MutPtr((dest).rawAddress + ((offsetOfContents).toLong() * (PrimitiveLayouts.U8).strideBytes)))
+ *             // Now write all the sized fields.
  *             //
- *             // SAFETY: `self` by definition points somewhere before `self.contents` in the same
- *             // allocation.
- *             val offsetOfContents = (addrOf(this.contents)).byteOffsetFromUnsigned(this)
- *             // Clone the *sized* fields of `self` (just one, in this example).
- *             // (By cloning this first and storing it temporarily in a local variable, we avoid
- *             // leaking it in case of any panic, using the ordinary automatic cleanup of local
- *             // variables. Such a leak would be sound, but undesirable.)
- *             val label = this.label.clone()
- *             // SAFETY: The caller must provide a `dest` such that these field offsets are valid
- *             // to write to.
- *             run {
- *                 // Clone the unsized field directly from `self` to `dest`.
- *                 this.contents.cloneToUninit(MutPtr((dest).rawAddress + ((offsetOfContents).toLong() * (PrimitiveLayouts.U8).strideBytes)))
- *                 // Now write all the sized fields.
- *                 //
- *                 // Note that we only do this once all of the clone() and cloneToUninit() calls
- *                 // have completed, and therefore we know that there are no more possible panics;
- *                 // this ensures no memory leaks in case of panic.
- *                 (UnresolvedTypeLayout<String>()).writeNative((MutPtr((MutPtr((dest).rawAddress + ((0).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress)).rawAddress, label)
- *             }
- *             // All fields of the struct have been initialized; therefore, the struct is initialized,
- *             // and we have satisfied our `unchecked implementation CloneToUninit` obligations.
+ *             // Note that we only do this once all of the clone() and cloneToUninit() calls
+ *             // have completed, and therefore we know that there are no more possible panics;
+ *             // this ensures no memory leaks in case of panic.
+ *             (UnresolvedTypeLayout<String>()).writeNative((MutPtr((MutPtr((dest).rawAddress + ((0).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress)).rawAddress, label)
  *         }
+ *         // All fields of the struct have been initialized; therefore, the struct is initialized,
+ *         // and we have satisfied our `unchecked implementation CloneToUninit` obligations.
  *     }
  *     fun main() {
  *         // Construct MyDst<[u8; 4]>, then coerce to MyDst<[u8]>.

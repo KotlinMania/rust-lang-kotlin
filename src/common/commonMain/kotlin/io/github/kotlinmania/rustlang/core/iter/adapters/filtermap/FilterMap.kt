@@ -4,8 +4,6 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.filtermap
 import io.github.kotlinmania.rustlang.core.array.Guard
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
@@ -21,6 +19,7 @@ import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 
@@ -63,100 +62,10 @@ public typealias Source<I> = I.Source
 public open class FilterMap<I, F>(
     public var iter: I,
     public var f: F,
-) : TrustedFused, SourceIter<Source>, InPlaceIterable, Iterable<B> {
-    override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
-        override fun computeNext() {
-            when (val v = this@FilterMap.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
+) {
     public open fun clone(): FilterMap<I, F> = FilterMap(iter, f)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "FilterMap").field("iter", this.iter).finish()
-
-    public open fun next(): B? = this.iter.findMap(this.f)
-
-    public open fun nextChunk(n: Int): Result<List<B>, IntoIter<B>> {
-        open class Guard<T>(
-            public var array: MutableList<MaybeUninit<T>>,
-            public var initialized: Int,
-        ) {
-            public open fun drop() {
-                if (needsDrop<T>()) {
-                    // SAFETY: self.initialized is always <= N, which also is the length of the array.
-                    run {
-                        this.array.getUncheckedMut(0 until this.initialized).assumeInitDrop()
-                    }
-                }
-            }
-        }
-        var array: List<MaybeUninit<B>> = List(n) { MaybeUninit.uninit(UnresolvedTypeLayout<B>()) }
-        val guard = Guard(array = array, initialized = 0)
-        val result =
-            this.iter.tryForEach({ element ->
-                val idx = guard.initialized
-                val value = (this.f)(element)
-                guard.initialized = idx + (if (value != null) 1 else 0)
-                // SAFETY: Loop conditions ensure the index is in bounds.
-                run {
-                    val optPayloadAt: ConstPtr = (addrOf(value)).byteAdd(0).cast()
-                    val dst = MutPtr((guard.array.asMutPtr()).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))
-                    copyNonoverlapping(optPayloadAt, dst, 1, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<B>>())
-                    forget(value)
-                }
-                if (guard.initialized < n) {
-                    ControlFlow.Continue()
-                } else {
-                    ControlFlow.Break()
-                }
-            })
-        val guard1 = guard
-        return when (result) {
-            is ControlFlow.Break -> {
-                // SAFETY: The loop above is only explicitly broken when the array has been fully initialized
-                Result.Ok<List<B>, IntoIter<B>>(MaybeUninit.arrayAssumeInit(array, n))
-            }
-            is ControlFlow.Continue -> {
-                val initialized = guard1.initialized
-                // SAFETY: The range is in bounds since the loop breaks when reaching N elements.
-                Result.Err<List<B>, IntoIter<B>>(IntoIter.newUnchecked(array, 0 until initialized, n))
-            }
-        }
-    }
-
-    public open fun sizeHint(): Pair<Int, Int?> {
-        val (_, upper) = this.iter.sizeHint()
-        return Pair(0, upper)
-        // can't know a lower bound, due to the predicate
-    }
-
-    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, filterMapTryFold(this.f, fold))
-
-    public open fun <Acc> fold(init: Acc, fold: (Acc, B) -> Acc): Acc = this.iter.fold(init, filterMapFold(this.f, fold))
-
-    public open fun nextBack(): B? {
-        fun <T, B> find(f: (T) -> B?): (Unit, T) -> ControlFlow<B, Unit> =
-            { x -> when (val matchVal = f(x)) {
-                null -> ControlFlow.Continue()
-                else -> {
-                    val x1 = matchVal
-                    ControlFlow.Break(x1)
-                }
-            } }
-        return this.iter.tryRfold(find(this.f)).breakValue()
-    }
-
-    public open fun <Residual, Acc, R> tryRfold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, filterMapTryFold(this.f, fold))
-
-    public open fun <Acc> rfold(init: Acc, fold: (Acc, B) -> Acc): Acc = this.iter.rfold(init, filterMapFold(this.f, fold))
-
-    public override fun asInner(): Source {
-        // SAFETY: unchecked function forwarding to unchecked function with the same requirements
-        return this.iter.asInner()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "FilterMap").field("iter", this.iter).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun <I, F> typeLayout(typeLayoutI: TypeLayout<I>, typeLayoutF: TypeLayout<F>): TypeLayout<FilterMap<I, F>> =
@@ -185,10 +94,6 @@ public open class FilterMap<I, F>(
             }
 
         public fun <I, F> new(iter: I, f: F): FilterMap<I, F> = FilterMap(iter = iter, f = f)
-
-        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
-
-        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }
 
@@ -209,3 +114,88 @@ public fun <Residual, T, B, Acc, R : Try<R, Acc, Residual>> filterMapTryFold(f: 
             fold(acc, x)
         }
     } }
+
+public fun <B, I> FilterMap<I, F>.next(): B? = this.iter.findMap(this.f)
+
+public fun <B, I> FilterMap<I, F>.nextChunk(n: Int): Result<List<B>, IntoIter<B>> {
+    open class Guard<T>(
+        public var array: MutableList<MaybeUninit<T>>,
+        public var initialized: Int,
+    ) {
+        public open fun drop() {
+            if (needsDrop<T>()) {
+                // SAFETY: self.initialized is always <= N, which also is the length of the array.
+                run {
+                    this.array.getUncheckedMut(0 until this.initialized).assumeInitDrop()
+                }
+            }
+        }
+    }
+    var array: List<MaybeUninit<B>> = List(n) { MaybeUninit.uninit(UnresolvedTypeLayout<B>()) }
+    val guard = Guard(array = array, initialized = 0)
+    val result =
+        this.iter.tryForEach({ element ->
+            val idx = guard.initialized
+            val value = (this.f)(element)
+            guard.initialized = idx + (if (value != null) 1 else 0)
+            // SAFETY: Loop conditions ensure the index is in bounds.
+            run {
+                val optPayloadAt: ConstPtr = (addrOf(value)).byteAdd(0).cast()
+                val dst = MutPtr((guard.array.asMutPtr()).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))
+                copyNonoverlapping(optPayloadAt, dst, 1, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<B>>())
+                forget(value)
+            }
+            if (guard.initialized < n) {
+                ControlFlow.Continue(Unit)
+            } else {
+                ControlFlow.Break(Unit)
+            }
+        })
+    val guard1 = guard
+    return when (result) {
+        is ControlFlow.Break<*, *> -> {
+            // SAFETY: The loop above is only explicitly broken when the array has been fully initialized
+            Result.Ok<List<B>, IntoIter<B>>(MaybeUninit.arrayAssumeInit(array, n))
+        }
+        is ControlFlow.Continue<*, *> -> {
+            val initialized = guard1.initialized
+            // SAFETY: The range is in bounds since the loop breaks when reaching N elements.
+            Result.Err<List<B>, IntoIter<B>>(IntoIter.newUnchecked(array, 0 until initialized, n))
+        }
+    }
+}
+
+public fun <I> FilterMap<I, F>.sizeHint(): Pair<Int, Int?> {
+    val (_, upper) = this.iter.sizeHint()
+    return Pair(0, upper)
+    // can't know a lower bound, due to the predicate
+}
+
+public fun <Residual, B, I, Acc, R> FilterMap<I, F>.tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, filterMapTryFold(this.f, fold))
+
+public fun <B, I, Acc> FilterMap<I, F>.fold(init: Acc, fold: (Acc, B) -> Acc): Acc = this.iter.fold(init, filterMapFold(this.f, fold))
+
+public fun <B, I> FilterMap<I, F>.nextBack(): B? {
+    fun <T, B> find(f: (T) -> B?): (Unit, T) -> ControlFlow<B, Unit> =
+        { x -> when (val matchVal = f(x)) {
+            null -> ControlFlow.Continue(Unit)
+            else -> {
+                val x1 = matchVal
+                ControlFlow.Break(x1)
+            }
+        } }
+    return this.iter.tryRfold(Unit, find(this.f)).breakValue()
+}
+
+public fun <Residual, B, I, Acc, R> FilterMap<I, F>.tryRfold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, filterMapTryFold(this.f, fold))
+
+public fun <B, I, Acc> FilterMap<I, F>.rfold(init: Acc, fold: (Acc, B) -> Acc): Acc = this.iter.rfold(init, filterMapFold(this.f, fold))
+
+public fun <Source, I, F> FilterMap<I, F>.asInner(): Source where I : SourceIter<Source> {
+    // SAFETY: unchecked function forwarding to unchecked function with the same requirements
+    return this.iter.asInner()
+}
+
+public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
+
+public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY

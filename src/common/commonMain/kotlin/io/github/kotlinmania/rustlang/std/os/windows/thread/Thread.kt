@@ -6,6 +6,6 @@ import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
 
 // Windows-specific extensions to primitives in the [std.thread] module.
 
-public fun <T> JoinHandle<T>.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
+public fun <T> thread.JoinHandle<T>.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
 
-public fun <T> JoinHandle<T>.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
+public fun <T> thread.JoinHandle<T>.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())

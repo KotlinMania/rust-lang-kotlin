@@ -38,7 +38,7 @@ public sealed class ObjcClass {
     public data object Variant1 : ObjcClass()
     public data object Variant2 : ObjcClass()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "objc_class").finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "objc_class").finish(); Result.Ok<Unit, Unit>(Unit) }
 }
 
 /**
@@ -48,7 +48,7 @@ public sealed class ObjcSelector {
     public data object Variant1 : ObjcSelector()
     public data object Variant2 : ObjcSelector()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "objc_selector").finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "objc_selector").finish(); Result.Ok<Unit, Unit>(Unit) }
 }
 
 /**

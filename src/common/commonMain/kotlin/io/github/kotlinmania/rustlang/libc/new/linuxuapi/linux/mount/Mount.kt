@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U64
 import io.github.kotlinmania.rustlang.libc.types.CEnumRepr

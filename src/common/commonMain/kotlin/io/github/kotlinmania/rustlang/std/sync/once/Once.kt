@@ -279,7 +279,7 @@ public open class Once(
         this.inner.setState(newState)
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Once").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Once").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         /**
@@ -351,7 +351,7 @@ public open class OnceState(
         this.inner.poison()
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OnceState").field("poisoned", this.isPoisoned()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "OnceState").field("poisoned", this.isPoisoned()).finish(); Result.Ok<Unit, Error>(Unit) }
 }
 
 /**

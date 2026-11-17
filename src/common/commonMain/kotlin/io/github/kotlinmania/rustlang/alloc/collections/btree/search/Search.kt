@@ -40,11 +40,11 @@ public sealed class SearchBound<T> {
     public companion object {
         public fun <T> fromRange(rangeBound: Bound<T>): SearchBound<T> =
             when (rangeBound) {
-                is Bound.Included -> {
+                is Bound.Included<*> -> {
                     val (t) = rangeBound
                     Included(t)
                 }
-                is Bound.Excluded -> {
+                is Bound.Excluded<*> -> {
                     val (t1) = rangeBound
                     Excluded(t1)
                 }
@@ -123,11 +123,11 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
     var selfMut = this
     while (true) {
         selfMut = when (val matchVal = selfMut.searchNode(key)) {
-            is Found -> {
+            is Found<*, *, *, *, *> -> {
                 val (handle) = matchVal
                 return Found(handle)
             }
-            is GoDown -> {
+            is GoDown<*, *, *, *, *> -> {
                 val (handle1) = matchVal
                 when (val matchVal1 = handle1.force()) {
                     is io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf -> {
@@ -171,7 +171,7 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
     run {
         val matchVal = Pair(start, end)
         when {
-            matchVal.first is Bound.Excluded && matchVal.second is Bound.Excluded && (matchVal.first as Bound.Excluded).value == (matchVal.second as Bound.Excluded).value -> {
+            matchVal.first is Bound.Excluded<*> && matchVal.second is Bound.Excluded<*> && (matchVal.first as Bound.Excluded<*>).value == (matchVal.second as Bound.Excluded<*>).value -> {
                 val (s) = matchVal.first as Bound.Excluded<*>
                 val (e) = matchVal.second as Bound.Excluded<*>
                 if (isSet) {
@@ -180,7 +180,7 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
                     error("range start and end are equal and excluded in BTreeMap")
                 }
             }
-            ((matchVal.first is Bound.Included || matchVal.first is Bound.Excluded) && (matchVal.second is Bound.Included || matchVal.second is Bound.Excluded)) && (matchVal.first as Bound.Included).value > (matchVal.second as Bound.Included).value -> {
+            ((matchVal.first is Bound.Included<*> || matchVal.first is Bound.Excluded<*>) && (matchVal.second is Bound.Included<*> || matchVal.second is Bound.Excluded<*>)) && (matchVal.first as Bound.Included<*>).value > (matchVal.second as Bound.Included<*>).value -> {
                 val (s1) = matchVal.first as Bound.Included<*>
                 val (e1) = matchVal.second as Bound.Included<*>
                 if (isSet) {
@@ -303,7 +303,7 @@ public fun <BorrowType, K, V, Type, Q> NodeRef<BorrowType, K, V, Type>.findKeyIn
 public fun <BorrowType, K, V, Type, Q> NodeRef<BorrowType, K, V, Type>.findLowerBoundIndex(bound: SearchBound<Q>): Pair<Int, SearchBound<Q>> where K : Borrow<Q> =
     when (bound) {
         // ignore-tidy-undocumented-unchecked
-        is Included -> {
+        is Included<*> -> {
             val (key) = bound
             when (val matchVal = this.findKeyIndex(key, 0)) {
                 is IndexResult.KV -> {
@@ -317,7 +317,7 @@ public fun <BorrowType, K, V, Type, Q> NodeRef<BorrowType, K, V, Type>.findLower
             }
         }
         // ignore-tidy-undocumented-unchecked
-        is Excluded -> {
+        is Excluded<*> -> {
             val (key1) = bound
             when (val matchVal1 = this.findKeyIndex(key1, 0)) {
                 is IndexResult.KV -> {
@@ -344,7 +344,7 @@ public fun <BorrowType, K, V, Type, Q> NodeRef<BorrowType, K, V, Type>.findLower
 public fun <BorrowType, K, V, Type, Q> NodeRef<BorrowType, K, V, Type>.findUpperBoundIndex(bound: SearchBound<Q>, startIndex: Int): Pair<Int, SearchBound<Q>> where K : Borrow<Q> =
     when (bound) {
         // ignore-tidy-undocumented-unchecked
-        is Included -> {
+        is Included<*> -> {
             val (key) = bound
             when (val matchVal = this.findKeyIndex(key, startIndex)) {
                 is IndexResult.KV -> {
@@ -358,7 +358,7 @@ public fun <BorrowType, K, V, Type, Q> NodeRef<BorrowType, K, V, Type>.findUpper
             }
         }
         // ignore-tidy-undocumented-unchecked
-        is Excluded -> {
+        is Excluded<*> -> {
             val (key1) = bound
             when (val matchVal1 = this.findKeyIndex(key1, startIndex)) {
                 is IndexResult.KV -> {

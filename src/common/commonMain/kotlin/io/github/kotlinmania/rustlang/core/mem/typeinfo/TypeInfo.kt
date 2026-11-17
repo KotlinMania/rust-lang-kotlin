@@ -25,6 +25,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVariantRe
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVariants
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.metadata.DynMetadata
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // MVP for exposing compile-time information about types in a

@@ -136,7 +136,7 @@ public open class Vars(
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         val inner = this.inner.inner
-        return DebugStruct(f, "Vars").field("inner", inner).finish()
+        return run { DebugStruct(f, "Vars").field("inner", inner).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
     }
 }
 
@@ -165,7 +165,7 @@ public open class VarsOs(
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         val inner = this.inner
-        return DebugStruct(f, "VarsOs").field("inner", inner).finish()
+        return run { DebugStruct(f, "VarsOs").field("inner", inner).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
     }
 }
 
@@ -254,7 +254,7 @@ public fun varsOs(): VarsOs = VarsOs(inner = envimp.env())
  */
 public fun variable(key: OsStr): Result<String, VarError> {
     fun inner(key1: OsStr): Result<String, VarError> {
-        return when (val tryResult = envimp.getenv(key1).okOr(VarError.NotPresent)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<String, VarError>(tryResult.error) }.intoString().mapErr({ VarError.NotUnicode(it) })
+        return when (val tryResult = envimp.getenv(key1).okOr(VarError.NotPresent)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<String, VarError>(tryResult.error) }.intoString().mapErr({ VarError.NotUnicode(it) })
     }
     return inner(key)
 }
@@ -313,10 +313,10 @@ public sealed class VarError {
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
         when (this) {
-            VarError.NotPresent -> run { f.append("environment variable not found"); Result.Ok(Unit) }
+            VarError.NotPresent -> run { f.append("environment variable not found"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             is VarError.NotUnicode -> {
-                val (s) = this
-                run { f.append("environment variable was not valid unicode: $s"); Result.Ok(Unit) }
+                val (s) = this as VarError.NotUnicode
+                run { f.append("environment variable was not valid unicode: $s"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
         }
 }
@@ -469,7 +469,7 @@ public open class SplitPaths(
 
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "SplitPaths").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "SplitPaths").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 }
 
 /**
@@ -535,7 +535,7 @@ public open class SplitPathsRef(
 
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "SplitPathsRef").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "SplitPathsRef").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 }
 
 /**
@@ -840,7 +840,7 @@ public open class Args(
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         val inner = this.inner.inner
-        return DebugStruct(f, "Args").field("inner", inner).finish()
+        return run { DebugStruct(f, "Args").field("inner", inner).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
     }
 }
 
@@ -881,7 +881,7 @@ public open class ArgsOs(
 
     public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBy(n)
 
-    public open fun <Residual, B, R> tryFold(init: B, f: (B, OsString) -> R): R where R : Try<B> = this.inner.tryFold(init, f)
+    public open fun <Residual, B, R> tryFold(init: B, f: (B, OsString) -> R): R where R : Try<B, Residual> = this.inner.tryFold(init, f)
 
     public open fun <B> fold(init: B, f: (B, OsString) -> B): B = this.inner.fold(init, f)
 
@@ -895,7 +895,7 @@ public open class ArgsOs(
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         val inner = this.inner
-        return DebugStruct(f, "ArgsOs").field("inner", inner).finish()
+        return run { DebugStruct(f, "ArgsOs").field("inner", inner).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
     }
 }
 

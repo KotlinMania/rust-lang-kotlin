@@ -23,18 +23,18 @@ public class RawEntryTestMapInlineTests {
                 newValue
             })
         when (entry) {
-            is RawEntryMut.Occupied -> {
+            is RawEntryMut.Occupied<*, *, *, *> -> {
                 val (e) = entry
                 check(e.key() == key)
                 check(e.get() == newValue)
             }
-            is RawEntryMut.Vacant -> error("panic")
+            is RawEntryMut.Vacant<*, *, *, *> -> error("panic")
         }
         check(a[key] == newValue)
         check(a.size == 1)
         val entry1 =
             when (val matchVal = a.rawEntryMut().fromKey(key)) {
-                is RawEntryMut.Occupied -> {
+                is RawEntryMut.Occupied<*, *, *, *> -> {
                     val (e1) = matchVal
                     e1.replaceEntryWith({ k, v ->
                         check(k == key)
@@ -42,11 +42,11 @@ public class RawEntryTestMapInlineTests {
                         null
                     })
                 }
-                is RawEntryMut.Vacant -> error("panic")
+                is RawEntryMut.Vacant<*, *, *, *> -> error("panic")
             }
         when (entry1) {
-            is RawEntryMut.Vacant -> {}
-            is RawEntryMut.Occupied -> error("panic")
+            is RawEntryMut.Vacant<*, *, *, *> -> {}
+            is RawEntryMut.Occupied<*, *, *, *> -> error("panic")
         }
         check(!a.containsKey(key))
         check(a.size == 0)
@@ -60,8 +60,8 @@ public class RawEntryTestMapInlineTests {
         val newValue = "a new value"
         val entry = a.rawEntryMut().fromKey(key).andReplaceEntryWith({ error("panic") })
         when (entry) {
-            is RawEntryMut.Vacant -> {}
-            is RawEntryMut.Occupied -> error("panic")
+            is RawEntryMut.Vacant<*, *, *, *> -> {}
+            is RawEntryMut.Occupied<*, *, *, *> -> error("panic")
         }
         a.put(key, value)
         val entry1 =
@@ -71,12 +71,12 @@ public class RawEntryTestMapInlineTests {
                 newValue
             })
         when (entry1) {
-            is RawEntryMut.Occupied -> {
+            is RawEntryMut.Occupied<*, *, *, *> -> {
                 val (e) = entry1
                 check(e.key() == key)
                 check(e.get() == newValue)
             }
-            is RawEntryMut.Vacant -> error("panic")
+            is RawEntryMut.Vacant<*, *, *, *> -> error("panic")
         }
         check(a[key] == newValue)
         check(a.size == 1)
@@ -87,8 +87,8 @@ public class RawEntryTestMapInlineTests {
                 null
             })
         when (entry2) {
-            is RawEntryMut.Vacant -> {}
-            is RawEntryMut.Occupied -> error("panic")
+            is RawEntryMut.Vacant<*, *, *, *> -> {}
+            is RawEntryMut.Occupied<*, *, *, *> -> error("panic")
         }
         check(!a.containsKey(key))
         check(a.size == 0)
@@ -104,8 +104,8 @@ public class RawEntryTestMapInlineTests {
             }
         // Existing key (insert)
         when (val matchVal = map.rawEntryMut().fromKey(1)) {
-            is Vacant -> error("unreachable")
-            is Occupied -> {
+            is Vacant<*, *, *, *> -> error("unreachable")
+            is Occupied<*, *, *, *> -> {
                 val (view) = matchVal
                 check(view.get() == 10)
                 check(view.insert(100) == 10)
@@ -118,8 +118,8 @@ public class RawEntryTestMapInlineTests {
         check(map.len() == 6)
         // Existing key (update)
         when (val matchVal1 = map.rawEntryMut().fromKey(2)) {
-            is Vacant -> error("unreachable")
-            is Occupied -> {
+            is Vacant<*, *, *, *> -> error("unreachable")
+            is Occupied<*, *, *, *> -> {
                 val (view1) = matchVal1
                 val v = view1.getMut()
                 val newV = v * 10
@@ -134,8 +134,8 @@ public class RawEntryTestMapInlineTests {
         // Existing key (take)
         val hash3 = computeHash(map, 3)
         when (val matchVal2 = map.rawEntryMut().fromKeyHashedNocheck(hash3, 3)) {
-            is Vacant -> error("unreachable")
-            is Occupied -> {
+            is Vacant<*, *, *, *> -> error("unreachable")
+            is Occupied<*, *, *, *> -> {
                 val (view2) = matchVal2
                 check(view2.removeEntry() == Pair(3, 30))
             }
@@ -146,8 +146,8 @@ public class RawEntryTestMapInlineTests {
         check(map.len() == 5)
         // Nonexistent key (insert)
         when (val matchVal3 = map.rawEntryMut().fromKey(10)) {
-            is Occupied -> error("unreachable")
-            is Vacant -> {
+            is Occupied<*, *, *, *> -> error("unreachable")
+            is Vacant<*, *, *, *> -> {
                 val (view3) = matchVal3
                 check(view3.insert(10, 1000) == Pair(RustMutableReference(allocateNativeCell(10, PrimitiveLayouts.I32), PrimitiveLayouts.I32), RustMutableReference(allocateNativeCell(1000, PrimitiveLayouts.I32), PrimitiveLayouts.I32)))
             }
@@ -163,25 +163,25 @@ public class RawEntryTestMapInlineTests {
             check(map.rawEntry().fromHash(hash, { q -> q == k }) == kv)
             check(map.rawEntry().fromKeyHashedNocheck(hash, k) == kv)
             when (val matchVal4 = map.rawEntryMut().fromKey(k)) {
-                is Occupied -> {
+                is Occupied<*, *, *, *> -> {
                     val (o) = matchVal4
                     check(o.getKeyValue() == kv)
                 }
-                is Vacant -> check(v1 == null)
+                is Vacant<*, *, *, *> -> check(v1 == null)
             }
             when (val matchVal5 = map.rawEntryMut().fromKeyHashedNocheck(hash, k)) {
-                is Occupied -> {
+                is Occupied<*, *, *, *> -> {
                     val (o1) = matchVal5
                     check(o1.getKeyValue() == kv)
                 }
-                is Vacant -> check(v1 == null)
+                is Vacant<*, *, *, *> -> check(v1 == null)
             }
             when (val matchVal6 = map.rawEntryMut().fromHash(hash, { q -> q == k })) {
-                is Occupied -> {
+                is Occupied<*, *, *, *> -> {
                     val (o2) = matchVal6
                     check(o2.getKeyValue() == kv)
                 }
-                is Vacant -> check(v1 == null)
+                is Vacant<*, *, *, *> -> check(v1 == null)
             }
         }
     }
@@ -204,13 +204,13 @@ public class RawEntryTestMapInlineTests {
         run {
             val vacantEntry =
                 when (val matchVal = m.rawEntryMut().fromHash(0, { k -> k.first == 0 })) {
-                    is RawEntryMut.Occupied -> error("Found entry for key 0")
-                    is RawEntryMut.Vacant -> {
+                    is RawEntryMut.Occupied<*, *, *, *> -> error("Found entry for key 0")
+                    is RawEntryMut.Vacant<*, *, *, *> -> {
                         val (e) = matchVal
                         e
                     }
                 }
-            vacantEntry.insertWithHasher(0, IntWrapper(0), { k -> k.first })
+            vacantEntry.insertWithHasher(0, IntWrapper(0), Unit, { k -> k.first })
         }
         run {
             check(m.rawEntry().fromHash(0, { k -> k.first == 0 }) != null)
@@ -220,13 +220,13 @@ public class RawEntryTestMapInlineTests {
         run {
             val vacantEntry1 =
                 when (val matchVal1 = m.rawEntryMut().fromHash(1, { k -> k.first == 1 })) {
-                    is RawEntryMut.Occupied -> error("Found entry for key 1")
-                    is RawEntryMut.Vacant -> {
+                    is RawEntryMut.Occupied<*, *, *, *> -> error("Found entry for key 1")
+                    is RawEntryMut.Vacant<*, *, *, *> -> {
                         val (e1) = matchVal1
                         e1
                     }
                 }
-            vacantEntry1.insertWithHasher(1, IntWrapper(1), { k -> k.first })
+            vacantEntry1.insertWithHasher(1, IntWrapper(1), Unit, { k -> k.first })
         }
         run {
             check(m.rawEntry().fromHash(0, { k -> k.first == 0 }) != null)
@@ -236,11 +236,11 @@ public class RawEntryTestMapInlineTests {
         run {
             val occupiedEntry =
                 when (val matchVal2 = m.rawEntryMut().fromHash(0, { k -> k.first == 0 })) {
-                    is RawEntryMut.Occupied -> {
+                    is RawEntryMut.Occupied<*, *, *, *> -> {
                         val (e2) = matchVal2
                         e2
                     }
-                    is RawEntryMut.Vacant -> error("Couldn't find entry for key 0")
+                    is RawEntryMut.Vacant<*, *, *, *> -> error("Couldn't find entry for key 0")
                 }
             occupiedEntry.remove()
         }

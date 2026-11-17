@@ -55,6 +55,7 @@ import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
 import io.github.kotlinmania.rustlang.core.ops.bit.BitOrAssign
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.fromMut
 import io.github.kotlinmania.rustlang.core.ptr.fromRef
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -160,7 +161,7 @@ public open class NonZero<T, NonZeroInner> internal constructor(
 
     public open fun fmtUpperExp(f: StringBuilder): Result<Unit, Unit> = this.get().fmt(f)
 
-    public override fun clone(): NonZero<T, NonZeroInner> = NonZero(this.value)
+    public open fun clone(): NonZero<T, NonZeroInner> = NonZero(this.value)
 
     public open fun eq(other: NonZero<T, NonZeroInner>): Boolean = this.get() == other.get()
 
@@ -1195,10 +1196,10 @@ public fun NonZero.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UI
     val n1 =
         run {
             val matchVal = UByte.fromAsciiBytesRadixImpl(src, radix)
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val n = matchVal.value
                 n
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val err = matchVal.error
                 return Result.Err<NonZero<UByte, NonZeroU8Inner>, ParseIntError>(err)
             } }

@@ -151,13 +151,13 @@ public fun formatSymbolName(fmt: FnCallback, bytes: List<UByte>, f: StringBuilde
     while (bytes1.size > 0) {
         run {
             val matchVal = String.fromUtf8(bytes1)
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val name = matchVal.value
-                when (val tryResult = fmt(name, f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = fmt(name, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
                 break
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val err = matchVal.error
-                when (val tryResult = fmt("�", f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = fmt("�", f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
                 when (val matchVal1 = err.errorLen()) {
                     null -> { break }
                     else -> {

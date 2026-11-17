@@ -7,11 +7,12 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 // Utility macros.
 
 public open class SimdShuffleIdx(
-    public var value: UIntArray = UIntArray((LEN).toInt()),
+    public var value: UIntArray = UIntArray(0),
 ) {
     public var field0: UIntArray
         get() = value

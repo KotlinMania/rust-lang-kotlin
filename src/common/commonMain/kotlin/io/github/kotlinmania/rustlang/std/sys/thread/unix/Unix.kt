@@ -4,6 +4,7 @@
 package io.github.kotlinmania.rustlang.std.sys.thread.unix
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -18,11 +19,11 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.CPU_COUNT
 import io.github.kotlinmania.rustlang.libc.clockNanosleep
 import io.github.kotlinmania.rustlang.libc.prctl
@@ -49,7 +50,7 @@ import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.fs.exists
 import io.github.kotlinmania.rustlang.std.io.constError
-import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.helpers.copaque.COpaque
@@ -75,7 +76,7 @@ public open class Thread(
     public open fun join() {
         val id = this.intoId()
         val ret = pthreadJoin(id, MutPtr(0L))
-        check(ret == 0) { "failed to join thread: ${io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(ret)}" }
+        check(ret == 0) { "failed to join thread: ${Error.fromRawOsError(ret)}" }
     }
 
     public open fun id(): PthreadT = this.id
@@ -162,7 +163,7 @@ public open class Thread(
                 // The thread failed to start and as a result `data` was not consumed.
                 // Therefore, it is safe to reconstruct the box so that it gets deallocated.
                 (Box.fromRaw(data1)).let { }
-                Result.Err<Thread, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(ret))
+                Result.Err<Thread, Error>(Error.fromRawOsError(ret))
             }
         }
     }
@@ -191,8 +192,8 @@ public fun availableParallelism(): Result<NonZero<Int, NonZeroUsizeInner>, Error
         }
     }
     return when (val matchVal1 = sysconf(SC_NPROCESSORS_ONLN)) {
-        -1 -> Result.Err<NonZero<Int, NonZeroUsizeInner>, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
-        0 -> Result.Err<NonZero<Int, NonZeroUsizeInner>, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.UNKNOWN_THREAD_COUNT)
+        -1 -> Result.Err<NonZero<Int, NonZeroUsizeInner>, Error>(Error.lastOsError())
+        0 -> Result.Err<NonZero<Int, NonZeroUsizeInner>, Error>(Error.UNKNOWN_THREAD_COUNT)
         else -> {
             val cpus = matchVal1
             val count3 = cpus.toInt()
@@ -245,7 +246,7 @@ public fun sleep(dur: Duration) {
     // on WASIp2. Using `clockNanosleep` directly bypasses the issue.
     fun nanosleep(rqtp: ConstPtr, rmtp: MutPtr): CInt = clockNanosleep(io.github.kotlinmania.rustlang.std.sys.time.unix.Instant.CLOCK_ID, 0, rqtp, rmtp)
     var secs = dur.asSecs()
-    var nsecs = ((dur.subsecNanos() as Any?) as Unit)
+    var nsecs = dur.subsecNanos()
     // If we're awoken with a signal then the return value will be -1 and
     // nanosleep will fill in `ts` with the remaining time.
     while (secs > 0 || nsecs > 0) {
@@ -339,7 +340,7 @@ public fun quota(): Int {
         run {
             val buf = ArrayList(128)
             // find our place in the cgroup hierarchy
-            when (val tryResult = when (val tryResult = File.open("/proc/self/cgroup").ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }.readToEnd(buf).ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = when (val tryResult = File.open("/proc/self/cgroup").ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.readToEnd(buf).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             val (cgroupPath, version) =
                 when (val tryResult = buf.split({ c -> c == 10u }).fold(null, closure@{ previous, line ->
                     var fields = line.splitn(3, { c -> c == 58u })
@@ -360,10 +361,10 @@ public fun quota(): Int {
                     if (previous != null && version == Cgroup.V2) {
                         return@closure previous
                     }
-                    val path = when (val tryResult = fields.last()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
+                    val path = when (val tryResult = fields.last()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
                     // skip leading slash
                     Pair(path[1 until path.size].toOwned(), version)
-                })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             val cgroupPath1 = PathBuf.from(OsString.fromVec(cgroupPath))
             quota = when (version) {
                 Cgroup.v1 -> quotaV1(cgroupPath1)
@@ -386,8 +387,8 @@ public fun quotaV2(groupPath: PathBuf): Int {
     if (run {
         val matchVal = exists(path)
         when {
-            matchVal is Result.Err -> true
-            matchVal is Result.Ok && matchVal.value == false -> {
+            matchVal is Result.Err<*, *> -> true
+            matchVal is Result.Ok<*, *> && matchVal.value == false -> {
                 val valueVal = matchVal.value
                 true
             }
@@ -402,16 +403,16 @@ public fun quotaV2(groupPath: PathBuf): Int {
             path.push("cpu.max")
             readBuf = ""
             if (File.open(path).andThen({ f -> f.readToString(readBuf) }).isOk()) {
-                val rawQuota = when (val tryResult = readBuf.lines().next()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                val rawQuota = when (val tryResult = readBuf.lines().next()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 val rawQuota1 = rawQuota.split(' ')
-                val limit = when (val tryResult = rawQuota1.next()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-                val period = when (val tryResult = rawQuota1.next()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                val limit = when (val tryResult = rawQuota1.next()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                val period = when (val tryResult = rawQuota1.next()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 run {
                     val matchVal1 = Pair((limit.toIntOrNull()?.let { Result.Ok<Int, String>(it) } ?: Result.Err<Int, String>("failed to parse Int")), (period.toIntOrNull()?.let { Result.Ok<Int, String>(it) } ?: Result.Err<Int, String>("failed to parse Int")))
                     when {
-                        matchVal1.first is Result.Ok && matchVal1.second is Result.Ok && period > 0 -> {
-                            val limit1 = (matchVal1.first as Result.Ok).value
-                            val period1 = (matchVal1.second as Result.Ok).value
+                        matchVal1.first is Result.Ok<*, *> && matchVal1.second is Result.Ok<*, *> && period > 0 -> {
+                            val limit1 = (matchVal1.first as Result.Ok<*, *>).value
+                            val period1 = (matchVal1.second as Result.Ok<*, *>).value
                             quota = quota.min(limit1 / period1)
                         }
                         else -> {}
@@ -442,8 +443,8 @@ public fun quotaV1(groupPath: PathBuf): Int {
         if (run {
             val matchVal = exists(path)
             when {
-                matchVal is Result.Err -> true
-                matchVal is Result.Ok && matchVal.value == false -> {
+                matchVal is Result.Err<*, *> -> true
+                matchVal is Result.Ok<*, *> && matchVal.value == false -> {
                     val valueVal = matchVal.value
                     true
                 }
@@ -460,8 +461,8 @@ public fun quotaV1(groupPath: PathBuf): Int {
                     val f = File.open(path)
                     path.pop()
                     // restore buffer before any early returns
-                    when (val tryResult = when (val tryResult = f.ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }.readToString(readBuf).ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }
-                    val parsed = when (val tryResult = (readBuf.trim().toIntOrNull()?.let { Result.Ok<Int, String>(it) } ?: Result.Err<Int, String>("failed to parse Int")).ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }
+                    when (val tryResult = when (val tryResult = f.ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }.readToString(readBuf).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }
+                    val parsed = when (val tryResult = (readBuf.trim().toIntOrNull()?.let { Result.Ok<Int, String>(it) } ?: Result.Err<Int, String>("failed to parse Int")).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }
                     parsed
                 }
             val limit = parseFile("cpu.cfs_quota_us")

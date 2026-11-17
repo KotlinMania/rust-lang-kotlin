@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.clone.Share
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.sync.mpmc.SendTimeoutError
@@ -557,7 +558,7 @@ public open class Receiver<T>(
 
     public open fun intoIterIntoIterator(): IntoIter<T> = IntoIter(rx = this)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Receiver").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Receiver").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 }
 
 /**
@@ -854,7 +855,7 @@ public open class Sender<T>(
      */
     public open fun clone(): Sender<T> = Sender(inner = this.inner.clone())
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Sender").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Sender").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 }
 
 /**
@@ -1053,7 +1054,7 @@ public open class SyncSender<T>(
 
     public open fun clone(): SyncSender<T> = SyncSender(inner = this.inner.clone())
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "SyncSender").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "SyncSender").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 }
 
 /**
@@ -1075,7 +1076,7 @@ public open class SendError<T>(
 
     public open fun clone(): SendError<T> = SendError(value)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "SendError").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "SendError").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = "sending on a closed channel".fmt(f)
 
@@ -1265,28 +1266,28 @@ public sealed class TrySendError<T> {
      */
     public open fun intoInner(): T =
         when (this) {
-            is TrySendError.Full -> {
-                val (inner) = this
+            is TrySendError.Full<*> -> {
+                val (inner) = this as TrySendError.Full<T>
                 inner
             }
-            is TrySendError.Disconnected -> {
-                val (inner1) = this
+            is TrySendError.Disconnected<*> -> {
+                val (inner1) = this as TrySendError.Disconnected<T>
                 inner1
             }
         }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is TrySendError.Full -> DebugTuple(f, "TrySendError::Full").finishNonExhaustive()
-            is TrySendError.Disconnected -> {
-                DebugTuple(f, "TrySendError::Disconnected").finishNonExhaustive()
+            is TrySendError.Full<*> -> run { DebugTuple(f, "TrySendError::Full").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
+            is TrySendError.Disconnected<*> -> {
+                run { DebugTuple(f, "TrySendError::Disconnected").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
             }
         }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is TrySendError.Full -> "sending on a full channel".fmt(f)
-            is TrySendError.Disconnected -> "sending on a closed channel".fmt(f)
+            is TrySendError.Full<*> -> "sending on a full channel".fmt(f)
+            is TrySendError.Disconnected<*> -> "sending on a closed channel".fmt(f)
         }
 
     public companion object {

@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.FpCategory
 import io.github.kotlinmania.rustlang.core.num.imp.traits.FloatExt
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 // Decodes a floating-point value into individual parts and error ranges.
 

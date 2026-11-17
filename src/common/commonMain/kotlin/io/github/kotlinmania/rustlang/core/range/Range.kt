@@ -9,6 +9,8 @@ import io.github.kotlinmania.rustlang.core.ops.range.Bound.Excluded
 import io.github.kotlinmania.rustlang.core.ops.range.Bound.Included
 import io.github.kotlinmania.rustlang.core.ops.range.Bound.Unbounded
 import io.github.kotlinmania.rustlang.core.ops.range.OneSidedRangeBound
+import io.github.kotlinmania.rustlang.core.ops.range.bound
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.range.iter.RangeFromIter
 import io.github.kotlinmania.rustlang.core.range.iter.RangeInclusiveIter
 import io.github.kotlinmania.rustlang.core.range.iter.RangeIter
@@ -71,9 +73,9 @@ public open class Range<Idx>(
     public open fun clone(): Range<Idx> = Range(start, end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -226,9 +228,9 @@ public open class RangeInclusive<Idx>(
     public open fun clone(): RangeInclusive<Idx> = RangeInclusive(start, last)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = this.last.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.last.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -362,10 +364,10 @@ public fun <T> fromRangeInclusiveT(value: RangeInclusive<T>): io.github.kotlinma
  * import core.range.RangeInclusive
  * import core.range.legacy
  *
- * val single: legacy.RangeInclusive<Int> = 0..1
+ * val single: legacy.RangeInclusive<Int> = RangeInclusive(0, 1, false)
  * val single1 = RangeInclusive.from(single)
  * check(Pair(single1.start, single1.last) == Pair(0, 1))
- * val empty: legacy.RangeInclusive<Int> = 0..0
+ * val empty: legacy.RangeInclusive<Int> = RangeInclusive(0, 0, false)
  * val empty1 = RangeInclusive.from(empty)
  * check(Pair(empty1.start, empty1.last) == Pair(0, 0))
  * ```
@@ -375,7 +377,7 @@ public fun <T> fromRangeInclusiveT(value: RangeInclusive<T>): io.github.kotlinma
  * import core.range.legacy
  * import std.panic.catchUnwind
  *
- * var exhausted: legacy.RangeInclusive<Int> = 0..0
+ * var exhausted: legacy.RangeInclusive<Int> = RangeInclusive(0, 0, false)
  * exhausted.next()
  * val result = catchUnwind({ RangeInclusive.from(exhausted) })
  * // The `from` call either panicked or returned an empty range.
@@ -424,8 +426,8 @@ public open class RangeFrom<Idx>(
     public open fun clone(): RangeFrom<Idx> = RangeFrom(start)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -567,8 +569,8 @@ public open class RangeToInclusive<Idx>(
     public open fun clone(): RangeToInclusive<Idx> = RangeToInclusive(last)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = this.last.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.last.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 

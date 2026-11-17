@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.mapAddr
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
@@ -16,8 +17,6 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.libc.CInt
-import io.github.kotlinmania.rustlang.libc.CVoid
 import io.github.kotlinmania.rustlang.libc.getauxval
 import io.github.kotlinmania.rustlang.libc.mprotect
 import io.github.kotlinmania.rustlang.libc.munmap
@@ -45,6 +44,8 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_READ
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_WRITE
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.MAP_STACK
 import io.github.kotlinmania.rustlang.libc.windows.SIGSEGV
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
+import io.github.kotlinmania.rustlang.std.os.raw.CVoid
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.conf.pageSize
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.Handler
@@ -313,7 +314,7 @@ public fun sigstackSize(): Int {
     // If getauxval couldn't find the entry, it returns 0,
     // so take the higher of the "constant" and auxval.
     // This transparently supports older kernels which don't provide AT_MINSIGSTKSZ
-    return SIGSTKSZ.max(dynamicSigstksz.toInt())
+    return SIGSTKSZ.max(dynamicSigstksz)
 }
 
 public fun getStackStart(): MutPtr? {

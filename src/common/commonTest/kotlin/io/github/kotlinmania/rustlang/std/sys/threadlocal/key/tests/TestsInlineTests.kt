@@ -4,8 +4,8 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.key.tests
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.sync.Arc
-import io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.windows.KEY
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy.LazyKey
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.get
@@ -37,14 +37,14 @@ public class TestsInlineTests {
             (Arc.fromRaw(ConstPtr(ptr.rawAddress, ptr.rawMeta))).let { }
         }
         val KEY: LazyKey  = LazyKey.new(::destruct)
-        val shared1 = Arc.new()
+        val shared1 = Arc.new(Unit)
         val shared2 = shared1
         val key = KEY.force()
         run {
             check(((get(key)).rawAddress == 0L))
             set(key, mutPtrFromRustCast(Arc.intoRaw(shared1)))
         }
-        Thread.spawn({ run {
+        thread.spawn({ run {
             val key1 = KEY.force()
             check(((get(key1)).rawAddress == 0L))
             set(key1, mutPtrFromRustCast(Arc.intoRaw(shared2)))

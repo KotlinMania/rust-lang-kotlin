@@ -57,24 +57,24 @@ public fun Long.isMinusOne(): Boolean = (this == -1L).toUByte()
  * and if so, returns the last error from the Windows socket interface. This
  * function must be called before another call to the socket API is made.
  */
-public fun <T : IsMinusOne> cvt(t: T): Result<T, io.github.kotlinmania.rustlang.std.io.error.Error> =
+public fun <T : IsMinusOne> cvt(t: T): Result<T, Error> =
     if (t.isMinusOne()) {
-        Result.Err<T, io.github.kotlinmania.rustlang.std.io.error.Error>(lastError())
+        Result.Err<T, Error>(lastError())
     } else {
-        Result.Ok<T, io.github.kotlinmania.rustlang.std.io.error.Error>(t)
+        Result.Ok<T, Error>(t)
     }
 
 /**
  * A variant of `cvt` for `getaddrinfo` which return 0 for a success.
  */
-public fun cvtGai(err: CInt): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> =
+public fun cvtGai(err: CInt): Result<Unit, Error> =
     if (err == 0) {
-        Result.Ok<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(Unit)
+        Result.Ok<Unit, Error>(Unit)
     } else {
-        Result.Err<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(lastError())
+        Result.Err<Unit, Error>(lastError())
     }
 
 /**
  * Just to provide the same interface as sys/pal/unix/net.rs
  */
-public fun <T> cvtR(f: () -> T): Result<T, io.github.kotlinmania.rustlang.std.io.error.Error> where T : IsMinusOne = cvt(f())
+public fun <T> cvtR(f: () -> T): Result<T, Error> where T : IsMinusOne = cvt(f())

@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 // Internal `@repr(simd)` types
 
@@ -32,13 +33,39 @@ public interface SimdElement<T> {
 }
 
 public open class Simd<T>(
-    public var value: List<T>,
+    public var value: List<T> = emptyList(),
 ) {
     public var field0: List<T>
         get() = value
         set(v) {
             value = v
         }
+
+    /**
+     * Extract the element at position `index`. Note that `index` is not a constant so this
+     * operation is not efficient on most platforms. Use for testing only.
+     */
+    public open fun extractDyn(index: Int): T {
+        check(index < N)
+        // SAFETY: self is a vector, T its element type.
+        return run { val _simdArg0 = this; val _simdArg1 = index.toUInt(); _simdArg0 }
+    }
+
+    public open fun asArray(): List<T> {
+        val simdPtr: ConstPtr = this
+        val arrayPtr: ConstPtr = ConstPtr((simdPtr).rawAddress)
+        // SAFETY: We can always read the prefix of a simd type as an array.
+        // There might be more padding afterwards for some widths, but
+        // that's not a problem for reading less than that.
+        return (UnresolvedTypeLayout<List<T>>()).readNative((arrayPtr).rawAddress)
+    }
+
+    // `@derive(Clone)` causes ICE "Projecting into SIMD type coreArch.simd.Simd is banned by MCP#838"
+    public open fun clone(): Simd<T> = Simd(this.value)
+
+    public open fun eq(other: Simd<T>): Boolean = this.asArray() == other.asArray()
+
+    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "Simd", this.asArray(), n)
 
     public companion object {
         public fun <T> typeLayout(typeLayoutT: TypeLayout<T>, n: Int = 0): TypeLayout<Simd<T>> =
@@ -61,54 +88,28 @@ public open class Simd<T>(
                 }
             }
 
-        public fun <T> new(x0: T, n: Int): Simd<T> = Simd(listOf(x0))
+        /**
+         * A value of this type where all elements are zeroed out.
+         */
+        public val ZERO: Simd<T> = Simd.splat(T.ZERO, n)
 
-        public fun <T> new(x0: T, x1: T, n: Int): Simd<T> = Simd(listOf(x0, x1))
+        public fun <T> fromArray(elements: List<T>, n: Int): Simd<T> = Simd(elements)
 
-        public fun <T> new(x0: T, x1: T, x2: T, x3: T, n: Int): Simd<T> = Simd(listOf(x0, x1, x2, x3))
-
-        public fun <T> new(x0: T, x1: T, x2: T, x3: T, x4: T, x5: T, x6: T, x7: T, n: Int): Simd<T> = Simd(listOf(x0, x1, x2, x3, x4, x5, x6, x7))
-
-        public fun <T> new(x0: T, x1: T, x2: T, x3: T, x4: T, x5: T, x6: T, x7: T, x8: T, x9: T, x10: T, x11: T, x12: T, x13: T, x14: T, x15: T, n: Int): Simd<T> = Simd(listOf(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15))
-
-        public fun <T> new(x0: T, x1: T, x2: T, x3: T, x4: T, x5: T, x6: T, x7: T, x8: T, x9: T, x10: T, x11: T, x12: T, x13: T, x14: T, x15: T, x16: T, x17: T, x18: T, x19: T, x20: T, x21: T, x22: T, x23: T, x24: T, x25: T, x26: T, x27: T, x28: T, x29: T, x30: T, x31: T, n: Int): Simd<T> = Simd(listOf(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31))
+        public fun <T> splat(value: T, n: Int): Simd<T> = run { val _simdArg0 = value; _simdArg0 }
     }
 }
 
-/**
- * A value of this type where all elements are zeroed out.
- */
-public val ZERO: Simd<T> = Simd.splat(T.ZERO, n)
+public fun <T> Simd.Companion.new(x0: T): Simd<T> = Simd(listOf(x0))
 
-public fun <T> Simd.Companion.fromArray(elements: List<T>, n: Int): Simd<T> = Simd(elements)
+public fun <T> Simd.Companion.new(x0: T, x1: T): Simd<T> = Simd(listOf(x0, x1))
 
-public fun <T> Simd.Companion.splat(value: T, n: Int): Simd<T> = run { val _simdArg0 = value; _simdArg0 }
+public fun <T> Simd.Companion.new(x0: T, x1: T, x2: T, x3: T): Simd<T> = Simd(listOf(x0, x1, x2, x3))
 
-/**
- * Extract the element at position `index`. Note that `index` is not a constant so this
- * operation is not efficient on most platforms. Use for testing only.
- */
-public fun <T> Simd<T>.extractDyn(index: Int, n: Int): T {
-    check(index < n)
-    // SAFETY: self is a vector, T its element type.
-    return run { val _simdArg0 = this; val _simdArg1 = index.toUInt(); _simdArg0 }
-}
+public fun <T> Simd.Companion.new(x0: T, x1: T, x2: T, x3: T, x4: T, x5: T, x6: T, x7: T): Simd<T> = Simd(listOf(x0, x1, x2, x3, x4, x5, x6, x7))
 
-public fun <T> Simd<T>.asArray(n: Int): List<T> {
-    val simdPtr: ConstPtr = this
-    val arrayPtr: ConstPtr = ConstPtr((simdPtr).rawAddress)
-    // SAFETY: We can always read the prefix of a simd type as an array.
-    // There might be more padding afterwards for some widths, but
-    // that's not a problem for reading less than that.
-    return (UnresolvedTypeLayout<List<T>>()).readNative((arrayPtr).rawAddress)
-}
+public fun <T> Simd.Companion.new(x0: T, x1: T, x2: T, x3: T, x4: T, x5: T, x6: T, x7: T, x8: T, x9: T, x10: T, x11: T, x12: T, x13: T, x14: T, x15: T): Simd<T> = Simd(listOf(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15))
 
-// `@derive(Clone)` causes ICE "Projecting into SIMD type coreArch.simd.Simd is banned by MCP#838"
-public fun <T> Simd<T>.clone(n: Int): Simd<T> = Simd(this.value)
-
-public fun <T> Simd<T>.eq(other: Simd<T>, n: Int): Boolean = this.asArray() == other.asArray()
-
-public fun <T> Simd<T>.fmt(f: Formatter, n: Int): Result = debugSimdFinish(f, "Simd", this.asArray(), n)
+public fun <T> Simd.Companion.new(x0: T, x1: T, x2: T, x3: T, x4: T, x5: T, x6: T, x7: T, x8: T, x9: T, x10: T, x11: T, x12: T, x13: T, x14: T, x15: T, x16: T, x17: T, x18: T, x19: T, x20: T, x21: T, x22: T, x23: T, x24: T, x25: T, x26: T, x27: T, x28: T, x29: T, x30: T, x31: T): Simd<T> = Simd(listOf(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31))
 
 public fun Simd<F16>.toBits(n: Int): Simd<UShort> {
     check(sizeOf<Simd<F16>>(typeLayoutT = UnresolvedTypeLayout<Simd<F16>>()) == sizeOf<Simd<UShort>>(typeLayoutT = UnresolvedTypeLayout<Simd<UShort>>()))
@@ -121,13 +122,29 @@ public fun Simd.Companion.fromBits(bits: Simd<UShort>, n: Int): Simd<F16> {
 }
 
 public open class SimdM<T>(
-    public var value: List<T>,
+    public var value: List<T> = emptyList(),
 ) {
     public var field0: List<T>
         get() = value
         set(v) {
             value = v
         }
+
+    public open fun asArray(): List<T> {
+        val simdPtr: ConstPtr = this
+        val arrayPtr: ConstPtr = ConstPtr((simdPtr).rawAddress)
+        // SAFETY: We can always read the prefix of a simd type as an array.
+        // There might be more padding afterwards for some widths, but
+        // that's not a problem for reading less than that.
+        return (UnresolvedTypeLayout<List<T>>()).readNative((arrayPtr).rawAddress)
+    }
+
+    // `@derive(Clone)` causes ICE "Projecting into SIMD type coreArch.simd.SimdM is banned by MCP#838"
+    public open fun clone(): SimdM<T> = SimdM(this.value)
+
+    public open fun eq(other: SimdM<T>): Boolean = this.asArray() == other.asArray()
+
+    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "SimdM", this.asArray(), n)
 
     public companion object {
         public fun <T> typeLayout(typeLayoutT: TypeLayout<T>, n: Int = 0): TypeLayout<SimdM<T>> =
@@ -149,53 +166,37 @@ public open class SimdM<T>(
                     (fixedListTypeLayout(typeLayoutT, (n).toInt())).writeBytes(buf, offset, value.value)
                 }
             }
-    }
-}
 
-public fun <T> SimdM.Companion.boolToInternal(x: Boolean, n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
-    // SAFETY: `T` implements `SimdElement`, so all bit patterns are valid.
-    val ones =
-        run {
-            // Ideally, this would be `reinterpret([0xFFu8; sizeOf<T>()])`, but
-            // `sizeOf<T>()` is not allowed to use a generic parameter there.
-            val r = MaybeUninit.uninit(typeLayoutT)
+        public fun <T> boolToInternal(x: Boolean, n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
+            // SAFETY: `T` implements `SimdElement`, so all bit patterns are valid.
+            val ones =
+                run {
+                    // Ideally, this would be `reinterpret([0xFFu8; sizeOf<T>()])`, but
+                    // `sizeOf<T>()` is not allowed to use a generic parameter there.
+                    val r = MaybeUninit.uninit(typeLayoutT)
+                    var i = 0
+                    while (i < sizeOf<T>(typeLayoutT = typeLayoutT)) {
+                        r.asBytesMut()[i] = MaybeUninit.new(0xFF, typeLayoutT)
+                        i += 1
+                    }
+                    r.assumeInit()
+                }
+            return listOf(T.ZERO, ones)[x.toInt()]
+        }
+
+        public fun <T> fromArray(elements: BooleanArray, n: Int): SimdM<T> {
+            val internal = MutableList(n) { T.ZERO }
             var i = 0
-            while (i < sizeOf<T>(typeLayoutT = typeLayoutT)) {
-                r.asBytesMut()[i] = MaybeUninit.new(0xFF, typeLayoutT)
+            while (i < n) {
+                internal[i] = SimdM.boolToInternal(elements[i], n)
                 i += 1
             }
-            r.assumeInit()
+            return SimdM(internal)
         }
-    return listOf(T.ZERO, ones)[x.toInt()]
-}
 
-public fun <T> SimdM.Companion.fromArray(elements: BooleanArray, n: Int): SimdM<T> {
-    val internal = MutableList(n) { T.ZERO }
-    var i = 0
-    while (i < n) {
-        internal[i] = SimdM.boolToInternal(elements[i], n)
-        i += 1
+        public fun <T> splat(value: Boolean, n: Int): SimdM<T> = run { val _simdArg0 = SimdM.boolToInternal(value, n); _simdArg0 }
     }
-    return SimdM(internal)
 }
-
-public fun <T> SimdM.Companion.splat(value: Boolean, n: Int): SimdM<T> = run { val _simdArg0 = SimdM.boolToInternal(value, n); _simdArg0 }
-
-public fun <T> SimdM<T>.asArray(n: Int): List<T> {
-    val simdPtr: ConstPtr = this
-    val arrayPtr: ConstPtr = ConstPtr((simdPtr).rawAddress)
-    // SAFETY: We can always read the prefix of a simd type as an array.
-    // There might be more padding afterwards for some widths, but
-    // that's not a problem for reading less than that.
-    return (UnresolvedTypeLayout<List<T>>()).readNative((arrayPtr).rawAddress)
-}
-
-// `@derive(Clone)` causes ICE "Projecting into SIMD type coreArch.simd.SimdM is banned by MCP#838"
-public fun <T> SimdM<T>.clone(n: Int): SimdM<T> = SimdM(this.value)
-
-public fun <T> SimdM<T>.eq(other: SimdM<T>, n: Int): Boolean = this.asArray() == other.asArray()
-
-public fun <T> SimdM<T>.fmt(f: Formatter, n: Int): Result = debugSimdFinish(f, "SimdM", this.asArray(), n)
 
 // 16-bit wide types:
 public typealias U8x2 = Simd<UByte>

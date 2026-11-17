@@ -15,7 +15,7 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 public open class LaunchError(
     public var message: String,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(this.message); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(this.message); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         /**
@@ -65,7 +65,7 @@ public open class Region<T, S : PartitioningStrategy<View, ViewMut>, View, ViewM
 
     public override fun offloadCheckLaunch(grid: UIntArray, block: UIntArray) {
         when (val matchVal = this.checkLaunch(grid, block)) {
-            is Result.Err -> {
+            is Result.Err<*, *> -> {
                 val err = matchVal.error
                 error("offload launch is not supported by the region's partitioning strategy: $err")
             }

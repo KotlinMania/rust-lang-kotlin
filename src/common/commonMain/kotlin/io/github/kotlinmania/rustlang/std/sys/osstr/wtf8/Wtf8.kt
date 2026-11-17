@@ -45,9 +45,9 @@ public open class Buf internal constructor(
 
     public override fun asInner(): Wtf8 = this.inner
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok(Unit) }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun clone(): Buf = Buf(inner = this.inner.clone(), fieldLayout = this.fieldLayout)
 
@@ -182,9 +182,9 @@ public open class Slice internal constructor(
 
     public fun pointerLayout(): TypeLayout<Slice> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Slice(ptr, layout) }, { it.inner })
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok(Unit) }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun asEncodedBytes(): List<UByte> = this.inner.asBytes()
 

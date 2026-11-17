@@ -2,13 +2,13 @@
 package io.github.kotlinmania.rustlang.core.range.iter
 
 import io.github.kotlinmania.rustlang.core.iter.range.Step
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.range.Range
 import io.github.kotlinmania.rustlang.core.range.RangeFrom
 import io.github.kotlinmania.rustlang.core.range.RangeInclusive
@@ -22,21 +22,12 @@ import io.github.kotlinmania.rustlang.core.result.Result
  */
 public open class RangeIter<A>(
     public var value: Range<A>,
-) : TrustedLen, Iterable<A> {
+) {
     public var field0: Range<A>
         get() = value
         set(v) {
             value = v
         }
-
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@RangeIter.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
 
     public open fun clone(): RangeIter<A> = RangeIter(value)
 
@@ -59,38 +50,6 @@ public open class RangeIter<A>(
      * ```
      */
     public open fun remainder(): io.github.kotlinmania.rustlang.core.range.Range<A> = Range(start = this.value.start, end = this.value.end)
-
-    public override fun next(): A? = this.value.next()
-
-    public override fun sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
-
-    public override fun count(): Int = this.value.count()
-
-    public override fun nth(n: Int): A? = this.value.nth(n)
-
-    public override fun last(): A? = this.value.last()
-
-    public override fun min(): A? = this.value.min()
-
-    public override fun max(): A? = this.value.max()
-
-    public override fun isSorted(): Boolean = true
-
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
-
-    public override fun iteratorGetUnchecked(idx: Int): A {
-        // SAFETY: The TrustedRandomAccess contract requires that callers only pass an index
-        // that is in bounds.
-        // Additionally Self: TrustedRandomAccess is only implemented for Copy types
-        // which means even repeated reads of the same index would be safe.
-        return Step.forwardUnchecked(this.value.start.clone(), idx)
-    }
-
-    public open fun nextBack(): A? = this.value.nextBack()
-
-    public open fun nthBack(n: Int): A? = this.value.nthBack(n)
-
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 }
 
 public val MAY_HAVE_SIDE_EFFECT: Boolean = false
@@ -113,6 +72,38 @@ public val MAY_HAVE_SIDE_EFFECT8: Boolean = false
 
 public val MAY_HAVE_SIDE_EFFECT9: Boolean = false
 
+public fun <A : Step<A>> RangeIter<A>.next(): A? = this.value.next()
+
+public fun <A : Step<A>> RangeIter<A>.sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
+
+public fun <A : Step<A>> RangeIter<A>.count(): Int = this.value.count()
+
+public fun <A : Step<A>> RangeIter<A>.nth(n: Int): A? = this.value.nth(n)
+
+public fun <A : Step<A>> RangeIter<A>.last(): A? = this.value.last()
+
+public fun <A : Step<A>> RangeIter<A>.min(): A? = this.value.min()
+
+public fun <A : Step<A>> RangeIter<A>.max(): A? = this.value.max()
+
+public fun <A : Step<A>> RangeIter<A>.isSorted(): Boolean = true
+
+public fun <A : Step<A>> RangeIter<A>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
+
+public fun <A : Step<A>> RangeIter<A>.iteratorGetUnchecked(idx: Int): A {
+    // SAFETY: The TrustedRandomAccess contract requires that callers only pass an index
+    // that is in bounds.
+    // Additionally Self: TrustedRandomAccess is only implemented for Copy types
+    // which means even repeated reads of the same index would be safe.
+    return Step.forwardUnchecked(this.value.start.clone(), idx)
+}
+
+public fun <A : Step<A>> RangeIter<A>.nextBack(): A? = this.value.nextBack()
+
+public fun <A : Step<A>> RangeIter<A>.nthBack(n: Int): A? = this.value.nthBack(n)
+
+public fun <A : Step<A>> RangeIter<A>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
+
 public fun <A : Step<A>> io.github.kotlinmania.rustlang.core.range.Range<A>.intoIter(): RangeIter<A> = RangeIter(this.into())
 
 /**
@@ -120,21 +111,12 @@ public fun <A : Step<A>> io.github.kotlinmania.rustlang.core.range.Range<A>.into
  */
 public open class RangeInclusiveIter<A>(
     public var value: io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive<A>,
-) : TrustedLen, Iterable<A> {
+) {
     public var field0: io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive<A>
         get() = value
         set(v) {
             value = v
         }
-
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@RangeInclusiveIter.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
 
     public open fun clone(): RangeInclusiveIter<A> = RangeInclusiveIter(value)
 
@@ -164,31 +146,31 @@ public open class RangeInclusiveIter<A>(
         }
         return RangeInclusive(start = this.value.start, last = this.value.end)
     }
-
-    public override fun next(): A? = this.value.next()
-
-    public override fun sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
-
-    public override fun count(): Int = this.value.count()
-
-    public override fun nth(n: Int): A? = this.value.nth(n)
-
-    public override fun last(): A? = this.value.last()
-
-    public override fun min(): A? = this.value.min()
-
-    public override fun max(): A? = this.value.max()
-
-    public override fun isSorted(): Boolean = true
-
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
-
-    public open fun nextBack(): A? = this.value.nextBack()
-
-    public open fun nthBack(n: Int): A? = this.value.nthBack(n)
-
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 }
+
+public fun <A : Step<A>> RangeInclusiveIter<A>.next(): A? = this.value.next()
+
+public fun <A : Step<A>> RangeInclusiveIter<A>.sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
+
+public fun <A : Step<A>> RangeInclusiveIter<A>.count(): Int = this.value.count()
+
+public fun <A : Step<A>> RangeInclusiveIter<A>.nth(n: Int): A? = this.value.nth(n)
+
+public fun <A : Step<A>> RangeInclusiveIter<A>.last(): A? = this.value.last()
+
+public fun <A : Step<A>> RangeInclusiveIter<A>.min(): A? = this.value.min()
+
+public fun <A : Step<A>> RangeInclusiveIter<A>.max(): A? = this.value.max()
+
+public fun <A : Step<A>> RangeInclusiveIter<A>.isSorted(): Boolean = true
+
+public fun <A : Step<A>> RangeInclusiveIter<A>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
+
+public fun <A : Step<A>> RangeInclusiveIter<A>.nextBack(): A? = this.value.nextBack()
+
+public fun <A : Step<A>> RangeInclusiveIter<A>.nthBack(n: Int): A? = this.value.nthBack(n)
+
+public fun <A : Step<A>> RangeInclusiveIter<A>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 
 public fun <A : Step<A>> RangeInclusive<A>.intoIter(): RangeInclusiveIter<A> = RangeInclusiveIter(this.into())
 
@@ -202,16 +184,7 @@ public open class RangeFromIter<A>(
      * Only used when overflow checks are enabled.
      */
     public var exhausted: Boolean,
-) : TrustedLen, Iterable<A> {
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@RangeFromIter.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
+) {
     public open fun clone(): RangeFromIter<A> = RangeFromIter(start, exhausted)
 
     /**
@@ -241,63 +214,6 @@ public open class RangeFromIter<A>(
         return RangeFrom(start = this.start)
     }
 
-    public override fun next(): A? {
-        if (this.exhausted) {
-            // This should panic if overflow checks are enabled, since
-            // `forwardChecked` returned `None` in prior iteration.
-            this.start = Step.forward(this.start.clone(), 1)
-            // If we get here, if means this iterator was exhausted by a crate
-            // with overflow-checks enabled, but now we're iterating in a crate with
-            // overflow-checks disabled. Since we successfully incremented `self.start`
-            // above (in many cases this will wrap around to MIN), we now unset
-            // the flag so we don't repeat this process in the next iteration.
-            //
-            // This could also happen if `forwardChecked` returned None but
-            // (for whatever reason, not applicable to any std implementors)
-            // `forward` doesn't panic when overflow-checks are enabled. In that
-            // case, this is also the correct behavior.
-            this.exhausted = false
-        }
-        if (false) {
-            val n = Step.forwardChecked(this.start.clone(), 1) ?: run {
-                this.exhausted = true
-                return this.start.clone()
-            }
-            return replace(this.start, n)
-        }
-        val n1 = Step.forward(this.start.clone(), 1)
-        return replace(this.start, n1)
-    }
-
-    public override fun sizeHint(): Pair<Int, Int?> = Pair(Int.MAX_VALUE, null)
-
-    public override fun nth(n: Int): A? {
-        // Typically `forward` will cause an overflow-check panic here,
-        // but unset the exhausted flag to handle the uncommon cases.
-        // See the comments in `next` for more details.
-        if (this.exhausted) {
-            this.start = Step.forward(this.start.clone(), 1)
-            this.exhausted = false
-        }
-        if (false) {
-            val plusN = Step.forward(this.start.clone(), n)
-            when (val matchVal = Step.forwardChecked(plusN.clone(), 1)) {
-                null -> {
-                    this.start = plusN.clone()
-                    this.exhausted = true
-                }
-                else -> {
-                    val plusN1 = matchVal
-                    this.start = plusN1
-                }
-            }
-            return plusN
-        }
-        val plusN1 = Step.forward(this.start.clone(), n)
-        this.start = Step.forward(plusN1.clone(), 1)
-        return plusN1
-    }
-
     public companion object {
         public fun <A> typeLayout(typeLayoutA: TypeLayout<A>): TypeLayout<RangeFromIter<A>> =
             object : TypeLayout<RangeFromIter<A>> {
@@ -324,6 +240,63 @@ public open class RangeFromIter<A>(
                 }
             }
     }
+}
+
+public fun <A : Step<A>> RangeFromIter<A>.next(): A? {
+    if (this.exhausted) {
+        // This should panic if overflow checks are enabled, since
+        // `forwardChecked` returned `None` in prior iteration.
+        this.start = Step.forward(this.start.clone(), 1)
+        // If we get here, if means this iterator was exhausted by a crate
+        // with overflow-checks enabled, but now we're iterating in a crate with
+        // overflow-checks disabled. Since we successfully incremented `self.start`
+        // above (in many cases this will wrap around to MIN), we now unset
+        // the flag so we don't repeat this process in the next iteration.
+        //
+        // This could also happen if `forwardChecked` returned None but
+        // (for whatever reason, not applicable to any std implementors)
+        // `forward` doesn't panic when overflow-checks are enabled. In that
+        // case, this is also the correct behavior.
+        this.exhausted = false
+    }
+    if (false) {
+        val n = Step.forwardChecked(this.start.clone(), 1) ?: run {
+            this.exhausted = true
+            return this.start.clone()
+        }
+        return replace(this.start, n)
+    }
+    val n1 = Step.forward(this.start.clone(), 1)
+    return replace(this.start, n1)
+}
+
+public fun <A : Step<A>> RangeFromIter<A>.sizeHint(): Pair<Int, Int?> = Pair(Int.MAX_VALUE, null)
+
+public fun <A : Step<A>> RangeFromIter<A>.nth(n: Int): A? {
+    // Typically `forward` will cause an overflow-check panic here,
+    // but unset the exhausted flag to handle the uncommon cases.
+    // See the comments in `next` for more details.
+    if (this.exhausted) {
+        this.start = Step.forward(this.start.clone(), 1)
+        this.exhausted = false
+    }
+    if (false) {
+        val plusN = Step.forward(this.start.clone(), n)
+        when (val matchVal = Step.forwardChecked(plusN.clone(), 1)) {
+            null -> {
+                this.start = plusN.clone()
+                this.exhausted = true
+            }
+            else -> {
+                val plusN1 = matchVal
+                this.start = plusN1
+            }
+        }
+        return plusN
+    }
+    val plusN1 = Step.forward(this.start.clone(), n)
+    this.start = Step.forward(plusN1.clone(), 1)
+    return plusN1
 }
 
 public fun <A : Step<A>> RangeFrom<A>.intoIter(): RangeFromIter<A> = RangeFromIter(start = this.start, exhausted = false)

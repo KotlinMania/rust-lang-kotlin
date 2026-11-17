@@ -1,4 +1,6 @@
 // port-lint: source x86/fma.rs
+@file:OptIn(ExperimentalUnsignedTypes::class)
+
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
@@ -86,7 +88,7 @@ public fun mmFmaddsubPd(a: M128d, b: M128d, c: M128d): M128d =
     run {
         val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
         val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
-        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(2, 1)); _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 1u)); _simdArg0 }
     }
 
 /**
@@ -100,7 +102,7 @@ public fun mm256FmaddsubPd(a: M256d, b: M256d, c: M256d): M256d =
     run {
         val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
         val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
-        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(4, 1, 6, 3)); _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 6u, 3u)); _simdArg0 }
     }
 
 /**
@@ -114,7 +116,7 @@ public fun mmFmaddsubPs(a: M128, b: M128, c: M128): M128 =
     run {
         val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
         val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
-        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(4, 1, 6, 3)); _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 6u, 3u)); _simdArg0 }
     }
 
 /**
@@ -128,7 +130,7 @@ public fun mm256FmaddsubPs(a: M256, b: M256, c: M256): M256 =
     run {
         val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
         val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
-        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(8, 1, 10, 3, 12, 5, 14, 7)); _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 1u, 10u, 3u, 12u, 5u, 14u, 7u)); _simdArg0 }
     }
 
 /**
@@ -194,7 +196,7 @@ public fun mmFmsubaddPd(a: M128d, b: M128d, c: M128d): M128d =
     run {
         val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
         val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
-        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(0, 3)); _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 3u)); _simdArg0 }
     }
 
 /**
@@ -208,7 +210,7 @@ public fun mm256FmsubaddPd(a: M256d, b: M256d, c: M256d): M256d =
     run {
         val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
         val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
-        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(0, 5, 2, 7)); _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 5u, 2u, 7u)); _simdArg0 }
     }
 
 /**
@@ -222,7 +224,7 @@ public fun mmFmsubaddPs(a: M128, b: M128, c: M128): M128 =
     run {
         val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
         val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
-        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(0, 5, 2, 7)); _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 5u, 2u, 7u)); _simdArg0 }
     }
 
 /**
@@ -236,7 +238,7 @@ public fun mm256FmsubaddPs(a: M256, b: M256, c: M256): M256 =
     run {
         val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
         val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
-        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(0, 9, 2, 11, 4, 13, 6, 15)); _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 9u, 2u, 11u, 4u, 13u, 6u, 15u)); _simdArg0 }
     }
 
 /**

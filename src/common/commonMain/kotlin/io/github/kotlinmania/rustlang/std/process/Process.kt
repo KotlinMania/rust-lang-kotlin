@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ptr.nullVal
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.formatArgsNl
@@ -17,12 +18,16 @@ import io.github.kotlinmania.rustlang.std.io.pipe.PipeWriter
 import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
 import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
 import io.github.kotlinmania.rustlang.std.io.stdio.attemptPrintToStderr
+import io.github.kotlinmania.rustlang.std.io.stdio.stderr
+import io.github.kotlinmania.rustlang.std.io.stdio.stdout
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.rt.cleanup
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.AsInnerMut
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
+import io.github.kotlinmania.rustlang.std.sys.intoInner
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.abortInternal
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandResolvedEnvs
 import io.github.kotlinmania.rustlang.std.sys.process.unix.common.ChildPipe
@@ -262,7 +267,7 @@ public open class Child(
 
     public override fun intoInner(): Process = this.handle
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Child").field("stdin", this.stdin).field("stdout", this.stdout).field("stderr", this.stderr).finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Child").field("stdin", this.stdin).field("stdout", this.stdout).field("stderr", this.stderr).finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Forces the child process to exit. If the child has already exited, `Ok(())`
@@ -292,7 +297,7 @@ public open class Child(
      * [ErrorKind]: io.ErrorKind
      * [InvalidInput]: io.ErrorKind.InvalidInput
      */
-    public open fun kill(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.handle.kill()
+    public open fun kill(): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = this.handle.kill()
 
     /**
      * Returns the OS-assigned process identifier associated with this child.
@@ -344,7 +349,7 @@ public open class Child(
      * }
      * ```
      */
-    public open fun wait(): Result<ExitStatus, io.github.kotlinmania.rustlang.std.io.error.Error> {
+    public open fun wait(): Result<ExitStatus, io.github.kotlinmania.rustlang.core.io.error.Error> {
         (this.stdin.also { this.stdin = null }).let { }
         return this.handle.wait().map({ ExitStatus(it) })
     }
@@ -385,15 +390,15 @@ public open class Child(
      *             println("result: $res")
      *         }
      *         else -> {
-     *             val (e) = matchVal
+     *             val (e) = matchVal as Err
      *             println("error attempting to wait: $e")
      *         }
      *     }
      * }
      * ```
      */
-    public open fun tryWait(): Result<ExitStatus?, io.github.kotlinmania.rustlang.std.io.error.Error> {
-        return Result.Ok<ExitStatus?, io.github.kotlinmania.rustlang.std.io.error.Error>(when (val tryResult = this.handle.tryWait()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ExitStatus?, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }.map({ ExitStatus(it) }))
+    public open fun tryWait(): Result<ExitStatus?, io.github.kotlinmania.rustlang.core.io.error.Error> {
+        return Result.Ok<ExitStatus?, io.github.kotlinmania.rustlang.core.io.error.Error>(when (val tryResult = this.handle.tryWait()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ExitStatus?, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }.map({ ExitStatus(it) }))
     }
 
     /**
@@ -422,7 +427,7 @@ public open class Child(
      * check(output.status.success())
      * ```
      */
-    public open fun waitWithOutput(): Result<Output, io.github.kotlinmania.rustlang.std.io.error.Error> {
+    public open fun waitWithOutput(): Result<Output, io.github.kotlinmania.rustlang.core.io.error.Error> {
         (this.stdin.also { this.stdin = null }).let { }
         var (stdout, stderr) = Pair(mutableListOf(), mutableListOf())
         run {
@@ -447,8 +452,8 @@ public open class Child(
                 }
             }
         }
-        val status = when (val tryResult = this.wait()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Output, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-        return Result.Ok<Output, io.github.kotlinmania.rustlang.std.io.error.Error>(Output(status = status, stdout = stdout, stderr = stderr))
+        val status = when (val tryResult = this.wait()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Output, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+        return Result.Ok<Output, io.github.kotlinmania.rustlang.core.io.error.Error>(Output(status = status, stdout = stdout, stderr = stderr))
     }
 
     public companion object {
@@ -514,19 +519,19 @@ public open class ChildStdin internal constructor(
     // `AsRawFd`/`IntoRawFd`/`FromRawFd`, on Unix and WASI, and
     // `AsHandle`/`From<OwnedHandle>`/`Into<OwnedHandle>` and
     // `AsRawHandle`/`IntoRawHandle`/`FromRawHandle` on Windows.
-    public open fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = (this).write(buf)
+    public open fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = (this).writeVectored(bufs)
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).writeVectored(bufs)
 
     public open fun isWriteVectored(): Boolean = Write.isWriteVectored(this)
 
-    public open fun flush(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = (this).flush()
+    public open fun flush(): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).flush()
 
     public override fun asInner(): ChildPipe = this.inner
 
     public override fun intoInner(): ChildPipe = this.inner
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "ChildStdin").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "ChildStdin").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(
@@ -561,21 +566,21 @@ public open class ChildStdout internal constructor(
     // `AsRawFd`/`IntoRawFd`/`FromRawFd`, on Unix and WASI, and
     // `AsHandle`/`From<OwnedHandle>`/`Into<OwnedHandle>` and
     // `AsRawHandle`/`IntoRawHandle`/`FromRawHandle` on Windows.
-    public open fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.read(buf)
+    public open fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.read(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.readBuf(buf)
+    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readBuf(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.readVectored(bufs)
+    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readVectored(bufs)
 
     public open fun isReadVectored(): Boolean = this.inner.isReadVectored()
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.readToEnd(buf)
+    public open fun readToEnd(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readToEnd(buf)
 
     public override fun asInner(): ChildPipe = this.inner
 
     public override fun intoInner(): ChildPipe = this.inner
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "ChildStdout").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "ChildStdout").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(
@@ -610,21 +615,21 @@ public open class ChildStderr internal constructor(
     // `AsRawFd`/`IntoRawFd`/`FromRawFd`, on Unix and WASI, and
     // `AsHandle`/`From<OwnedHandle>`/`Into<OwnedHandle>` and
     // `AsRawHandle`/`IntoRawHandle`/`FromRawHandle` on Windows.
-    public open fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.read(buf)
+    public open fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.read(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.readBuf(buf)
+    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readBuf(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.readVectored(bufs)
+    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readVectored(bufs)
 
     public open fun isReadVectored(): Boolean = this.inner.isReadVectored()
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.readToEnd(buf)
+    public open fun readToEnd(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readToEnd(buf)
 
     public override fun asInner(): ChildPipe = this.inner
 
     public override fun intoInner(): ChildPipe = this.inner
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "ChildStderr").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "ChildStderr").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(
@@ -1043,7 +1048,7 @@ public open class Command(
      * Command.new("ls").spawn().expect("ls command should start")
      * ```
      */
-    public open fun spawn(): Result<Child, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.spawn(io.github.kotlinmania.rustlang.std.sys.process.unix.common.Stdio.Inherit, true).map(Child::fromInner)
+    public open fun spawn(): Result<Child, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.spawn(io.github.kotlinmania.rustlang.std.sys.process.unix.common.Stdio.Inherit, true).map(Child::fromInner)
 
     /**
      * Executes the command as a child process, waiting for it to finish and
@@ -1081,9 +1086,9 @@ public open class Command(
      * check(output.status.success())
      * ```
      */
-    public open fun output(): Result<Output, io.github.kotlinmania.rustlang.std.io.error.Error> {
-        val (status, stdout, stderr) = when (val tryResult = io.github.kotlinmania.rustlang.std.sys.process.output(this.inner)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Output, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-        return Result.Ok<Output, io.github.kotlinmania.rustlang.std.io.error.Error>(Output(status = ExitStatus(status), stdout = stdout, stderr = stderr))
+    public open fun output(): Result<Output, io.github.kotlinmania.rustlang.core.io.error.Error> {
+        val (status, stdout, stderr) = when (val tryResult = io.github.kotlinmania.rustlang.std.sys.process.output(this.inner)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Output, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+        return Result.Ok<Output, io.github.kotlinmania.rustlang.core.io.error.Error>(Output(status = ExitStatus(status), stdout = stdout, stderr = stderr))
     }
 
     /**
@@ -1115,7 +1120,7 @@ public open class Command(
      * check(status.success())
      * ```
      */
-    public open fun status(): Result<ExitStatus, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.process.status(this.inner).map({ ExitStatus(it) })
+    public open fun status(): Result<ExitStatus, io.github.kotlinmania.rustlang.core.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.process.status(this.inner).map({ ExitStatus(it) })
 
     /**
      * Returns the path to the program that was given to [Command.new].
@@ -1492,7 +1497,7 @@ public open class Output(
      * ```
      */
     public open fun exitOk(): Result<Output, ExitStatusError> {
-        when (val tryResult = this.status.exitOk()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Output, ExitStatusError>(tryResult.error) }
+        when (val tryResult = this.status.exitOk()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Output, ExitStatusError>(tryResult.error) }
         return Result.Ok<Output, ExitStatusError>(this)
     }
 
@@ -1501,21 +1506,21 @@ public open class Output(
     public open fun fmt(fmt: StringBuilder): Result<Unit, Error> {
         val stdoutUtf8 = String.fromUtf8(this.stdout)
         val stdoutDebug: Any =
-            when (stdoutUtf8) { is Result.Ok -> {
+            when (stdoutUtf8) { is Result.Ok<*, *> -> {
                 val s = stdoutUtf8.value
                 s
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 this.stdout
             } }
         val stderrUtf8 = String.fromUtf8(this.stderr)
         val stderrDebug: Any =
-            when (stderrUtf8) { is Result.Ok -> {
+            when (stderrUtf8) { is Result.Ok<*, *> -> {
                 val s1 = stderrUtf8.value
                 s1
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 this.stderr
             } }
-        return DebugStruct(fmt, "Output").field("status", this.status).field("stdout", stdoutDebug).field("stderr", stderrDebug).finish()
+        return run { DebugStruct(fmt, "Output").field("status", this.status).field("stdout", stdoutDebug).field("stderr", stderrDebug).finish(); Result.Ok<Unit, Error>(Unit) }
     }
 }
 
@@ -1557,7 +1562,7 @@ public open class Stdio(
             else -> false
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Stdio").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Stdio").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         /**
@@ -2012,7 +2017,7 @@ public open class ExitStatusError(
      */
     public open fun intoStatus(): ExitStatus = ExitStatus(this.value.into())
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("process exited unsuccessfully: ${this.intoStatus()}"); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("process exited unsuccessfully: ${this.intoStatus()}"); Result.Ok<Unit, Error>(Unit) }
 }
 
 /**
@@ -2344,10 +2349,10 @@ public fun Unit.report(): ExitCode = ExitCode.SUCCESS
 public fun Nothing.report(): ExitCode = this
 
 public fun <T : Termination, E> Result<T, E>.report(): ExitCode =
-    when (this) { is Result.Ok -> {
+    when (this) { is Result.Ok<*, *> -> {
         val value = this.value
         value.report()
-    }; is Result.Err -> {
+    }; is Result.Err<*, *> -> {
         val err = this.error
         attemptPrintToStderr(formatArgsNl("Error: {err:?}"))
         ExitCode.FAILURE

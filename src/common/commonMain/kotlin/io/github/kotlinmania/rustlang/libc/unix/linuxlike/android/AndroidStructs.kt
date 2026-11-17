@@ -19,6 +19,7 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S16
@@ -3191,7 +3192,7 @@ public class CAnonymousIfrIfru internal constructor(
         ifruDataCtorArg = null,
     )
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_ifr_ifru").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "__c_anonymous_ifr_ifru").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(
@@ -3251,7 +3252,7 @@ public class CAnonymousIfcIfcu internal constructor(
         ifcuReqCtorArg = null,
     )
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_ifc_ifcu").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "__c_anonymous_ifc_ifcu").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(
@@ -3375,7 +3376,7 @@ public class Sifields internal constructor(
         sigchld = null,
     )
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "sifields").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "sifields").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(

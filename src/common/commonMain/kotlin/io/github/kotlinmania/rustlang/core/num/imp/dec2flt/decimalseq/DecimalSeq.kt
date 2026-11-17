@@ -8,6 +8,8 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common.is8digits
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import io.github.kotlinmania.rustlang.core.slice.splitFirst
 
 // Arbitrary-precision decimal type used by fallback algorithms.
 //
@@ -371,7 +373,7 @@ public fun numberOfDigitsDecimalLeftShift(d: DecimalSeq, shift: Int): Int {
     shift1 = shift1 and 63
     val xA = TABLE[shift1]
     val xB = TABLE[shift1 + 1]
-    val numNewDigits = (xA shr 11).toInt()
+    val numNewDigits = (xA shr 11)
     val pow5A = (0x7FF and xA).toInt()
     val pow5B = (0x7FF and xB).toInt()
     val pow5 = TABLE_POW5[pow5A until TABLE_POW5.size]

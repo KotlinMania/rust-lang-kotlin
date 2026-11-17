@@ -8,8 +8,9 @@ import io.github.kotlinmania.rustlang.std.sync.WaitTimeoutResult
 import io.github.kotlinmania.rustlang.std.sync.poison.LockResult
 import io.github.kotlinmania.rustlang.std.sync.poison.PoisonError
 import io.github.kotlinmania.rustlang.std.sync.poison.mapResult
-import io.github.kotlinmania.rustlang.std.sync.poison.mutex.Mutex
 import io.github.kotlinmania.rustlang.std.sync.poison.mutex.MutexGuard
+import io.github.kotlinmania.rustlang.std.sync.poison.mutex.guardLock
+import io.github.kotlinmania.rustlang.std.sync.poison.mutex.guardPoison
 import io.github.kotlinmania.rustlang.std.time.Instant
 
 public class DebugStruct(
@@ -135,9 +136,9 @@ public open class Condvar(
     public open fun <T> wait(guard: MutexGuard<T>): LockResult<MutexGuard<T>> {
         val poisoned =
             run {
-                val lock = Mutex.guardLock(guard)
+                val lock = guardLock(guard)
                 this.inner.wait(lock)
-                Mutex.guardPoison(guard).get()
+                guardPoison(guard).get()
             }
         return if (poisoned) {
             Result.Err(PoisonError.new(guard))
@@ -324,9 +325,9 @@ public open class Condvar(
     public open fun <T> waitTimeout(guard: MutexGuard<T>, dur: Duration): LockResult<Pair<MutexGuard<T>, WaitTimeoutResult>> {
         val (poisoned, result) =
             run {
-                val lock = Mutex.guardLock(guard)
+                val lock = guardLock(guard)
                 val success = this.inner.waitTimeout(lock, dur)
-                Pair(Mutex.guardPoison(guard).get(), WaitTimeoutResult(!success))
+                Pair(guardPoison(guard).get(), WaitTimeoutResult(!success))
             }
         return if (poisoned) {
             Result.Err(PoisonError.new(Pair(guard, result)))
@@ -485,7 +486,7 @@ public open class Condvar(
         this.inner.notifyAll()
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Condvar").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Condvar").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         /**

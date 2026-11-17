@@ -6,6 +6,7 @@ package io.github.kotlinmania.rustlang.backtrace.windowssysarm32shim
 import io.github.kotlinmania.rustlang.backtrace.windowssys.ImageFileMachine
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 public val ARM_MAX_BREAKPOINTS: Int = 8
 

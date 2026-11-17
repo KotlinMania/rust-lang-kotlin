@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.num.trailingZeros
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.hashbrown.control.group.BITMASK_ITER_MASK
 import io.github.kotlinmania.rustlang.hashbrown.control.group.BITMASK_STRIDE
 import io.github.kotlinmania.rustlang.hashbrown.control.group.BitMaskWord

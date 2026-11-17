@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.hashbrown
 
+import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.mem.replace
@@ -1225,10 +1226,10 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
         val hasher = makeHasher(this.hashBuilder)
         return run {
             val matchVal = this.table.findOrFindInsertIndex(hash, equivalent, hasher)
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val bucket = matchVal.value
                 replace(bucket.asMut().second, v)
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val index = matchVal.error
                 run {
                     this.table.insertAtIndex(hash, index, Pair(k, v))
@@ -1336,11 +1337,11 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
      */
     public open fun tryInsert(key: K, value: V): Result<V, OccupiedError<K, V, S, A>> =
         when (val matchVal = this.entry(key)) {
-            is Entry.Occupied -> {
+            is Entry.Occupied<*, *, *, *> -> {
                 val (entry) = matchVal
                 Result.Err<V, OccupiedError<K, V, S, A>>(OccupiedError(entry = entry, value = value))
             }
-            is Entry.Vacant -> {
+            is Entry.Vacant<*, *, *, *> -> {
                 val (entry1) = matchVal
                 Result.Ok<V, OccupiedError<K, V, S, A>>(entry1.insert(value))
             }
@@ -1417,33 +1418,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
      */
     public open fun allocationSize(): Int = this.table.allocationSize()
 
-    public open fun eq(other: HashMap<K, V, S, A>): Boolean {
-        if (this.len() != other.len()) {
-            return false
-        }
-        return this.iter().all({ (key, value) -> other.get(key).isSomeAnd({ v -> value == v }) })
-    }
-
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<String>(); fun entry(k: Any?, v: Any?) = apply { entries.add("$k: $v") }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish()
-
-    /**
-     * Returns a reference to the value corresponding to the supplied key.
-     *
-     * # Panics
-     *
-     * Panics if the key is not present in the `HashMap`.
-     *
-     * # Examples
-     *
-     * ```kotlin
-     * import hashbrown.HashMap
-     *
-     * val map: HashMap = listOf(Pair("a", "One"), Pair("b", "Two")).into()
-     * check(map["a"] == "One")
-     * check(map["b"] == "Two")
-     * ```
-     */
-    public open fun index(key: Q): V = (this.get(key) ?: error("no entry found for key"))
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<String>(); fun entry(k: Any?, v: Any?) = apply { entries.add("$k: $v") }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Creates an iterator over the entries of a `HashMap` in arbitrary order.
@@ -1489,175 +1464,6 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
      * ```
      */
     public open fun intoIterIntoIterator(): IntoIter<K, V, A> = IntoIter(inner = this.table.intoIter())
-
-    /**
-     * Inserts all new key-values from the iterator and replaces values with existing
-     * keys with new values returned from the iterator.
-     */
-    /**
-     * Inserts all new key-values from the iterator to existing `HashMap<K, V, S, A>`.
-     * Replace values with existing keys with new values returned from the iterator.
-     *
-     * # Examples
-     *
-     * ```kotlin
-     * import hashbrown.hashmap.HashMap
-     *
-     * var map = mutableMapOf()
-     * map.put(1, 100)
-     * val someIter = listOf(Pair(1, 1), Pair(2, 2)).intoIter()
-     * map.extend(someIter)
-     * // Replace values with existing keys with new values returned from the iterator.
-     * // So that the map.get(&1) doesn't return Some(&100).
-     * check(map.get(1) == 1)
-     * val someVec: Vec = mutableListOf(Pair(3, 3), Pair(4, 4))
-     * map.extend(someVec)
-     * val someArr = listOf(Pair(5, 5), Pair(6, 6))
-     * map.extend(someArr)
-     * val oldMapLen = map.size
-     * // You can also extend from another HashMap
-     * var newMap = mutableMapOf()
-     * newMap.extend(map)
-     * check(newMap.size == oldMapLen)
-     * var vec: Vec = newMap.intoIter().collect()
-     * // The `IntoIter` iterator produces items in arbitrary order, so the
-     * // items must be sorted to test them against a sorted array.
-     * vec.sortUnstable()
-     * check(vec == listOf(Pair(1, 1), Pair(2, 2), Pair(3, 3), Pair(4, 4), Pair(5, 5), Pair(6, 6)))
-     * ```
-     */
-    public open fun <T : Iterable<Pair<K, V>>> extend(iter: T) {
-        // Keys may be already present or show multiple times in the iterator.
-        // Reserve the entire hint lower bound if the map is empty.
-        // Otherwise reserve half the hint (rounded up), so the map
-        // will only resize twice in the worst case.
-        val iter1 = iter.iterator()
-        val reserve =
-            if (this.isEmpty()) {
-                iter1.sizeHint().first
-            } else {
-                iter1.sizeHint().first.divCeil(2)
-            }
-        this.reserve(reserve)
-        iter1.forEach({ (k, v) ->
-            this.put(k, v)
-        })
-    }
-
-    public open fun extendOne(tupleArg0: Pair<K, V>) {
-        val (k, v) = tupleArg0
-        this.put(k, v)
-    }
-
-    public open fun extendReserve(additional: Int) {
-        // Keys may be already present or show multiple times in the iterator.
-        // Reserve the entire hint lower bound if the map is empty.
-        // Otherwise reserve half the hint (rounded up), so the map
-        // will only resize twice in the worst case.
-        val reserve =
-            if (this.isEmpty()) {
-                additional
-            } else {
-                additional.divCeil(2)
-            }
-        this.reserve(reserve)
-    }
-
-    /**
-     * Inserts all new key-values from the iterator and replaces values with existing
-     * keys with new values returned from the iterator.
-     */
-    /**
-     * Inserts all new key-values from the iterator to existing `HashMap<K, V, S, A>`.
-     * Replace values with existing keys with new values returned from the iterator.
-     * The keys and values must implement [Copy] trait.
-     *
-     * # Examples
-     *
-     * ```kotlin
-     * import hashbrown.hashmap.HashMap
-     *
-     * var map = mutableMapOf()
-     * map.put(1, 100)
-     * val arr = listOf(Pair(1, 1), Pair(2, 2))
-     * val someIter = arr.iter().map({ (k, v) -> Pair(k, v) })
-     * map.extend(someIter)
-     * // Replace values with existing keys with new values returned from the iterator.
-     * // So that the map.get(&1) doesn't return Some(&100).
-     * check(map.get(1) == 1)
-     * val someVec: Vec = mutableListOf(Pair(3, 3), Pair(4, 4))
-     * map.extend(ArrayDeque((ArrayDeque(someVec)).map({ (k, v) -> Pair(k, v) })))
-     * val someArr = listOf(Pair(5, 5), Pair(6, 6))
-     * map.extend(someArr.iter().map({ (k, v) -> Pair(k, v) }))
-     * // You can also extend from another HashMap
-     * var newMap = mutableMapOf()
-     * newMap.extend(map)
-     * check(newMap == map)
-     * var vec: Vec = newMap.intoIter().collect()
-     * // The `IntoIter` iterator produces items in arbitrary order, so the
-     * // items must be sorted to test them against a sorted array.
-     * vec.sortUnstable()
-     * check(vec == listOf(Pair(1, 1), Pair(2, 2), Pair(3, 3), Pair(4, 4), Pair(5, 5), Pair(6, 6)))
-     * ```
-     */
-    public open fun <T : Iterable<Pair<K, V>>> extendKV(iter: T) {
-        this.extend(iter.iterator().map({ (key, value) -> Pair(key, value) }))
-    }
-
-    public open fun extendOneKV(tupleArg0: Pair<K, V>) {
-        val (k, v) = tupleArg0
-        this.put(k, v)
-    }
-
-    public open fun extendReserveKV(additional: Int) {
-        Extend.extendReserve(this, additional)
-    }
-
-    /**
-     * Inserts all new key-values from the iterator and replaces values with existing
-     * keys with new values returned from the iterator.
-     */
-    /**
-     * Inserts all new key-values from the iterator to existing `HashMap<K, V, S, A>`.
-     * Replace values with existing keys with new values returned from the iterator.
-     * The keys and values must implement [Copy] trait.
-     *
-     * # Examples
-     *
-     * ```kotlin
-     * import hashbrown.hashmap.HashMap
-     *
-     * var map = mutableMapOf()
-     * map.put(1, 100)
-     * val arr = listOf(Pair(1, 1), Pair(2, 2))
-     * val someIter = arr.iter()
-     * map.extend(someIter)
-     * // Replace values with existing keys with new values returned from the iterator.
-     * // So that the map.get(&1) doesn't return Some(&100).
-     * check(map.get(1) == 1)
-     * val someVec: Vec = mutableListOf(Pair(3, 3), Pair(4, 4))
-     * map.extend(someVec)
-     * val someArr = listOf(Pair(5, 5), Pair(6, 6))
-     * map.extend(someArr)
-     * var vec: Vec = map.intoIter().collect()
-     * // The `IntoIter` iterator produces items in arbitrary order, so the
-     * // items must be sorted to test them against a sorted array.
-     * vec.sortUnstable()
-     * check(vec == listOf(Pair(1, 1), Pair(2, 2), Pair(3, 3), Pair(4, 4), Pair(5, 5), Pair(6, 6)))
-     * ```
-     */
-    public open fun <T : Iterable<Pair<K, V>>> extendKVKV(iter: T) {
-        this.extend(iter.iterator().map({ (key, value) -> Pair(key, value) }))
-    }
-
-    public open fun extendOneKVKV(tupleArg0: Pair<K, V>) {
-        val (k, v) = tupleArg0
-        this.put(k, v)
-    }
-
-    public open fun extendReserveKVKV(additional: Int) {
-        Extend.extendReserve(this, additional)
-    }
 
     public companion object {
         public operator fun <K, V, S, A : Allocator> invoke(
@@ -1746,15 +1552,6 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
          * ```
          */
         public fun <K, V, S, A : Allocator> default(): HashMap<K, V, S, A> where A : Allocator = HashMap.withHasherIn(HashMap.default(), HashMap.default())
-
-        public fun <K, V, S, A : Allocator, T : Iterable<Pair<K, V>>> fromIter(iter: T, defaultSFn: () -> S, defaultAFn: () -> A): HashMap<K, V, S, A> where S : BuildHasher, A : Allocator {
-            val iter1 = iter.iterator()
-            val map = HashMap.withCapacityAndHasherIn(iter1.sizeHint().first, defaultSFn(), defaultAFn())
-            iter1.forEach({ (k, v) ->
-                map.insert(k, v)
-            })
-            return map
-        }
     }
 }
 
@@ -1989,6 +1786,32 @@ public fun <K, V, S> HashMap.Companion.withHasher(hashBuilder: S): HashMap<K, V,
  */
 public fun <K, V, S> HashMap.Companion.withCapacityAndHasher(capacity: Int, hashBuilder: S): HashMap<K, V, S, Global> = HashMap(hashBuilder = hashBuilder, table = RawTable.withCapacity(capacity))
 
+public fun <K, V, S, A> HashMap<K, V, S, A>.eq(other: HashMap<K, V, S, A>): Boolean where S : BuildHasher, A : Allocator {
+    if (this.len() != other.len()) {
+        return false
+    }
+    return this.iter().all({ (key, value) -> other.get(key).isSomeAnd({ v -> value == v }) })
+}
+
+/**
+ * Returns a reference to the value corresponding to the supplied key.
+ *
+ * # Panics
+ *
+ * Panics if the key is not present in the `HashMap`.
+ *
+ * # Examples
+ *
+ * ```kotlin
+ * import hashbrown.HashMap
+ *
+ * val map: HashMap = listOf(Pair("a", "One"), Pair("b", "Two")).into()
+ * check(map["a"] == "One")
+ * check(map["b"] == "Two")
+ * ```
+ */
+public fun <K, Q, V, S, A> HashMap<K, V, S, A>.index(key: Q): V where Q : Equivalent<K>, S : BuildHasher, A : Allocator = (this.get(key) ?: error("no entry found for key"))
+
 // The default hasher is used to match the std implementation signature
 
 /**
@@ -2049,7 +1872,7 @@ public open class Iter<K, V> internal constructor(
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Iter<K, V> = Iter(inner = this.inner.clone(), marker = Unit)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun next(): Pair<K, V>? {
         // Avoid `Option.map` because it bloats LLVM IR.
@@ -2163,7 +1986,7 @@ public open class IterMut<K, V> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <K, V> invoke(
@@ -2233,7 +2056,7 @@ public open class IntoIter<K, V, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -2296,7 +2119,7 @@ public open class IntoKeys<K, V, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (k, _) -> k })).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (k, _) -> k })).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -2358,7 +2181,7 @@ public open class IntoValues<K, V, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, v) -> v })).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, v) -> v })).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -2412,7 +2235,7 @@ public open class Keys<K, V>(
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Keys<K, V> = Keys(inner = this.inner.clone())
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun next(): K? {
         // Avoid `Option.map` because it bloats LLVM IR.
@@ -2477,7 +2300,7 @@ public open class Values<K, V>(
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Values<K, V> = Values(inner = this.inner.clone())
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun next(): V? {
         // Avoid `Option.map` because it bloats LLVM IR.
@@ -2555,7 +2378,7 @@ public open class Drain<K, V, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -2597,22 +2420,9 @@ public open class Drain<K, V, A : Allocator> internal constructor(
 public open class ExtractIf<K, V, F, A : Allocator> internal constructor(
     public var f: F,
     innerCtorArg: RawExtractIf<Pair<K, V>, A>,
-) : Iterable<Pair<K, V>> {
+) {
     public var inner: RawExtractIf<Pair<K, V>, A> = innerCtorArg
         internal set
-
-    override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
-        override fun computeNext() {
-            when (val v = this@ExtractIf.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
-    public open fun next(): Pair<K, V>? = this.inner.next({ (k, v) -> (this.f)(k, v) })
-
-    public open fun sizeHint(): Pair<Int, Int?> = Pair(0, this.inner.iter.sizeHint().second)
 
     public companion object {
         public operator fun <K, V, F, A : Allocator> invoke(
@@ -2624,6 +2434,10 @@ public open class ExtractIf<K, V, F, A : Allocator> internal constructor(
         )
     }
 }
+
+public fun <K, V, A> ExtractIf<K, V, F, A>.next(): Pair<K, V>? where A : Allocator = this.inner.next({ (k, v) -> (this.f)(k, v) })
+
+public fun <K, V, A> ExtractIf<K, V, F, A>.sizeHint(): Pair<Int, Int?> where A : Allocator = Pair(0, this.inner.iter.sizeHint().second)
 
 /**
  * A mutable iterator over the values of a `HashMap` in arbitrary order.
@@ -2679,7 +2493,7 @@ public open class ValuesMut<K, V>(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, value) -> value })).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, value) -> value })).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun <K, V> default(): ValuesMut<K, V> = ValuesMut(inner = IterMut.default())
@@ -2813,13 +2627,13 @@ public sealed class Entry<K, V, S, A> {
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is Entry.Vacant -> {
-                val (v) = this
-                DebugTuple(f, "Entry").field(v).finish()
+            is Entry.Vacant<*, *, *, *> -> {
+                val (v) = this as Entry.Vacant<K, V, S, A>
+                run { DebugTuple(f, "Entry").field(v).finish(); Result.Ok<Unit, Error>(Unit) }
             }
-            is Entry.Occupied -> {
-                val (o) = this
-                DebugTuple(f, "Entry").field(o).finish()
+            is Entry.Occupied<*, *, *, *> -> {
+                val (o) = this as Entry.Occupied<K, V, S, A>
+                run { DebugTuple(f, "Entry").field(o).finish(); Result.Ok<Unit, Error>(Unit) }
             }
         }
 
@@ -2838,13 +2652,13 @@ public sealed class Entry<K, V, S, A> {
      */
     public open fun insert(value: V): OccupiedEntry<K, V, S, A> =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *, *, *> -> {
+                val (entry) = this as Entry.Occupied<K, V, S, A>
                 entry.insert(value)
                 entry
             }
-            is Entry.Vacant -> {
-                val (entry1) = this
+            is Entry.Vacant<*, *, *, *> -> {
+                val (entry1) = this as Entry.Vacant<K, V, S, A>
                 entry1.insertEntry(value)
             }
         }
@@ -2869,12 +2683,12 @@ public sealed class Entry<K, V, S, A> {
      */
     public open fun orInsert(default: V): V =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *, *, *> -> {
+                val (entry) = this as Entry.Occupied<K, V, S, A>
                 entry.intoMut()
             }
-            is Entry.Vacant -> {
-                val (entry1) = this
+            is Entry.Vacant<*, *, *, *> -> {
+                val (entry1) = this as Entry.Vacant<K, V, S, A>
                 entry1.insert(default)
             }
         }
@@ -2901,12 +2715,12 @@ public sealed class Entry<K, V, S, A> {
      */
     public open fun orInsertEntry(default: V): OccupiedEntry<K, V, S, A> =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *, *, *> -> {
+                val (entry) = this as Entry.Occupied<K, V, S, A>
                 entry
             }
-            is Entry.Vacant -> {
-                val (entry1) = this
+            is Entry.Vacant<*, *, *, *> -> {
+                val (entry1) = this as Entry.Vacant<K, V, S, A>
                 entry1.insertEntry(default)
             }
         }
@@ -2931,12 +2745,12 @@ public sealed class Entry<K, V, S, A> {
      */
     public open fun orInsertWith(default: () -> V): V =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *, *, *> -> {
+                val (entry) = this as Entry.Occupied<K, V, S, A>
                 entry.intoMut()
             }
-            is Entry.Vacant -> {
-                val (entry1) = this
+            is Entry.Vacant<*, *, *, *> -> {
+                val (entry1) = this as Entry.Vacant<K, V, S, A>
                 entry1.insert(default())
             }
         }
@@ -2965,12 +2779,12 @@ public sealed class Entry<K, V, S, A> {
      */
     public open fun orInsertWithKey(default: (K) -> V): V =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *, *, *> -> {
+                val (entry) = this as Entry.Occupied<K, V, S, A>
                 entry.intoMut()
             }
-            is Entry.Vacant -> {
-                val (entry1) = this
+            is Entry.Vacant<*, *, *, *> -> {
+                val (entry1) = this as Entry.Vacant<K, V, S, A>
                 val value = default(entry1.key())
                 entry1.insert(value)
             }
@@ -2994,12 +2808,12 @@ public sealed class Entry<K, V, S, A> {
      */
     public open fun key(): K =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *, *, *> -> {
+                val (entry) = this as Entry.Occupied<K, V, S, A>
                 entry.key()
             }
-            is Entry.Vacant -> {
-                val (entry1) = this
+            is Entry.Vacant<*, *, *, *> -> {
+                val (entry1) = this as Entry.Vacant<K, V, S, A>
                 entry1.key()
             }
         }
@@ -3026,13 +2840,13 @@ public sealed class Entry<K, V, S, A> {
      */
     public open fun andModify(f: (V) -> Unit): Entry<K, V, S, A> =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *, *, *> -> {
+                val (entry) = this as Entry.Occupied<K, V, S, A>
                 f(entry.getMut())
                 Entry.Occupied(entry)
             }
-            is Entry.Vacant -> {
-                val (entry1) = this
+            is Entry.Vacant<*, *, *, *> -> {
+                val (entry1) = this as Entry.Vacant<K, V, S, A>
                 Entry.Vacant(entry1)
             }
         }
@@ -3085,11 +2899,11 @@ public sealed class Entry<K, V, S, A> {
      */
     public open fun andReplaceEntryWith(f: (K, V) -> V?): Entry<K, V, S, A> =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *, *, *> -> {
+                val (entry) = this as Entry.Occupied<K, V, S, A>
                 entry.replaceEntryWith(f)
             }
-            is Entry.Vacant -> this
+            is Entry.Vacant<*, *, *, *> -> this
         }
 
     /**
@@ -3097,12 +2911,12 @@ public sealed class Entry<K, V, S, A> {
      */
     public open fun intoMap(): HashMap<K, V, S, A> =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *, *, *> -> {
+                val (entry) = this as Entry.Occupied<K, V, S, A>
                 entry.table
             }
-            is Entry.Vacant -> {
-                val (entry1) = this
+            is Entry.Vacant<*, *, *, *> -> {
+                val (entry1) = this as Entry.Vacant<K, V, S, A>
                 entry1.table
             }
         }
@@ -3127,12 +2941,12 @@ public sealed class Entry<K, V, S, A> {
      */
     public open fun orDefault(defaultVFn: () -> V): V =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *, *, *> -> {
+                val (entry) = this as Entry.Occupied<K, V, S, A>
                 entry.intoMut()
             }
-            is Entry.Vacant -> {
-                val (entry1) = this
+            is Entry.Vacant<*, *, *, *> -> {
+                val (entry1) = this as Entry.Vacant<K, V, S, A>
                 entry1.insert(defaultVFn())
             }
         }
@@ -3189,7 +3003,7 @@ public open class OccupiedEntry<K, V, S, A : Allocator> internal constructor(
     public var table: HashMap<K, V, S, A> = tableCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Gets a reference to the key in the entry.
@@ -3627,7 +3441,7 @@ public open class VacantEntry<K, V, S, A : Allocator> internal constructor(
     public var table: HashMap<K, V, S, A> = tableCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "VacantEntry").field(this.key()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "VacantEntry").field(this.key()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Gets a reference to the key that would be used when inserting a value
@@ -3866,18 +3680,6 @@ public sealed class EntryRef<K, Q, V, S, A> {
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
-        when (this) {
-            is EntryRef.Vacant -> {
-                val (v) = this
-                DebugTuple(f, "EntryRef").field(v).finish()
-            }
-            is EntryRef.Occupied -> {
-                val (o) = this
-                DebugTuple(f, "EntryRef").field(o).finish()
-            }
-        }
-
     /**
      * Sets the value of the entry, and returns an `OccupiedEntry`.
      *
@@ -3893,13 +3695,13 @@ public sealed class EntryRef<K, Q, V, S, A> {
      */
     public open fun insert(value: V): OccupiedEntry<K, V, S, A> =
         when (this) {
-            is EntryRef.Occupied -> {
-                val (entry) = this
+            is EntryRef.Occupied<*, *, *, *, *> -> {
+                val (entry) = this as EntryRef.Occupied<K, Q, V, S, A>
                 entry.insert(value)
                 entry
             }
-            is EntryRef.Vacant -> {
-                val (entry1) = this
+            is EntryRef.Vacant<*, *, *, *, *> -> {
+                val (entry1) = this as EntryRef.Vacant<K, Q, V, S, A>
                 entry1.insertEntry(value)
             }
         }
@@ -3924,12 +3726,12 @@ public sealed class EntryRef<K, Q, V, S, A> {
      */
     public open fun orInsert(default: V): V =
         when (this) {
-            is EntryRef.Occupied -> {
-                val (entry) = this
+            is EntryRef.Occupied<*, *, *, *, *> -> {
+                val (entry) = this as EntryRef.Occupied<K, Q, V, S, A>
                 entry.intoMut()
             }
-            is EntryRef.Vacant -> {
-                val (entry1) = this
+            is EntryRef.Vacant<*, *, *, *, *> -> {
+                val (entry1) = this as EntryRef.Vacant<K, Q, V, S, A>
                 entry1.insert(default)
             }
         }
@@ -3954,12 +3756,12 @@ public sealed class EntryRef<K, Q, V, S, A> {
      */
     public open fun orInsertWith(default: () -> V): V =
         when (this) {
-            is EntryRef.Occupied -> {
-                val (entry) = this
+            is EntryRef.Occupied<*, *, *, *, *> -> {
+                val (entry) = this as EntryRef.Occupied<K, Q, V, S, A>
                 entry.intoMut()
             }
-            is EntryRef.Vacant -> {
-                val (entry1) = this
+            is EntryRef.Vacant<*, *, *, *, *> -> {
+                val (entry1) = this as EntryRef.Vacant<K, Q, V, S, A>
                 entry1.insert(default())
             }
         }
@@ -3985,12 +3787,12 @@ public sealed class EntryRef<K, Q, V, S, A> {
      */
     public open fun orInsertWithKey(default: (Q) -> V): V =
         when (this) {
-            is EntryRef.Occupied -> {
-                val (entry) = this
+            is EntryRef.Occupied<*, *, *, *, *> -> {
+                val (entry) = this as EntryRef.Occupied<K, Q, V, S, A>
                 entry.intoMut()
             }
-            is EntryRef.Vacant -> {
-                val (entry1) = this
+            is EntryRef.Vacant<*, *, *, *, *> -> {
+                val (entry1) = this as EntryRef.Vacant<K, Q, V, S, A>
                 val value = default(entry1.key)
                 entry1.insert(value)
             }
@@ -4014,12 +3816,12 @@ public sealed class EntryRef<K, Q, V, S, A> {
      */
     public open fun key(): Q =
         when (this) {
-            is EntryRef.Occupied -> {
-                val (entry) = this
+            is EntryRef.Occupied<*, *, *, *, *> -> {
+                val (entry) = this as EntryRef.Occupied<K, Q, V, S, A>
                 entry.key().borrow()
             }
-            is EntryRef.Vacant -> {
-                val (entry1) = this
+            is EntryRef.Vacant<*, *, *, *, *> -> {
+                val (entry1) = this as EntryRef.Vacant<K, Q, V, S, A>
                 entry1.key()
             }
         }
@@ -4046,13 +3848,13 @@ public sealed class EntryRef<K, Q, V, S, A> {
      */
     public open fun andModify(f: (V) -> Unit): EntryRef<K, Q, V, S, A> =
         when (this) {
-            is EntryRef.Occupied -> {
-                val (entry) = this
+            is EntryRef.Occupied<*, *, *, *, *> -> {
+                val (entry) = this as EntryRef.Occupied<K, Q, V, S, A>
                 f(entry.getMut())
                 EntryRef.Occupied(entry)
             }
-            is EntryRef.Vacant -> {
-                val (entry1) = this
+            is EntryRef.Vacant<*, *, *, *, *> -> {
+                val (entry1) = this as EntryRef.Vacant<K, Q, V, S, A>
                 EntryRef.Vacant(entry1)
             }
         }
@@ -4062,12 +3864,12 @@ public sealed class EntryRef<K, Q, V, S, A> {
      */
     public open fun intoMap(): HashMap<K, V, S, A> =
         when (this) {
-            is EntryRef.Occupied -> {
-                val (entry) = this
+            is EntryRef.Occupied<*, *, *, *, *> -> {
+                val (entry) = this as EntryRef.Occupied<K, Q, V, S, A>
                 entry.table
             }
-            is EntryRef.Vacant -> {
-                val (entry1) = this
+            is EntryRef.Vacant<*, *, *, *, *> -> {
+                val (entry1) = this as EntryRef.Vacant<K, Q, V, S, A>
                 entry1.table
             }
         }
@@ -4092,12 +3894,12 @@ public sealed class EntryRef<K, Q, V, S, A> {
      */
     public open fun orDefault(defaultVFn: () -> V): V =
         when (this) {
-            is EntryRef.Occupied -> {
-                val (entry) = this
+            is EntryRef.Occupied<*, *, *, *, *> -> {
+                val (entry) = this as EntryRef.Occupied<K, Q, V, S, A>
                 entry.intoMut()
             }
-            is EntryRef.Vacant -> {
-                val (entry1) = this
+            is EntryRef.Vacant<*, *, *, *, *> -> {
+                val (entry1) = this as EntryRef.Vacant<K, Q, V, S, A>
                 entry1.insert(defaultVFn())
             }
         }
@@ -4125,16 +3927,28 @@ public sealed class EntryRef<K, Q, V, S, A> {
      */
     public open fun orDefaultEntry(defaultVFn: () -> V): OccupiedEntry<K, V, S, A> =
         when (this) {
-            is EntryRef.Occupied -> {
-                val (entry) = this
+            is EntryRef.Occupied<*, *, *, *, *> -> {
+                val (entry) = this as EntryRef.Occupied<K, Q, V, S, A>
                 entry
             }
-            is EntryRef.Vacant -> {
-                val (entry1) = this
+            is EntryRef.Vacant<*, *, *, *, *> -> {
+                val (entry1) = this as EntryRef.Vacant<K, Q, V, S, A>
                 entry1.insertEntry(defaultVFn())
             }
         }
 }
+
+public fun <K, Q, V, S, A> EntryRef<K, Q, V, S, A>.fmt(f: StringBuilder): Result<Unit, Error> where K : Borrow<Q>, A : Allocator =
+    when (this) {
+        is EntryRef.Vacant<*, *, *, *, *> -> {
+            val (v) = this as EntryRef.Vacant<K, Q, V, S, A>
+            run { DebugTuple(f, "EntryRef").field(v).finish(); Result.Ok<Unit, Error>(Unit) }
+        }
+        is EntryRef.Occupied<*, *, *, *, *> -> {
+            val (o) = this as EntryRef.Occupied<K, Q, V, S, A>
+            run { DebugTuple(f, "EntryRef").field(o).finish(); Result.Ok<Unit, Error>(Unit) }
+        }
+    }
 
 /**
  * A view into a vacant entry in a `HashMap`.
@@ -4177,8 +3991,6 @@ public open class VacantEntryRef<K, Q, V, S, A : Allocator> internal constructor
 ) {
     public var table: HashMap<K, V, S, A> = tableCtorArg
         internal set
-
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "VacantEntryRef").field(this.key()).finish()
 
     /**
      * Gets a reference to the key that would be used when inserting a value
@@ -4443,6 +4255,8 @@ public open class VacantEntryRef<K, Q, V, S, A : Allocator> internal constructor
     }
 }
 
+public fun <K, Q, V, S, A> VacantEntryRef<K, Q, V, S, A>.fmt(f: StringBuilder): Result<Unit, Error> where K : Borrow<Q>, A : Allocator = run { DebugTuple(f, "VacantEntryRef").field(this.key()).finish(); Result.Ok<Unit, Error>(Unit) }
+
 /**
  * The error returned by [`tryInsert`](HashMap.tryInsert) when the key already exists.
  *
@@ -4487,9 +4301,9 @@ public open class OccupiedError<K, V, S, A : Allocator> internal constructor(
     public var entry: OccupiedEntry<K, V, S, A> = entryCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedError").field("key", this.entry.key()).field("old_value", this.entry.get()).field("new_value", this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "OccupiedError").field("key", this.entry.key()).field("old_value", this.entry.get()).field("new_value", this.value).finish(); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append("failed to insert ${this.value}, key ${this.entry.key()} already exists with value ${this.entry.get()}"); Result.Ok(Unit) }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append("failed to insert ${this.value}, key ${this.entry.key()} already exists with value ${this.entry.get()}"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <K, V, S, A : Allocator> invoke(
@@ -4501,6 +4315,143 @@ public open class OccupiedError<K, V, S, A : Allocator> internal constructor(
         )
     }
 }
+
+public fun <K, V, S, A, T : Iterable<Pair<K, V>>> fromIteratorFromIterHashMapKVSA(iter: T, defaultSFn: () -> S, defaultAFn: () -> A): HashMap<K, V, S, A> where S : BuildHasher, A : Allocator {
+    val iter1 = iter.iterator()
+    val map = HashMap.withCapacityAndHasherIn(iter1.sizeHint().first, defaultSFn(), defaultAFn())
+    iter1.forEach({ (k, v) ->
+        map.insert(k, v)
+    })
+    return map
+}
+
+/**
+ * Inserts all new key-values from the iterator and replaces values with existing
+ * keys with new values returned from the iterator.
+ */
+/**
+ * Inserts all new key-values from the iterator to existing `HashMap<K, V, S, A>`.
+ * Replace values with existing keys with new values returned from the iterator.
+ *
+ * # Examples
+ *
+ * ```kotlin
+ * import hashbrown.hashmap.HashMap
+ *
+ * var map = mutableMapOf()
+ * map.put(1, 100)
+ * val someIter = listOf(Pair(1, 1), Pair(2, 2)).intoIter()
+ * map.extend(someIter)
+ * // Replace values with existing keys with new values returned from the iterator.
+ * // So that the map.get(&1) doesn't return Some(&100).
+ * check(map.get(1) == 1)
+ * val someVec: Vec = mutableListOf(Pair(3, 3), Pair(4, 4))
+ * map.extend(someVec)
+ * val someArr = listOf(Pair(5, 5), Pair(6, 6))
+ * map.extend(someArr)
+ * val oldMapLen = map.size
+ * // You can also extend from another HashMap
+ * var newMap = mutableMapOf()
+ * newMap.extend(map)
+ * check(newMap.size == oldMapLen)
+ * var vec: Vec = newMap.intoIter().collect()
+ * // The `IntoIter` iterator produces items in arbitrary order, so the
+ * // items must be sorted to test them against a sorted array.
+ * vec.sortUnstable()
+ * check(vec == listOf(Pair(1, 1), Pair(2, 2), Pair(3, 3), Pair(4, 4), Pair(5, 5), Pair(6, 6)))
+ * ```
+ */
+public fun <K, V, S, A, T : Iterable<Pair<K, V>>> HashMap<K, V, S, A>.extend(iter: T) where S : BuildHasher, A : Allocator {
+    // Keys may be already present or show multiple times in the iterator.
+    // Reserve the entire hint lower bound if the map is empty.
+    // Otherwise reserve half the hint (rounded up), so the map
+    // will only resize twice in the worst case.
+    val iter1 = iter.iterator()
+    val reserve =
+        if (this.isEmpty()) {
+            iter1.sizeHint().first
+        } else {
+            iter1.sizeHint().first.divCeil(2)
+        }
+    this.reserve(reserve)
+    iter1.forEach({ (k, v) ->
+        this.put(k, v)
+    })
+}
+
+public fun <K, V, S, A> HashMap<K, V, S, A>.extendOne(tupleArg0: Pair<K, V>) where S : BuildHasher, A : Allocator {
+    val (k, v) = tupleArg0
+    this.put(k, v)
+}
+
+public fun <K, V, S, A> HashMap<K, V, S, A>.extendReserve(additional: Int) where S : BuildHasher, A : Allocator {
+    // Keys may be already present or show multiple times in the iterator.
+    // Reserve the entire hint lower bound if the map is empty.
+    // Otherwise reserve half the hint (rounded up), so the map
+    // will only resize twice in the worst case.
+    val reserve =
+        if (this.isEmpty()) {
+            additional
+        } else {
+            additional.divCeil(2)
+        }
+    this.reserve(reserve)
+}
+
+/**
+ * Inserts all new key-values from the iterator and replaces values with existing
+ * keys with new values returned from the iterator.
+ */
+/**
+ * Inserts all new key-values from the iterator to existing `HashMap<K, V, S, A>`.
+ * Replace values with existing keys with new values returned from the iterator.
+ * The keys and values must implement [Copy] trait.
+ *
+ * # Examples
+ *
+ * ```kotlin
+ * import hashbrown.hashmap.HashMap
+ *
+ * var map = mutableMapOf()
+ * map.put(1, 100)
+ * val arr = listOf(Pair(1, 1), Pair(2, 2))
+ * val someIter = arr.iter().map({ (k, v) -> Pair(k, v) })
+ * map.extend(someIter)
+ * // Replace values with existing keys with new values returned from the iterator.
+ * // So that the map.get(&1) doesn't return Some(&100).
+ * check(map.get(1) == 1)
+ * val someVec: Vec = mutableListOf(Pair(3, 3), Pair(4, 4))
+ * map.extend(ArrayDeque((ArrayDeque(someVec)).map({ (k, v) -> Pair(k, v) })))
+ * val someArr = listOf(Pair(5, 5), Pair(6, 6))
+ * map.extend(someArr.iter().map({ (k, v) -> Pair(k, v) }))
+ * // You can also extend from another HashMap
+ * var newMap = mutableMapOf()
+ * newMap.extend(map)
+ * check(newMap == map)
+ * var vec: Vec = newMap.intoIter().collect()
+ * // The `IntoIter` iterator produces items in arbitrary order, so the
+ * // items must be sorted to test them against a sorted array.
+ * vec.sortUnstable()
+ * check(vec == listOf(Pair(1, 1), Pair(2, 2), Pair(3, 3), Pair(4, 4), Pair(5, 5), Pair(6, 6)))
+ * ```
+ */
+public fun <K, V, S, A, T : Iterable<Pair<K, V>>> HashMap<K, V, S, A>.extendKV(iter: T) where S : BuildHasher, A : Allocator {
+    this.extend(iter.iterator().map({ (key, value) -> Pair(key, value) }))
+}
+
+public fun <K, V, S, A> HashMap<K, V, S, A>.extendOneKV(tupleArg0: Pair<K, V>) where S : BuildHasher, A : Allocator {
+    val (k, v) = tupleArg0
+    this.put(k, v)
+}
+
+public fun <K, V, S, A> HashMap<K, V, S, A>.extendReserveKV(additional: Int) where S : BuildHasher, A : Allocator {
+    Extend.extendReserve(this, additional)
+}
+
+/**
+ * Inserts all new key-values from the iterator and replaces values with existing
+ * keys with new values returned from the iterator.
+ */
 
 public fun assertCovariance() {
     fun mapKey(v: HashMap<String, UByte, DefaultHashBuilder, Global>): HashMap<String, UByte, DefaultHashBuilder, Global> = v

@@ -37,9 +37,9 @@ public open class Condvar internal constructor(
         run {
             val matchVal = this.mutex.compareExchange(0, addr, Relaxed, Relaxed)
             when {
-                matchVal is Result.Ok -> {}
+                matchVal is Result.Ok<*, *> -> {}
                 // Stored the address
-                matchVal is Result.Err && (matchVal as Result.Err).error == addr -> {
+                matchVal is Result.Err<*, *> && matchVal.error == addr -> {
                     val n = matchVal.error
                 }
                 // Lost a race to store the same address

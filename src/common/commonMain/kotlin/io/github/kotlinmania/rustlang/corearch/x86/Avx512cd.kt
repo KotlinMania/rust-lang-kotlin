@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.I32x8
 import io.github.kotlinmania.rustlang.corearch.simd.I64x2
 import io.github.kotlinmania.rustlang.corearch.simd.I64x4
 import io.github.kotlinmania.rustlang.corearch.simd.I64x8
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 
 // should be vpbroadcastmw2d
 
@@ -92,7 +93,7 @@ public fun mm512MaskConflictEpi32(src: M512i, k: Mmask16, a: M512i): M512i =
 public fun mm512MaskzConflictEpi32(k: Mmask16, a: M512i): M512i =
     run {
         val conflict = mm512ConflictEpi32(a).asI32x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = conflict; val _simdArg2 = i32x16.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = conflict; val _simdArg2 = Simd<Int>(List(16) { 0 }); _simdArg1 })
     }
 
 /**
@@ -121,7 +122,7 @@ public fun mm256MaskConflictEpi32(src: M256i, k: Mmask8, a: M256i): M256i =
 public fun mm256MaskzConflictEpi32(k: Mmask8, a: M256i): M256i =
     run {
         val conflict = mm256ConflictEpi32(a).asI32x8()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = conflict; val _simdArg2 = i32x8.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = conflict; val _simdArg2 = Simd<Int>(List(8) { 0 }); _simdArg1 })
     }
 
 /**
@@ -150,7 +151,7 @@ public fun mmMaskConflictEpi32(src: M128i, k: Mmask8, a: M128i): M128i =
 public fun mmMaskzConflictEpi32(k: Mmask8, a: M128i): M128i =
     run {
         val conflict = mmConflictEpi32(a).asI32x4()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = conflict; val _simdArg2 = i32x4.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = conflict; val _simdArg2 = Simd<Int>(List(4) { 0 }); _simdArg1 })
     }
 
 /**
@@ -179,7 +180,7 @@ public fun mm512MaskConflictEpi64(src: M512i, k: Mmask8, a: M512i): M512i =
 public fun mm512MaskzConflictEpi64(k: Mmask8, a: M512i): M512i =
     run {
         val conflict = mm512ConflictEpi64(a).asI64x8()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = conflict; val _simdArg2 = i64x8.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = conflict; val _simdArg2 = Simd<Long>(List(8) { 0L }); _simdArg1 })
     }
 
 /**
@@ -208,7 +209,7 @@ public fun mm256MaskConflictEpi64(src: M256i, k: Mmask8, a: M256i): M256i =
 public fun mm256MaskzConflictEpi64(k: Mmask8, a: M256i): M256i =
     run {
         val conflict = mm256ConflictEpi64(a).asI64x4()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = conflict; val _simdArg2 = i64x4.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = conflict; val _simdArg2 = Simd<Long>(List(4) { 0L }); _simdArg1 })
     }
 
 /**
@@ -237,7 +238,7 @@ public fun mmMaskConflictEpi64(src: M128i, k: Mmask8, a: M128i): M128i =
 public fun mmMaskzConflictEpi64(k: Mmask8, a: M128i): M128i =
     run {
         val conflict = mmConflictEpi64(a).asI64x2()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = conflict; val _simdArg2 = i64x2.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = conflict; val _simdArg2 = Simd<Long>(List(2) { 0L }); _simdArg1 })
     }
 
 /**
@@ -266,7 +267,7 @@ public fun mm512MaskLzcntEpi32(src: M512i, k: Mmask16, a: M512i): M512i =
 public fun mm512MaskzLzcntEpi32(k: Mmask16, a: M512i): M512i =
     run {
         val zerocount = mm512LzcntEpi32(a).asI32x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = zerocount; val _simdArg2 = i32x16.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = zerocount; val _simdArg2 = Simd<Int>(List(16) { 0 }); _simdArg1 })
     }
 
 /**
@@ -295,7 +296,7 @@ public fun mm256MaskLzcntEpi32(src: M256i, k: Mmask8, a: M256i): M256i =
 public fun mm256MaskzLzcntEpi32(k: Mmask8, a: M256i): M256i =
     run {
         val zerocount = mm256LzcntEpi32(a).asI32x8()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = zerocount; val _simdArg2 = i32x8.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = zerocount; val _simdArg2 = Simd<Int>(List(8) { 0 }); _simdArg1 })
     }
 
 /**
@@ -324,7 +325,7 @@ public fun mmMaskLzcntEpi32(src: M128i, k: Mmask8, a: M128i): M128i =
 public fun mmMaskzLzcntEpi32(k: Mmask8, a: M128i): M128i =
     run {
         val zerocount = mmLzcntEpi32(a).asI32x4()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = zerocount; val _simdArg2 = i32x4.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = zerocount; val _simdArg2 = Simd<Int>(List(4) { 0 }); _simdArg1 })
     }
 
 /**
@@ -353,7 +354,7 @@ public fun mm512MaskLzcntEpi64(src: M512i, k: Mmask8, a: M512i): M512i =
 public fun mm512MaskzLzcntEpi64(k: Mmask8, a: M512i): M512i =
     run {
         val zerocount = mm512LzcntEpi64(a).asI64x8()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = zerocount; val _simdArg2 = i64x8.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = zerocount; val _simdArg2 = Simd<Long>(List(8) { 0L }); _simdArg1 })
     }
 
 /**
@@ -382,7 +383,7 @@ public fun mm256MaskLzcntEpi64(src: M256i, k: Mmask8, a: M256i): M256i =
 public fun mm256MaskzLzcntEpi64(k: Mmask8, a: M256i): M256i =
     run {
         val zerocount = mm256LzcntEpi64(a).asI64x4()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = zerocount; val _simdArg2 = i64x4.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = zerocount; val _simdArg2 = Simd<Long>(List(4) { 0L }); _simdArg1 })
     }
 
 /**
@@ -411,7 +412,7 @@ public fun mmMaskLzcntEpi64(src: M128i, k: Mmask8, a: M128i): M128i =
 public fun mmMaskzLzcntEpi64(k: Mmask8, a: M128i): M128i =
     run {
         val zerocount = mmLzcntEpi64(a).asI64x2()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = zerocount; val _simdArg2 = i64x2.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = zerocount; val _simdArg2 = Simd<Long>(List(2) { 0L }); _simdArg1 })
     }
 
 public expect fun vpconflictd(a: I32x16): I32x16

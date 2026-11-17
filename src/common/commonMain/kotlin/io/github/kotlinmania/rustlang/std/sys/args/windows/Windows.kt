@@ -5,6 +5,7 @@ package io.github.kotlinmania.rustlang.std.sys.args.windows
 
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphanumeric
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU16Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
@@ -15,7 +16,6 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.constError
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Iter
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
@@ -209,7 +209,7 @@ public fun appendArg(cmd: List<UShort>, arg: Arg, forceQuotes: Boolean): Result<
     // If an argument has 0 characters then we need to quote it to ensure
     // that it actually gets passed through on the command line or otherwise
     // it will be dropped entirely when parsed on the other end.
-    when (val tryResult = ensureNoNuls(arg3)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = ensureNoNuls(arg3)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
     val argBytes = arg3.asEncodedBytes()
     val (quote1, escape) =
         when (quote) {
@@ -247,7 +247,7 @@ public fun appendArg(cmd: List<UShort>, arg: Arg, forceQuotes: Boolean): Result<
 
 public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<Unit, Error> {
     var quote1 = quote
-    when (val tryResult = ensureNoNuls(arg)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = ensureNoNuls(arg)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
     // If an argument has 0 characters then we need to quote it to ensure
     // that it actually gets passed through on the command line or otherwise
     // it will be dropped entirely when parsed on the other end.
@@ -319,7 +319,7 @@ public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<U
 }
 
 public fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes: Boolean): Result<List<UShort>, Error> {
-    val INVALID_ARGUMENT_ERROR: io.github.kotlinmania.rustlang.core.io.error.Error = constError(ErrorKind.InvalidInput, "batch file arguments are invalid")
+    val INVALID_ARGUMENT_ERROR: Error = constError(ErrorKind.InvalidInput, "batch file arguments are invalid")
     // Windows file names cannot contain a `"` character or end with `\\`.
     // If the script name does then return an error.
     // Also we disallow `^` and `%` to prevent escaping or environment variable substitution.
@@ -351,12 +351,12 @@ public fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes
                 if (argBytes.iter().any({ c -> DISALLOWED.contains(c) })) {
                     return Result.Err<List<UShort>, Error>(INVALID_ARGUMENT_ERROR)
                 }
-                when (val tryResult = appendBatArg(cmd, argOs, forceQuotes)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UShort>, Error>(tryResult.error) }
+                when (val tryResult = appendBatArg(cmd, argOs, forceQuotes)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.error) }
             }
             else -> {
                 // Raw arguments are passed on as-is.
                 // It's the user's responsibility to properly handle arguments in this case.
-                when (val tryResult = appendArg(cmd, arg, forceQuotes)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UShort>, Error>(tryResult.error) }
+                when (val tryResult = appendArg(cmd, arg, forceQuotes)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.error) }
             }
         }
     }
@@ -371,7 +371,7 @@ public fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes
  * This is necessary because cmd.exe does not support verbatim paths.
  */
 public fun toUserPath(path: Path): Result<List<UShort>, Error> {
-    return fromWideToUserPath(when (val tryResult = toU16s(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UShort>, Error>(tryResult.error) })
+    return fromWideToUserPath(when (val tryResult = toU16s(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.error) })
 }
 
 public fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>, Error> {

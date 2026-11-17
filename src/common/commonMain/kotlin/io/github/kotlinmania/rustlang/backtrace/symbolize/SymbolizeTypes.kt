@@ -35,11 +35,11 @@ public sealed class ResolveWhat {
     public open fun addressOrIp(): MutPtr =
         when (this) {
             is ResolveWhat.Address -> {
-                val (a) = this
+                val (a) = this as ResolveWhat.Address
                 adjustIp((PrimitiveLayouts.U8).readNative((a).rawAddress))
             }
             is ResolveWhat.Frame -> {
-                val (f) = this
+                val (f) = this as ResolveWhat.Frame
                 adjustIp(f.ip())
             }
         }

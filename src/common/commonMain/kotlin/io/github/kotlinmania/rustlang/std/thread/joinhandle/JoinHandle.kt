@@ -4,9 +4,12 @@ package io.github.kotlinmania.rustlang.std.thread.joinhandle
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.sys.asInner
+import io.github.kotlinmania.rustlang.std.sys.intoInner
 import io.github.kotlinmania.rustlang.std.thread.Result
 import io.github.kotlinmania.rustlang.std.thread.lifecycle.JoinInner
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -173,5 +176,5 @@ public open class JoinHandle<T>(
 
     public override fun intoInner(): Thread = this.value.intoInner()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "JoinHandle").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): RustResult<Unit, Error> = run { DebugStruct(f, "JoinHandle").finishNonExhaustive(); RustResult.Ok<Unit, Error>(Unit) }
 }

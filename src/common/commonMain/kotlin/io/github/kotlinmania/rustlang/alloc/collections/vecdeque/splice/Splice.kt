@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.splice
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.drain.Drain
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.mem.drop
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
 
 /**
  * A splicing iterator for `VecDeque`.

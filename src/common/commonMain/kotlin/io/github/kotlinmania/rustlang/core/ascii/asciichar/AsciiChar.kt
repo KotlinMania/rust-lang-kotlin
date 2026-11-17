@@ -1211,7 +1211,7 @@ public sealed class AsciiChar(
                 }
                 else -> Pair(listOf(Apostrophe, this, Apostrophe, Null, Null, Null), 3)
             }
-        return run { f.append(buf[0 until len].asStr()); Result.Ok(Unit) }
+        return run { f.append(buf[0 until len].asStr()); Result.Ok<Unit, Unit>(Unit) }
     }
 
     public companion object {

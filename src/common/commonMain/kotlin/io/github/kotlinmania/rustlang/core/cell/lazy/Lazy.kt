@@ -84,30 +84,6 @@ public open class LazyCell<T, F> internal constructor(
     public var state: UnsafeCell<State<T, F>> = stateCtorArg
         internal set
 
-    /**
-     * # Panics
-     *
-     * If the initialization closure panics (the one that is passed to the [new] method), the
-     * panic is propagated to the caller, and the cell becomes poisoned. This will cause all future
-     * accesses of the cell (via [force] or a dereference) to panic.
-     *
-     * [new]: LazyCell.new
-     * [force]: LazyCell.force
-     */
-    public open fun deref(): T = LazyCell.force(this)
-
-    /**
-     * # Panics
-     *
-     * If the initialization closure panics (the one that is passed to the [new] method), the
-     * panic is propagated to the caller, and the cell becomes poisoned. This will cause all future
-     * accesses of the cell (via [force] or a dereference) to panic.
-     *
-     * [new]: LazyCell.new
-     * [force]: LazyCell.force
-     */
-    public open fun derefMut(): T = LazyCell.forceMut(this)
-
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
         val d = DebugTuple(f, "LazyCell")
         when (val matchVal = LazyCell.get(this)) {
@@ -167,11 +143,11 @@ public open class LazyCell<T, F> internal constructor(
          */
         public fun <T> intoInner(thisRef: LazyCell<T, F>): Result<T, () -> T> =
             when (val matchVal = thisRef.state.intoInner()) {
-                is State.Init -> {
+                is State.Init<*, *> -> {
                     val (data) = matchVal
                     Result.Ok<T, () -> T>(data)
                 }
-                is State.Uninit -> {
+                is State.Uninit<*, *> -> {
                     val (f) = matchVal
                     Result.Err<T, () -> T>(f)
                 }
@@ -211,12 +187,12 @@ public open class LazyCell<T, F> internal constructor(
             // uninitialized case; `reallyInit` will create and return a fresh reference).
             val state = thisRef.state.get()
             return when (state) {
-                is State.Init -> {
+                is State.Init<*, *> -> {
                     val (data) = state
                     data
                 }
                 // SAFETY: The state is uninitialized.
-                is State.Uninit -> LazyCell.reallyInit(thisRef)
+                is State.Uninit<*, *> -> LazyCell.reallyInit(thisRef)
                 State.Poisoned -> panicPoisoned()
             }
         }
@@ -289,12 +265,12 @@ unreachableUnchecked()
             }
             val state = thisRef.state.getMut()
             return when (state) {
-                is State.Init -> {
+                is State.Init<*, *> -> {
                     val (data) = state
                     data
                 }
                 // SAFETY: `state` is `Uninit`.
-                is State.Uninit -> reallyInitMut(state)
+                is State.Uninit<*, *> -> reallyInitMut(state)
                 State.Poisoned -> panicPoisoned()
             }
         }
@@ -348,7 +324,7 @@ unreachableUnchecked()
         public fun <T, F> getMut(thisRef: LazyCell<T, F>): T? {
             val state = thisRef.state.getMut()
             return when (state) {
-                is State.Init -> {
+                is State.Init<*, *> -> {
                     val (data) = state
                     data
                 }
@@ -378,7 +354,7 @@ unreachableUnchecked()
             // will stay valid for the duration of the borrow to `self`.
             val state = thisRef.state.get()
             return when (state) {
-                is State.Init -> {
+                is State.Init<*, *> -> {
                     val (data) = state
                     data
                 }
@@ -393,6 +369,30 @@ unreachableUnchecked()
         public fun <T, F> from(value: T): LazyCell<T, F> = LazyCell(state = UnsafeCell.new(State.Init(value)))
     }
 }
+
+/**
+ * # Panics
+ *
+ * If the initialization closure panics (the one that is passed to the [new] method), the
+ * panic is propagated to the caller, and the cell becomes poisoned. This will cause all future
+ * accesses of the cell (via [force] or a dereference) to panic.
+ *
+ * [new]: LazyCell.new
+ * [force]: LazyCell.force
+ */
+public fun <T> LazyCell<T, F>.deref(): T = LazyCell.force(this)
+
+/**
+ * # Panics
+ *
+ * If the initialization closure panics (the one that is passed to the [new] method), the
+ * panic is propagated to the caller, and the cell becomes poisoned. This will cause all future
+ * accesses of the cell (via [force] or a dereference) to panic.
+ *
+ * [new]: LazyCell.new
+ * [force]: LazyCell.force
+ */
+public fun <T> LazyCell<T, F>.derefMut(): T = LazyCell.forceMut(this)
 
 /**
  * Creates a new lazy value using `Default` as the initializing function.

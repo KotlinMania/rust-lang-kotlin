@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.fmt.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.orElse
 import io.github.kotlinmania.rustlang.std.backtrace.Backtrace
@@ -334,7 +335,7 @@ public open class Report<E>(
 
     // This type intentionally outputs the same format for `Display` and `Debug`for
     // situations where you unwrap a `Report` or return it from main.
-    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun <E> typeLayout(typeLayoutE: TypeLayout<E>): TypeLayout<Report<E>> =

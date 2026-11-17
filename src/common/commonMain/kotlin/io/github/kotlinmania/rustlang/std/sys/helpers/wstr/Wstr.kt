@@ -81,7 +81,7 @@ public open class WStrUnits internal constructor(
          * at least as long as the scope of this struct.
          */
         public fun new(lpwstr: ConstPtr): WStrUnits? {
-            return WStrUnits(lpwstr = (NonNull.new(((lpwstr as Any?) as WStrUnits?)) ?: return null), lifetime = Unit)
+            return WStrUnits(lpwstr = (NonNull.new(lpwstr) ?: return null), lifetime = Unit)
         }
     }
 }

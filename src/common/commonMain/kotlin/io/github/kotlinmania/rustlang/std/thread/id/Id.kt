@@ -80,9 +80,9 @@ public open class ThreadId internal constructor(
                 val id = last.checkedAdd(1) ?: exhausted()
                 run {
                     val matchVal = COUNTER.compareExchangeWeak(last, id, Ordering.Relaxed, Ordering.Relaxed)
-                    when (matchVal) { is Result.Ok -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         return ThreadId(NonZero.new(id)!!)
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         val id1 = matchVal.error
                         last = id1
                     } }

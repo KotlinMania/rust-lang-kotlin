@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.char.decode
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 
@@ -34,7 +35,7 @@ public open class DecodeUtf16<I, Item>(
     public open fun next(): Result<Char, DecodeUtf16Error>? {
         val u =
             when (val matchVal = this.buf.also { this.buf = null }) {
-                null -> when (val tryResult = this.iter.next()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                null -> when (val tryResult = this.iter.next()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 else -> {
                     val buf = matchVal
                     buf

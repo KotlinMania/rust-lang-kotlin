@@ -19,6 +19,8 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.Methods
 import io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
 import io.github.kotlinmania.rustlang.procmacro.bridge.closure.Closure
+import io.github.kotlinmania.rustlang.procmacro.bridge.decode
+import io.github.kotlinmania.rustlang.procmacro.bridge.encode
 import io.github.kotlinmania.rustlang.procmacro.bridge.handle.Handle
 import io.github.kotlinmania.rustlang.procmacro.bridge.panicmessage.PanicMessage
 import io.github.kotlinmania.rustlang.procmacro.bridge.selflessreify.reifyToExternCFnHrtBridge
@@ -50,7 +52,7 @@ public open class TokenStream(
     public open fun clone(): TokenStream = Methods.tsClone(this)
 
     public companion object {
-        public fun <S> decode(r: List<UByte>, s: S): TokenStream = TokenStream(handle = Handle.Handle.decode(r, s))
+        public fun <S> decode(r: List<UByte>, s: S): TokenStream = TokenStream(handle = Handle.decode(r, s))
     }
 }
 
@@ -69,10 +71,10 @@ public open class Span(
         this.handle.encode(w, s)
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(Methods.spanDebug(this)); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(Methods.spanDebug(this)); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
-        public fun <S> decode(r: List<UByte>, s: S): Span = Span(handle = Handle.Handle.decode(r, s))
+        public fun <S> decode(r: List<UByte>, s: S): Span = Span(handle = Handle.decode(r, s))
 
         public fun defSite(): Span = Bridge.with({ bridge -> bridge.globals.defSite })
 

@@ -28,15 +28,15 @@ public sealed class Part {
     public open fun len(): Int =
         when (this) {
             is Part.Zero -> {
-                val (nzeroes) = this
+                val (nzeroes) = this as Part.Zero
                 nzeroes
             }
             is Part.Num -> {
-                val (v) = this
+                val (v) = this as Part.Num
                 v.checkedIlog10().unwrapOrDefault().toInt() + 1
             }
             is Part.Copy -> {
-                val (buf) = this
+                val (buf) = this as Part.Copy
                 buf.size
             }
         }
@@ -51,20 +51,20 @@ public sealed class Part {
         return if (out.size >= len) {
             when (this) {
                 is Part.Zero -> {
-                    val (nzeroes) = this
+                    val (nzeroes) = this as Part.Zero
                     for (idx in ((out).subList(0, nzeroes)).indices) {
                         ((out).subList(0, nzeroes))[idx] = 48u
                     }
                 }
                 is Part.Num -> {
-                    val (v) = this
+                    val (v) = this as Part.Num
                     for (c in ((out).subList(0, len)).iterMut().rev()) {
                         c = 48u + (v % 10u).toUByte()
                         v /= 10u
                     }
                 }
                 is Part.Copy -> {
-                    val (buf) = this
+                    val (buf) = this as Part.Copy
                     run { val dstTmp0 = out; val srcTmp0 = buf; for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
                 }
             }

@@ -15,6 +15,7 @@ import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // `front` and `back` are always both `None` or both `Some`.
@@ -133,12 +134,12 @@ public sealed class LazyLeafHandle<BorrowType, K, V> {
 
     public open fun reborrow(): LazyLeafHandle<Immut, K, V> =
         when (this) {
-            is LazyLeafHandle.Root -> {
-                val (root) = this
+            is LazyLeafHandle.Root<*, *, *> -> {
+                val (root) = this as LazyLeafHandle.Root<BorrowType, K, V>
                 LazyLeafHandle.Root(root.reborrow())
             }
-            is LazyLeafHandle.Edge -> {
-                val (edge) = this
+            is LazyLeafHandle.Edge<*, *, *> -> {
+                val (edge) = this as LazyLeafHandle.Edge<BorrowType, K, V>
                 LazyLeafHandle.Edge(edge.reborrow())
             }
         }
@@ -146,12 +147,12 @@ public sealed class LazyLeafHandle<BorrowType, K, V> {
 
 public fun <K, V> LazyLeafHandle<Immut, K, V>.clone(): LazyLeafHandle<Immut, K, V> =
     when (this) {
-        is LazyLeafHandle.Root -> {
-            val (root) = this
+        is LazyLeafHandle.Root<*, *, *> -> {
+            val (root) = this as LazyLeafHandle.Root<*, *, *>
             LazyLeafHandle.Root(root)
         }
-        is LazyLeafHandle.Edge -> {
-            val (edge) = this
+        is LazyLeafHandle.Edge<*, *, *> -> {
+            val (edge) = this as LazyLeafHandle.Edge<*, *, *>
             LazyLeafHandle.Edge(edge)
         }
     }
@@ -177,12 +178,12 @@ public open class LazyLeafRange<BorrowType, K, V>(
         }
         return when (val matchVal1 = this.front) {
             null -> null
-            is LazyLeafHandle.Edge -> {
+            is LazyLeafHandle.Edge<*, *, *> -> {
                 val (edge) = matchVal1 as LazyLeafHandle.Edge<BorrowType, K, V>
                 edge
             }
             // SAFETY: the code above would have replaced it.
-            is LazyLeafHandle.Root -> unreachableUnchecked()
+            is LazyLeafHandle.Root<*, *, *> -> unreachableUnchecked()
         }
     }
 
@@ -197,12 +198,12 @@ public open class LazyLeafRange<BorrowType, K, V>(
         }
         return when (val matchVal1 = this.back) {
             null -> null
-            is LazyLeafHandle.Edge -> {
+            is LazyLeafHandle.Edge<*, *, *> -> {
                 val (edge) = matchVal1 as LazyLeafHandle.Edge<BorrowType, K, V>
                 edge
             }
             // SAFETY: the code above would have replaced it.
-            is LazyLeafHandle.Root -> unreachableUnchecked()
+            is LazyLeafHandle.Root<*, *, *> -> unreachableUnchecked()
         }
     }
 
@@ -227,11 +228,11 @@ public fun <K, V> LazyLeafRange<Immut, K, V>.nextBackUnchecked(): Pair<K, V> {
 
 public fun <K, V> LazyLeafRange<Dying, K, V>.takeFront(): Handle<NodeRef<Dying, K, V, Leaf>, Edge>? {
     return when (val matchVal = (this.front.also { this.front = null } ?: return null)) {
-        is LazyLeafHandle.Root -> {
+        is LazyLeafHandle.Root<*, *, *> -> {
             val (root) = matchVal
             root.firstLeafEdge()
         }
-        is LazyLeafHandle.Edge -> {
+        is LazyLeafHandle.Edge<*, *, *> -> {
             val (edge) = matchVal
             edge
         }
@@ -280,7 +281,7 @@ public fun <K, V, A : AllocatorClone> LazyLeafRange<Dying, K, V>.deallocatingEnd
 public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.BorrowType, K, V, Q, R> NodeRef<BorrowType, K, V, LeafOrInternal>.findLeafEdgesSpanningRange(range: R): LeafRange<BorrowType, K, V> where K : Borrow<Q>, R : RangeBounds<Q> {
     return run {
         val matchVal = this.searchTreeForBifurcation(range)
-        when (matchVal) { is Result.Ok -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val okVal = matchVal.value
             val node = okVal[0]
             val lowerEdgeIdx = okVal[1]
@@ -295,12 +296,12 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
                 run {
                     val matchVal1 = Pair(lowerEdge.force(), upperEdge.force())
                     when {
-                        matchVal1.first is Leaf && matchVal1.second is Leaf -> {
+                        matchVal1.first is Leaf<*, *, *> && matchVal1.second is Leaf<*, *, *> -> {
                             val (f) = matchVal1.first as Leaf<BorrowType, K, V>
                             val (b) = matchVal1.second as Leaf<BorrowType, K, V>
                             return LeafRange(front = f, back = b)
                         }
-                        matchVal1.first is Internal && matchVal1.second is Internal -> {
+                        matchVal1.first is Internal<*, *, *> && matchVal1.second is Internal<*, *, *> -> {
                             val (f1) = matchVal1.first as Internal<BorrowType, K, V>
                             val (b1) = matchVal1.second as Internal<BorrowType, K, V>
                             Pair(lowerEdge, lowerChildBound) = f1.descend().findLowerBoundEdge(lowerChildBound)
@@ -310,7 +311,7 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
                     }
                 }
             }
-        }; is Result.Err -> {
+        }; is Result.Err<*, *> -> {
             LeafRange.none()
         } }
     }
@@ -344,17 +345,17 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
     while (true) {
         edge = run {
             val matchVal = edge.rightKv()
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val kv = matchVal.value
                 return Result.Ok<Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>, NodeRef<BorrowType, K, V, LeafOrInternal>>(kv)
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val lastEdge = matchVal.error
                 run {
                     val matchVal1 = lastEdge.intoNode().ascend()
-                    when (matchVal1) { is Result.Ok -> {
+                    when (matchVal1) { is Result.Ok<*, *> -> {
                         val parentEdge = matchVal1.value
                         parentEdge.forgetNodeType()
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         val root = matchVal1.error
                         return Result.Err<Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>, NodeRef<BorrowType, K, V, LeafOrInternal>>(root)
                     } }
@@ -374,17 +375,17 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
     while (true) {
         edge = run {
             val matchVal = edge.leftKv()
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val kv = matchVal.value
                 return Result.Ok<Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>, NodeRef<BorrowType, K, V, LeafOrInternal>>(kv)
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val lastEdge = matchVal.error
                 run {
                     val matchVal1 = lastEdge.intoNode().ascend()
-                    when (matchVal1) { is Result.Ok -> {
+                    when (matchVal1) { is Result.Ok<*, *> -> {
                         val parentEdge = matchVal1.value
                         parentEdge.forgetNodeType()
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         val root = matchVal1.error
                         return Result.Err<Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>, NodeRef<BorrowType, K, V, LeafOrInternal>>(root)
                     } }
@@ -414,10 +415,10 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Dying, K, V, Leaf>, Edge>.d
     while (true) {
         edge = run {
             val matchVal = edge.rightKv()
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val kv = matchVal.value
                 return Pair(read(kv).nextLeafEdge(), kv)
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val lastEdge = matchVal.error
                 // ignore-tidy-undocumented-unchecked
                 when (val matchVal1 = lastEdge.intoNode().deallocateAndAscend(alloc.clone())) {
@@ -452,10 +453,10 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Dying, K, V, Leaf>, Edge>.d
     while (true) {
         edge = run {
             val matchVal = edge.leftKv()
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val kv = matchVal.value
                 return Pair(read(kv).nextBackLeafEdge(), kv)
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val lastEdge = matchVal.error
                 // ignore-tidy-undocumented-unchecked
                 when (val matchVal1 = lastEdge.intoNode().deallocateAndAscend(alloc.clone())) {
@@ -617,11 +618,11 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
     var node = this
     while (true) {
         when (val matchVal = node.force()) {
-            is Leaf -> {
+            is Leaf<*, *, *> -> {
                 val (leaf) = matchVal
                 return leaf.firstEdge()
             }
-            is Internal -> {
+            is Internal<*, *, *> -> {
                 val (internal) = matchVal
                 node = internal.firstEdge().descend()
             }
@@ -637,11 +638,11 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
     var node = this
     while (true) {
         when (val matchVal = node.force()) {
-            is Leaf -> {
+            is Leaf<*, *, *> -> {
                 val (leaf) = matchVal
                 return leaf.lastEdge()
             }
-            is Internal -> {
+            is Internal<*, *, *> -> {
                 val (internal) = matchVal
                 node = internal.lastEdge().descend()
             }
@@ -710,31 +711,31 @@ public sealed class Position<BorrowType, K, V> {
  */
 public fun <K, V> NodeRef<Immut, K, V, LeafOrInternal>.visitNodesInOrder(visit: (Position<Immut, K, V>) -> Unit) {
     when (val matchVal = this.force()) {
-        is Leaf -> {
+        is Leaf<*, *, *> -> {
             val (leaf) = matchVal
             visit(Position.Leaf(leaf))
         }
-        is Internal -> {
+        is Internal<*, *, *> -> {
             val (internal) = matchVal
             visit(Position.Internal(internal))
             var edge = internal.firstEdge()
             while (true) {
                 edge = when (val matchVal1 = edge.descend().force()) {
-                    is Leaf -> {
+                    is Leaf<*, *, *> -> {
                         val (leaf1) = matchVal1
                         visit(Position.Leaf(leaf1))
                         run {
                             val matchVal2 = edge.nextKv()
-                            when (matchVal2) { is Result.Ok -> {
+                            when (matchVal2) { is Result.Ok<*, *> -> {
                                 val kv = matchVal2.value
                                 visit(Position.InternalKV)
                                 kv.rightEdge()
-                            }; is Result.Err -> {
+                            }; is Result.Err<*, *> -> {
                                 return
                             } }
                         }
                     }
-                    is Internal -> {
+                    is Internal<*, *, *> -> {
                         val (internal1) = matchVal1
                         visit(Position.Internal(internal1))
                         internal1.firstEdge()
@@ -751,11 +752,11 @@ public fun <K, V> NodeRef<Immut, K, V, LeafOrInternal>.visitNodesInOrder(visit: 
 public fun <K, V> NodeRef<Immut, K, V, LeafOrInternal>.calcLength(): Int {
     var result = 0
     this.visitNodesInOrder({ pos -> when (pos) {
-        is Position.Leaf -> {
+        is Position.Leaf<*, *, *> -> {
             val (node) = pos
             result += node.len()
         }
-        is Position.Internal -> {
+        is Position.Internal<*, *, *> -> {
             val (node1) = pos
             result += node1.len()
         }
@@ -769,11 +770,11 @@ public fun <K, V> NodeRef<Immut, K, V, LeafOrInternal>.calcLength(): Int {
  */
 public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>.nextLeafEdge(): Handle<NodeRef<BorrowType, K, V, Leaf>, Edge> =
     when (val matchVal = this.force()) {
-        is Leaf -> {
+        is Leaf<*, *, *> -> {
             val (leafKv) = matchVal
             leafKv.rightEdge()
         }
-        is Internal -> {
+        is Internal<*, *, *> -> {
             val (internalKv) = matchVal
             val nextInternalEdge = internalKv.rightEdge()
             nextInternalEdge.descend().firstLeafEdge()
@@ -785,11 +786,11 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
  */
 public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>.nextBackLeafEdge(): Handle<NodeRef<BorrowType, K, V, Leaf>, Edge> =
     when (val matchVal = this.force()) {
-        is Leaf -> {
+        is Leaf<*, *, *> -> {
             val (leafKv) = matchVal
             leafKv.leftEdge()
         }
-        is Internal -> {
+        is Internal<*, *, *> -> {
             val (internalKv) = matchVal
             val nextInternalEdge = internalKv.leftEdge()
             nextInternalEdge.descend().lastLeafEdge()
@@ -806,11 +807,11 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
     while (true) {
         val (edge, newBound) = node.findLowerBoundEdge(bound1)
         when (val matchVal = edge.force()) {
-            is Leaf -> {
+            is Leaf<*, *, *> -> {
                 val (edge1) = matchVal
                 return edge1
             }
-            is Internal -> {
+            is Internal<*, *, *> -> {
                 val (edge2) = matchVal
                 node = edge2.descend()
                 bound1 = newBound
@@ -829,11 +830,11 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
     while (true) {
         val (edge, newBound) = node.findUpperBoundEdge(bound1)
         when (val matchVal = edge.force()) {
-            is Leaf -> {
+            is Leaf<*, *, *> -> {
                 val (edge1) = matchVal
                 return edge1
             }
-            is Internal -> {
+            is Internal<*, *, *> -> {
                 val (edge2) = matchVal
                 node = edge2.descend()
                 bound1 = newBound
@@ -862,10 +863,10 @@ public fun <K, V, A : AllocatorClone> NodeRef<Dying, K, V, LeafOrInternal>.dropT
         val parent = (node.deallocateAndAscend(alloc1) ?: return null)
         return run {
             val matchVal = parent.rightKv()
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val kv = matchVal.value
                 kv.rightEdge().descend().firstLeafEdge().intoNode().forgetType()
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val lastEdge = matchVal.error
                 lastEdge.intoNode().forgetType()
             } }

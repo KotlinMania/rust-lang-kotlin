@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.num.imp.ppcf128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 /**
  * The IBM extended-precision (double-double) floating-point lang item.

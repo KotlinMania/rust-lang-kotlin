@@ -17,6 +17,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.unix.GidT
@@ -892,7 +893,7 @@ public open class CAnonymousUcSigmask(
     public var ucSigmask: SigsetT? = null,
     public var ucSigmask64: Sigset64T? = null,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_uc_sigmask").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "__c_anonymous_uc_sigmask").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun eq(other: CAnonymousUcSigmask): Boolean = this.ucSigmask == other.ucSigmask
 

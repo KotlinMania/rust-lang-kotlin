@@ -5,6 +5,7 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.mem.transmuteCopy
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.U16x4
 import io.github.kotlinmania.rustlang.corearch.simd.U16x8
 
@@ -111,13 +112,13 @@ public fun testMm256CvtneophPs() {
 public fun testMmCvtnepsAvxPbh() {
     val a = mmSetrPs(1.0f, 2.0f, 3.0f, 4.0f)
     val r: U16x4 = transmuteCopy(mmCvtnepsAvxPbh(a))
-    val e = U16x4.new(BF16_ONE, BF16_TWO, BF16_THREE, BF16_FOUR)
+    val e = Simd<UShort>(listOf(BF16_ONE, BF16_TWO, BF16_THREE, BF16_FOUR))
     check(r == e)
 }
 
 public fun testMm256CvtnepsAvxPbh() {
     val a = mm256SetrPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f)
     val r: U16x8 = mm256CvtnepsAvxPbh(a).asU16x8()
-    val e = U16x8.new(BF16_ONE, BF16_TWO, BF16_THREE, BF16_FOUR, BF16_FIVE, BF16_SIX, BF16_SEVEN, BF16_EIGHT)
+    val e = Simd<UShort>(listOf(BF16_ONE, BF16_TWO, BF16_THREE, BF16_FOUR, BF16_FIVE, BF16_SIX, BF16_SEVEN, BF16_EIGHT))
     check(r == e)
 }

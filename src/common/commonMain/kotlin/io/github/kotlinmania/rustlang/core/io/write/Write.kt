@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.io.write
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 /**
  * A trait for objects which are byte-oriented sinks.
@@ -209,25 +210,25 @@ public interface Write<T> {
             run {
                 val matchVal = this.write(buf1)
                 when {
-                    matchVal is Result.Ok && matchVal.value == 0 -> {
+                    matchVal is RustResult.Ok<*, *> && matchVal.value == 0 -> {
                         val valueVal = matchVal.value
-                        return Result.Err(Error.WRITE_ALL_EOF)
+                        return RustResult.Err(Error.WRITE_ALL_EOF)
                     }
-                    matchVal is Result.Ok -> {
+                    matchVal is RustResult.Ok<*, *> -> {
                         val n = matchVal.value
                         buf1 = ((buf1).subList(n, (buf1).size))
                     }
-                    matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                    matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
                         val e = matchVal.error
                     }
                     else -> {
-                        val e1 = matchVal.error
-                        return Result.Err(e1)
+                        val e1 = (matchVal as RustResult.Err<*, *>).error
+                        return RustResult.Err(e1)
                     }
                 }
             }
         }
-        return Result.Ok(Unit)
+        return RustResult.Ok(Unit)
     }
 
     /**
@@ -282,25 +283,25 @@ public interface Write<T> {
             run {
                 val matchVal = this.writeVectored(bufs)
                 when {
-                    matchVal is Result.Ok && matchVal.value == 0 -> {
+                    matchVal is RustResult.Ok<*, *> && matchVal.value == 0 -> {
                         val valueVal = matchVal.value
-                        return Result.Err(Error.WRITE_ALL_EOF)
+                        return RustResult.Err(Error.WRITE_ALL_EOF)
                     }
-                    matchVal is Result.Ok -> {
+                    matchVal is RustResult.Ok<*, *> -> {
                         val n = matchVal.value
                         IoSlice.advanceSlices(bufs, n)
                     }
-                    matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                    matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
                         val e = matchVal.error
                     }
                     else -> {
-                        val e1 = matchVal.error
-                        return Result.Err(e1)
+                        val e1 = (matchVal as RustResult.Err<*, *>).error
+                        return RustResult.Err(e1)
                     }
                 }
             }
         }
-        return Result.Ok(Unit)
+        return RustResult.Ok(Unit)
     }
 
     /**
@@ -389,25 +390,24 @@ public fun <W : Write<W>> defaultWriteFmt(thisRef: W, args: fmt.Arguments): Resu
     open class Adapter<T>(
         public var inner: T,
         public var error: Result<Unit>,
-    ) : Appendable {
-        public open fun writeStr(s: String): Result<Unit, Error> =
-            run {
-                val matchVal = this.inner.writeAll(s.encodeToByteArray().map { it.toUByte() })
-                when (matchVal) { is Result.Ok -> {
-                    Result.Ok<Unit, Error>(Unit)
-                }; is Result.Err -> {
-                    val e = matchVal.error
-                    this.error = Result.Err<Unit, Error>(e)
-                    Result.Err<Unit, Error>(fmt.Error)
-                } }
-            }
-    }
-    val output = Adapter(inner = thisRef, error = Result.Ok(Unit))
+    )
+    fun <T : Write<T>> Adapter<T>.writeStr(s: String): RustResult<Unit, Error> =
+        run {
+            val matchVal = this.inner.writeAll(s.encodeToByteArray().map { it.toUByte() })
+            when (matchVal) { is RustResult.Ok<*, *> -> {
+                RustResult.Ok<Unit, Error>(Unit)
+            }; is RustResult.Err<*, *> -> {
+                val e = matchVal.error
+                this.error = RustResult.Err<Unit, Error>(e)
+                RustResult.Err<Unit, Error>(fmt.Error)
+            } }
+        }
+    val output = Adapter(inner = thisRef, error = RustResult.Ok(Unit))
     return run {
         val matchVal = fmt.Write(output, args)
-        when (matchVal) { is Result.Ok -> {
-            Result.Ok(Unit)
-        }; is Result.Err -> {
+        when (matchVal) { is RustResult.Ok<*, *> -> {
+            RustResult.Ok(Unit)
+        }; is RustResult.Err<*, *> -> {
             // Check whether the error came from the underlying `Write`.
             if (output.error.isErr()) {
                 output.error

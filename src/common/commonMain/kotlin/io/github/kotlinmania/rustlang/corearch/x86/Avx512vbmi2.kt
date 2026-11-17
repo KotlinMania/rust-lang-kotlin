@@ -13,6 +13,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.I16x8
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 import io.github.kotlinmania.rustlang.corearch.simd.I8x32
 import io.github.kotlinmania.rustlang.corearch.simd.I8x64
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 
 /**
  * Load contiguous active 16-bit integers from unaligned memory at memAddr (those with their respective bit set in mask k), and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -164,7 +165,7 @@ public fun mm512MaskCompressEpi16(src: M512i, k: Mmask32, a: M512i): M512i = tra
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_compress_epi16&expand=1193)
  */
-public fun mm512MaskzCompressEpi16(k: Mmask32, a: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpcompressw(a.asI16x32(), i16x32.ZERO, k), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
+public fun mm512MaskzCompressEpi16(k: Mmask32, a: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpcompressw(a.asI16x32(), Simd<Short>(List(32) { 0.toShort() }), k), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Contiguously store the active 16-bit integers in a (those with their respective bit set in writemask k) to dst, and pass through the remaining elements from src.
@@ -178,7 +179,7 @@ public fun mm256MaskCompressEpi16(src: M256i, k: Mmask16, a: M256i): M256i = tra
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_compress_epi16&expand=1191)
  */
-public fun mm256MaskzCompressEpi16(k: Mmask16, a: M256i): M256i = transmuteWithLayouts<I16x16, M256i>(vpcompressw256(a.asI16x16(), i16x16.ZERO, k), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
+public fun mm256MaskzCompressEpi16(k: Mmask16, a: M256i): M256i = transmuteWithLayouts<I16x16, M256i>(vpcompressw256(a.asI16x16(), Simd<Short>(List(16) { 0.toShort() }), k), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Contiguously store the active 16-bit integers in a (those with their respective bit set in writemask k) to dst, and pass through the remaining elements from src.
@@ -192,7 +193,7 @@ public fun mmMaskCompressEpi16(src: M128i, k: Mmask8, a: M128i): M128i = transmu
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_compress_epi16&expand=1189)
  */
-public fun mmMaskzCompressEpi16(k: Mmask8, a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpcompressw128(a.asI16x8(), i16x8.ZERO, k), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
+public fun mmMaskzCompressEpi16(k: Mmask8, a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpcompressw128(a.asI16x8(), Simd<Short>(List(8) { 0.toShort() }), k), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Contiguously store the active 8-bit integers in a (those with their respective bit set in writemask k) to dst, and pass through the remaining elements from src.
@@ -206,7 +207,7 @@ public fun mm512MaskCompressEpi8(src: M512i, k: Mmask64, a: M512i): M512i = tran
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_compress_epi8&expand=1211)
  */
-public fun mm512MaskzCompressEpi8(k: Mmask64, a: M512i): M512i = transmuteWithLayouts<I8x64, M512i>(vpcompressb(a.asI8x64(), i8x64.ZERO, k), UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
+public fun mm512MaskzCompressEpi8(k: Mmask64, a: M512i): M512i = transmuteWithLayouts<I8x64, M512i>(vpcompressb(a.asI8x64(), Simd<Byte>(List(64) { 0.toByte() }), k), UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Contiguously store the active 8-bit integers in a (those with their respective bit set in writemask k) to dst, and pass through the remaining elements from src.
@@ -220,7 +221,7 @@ public fun mm256MaskCompressEpi8(src: M256i, k: Mmask32, a: M256i): M256i = tran
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_compress_epi8&expand=1209)
  */
-public fun mm256MaskzCompressEpi8(k: Mmask32, a: M256i): M256i = transmuteWithLayouts<I8x32, M256i>(vpcompressb256(a.asI8x32(), i8x32.ZERO, k), UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
+public fun mm256MaskzCompressEpi8(k: Mmask32, a: M256i): M256i = transmuteWithLayouts<I8x32, M256i>(vpcompressb256(a.asI8x32(), Simd<Byte>(List(32) { 0.toByte() }), k), UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Contiguously store the active 8-bit integers in a (those with their respective bit set in writemask k) to dst, and pass through the remaining elements from src.
@@ -234,7 +235,7 @@ public fun mmMaskCompressEpi8(src: M128i, k: Mmask16, a: M128i): M128i = transmu
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_compress_epi8&expand=1207)
  */
-public fun mmMaskzCompressEpi8(k: Mmask16, a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpcompressb128(a.asI8x16(), i8x16.ZERO, k), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mmMaskzCompressEpi8(k: Mmask16, a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpcompressb128(a.asI8x16(), Simd<Byte>(List(16) { 0.toByte() }), k), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Load contiguous active 16-bit integers from a (those with their respective bit set in mask k), and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -248,7 +249,7 @@ public fun mm512MaskExpandEpi16(src: M512i, k: Mmask32, a: M512i): M512i = trans
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_expand_epi16&expand=2311)
  */
-public fun mm512MaskzExpandEpi16(k: Mmask32, a: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpexpandw(a.asI16x32(), i16x32.ZERO, k), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
+public fun mm512MaskzExpandEpi16(k: Mmask32, a: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpexpandw(a.asI16x32(), Simd<Short>(List(32) { 0.toShort() }), k), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Load contiguous active 16-bit integers from a (those with their respective bit set in mask k), and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -262,7 +263,7 @@ public fun mm256MaskExpandEpi16(src: M256i, k: Mmask16, a: M256i): M256i = trans
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_expand_epi16&expand=2309)
  */
-public fun mm256MaskzExpandEpi16(k: Mmask16, a: M256i): M256i = transmuteWithLayouts<I16x16, M256i>(vpexpandw256(a.asI16x16(), i16x16.ZERO, k), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
+public fun mm256MaskzExpandEpi16(k: Mmask16, a: M256i): M256i = transmuteWithLayouts<I16x16, M256i>(vpexpandw256(a.asI16x16(), Simd<Short>(List(16) { 0.toShort() }), k), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Load contiguous active 16-bit integers from a (those with their respective bit set in mask k), and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -276,7 +277,7 @@ public fun mmMaskExpandEpi16(src: M128i, k: Mmask8, a: M128i): M128i = transmute
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_expand_epi16&expand=2307)
  */
-public fun mmMaskzExpandEpi16(k: Mmask8, a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpexpandw128(a.asI16x8(), i16x8.ZERO, k), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
+public fun mmMaskzExpandEpi16(k: Mmask8, a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpexpandw128(a.asI16x8(), Simd<Short>(List(8) { 0.toShort() }), k), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Load contiguous active 8-bit integers from a (those with their respective bit set in mask k), and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -290,7 +291,7 @@ public fun mm512MaskExpandEpi8(src: M512i, k: Mmask64, a: M512i): M512i = transm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_expand_epi8&expand=2329)
  */
-public fun mm512MaskzExpandEpi8(k: Mmask64, a: M512i): M512i = transmuteWithLayouts<I8x64, M512i>(vpexpandb(a.asI8x64(), i8x64.ZERO, k), UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
+public fun mm512MaskzExpandEpi8(k: Mmask64, a: M512i): M512i = transmuteWithLayouts<I8x64, M512i>(vpexpandb(a.asI8x64(), Simd<Byte>(List(64) { 0.toByte() }), k), UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Load contiguous active 8-bit integers from a (those with their respective bit set in mask k), and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -304,7 +305,7 @@ public fun mm256MaskExpandEpi8(src: M256i, k: Mmask32, a: M256i): M256i = transm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_expand_epi8&expand=2327)
  */
-public fun mm256MaskzExpandEpi8(k: Mmask32, a: M256i): M256i = transmuteWithLayouts<I8x32, M256i>(vpexpandb256(a.asI8x32(), i8x32.ZERO, k), UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
+public fun mm256MaskzExpandEpi8(k: Mmask32, a: M256i): M256i = transmuteWithLayouts<I8x32, M256i>(vpexpandb256(a.asI8x32(), Simd<Byte>(List(32) { 0.toByte() }), k), UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Load contiguous active 8-bit integers from a (those with their respective bit set in mask k), and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -318,14 +319,14 @@ public fun mmMaskExpandEpi8(src: M128i, k: Mmask16, a: M128i): M128i = transmute
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_expand_epi8&expand=2325)
  */
-public fun mmMaskzExpandEpi8(k: Mmask16, a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpexpandb128(a.asI8x16(), i8x16.ZERO, k), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mmMaskzExpandEpi8(k: Mmask16, a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpexpandb128(a.asI8x16(), Simd<Byte>(List(16) { 0.toByte() }), k), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Concatenate packed 64-bit integers in a and b producing an intermediate 128-bit result. Shift the result left by the amount specified in the corresponding element of c, and store the upper 64-bits in dst.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_shldv_epi64&expand=5087)
  */
-public fun mm512ShldvEpi64(a: M512i, b: M512i, c: M512i): M512i = transmute(run { val _simdArg0 = a.asI64x8(); val _simdArg1 = b.asI64x8(); val _simdArg2 = run { val _simdArg0 = c.asI64x8(); val _simdArg1 = i64x8.splat(63); _simdArg0 }; _simdArg0 })
+public fun mm512ShldvEpi64(a: M512i, b: M512i, c: M512i): M512i = transmute(run { val _simdArg0 = a.asI64x8(); val _simdArg1 = b.asI64x8(); val _simdArg2 = run { val _simdArg0 = c.asI64x8(); val _simdArg1 = Simd<Long>(List(8) { 63L }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 64-bit integers in a and b producing an intermediate 128-bit result. Shift the result left by the amount specified in the corresponding element of c, and store the upper 64-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -346,7 +347,7 @@ public fun mm512MaskShldvEpi64(a: M512i, k: Mmask8, b: M512i, c: M512i): M512i =
 public fun mm512MaskzShldvEpi64(k: Mmask8, a: M512i, b: M512i, c: M512i): M512i =
     run {
         val shf = mm512ShldvEpi64(a, b, c).asI64x8()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i64x8.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Long>(List(8) { 0L }); _simdArg1 })
     }
 
 /**
@@ -354,7 +355,7 @@ public fun mm512MaskzShldvEpi64(k: Mmask8, a: M512i, b: M512i, c: M512i): M512i 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_shldv_epi64&expand=5084)
  */
-public fun mm256ShldvEpi64(a: M256i, b: M256i, c: M256i): M256i = transmute(run { val _simdArg0 = a.asI64x4(); val _simdArg1 = b.asI64x4(); val _simdArg2 = run { val _simdArg0 = c.asI64x4(); val _simdArg1 = i64x4.splat(63); _simdArg0 }; _simdArg0 })
+public fun mm256ShldvEpi64(a: M256i, b: M256i, c: M256i): M256i = transmute(run { val _simdArg0 = a.asI64x4(); val _simdArg1 = b.asI64x4(); val _simdArg2 = run { val _simdArg0 = c.asI64x4(); val _simdArg1 = Simd<Long>(List(4) { 63L }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 64-bit integers in a and b producing an intermediate 128-bit result. Shift the result left by the amount specified in the corresponding element of c, and store the upper 64-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -375,7 +376,7 @@ public fun mm256MaskShldvEpi64(a: M256i, k: Mmask8, b: M256i, c: M256i): M256i =
 public fun mm256MaskzShldvEpi64(k: Mmask8, a: M256i, b: M256i, c: M256i): M256i =
     run {
         val shf = mm256ShldvEpi64(a, b, c).asI64x4()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i64x4.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Long>(List(4) { 0L }); _simdArg1 })
     }
 
 /**
@@ -383,7 +384,7 @@ public fun mm256MaskzShldvEpi64(k: Mmask8, a: M256i, b: M256i, c: M256i): M256i 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_shldv_epi64&expand=5081)
  */
-public fun mmShldvEpi64(a: M128i, b: M128i, c: M128i): M128i = transmute(run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); val _simdArg2 = run { val _simdArg0 = c.asI64x2(); val _simdArg1 = i64x2.splat(63); _simdArg0 }; _simdArg0 })
+public fun mmShldvEpi64(a: M128i, b: M128i, c: M128i): M128i = transmute(run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); val _simdArg2 = run { val _simdArg0 = c.asI64x2(); val _simdArg1 = Simd<Long>(List(2) { 63L }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 64-bit integers in a and b producing an intermediate 128-bit result. Shift the result left by the amount specified in the corresponding element of c, and store the upper 64-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -404,7 +405,7 @@ public fun mmMaskShldvEpi64(a: M128i, k: Mmask8, b: M128i, c: M128i): M128i =
 public fun mmMaskzShldvEpi64(k: Mmask8, a: M128i, b: M128i, c: M128i): M128i =
     run {
         val shf = mmShldvEpi64(a, b, c).asI64x2()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i64x2.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Long>(List(2) { 0L }); _simdArg1 })
     }
 
 /**
@@ -412,7 +413,7 @@ public fun mmMaskzShldvEpi64(k: Mmask8, a: M128i, b: M128i, c: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_shldv_epi32&expand=5078)
  */
-public fun mm512ShldvEpi32(a: M512i, b: M512i, c: M512i): M512i = transmute(run { val _simdArg0 = a.asI32x16(); val _simdArg1 = b.asI32x16(); val _simdArg2 = run { val _simdArg0 = c.asI32x16(); val _simdArg1 = i32x16.splat(31); _simdArg0 }; _simdArg0 })
+public fun mm512ShldvEpi32(a: M512i, b: M512i, c: M512i): M512i = transmute(run { val _simdArg0 = a.asI32x16(); val _simdArg1 = b.asI32x16(); val _simdArg2 = run { val _simdArg0 = c.asI32x16(); val _simdArg1 = Simd<Int>(List(16) { 31 }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 32-bit integers in a and b producing an intermediate 64-bit result. Shift the result left by the amount specified in the corresponding element of c, and store the upper 32-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -433,7 +434,7 @@ public fun mm512MaskShldvEpi32(a: M512i, k: Mmask16, b: M512i, c: M512i): M512i 
 public fun mm512MaskzShldvEpi32(k: Mmask16, a: M512i, b: M512i, c: M512i): M512i =
     run {
         val shf = mm512ShldvEpi32(a, b, c).asI32x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i32x16.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Int>(List(16) { 0 }); _simdArg1 })
     }
 
 /**
@@ -441,7 +442,7 @@ public fun mm512MaskzShldvEpi32(k: Mmask16, a: M512i, b: M512i, c: M512i): M512i
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_shldv_epi32&expand=5075)
  */
-public fun mm256ShldvEpi32(a: M256i, b: M256i, c: M256i): M256i = transmute(run { val _simdArg0 = a.asI32x8(); val _simdArg1 = b.asI32x8(); val _simdArg2 = run { val _simdArg0 = c.asI32x8(); val _simdArg1 = i32x8.splat(31); _simdArg0 }; _simdArg0 })
+public fun mm256ShldvEpi32(a: M256i, b: M256i, c: M256i): M256i = transmute(run { val _simdArg0 = a.asI32x8(); val _simdArg1 = b.asI32x8(); val _simdArg2 = run { val _simdArg0 = c.asI32x8(); val _simdArg1 = Simd<Int>(List(8) { 31 }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 32-bit integers in a and b producing an intermediate 64-bit result. Shift the result left by the amount specified in the corresponding element of c, and store the upper 32-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -462,7 +463,7 @@ public fun mm256MaskShldvEpi32(a: M256i, k: Mmask8, b: M256i, c: M256i): M256i =
 public fun mm256MaskzShldvEpi32(k: Mmask8, a: M256i, b: M256i, c: M256i): M256i =
     run {
         val shf = mm256ShldvEpi32(a, b, c).asI32x8()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i32x8.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Int>(List(8) { 0 }); _simdArg1 })
     }
 
 /**
@@ -470,7 +471,7 @@ public fun mm256MaskzShldvEpi32(k: Mmask8, a: M256i, b: M256i, c: M256i): M256i 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_shldv_epi32&expand=5072)
  */
-public fun mmShldvEpi32(a: M128i, b: M128i, c: M128i): M128i = transmute(run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); val _simdArg2 = run { val _simdArg0 = c.asI32x4(); val _simdArg1 = i32x4.splat(31); _simdArg0 }; _simdArg0 })
+public fun mmShldvEpi32(a: M128i, b: M128i, c: M128i): M128i = transmute(run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); val _simdArg2 = run { val _simdArg0 = c.asI32x4(); val _simdArg1 = Simd<Int>(List(4) { 31 }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 32-bit integers in a and b producing an intermediate 64-bit result. Shift the result left by the amount specified in the corresponding element of c, and store the upper 32-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -491,7 +492,7 @@ public fun mmMaskShldvEpi32(a: M128i, k: Mmask8, b: M128i, c: M128i): M128i =
 public fun mmMaskzShldvEpi32(k: Mmask8, a: M128i, b: M128i, c: M128i): M128i =
     run {
         val shf = mmShldvEpi32(a, b, c).asI32x4()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i32x4.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Int>(List(4) { 0 }); _simdArg1 })
     }
 
 /**
@@ -499,7 +500,7 @@ public fun mmMaskzShldvEpi32(k: Mmask8, a: M128i, b: M128i, c: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_shldv_epi16&expand=5069)
  */
-public fun mm512ShldvEpi16(a: M512i, b: M512i, c: M512i): M512i = transmute(run { val _simdArg0 = a.asI16x32(); val _simdArg1 = b.asI16x32(); val _simdArg2 = run { val _simdArg0 = c.asI16x32(); val _simdArg1 = i16x32.splat(15); _simdArg0 }; _simdArg0 })
+public fun mm512ShldvEpi16(a: M512i, b: M512i, c: M512i): M512i = transmute(run { val _simdArg0 = a.asI16x32(); val _simdArg1 = b.asI16x32(); val _simdArg2 = run { val _simdArg0 = c.asI16x32(); val _simdArg1 = Simd<Short>(List(32) { 15.toShort() }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 16-bit integers in a and b producing an intermediate 32-bit result. Shift the result left by the amount specified in the corresponding element of c, and store the upper 16-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -520,7 +521,7 @@ public fun mm512MaskShldvEpi16(a: M512i, k: Mmask32, b: M512i, c: M512i): M512i 
 public fun mm512MaskzShldvEpi16(k: Mmask32, a: M512i, b: M512i, c: M512i): M512i =
     run {
         val shf = mm512ShldvEpi16(a, b, c).asI16x32()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x32.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Short>(List(32) { 0.toShort() }); _simdArg1 })
     }
 
 /**
@@ -528,7 +529,7 @@ public fun mm512MaskzShldvEpi16(k: Mmask32, a: M512i, b: M512i, c: M512i): M512i
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_shldv_epi16&expand=5066)
  */
-public fun mm256ShldvEpi16(a: M256i, b: M256i, c: M256i): M256i = transmute(run { val _simdArg0 = a.asI16x16(); val _simdArg1 = b.asI16x16(); val _simdArg2 = run { val _simdArg0 = c.asI16x16(); val _simdArg1 = i16x16.splat(15); _simdArg0 }; _simdArg0 })
+public fun mm256ShldvEpi16(a: M256i, b: M256i, c: M256i): M256i = transmute(run { val _simdArg0 = a.asI16x16(); val _simdArg1 = b.asI16x16(); val _simdArg2 = run { val _simdArg0 = c.asI16x16(); val _simdArg1 = Simd<Short>(List(16) { 15.toShort() }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 16-bit integers in a and b producing an intermediate 32-bit result. Shift the result left by the amount specified in the corresponding element of c, and store the upper 16-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -549,7 +550,7 @@ public fun mm256MaskShldvEpi16(a: M256i, k: Mmask16, b: M256i, c: M256i): M256i 
 public fun mm256MaskzShldvEpi16(k: Mmask16, a: M256i, b: M256i, c: M256i): M256i =
     run {
         val shf = mm256ShldvEpi16(a, b, c).asI16x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x16.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Short>(List(16) { 0.toShort() }); _simdArg1 })
     }
 
 /**
@@ -557,7 +558,7 @@ public fun mm256MaskzShldvEpi16(k: Mmask16, a: M256i, b: M256i, c: M256i): M256i
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_shldv_epi16&expand=5063)
  */
-public fun mmShldvEpi16(a: M128i, b: M128i, c: M128i): M128i = transmute(run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); val _simdArg2 = run { val _simdArg0 = c.asI16x8(); val _simdArg1 = i16x8.splat(15); _simdArg0 }; _simdArg0 })
+public fun mmShldvEpi16(a: M128i, b: M128i, c: M128i): M128i = transmute(run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); val _simdArg2 = run { val _simdArg0 = c.asI16x8(); val _simdArg1 = Simd<Short>(List(8) { 15.toShort() }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 16-bit integers in a and b producing an intermediate 32-bit result. Shift the result left by the amount specified in the corresponding element of c, and store the upper 16-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -578,7 +579,7 @@ public fun mmMaskShldvEpi16(a: M128i, k: Mmask8, b: M128i, c: M128i): M128i =
 public fun mmMaskzShldvEpi16(k: Mmask8, a: M128i, b: M128i, c: M128i): M128i =
     run {
         val shf = mmShldvEpi16(a, b, c).asI16x8()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x8.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Short>(List(8) { 0.toShort() }); _simdArg1 })
     }
 
 /**
@@ -586,7 +587,7 @@ public fun mmMaskzShldvEpi16(k: Mmask8, a: M128i, b: M128i, c: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_shrdv_epi64&expand=5141)
  */
-public fun mm512ShrdvEpi64(a: M512i, b: M512i, c: M512i): M512i = transmute(run { val _simdArg0 = b.asI64x8(); val _simdArg1 = a.asI64x8(); val _simdArg2 = run { val _simdArg0 = c.asI64x8(); val _simdArg1 = i64x8.splat(63); _simdArg0 }; _simdArg0 })
+public fun mm512ShrdvEpi64(a: M512i, b: M512i, c: M512i): M512i = transmute(run { val _simdArg0 = b.asI64x8(); val _simdArg1 = a.asI64x8(); val _simdArg2 = run { val _simdArg0 = c.asI64x8(); val _simdArg1 = Simd<Long>(List(8) { 63L }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 64-bit integers in b and a producing an intermediate 128-bit result. Shift the result right by the amount specified in the corresponding element of c, and store the lower 64-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -607,7 +608,7 @@ public fun mm512MaskShrdvEpi64(a: M512i, k: Mmask8, b: M512i, c: M512i): M512i =
 public fun mm512MaskzShrdvEpi64(k: Mmask8, a: M512i, b: M512i, c: M512i): M512i =
     run {
         val shf = mm512ShrdvEpi64(a, b, c).asI64x8()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i64x8.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Long>(List(8) { 0L }); _simdArg1 })
     }
 
 /**
@@ -615,7 +616,7 @@ public fun mm512MaskzShrdvEpi64(k: Mmask8, a: M512i, b: M512i, c: M512i): M512i 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_shrdv_epi64&expand=5138)
  */
-public fun mm256ShrdvEpi64(a: M256i, b: M256i, c: M256i): M256i = transmute(run { val _simdArg0 = b.asI64x4(); val _simdArg1 = a.asI64x4(); val _simdArg2 = run { val _simdArg0 = c.asI64x4(); val _simdArg1 = i64x4.splat(63); _simdArg0 }; _simdArg0 })
+public fun mm256ShrdvEpi64(a: M256i, b: M256i, c: M256i): M256i = transmute(run { val _simdArg0 = b.asI64x4(); val _simdArg1 = a.asI64x4(); val _simdArg2 = run { val _simdArg0 = c.asI64x4(); val _simdArg1 = Simd<Long>(List(4) { 63L }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 64-bit integers in b and a producing an intermediate 128-bit result. Shift the result right by the amount specified in the corresponding element of c, and store the lower 64-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -636,7 +637,7 @@ public fun mm256MaskShrdvEpi64(a: M256i, k: Mmask8, b: M256i, c: M256i): M256i =
 public fun mm256MaskzShrdvEpi64(k: Mmask8, a: M256i, b: M256i, c: M256i): M256i =
     run {
         val shf = mm256ShrdvEpi64(a, b, c).asI64x4()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i64x4.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Long>(List(4) { 0L }); _simdArg1 })
     }
 
 /**
@@ -644,7 +645,7 @@ public fun mm256MaskzShrdvEpi64(k: Mmask8, a: M256i, b: M256i, c: M256i): M256i 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_shrdv_epi64&expand=5135)
  */
-public fun mmShrdvEpi64(a: M128i, b: M128i, c: M128i): M128i = transmute(run { val _simdArg0 = b.asI64x2(); val _simdArg1 = a.asI64x2(); val _simdArg2 = run { val _simdArg0 = c.asI64x2(); val _simdArg1 = i64x2.splat(63); _simdArg0 }; _simdArg0 })
+public fun mmShrdvEpi64(a: M128i, b: M128i, c: M128i): M128i = transmute(run { val _simdArg0 = b.asI64x2(); val _simdArg1 = a.asI64x2(); val _simdArg2 = run { val _simdArg0 = c.asI64x2(); val _simdArg1 = Simd<Long>(List(2) { 63L }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 64-bit integers in b and a producing an intermediate 128-bit result. Shift the result right by the amount specified in the corresponding element of c, and store the lower 64-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -665,7 +666,7 @@ public fun mmMaskShrdvEpi64(a: M128i, k: Mmask8, b: M128i, c: M128i): M128i =
 public fun mmMaskzShrdvEpi64(k: Mmask8, a: M128i, b: M128i, c: M128i): M128i =
     run {
         val shf = mmShrdvEpi64(a, b, c).asI64x2()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i64x2.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Long>(List(2) { 0L }); _simdArg1 })
     }
 
 /**
@@ -673,7 +674,7 @@ public fun mmMaskzShrdvEpi64(k: Mmask8, a: M128i, b: M128i, c: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_shrdv_epi32&expand=5132)
  */
-public fun mm512ShrdvEpi32(a: M512i, b: M512i, c: M512i): M512i = transmute(run { val _simdArg0 = b.asI32x16(); val _simdArg1 = a.asI32x16(); val _simdArg2 = run { val _simdArg0 = c.asI32x16(); val _simdArg1 = i32x16.splat(31); _simdArg0 }; _simdArg0 })
+public fun mm512ShrdvEpi32(a: M512i, b: M512i, c: M512i): M512i = transmute(run { val _simdArg0 = b.asI32x16(); val _simdArg1 = a.asI32x16(); val _simdArg2 = run { val _simdArg0 = c.asI32x16(); val _simdArg1 = Simd<Int>(List(16) { 31 }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 32-bit integers in b and a producing an intermediate 64-bit result. Shift the result right by the amount specified in the corresponding element of c, and store the lower 32-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -694,7 +695,7 @@ public fun mm512MaskShrdvEpi32(a: M512i, k: Mmask16, b: M512i, c: M512i): M512i 
 public fun mm512MaskzShrdvEpi32(k: Mmask16, a: M512i, b: M512i, c: M512i): M512i =
     run {
         val shf = mm512ShrdvEpi32(a, b, c).asI32x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i32x16.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Int>(List(16) { 0 }); _simdArg1 })
     }
 
 /**
@@ -702,7 +703,7 @@ public fun mm512MaskzShrdvEpi32(k: Mmask16, a: M512i, b: M512i, c: M512i): M512i
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_shrdv_epi32&expand=5129)
  */
-public fun mm256ShrdvEpi32(a: M256i, b: M256i, c: M256i): M256i = transmute(run { val _simdArg0 = b.asI32x8(); val _simdArg1 = a.asI32x8(); val _simdArg2 = run { val _simdArg0 = c.asI32x8(); val _simdArg1 = i32x8.splat(31); _simdArg0 }; _simdArg0 })
+public fun mm256ShrdvEpi32(a: M256i, b: M256i, c: M256i): M256i = transmute(run { val _simdArg0 = b.asI32x8(); val _simdArg1 = a.asI32x8(); val _simdArg2 = run { val _simdArg0 = c.asI32x8(); val _simdArg1 = Simd<Int>(List(8) { 31 }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 32-bit integers in b and a producing an intermediate 64-bit result. Shift the result right by the amount specified in the corresponding element of c, and store the lower 32-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -723,7 +724,7 @@ public fun mm256MaskShrdvEpi32(a: M256i, k: Mmask8, b: M256i, c: M256i): M256i =
 public fun mm256MaskzShrdvEpi32(k: Mmask8, a: M256i, b: M256i, c: M256i): M256i =
     run {
         val shf = mm256ShrdvEpi32(a, b, c).asI32x8()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i32x8.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Int>(List(8) { 0 }); _simdArg1 })
     }
 
 /**
@@ -731,7 +732,7 @@ public fun mm256MaskzShrdvEpi32(k: Mmask8, a: M256i, b: M256i, c: M256i): M256i 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_shrdv_epi32&expand=5126)
  */
-public fun mmShrdvEpi32(a: M128i, b: M128i, c: M128i): M128i = transmute(run { val _simdArg0 = b.asI32x4(); val _simdArg1 = a.asI32x4(); val _simdArg2 = run { val _simdArg0 = c.asI32x4(); val _simdArg1 = i32x4.splat(31); _simdArg0 }; _simdArg0 })
+public fun mmShrdvEpi32(a: M128i, b: M128i, c: M128i): M128i = transmute(run { val _simdArg0 = b.asI32x4(); val _simdArg1 = a.asI32x4(); val _simdArg2 = run { val _simdArg0 = c.asI32x4(); val _simdArg1 = Simd<Int>(List(4) { 31 }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 32-bit integers in b and a producing an intermediate 64-bit result. Shift the result right by the amount specified in the corresponding element of c, and store the lower 32-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -752,7 +753,7 @@ public fun mmMaskShrdvEpi32(a: M128i, k: Mmask8, b: M128i, c: M128i): M128i =
 public fun mmMaskzShrdvEpi32(k: Mmask8, a: M128i, b: M128i, c: M128i): M128i =
     run {
         val shf = mmShrdvEpi32(a, b, c).asI32x4()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i32x4.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Int>(List(4) { 0 }); _simdArg1 })
     }
 
 /**
@@ -760,7 +761,7 @@ public fun mmMaskzShrdvEpi32(k: Mmask8, a: M128i, b: M128i, c: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_shrdv_epi16&expand=5123)
  */
-public fun mm512ShrdvEpi16(a: M512i, b: M512i, c: M512i): M512i = transmute(run { val _simdArg0 = b.asI16x32(); val _simdArg1 = a.asI16x32(); val _simdArg2 = run { val _simdArg0 = c.asI16x32(); val _simdArg1 = i16x32.splat(15); _simdArg0 }; _simdArg0 })
+public fun mm512ShrdvEpi16(a: M512i, b: M512i, c: M512i): M512i = transmute(run { val _simdArg0 = b.asI16x32(); val _simdArg1 = a.asI16x32(); val _simdArg2 = run { val _simdArg0 = c.asI16x32(); val _simdArg1 = Simd<Short>(List(32) { 15.toShort() }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 16-bit integers in b and a producing an intermediate 32-bit result. Shift the result right by the amount specified in the corresponding element of c, and store the lower 16-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -781,7 +782,7 @@ public fun mm512MaskShrdvEpi16(a: M512i, k: Mmask32, b: M512i, c: M512i): M512i 
 public fun mm512MaskzShrdvEpi16(k: Mmask32, a: M512i, b: M512i, c: M512i): M512i =
     run {
         val shf = mm512ShrdvEpi16(a, b, c).asI16x32()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x32.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Short>(List(32) { 0.toShort() }); _simdArg1 })
     }
 
 /**
@@ -789,7 +790,7 @@ public fun mm512MaskzShrdvEpi16(k: Mmask32, a: M512i, b: M512i, c: M512i): M512i
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_shrdv_epi16&expand=5120)
  */
-public fun mm256ShrdvEpi16(a: M256i, b: M256i, c: M256i): M256i = transmute(run { val _simdArg0 = b.asI16x16(); val _simdArg1 = a.asI16x16(); val _simdArg2 = run { val _simdArg0 = c.asI16x16(); val _simdArg1 = i16x16.splat(15); _simdArg0 }; _simdArg0 })
+public fun mm256ShrdvEpi16(a: M256i, b: M256i, c: M256i): M256i = transmute(run { val _simdArg0 = b.asI16x16(); val _simdArg1 = a.asI16x16(); val _simdArg2 = run { val _simdArg0 = c.asI16x16(); val _simdArg1 = Simd<Short>(List(16) { 15.toShort() }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 16-bit integers in b and a producing an intermediate 32-bit result. Shift the result right by the amount specified in the corresponding element of c, and store the lower 16-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -810,7 +811,7 @@ public fun mm256MaskShrdvEpi16(a: M256i, k: Mmask16, b: M256i, c: M256i): M256i 
 public fun mm256MaskzShrdvEpi16(k: Mmask16, a: M256i, b: M256i, c: M256i): M256i =
     run {
         val shf = mm256ShrdvEpi16(a, b, c).asI16x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x16.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Short>(List(16) { 0.toShort() }); _simdArg1 })
     }
 
 /**
@@ -818,7 +819,7 @@ public fun mm256MaskzShrdvEpi16(k: Mmask16, a: M256i, b: M256i, c: M256i): M256i
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_shrdv_epi16&expand=5117)
  */
-public fun mmShrdvEpi16(a: M128i, b: M128i, c: M128i): M128i = transmute(run { val _simdArg0 = b.asI16x8(); val _simdArg1 = a.asI16x8(); val _simdArg2 = run { val _simdArg0 = c.asI16x8(); val _simdArg1 = i16x8.splat(15); _simdArg0 }; _simdArg0 })
+public fun mmShrdvEpi16(a: M128i, b: M128i, c: M128i): M128i = transmute(run { val _simdArg0 = b.asI16x8(); val _simdArg1 = a.asI16x8(); val _simdArg2 = run { val _simdArg0 = c.asI16x8(); val _simdArg1 = Simd<Short>(List(8) { 15.toShort() }); _simdArg0 }; _simdArg0 })
 
 /**
  * Concatenate packed 16-bit integers in b and a producing an intermediate 32-bit result. Shift the result right by the amount specified in the corresponding element of c, and store the lower 16-bits in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -839,7 +840,7 @@ public fun mmMaskShrdvEpi16(a: M128i, k: Mmask8, b: M128i, c: M128i): M128i =
 public fun mmMaskzShrdvEpi16(k: Mmask8, a: M128i, b: M128i, c: M128i): M128i =
     run {
         val shf = mmShrdvEpi16(a, b, c).asI16x8()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x8.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Short>(List(8) { 0.toShort() }); _simdArg1 })
     }
 
 /**
@@ -879,7 +880,7 @@ public fun mm512MaskzShldiEpi64(k: Mmask8, a: M512i, b: M512i, imm8: Int): M512i
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mm512ShldiEpi64(a, b, imm8).asI64x8()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i64x8.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Long>(List(8) { 0L }); _simdArg1 })
     }
 
 /**
@@ -919,7 +920,7 @@ public fun mm256MaskzShldiEpi64(k: Mmask8, a: M256i, b: M256i, imm8: Int): M256i
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mm256ShldiEpi64(a, b, imm8).asI64x4()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i64x4.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Long>(List(4) { 0L }); _simdArg1 })
     }
 
 /**
@@ -959,7 +960,7 @@ public fun mmMaskzShldiEpi64(k: Mmask8, a: M128i, b: M128i, imm8: Int): M128i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mmShldiEpi64(a, b, imm8).asI64x2()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i64x2.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Long>(List(2) { 0L }); _simdArg1 })
     }
 
 /**
@@ -999,7 +1000,7 @@ public fun mm512MaskzShldiEpi32(k: Mmask16, a: M512i, b: M512i, imm8: Int): M512
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mm512ShldiEpi32(a, b, imm8).asI32x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i32x16.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Int>(List(16) { 0 }); _simdArg1 })
     }
 
 /**
@@ -1039,7 +1040,7 @@ public fun mm256MaskzShldiEpi32(k: Mmask8, a: M256i, b: M256i, imm8: Int): M256i
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mm256ShldiEpi32(a, b, imm8).asI32x8()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i32x8.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Int>(List(8) { 0 }); _simdArg1 })
     }
 
 /**
@@ -1079,7 +1080,7 @@ public fun mmMaskzShldiEpi32(k: Mmask8, a: M128i, b: M128i, imm8: Int): M128i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mmShldiEpi32(a, b, imm8).asI32x4()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i32x4.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Int>(List(4) { 0 }); _simdArg1 })
     }
 
 /**
@@ -1119,7 +1120,7 @@ public fun mm512MaskzShldiEpi16(k: Mmask32, a: M512i, b: M512i, imm8: Int): M512
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mm512ShldiEpi16(a, b, imm8).asI16x32()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x32.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Short>(List(32) { 0.toShort() }); _simdArg1 })
     }
 
 /**
@@ -1159,7 +1160,7 @@ public fun mm256MaskzShldiEpi16(k: Mmask16, a: M256i, b: M256i, imm8: Int): M256
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mm256ShldiEpi16(a, b, imm8).asI16x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x16.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Short>(List(16) { 0.toShort() }); _simdArg1 })
     }
 
 /**
@@ -1199,7 +1200,7 @@ public fun mmMaskzShldiEpi16(k: Mmask8, a: M128i, b: M128i, imm8: Int): M128i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mmShldiEpi16(a, b, imm8).asI16x8()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x8.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Short>(List(8) { 0.toShort() }); _simdArg1 })
     }
 
 // should be vpshrdq
@@ -1245,7 +1246,7 @@ public fun mm512MaskzShrdiEpi64(k: Mmask8, a: M512i, b: M512i, imm8: Int): M512i
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mm512ShrdiEpi64(a, b, imm8).asI64x8()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i64x8.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Long>(List(8) { 0L }); _simdArg1 })
     }
 
 // should be vpshrdq
@@ -1291,7 +1292,7 @@ public fun mm256MaskzShrdiEpi64(k: Mmask8, a: M256i, b: M256i, imm8: Int): M256i
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mm256ShrdiEpi64(a, b, imm8).asI64x4()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i64x4.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Long>(List(4) { 0L }); _simdArg1 })
     }
 
 // should be vpshrdq
@@ -1337,7 +1338,7 @@ public fun mmMaskzShrdiEpi64(k: Mmask8, a: M128i, b: M128i, imm8: Int): M128i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mmShrdiEpi64(a, b, imm8).asI64x2()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i64x2.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Long>(List(2) { 0L }); _simdArg1 })
     }
 
 // should be vpshldd
@@ -1383,7 +1384,7 @@ public fun mm512MaskzShrdiEpi32(k: Mmask16, a: M512i, b: M512i, imm8: Int): M512
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mm512ShrdiEpi32(a, b, imm8).asI32x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i32x16.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Int>(List(16) { 0 }); _simdArg1 })
     }
 
 // should be vpshldd
@@ -1429,7 +1430,7 @@ public fun mm256MaskzShrdiEpi32(k: Mmask8, a: M256i, b: M256i, imm8: Int): M256i
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mm256ShrdiEpi32(a, b, imm8).asI32x8()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i32x8.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Int>(List(8) { 0 }); _simdArg1 })
     }
 
 // should be vpshldd
@@ -1475,7 +1476,7 @@ public fun mmMaskzShrdiEpi32(k: Mmask8, a: M128i, b: M128i, imm8: Int): M128i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mmShrdiEpi32(a, b, imm8).asI32x4()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i32x4.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Int>(List(4) { 0 }); _simdArg1 })
     }
 
 // should be vpshrdw
@@ -1521,7 +1522,7 @@ public fun mm512MaskzShrdiEpi16(k: Mmask32, a: M512i, b: M512i, imm8: Int): M512
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mm512ShrdiEpi16(a, b, imm8).asI16x32()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x32.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Short>(List(32) { 0.toShort() }); _simdArg1 })
     }
 
 // should be vpshrdw
@@ -1567,7 +1568,7 @@ public fun mm256MaskzShrdiEpi16(k: Mmask16, a: M256i, b: M256i, imm8: Int): M256
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mm256ShrdiEpi16(a, b, imm8).asI16x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x16.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Short>(List(16) { 0.toShort() }); _simdArg1 })
     }
 
 // should be vpshrdw
@@ -1613,7 +1614,7 @@ public fun mmMaskzShrdiEpi16(k: Mmask8, a: M128i, b: M128i, imm8: Int): M128i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mmShrdiEpi16(a, b, imm8).asI16x8()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x8.ZERO; _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = Simd<Short>(List(8) { 0.toShort() }); _simdArg1 })
     }
 
 public expect fun vcompressstorew(mem: MutPtr, data: I16x32, mask: UInt)

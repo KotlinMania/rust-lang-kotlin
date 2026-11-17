@@ -47,11 +47,11 @@ public fun <K, V, Q, A : AllocatorClone> Root<K, V>.splitOff(key: Q, alloc: A): 
     var splitEdge =
         when (val matchVal = leftNode.searchNode(key)) {
             // key is going to the right tree
-            is Found -> {
+            is Found<*, *, *, *, *> -> {
                 val (kv) = matchVal
                 kv.leftEdge()
             }
-            is GoDown -> {
+            is GoDown<*, *, *, *, *> -> {
                 val (edge) = matchVal
                 edge
             }
@@ -63,7 +63,7 @@ public fun <K, V, Q, A : AllocatorClone> Root<K, V>.splitOff(key: Q, alloc: A): 
     // A panic from a later `searchNode` comparison would unwind out of
     // that state and double-free the shared values (#158165), so abort
     // instead of exposing it.
-    val guard = DropGuard.new({ kmAbort() })
+    val guard = DropGuard.new(Unit, { kmAbort() })
     while (true) {
         splitEdge.moveSuffix(rightNode)
         run {
@@ -80,11 +80,11 @@ public fun <K, V, Q, A : AllocatorClone> Root<K, V>.splitOff(key: Q, alloc: A): 
             }
         }
         splitEdge = when (val matchVal2 = leftNode.searchNode(key)) {
-            is Found -> {
+            is Found<*, *, *, *, *> -> {
                 val (kv1) = matchVal2
                 kv1.leftEdge()
             }
-            is GoDown -> {
+            is GoDown<*, *, *, *, *> -> {
                 val (edge2) = matchVal2
                 edge2
             }

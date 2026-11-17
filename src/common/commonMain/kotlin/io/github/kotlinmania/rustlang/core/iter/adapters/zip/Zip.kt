@@ -3,14 +3,16 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.zip
 
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.AssertKind
+import io.github.kotlinmania.rustlang.core.panicking.assertFailed
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -52,7 +54,7 @@ public open class Zip<A, B>(
     // index, len and aLen are only used by the specialized version of zip
     public var index: Int,
     public var len: Int,
-) : ZipImpl<A, B, Zip<A, B>, Pair<Item, Item>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedFused, TrustedLen, SourceIter<Source>, InPlaceIterable, ZipFmt<A, B>, SpecFold, Iterable<Pair<Item, Item>> {
+) : ZipImpl<A, B, Zip<A, B>, Pair<Item, Item>>, ZipFmt<A, B>, SpecFold, Iterable<Pair<Item, Item>> {
     override fun iterator(): Iterator<Pair<Item, Item>> = object : AbstractIterator<Pair<Item, Item>>() {
         override fun computeNext() {
             when (val v = this@Zip.next()) {
@@ -86,7 +88,7 @@ public open class Zip<A, B>(
 
     public override fun <Acc> fold(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc = this.fold(init, f)
 
-    public override fun iteratorGetUnchecked(idx: Int): Pair<Item, Item> {
+    public open fun iteratorGetUnchecked(idx: Int): Pair<Item, Item> {
         // SAFETY: `ZipImpl.__iterator_get_unchecked` has same safety
         // requirements as `Iterator.__iterator_get_unchecked`.
         return this.getUnchecked(idx)
@@ -164,84 +166,9 @@ public open class Zip<A, B>(
 
     public open fun <Acc> foldAB(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc = SpecFold.SpecFold(this, init, f)
 
-    public open fun nextABAB(): Pair<Item, Item>? {
-        val x = (this.a.next() ?: return null)
-        val y = (this.b.next() ?: return null)
-        return Pair(x, y)
-    }
-
-    public open fun nthABAB(n: Int): Pair<Item, Item>? = this.superNth(n)
-
-    public open fun nextBackABAB(): Pair<Item, Item>? {
-        val aSz = this.a.len()
-        val bSz = this.b.len()
-        if (aSz != bSz) {
-            if (aSz > bSz) {
-                for (unused in 0 until aSz - bSz) {
-                    this.a.nextBack()
-                }
-            } else {
-                for (unused1 in 0 until bSz - aSz) {
-                    this.b.nextBack()
-                }
-            }
-        }
-        return run {
-            val matchVal = Pair(this.a.nextBack(), this.b.nextBack())
-            when {
-                matchVal.first != null && matchVal.second != null -> {
-                    val x = matchVal.first
-                    val y = matchVal.second
-                    Pair(x, y)
-                }
-                matchVal.first == null && matchVal.second == null -> null
-                else -> error("unreachable")
-            }
-        }
-    }
-
-    public open fun sizeHintABAB(): Pair<Int, Int?> {
-        val size = minOf(this.a.size(), this.b.size())
-        return Pair(size, size)
-    }
-
-    public open fun getUncheckedAB(idx: Int): Item {
-        val idx1 = this.index + idx
-        // SAFETY: the caller must uphold the contract for
-        // `Iterator.__iterator_get_unchecked`.
-        return Pair(this.a.iteratorGetUnchecked(idx1), this.b.iteratorGetUnchecked(idx1))
-    }
-
-    public open fun <Acc> foldABAB(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc {
-        var accum = init
-        val len = this.sizeHint().first
-        for (i in 0 until len) {
-            // SAFETY: since Self: TrustedRandomAccessNoCoerce we can trust the size-hint to
-            // calculate the length and then use that to do unchecked iteration.
-            // fold consumes the iterator so we don't need to fixup any state.
-            run {
-                accum = f(accum, this.getUnchecked(i))
-            }
-        }
-        return accum
-    }
-
-    // Arbitrarily selects the left side of the zip iteration as extractable "source"
-    // it would require negative trait bounds to be able to try both
-    public override fun asInner(): Source {
-        // SAFETY: unchecked function forwarding to unchecked function with the same requirements
-        return this.a.asInner()
-    }
-
     public override fun fmt(f: StringBuilder): Result<Unit, Unit> = this.fmt(f)
 
-    public open fun fmtAB(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Zip").field("a", this.a).field("b", this.b).finish()
-
-    public open fun fmtABAB(f: StringBuilder): Result<Unit, Error> {
-        // It's *not safe* to call fmt on the contained iterators, since once
-        // we start iterating they're in strange, potentially unchecked, states.
-        return DebugStruct(f, "Zip").finish()
-    }
+    public open fun fmtAB(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Zip").field("a", this.a).field("b", this.b).finish(); Result.Ok<Unit, Error>(Unit) }
 
     // Adapted from default impl from the Iterator trait
     public override fun <Acc> specFold(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc {
@@ -294,15 +221,6 @@ public open class Zip<A, B>(
         public fun <A, B> new(a: A, b: B): Zip<A, B> = ZipImpl.new(a, b)
 
         public fun <A, B> newAB(a: A, b: B): Zip<A, B> = Zip(a = a, b = b, index = 0, len = 0)
-
-        public fun <A, B> newABAB(a: A, b: B): Zip<A, B> where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce = Zip(a = a, b = b, index = 0, len = 0)
-
-        public val MAY_HAVE_SIDE_EFFECT: Boolean = A.MAY_HAVE_SIDE_EFFECT || B.MAY_HAVE_SIDE_EFFECT
-
-        // Since SourceIter forwards the left hand side we do the same here
-        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = A.EXPAND_BY
-
-        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = A.MERGE_BY
     }
 }
 
@@ -351,8 +269,190 @@ public interface ZipImpl<A, B, T, Item> {
     public fun getUnchecked(idx: Int): Item
 }
 
+public fun <A, B> zipImplNewZipAB(a: A, b: B): Zip<A, B> where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce = Zip(a = a, b = b, index = 0, len = 0)
+
+public fun <A, B> Zip<A, B>.next(): Pair<Item, Item>? where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce {
+    val x = (this.a.next() ?: return null)
+    val y = (this.b.next() ?: return null)
+    return Pair(x, y)
+}
+
+public fun <A, B> Zip<A, B>.nth(n: Int): Pair<Item, Item>? where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce = this.superNth(n)
+
+public fun <A, B> Zip<A, B>.nextBack(): Pair<Item, Item>? where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce {
+    val aSz = this.a.len()
+    val bSz = this.b.len()
+    if (aSz != bSz) {
+        if (aSz > bSz) {
+            for (unused in 0 until aSz - bSz) {
+                this.a.nextBack()
+            }
+        } else {
+            for (unused1 in 0 until bSz - aSz) {
+                this.b.nextBack()
+            }
+        }
+    }
+    return run {
+        val matchVal = Pair(this.a.nextBack(), this.b.nextBack())
+        when {
+            matchVal.first != null && matchVal.second != null -> {
+                val x = matchVal.first
+                val y = matchVal.second
+                Pair(x, y)
+            }
+            matchVal.first == null && matchVal.second == null -> null
+            else -> error("unreachable")
+        }
+    }
+}
+
+public fun <A, B> Zip<A, B>.sizeHint(): Pair<Int, Int?> where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce {
+    val size = minOf(this.a.size(), this.b.size())
+    return Pair(size, size)
+}
+
+public fun <A, B> Zip<A, B>.getUnchecked(idx: Int): Item where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce {
+    val idx1 = this.index + idx
+    // SAFETY: the caller must uphold the contract for
+    // `Iterator.__iterator_get_unchecked`.
+    return Pair(this.a.iteratorGetUnchecked(idx1), this.b.iteratorGetUnchecked(idx1))
+}
+
+public fun <A, B, Acc> Zip<A, B>.fold(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce {
+    var accum = init
+    val len = this.sizeHint().first
+    for (i in 0 until len) {
+        // SAFETY: since Self: TrustedRandomAccessNoCoerce we can trust the size-hint to
+        // calculate the length and then use that to do unchecked iteration.
+        // fold consumes the iterator so we don't need to fixup any state.
+        run {
+            accum = f(accum, this.getUnchecked(i))
+        }
+    }
+    return accum
+}
+
+public fun <A, B> Zip<A, B>.nextAB(): Pair<Item, Item>? where A : TrustedRandomAccess, B : TrustedRandomAccess =
+    if (this.index < this.len) {
+        val i = this.index
+        // since getUnchecked executes code which can panic we increment the counters beforehand
+        // so that the same index won't be accessed twice, as required by TrustedRandomAccess
+        this.index += 1
+        // SAFETY: `i` is smaller than `self.len`, thus smaller than `self.a.len()` and `self.b.len()`
+        Pair(this.a.iteratorGetUnchecked(i), this.b.iteratorGetUnchecked(i))
+    } else {
+        null
+    }
+
+public fun <A, B> Zip<A, B>.sizeHintAB(): Pair<Int, Int?> where A : TrustedRandomAccess, B : TrustedRandomAccess {
+    val len = this.len - this.index
+    return Pair(len, len)
+}
+
+public fun <A, B> Zip<A, B>.nthAB(n: Int): Pair<Item, Item>? where A : TrustedRandomAccess, B : TrustedRandomAccess {
+    val delta = minOf(n, this.len - this.index)
+    val end = this.index + delta
+    while (this.index < end) {
+        val i = this.index
+        // since getUnchecked executes code which can panic we increment the counters beforehand
+        // so that the same index won't be accessed twice, as required by TrustedRandomAccess
+        this.index += 1
+        if (A.MAY_HAVE_SIDE_EFFECT) {
+            // SAFETY: the usage of `cmp.min` to calculate `delta`
+            // ensures that `end` is smaller than or equal to `self.len`,
+            // so `i` is also smaller than `self.len`.
+            run {
+                this.a.iteratorGetUnchecked(i)
+            }
+        }
+        if (B.MAY_HAVE_SIDE_EFFECT) {
+            // SAFETY: same as above.
+            run {
+                this.b.iteratorGetUnchecked(i)
+            }
+        }
+    }
+    return this.superNth(n - delta)
+}
+
+public fun <A, B> Zip<A, B>.nextBackAB(): Pair<Item, Item>? where A : TrustedRandomAccess, B : TrustedRandomAccess {
+    // No effects when the iterator is exhausted, to reduce the number of
+    // cases the unchecked code has to handle.
+    // See #137255 for a case where where too many epicycles lead to unsoundness.
+    return if (this.index < this.len) {
+        val oldLen = this.len
+        // since getUnchecked and the side-effecting code can execute user code
+        // which can panic we decrement the counter beforehand
+        // so that the same index won't be accessed twice, as required by TrustedRandomAccess.
+        // Additionally this will ensure that the side-effects code won't run a second time.
+        this.len -= 1
+        // Adjust a, b to equal length if we're iterating backwards.
+        if (A.MAY_HAVE_SIDE_EFFECT || B.MAY_HAVE_SIDE_EFFECT) {
+            // note if some forward-iteration already happened then these aren't the real
+            // remaining lengths of the inner iterators, so we have to relate them to
+            // Zip's internal length-tracking.
+            val szA = this.a.size()
+            val szB = this.b.size()
+            // This condition can and must only be true on the first `nextBack` call,
+            // otherwise we will break the restriction on calls to `self.nextBack()`
+            // after calling `getUnchecked()`.
+            if (szA != szB && (oldLen == szA || oldLen == szB)) {
+                if (A.MAY_HAVE_SIDE_EFFECT && szA > oldLen) {
+                    for (unused in 0 until szA - oldLen) {
+                        this.a.nextBack()
+                    }
+                }
+                if (B.MAY_HAVE_SIDE_EFFECT && szB > oldLen) {
+                    for (unused1 in 0 until szB - oldLen) {
+                        this.b.nextBack()
+                    }
+                }
+                if (false) {
+                    when (val matchVal = Pair(this.a.size(), this.b.size())) {
+                        else -> {
+                            val leftVal = matchVal.first
+                            val rightVal = matchVal.second
+                            if (!(leftVal == rightVal)) {
+                                val kind = AssertKind.Eq
+                                assertFailed(kind, leftVal, rightVal, Option.None)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        val i = this.len
+        // SAFETY: `i` is smaller than the previous value of `self.len`,
+        // which is also smaller than or equal to `self.a.len()` and `self.b.len()`
+        Pair(this.a.iteratorGetUnchecked(i), this.b.iteratorGetUnchecked(i))
+    } else {
+        null
+    }
+}
+
+public val MAY_HAVE_SIDE_EFFECT: Boolean = A.MAY_HAVE_SIDE_EFFECT || B.MAY_HAVE_SIDE_EFFECT
+
+// Arbitrarily selects the left side of the zip iteration as extractable "source"
+// it would require negative trait bounds to be able to try both
+public fun <Source, A, B> Zip<A, B>.asInner(): Source where A : SourceIter<Source> {
+    // SAFETY: unchecked function forwarding to unchecked function with the same requirements
+    return this.a.asInner()
+}
+
+// Since SourceIter forwards the left hand side we do the same here
+public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = A.EXPAND_BY
+
+public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = A.MERGE_BY
+
 public interface ZipFmt<A, B> {
     public fun fmt(f: StringBuilder): Result<Unit, Error>
+}
+
+public fun <A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce> Zip<A, B>.fmt(f: StringBuilder): Result<Unit, Error> {
+    // It's *not safe* to call fmt on the contained iterators, since once
+    // we start iterating they're in strange, potentially unchecked, states.
+    return run { DebugStruct(f, "Zip").finish(); Result.Ok<Unit, Error>(Unit) }
 }
 
 //
@@ -461,4 +561,29 @@ public fun <I> I.tryGetUnchecked(arg0: Int): Item {
 
 public interface SpecFold {
     public fun <B> specFold(init: B, f: (B, Item) -> B): B
+}
+
+public fun <A : TrustedLen, B : TrustedLen, Acc> Zip<A, B>.specFold(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc {
+    var accum = init
+    while (true) {
+        val (upper1, more) =
+            when (val matchVal = this.sizeHint().second) {
+                null -> {
+                    // Per TrustedLen contract a None upper bound means more than usize.Max items
+                    Pair(Int.MAX_VALUE, true)
+                }
+                else -> {
+                    val upper = matchVal
+                    Pair(upper, false)
+                }
+            }
+        for (unused in 0 until upper1) {
+            val pair = Pair(this.a.next().unwrapUnchecked(), this.b.next().unwrapUnchecked())
+            accum = f(accum, pair)
+        }
+        if (!more) {
+            break
+        }
+    }
+    return accum
 }

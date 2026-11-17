@@ -3,11 +3,11 @@ package io.github.kotlinmania.rustlang.std.io.pipe
 
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.pipe.unix.pipe as imp

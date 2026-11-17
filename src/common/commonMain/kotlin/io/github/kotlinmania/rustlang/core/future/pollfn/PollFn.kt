@@ -1,9 +1,9 @@
 // port-lint: source future/poll_fn.rs
 package io.github.kotlinmania.rustlang.core.future.pollfn
 
-import io.github.kotlinmania.rustlang.core.future.future.Future
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.task.poll.Poll
 import io.github.kotlinmania.rustlang.core.task.wake.Context
@@ -158,13 +158,8 @@ public fun <T> pollFn(f: (Context) -> Poll<T>): PollFn<(Context) -> Poll<T>> = P
  */
 public open class PollFn<F>(
     public var f: F,
-) : Future<T> {
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "PollFn").finish()
-
-    public override fun poll(cx: Context): Poll<T> {
-        // SAFETY: We are not moving out of the pinned field.
-        return (this.getUncheckedMut().f)(cx)
-    }
+) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "PollFn").finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun <F> typeLayout(typeLayoutF: TypeLayout<F>): TypeLayout<PollFn<F>> =
@@ -187,4 +182,9 @@ public open class PollFn<F>(
                 }
             }
     }
+}
+
+public fun <T> PollFn<F>.poll(cx: Context): Poll<T> {
+    // SAFETY: We are not moving out of the pinned field.
+    return (this.getUncheckedMut().f)(cx)
 }

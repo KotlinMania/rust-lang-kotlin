@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8
 import io.github.kotlinmania.rustlang.corearch.simd.I32x4
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 
 // Supplemental Streaming SIMD Extensions 3 (SSSE3)
@@ -24,7 +25,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 public fun mmAbsEpi8(a: M128i): M128i =
     run {
         val a1 = a.asI8x16()
-        val zero = i8x16.ZERO
+        val zero = Simd<Byte>(List(16) { 0.toByte() })
         val r = run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = zero; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = a1; _simdArg0 }; val _simdArg2 = a1; _simdArg1 }
         transmute(r)
     }
@@ -39,7 +40,7 @@ public fun mmAbsEpi8(a: M128i): M128i =
 public fun mmAbsEpi16(a: M128i): M128i =
     run {
         val a1 = a.asI16x8()
-        val zero = i16x8.ZERO
+        val zero = Simd<Short>(List(8) { 0.toShort() })
         val r = run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = zero; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = a1; _simdArg0 }; val _simdArg2 = a1; _simdArg1 }
         transmute(r)
     }
@@ -54,7 +55,7 @@ public fun mmAbsEpi16(a: M128i): M128i =
 public fun mmAbsEpi32(a: M128i): M128i =
     run {
         val a1 = a.asI32x4()
-        val zero = i32x4.ZERO
+        val zero = Simd<Int>(List(4) { 0 })
         val r = run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = zero; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = a1; _simdArg0 }; val _simdArg2 = a1; _simdArg1 }
         transmute(r)
     }
@@ -141,8 +142,8 @@ public fun mmHaddEpi16(a: M128i, b: M128i): M128i {
     val a1 = a.asI16x8()
     val b1 = b.asI16x8()
     return run {
-        val even: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14)); _simdArg0 }
-        val odd: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15)); _simdArg0 }
+        val even: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); _simdArg0 }
+        val odd: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); _simdArg0 }
         run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }.asM128i()
     }
 }
@@ -158,8 +159,8 @@ public fun mmHaddsEpi16(a: M128i, b: M128i): M128i {
     val a1 = a.asI16x8()
     val b1 = b.asI16x8()
     return run {
-        val even: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14)); _simdArg0 }
-        val odd: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15)); _simdArg0 }
+        val even: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); _simdArg0 }
+        val odd: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); _simdArg0 }
         run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }.asM128i()
     }
 }
@@ -174,8 +175,8 @@ public fun mmHaddEpi32(a: M128i, b: M128i): M128i {
     val a1 = a.asI32x4()
     val b1 = b.asI32x4()
     return run {
-        val even: I32x4 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6)); _simdArg0 }
-        val odd: I32x4 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7)); _simdArg0 }
+        val even: I32x4 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); _simdArg0 }
+        val odd: I32x4 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); _simdArg0 }
         run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }.asM128i()
     }
 }
@@ -190,8 +191,8 @@ public fun mmHsubEpi16(a: M128i, b: M128i): M128i {
     val a1 = a.asI16x8()
     val b1 = b.asI16x8()
     return run {
-        val even: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14)); _simdArg0 }
-        val odd: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15)); _simdArg0 }
+        val even: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); _simdArg0 }
+        val odd: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); _simdArg0 }
         run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }.asM128i()
     }
 }
@@ -208,8 +209,8 @@ public fun mmHsubsEpi16(a: M128i, b: M128i): M128i {
     val a1 = a.asI16x8()
     val b1 = b.asI16x8()
     return run {
-        val even: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14)); _simdArg0 }
-        val odd: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15)); _simdArg0 }
+        val even: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); _simdArg0 }
+        val odd: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); _simdArg0 }
         run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }.asM128i()
     }
 }
@@ -224,8 +225,8 @@ public fun mmHsubEpi32(a: M128i, b: M128i): M128i {
     val a1 = a.asI32x4()
     val b1 = b.asI32x4()
     return run {
-        val even: I32x4 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6)); _simdArg0 }
-        val odd: I32x4 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7)); _simdArg0 }
+        val even: I32x4 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); _simdArg0 }
+        val odd: I32x4 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); _simdArg0 }
         run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }.asM128i()
     }
 }

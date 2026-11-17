@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.env.wasi
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.drop
@@ -12,7 +13,6 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.OsStringExt
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.asBytes
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromVec
@@ -24,7 +24,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.wasi.cvt
 // This is not available yet in libc.
 public expect fun wasilibcGetEnviron(): MutPtr
 
-public var ENV_LOCK: RwLock<Unit> = RwLock.new()
+public var ENV_LOCK: RwLock<Unit> = RwLock.new(Unit)
 
 public fun envReadLock(): Any = ENV_LOCK.read().unwrapOrElse({ it.intoInner() })
 

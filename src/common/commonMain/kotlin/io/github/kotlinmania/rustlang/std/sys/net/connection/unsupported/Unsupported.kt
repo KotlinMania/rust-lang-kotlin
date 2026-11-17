@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.net.connection.unsupported
 
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
@@ -9,7 +10,6 @@ import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv6Addr
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.net.Shutdown
 import io.github.kotlinmania.rustlang.std.net.socketaddr.ToSocketAddrs
 import io.github.kotlinmania.rustlang.std.sys.pal.unsupported.unsupported
@@ -75,7 +75,7 @@ public open class TcpStream(
 
     public open fun hopLimitV6(): Result<UByte, Error> = this.value
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value
+    public open fun takeError(): Result<Error?, Error> = this.value
 
     public open fun setNonblocking(arg0: Boolean): Result<Unit, Error> = this.value
 
@@ -115,7 +115,7 @@ public open class TcpListener(
 
     public open fun onlyV6(): Result<Boolean, Error> = this.value
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value
+    public open fun takeError(): Result<Error?, Error> = this.value
 
     public open fun setNonblocking(arg0: Boolean): Result<Unit, Error> = this.value
 
@@ -191,7 +191,7 @@ public open class UdpSocket(
 
     public open fun multicastHopLimitV6(): Result<UByte, Error> = this.value
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value
+    public open fun takeError(): Result<Error?, Error> = this.value
 
     public open fun setNonblocking(arg0: Boolean): Result<Unit, Error> = this.value
 

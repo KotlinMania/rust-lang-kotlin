@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.Lemire
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 // Representation of a float as the significant digits and exponent.
 
@@ -55,9 +56,9 @@ public open class Decimal(
                 // normal fast path
                 val value = fromU64FFn(this.mantissa)
                 if (this.exponent < 0L) {
-                    value / pow10FastPathFFn(null)
+                    value / pow10FastPathFFn((-this.exponent))
                 } else {
-                    value * pow10FastPathFFn(null)
+                    value * pow10FastPathFFn(this.exponent)
                 }
             } else {
                 // disguised fast path
@@ -66,7 +67,7 @@ public open class Decimal(
                 if (mantissa > F.MAX_MANTISSA_FAST_PATH) {
                     return null
                 }
-                fromU64FFn(mantissa) * pow10FastPathFFn(null)
+                fromU64FFn(mantissa) * pow10FastPathFFn(F.MAX_EXPONENT_FAST_PATH)
             }
         return if (this.negative) {
             -value1

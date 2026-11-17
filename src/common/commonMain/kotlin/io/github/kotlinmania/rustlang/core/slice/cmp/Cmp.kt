@@ -17,6 +17,7 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.chunksExact
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 
 // Comparison traits for `[T]`.
@@ -108,7 +109,7 @@ public fun <A, B> slicePartialEqEqualSameLengthA(lhs: ConstPtr, rhs: ConstPtr, l
     // not to overflow because it exists in memory;
     return run {
         val size = ((len) * (A.SIZE))
-        compareBytes(((lhs as Any?) as Boolean), ((rhs as Any?) as Boolean), size) == 0
+        compareBytes(lhs, rhs, size) == 0
     }
 }
 
@@ -127,7 +128,7 @@ public typealias AlwaysBreak<B> = ControlFlow<B, Nothing>
 public fun <A> slicePartialOrdPartialCompareA(left: List<A>, right: List<A>): Ordering? {
     val elemChain =
         { a, b -> when (val matchVal = a.partialCmp(b)) {
-            Ordering.Equal -> ControlFlow.Continue()
+            Ordering.Equal -> ControlFlow.Continue(Unit)
             else -> {
                 val nonEq = matchVal
                 ControlFlow.Break(nonEq)
@@ -150,7 +151,7 @@ public fun <A, B, C> chainingImpl(left: List<A>, right: List<A>, elemChain: (A, 
     val lhs = ((left).subList(0, l))
     val rhs = ((right).subList(0, l))
     for (i in 0 until l) {
-        when (val tryResult = elemChain(lhs[i], rhs[i])) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, C>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
+        when (val tryResult = elemChain(lhs[i], rhs[i])) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, C>(tryResult.value) }
     }
     return lenChain(left.size, right.size)
 }
@@ -177,7 +178,7 @@ public interface SliceOrd<T> {
 public fun <A> sliceOrdCompareA(left: List<A>, right: List<A>): Ordering {
     val elemChain =
         { a, b -> when (val matchVal = a.cmp(b)) {
-            Ordering.Equal -> ControlFlow.Continue()
+            Ordering.Equal -> ControlFlow.Continue(Unit)
             else -> {
                 val nonEq = matchVal
                 ControlFlow.Break(nonEq)

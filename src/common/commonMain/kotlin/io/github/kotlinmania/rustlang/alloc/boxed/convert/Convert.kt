@@ -277,10 +277,10 @@ public fun fromBoxAny(err: String): Any {
                 value = v
             }
 
-        public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.value).toString()); Result.Ok(Unit) }
+        public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.value).toString()); Result.Ok<Unit, Error>(Unit) }
 
         // Purposefully skip printing "StringError(..)"
-        public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this.value).toString()); Result.Ok(Unit) }
+        public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this.value).toString()); Result.Ok<Unit, Error>(Unit) }
     }
     return StringError(err)
 }

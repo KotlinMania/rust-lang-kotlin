@@ -98,51 +98,42 @@ public open class IntersperseWith<I, G, Item>(
     public var separator: G,
     public var nextItem: Item?,
     public var iter: I,
-) : Iterable<Item> {
-    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
-        override fun computeNext() {
-            when (val v = this@IntersperseWith.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "IntersperseWith").field("started", this.started).field("separator", this.separator).field("iter", this.iter).field("next_item", this.nextItem).finish()
+) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "IntersperseWith").field("started", this.started).field("separator", this.separator).field("iter", this.iter).field("next_item", this.nextItem).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun clone(): IntersperseWith<I, G, Item> = IntersperseWith(started = this.started, separator = this.separator.clone(), iter = this.iter.clone(), nextItem = this.nextItem)
-
-    public open fun next(): Item? =
-        if (this.started) {
-            when (val matchVal = this.nextItem.also { this.nextItem = null }) {
-                null -> {
-                    val nextItem = this.iter.next()
-                    if (nextItem != null) {
-                        this.nextItem = nextItem
-                        (this.separator)()
-                    } else {
-                        null
-                    }
-                }
-                else -> {
-                    val v = matchVal
-                    v
-                }
-            }
-        } else {
-            val item = this.iter.next()
-            this.started = item != null
-            item
-        }
-
-    public open fun sizeHint(): Pair<Int, Int?> = intersperseSizeHint(this.iter, this.started, this.nextItem != null)
-
-    public open fun <B> fold(init: B, f: (B, Item) -> B): B = intersperseFold(this.iter, init, f, this.separator, this.started, this.nextItem)
 
     public companion object {
         public fun <I> new(iter: I, separator: () -> Item): IntersperseWith<I, G, Item> = IntersperseWith(started = false, separator = separator, nextItem = null, iter = iter)
     }
 }
+
+public fun <I> IntersperseWith<I, G, Item>.next(): Item? =
+    if (this.started) {
+        when (val matchVal = this.nextItem.also { this.nextItem = null }) {
+            null -> {
+                val nextItem = this.iter.next()
+                if (nextItem != null) {
+                    this.nextItem = nextItem
+                    (this.separator)()
+                } else {
+                    null
+                }
+            }
+            else -> {
+                val v = matchVal
+                v
+            }
+        }
+    } else {
+        val item = this.iter.next()
+        this.started = item != null
+        item
+    }
+
+public fun <I> IntersperseWith<I, G, Item>.sizeHint(): Pair<Int, Int?> = intersperseSizeHint(this.iter, this.started, this.nextItem != null)
+
+public fun <I, B> IntersperseWith<I, G, Item>.fold(init: B, f: (B, Item) -> B): B = intersperseFold(this.iter, init, f, this.separator, this.started, this.nextItem)
 
 public fun <I> intersperseSizeHint(iter: I, started: Boolean, nextIsSome: Boolean): Pair<Int, Int?> {
     val (lo, hi) = iter.sizeHint()

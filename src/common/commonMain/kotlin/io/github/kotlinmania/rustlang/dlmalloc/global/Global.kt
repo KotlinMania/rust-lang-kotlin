@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.alloc.global.GlobalAlloc
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.dlmalloc.Dlmalloc
 import io.github.kotlinmania.rustlang.dlmalloc.unix.acquireGlobalLock
 import io.github.kotlinmania.rustlang.dlmalloc.unix.releaseGlobalLock

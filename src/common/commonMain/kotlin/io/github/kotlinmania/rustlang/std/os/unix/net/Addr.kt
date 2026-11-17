@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.os.unix.net
 
 import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -12,17 +13,17 @@ import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.libc.CChar
-import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.unix.bsd.SockaddrUn
 import io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AF_UNIX
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.io.constError
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.net.linuxext.addr.SocketAddrExt
+import io.github.kotlinmania.rustlang.std.os.raw.CChar
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
@@ -176,14 +177,14 @@ public open class SocketAddr(
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
         when (val matchVal = this.address()) {
-            AddressKind.Unnamed -> run { fmt.append("(unnamed)"); Result.Ok(Unit) }
+            AddressKind.Unnamed -> run { fmt.append("(unnamed)"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             is AddressKind.Abstract -> {
                 val (name) = matchVal
-                run { fmt.append("$name (abstract)"); Result.Ok(Unit) }
+                run { fmt.append("$name (abstract)"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
             is AddressKind.Pathname -> {
                 val (path) = matchVal
-                run { fmt.append("$path (pathname)"); Result.Ok(Unit) }
+                run { fmt.append("$path (pathname)"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
         }
 
@@ -194,7 +195,7 @@ public open class SocketAddr(
                 val addr by localStorageL107C12
                 val localStorageL108C12 = AddressableLocal(sizeOf<SockaddrUn>(typeLayoutT = UnresolvedTypeLayout<SockaddrUn>()).toInt(), UnresolvedTypeLayout<SocklenT>())
                 val len by localStorageL108C12
-                when (val tryResult = cvt(f((localStorageL107C12.asMutPtr()), RustMutableReference(localStorageL108C12.asMutPtr(), localStorageL108C12.layout)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<SocketAddr, Error>(tryResult.error) }
+                when (val tryResult = cvt(f((localStorageL107C12.asMutPtr()), RustMutableReference(localStorageL108C12.asMutPtr(), localStorageL108C12.layout)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<SocketAddr, Error>(tryResult.error) }
                 SocketAddr.fromParts(addr, len)
             }
         }

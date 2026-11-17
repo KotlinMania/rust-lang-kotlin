@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.mapwhile
 
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
@@ -11,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -52,49 +52,10 @@ public typealias Source<I> = I.Source
 public open class MapWhile<I, P>(
     public var iter: I,
     public var predicate: P,
-) : SourceIter<Source>, InPlaceIterable, Iterable<B> {
-    override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
-        override fun computeNext() {
-            when (val v = this@MapWhile.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
+) {
     public open fun clone(): MapWhile<I, P> = MapWhile(iter, predicate)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "MapWhile").field("iter", this.iter).finish()
-
-    public open fun next(): B? {
-        val x = (this.iter.next() ?: return null)
-        return (this.predicate)(x)
-    }
-
-    public open fun sizeHint(): Pair<Int, Int?> {
-        val (_, upper) = this.iter.sizeHint()
-        return Pair(0, upper)
-        // can't know a lower bound, due to the predicate
-    }
-
-    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> {
-        val iter = this.iter
-        val predicate = this.predicate
-        return iter.tryFold(init, { acc, x -> when (val matchVal = predicate(x)) {
-            null -> ControlFlow.Break(acc)
-            else -> {
-                val item = matchVal
-                ControlFlow.fromTry(fold(acc, item))
-            }
-        } }).intoTry()
-    }
-
-    public open fun <Aaa> fold(init: Aaa, fold: (Aaa, B) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
-
-    public override fun asInner(): Source {
-        // SAFETY: unchecked function forwarding to unchecked function with the same requirements
-        return this.iter.asInner()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "MapWhile").field("iter", this.iter).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun <I, P> typeLayout(typeLayoutI: TypeLayout<I>, typeLayoutP: TypeLayout<P>): TypeLayout<MapWhile<I, P>> =
@@ -123,9 +84,39 @@ public open class MapWhile<I, P>(
             }
 
         public fun <I, P> new(iter: I, predicate: P): MapWhile<I, P> = MapWhile(iter = iter, predicate = predicate)
-
-        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
-
-        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }
+
+public fun <B, I> MapWhile<I, P>.next(): B? {
+    val x = (this.iter.next() ?: return null)
+    return (this.predicate)(x)
+}
+
+public fun <B, I> MapWhile<I, P>.sizeHint(): Pair<Int, Int?> {
+    val (_, upper) = this.iter.sizeHint()
+    return Pair(0, upper)
+    // can't know a lower bound, due to the predicate
+}
+
+public fun <Residual, B, I, Acc, R> MapWhile<I, P>.tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> {
+    val iter = this.iter
+    val predicate = this.predicate
+    return iter.tryFold(init, { acc, x -> when (val matchVal = predicate(x)) {
+        null -> ControlFlow.Break(acc)
+        else -> {
+            val item = matchVal
+            ControlFlow.fromTry(fold(acc, item))
+        }
+    } }).intoTry()
+}
+
+public fun <B, I, Aaa> MapWhile<I, P>.fold(init: Aaa, fold: (Aaa, B) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
+
+public fun <Source, I, P> MapWhile<I, P>.asInner(): Source where I : SourceIter<Source> {
+    // SAFETY: unchecked function forwarding to unchecked function with the same requirements
+    return this.iter.asInner()
+}
+
+public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
+
+public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY

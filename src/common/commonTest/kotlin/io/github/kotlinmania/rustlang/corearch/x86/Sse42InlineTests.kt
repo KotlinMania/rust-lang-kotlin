@@ -4,6 +4,7 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 
 // Streaming SIMD Extensions 4.2 (SSE4.2)
 //
@@ -18,7 +19,7 @@ public fun strToM128i(s: List<UByte>): M128i {
     check(s.size <= 16)
     val array = UByteArray(16) { 0u.toUByte() }
     run { val dstTmp0 = array; val srcTmp0 = s; for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
-    return u8x16.fromArray(array).asM128i()
+    return Simd<UByte>((array).toList()).asM128i()
 }
 
 public fun testMmCmpistrm() {

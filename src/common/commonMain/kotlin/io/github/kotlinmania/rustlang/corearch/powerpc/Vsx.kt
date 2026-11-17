@@ -13,6 +13,7 @@ import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.simd.I64x2
 import io.github.kotlinmania.rustlang.corearch.simd.M64x2
@@ -276,16 +277,16 @@ public fun xxpermdi(a: VectorSignedLong, b: VectorSignedLong, dm: UByte): Vector
     val r: I64x2 =
         when (dm and 0x3u.toUByte()) {
             0 -> {
-                run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(0x0, 0x2)); _simdArg0 }
+                run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0x0u, 0x2u)); _simdArg0 }
             }
             1 -> {
-                run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(0x1, 0x2)); _simdArg0 }
+                run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0x1u, 0x2u)); _simdArg0 }
             }
             2 -> {
-                run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(0x0, 0x3)); _simdArg0 }
+                run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0x0u, 0x3u)); _simdArg0 }
             }
             else -> {
-                run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(0x1, 0x3)); _simdArg0 }
+                run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0x1u, 0x3u)); _simdArg0 }
             }
         }
     return transmuteWithLayouts<I64x2, VectorSignedLong>(r, UnresolvedTypeLayout<I64x2>(), VectorSignedLong.typeLayout())
@@ -306,12 +307,12 @@ public interface VectorMergeEo<T> {
 }
 
 public fun mergee(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt {
-    val p = transmute(u8x16.new(0x00, 0x01, 0x02, 0x03, 0x10, 0x11, 0x12, 0x13, 0x08, 0x09, 0x0A, 0x0B, 0x18, 0x19, 0x1A, 0x1B))
+    val p = transmute(Simd<UByte>(listOf(0x00u.toUByte(), 0x01u.toUByte(), 0x02u.toUByte(), 0x03u.toUByte(), 0x10u.toUByte(), 0x11u.toUByte(), 0x12u.toUByte(), 0x13u.toUByte(), 0x08u.toUByte(), 0x09u.toUByte(), 0x0Au.toUByte(), 0x0Bu.toUByte(), 0x18u.toUByte(), 0x19u.toUByte(), 0x1Au.toUByte(), 0x1Bu.toUByte())))
     return vecPerm(a, b, p)
 }
 
 public fun mergeo(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt {
-    val p = transmute(u8x16.new(0x04, 0x05, 0x06, 0x07, 0x14, 0x15, 0x16, 0x17, 0x0C, 0x0D, 0x0E, 0x0F, 0x1C, 0x1D, 0x1E, 0x1F))
+    val p = transmute(Simd<UByte>(listOf(0x04u.toUByte(), 0x05u.toUByte(), 0x06u.toUByte(), 0x07u.toUByte(), 0x14u.toUByte(), 0x15u.toUByte(), 0x16u.toUByte(), 0x17u.toUByte(), 0x0Cu.toUByte(), 0x0Du.toUByte(), 0x0Eu.toUByte(), 0x0Fu.toUByte(), 0x1Cu.toUByte(), 0x1Du.toUByte(), 0x1Eu.toUByte(), 0x1Fu.toUByte())))
     return vecPerm(a, b, p)
 }
 

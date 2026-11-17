@@ -36,7 +36,7 @@ public open class IoSliceMut internal constructor(
 
     public fun pointerLayout(): TypeLayout<IoSliceMut> = TransparentTypeLayout(fieldLayout, { ptr, layout -> IoSliceMut(ptr, layout) }, { it.value })
 
-    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this.value.asSlice()).toString()); Result.Ok(Unit) }
+    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this.value.asSlice()).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     /**
      * Advance the internal cursor of the slice.
@@ -185,7 +185,7 @@ public open class IoSlice internal constructor(
 
     public open fun clone(): IoSlice = IoSlice(value, fieldLayout)
 
-    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this.value.asSlice()).toString()); Result.Ok(Unit) }
+    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this.value.asSlice()).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     /**
      * Advance the internal cursor of the slice.

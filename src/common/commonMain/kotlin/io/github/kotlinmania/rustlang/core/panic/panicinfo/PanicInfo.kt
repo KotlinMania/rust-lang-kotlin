@@ -99,9 +99,9 @@ public open class PanicInfo(
 
     public open fun fmt(formatter: StringBuilder): Result<Unit, Unit> {
         formatter.append("panicked at ")
-        when (val tryResult = this.location.fmt(formatter)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.location.fmt(formatter)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
         formatter.append(":\n")
-        when (val tryResult = formatter.writeFmt(this.message)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = formatter.writeFmt(this.message)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 

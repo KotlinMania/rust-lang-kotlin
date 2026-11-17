@@ -129,13 +129,13 @@ public sealed class Entry<K, V, A : AllocatorClone> {
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is Vacant -> {
-                val (v) = this
-                DebugTuple(f, "Entry").field(v).finish()
+            is Vacant<*, *, *> -> {
+                val (v) = this as Vacant<K, V, A>
+                run { DebugTuple(f, "Entry").field(v).finish(); Result.Ok<Unit, Error>(Unit) }
             }
-            is Occupied -> {
-                val (o) = this
-                DebugTuple(f, "Entry").field(o).finish()
+            is Occupied<*, *, *> -> {
+                val (o) = this as Occupied<K, V, A>
+                run { DebugTuple(f, "Entry").field(o).finish(); Result.Ok<Unit, Error>(Unit) }
             }
         }
 
@@ -153,12 +153,12 @@ public sealed class Entry<K, V, A : AllocatorClone> {
      */
     public open fun orInsert(default: V): V =
         when (this) {
-            is Occupied -> {
-                val (entry) = this
+            is Occupied<*, *, *> -> {
+                val (entry) = this as Occupied<K, V, A>
                 entry.intoMut()
             }
-            is Vacant -> {
-                val (entry1) = this
+            is Vacant<*, *, *> -> {
+                val (entry1) = this as Vacant<K, V, A>
                 entry1.insert(default)
             }
         }
@@ -202,13 +202,13 @@ public sealed class Entry<K, V, A : AllocatorClone> {
      */
     public open fun <E> orTryInsertWith(default: () -> Result<V, E>): Result<V, E> {
         return when (this) {
-            is Occupied -> {
-                val (entry) = this
+            is Occupied<*, *, *> -> {
+                val (entry) = this as Occupied<K, V, A>
                 Result.Ok<V, E>(entry.intoMut())
             }
-            is Vacant -> {
-                val (entry1) = this
-                Result.Ok<V, E>(entry1.insert(when (val tryResult = default()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<V, E>(tryResult.error) }))
+            is Vacant<*, *, *> -> {
+                val (entry1) = this as Vacant<K, V, A>
+                Result.Ok<V, E>(entry1.insert(when (val tryResult = default()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<V, E>(tryResult.error) }))
             }
         }
     }
@@ -256,13 +256,13 @@ public sealed class Entry<K, V, A : AllocatorClone> {
      */
     public open fun <E> orTryInsertWithKey(default: (K) -> Result<V, E>): Result<V, E> {
         return when (this) {
-            is Occupied -> {
-                val (entry) = this
+            is Occupied<*, *, *> -> {
+                val (entry) = this as Occupied<K, V, A>
                 Result.Ok<V, E>(entry.intoMut())
             }
-            is Vacant -> {
-                val (entry1) = this
-                val value = when (val tryResult = default(entry1.key())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<V, E>(tryResult.error) }
+            is Vacant<*, *, *> -> {
+                val (entry1) = this as Vacant<K, V, A>
+                val value = when (val tryResult = default(entry1.key())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<V, E>(tryResult.error) }
                 Result.Ok<V, E>(entry1.insert(value))
             }
         }
@@ -280,12 +280,12 @@ public sealed class Entry<K, V, A : AllocatorClone> {
      */
     public open fun key(): K =
         when (this) {
-            is Occupied -> {
-                val (entry) = this
+            is Occupied<*, *, *> -> {
+                val (entry) = this as Occupied<K, V, A>
                 entry.key()
             }
-            is Vacant -> {
-                val (entry1) = this
+            is Vacant<*, *, *> -> {
+                val (entry1) = this as Vacant<K, V, A>
                 entry1.key()
             }
         }
@@ -310,13 +310,13 @@ public sealed class Entry<K, V, A : AllocatorClone> {
      */
     public open fun andModify(f: (V) -> Unit): Entry<K, V, A> =
         when (this) {
-            is Occupied -> {
-                val (entry) = this
+            is Occupied<*, *, *> -> {
+                val (entry) = this as Occupied<K, V, A>
                 f(entry.getMut())
                 Occupied(entry)
             }
-            is Vacant -> {
-                val (entry1) = this
+            is Vacant<*, *, *> -> {
+                val (entry1) = this as Vacant<K, V, A>
                 Vacant(entry1)
             }
         }
@@ -335,13 +335,13 @@ public sealed class Entry<K, V, A : AllocatorClone> {
      */
     public open fun insertEntry(value: V): OccupiedEntry<K, V, A> =
         when (this) {
-            is Occupied -> {
-                val (entry) = this
+            is Occupied<*, *, *> -> {
+                val (entry) = this as Occupied<K, V, A>
                 entry.insert(value)
                 entry
             }
-            is Vacant -> {
-                val (entry1) = this
+            is Vacant<*, *, *> -> {
+                val (entry1) = this as Vacant<K, V, A>
                 entry1.insertEntry(value)
             }
         }
@@ -360,12 +360,12 @@ public sealed class Entry<K, V, A : AllocatorClone> {
      */
     public open fun orDefault(defaultVFn: () -> V): V =
         when (this) {
-            is Occupied -> {
-                val (entry) = this
+            is Occupied<*, *, *> -> {
+                val (entry) = this as Occupied<K, V, A>
                 entry.intoMut()
             }
-            is Vacant -> {
-                val (entry1) = this
+            is Vacant<*, *, *> -> {
+                val (entry1) = this as Vacant<K, V, A>
                 entry1.insert(defaultVFn())
             }
         }
@@ -395,7 +395,7 @@ public open class VacantEntry<K, V, A : AllocatorClone> internal constructor(
     public var dormantMap: DormantMutRef<MutableMap<K, V>> = dormantMapCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "VacantEntry").field(this.key()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "VacantEntry").field(this.key()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Gets a reference to the key that would be used when inserting a value
@@ -542,7 +542,7 @@ public open class OccupiedEntry<K, V, A : AllocatorClone> internal constructor(
     public var dormantMap: DormantMutRef<MutableMap<K, V>> = dormantMapCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Gets a reference to the key in the entry.
@@ -762,7 +762,7 @@ public open class OccupiedError<K, V, A : AllocatorClone> internal constructor(
     public var entry: OccupiedEntry<K, V, A> = entryCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedError").field("key", this.entry.key()).field("uninserted_key", this.key).field("old_value", this.entry.get()).field("new_value", this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "OccupiedError").field("key", this.entry.key()).field("uninserted_key", this.key).field("old_value", this.entry.get()).field("new_value", this.value).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <K, V, A : AllocatorClone> invoke(

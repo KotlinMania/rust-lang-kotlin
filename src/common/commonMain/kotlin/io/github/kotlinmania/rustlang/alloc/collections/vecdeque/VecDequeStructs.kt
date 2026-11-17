@@ -9,9 +9,11 @@ import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.intoiter.IntoIt
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.iter.Iter
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.itermut.IterMut
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.specfromiter.SpecFromIter
+import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.specfromiter.specFromIter
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.splice.Splice
 import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
@@ -19,17 +21,21 @@ import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.adapters.byrefsized.ByRefSized
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatn.repeatN
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatwith.repeatWith
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawPartsMut
 import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -835,10 +841,10 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun tryReserveExact(additional: Int): Result<Unit, TryReserveError> {
-        val newCap = when (val tryResult = (this.len.checkedAdd(additional)?.let { Result.Ok<Int, TryReserveError>(it) } ?: Result.Err<Int, TryReserveError>(TryReserveErrorKind.CapacityOverflow))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
+        val newCap = when (val tryResult = (this.len.checkedAdd(additional)?.let { Result.Ok<Int, TryReserveError>(it) } ?: Result.Err<Int, TryReserveError>(TryReserveErrorKind.CapacityOverflow))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
         val oldCap = this.capacity()
         if (newCap > oldCap) {
-            when (val tryResult = this.buf.tryReserveExact(this.len, additional)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
+            when (val tryResult = this.buf.tryReserveExact(this.len, additional)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
             // ignore-tidy-undocumented-unchecked
             run {
                 this.handleCapacityIncrease(oldCap)
@@ -878,10 +884,10 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun tryReserve(additional: Int): Result<Unit, TryReserveError> {
-        val newCap = when (val tryResult = (this.len.checkedAdd(additional)?.let { Result.Ok<Int, TryReserveError>(it) } ?: Result.Err<Int, TryReserveError>(TryReserveErrorKind.CapacityOverflow))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
+        val newCap = when (val tryResult = (this.len.checkedAdd(additional)?.let { Result.Ok<Int, TryReserveError>(it) } ?: Result.Err<Int, TryReserveError>(TryReserveErrorKind.CapacityOverflow))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
         val oldCap = this.capacity()
         if (newCap > oldCap) {
-            when (val tryResult = this.buf.tryReserve(this.len, additional)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
+            when (val tryResult = this.buf.tryReserve(this.len, additional)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
             // ignore-tidy-undocumented-unchecked
             run {
                 this.handleCapacityIncrease(oldCap)
@@ -1169,7 +1175,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun <R> truncateToRange(range: R) where R : RangeBounds<Int> {
-        val structVal = Slice.range(range, 0 until this.len)
+        val structVal = Range(range, 0 until this.len)
         val start = structVal.start
         val end = structVal.end
         if (start == 0 && end == this.len) {
@@ -1407,7 +1413,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * logical buffer, and that all elements in that range are initialized.
      */
     public open fun <R> sliceRanges(range: R, len: Int): Pair<IntRange, IntRange> where R : RangeBounds<Int> {
-        val structVal = Slice.range(range, 0 until len)
+        val structVal = Range(range, 0 until len)
         val start = structVal.start
         val end = structVal.end
         val len1 = end - start
@@ -1533,7 +1539,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         // When finished, the remaining data will be copied back to cover the hole,
         // and the head/tail values will be restored correctly.
         //
-        val structVal = Slice.range(range, 0 until this.len)
+        val structVal = Range(range, 0 until this.len)
         val start = structVal.start
         val end = structVal.end
         val drainStart = start
@@ -2455,7 +2461,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         if (this.isContiguous()) {
             // ignore-tidy-undocumented-unchecked
             run {
-                return Slice.fromRawPartsMut(this.ptr().add(this.head.asIndex()), this.len)
+                return linearMutSliceView(this.ptr().add(this.head.asIndex()), this.len.toInt(), PrimitiveLayouts.U8)
             }
         }
         val head = this.head
@@ -2567,7 +2573,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
             }
         }
         // ignore-tidy-undocumented-unchecked
-        return Slice.fromRawPartsMut(ptr.add(this.head.asIndex()), this.len)
+        return linearMutSliceView(ptr.add(this.head.asIndex()), this.len.toInt(), PrimitiveLayouts.U8)
     }
 
     /**
@@ -2930,7 +2936,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun <R> extendFromWithin(src: R) where R : RangeBounds<Int> {
-        val range = Slice.range(src, 0 until this.len())
+        val range = Range(src, 0 until this.len())
         this.reserve(range.len())
         // SAFETY:
         // - `slice.range` guarantees that the given range is valid for indexing self
@@ -2966,7 +2972,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun <R> prependFromWithin(src: R) where R : RangeBounds<Int> {
-        val range = Slice.range(src, 0 until this.len())
+        val range = Range(src, 0 until this.len())
         this.reserve(range.len())
         // SAFETY:
         // - `slice.range` guarantees that the given range is valid for indexing self
@@ -3049,25 +3055,6 @@ public open class VecDeque<T, A : Allocator> internal constructor(
                 }
             }
         }
-    }
-
-    public open fun specPrependFromWithinSpecExtendFromWithin(src: IntRange) {
-        val dst = 0
-        val count = src.end - src.start
-        val src1 = src.start + count
-        val newHead = this.wrapSub(this.head, count)
-        // SAFETY:
-        // - Ranges do not overlap: src entirely spans initialized values, dst entirely spans uninitialized values.
-        // - Ranges are in bounds: guaranteed by the caller.
-        val ranges = this.nonoverlappingRanges(src1, dst, count, newHead)
-        for ((src2, dst1, count1) in ranges) {
-            // SAFETY: Ditto.
-            copyNonoverlapping(src2, dst1, count1)
-        }
-        // SAFETY:
-        // - The elements were just initialized by `copyNonoverlapping`
-        this.head = newHead
-        this.len += count
     }
 
     public open fun eq(other: VecDeque<T, A>): Boolean {
@@ -3214,7 +3201,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <T, A : Allocator> invoke(
@@ -3344,7 +3331,43 @@ public fun <T> VecDeque.Companion.withCapacity(capacity: Int): VecDeque<T, Globa
  * ```
  */
 public fun <T> VecDeque.Companion.tryWithCapacity(capacity: Int): Result<VecDeque<T, Global>, TryReserveError> {
-    return Result.Ok<VecDeque<T, Global>, TryReserveError>(VecDeque(head = WrappedIndex.zero(), len = 0, buf = when (val tryResult = RawVec.tryWithCapacityIn(capacity, Global())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<VecDeque<T, Global>, TryReserveError>(tryResult.error) }))
+    return Result.Ok<VecDeque<T, Global>, TryReserveError>(VecDeque(head = WrappedIndex.zero(), len = 0, buf = when (val tryResult = RawVec.tryWithCapacityIn(capacity, Global())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<VecDeque<T, Global>, TryReserveError>(tryResult.error) }))
+}
+
+public fun <T : TrivialClone, A : Allocator> VecDeque<T, A>.specExtendFromWithin(src: IntRange) {
+    val dst = this.len()
+    val count = src.end - src.start
+    val src1 = src.start
+    // SAFETY:
+    // - Ranges do not overlap: src entirely spans initialized values, dst entirely spans uninitialized values.
+    // - Ranges are in bounds: guaranteed by the caller.
+    val ranges = this.nonoverlappingRanges(src1, dst, count, this.head)
+    for ((src2, dst1, count1) in ranges) {
+        // SAFETY: Ditto.
+        copyNonoverlapping(src2, dst1, count1)
+    }
+    // SAFETY:
+    // - The elements were just initialized by `copyNonoverlapping`
+    this.len += count
+}
+
+public fun <T : TrivialClone, A : Allocator> VecDeque<T, A>.specPrependFromWithin(src: IntRange) {
+    val dst = 0
+    val count = src.end - src.start
+    val src1 = src.start + count
+    val newHead = this.wrapSub(this.head, count)
+    // SAFETY:
+    // - Ranges do not overlap: src entirely spans initialized values, dst entirely spans uninitialized values.
+    // - Ranges are in bounds: guaranteed by the caller.
+    val ranges = this.nonoverlappingRanges(src1, dst, count, newHead)
+    for ((src2, dst1, count1) in ranges) {
+        // SAFETY: Ditto.
+        copyNonoverlapping(src2, dst1, count1)
+    }
+    // SAFETY:
+    // - The elements were just initialized by `copyNonoverlapping`
+    this.head = newHead
+    this.len += count
 }
 
 public fun <T, I : Iterable<T>> fromIteratorFromIterVecDequeT(iter: I): VecDeque<T, Global> = SpecFromIter.specFromIter(iter.iterator())

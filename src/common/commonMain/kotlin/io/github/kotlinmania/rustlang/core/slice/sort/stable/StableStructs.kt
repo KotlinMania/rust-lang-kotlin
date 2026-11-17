@@ -16,6 +16,12 @@ public open class AlignedStorage<T> internal constructor(
     public var storage: List<MaybeUninit<UByte>> = storageCtorArg
         internal set
 
+    public open fun asUninitSliceMut(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutableList<MaybeUninit<T>> {
+        val len = N / sizeOf<T>(typeLayoutT = typeLayoutT)
+        // SAFETY: `_align` ensures we are correctly aligned.
+        return linearMutSliceView(MutPtr((this.storage.asMutPtr()).rawAddress), len.toInt(), PrimitiveLayouts.U8)
+    }
+
     public companion object {
         public operator fun <T> invoke(
             align: List<T>,
@@ -24,13 +30,7 @@ public open class AlignedStorage<T> internal constructor(
             align = align,
             storageCtorArg = storage,
         )
+
+        public fun <T> new(n: Int): AlignedStorage<T> = AlignedStorage(align = listOf(), storage = List(n) { MaybeUninit.uninit(PrimitiveLayouts.U8) })
     }
-}
-
-public fun <T> AlignedStorage.Companion.new(n: Int): AlignedStorage<T> = AlignedStorage(align = listOf(), storage = List(n) { MaybeUninit.uninit(PrimitiveLayouts.U8) })
-
-public fun <T> AlignedStorage<T>.asUninitSliceMut(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutableList<MaybeUninit<T>> {
-    val len = n / sizeOf<T>(typeLayoutT = typeLayoutT)
-    // SAFETY: `_align` ensures we are correctly aligned.
-    return linearMutSliceView(MutPtr((this.storage.asMutPtr()).rawAddress), len.toInt(), UnresolvedTypeLayout<MaybeUninit<UByte>>())
 }

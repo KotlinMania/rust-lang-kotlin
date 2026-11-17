@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.libc.systemPropertyGet
@@ -36,7 +37,7 @@ public fun detectFeatures(): cache.Initializer {
         len > 0 && arch.startsWith("exynos9810".encodeToByteArray())
     }
     when (val matchVal = auxv()) {
-        is Result.Ok -> {
+        is Result.Ok<*, *> -> {
             val auxv = matchVal.value
             val hwcap: AtHwcap = auxv.into()
             return hwcap.cache(isExynos9810)

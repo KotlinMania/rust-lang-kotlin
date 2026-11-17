@@ -380,37 +380,38 @@ import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4qS8
 import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4qU16
 import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4qU32
 import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4qU8
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 
 // ARMv8 ASIMD intrinsics
 
 public fun testVaddF64() {
-    val a = f64x1.fromArray(listOf(1.0))
-    val b = f64x1.fromArray(listOf(8.0))
-    val e = f64x1.fromArray(listOf(9.0))
+    val a = Simd<Double>((listOf(1.0)).toList())
+    val b = Simd<Double>((listOf(8.0)).toList())
+    val e = Simd<Double>((listOf(9.0)).toList())
     val r = f64x1.from(vaddF64(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVaddqF64() {
-    val a = f64x2.new(1.0, 2.0)
-    val b = f64x2.new(8.0, 7.0)
-    val e = f64x2.new(9.0, 9.0)
+    val a = Simd<Double>(listOf(1.0.toDouble(), 2.0.toDouble()))
+    val b = Simd<Double>(listOf(8.0.toDouble(), 7.0.toDouble()))
+    val e = Simd<Double>(listOf(9.0.toDouble(), 9.0.toDouble()))
     val r = f64x2.from(vaddqF64(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVaddS64() {
-    val a = i64x1.fromArray(listOf(1))
-    val b = i64x1.fromArray(listOf(8))
-    val e = i64x1.fromArray(listOf(9))
+    val a = Simd<Long>((listOf(1)).toList())
+    val b = Simd<Long>((listOf(8)).toList())
+    val e = Simd<Long>((listOf(9)).toList())
     val r = i64x1.from(vaddS64(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVaddU64() {
-    val a = u64x1.fromArray(listOf(1))
-    val b = u64x1.fromArray(listOf(8))
-    val e = u64x1.fromArray(listOf(9))
+    val a = Simd<ULong>((listOf(1)).toList())
+    val b = Simd<ULong>((listOf(8)).toList())
+    val e = Simd<ULong>((listOf(9)).toList())
     val r = u64x1.from(vaddU64(a.into(), b.into()))
     check(r == e)
 }
@@ -432,17 +433,17 @@ public fun testVadddU64() {
 }
 
 public fun testVextP64() {
-    val a = u64x1.new(0)
-    val b = u64x1.new(1)
-    val e = u64x1.new(0)
+    val a = Simd<ULong>(listOf(0uL))
+    val b = Simd<ULong>(listOf(1uL))
+    val e = Simd<ULong>(listOf(0uL))
     val r = u64x1.from(vextP64(a.into(), b.into(), 0))
     check(r == e)
 }
 
 public fun testVextF64() {
-    val a = f64x1.new(0.0)
-    val b = f64x1.new(1.0)
-    val e = f64x1.new(0.0)
+    val a = Simd<Double>(listOf(0.0.toDouble()))
+    val b = Simd<Double>(listOf(1.0.toDouble()))
+    val e = Simd<Double>(listOf(0.0.toDouble()))
     val r = f64x1.from(vextF64(a.into(), b.into(), 0))
     check(r == e)
 }
@@ -493,178 +494,178 @@ public fun testVsradNU64() {
 
 public fun testVdupNF64() {
     val a: Double = 3.3
-    val e = f64x1.new(3.3)
+    val e = Simd<Double>(listOf(3.3.toDouble()))
     val r = f64x1.from(vdupNF64(a))
     check(r == e)
 }
 
 public fun testVdupNP64() {
     val a: ULong = 3uL
-    val e = u64x1.new(3)
+    val e = Simd<ULong>(listOf(3uL))
     val r = u64x1.from(vdupNP64(a))
     check(r == e)
 }
 
 public fun testVdupqNF64() {
     val a: Double = 3.3
-    val e = f64x2.new(3.3, 3.3)
+    val e = Simd<Double>(listOf(3.3.toDouble(), 3.3.toDouble()))
     val r = f64x2.from(vdupqNF64(a))
     check(r == e)
 }
 
 public fun testVdupqNP64() {
     val a: ULong = 3uL
-    val e = u64x2.new(3, 3)
+    val e = Simd<ULong>(listOf(3uL, 3uL))
     val r = u64x2.from(vdupqNP64(a))
     check(r == e)
 }
 
 public fun testVmovNP64() {
     val a: ULong = 3uL
-    val e = u64x1.new(3)
+    val e = Simd<ULong>(listOf(3uL))
     val r = u64x1.from(vmovNP64(a))
     check(r == e)
 }
 
 public fun testVmovNF64() {
     val a: Double = 3.3
-    val e = f64x1.new(3.3)
+    val e = Simd<Double>(listOf(3.3.toDouble()))
     val r = f64x1.from(vmovNF64(a))
     check(r == e)
 }
 
 public fun testVmovqNP64() {
     val a: ULong = 3uL
-    val e = u64x2.new(3, 3)
+    val e = Simd<ULong>(listOf(3uL, 3uL))
     val r = u64x2.from(vmovqNP64(a))
     check(r == e)
 }
 
 public fun testVmovqNF64() {
     val a: Double = 3.3
-    val e = f64x2.new(3.3, 3.3)
+    val e = Simd<Double>(listOf(3.3.toDouble(), 3.3.toDouble()))
     val r = f64x2.from(vmovqNF64(a))
     check(r == e)
 }
 
 public fun testVgetLaneF64() {
-    val v = f64x1.new(1.0)
+    val v = Simd<Double>(listOf(1.0.toDouble()))
     val r = vgetLaneF64(v.into(), 0)
     check(r == 1.0.toDouble())
 }
 
 public fun testVcopyLaneS64() {
-    val a = i64x1.new(1)
-    val b = i64x1.new(0x7FFFFFFFFFFFFFFF)
-    val e = i64x1.new(0x7FFFFFFFFFFFFFFF)
+    val a = Simd<Long>(listOf(1L))
+    val b = Simd<Long>(listOf(0x7FFFFFFFFFFFFFFFL))
+    val e = Simd<Long>(listOf(0x7FFFFFFFFFFFFFFFL))
     val r = i64x1.from(vcopyLaneS64(a.into(), b.into(), 0, 0))
     check(r == e)
 }
 
 public fun testVcopyLaneU64() {
-    val a = u64x1.new(1)
-    val b = u64x1.new(0xFFFFFFFFFFFFFFFFuL)
-    val e = u64x1.new(0xFFFFFFFFFFFFFFFFuL)
+    val a = Simd<ULong>(listOf(1uL))
+    val b = Simd<ULong>(listOf(0xFFFFFFFFFFFFFFFFuL))
+    val e = Simd<ULong>(listOf(0xFFFFFFFFFFFFFFFFuL))
     val r = u64x1.from(vcopyLaneU64(a.into(), b.into(), 0, 0))
     check(r == e)
 }
 
 public fun testVcopyLaneP64() {
-    val a = u64x1.new(1)
-    val b = u64x1.new(0x7FFFFFFFFFFFFFFF)
-    val e = u64x1.new(0x7FFFFFFFFFFFFFFF)
+    val a = Simd<ULong>(listOf(1uL))
+    val b = Simd<ULong>(listOf(0x7FFFFFFFFFFFFFFFuL))
+    val e = Simd<ULong>(listOf(0x7FFFFFFFFFFFFFFFuL))
     val r = u64x1.from(vcopyLaneP64(a.into(), b.into(), 0, 0))
     check(r == e)
 }
 
 public fun testVcopyLaneF64() {
-    val a = f64x1.fromArray(listOf(1.0))
-    val b = f64x1.fromArray(listOf(0.0))
-    val e = f64x1.fromArray(listOf(0.0))
+    val a = Simd<Double>((listOf(1.0)).toList())
+    val b = Simd<Double>((listOf(0.0)).toList())
+    val e = Simd<Double>((listOf(0.0)).toList())
     val r = f64x1.from(vcopyLaneF64(a.into(), b.into(), 0, 0))
     check(r == e)
 }
 
 public fun testVbslF64() {
-    val a = u64x1.new(0x8000000000000000uL)
-    val b = f64x1.new(-1.23)
-    val c = f64x1.new(2.34)
-    val e = f64x1.new(-2.34)
+    val a = Simd<ULong>(listOf(0x8000000000000000uL))
+    val b = Simd<Double>(listOf(-1.23))
+    val c = Simd<Double>(listOf(2.34))
+    val e = Simd<Double>(listOf(-2.34))
     val r = f64x1.from(vbslF64(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslP64() {
-    val a = u64x1.new(1)
-    val b = u64x1.new(ULong.MAX_VALUE)
-    val c = u64x1.new(ULong.MIN_VALUE)
-    val e = u64x1.new(1)
+    val a = Simd<ULong>(listOf(1uL))
+    val b = Simd<ULong>(listOf(ULong.MAX_VALUE))
+    val c = Simd<ULong>(listOf(ULong.MIN_VALUE))
+    val e = Simd<ULong>(listOf(1uL))
     val r = u64x1.from(vbslP64(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslqF64() {
-    val a = u64x2.new(1, 0x8000000000000000uL)
-    val b = f64x2.new(Double.MAX_VALUE, -1.23)
-    val c = f64x2.new((-Double.MAX_VALUE), 2.34)
-    val e = f64x2.new((-Double.MAX_VALUE), -2.34)
+    val a = Simd<ULong>(listOf(1uL, 0x8000000000000000uL))
+    val b = Simd<Double>(listOf(Double.MAX_VALUE, -1.23))
+    val c = Simd<Double>(listOf((-Double.MAX_VALUE), 2.34))
+    val e = Simd<Double>(listOf((-Double.MAX_VALUE), -2.34))
     val r = f64x2.from(vbslqF64(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslqP64() {
-    val a = u64x2.new(ULong.MAX_VALUE, 1)
-    val b = u64x2.new(ULong.MAX_VALUE, ULong.MAX_VALUE)
-    val c = u64x2.new(ULong.MIN_VALUE, ULong.MIN_VALUE)
-    val e = u64x2.new(ULong.MAX_VALUE, 1)
+    val a = Simd<ULong>(listOf(ULong.MAX_VALUE, 1uL))
+    val b = Simd<ULong>(listOf(ULong.MAX_VALUE, ULong.MAX_VALUE))
+    val c = Simd<ULong>(listOf(ULong.MIN_VALUE, ULong.MIN_VALUE))
+    val e = Simd<ULong>(listOf(ULong.MAX_VALUE, 1uL))
     val r = u64x2.from(vbslqP64(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVld1F64() {
     val a: DoubleArray = doubleArrayOf(0.0, 1.0)
-    val e = f64x1.new(1.0)
+    val e = Simd<Double>(listOf(1.0.toDouble()))
     val r = f64x1.from(vld1F64(((a).sliceArray(1 until a.size)).asPtr()))
     check(r == e)
 }
 
 public fun testVld1qF64() {
     val a: DoubleArray = doubleArrayOf(0.0, 1.0, 2.0)
-    val e = f64x2.new(1.0, 2.0)
+    val e = Simd<Double>(listOf(1.0.toDouble(), 2.0.toDouble()))
     val r = f64x2.from(vld1qF64(((a).sliceArray(1 until a.size)).asPtr()))
     check(r == e)
 }
 
 public fun testVld1DupF64() {
     val a: DoubleArray = doubleArrayOf(1.0, 42.0)
-    val e = f64x1.new(42.0)
+    val e = Simd<Double>(listOf(42.0.toDouble()))
     val r = f64x1.from(vld1DupF64(((a).sliceArray(1 until a.size)).asPtr()))
     check(r == e)
 }
 
 public fun testVld1qDupF64() {
-    val e = f64x2.new(42.0, 42.0)
+    val e = Simd<Double>(listOf(42.0.toDouble(), 42.0.toDouble()))
     val r = f64x2.from(vld1qDupF64(elem))
     check(r == e)
 }
 
 public fun testVld1LaneF64() {
-    val a = f64x1.new(0.0)
-    val e = f64x1.new(42.0)
+    val a = Simd<Double>(listOf(0.0.toDouble()))
+    val e = Simd<Double>(listOf(42.0.toDouble()))
     val r = f64x1.from(vld1LaneF64(elem, a.into(), 0))
     check(r == e)
 }
 
 public fun testVld1qLaneF64() {
-    val a = f64x2.new(0.0, 1.0)
-    val e = f64x2.new(0.0, 42.0)
+    val a = Simd<Double>(listOf(0.0.toDouble(), 1.0.toDouble()))
+    val e = Simd<Double>(listOf(0.0.toDouble(), 42.0.toDouble()))
     val r = f64x2.from(vld1qLaneF64(elem, a.into(), 1))
     check(r == e)
 }
 
 public fun testVst1F64() {
     val vals = MutableList(2) { 0.0 }
-    val a = f64x1.new(1.0)
+    val a = Simd<Double>(listOf(1.0.toDouble()))
     run {
         vst1F64(vals[1 until vals.size].asMutPtr(), a.into())
     }
@@ -674,7 +675,7 @@ public fun testVst1F64() {
 
 public fun testVst1qF64() {
     val vals = MutableList(3) { 0.0 }
-    val a = f64x2.new(1.0, 2.0)
+    val a = Simd<Double>(listOf(1.0.toDouble(), 2.0.toDouble()))
     run {
         vst1qF64(vals[1 until vals.size].asMutPtr(), a.into())
     }

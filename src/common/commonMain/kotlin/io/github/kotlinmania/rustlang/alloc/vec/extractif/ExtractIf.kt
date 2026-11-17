@@ -5,11 +5,14 @@ import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
+import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -74,56 +77,11 @@ public open class ExtractIf<T, F, A : Allocator>(
      * The filter test predicate.
      */
     public var pred: F,
-) : Iterable<T> {
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@ExtractIf.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
+) {
     /**
      * Returns a reference to the underlying allocator.
      */
     public open fun allocator(): A = this.vec.allocator()
-
-    public open fun next(): T? {
-        while (this.idx < this.end) {
-            val i = this.idx
-            // SAFETY:
-            // We know that `i<self.end` from the if guard and that `self.end <= self.oldLen` from
-            // the validity of `Self`. Therefore `i` points to an element within `vec`.
-            //
-            // Additionally, the i-th element is valid because each element is visited at most once
-            // and it is the first time we access vec[i].
-            //
-            // Note: we can't use `vec.getUncheckedMut(i)` here since the precondition for that
-            // function is that i < vec.len(), but we've set vec's length to zero.
-            val cur = RustMutableReference(MutPtr((MutPtr((this.vec.asMutPtr()).rawAddress + ((i).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))).rawAddress), UnresolvedTypeLayout<T>())
-            val drained = (this.pred)(cur)
-            // Update the index *after* the predicate is called. If the index
-            // is updated prior and the predicate panics, the element at this
-            // index would be leaked.
-            this.idx += 1
-            if (drained) {
-                this.del += 1
-                // SAFETY: We never touch this element again after returning it.
-                return read(cur)
-            } else if (this.del > 0) {
-                // SAFETY: `self.del` > 0, so the hole slot must not overlap with current element.
-                // We use copy for move, and never touch this element again.
-                run {
-                    val holeSlot = MutPtr((this.vec.asMutPtr()).rawAddress + ((i - this.del).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
-                    copyNonoverlapping(cur, holeSlot, 1)
-                }
-            }
-        }
-        return null
-    }
-
-    public open fun sizeHint(): Pair<Int, Int?> = Pair(0, this.end - this.idx)
 
     public open fun drop() {
         if (this.del > 0) {
@@ -143,16 +101,16 @@ public open class ExtractIf<T, F, A : Allocator>(
         // because the length of `self.vec` is temporarily set to 0.
         val start = this.vec.asPtr()
         // SAFETY: we always keep first `self.idx - self.del` elements valid.
-        val retained = Slice.fromRawParts(start, this.idx - this.del)
-        val validTail = Slice.fromRawParts(ConstPtr((start).rawAddress + ((this.idx).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), this.oldLen - this.idx)
+        val retained = linearSliceView(start, (this.idx - this.del).toInt(), UnresolvedTypeLayout<T>())
+        val validTail = linearSliceView(ConstPtr((start).rawAddress + ((this.idx).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), (this.oldLen - this.idx).toInt(), UnresolvedTypeLayout<T>())
         val (remainder, skippedTail) = validTail.splitAtUnchecked(this.end - this.idx)
-        return DebugStruct(f, "ExtractIf").field("retained", retained).field("remainder", remainder).field("skipped_tail", skippedTail).finishNonExhaustive()
+        return run { DebugStruct(f, "ExtractIf").field("retained", retained).field("remainder", remainder).field("skipped_tail", skippedTail).finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
     }
 
     public companion object {
         public fun <T, F, A : Allocator, R : RangeBounds<Int>> new(vec: List<T>, pred: F, range: R): ExtractIf<T, F, A> {
             val oldLen = vec.size
-            val structVal = Slice.range(range, 0 until oldLen)
+            val structVal = Range(range, 0 until oldLen)
             val start = structVal.start
             val end = structVal.end
             // Guard against the vec getting leaked (leak amplification)
@@ -164,3 +122,39 @@ public open class ExtractIf<T, F, A : Allocator>(
         }
     }
 }
+
+public fun <T, A : Allocator> ExtractIf<T, F, A>.next(): T? {
+    while (this.idx < this.end) {
+        val i = this.idx
+        // SAFETY:
+        // We know that `i<self.end` from the if guard and that `self.end <= self.oldLen` from
+        // the validity of `Self`. Therefore `i` points to an element within `vec`.
+        //
+        // Additionally, the i-th element is valid because each element is visited at most once
+        // and it is the first time we access vec[i].
+        //
+        // Note: we can't use `vec.getUncheckedMut(i)` here since the precondition for that
+        // function is that i < vec.len(), but we've set vec's length to zero.
+        val cur = RustMutableReference(MutPtr((MutPtr((this.vec.asMutPtr()).rawAddress + ((i).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))).rawAddress), UnresolvedTypeLayout<T>())
+        val drained = (this.pred)(cur)
+        // Update the index *after* the predicate is called. If the index
+        // is updated prior and the predicate panics, the element at this
+        // index would be leaked.
+        this.idx += 1
+        if (drained) {
+            this.del += 1
+            // SAFETY: We never touch this element again after returning it.
+            return read(cur, typeLayoutT = UnresolvedTypeLayout<T>())
+        } else if (this.del > 0) {
+            // SAFETY: `self.del` > 0, so the hole slot must not overlap with current element.
+            // We use copy for move, and never touch this element again.
+            run {
+                val holeSlot = MutPtr((this.vec.asMutPtr()).rawAddress + ((i - this.del).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
+                copyNonoverlapping(cur, holeSlot, 1, typeLayoutT = UnresolvedTypeLayout<T>())
+            }
+        }
+    }
+    return null
+}
+
+public fun <T, A : Allocator> ExtractIf<T, F, A>.sizeHint(): Pair<Int, Int?> = Pair(0, this.end - this.idx)

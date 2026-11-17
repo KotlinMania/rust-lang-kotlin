@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.os.fd
 
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -15,7 +16,6 @@ import io.github.kotlinmania.rustlang.libc.fcntl
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.F_DUPFD_CLOEXEC
 import io.github.kotlinmania.rustlang.std.Rc
 import io.github.kotlinmania.rustlang.std.fs.File
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeWriter
 import io.github.kotlinmania.rustlang.std.io.stdio.IsTerminal
@@ -25,6 +25,7 @@ import io.github.kotlinmania.rustlang.std.io.stdio.Stdin
 import io.github.kotlinmania.rustlang.std.io.stdio.StdinLock
 import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
 import io.github.kotlinmania.rustlang.std.io.stdio.StdoutLock
+import io.github.kotlinmania.rustlang.std.io.stdio.isTerminal
 import io.github.kotlinmania.rustlang.std.net.tcp.TcpListener
 import io.github.kotlinmania.rustlang.std.net.tcp.TcpStream
 import io.github.kotlinmania.rustlang.std.net.udp.UdpSocket
@@ -34,6 +35,7 @@ import io.github.kotlinmania.rustlang.std.os.raw.IntoRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.RawFd
 import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.debugAssertFdIsOpen
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
@@ -121,13 +123,13 @@ public open class BorrowedFd internal constructor(
         // is a POSIX flag that was added to Linux in 2.6.24.
         val cmd = F_DUPFD_CLOEXEC
         // Avoid using file descriptors below 3 as they are used for stdio
-        val fd = when (val tryResult = cvt(fcntl(this.asRawFd(), cmd, 3))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OwnedFd, Error>(tryResult.error) }
+        val fd = when (val tryResult = cvt(fcntl(this.asRawFd(), cmd, 3))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OwnedFd, Error>(tryResult.error) }
         return Result.Ok<OwnedFd, Error>(OwnedFd.fromRawFd(fd, fieldLayout = UnresolvedTypeLayout<NotAllOnes<RawFd>>()))
     }
 
     public override fun asRawFd(): RawFd = this.fd.asInner()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "BorrowedFd").field("fd", this.fd).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "BorrowedFd").field("fd", this.fd).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
@@ -214,7 +216,7 @@ public open class BorrowedFd internal constructor(
          *
          * Panics if the raw file descriptor has the value `- 1`.
          */
-        public fun borrowRaw(fd: RawFd): BorrowedFd = BorrowedFd(fd = ValidRawFd.new(fd).expect("fd != -1"), phantom = Unit)
+        public fun borrowRaw(fd: RawFd): BorrowedFd = BorrowedFd(fd = NotAllOnes.new(fd).expect("fd != -1"), phantom = Unit)
     }
 }
 
@@ -273,7 +275,7 @@ public open class OwnedFd internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "OwnedFd").field("fd", this.fd).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "OwnedFd").field("fd", this.fd).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
@@ -303,7 +305,7 @@ public open class OwnedFd internal constructor(
          *
          * Panics if the raw file descriptor has the value `- 1`.
          */
-        public fun fromRawFd(fd: RawFd, fieldLayout: TypeLayout<NotAllOnes<RawFd>> = UnresolvedTypeLayout()): OwnedFd = OwnedFd(fd = ValidRawFd.new(fd).expect("fd != -1"), fieldLayout = fieldLayout)
+        public fun fromRawFd(fd: RawFd, fieldLayout: TypeLayout<NotAllOnes<RawFd>> = UnresolvedTypeLayout()): OwnedFd = OwnedFd(fd = NotAllOnes.new(fd).expect("fd != -1"), fieldLayout = fieldLayout)
 
         /**
          * Takes ownership of a [`File`](fs.File)'s underlying file descriptor.

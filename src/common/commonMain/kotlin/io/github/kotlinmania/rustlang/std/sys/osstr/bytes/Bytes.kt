@@ -45,9 +45,9 @@ public open class Buf internal constructor(
 
     public override fun asInner(): List<UByte> = this.inner
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.asSlice()).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.asSlice()).toString()); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.asSlice()).toString()); Result.Ok(Unit) }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.asSlice()).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun clone(): Buf = Buf(inner = this.inner.toMutableList(), fieldLayout = this.fieldLayout)
 
@@ -174,9 +174,9 @@ public open class Slice internal constructor(
 
     public fun pointerLayout(): TypeLayout<Slice> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Slice(ptr, layout) }, { it.inner })
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner.utf8Chunks().debug()).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner.utf8Chunks().debug()).toString()); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((ByteStr.new(this.inner)).toString()); Result.Ok(Unit) }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((ByteStr.new(this.inner)).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun asEncodedBytes(): List<UByte> = this.inner
 
@@ -201,8 +201,8 @@ public open class Slice internal constructor(
             run {
                 val matchVal = String.fromUtf8(after1)
                 when {
-                    matchVal is Result.Ok -> { return Unit }
-                    matchVal is Result.Err && (matchVal as Result.Err).error.validUpTo() != 0 -> {
+                    matchVal is Result.Ok<*, *> -> { return Unit }
+                    matchVal is Result.Err<*, *> && matchVal.error.validUpTo() != 0 -> {
                         val err = matchVal.error
                         return Unit
                     }

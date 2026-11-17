@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOr
 
 public fun getConcurrency(): Int =
     when (val matchVal = Env.variable("RUST_TEST_THREADS")) {
-        is Result.Ok -> {
+        is Result.Ok<*, *> -> {
             val value = matchVal.value
             run {
                 val matchVal1 = value.parse<NonZero<Int, NonZeroUsizeInner>>().ok()

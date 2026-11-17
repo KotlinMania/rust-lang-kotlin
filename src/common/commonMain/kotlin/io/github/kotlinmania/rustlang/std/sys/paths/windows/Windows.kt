@@ -5,6 +5,8 @@ import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.env.varOs
@@ -12,6 +14,7 @@ import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.os.windows.ffi.EncodeWide
 import io.github.kotlinmania.rustlang.std.os.windows.ffi.OsStringExt
+import io.github.kotlinmania.rustlang.std.os.windows.ffi.encodeWide
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.getLastError
@@ -136,11 +139,11 @@ public fun <I> joinPaths(paths: I): Result<OsString, JoinPathsError> where I : I
     return Result.Ok<OsString, JoinPathsError>(OsStringExt.fromWide(joined))
 }
 
-public fun currentExe(): Result<PathBuf, io.github.kotlinmania.rustlang.std.io.error.Error> = fillUtf16Buf({ buf, sz -> getModuleFileNameW(MutPtr(0L), buf, sz) }, os2path)
+public fun currentExe(): Result<PathBuf, io.github.kotlinmania.rustlang.core.io.error.Error> = fillUtf16Buf({ buf, sz -> getModuleFileNameW(MutPtr(0L), buf, sz) }, os2path)
 
-public fun getcwd(): Result<PathBuf, io.github.kotlinmania.rustlang.std.io.error.Error> = fillUtf16Buf({ buf, sz -> getCurrentDirectoryW(sz, buf) }, os2path)
+public fun getcwd(): Result<PathBuf, io.github.kotlinmania.rustlang.core.io.error.Error> = fillUtf16Buf({ buf, sz -> getCurrentDirectoryW(sz, buf) }, os2path)
 
-public fun chdir(p: path.Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
+public fun chdir(p: path.Path): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> {
     val p1: OsStr = p.asRef()
     val p2 = p1.encodeWide().collect<Vec>()
     p2.push(0)

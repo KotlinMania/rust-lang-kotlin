@@ -1,7 +1,6 @@
 // port-lint: source result.rs
 package io.github.kotlinmania.rustlang.core.result
 
-import io.github.kotlinmania.rustlang.core.clone.UseCloned
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
@@ -9,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.deref.Deref
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefMut
+import io.github.kotlinmania.rustlang.core.ops.deref.derefMut
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Yeet
 
@@ -549,7 +549,7 @@ public typealias TryType<T, E> = Result<T, E>
  *
  * See the [module documentation](self) for details.
  */
-public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T, Result<Nothing, E>> {
+public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
     /**
      * Contains the success value
      */
@@ -584,7 +584,7 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun isOk(): Boolean =
         when (this) {
-            is Ok -> true
+            is Ok<*, *> -> true
             else -> false
         }
 
@@ -607,9 +607,9 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun isOkAnd(f: (T) -> Boolean): Boolean =
         when (this) {
-            is Err -> false
-            is Ok -> {
-                val (x) = this
+            is Err<*, *> -> false
+            is Ok<*, *> -> {
+                val (x) = this as Ok<T, E>
                 f(x)
             }
         }
@@ -650,9 +650,9 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun isErrAnd(f: (E) -> Boolean): Boolean =
         when (this) {
-            is Ok -> false
-            is Err -> {
-                val (e) = this
+            is Ok<*, *> -> false
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 f(e)
             }
         }
@@ -678,11 +678,11 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun ok(): T? =
         when (this) {
-            is Ok -> {
-                val (x) = this
+            is Ok<*, *> -> {
+                val (x) = this as Ok<T, E>
                 x
             }
-            is Err -> null
+            is Err<*, *> -> null
         }
 
     /**
@@ -702,9 +702,9 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun err(): E? =
         when (this) {
-            is Ok -> null
-            is Err -> {
-                val (x) = this
+            is Ok<*, *> -> null
+            is Err<*, *> -> {
+                val (x) = this as Err<T, E>
                 x
             }
         }
@@ -730,12 +730,12 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun asRef(): Result<T, E> =
         when (this) {
-            is Ok -> {
-                val (x) = this
+            is Ok<*, *> -> {
+                val (x) = this as Ok<T, E>
                 Ok(x)
             }
-            is Err -> {
-                val (x1) = this
+            is Err<*, *> -> {
+                val (x1) = this as Err<T, E>
                 Err(x1)
             }
         }
@@ -768,12 +768,12 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun asMut(): Result<T, E> =
         when (this) {
-            is Ok -> {
-                val (x) = this
+            is Ok<*, *> -> {
+                val (x) = this as Ok<T, E>
                 Ok(x)
             }
-            is Err -> {
-                val (x1) = this
+            is Err<*, *> -> {
+                val (x1) = this as Err<T, E>
                 Err(x1)
             }
         }
@@ -807,12 +807,12 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun <U> map(op: (T) -> U): Result<U, E> =
         when (this) {
-            is Ok -> {
-                val (t) = this
+            is Ok<*, *> -> {
+                val (t) = this as Ok<T, E>
                 Ok(op(t))
             }
-            is Err -> {
-                val (e) = this
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 Err(e)
             }
         }
@@ -838,11 +838,11 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun <U> mapOr(default: U, f: (T) -> U): U =
         when (this) {
-            is Ok -> {
-                val (t) = this
+            is Ok<*, *> -> {
+                val (t) = this as Ok<T, E>
                 f(t)
             }
-            is Err -> default
+            is Err<*, *> -> default
         }
 
     /**
@@ -864,12 +864,12 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun <U> mapOrElse(default: (E) -> U, f: (T) -> U): U =
         when (this) {
-            is Ok -> {
-                val (t) = this
+            is Ok<*, *> -> {
+                val (t) = this as Ok<T, E>
                 f(t)
             }
-            is Err -> {
-                val (e) = this
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 default(e)
             }
         }
@@ -892,11 +892,11 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun <U> mapOrDefault(f: (T) -> U, defaultUFn: () -> U): U =
         when (this) {
-            is Ok -> {
-                val (t) = this
+            is Ok<*, *> -> {
+                val (t) = this as Ok<T, E>
                 f(t)
             }
-            is Err -> defaultUFn()
+            is Err<*, *> -> defaultUFn()
         }
 
     /**
@@ -920,12 +920,12 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun <F> mapErr(op: (E) -> F): Result<T, F> =
         when (this) {
-            is Ok -> {
-                val (t) = this
+            is Ok<*, *> -> {
+                val (t) = this as Ok<T, E>
                 Ok(t)
             }
-            is Err -> {
-                val (e) = this
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 Err(op(e))
             }
         }
@@ -942,7 +942,7 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      * ```
      */
     public open fun inspect(f: (T) -> Unit): Result<T, E> {
-        if (this is Ok) {
+        if (this is Ok<*, *>) {
             val (t) = this
             f(t)
         }
@@ -966,7 +966,7 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      * ```
      */
     public open fun inspectErr(f: (E) -> Unit): Result<T, E> {
-        if (this is Err) {
+        if (this is Err<*, *>) {
             val (e) = this
             f(e)
         }
@@ -1116,12 +1116,12 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun expect(msg: String): T =
         when (this) {
-            is Ok -> {
-                val (t) = this
+            is Ok<*, *> -> {
+                val (t) = this as Ok<T, E>
                 t
             }
-            is Err -> {
-                val (e) = this
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 unwrapFailed(msg, e)
             }
         }
@@ -1165,12 +1165,12 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun unwrap(): T =
         when (this) {
-            is Ok -> {
-                val (t) = this
+            is Ok<*, *> -> {
+                val (t) = this as Ok<T, E>
                 t
             }
-            is Err -> {
-                val (e) = this
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 unwrapFailed("called `Result::unwrap()` on an `Err` value", e)
             }
         }
@@ -1202,11 +1202,11 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun unwrapOrDefault(defaultTFn: () -> T): T =
         when (this) {
-            is Ok -> {
-                val (x) = this
+            is Ok<*, *> -> {
+                val (x) = this as Ok<T, E>
                 x
             }
-            is Err -> defaultTFn()
+            is Err<*, *> -> defaultTFn()
         }
 
     /**
@@ -1227,12 +1227,12 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun expectErr(msg: String): E =
         when (this) {
-            is Ok -> {
-                val (t) = this
+            is Ok<*, *> -> {
+                val (t) = this as Ok<T, E>
                 unwrapFailed(msg, t)
             }
-            is Err -> {
-                val (e) = this
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 e
             }
         }
@@ -1260,12 +1260,12 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun unwrapErr(): E =
         when (this) {
-            is Ok -> {
-                val (t) = this
+            is Ok<*, *> -> {
+                val (t) = this as Ok<T, E>
                 unwrapFailed("called `Result::unwrap_err()` on an `Ok` value", t)
             }
-            is Err -> {
-                val (e) = this
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 e
             }
         }
@@ -1293,12 +1293,12 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun intoOk(): T =
         when (this) {
-            is Ok -> {
-                val (x) = this
+            is Ok<*, *> -> {
+                val (x) = this as Ok<T, E>
                 x
             }
-            is Err -> {
-                val (e) = this
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 e.into()
             }
         }
@@ -1326,12 +1326,12 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun intoErr(): E =
         when (this) {
-            is Ok -> {
-                val (x) = this
+            is Ok<*, *> -> {
+                val (x) = this as Ok<T, E>
                 x.into()
             }
-            is Err -> {
-                val (e) = this
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 e
             }
         }
@@ -1368,9 +1368,9 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun <U> and(res: Result<U, E>): Result<U, E> =
         when (this) {
-            is Ok -> res
-            is Err -> {
-                val (e) = this
+            is Ok<*, *> -> res
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 Err(e)
             }
         }
@@ -1407,12 +1407,12 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun <U> andThen(op: (T) -> Result<U, E>): Result<U, E> =
         when (this) {
-            is Ok -> {
-                val (t) = this
+            is Ok<*, *> -> {
+                val (t) = this as Ok<T, E>
                 op(t)
             }
-            is Err -> {
-                val (e) = this
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 Err(e)
             }
         }
@@ -1445,11 +1445,11 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun <F> or(res: Result<T, F>): Result<T, F> =
         when (this) {
-            is Ok -> {
-                val (v) = this
+            is Ok<*, *> -> {
+                val (v) = this as Ok<T, E>
                 Ok(v)
             }
-            is Err -> res
+            is Err<*, *> -> res
         }
 
     /**
@@ -1474,12 +1474,12 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun <F> orElse(op: (E) -> Result<T, F>): Result<T, F> =
         when (this) {
-            is Ok -> {
-                val (t) = this
+            is Ok<*, *> -> {
+                val (t) = this as Ok<T, E>
                 Ok(t)
             }
-            is Err -> {
-                val (e) = this
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 op(e)
             }
         }
@@ -1505,11 +1505,11 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun unwrapOr(default: T): T =
         when (this) {
-            is Ok -> {
-                val (t) = this
+            is Ok<*, *> -> {
+                val (t) = this as Ok<T, E>
                 t
             }
-            is Err -> default
+            is Err<*, *> -> default
         }
 
     /**
@@ -1527,12 +1527,12 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun unwrapOrElse(op: (E) -> T): T =
         when (this) {
-            is Ok -> {
-                val (t) = this
+            is Ok<*, *> -> {
+                val (t) = this as Ok<T, E>
                 t
             }
-            is Err -> {
-                val (e) = this
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 op(e)
             }
         }
@@ -1562,12 +1562,12 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
      */
     public open fun unwrapUnchecked(): T =
         when (this) {
-            is Ok -> {
-                val (t) = this
+            is Ok<*, *> -> {
+                val (t) = this as Ok<T, E>
                 t
             }
-            is Err -> {
-                val (e) = this
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 // Note(const-Note): to avoid E: const Destruct bound
                 forget(e)
                 // SAFETY: the safety contract must be upheld by the caller.
@@ -1601,9 +1601,9 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
     public open fun unwrapErrUnchecked(): E =
         when (this) {
             // SAFETY: the safety contract must be upheld by the caller.
-            is Ok -> unreachableUnchecked()
-            is Err -> {
-                val (e) = this
+            is Ok<*, *> -> unreachableUnchecked()
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 e
             }
         }
@@ -1611,28 +1611,28 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
     // ////////////////////////////////////////////////////////////////////////
     // Trait implementations
     // ////////////////////////////////////////////////////////////////////////
-    public override fun clone(cloneEFn: (E) -> E = { it }): Result<T, E> =
+    public open fun clone(cloneEFn: (E) -> E = { it }): Result<T, E> =
         when (this) {
-            is Ok -> {
-                val (x) = this
+            is Ok<*, *> -> {
+                val (x) = this as Ok<T, E>
                 Ok(x.clone())
             }
-            is Err -> {
-                val (x1) = this
+            is Err<*, *> -> {
+                val (x1) = this as Err<T, E>
                 Err(cloneEFn(x1))
             }
         }
 
-    public override fun cloneFrom(source: Result<T, E>, cloneEFn: (E) -> E = { it }) {
+    public open fun cloneFrom(source: Result<T, E>, cloneEFn: (E) -> E = { it }) {
         run {
             val matchVal = Pair(this, source)
             when {
-                matchVal.first is Ok && matchVal.second is Ok -> {
+                matchVal.first is Ok<*, *> && matchVal.second is Ok<*, *> -> {
                     val (to) = matchVal.first as Ok<T, E>
                     val (from) = matchVal.second as Ok<T, E>
                     to.cloneFrom(from)
                 }
-                matchVal.first is Err && matchVal.second is Err -> {
+                matchVal.first is Err<*, *> && matchVal.second is Err<*, *> -> {
                     val (to1) = matchVal.first as Err<T, E>
                     val (from1) = matchVal.second as Err<T, E>
                     to1.cloneFrom(from1)
@@ -1666,12 +1666,12 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T,
 
     public override fun branch(): ControlFlow<Result<Nothing, E>, T> =
         when (this) {
-            is Ok -> {
-                val (v) = this
+            is Ok<*, *> -> {
+                val (v) = this as Ok<T, E>
                 ControlFlow.Continue(v)
             }
-            is Err -> {
-                val (e) = this
+            is Err<*, *> -> {
+                val (e) = this as Err<T, E>
                 ControlFlow.Break(Err(e))
             }
         }
@@ -1699,12 +1699,12 @@ public fun <T, E> Result<T, E>.copied(): Result<T, E> {
     // Note(const-Note): this implementation, which sidesteps using `Result.map` since it's not const
     // ready yet, should be reverted when possible to avoid code repetition
     return when (this) {
-        is Ok -> {
-            val (v) = this
+        is Ok<*, *> -> {
+            val (v) = this as Ok<T, E>
             Ok(v)
         }
-        is Err -> {
-            val (e) = this
+        is Err<*, *> -> {
+            val (e) = this as Err<T, E>
             Err(e)
         }
     }
@@ -1743,16 +1743,16 @@ public fun <T, E> Result<T, E>.cloned(): Result<T, E> = this.map({ t -> t.clone(
  */
 public fun <T, E> Result<T?, E>.transpose(): Result<T, E>? =
     when {
-        this is Ok && (this as Ok<T, E>).value != null -> {
+        this is Ok<*, *> && (this as Ok<T, E>).value != null -> {
             val x = (this as Ok<T, E>).value
             Ok(x)
         }
-        this is Ok && (this as Ok<T, E>).value == null -> {
+        this is Ok<*, *> && (this as Ok<T, E>).value == null -> {
             val (None) = this as Ok<T, E>
             null
         }
         else -> {
-            val (e) = this
+            val (e) = this as Err<T, E>
             Err(e)
         }
     }
@@ -1782,12 +1782,12 @@ public fun <T, E> Result<T?, E>.transpose(): Result<T, E>? =
 public fun <T, E> Result<Result<T, E>, E>.flatten(): Result<T, E> {
     // Note(const-Note): could be written with `andThen`
     return when (this) {
-        is Ok -> {
-            val (inner) = this
+        is Ok<*, *> -> {
+            val (inner) = this as Ok<T, E>
             inner
         }
-        is Err -> {
-            val (e) = this
+        is Err<*, *> -> {
+            val (e) = this as Err<T, E>
             Err(e)
         }
     }
@@ -1964,7 +1964,7 @@ public fun <T, E, V, I : Iterable<Result<T, E>>> fromIteratorFromIterResultVE(it
 
 public fun <T, E, F> fromResidualResultTF(residual: Result<Nothing, E>): Result<T, F> =
     when (residual) {
-        is Err -> {
+        is Err<*, *> -> {
             val (e) = residual
             Err(From.from(e))
         }

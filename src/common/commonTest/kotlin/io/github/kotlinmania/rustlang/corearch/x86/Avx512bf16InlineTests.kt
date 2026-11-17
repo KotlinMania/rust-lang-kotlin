@@ -5,13 +5,8 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.transmuteCopy
-import io.github.kotlinmania.rustlang.corearch.simd.F32x16
-import io.github.kotlinmania.rustlang.corearch.simd.F32x4
-import io.github.kotlinmania.rustlang.corearch.simd.F32x8
-import io.github.kotlinmania.rustlang.corearch.simd.U16x16
-import io.github.kotlinmania.rustlang.corearch.simd.U16x32
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.U16x4
-import io.github.kotlinmania.rustlang.corearch.simd.U16x8
 
 // [AVX512BF16 intrinsics].
 //
@@ -20,8 +15,8 @@ import io.github.kotlinmania.rustlang.corearch.simd.U16x8
 public fun testMmCvtne2psPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f)
     val bArray = floatArrayOf(-178.125f, -10.5f, -3.75f, -50.25f)
-    val a = F32x4.fromArray(aArray).asM128()
-    val b = F32x4.fromArray(bArray).asM128()
+    val a = Simd<Float>((aArray).toList()).asM128()
+    val b = Simd<Float>((bArray).toList()).asM128()
     val c: M128bh = mmCvtne2psPbh(a, b)
     val result = c.asU16x8().asArray()
     val expectedResult: UShortArray = ushortArrayOf(0xC332u, 0xC128u, 0xC070u, 0xC249u, 0x4332u, 0x4128u, 0x4070u, 0x4249u)
@@ -32,9 +27,9 @@ public fun testMmMaskCvtne2psPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f)
     val bArray = floatArrayOf(-178.125f, -10.5f, -3.75f, -50.25f)
     val srcArray: UShortArray = ushortArrayOf(0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4332u, 0x4128u, 0x4070u, 0x4249u)
-    val src = U16x8.fromArray(srcArray).asM128bh()
-    val a = F32x4.fromArray(aArray).asM128()
-    val b = F32x4.fromArray(bArray).asM128()
+    val src = Simd<UShort>((srcArray).toList()).asM128bh()
+    val a = Simd<Float>((aArray).toList()).asM128()
+    val b = Simd<Float>((bArray).toList()).asM128()
     val k: Mmask8 = 0xFFu
     val c: M128bh = mmMaskCvtne2psPbh(src, k, a, b)
     val result = c.asU16x8().asArray()
@@ -50,8 +45,8 @@ public fun testMmMaskCvtne2psPbh() {
 public fun testMmMaskzCvtne2psPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f)
     val bArray = floatArrayOf(-178.125f, -10.5f, -3.75f, -50.25f)
-    val a = F32x4.fromArray(aArray).asM128()
-    val b = F32x4.fromArray(bArray).asM128()
+    val a = Simd<Float>((aArray).toList()).asM128()
+    val b = Simd<Float>((bArray).toList()).asM128()
     val k: Mmask8 = 0xFFu
     val c: M128bh = mmMaskzCvtne2psPbh(k, a, b)
     val result = c.asU16x8().asArray()
@@ -67,8 +62,8 @@ public fun testMmMaskzCvtne2psPbh() {
 public fun testMm256Cvtne2psPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f)
     val bArray = floatArrayOf(-178.125f, -10.5f, -3.75f, -50.25f, -16.5f, -255.11f, -1000.158f, -575.575f)
-    val a = F32x8.fromArray(aArray).asM256()
-    val b = F32x8.fromArray(bArray).asM256()
+    val a = Simd<Float>((aArray).toList()).asM256()
+    val b = Simd<Float>((bArray).toList()).asM256()
     val c: M256bh = mm256Cvtne2psPbh(a, b)
     val result = c.asU16x16().asArray()
     val expectedResult: UShortArray = ushortArrayOf(0xC332u, 0xC128u, 0xC070u, 0xC249u, 0xC184u, 0xC37Fu, 0xC47Au, 0xC410u, 0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4184u, 0x437Fu, 0x447Au, 0x4410u)
@@ -79,9 +74,9 @@ public fun testMm256MaskCvtne2psPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f)
     val bArray = floatArrayOf(-178.125f, -10.5f, -3.75f, -50.25f, -16.5f, -255.11f, -1000.158f, -575.575f)
     val srcArray: UShortArray = ushortArrayOf(0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4332u, 0x4128u, 0x4070u, 0x4249u)
-    val src = U16x16.fromArray(srcArray).asM256bh()
-    val a = F32x8.fromArray(aArray).asM256()
-    val b = F32x8.fromArray(bArray).asM256()
+    val src = Simd<UShort>((srcArray).toList()).asM256bh()
+    val a = Simd<Float>((aArray).toList()).asM256()
+    val b = Simd<Float>((bArray).toList()).asM256()
     val k: Mmask16 = 0xffffu
     val c: M256bh = mm256MaskCvtne2psPbh(src, k, a, b)
     val result = c.asU16x16().asArray()
@@ -97,8 +92,8 @@ public fun testMm256MaskCvtne2psPbh() {
 public fun testMm256MaskzCvtne2psPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f)
     val bArray = floatArrayOf(-178.125f, -10.5f, -3.75f, -50.25f, -16.5f, -255.11f, -1000.158f, -575.575f)
-    val a = F32x8.fromArray(aArray).asM256()
-    val b = F32x8.fromArray(bArray).asM256()
+    val a = Simd<Float>((aArray).toList()).asM256()
+    val b = Simd<Float>((bArray).toList()).asM256()
     val k: Mmask16 = 0xffffu
     val c: M256bh = mm256MaskzCvtne2psPbh(k, a, b)
     val result = c.asU16x16().asArray()
@@ -114,8 +109,8 @@ public fun testMm256MaskzCvtne2psPbh() {
 public fun testMm512Cvtne2psPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f, 178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f)
     val bArray = floatArrayOf(-178.125f, -10.5f, -3.75f, -50.25f, -16.5f, -255.11f, -1000.158f, -575.575f, -178.125f, -10.5f, -3.75f, -50.25f, -16.5f, -255.11f, -1000.158f, -575.575f)
-    val a = F32x16.fromArray(aArray).asM512()
-    val b = F32x16.fromArray(bArray).asM512()
+    val a = Simd<Float>((aArray).toList()).asM512()
+    val b = Simd<Float>((bArray).toList()).asM512()
     val c: M512bh = mm512Cvtne2psPbh(a, b)
     val result = c.asU16x32().asArray()
     val expectedResult: UShortArray = ushortArrayOf(0xC332u, 0xC128u, 0xC070u, 0xC249u, 0xC184u, 0xC37Fu, 0xC47Au, 0xC410u, 0xC332u, 0xC128u, 0xC070u, 0xC249u, 0xC184u, 0xC37Fu, 0xC47Au, 0xC410u, 0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4184u, 0x437Fu, 0x447Au, 0x4410u, 0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4184u, 0x437Fu, 0x447Au, 0x4410u)
@@ -126,9 +121,9 @@ public fun testMm512MaskCvtne2psPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f, 178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f)
     val bArray = floatArrayOf(-178.125f, -10.5f, -3.75f, -50.25f, -16.5f, -255.11f, -1000.158f, -575.575f, -178.125f, -10.5f, -3.75f, -50.25f, -16.5f, -255.11f, -1000.158f, -575.575f)
     val srcArray: UShortArray = ushortArrayOf(0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4332u, 0x4128u, 0x4070u, 0x4249u)
-    val src = U16x32.fromArray(srcArray).asM512bh()
-    val a = F32x16.fromArray(aArray).asM512()
-    val b = F32x16.fromArray(bArray).asM512()
+    val src = Simd<UShort>((srcArray).toList()).asM512bh()
+    val a = Simd<Float>((aArray).toList()).asM512()
+    val b = Simd<Float>((bArray).toList()).asM512()
     val k: Mmask32 = 0xffffffffu
     val c: M512bh = mm512MaskCvtne2psPbh(src, k, a, b)
     val result = c.asU16x32().asArray()
@@ -144,8 +139,8 @@ public fun testMm512MaskCvtne2psPbh() {
 public fun testMm512MaskzCvtne2psPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f, 178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f)
     val bArray = floatArrayOf(-178.125f, -10.5f, -3.75f, -50.25f, -16.5f, -255.11f, -1000.158f, -575.575f, -178.125f, -10.5f, -3.75f, -50.25f, -16.5f, -255.11f, -1000.158f, -575.575f)
-    val a = F32x16.fromArray(aArray).asM512()
-    val b = F32x16.fromArray(bArray).asM512()
+    val a = Simd<Float>((aArray).toList()).asM512()
+    val b = Simd<Float>((bArray).toList()).asM512()
     val k: Mmask32 = 0xffffffffu
     val c: M512bh = mm512MaskzCvtne2psPbh(k, a, b)
     val result = c.asU16x32().asArray()
@@ -160,7 +155,7 @@ public fun testMm512MaskzCvtne2psPbh() {
 
 public fun testMm256CvtnepsPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f)
-    val a = F32x8.fromArray(aArray).asM256()
+    val a = Simd<Float>((aArray).toList()).asM256()
     val c: M128bh = mm256CvtnepsPbh(a)
     val result = c.asU16x8().asArray()
     val expectedResult: UShortArray = ushortArrayOf(0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4184u, 0x437Fu, 0x447Au, 0x4410u)
@@ -170,8 +165,8 @@ public fun testMm256CvtnepsPbh() {
 public fun testMm256MaskCvtnepsPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f)
     val srcArray: UShortArray = ushortArrayOf(0xC332u, 0xC128u, 0xC070u, 0xC249u, 0xC184u, 0xC37Fu, 0xC47Au, 0xC410u)
-    val src = U16x8.fromArray(srcArray).asM128bh()
-    val a = F32x8.fromArray(aArray).asM256()
+    val src = Simd<UShort>((srcArray).toList()).asM128bh()
+    val a = Simd<Float>((aArray).toList()).asM256()
     val k: Mmask8 = 0xffu
     val b = mm256MaskCvtnepsPbh(src, k, a)
     val result = b.asU16x8().asArray()
@@ -186,7 +181,7 @@ public fun testMm256MaskCvtnepsPbh() {
 
 public fun testMm256MaskzCvtnepsPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f)
-    val a = F32x8.fromArray(aArray).asM256()
+    val a = Simd<Float>((aArray).toList()).asM256()
     val k: Mmask8 = 0xffu
     val b = mm256MaskzCvtnepsPbh(k, a)
     val result = b.asU16x8().asArray()
@@ -201,7 +196,7 @@ public fun testMm256MaskzCvtnepsPbh() {
 
 public fun testMm512CvtnepsPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f, 178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f)
-    val a = F32x16.fromArray(aArray).asM512()
+    val a = Simd<Float>((aArray).toList()).asM512()
     val c: M256bh = mm512CvtnepsPbh(a)
     val result = c.asU16x16().asArray()
     val expectedResult: UShortArray = ushortArrayOf(0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4184u, 0x437Fu, 0x447Au, 0x4410u, 0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4184u, 0x437Fu, 0x447Au, 0x4410u)
@@ -211,8 +206,8 @@ public fun testMm512CvtnepsPbh() {
 public fun testMm512MaskCvtnepsPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f, 178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f)
     val srcArray: UShortArray = ushortArrayOf(0xC332u, 0xC128u, 0xC070u, 0xC249u, 0xC184u, 0xC37Fu, 0xC47Au, 0xC410u, 0xC332u, 0xC128u, 0xC070u, 0xC249u, 0xC184u, 0xC37Fu, 0xC47Au, 0xC410u)
-    val src = U16x16.fromArray(srcArray).asM256bh()
-    val a = F32x16.fromArray(aArray).asM512()
+    val src = Simd<UShort>((srcArray).toList()).asM256bh()
+    val a = Simd<Float>((aArray).toList()).asM512()
     val k: Mmask16 = 0xffffu
     val c: M256bh = mm512MaskCvtnepsPbh(src, k, a)
     val result = c.asU16x16().asArray()
@@ -227,7 +222,7 @@ public fun testMm512MaskCvtnepsPbh() {
 
 public fun testMm512MaskzCvtnepsPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f, 178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f)
-    val a = F32x16.fromArray(aArray).asM512()
+    val a = Simd<Float>((aArray).toList()).asM512()
     val k: Mmask16 = 0xffffu
     val c: M256bh = mm512MaskzCvtnepsPbh(k, a)
     val result = c.asU16x16().asArray()
@@ -243,9 +238,9 @@ public fun testMm512MaskzCvtnepsPbh() {
 public fun testMmDpbf16Ps() {
     val aArray = floatArrayOf(8.5f, 10.5f, 3.75f, 50.25f)
     val bArray = floatArrayOf(-1.0f, -1.0f, -1.0f, -1.0f)
-    val a1 = F32x4.fromArray(aArray).asM128()
-    val b1 = F32x4.fromArray(bArray).asM128()
-    val src = F32x4.fromArray(floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f)).asM128()
+    val a1 = Simd<Float>((aArray).toList()).asM128()
+    val b1 = Simd<Float>((bArray).toList()).asM128()
+    val src = Simd<Float>((floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f)).toList()).asM128()
     val a: M128bh = mmCvtne2psPbh(a1, a1)
     val b: M128bh = mmCvtne2psPbh(b1, b1)
     val c: M128 = mmDpbf16Ps(src, a, b)
@@ -257,10 +252,10 @@ public fun testMmDpbf16Ps() {
 public fun testMmMaskDpbf16Ps() {
     val aArray = floatArrayOf(8.5f, 10.5f, 3.75f, 50.25f)
     val bArray = floatArrayOf(-1.0f, -1.0f, -1.0f, -1.0f)
-    val a1 = F32x4.fromArray(aArray).asM128()
-    val b1 = F32x4.fromArray(bArray).asM128()
+    val a1 = Simd<Float>((aArray).toList()).asM128()
+    val b1 = Simd<Float>((bArray).toList()).asM128()
     val k: Mmask8 = 0xf3u
-    val src = F32x4.fromArray(floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f)).asM128()
+    val src = Simd<Float>((floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f)).toList()).asM128()
     val a: M128bh = mmCvtne2psPbh(a1, a1)
     val b: M128bh = mmCvtne2psPbh(b1, b1)
     val c: M128 = mmMaskDpbf16Ps(src, k, a, b)
@@ -282,10 +277,10 @@ public fun testMmMaskDpbf16Ps() {
 public fun testMmMaskzDpbf16Ps() {
     val aArray = floatArrayOf(8.5f, 10.5f, 3.75f, 50.25f)
     val bArray = floatArrayOf(-1.0f, -1.0f, -1.0f, -1.0f)
-    val a1 = F32x4.fromArray(aArray).asM128()
-    val b1 = F32x4.fromArray(bArray).asM128()
+    val a1 = Simd<Float>((aArray).toList()).asM128()
+    val b1 = Simd<Float>((bArray).toList()).asM128()
     val k: Mmask8 = 0xf3u
-    val src = F32x4.fromArray(floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f)).asM128()
+    val src = Simd<Float>((floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f)).toList()).asM128()
     val a: M128bh = mmCvtne2psPbh(a1, a1)
     val b: M128bh = mmCvtne2psPbh(b1, b1)
     val c: M128 = mmMaskzDpbf16Ps(k, src, a, b)
@@ -307,9 +302,9 @@ public fun testMmMaskzDpbf16Ps() {
 public fun testMm256Dpbf16Ps() {
     val aArray = floatArrayOf(8.5f, 10.5f, 3.75f, 50.25f, 8.5f, 10.5f, 3.75f, 50.25f)
     val bArray = floatArrayOf(-1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f)
-    val a1 = F32x8.fromArray(aArray).asM256()
-    val b1 = F32x8.fromArray(bArray).asM256()
-    val src = F32x8.fromArray(floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f)).asM256()
+    val a1 = Simd<Float>((aArray).toList()).asM256()
+    val b1 = Simd<Float>((bArray).toList()).asM256()
+    val src = Simd<Float>((floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f)).toList()).asM256()
     val a: M256bh = mm256Cvtne2psPbh(a1, a1)
     val b: M256bh = mm256Cvtne2psPbh(b1, b1)
     val c: M256 = mm256Dpbf16Ps(src, a, b)
@@ -321,10 +316,10 @@ public fun testMm256Dpbf16Ps() {
 public fun testMm256MaskDpbf16Ps() {
     val aArray = floatArrayOf(8.5f, 10.5f, 3.75f, 50.25f, 8.5f, 10.5f, 3.75f, 50.25f)
     val bArray = floatArrayOf(-1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f)
-    val a1 = F32x8.fromArray(aArray).asM256()
-    val b1 = F32x8.fromArray(bArray).asM256()
+    val a1 = Simd<Float>((aArray).toList()).asM256()
+    val b1 = Simd<Float>((bArray).toList()).asM256()
     val k: Mmask8 = 0x33u
-    val src = F32x8.fromArray(floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f)).asM256()
+    val src = Simd<Float>((floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f)).toList()).asM256()
     val a: M256bh = mm256Cvtne2psPbh(a1, a1)
     val b: M256bh = mm256Cvtne2psPbh(b1, b1)
     val c: M256 = mm256MaskDpbf16Ps(src, k, a, b)
@@ -346,10 +341,10 @@ public fun testMm256MaskDpbf16Ps() {
 public fun testMm256MaskzDpbf16Ps() {
     val aArray = floatArrayOf(8.5f, 10.5f, 3.75f, 50.25f, 8.5f, 10.5f, 3.75f, 50.25f)
     val bArray = floatArrayOf(-1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f)
-    val a1 = F32x8.fromArray(aArray).asM256()
-    val b1 = F32x8.fromArray(bArray).asM256()
+    val a1 = Simd<Float>((aArray).toList()).asM256()
+    val b1 = Simd<Float>((bArray).toList()).asM256()
     val k: Mmask8 = 0x33u
-    val src = F32x8.fromArray(floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f)).asM256()
+    val src = Simd<Float>((floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f)).toList()).asM256()
     val a: M256bh = mm256Cvtne2psPbh(a1, a1)
     val b: M256bh = mm256Cvtne2psPbh(b1, b1)
     val c: M256 = mm256MaskzDpbf16Ps(k, src, a, b)
@@ -371,9 +366,9 @@ public fun testMm256MaskzDpbf16Ps() {
 public fun testMm512Dpbf16Ps() {
     val aArray = floatArrayOf(8.5f, 10.5f, 3.75f, 50.25f, 8.5f, 10.5f, 3.75f, 50.25f, 8.5f, 10.5f, 3.75f, 50.25f, 8.5f, 10.5f, 3.75f, 50.25f)
     val bArray = floatArrayOf(-1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f)
-    val a1 = F32x16.fromArray(aArray).asM512()
-    val b1 = F32x16.fromArray(bArray).asM512()
-    val src = F32x16.fromArray(floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f)).asM512()
+    val a1 = Simd<Float>((aArray).toList()).asM512()
+    val b1 = Simd<Float>((bArray).toList()).asM512()
+    val src = Simd<Float>((floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f)).toList()).asM512()
     val a: M512bh = mm512Cvtne2psPbh(a1, a1)
     val b: M512bh = mm512Cvtne2psPbh(b1, b1)
     val c: M512 = mm512Dpbf16Ps(src, a, b)
@@ -385,10 +380,10 @@ public fun testMm512Dpbf16Ps() {
 public fun testMm512MaskDpbf16Ps() {
     val aArray = floatArrayOf(8.5f, 10.5f, 3.75f, 50.25f, 8.5f, 10.5f, 3.75f, 50.25f, 8.5f, 10.5f, 3.75f, 50.25f, 8.5f, 10.5f, 3.75f, 50.25f)
     val bArray = floatArrayOf(-1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f)
-    val a1 = F32x16.fromArray(aArray).asM512()
-    val b1 = F32x16.fromArray(bArray).asM512()
+    val a1 = Simd<Float>((aArray).toList()).asM512()
+    val b1 = Simd<Float>((bArray).toList()).asM512()
     val k: Mmask16 = 0x3333u
-    val src = F32x16.fromArray(floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f)).asM512()
+    val src = Simd<Float>((floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f)).toList()).asM512()
     val a: M512bh = mm512Cvtne2psPbh(a1, a1)
     val b: M512bh = mm512Cvtne2psPbh(b1, b1)
     val c: M512 = mm512MaskDpbf16Ps(src, k, a, b)
@@ -410,10 +405,10 @@ public fun testMm512MaskDpbf16Ps() {
 public fun testMm512MaskzDpbf16Ps() {
     val aArray = floatArrayOf(8.5f, 10.5f, 3.75f, 50.25f, 8.5f, 10.5f, 3.75f, 50.25f, 8.5f, 10.5f, 3.75f, 50.25f, 8.5f, 10.5f, 3.75f, 50.25f)
     val bArray = floatArrayOf(-1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f)
-    val a1 = F32x16.fromArray(aArray).asM512()
-    val b1 = F32x16.fromArray(bArray).asM512()
+    val a1 = Simd<Float>((aArray).toList()).asM512()
+    val b1 = Simd<Float>((bArray).toList()).asM512()
     val k: Mmask16 = 0x3333u
-    val src = F32x16.fromArray(floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f)).asM512()
+    val src = Simd<Float>((floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f, 4.0f)).toList()).asM512()
     val a: M512bh = mm512Cvtne2psPbh(a1, a1)
     val b: M512bh = mm512Cvtne2psPbh(b1, b1)
     val c: M512 = mm512MaskzDpbf16Ps(k, src, a, b)
@@ -528,7 +523,7 @@ public fun testMmCvtsbhSs() {
 public fun testMmCvtnepsPbh() {
     val a = mmSetrPs(1.0f, 2.0f, 3.0f, 4.0f)
     val r: U16x4 = transmuteCopy(mmCvtnepsPbh(a))
-    val e = U16x4.new(BF16_ONE, BF16_TWO, BF16_THREE, BF16_FOUR)
+    val e = Simd<UShort>(listOf(BF16_ONE, BF16_TWO, BF16_THREE, BF16_FOUR))
     check(r == e)
 }
 
@@ -537,7 +532,7 @@ public fun testMmMaskCvtnepsPbh() {
     val src = m128bh(listOf(5, 6, 7, 8, 0.inv(), 0.inv(), 0.inv(), 0.inv()))
     val k = 0xA
     val r: U16x4 = transmuteCopy(mmMaskCvtnepsPbh(src, k, a))
-    val e = U16x4.new(5, BF16_TWO, 7, BF16_FOUR)
+    val e = Simd<UShort>(listOf(5u.toUShort(), BF16_TWO, 7u.toUShort(), BF16_FOUR))
     check(r == e)
 }
 
@@ -545,7 +540,7 @@ public fun testMmMaskzCvtnepsPbh() {
     val a = mmSetrPs(1.0f, 2.0f, 3.0f, 4.0f)
     val k = 0xA
     val r: U16x4 = transmuteCopy(mmMaskzCvtnepsPbh(k, a))
-    val e = U16x4.new(0, BF16_TWO, 0, BF16_FOUR)
+    val e = Simd<UShort>(listOf(0u.toUShort(), BF16_TWO, 0u.toUShort(), BF16_FOUR))
     check(r == e)
 }
 

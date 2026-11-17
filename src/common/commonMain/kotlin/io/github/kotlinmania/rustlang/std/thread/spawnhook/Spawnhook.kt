@@ -1,23 +1,11 @@
 // port-lint: source thread/spawnhook.rs
 package io.github.kotlinmania.rustlang.std.thread.spawnhook
 
-import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.std.path.Iter
 import io.github.kotlinmania.rustlang.std.sync.UniqueArc
-import io.github.kotlinmania.rustlang.std.thread.LocalKey
-import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
-
-/**
- * A thread local linked list of spawn hooks.
- *
- * It is a linked list of Arcs, such that it can very cheaply be inherited by spawned threads.
- *
- * (That technically makes it a set of linked lists with shared tails, so a linked tree.)
- */
-public val SPAWN_HOOKS: LocalKey<Cell<SpawnHooks>> = threadLocalInner(key, Cell, SpawnHooks, Cell.new(SpawnHooks(first = null)))
 
 public open class SpawnHooks(
     public var first: SpawnHook?,
@@ -126,7 +114,7 @@ public fun runSpawnHooks(thread: Thread): ChildSpawnHooks {
         hooks.set(snapshot.clone())
         snapshot
     })) {
-        is Result.Ok -> {
+        is Result.Ok<*, *> -> {
             val hooks = matchVal.value
             // Iterate over the hooks, run them, and collect the results in a vector.
             val toRun: Vec = Iter.successors(hooks.first.asDeref(), { hook -> hook.next.asDeref() }).map({ hook -> (hook.hook)(thread) }).collect()

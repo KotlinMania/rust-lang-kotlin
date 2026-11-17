@@ -19,6 +19,7 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S16
@@ -4321,7 +4322,7 @@ public open class IwreqData(
     public var param: IwParam? = null,
     public var data: IwPoint? = null,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "iwreq_data").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "iwreq_data").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 }
 
 public open class IwEvent(
@@ -4335,7 +4336,7 @@ public open class IwEvent(
 public open class CAnonymousIwreq(
     public var ifrnName: UByteArray? = null,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_iwreq").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "__c_anonymous_iwreq").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 }
 
 public open class Iwreq(
@@ -4350,14 +4351,14 @@ public open class CAnonymousPtpPeroutRequest1(
     public var start: PtpClockTime? = null,
     public var phase: PtpClockTime? = null,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_ptp_perout_request_1").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "__c_anonymous_ptp_perout_request_1").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 }
 
 public open class CAnonymousPtpPeroutRequest2(
     public var on: PtpClockTime? = null,
     public var rsv: UIntArray? = null,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_ptp_perout_request_2").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "__c_anonymous_ptp_perout_request_2").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 }
 
 public open class PtpPeroutRequest(
@@ -4382,5 +4383,5 @@ public open class CAnonymousXskTxMetadataUnion(
     public var request: XskTxMetadataRequest? = null,
     public var completion: XskTxMetadataCompletion? = null,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_xsk_tx_metadata_union").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "__c_anonymous_xsk_tx_metadata_union").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 }

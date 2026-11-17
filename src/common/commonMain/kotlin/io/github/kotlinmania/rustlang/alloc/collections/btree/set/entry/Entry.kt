@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.alloc.collections.btree.set.entry
 
 import io.github.kotlinmania.rustlang.alloc.collections.btree.set.entry.Entry.*
+import io.github.kotlinmania.rustlang.alloc.collections.btree.set.map
 import io.github.kotlinmania.rustlang.alloc.collections.btree.setval.SetValZST
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.fmt.Error
@@ -172,13 +173,13 @@ public sealed class Entry<T, A : AllocatorClone> {
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is Vacant -> {
-                val (v) = this
-                DebugTuple(f, "Entry").field(v).finish()
+            is Vacant<*, *> -> {
+                val (v) = this as Vacant<T, A>
+                run { DebugTuple(f, "Entry").field(v).finish(); Result.Ok<Unit, Error>(Unit) }
             }
-            is Occupied -> {
-                val (o) = this
-                DebugTuple(f, "Entry").field(o).finish()
+            is Occupied<*, *> -> {
+                val (o) = this as Occupied<T, A>
+                run { DebugTuple(f, "Entry").field(o).finish(); Result.Ok<Unit, Error>(Unit) }
             }
         }
 
@@ -198,12 +199,12 @@ public sealed class Entry<T, A : AllocatorClone> {
      */
     public open fun insert(): OccupiedEntry<T, A> =
         when (this) {
-            is Occupied -> {
-                val (entry) = this
+            is Occupied<*, *> -> {
+                val (entry) = this as Occupied<T, A>
                 entry
             }
-            is Vacant -> {
-                val (entry1) = this
+            is Vacant<*, *> -> {
+                val (entry1) = this as Vacant<T, A>
                 entry1.insertEntry()
             }
         }
@@ -228,7 +229,7 @@ public sealed class Entry<T, A : AllocatorClone> {
      * ```
      */
     public open fun orInsert() {
-        if (this is Vacant) {
+        if (this is Vacant<*, *>) {
             val (entry) = this
             entry.insert()
         }
@@ -253,12 +254,12 @@ public sealed class Entry<T, A : AllocatorClone> {
      */
     public open fun get(): T =
         when (this) {
-            is Occupied -> {
-                val (entry) = this
+            is Occupied<*, *> -> {
+                val (entry) = this as Occupied<T, A>
                 entry.get()
             }
-            is Vacant -> {
-                val (entry1) = this
+            is Vacant<*, *> -> {
+                val (entry1) = this as Vacant<T, A>
                 entry1.get()
             }
         }
@@ -302,12 +303,12 @@ public sealed class Entry<T, A : AllocatorClone> {
  * ```
  */
 public open class OccupiedEntry<T, A : AllocatorClone> internal constructor(
-    innerCtorArg: OccupiedEntry<T, SetValZST, A>,
+    innerCtorArg: map.OccupiedEntry<T, SetValZST, A>,
 ) {
-    public var inner: OccupiedEntry<T, SetValZST, A> = innerCtorArg
+    public var inner: map.OccupiedEntry<T, SetValZST, A> = innerCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedEntry").field("value", this.get()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "OccupiedEntry").field("value", this.get()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Gets a reference to the value in the entry.
@@ -360,7 +361,7 @@ public open class OccupiedEntry<T, A : AllocatorClone> internal constructor(
 
     public companion object {
         public operator fun <T, A : AllocatorClone> invoke(
-            inner: OccupiedEntry<T, SetValZST, A>,
+            inner: map.OccupiedEntry<T, SetValZST, A>,
         ): OccupiedEntry<T, A> = OccupiedEntry<T, A>(
             innerCtorArg = inner,
         )
@@ -401,12 +402,12 @@ public open class OccupiedEntry<T, A : AllocatorClone> internal constructor(
  * ```
  */
 public open class VacantEntry<T, A : AllocatorClone> internal constructor(
-    innerCtorArg: VacantEntry<T, SetValZST, A>,
+    innerCtorArg: map.VacantEntry<T, SetValZST, A>,
 ) {
-    public var inner: VacantEntry<T, SetValZST, A> = innerCtorArg
+    public var inner: map.VacantEntry<T, SetValZST, A> = innerCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "VacantEntry").field(this.get()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "VacantEntry").field(this.get()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Gets a reference to the value that would be used when inserting
@@ -477,7 +478,7 @@ public open class VacantEntry<T, A : AllocatorClone> internal constructor(
 
     public companion object {
         public operator fun <T, A : AllocatorClone> invoke(
-            inner: VacantEntry<T, SetValZST, A>,
+            inner: map.VacantEntry<T, SetValZST, A>,
         ): VacantEntry<T, A> = VacantEntry<T, A>(
             innerCtorArg = inner,
         )

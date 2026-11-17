@@ -135,7 +135,7 @@ f.append(when (this) {
             EscapeErrorKind.UnskippedWhitespaceWarning -> "unskipped whitespace warning"
             EscapeErrorKind.MultipleSkippedLinesWarning -> "multiple skipped lines warning"
         })
-Result.Ok(Unit)
+Result.Ok<Unit, Error>(Unit)
 }
     }
 }
@@ -162,12 +162,12 @@ public sealed class ConversionErrorKind {
  * and returns whole groups as token trees.
  */
 public open class IntoIter internal constructor(
-    valueCtorArg: ArrayDeque<io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, io.github.kotlinmania.rustlang.procmacro.bridge.client.Span, Symbol>>,
+    valueCtorArg: ArrayDeque<bridge.TokenTree<bridge.TokenStream, bridge.Span, bridge.Symbol>>,
 ) : Iterable<TokenTree> {
-    public var value: ArrayDeque<io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, io.github.kotlinmania.rustlang.procmacro.bridge.client.Span, Symbol>> = valueCtorArg
+    public var value: ArrayDeque<bridge.TokenTree<bridge.TokenStream, bridge.Span, bridge.Symbol>> = valueCtorArg
         internal set
 
-    public var field0: ArrayDeque<io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, io.github.kotlinmania.rustlang.procmacro.bridge.client.Span, Symbol>>
+    public var field0: ArrayDeque<bridge.TokenTree<bridge.TokenStream, bridge.Span, bridge.Symbol>>
         get() = value
         set(v) {
             value = v
@@ -186,19 +186,19 @@ public open class IntoIter internal constructor(
 
     public open fun next(): TokenTree? =
         this.value.next()?.let({ tree -> when (tree) {
-            is io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree.Group -> {
+            is bridge.TokenTree.Group<*, *, *> -> {
                 val (tt) = tree
                 TokenTree.Group(Group(tt))
             }
-            is io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree.Punct -> {
+            is bridge.TokenTree.Punct<*, *, *> -> {
                 val (tt1) = tree
                 TokenTree.Punct(Punct(tt1))
             }
-            is io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree.Ident -> {
+            is bridge.TokenTree.Ident<*, *, *> -> {
                 val (tt2) = tree
                 TokenTree.Ident(Ident(tt2))
             }
-            is io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree.Literal -> {
+            is bridge.TokenTree.Literal<*, *, *> -> {
                 val (tt3) = tree
                 TokenTree.Literal(Literal(tt3))
             }
@@ -210,7 +210,7 @@ public open class IntoIter internal constructor(
 
     public companion object {
         public operator fun invoke(
-            value: ArrayDeque<io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, io.github.kotlinmania.rustlang.procmacro.bridge.client.Span, Symbol>>,
+            value: ArrayDeque<bridge.TokenTree<bridge.TokenStream, bridge.Span, bridge.Symbol>>,
         ): IntoIter = IntoIter(
             valueCtorArg = value,
         )
@@ -246,20 +246,20 @@ public sealed class TokenTree {
      */
     public open fun span(): Span =
         when (this) {
-            is TokenTree.Group -> {
-                val (t) = this
+            is TokenTree.Group<*, *, *> -> {
+                val (t) = this as TokenTree.Group<*, *, *>
                 t.span()
             }
-            is TokenTree.Ident -> {
-                val (t1) = this
+            is TokenTree.Ident<*, *, *> -> {
+                val (t1) = this as TokenTree.Ident<*, *, *>
                 t1.span()
             }
-            is TokenTree.Punct -> {
-                val (t2) = this
+            is TokenTree.Punct<*, *, *> -> {
+                val (t2) = this as TokenTree.Punct<*, *, *>
                 t2.span()
             }
-            is TokenTree.Literal -> {
-                val (t3) = this
+            is TokenTree.Literal<*, *, *> -> {
+                val (t3) = this as TokenTree.Literal<*, *, *>
                 t3.span()
             }
         }
@@ -273,20 +273,20 @@ public sealed class TokenTree {
      */
     public open fun setSpan(span: Span) {
         when (this) {
-            is TokenTree.Group -> {
-                val (t) = this
+            is TokenTree.Group<*, *, *> -> {
+                val (t) = this as TokenTree.Group<*, *, *>
                 t.setSpan(span)
             }
-            is TokenTree.Ident -> {
-                val (t1) = this
+            is TokenTree.Ident<*, *, *> -> {
+                val (t1) = this as TokenTree.Ident<*, *, *>
                 t1.setSpan(span)
             }
-            is TokenTree.Punct -> {
-                val (t2) = this
+            is TokenTree.Punct<*, *, *> -> {
+                val (t2) = this as TokenTree.Punct<*, *, *>
                 t2.setSpan(span)
             }
-            is TokenTree.Literal -> {
-                val (t3) = this
+            is TokenTree.Literal<*, *, *> -> {
+                val (t3) = this as TokenTree.Literal<*, *, *>
                 t3.setSpan(span)
             }
         }
@@ -299,20 +299,20 @@ public sealed class TokenTree {
         // Each of these has the name in the struct type in the derived debug,
         // so don't bother with an extra layer of indirection
         return when (this) {
-            is TokenTree.Group -> {
-                val (tt) = this
+            is TokenTree.Group<*, *, *> -> {
+                val (tt) = this as TokenTree.Group<*, *, *>
                 tt.fmt(f)
             }
-            is TokenTree.Ident -> {
-                val (tt1) = this
+            is TokenTree.Ident<*, *, *> -> {
+                val (tt1) = this as TokenTree.Ident<*, *, *>
                 tt1.fmt(f)
             }
-            is TokenTree.Punct -> {
-                val (tt2) = this
+            is TokenTree.Punct<*, *, *> -> {
+                val (tt2) = this as TokenTree.Punct<*, *, *>
                 tt2.fmt(f)
             }
-            is TokenTree.Literal -> {
-                val (tt3) = this
+            is TokenTree.Literal<*, *, *> -> {
+                val (tt3) = this as TokenTree.Literal<*, *, *>
                 tt3.fmt(f)
             }
         }
@@ -333,21 +333,21 @@ public sealed class TokenTree {
      */
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is TokenTree.Group -> {
-                val (t) = this
-                run { f.append("$t"); Result.Ok(Unit) }
+            is TokenTree.Group<*, *, *> -> {
+                val (t) = this as TokenTree.Group<*, *, *>
+                run { f.append("$t"); Result.Ok<Unit, Error>(Unit) }
             }
-            is TokenTree.Ident -> {
-                val (t1) = this
-                run { f.append("$t"); Result.Ok(Unit) }
+            is TokenTree.Ident<*, *, *> -> {
+                val (t1) = this as TokenTree.Ident<*, *, *>
+                run { f.append("$t"); Result.Ok<Unit, Error>(Unit) }
             }
-            is TokenTree.Punct -> {
-                val (t2) = this
-                run { f.append("$t"); Result.Ok(Unit) }
+            is TokenTree.Punct<*, *, *> -> {
+                val (t2) = this as TokenTree.Punct<*, *, *>
+                run { f.append("$t"); Result.Ok<Unit, Error>(Unit) }
             }
-            is TokenTree.Literal -> {
-                val (t3) = this
-                run { f.append("$t"); Result.Ok(Unit) }
+            is TokenTree.Literal<*, *, *> -> {
+                val (t3) = this as TokenTree.Literal<*, *, *>
+                run { f.append("$t"); Result.Ok<Unit, Error>(Unit) }
             }
         }
 

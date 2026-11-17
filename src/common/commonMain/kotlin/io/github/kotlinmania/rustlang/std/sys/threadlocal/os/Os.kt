@@ -9,20 +9,22 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.drop
-import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.alloc.System
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.panic.resumeUnwind
 import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sync.poison.Guard
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.abortOnDtorUnwind
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.enable
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.Key
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.LazyKey
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.get
@@ -40,7 +42,66 @@ public fun interface NewDtorCallback {
 public open class Storage<T>(
     public var key: LazyKey,
     public var marker: Unit,
-)
+) {
+    /**
+     * Gets a pointer to the TLS value, potentially initializing it with the
+     * provided parameters. If the TLS variable has been destroyed, a null
+     * pointer is returned.
+     *
+     * The resulting pointer may not be used after reentrant inialialization
+     * or thread destruction has occurred.
+     */
+    public open fun get(i: T?, f: () -> T): ConstPtr {
+        val key = this.key.force()
+        val ptr = (get(key)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
+        return if ((ptr).rawAddress.toInt() > 1) {
+            // SAFETY: the check ensured the pointer is safe (its destructor
+            // is not running) + it is coming from a trusted source (self).
+            (UnresolvedTypeLayout<Value<T>>()).readNative((ptr).rawAddress).value
+        } else {
+            // SAFETY: trivially correct.
+            Storage.tryInitialize(key, ptr, i, f, align)
+        }
+    }
+
+    public companion object {
+        public fun <T> new(align: Int): Storage<T> = Storage(key = LazyKey.new(destroyValue<T>), marker = Unit)
+
+        /**
+         * # Safety
+         * * `key` must be the result of calling `self.key.force()`
+         * * `ptr` must be the current value associated with `key`.
+         */
+        public fun <T> tryInitialize(key: Key, ptr: MutPtr, i: T?, f: () -> T, align: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ConstPtr {
+            if ((ptr).rawAddress.toInt() == 1) {
+                // destructor is running
+                return ConstPtr(0L)
+            }
+            val value = AlignedSystemBox.new(Value(value = (i?.let(Option::take) ?: f()), key = key), align)
+            val ptr1 = AlignedSystemBox.intoRaw(value, align)
+            // SAFETY:
+            // * key came from a `LazyKey` and is thus correct.
+            // * `ptr` is a correct pointer that can be destroyed by the key destructor.
+            // * the value is stored under the key that it contains.
+            val old1 =
+                run {
+                    val old = (get(key)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
+                    set(key, MutPtr(ptr1.rawAddress, ptr1.rawMeta))
+                    old
+                }
+            if (!old1.isNull()) {
+                // If the variable was recursively initialized, drop the old value.
+                // SAFETY: We cannot be inside a `LocalKey.with` scope, as the
+                // initializer has already returned and the next scope only starts
+                // after we return the pointer. Therefore, there can be no references
+                // to the old value.
+                (AlignedSystemBox.fromRaw(old1, align)).let { }
+            }
+            // SAFETY: We just created this value above.
+            return (Value.typeLayout<T>(typeLayoutT = typeLayoutT)).readNative((ptr1).rawAddress).value
+        }
+    }
+}
 
 public open class Value<T>(
     // This field must be first, for correctness of `@rustcAlignStatic`
@@ -87,44 +148,79 @@ public open class AlignedSystemBox<T> internal constructor(
     public var ptr: NonNull = ptrCtorArg
         internal set
 
+    public open fun deref(): Value<T> = (this.ptr.asPtr())
+
+    public open fun drop(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
+        val layout =
+            when (val matchVal = Layout.new<Value<T>>(typeLayoutT = Value.typeLayout<T>(typeLayoutT = typeLayoutT)).alignTo(ALIGN)) {
+                is Result.Ok<*, *> -> {
+                    val v = matchVal.value
+                    v
+                }
+                else -> {
+                    val err = matchVal
+                    val err1 = err.asRef().map({ drop(it) })
+                    run {
+                        when (val matchVal1 = panicOutput()) {
+                            null -> {}
+                            else -> {
+                                val out = matchVal1
+                                Write.writeFmt(out, "fatal runtime error: " + ("unwrap failed: Layout :: new ::< Value < T >> () . align_to (ALIGN) = $err1").toString() + ", aborting\n")
+                            }
+                        }
+                        run {
+                            "fatal runtime error: " + ("unwrap failed: Layout :: new ::< Value < T >> () . align_to (ALIGN) = $err1").toString() + ", aborting\n"
+                        }
+                        abort()
+                    }
+                }
+            }
+        run {
+            val unwindResult = catchUnwind(AssertUnwindSafe({ this.ptr.dropInPlace() }))
+            System().dealloc(this.ptr.asPtr().cast(), layout)
+            if (unwindResult is Result.Err<*, *>) {
+                val payload = unwindResult.error
+                resumeUnwind(payload)
+            }
+        }
+    }
+
     public companion object {
         public operator fun <T> invoke(
             ptr: NonNull,
         ): AlignedSystemBox<T> = AlignedSystemBox<T>(
             ptrCtorArg = ptr,
         )
-    }
-}
 
-public fun <T> AlignedSystemBox.Companion.new(v: Value<T>, align: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): AlignedSystemBox<T> {
-    val layout =
-        when (val matchVal = Layout.new<Value<T>>(typeLayoutT = Value.typeLayout<T>(typeLayoutT = typeLayoutT)).alignTo(align)) {
-            is Result.Ok -> {
-                val v1 = matchVal.value
-                v1
-            }
-            else -> {
-                val err = matchVal
-                val err1 = err.asRef().map({ drop(it) })
-                run {
-                    when (val matchVal1 = panicOutput()) {
-                        null -> {}
-                        else -> {
-                            val out = matchVal1
-                            Write.writeFmt(out, "fatal runtime error: " + ("unwrap failed: Layout :: new ::< Value < T >> () . align_to (ALIGN) = $err1").toString() + ", aborting\n")
+        public fun <T> new(v: Value<T>, align: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): AlignedSystemBox<T> {
+            val layout =
+                when (val matchVal = Layout.new<Value<T>>(typeLayoutT = Value.typeLayout<T>(typeLayoutT = typeLayoutT)).alignTo(align)) {
+                    is Result.Ok<*, *> -> {
+                        val v1 = matchVal.value
+                        v1
+                    }
+                    else -> {
+                        val err = matchVal
+                        val err1 = err.asRef().map({ drop(it) })
+                        run {
+                            when (val matchVal1 = panicOutput()) {
+                                null -> {}
+                                else -> {
+                                    val out = matchVal1
+                                    Write.writeFmt(out, "fatal runtime error: " + ("unwrap failed: Layout :: new ::< Value < T >> () . align_to (ALIGN) = $err1").toString() + ", aborting\n")
+                                }
+                            }
+                            run {
+                                "fatal runtime error: " + ("unwrap failed: Layout :: new ::< Value < T >> () . align_to (ALIGN) = $err1").toString() + ", aborting\n"
+                            }
+                            abort()
                         }
                     }
-                    run {
-                        "fatal runtime error: " + ("unwrap failed: Layout :: new ::< Value < T >> () . align_to (ALIGN) = $err1").toString() + ", aborting\n"
-                    }
-                    abort()
                 }
-            }
-        }
-    // We use the System allocator here to avoid interfering with a potential
-    // Global allocator using thread-local storage.
-    val ptr: MutPtr = (System().alloc(layout)).cast()
-    val ptr1 = NonNull.new(ptr) ?: run {
+            // We use the System allocator here to avoid interfering with a potential
+            // Global allocator using thread-local storage.
+            val ptr: MutPtr = (System().alloc(layout)).cast()
+            val ptr1 = NonNull.new(ptr) ?: run {
     when (val matchVal2 = panicOutput()) {
         null -> {}
         else -> {
@@ -137,109 +233,17 @@ public fun <T> AlignedSystemBox.Companion.new(v: Value<T>, align: Int, typeLayou
     }
     abort()
 }
-    ptr1.write(v)
-    return AlignedSystemBox(ptr = ptr1)
-}
-
-public fun <T> AlignedSystemBox.Companion.intoRaw(b: AlignedSystemBox<T>, align: Int): MutPtr {
-    val md = b
-    return md.ptr.asPtr()
-}
-
-public fun <T> AlignedSystemBox.Companion.fromRaw(ptr: MutPtr, align: Int): AlignedSystemBox<T> = AlignedSystemBox(ptr = NonNull.newUnchecked(ptr))
-
-public fun <T> AlignedSystemBox<T>.deref(align: Int): Value<T> = (this.ptr.asPtr())
-
-public fun <T> AlignedSystemBox<T>.drop(align: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
-    val layout =
-        when (val matchVal = Layout.new<Value<T>>(typeLayoutT = Value.typeLayout<T>(typeLayoutT = typeLayoutT)).alignTo(align)) {
-            is Result.Ok -> {
-                val v = matchVal.value
-                v
-            }
-            else -> {
-                val err = matchVal
-                val err1 = err.asRef().map({ drop(it) })
-                run {
-                    when (val matchVal1 = panicOutput()) {
-                        null -> {}
-                        else -> {
-                            val out = matchVal1
-                            Write.writeFmt(out, "fatal runtime error: " + ("unwrap failed: Layout :: new ::< Value < T >> () . align_to (ALIGN) = $err1").toString() + ", aborting\n")
-                        }
-                    }
-                    run {
-                        "fatal runtime error: " + ("unwrap failed: Layout :: new ::< Value < T >> () . align_to (ALIGN) = $err1").toString() + ", aborting\n"
-                    }
-                    abort()
-                }
-            }
+            ptr1.write(v)
+            return AlignedSystemBox(ptr = ptr1)
         }
-    run {
-        val unwindResult = catchUnwind(AssertUnwindSafe({ this.ptr.dropInPlace() }))
-        System().dealloc(this.ptr.asPtr().cast(), layout)
-        if (unwindResult is Result.Err) {
-            val payload = unwindResult.error
-            resumeUnwind(payload)
+
+        public fun <T> intoRaw(b: AlignedSystemBox<T>, align: Int): MutPtr {
+            val md = b
+            return md.ptr.asPtr()
         }
-    }
-}
 
-public fun <T> Storage.Companion.new(align: Int): Storage<T> = Storage(key = LazyKey.new(destroyValue<T>), marker = Unit)
-
-/**
- * Gets a pointer to the TLS value, potentially initializing it with the
- * provided parameters. If the TLS variable has been destroyed, a null
- * pointer is returned.
- *
- * The resulting pointer may not be used after reentrant inialialization
- * or thread destruction has occurred.
- */
-public fun <T> Storage<T>.get(i: T?, f: () -> T, align: Int): ConstPtr {
-    val key = this.key.force()
-    val ptr = (get(key)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    return if ((ptr).rawAddress.toInt() > 1) {
-        // SAFETY: the check ensured the pointer is safe (its destructor
-        // is not running) + it is coming from a trusted source (self).
-        (UnresolvedTypeLayout<Value<T>>()).readNative((ptr).rawAddress).value
-    } else {
-        // SAFETY: trivially correct.
-        Storage.tryInitialize(key, ptr, i, f, align)
+        public fun <T> fromRaw(ptr: MutPtr, align: Int): AlignedSystemBox<T> = AlignedSystemBox(ptr = NonNull.newUnchecked(ptr))
     }
-}
-
-/**
- * # Safety
- * * `key` must be the result of calling `self.key.force()`
- * * `ptr` must be the current value associated with `key`.
- */
-public fun <T> Storage.Companion.tryInitialize(key: Key, ptr: MutPtr, i: T?, f: () -> T, align: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ConstPtr {
-    if ((ptr).rawAddress.toInt() == 1) {
-        // destructor is running
-        return ConstPtr(0L)
-    }
-    val value = AlignedSystemBox.new(Value(value = (i?.let(Option::take) ?: f()), key = key), align)
-    val ptr1 = AlignedSystemBox.intoRaw(value, align)
-    // SAFETY:
-    // * key came from a `LazyKey` and is thus correct.
-    // * `ptr` is a correct pointer that can be destroyed by the key destructor.
-    // * the value is stored under the key that it contains.
-    val old1 =
-        run {
-            val old = (get(key)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-            set(key, mutPtrFromRustCast(ptr1))
-            old
-        }
-    if (!old1.isNull()) {
-        // If the variable was recursively initialized, drop the old value.
-        // SAFETY: We cannot be inside a `LocalKey.with` scope, as the
-        // initializer has already returned and the next scope only starts
-        // after we return the pointer. Therefore, there can be no references
-        // to the old value.
-        (AlignedSystemBox.fromRaw(old1, align)).let { }
-    }
-    // SAFETY: We just created this value above.
-    return ptr1.value
 }
 
 public fun destroyValue(ptr: MutPtr, align: Int) {
@@ -262,7 +266,7 @@ public fun destroyValue(ptr: MutPtr, align: Int) {
         set(key, MutPtr(0L))
         // Make sure that the runtime cleanup will be performed
         // after the next round of TLS destruction.
-        Guard.enable()
+        enable()
     })
 }
 

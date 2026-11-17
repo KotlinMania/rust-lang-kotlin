@@ -137,11 +137,11 @@ public typealias Result<T> = io.github.kotlinmania.rustlang.core.result.Result<T
 public open class Error(
     public var repr: Repr,
 ) {
-    public open fun fmt(f: StringBuilder): RustResult<Unit, Unit> = run { f.append((this.repr).toString()); RustResult.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): RustResult<Unit, Unit> = run { f.append((this.repr).toString()); RustResult.Ok<Unit, Unit>(Unit) }
 
     public open fun intoCustomOwner(): io.github.kotlinmania.rustlang.core.result.Result<CustomOwner, Error> =
         if (when (val matchVal = this.repr.data()) {
-            is ErrorData.Custom -> true
+            is ErrorData.Custom<*> -> true
             else -> false
         }) {
             val c = this.repr.intoData() ?: // SAFETY: Checked above using `matches`.
@@ -190,13 +190,13 @@ unreachableUnchecked()
      */
     public open fun rawOsError(): RawOsError? =
         when (val matchVal = this.repr.data()) {
-            is ErrorData.Os -> {
+            is ErrorData.Os<*> -> {
                 val (i) = matchVal
                 i
             }
-            is ErrorData.Custom -> null
-            is ErrorData.Simple -> null
-            is ErrorData.SimpleMessage -> null
+            is ErrorData.Custom<*> -> null
+            is ErrorData.Simple<*> -> null
+            is ErrorData.SimpleMessage<*> -> null
         }
 
     /**
@@ -234,10 +234,10 @@ unreachableUnchecked()
      */
     public open fun getRef(): Any? =
         when (val matchVal = this.repr.data()) {
-            is ErrorData.Os -> null
-            is ErrorData.Simple -> null
-            is ErrorData.SimpleMessage -> null
-            is ErrorData.Custom -> {
+            is ErrorData.Os<*> -> null
+            is ErrorData.Simple<*> -> null
+            is ErrorData.SimpleMessage<*> -> null
+            is ErrorData.Custom<*> -> {
                 val (c) = matchVal
                 c.errorRef()
             }
@@ -306,10 +306,10 @@ unreachableUnchecked()
      */
     public open fun getMut(): Any? =
         when (val matchVal = this.repr.dataMut()) {
-            is ErrorData.Os -> null
-            is ErrorData.Simple -> null
-            is ErrorData.SimpleMessage -> null
-            is ErrorData.Custom -> {
+            is ErrorData.Os<*> -> null
+            is ErrorData.Simple<*> -> null
+            is ErrorData.SimpleMessage<*> -> null
+            is ErrorData.Custom<*> -> {
                 val (c) = matchVal
                 c.errorMut()
             }
@@ -347,19 +347,19 @@ unreachableUnchecked()
      */
     public open fun kind(): ErrorKind =
         when (val matchVal = this.repr.data()) {
-            is ErrorData.Os -> {
+            is ErrorData.Os<*> -> {
                 val (code) = matchVal
                 decodeErrorKind(code)
             }
-            is ErrorData.Custom -> {
+            is ErrorData.Custom<*> -> {
                 val (c) = matchVal
                 c.kind
             }
-            is ErrorData.Simple -> {
+            is ErrorData.Simple<*> -> {
                 val (kind) = matchVal
                 kind
             }
-            is ErrorData.SimpleMessage -> {
+            is ErrorData.SimpleMessage<*> -> {
                 val (m) = matchVal
                 m.kind
             }
@@ -367,19 +367,19 @@ unreachableUnchecked()
 
     public open fun isInterrupted(): Boolean =
         when (val matchVal = this.repr.data()) {
-            is ErrorData.Os -> {
+            is ErrorData.Os<*> -> {
                 val (code) = matchVal
                 isInterrupted(code)
             }
-            is ErrorData.Custom -> {
+            is ErrorData.Custom<*> -> {
                 val (c) = matchVal
                 c.kind == ErrorKind.Interrupted
             }
-            is ErrorData.Simple -> {
+            is ErrorData.Simple<*> -> {
                 val (kind) = matchVal
                 kind == ErrorKind.Interrupted
             }
-            is ErrorData.SimpleMessage -> {
+            is ErrorData.SimpleMessage<*> -> {
                 val (m) = matchVal
                 m.kind == ErrorKind.Interrupted
             }
@@ -387,20 +387,20 @@ unreachableUnchecked()
 
     public open fun fmtDisplay(fmt: StringBuilder): RustResult<Unit, Unit> =
         when (val matchVal = this.repr.data()) {
-            is ErrorData.Os -> {
+            is ErrorData.Os<*> -> {
                 val (code) = matchVal
                 val detail = fmt.fromFn({ fmt1 -> formatOsError(code, fmt1) })
                 fmt.writeFmt("$detail (os error $code)")
             }
-            is ErrorData.Custom -> {
+            is ErrorData.Custom<*> -> {
                 val (c) = matchVal
-                run { fmt.append((c.errorRef()).toString()); RustResult.Ok(Unit) }
+                run { fmt.append((c.errorRef()).toString()); RustResult.Ok<Unit, Unit>(Unit) }
             }
-            is ErrorData.Simple -> {
+            is ErrorData.Simple<*> -> {
                 val (kind) = matchVal
                 kind.fmt(fmt)
             }
-            is ErrorData.SimpleMessage -> {
+            is ErrorData.SimpleMessage<*> -> {
                 val (msg) = matchVal
                 msg.message.fmt(fmt)
             }
@@ -408,10 +408,10 @@ unreachableUnchecked()
 
     public open fun cause(): Any? =
         when (val matchVal = this.repr.data()) {
-            is ErrorData.Os -> null
-            is ErrorData.Simple -> null
-            is ErrorData.SimpleMessage -> null
-            is ErrorData.Custom -> {
+            is ErrorData.Os<*> -> null
+            is ErrorData.Simple<*> -> null
+            is ErrorData.SimpleMessage<*> -> null
+            is ErrorData.Custom<*> -> {
                 val (c) = matchVal
                 c.errorRef().cause()
             }
@@ -419,10 +419,10 @@ unreachableUnchecked()
 
     public open fun source(): Any? =
         when (val matchVal = this.repr.data()) {
-            is ErrorData.Os -> null
-            is ErrorData.Simple -> null
-            is ErrorData.SimpleMessage -> null
-            is ErrorData.Custom -> {
+            is ErrorData.Os<*> -> null
+            is ErrorData.Simple<*> -> null
+            is ErrorData.SimpleMessage<*> -> null
+            is ErrorData.Custom<*> -> {
                 val (c) = matchVal
                 c.errorRef().source()
             }
@@ -535,23 +535,26 @@ public open class SimpleMessage(
 
 public fun Repr.fmt(fmt: StringBuilder): RustResult<Unit, Unit> =
     when (val matchVal = this.data()) {
-        is ErrorData.Os -> {
+        is ErrorData.Os<*> -> {
             val (code) = matchVal
-            DebugStruct(fmt, "Os").field("code", code).field("kind", decodeErrorKind(code)).field("message", fmt.fromFn({ fmt1 ->
+            run {
+DebugStruct(fmt, "Os").field("code", code).field("kind", decodeErrorKind(code)).field("message", fmt.fromFn({ fmt1 ->
                 fmt1.writeFmt("\"${fmt.fromFn({ fmt2 -> formatOsError(code, fmt2) })}\"")
             })).finish()
+RustResult.Ok<Unit, Unit>(Unit)
+}
         }
-        is ErrorData.Custom -> {
+        is ErrorData.Custom<*> -> {
             val (c) = matchVal
-            run { fmt.append((c).toString()); RustResult.Ok(Unit) }
+            run { fmt.append((c).toString()); RustResult.Ok<Unit, Unit>(Unit) }
         }
-        is ErrorData.Simple -> {
+        is ErrorData.Simple<*> -> {
             val (kind) = matchVal
-            DebugTuple(fmt, "Kind").field(kind).finish()
+            run { DebugTuple(fmt, "Kind").field(kind).finish(); RustResult.Ok<Unit, Unit>(Unit) }
         }
-        is ErrorData.SimpleMessage -> {
+        is ErrorData.SimpleMessage<*> -> {
             val (msg) = matchVal
-            DebugStruct(fmt, "Error").field("kind", msg.kind).field("message", msg.message).finish()
+            run { DebugStruct(fmt, "Error").field("kind", msg.kind).field("message", msg.message).finish(); RustResult.Ok<Unit, Unit>(Unit) }
         }
     }
 
@@ -596,7 +599,7 @@ public open class Custom(
 
     // SAFETY: All members of `Custom` are `Sync`
 
-    public open fun fmt(f: StringBuilder): RustResult<Unit, Unit> = DebugStruct(f, "Custom").field("kind", this.kind).field("error", this.errorRef()).finish()
+    public open fun fmt(f: StringBuilder): RustResult<Unit, Unit> = run { DebugStruct(f, "Custom").field("kind", this.kind).field("error", this.errorRef()).finish(); RustResult.Ok<Unit, Unit>(Unit) }
 
     public open fun drop() {
         // SAFETY: by `Custom` invariants, this is a drop call on a valid pointer.
@@ -1087,7 +1090,7 @@ public sealed class ErrorKind {
      * check("entity not found" == ErrorKind.NotFound.toString())
      * ```
      */
-    public open fun fmt(fmt: StringBuilder): RustResult<Unit, Unit> = run { fmt.append(this.asStr()); RustResult.Ok(Unit) }
+    public open fun fmt(fmt: StringBuilder): RustResult<Unit, Unit> = run { fmt.append(this.asStr()); RustResult.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         // This compiles to the same code as the check+reinterpret, but doesn't require
@@ -1096,179 +1099,179 @@ public sealed class ErrorKind {
         public fun fromPrim(ek: UInt): ErrorKind? =
             run {
                 when {
-                    ek == (((ErrorKind.NotFound as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.NotFound) -> {
                         val v = ek
                         ErrorKind.NotFound
                     }
-                    ek == (((ErrorKind.PermissionDenied as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.PermissionDenied) -> {
                         val v1 = ek
                         ErrorKind.PermissionDenied
                     }
-                    ek == (((ErrorKind.ConnectionRefused as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.ConnectionRefused) -> {
                         val v2 = ek
                         ErrorKind.ConnectionRefused
                     }
-                    ek == (((ErrorKind.ConnectionReset as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.ConnectionReset) -> {
                         val v3 = ek
                         ErrorKind.ConnectionReset
                     }
-                    ek == (((ErrorKind.HostUnreachable as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.HostUnreachable) -> {
                         val v4 = ek
                         ErrorKind.HostUnreachable
                     }
-                    ek == (((ErrorKind.NetworkUnreachable as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.NetworkUnreachable) -> {
                         val v5 = ek
                         ErrorKind.NetworkUnreachable
                     }
-                    ek == (((ErrorKind.ConnectionAborted as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.ConnectionAborted) -> {
                         val v6 = ek
                         ErrorKind.ConnectionAborted
                     }
-                    ek == (((ErrorKind.NotConnected as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.NotConnected) -> {
                         val v7 = ek
                         ErrorKind.NotConnected
                     }
-                    ek == (((ErrorKind.AddrInUse as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.AddrInUse) -> {
                         val v8 = ek
                         ErrorKind.AddrInUse
                     }
-                    ek == (((ErrorKind.AddrNotAvailable as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.AddrNotAvailable) -> {
                         val v9 = ek
                         ErrorKind.AddrNotAvailable
                     }
-                    ek == (((ErrorKind.NetworkDown as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.NetworkDown) -> {
                         val v10 = ek
                         ErrorKind.NetworkDown
                     }
-                    ek == (((ErrorKind.BrokenPipe as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.BrokenPipe) -> {
                         val v11 = ek
                         ErrorKind.BrokenPipe
                     }
-                    ek == (((ErrorKind.AlreadyExists as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.AlreadyExists) -> {
                         val v12 = ek
                         ErrorKind.AlreadyExists
                     }
-                    ek == (((ErrorKind.WouldBlock as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.WouldBlock) -> {
                         val v13 = ek
                         ErrorKind.WouldBlock
                     }
-                    ek == (((ErrorKind.NotADirectory as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.NotADirectory) -> {
                         val v14 = ek
                         ErrorKind.NotADirectory
                     }
-                    ek == (((ErrorKind.IsADirectory as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.IsADirectory) -> {
                         val v15 = ek
                         ErrorKind.IsADirectory
                     }
-                    ek == (((ErrorKind.DirectoryNotEmpty as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.DirectoryNotEmpty) -> {
                         val v16 = ek
                         ErrorKind.DirectoryNotEmpty
                     }
-                    ek == (((ErrorKind.ReadOnlyFilesystem as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.ReadOnlyFilesystem) -> {
                         val v17 = ek
                         ErrorKind.ReadOnlyFilesystem
                     }
-                    ek == (((ErrorKind.FilesystemLoop as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.FilesystemLoop) -> {
                         val v18 = ek
                         ErrorKind.FilesystemLoop
                     }
-                    ek == (((ErrorKind.StaleNetworkFileHandle as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.StaleNetworkFileHandle) -> {
                         val v19 = ek
                         ErrorKind.StaleNetworkFileHandle
                     }
-                    ek == (((ErrorKind.InvalidInput as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.InvalidInput) -> {
                         val v20 = ek
                         ErrorKind.InvalidInput
                     }
-                    ek == (((ErrorKind.InvalidData as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.InvalidData) -> {
                         val v21 = ek
                         ErrorKind.InvalidData
                     }
-                    ek == (((ErrorKind.TimedOut as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.TimedOut) -> {
                         val v22 = ek
                         ErrorKind.TimedOut
                     }
-                    ek == (((ErrorKind.WriteZero as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.WriteZero) -> {
                         val v23 = ek
                         ErrorKind.WriteZero
                     }
-                    ek == (((ErrorKind.StorageFull as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.StorageFull) -> {
                         val v24 = ek
                         ErrorKind.StorageFull
                     }
-                    ek == (((ErrorKind.NotSeekable as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.NotSeekable) -> {
                         val v25 = ek
                         ErrorKind.NotSeekable
                     }
-                    ek == (((ErrorKind.QuotaExceeded as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.QuotaExceeded) -> {
                         val v26 = ek
                         ErrorKind.QuotaExceeded
                     }
-                    ek == (((ErrorKind.FileTooLarge as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.FileTooLarge) -> {
                         val v27 = ek
                         ErrorKind.FileTooLarge
                     }
-                    ek == (((ErrorKind.ResourceBusy as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.ResourceBusy) -> {
                         val v28 = ek
                         ErrorKind.ResourceBusy
                     }
-                    ek == (((ErrorKind.ExecutableFileBusy as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.ExecutableFileBusy) -> {
                         val v29 = ek
                         ErrorKind.ExecutableFileBusy
                     }
-                    ek == (((ErrorKind.Deadlock as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.Deadlock) -> {
                         val v30 = ek
                         ErrorKind.Deadlock
                     }
-                    ek == (((ErrorKind.CrossesDevices as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.CrossesDevices) -> {
                         val v31 = ek
                         ErrorKind.CrossesDevices
                     }
-                    ek == (((ErrorKind.TooManyLinks as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.TooManyLinks) -> {
                         val v32 = ek
                         ErrorKind.TooManyLinks
                     }
-                    ek == (((ErrorKind.InvalidFilename as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.InvalidFilename) -> {
                         val v33 = ek
                         ErrorKind.InvalidFilename
                     }
-                    ek == (((ErrorKind.ArgumentListTooLong as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.ArgumentListTooLong) -> {
                         val v34 = ek
                         ErrorKind.ArgumentListTooLong
                     }
-                    ek == (((ErrorKind.Interrupted as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.Interrupted) -> {
                         val v35 = ek
                         ErrorKind.Interrupted
                     }
-                    ek == (((ErrorKind.Other as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.Other) -> {
                         val v36 = ek
                         ErrorKind.Other
                     }
-                    ek == (((ErrorKind.UnexpectedEof as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.UnexpectedEof) -> {
                         val v37 = ek
                         ErrorKind.UnexpectedEof
                     }
-                    ek == (((ErrorKind.Unsupported as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.Unsupported) -> {
                         val v38 = ek
                         ErrorKind.Unsupported
                     }
-                    ek == (((ErrorKind.OutOfMemory as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.OutOfMemory) -> {
                         val v39 = ek
                         ErrorKind.OutOfMemory
                     }
-                    ek == (((ErrorKind.InProgress as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.InProgress) -> {
                         val v40 = ek
                         ErrorKind.InProgress
                     }
-                    ek == (((ErrorKind.TooManyOpenFiles as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.TooManyOpenFiles) -> {
                         val v41 = ek
                         ErrorKind.TooManyOpenFiles
                     }
-                    ek == (((ErrorKind.InputOutputError as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.InputOutputError) -> {
                         val v42 = ek
                         ErrorKind.InputOutputError
                     }
-                    ek == (((ErrorKind.Uncategorized as Any?) as ErrorKind?)) -> {
+                    ek == (ErrorKind.Uncategorized) -> {
                         val v43 = ek
                         ErrorKind.Uncategorized
                     }

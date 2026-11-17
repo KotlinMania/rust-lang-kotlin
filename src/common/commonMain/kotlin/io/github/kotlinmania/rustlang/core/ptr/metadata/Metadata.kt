@@ -220,11 +220,11 @@ public open class DynMetadata<Dyn> internal constructor(
         return Layout.fromSizeAlignUnchecked(this.sizeOf(), this.alignOf())
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "DynMetadata").field(this.vtablePtr()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "DynMetadata").field(this.vtablePtr()).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     // Manual impls needed to avoid `Dyn: $ Trait` bounds.
 
-    public override fun clone(): DynMetadata<Dyn> = DynMetadata(this.vtablePtr, this.phantom)
+    public open fun clone(): DynMetadata<Dyn> = DynMetadata(this.vtablePtr, this.phantom)
 
     public open fun eq(other: DynMetadata<Dyn>): Boolean = io.github.kotlinmania.rustlang.core.ptr.eq<VTable>(this.vtablePtr(), other.vtablePtr())
 

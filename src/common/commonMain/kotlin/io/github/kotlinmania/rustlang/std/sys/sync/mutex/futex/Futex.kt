@@ -37,9 +37,9 @@ public open class Mutex(
         if (state == UNLOCKED) {
             run {
                 val matchVal = this.futex.compareExchange(UNLOCKED, LOCKED, Acquire, Relaxed)
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     return
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     val s = matchVal.error
                     state = s
                 } }
@@ -92,7 +92,7 @@ public open class Mutex(
     }
 
     public companion object {
-        public fun new(): Mutex = Mutex(futex = Futex.new(UNLOCKED))
+        public fun new(): Mutex = Mutex(futex = SmallFutex.new(UNLOCKED))
     }
 }
 

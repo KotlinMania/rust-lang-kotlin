@@ -82,11 +82,11 @@ public open class F16b internal constructor(
 
     public open fun partialCmp(other: F16b): Ordering? = widen(this).partialCmp(widen(other))
 
-    public open fun fmt(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append((widen(this)).toString()); Result.Ok(Unit) }
+    public open fun fmt(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append((widen(this)).toString()); Result.Ok<Unit, Unit>(Unit) }
 
-    public open fun fmtLowerExp(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append((widen(this)).toString()); Result.Ok(Unit) }
+    public open fun fmtLowerExp(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append((widen(this)).toString()); Result.Ok<Unit, Unit>(Unit) }
 
-    public open fun fmtUpperExp(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append((widen(this)).toString()); Result.Ok(Unit) }
+    public open fun fmtUpperExp(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append((widen(this)).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public operator fun invoke(value: UShort, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()): F16b = F16b(value, fieldLayout)

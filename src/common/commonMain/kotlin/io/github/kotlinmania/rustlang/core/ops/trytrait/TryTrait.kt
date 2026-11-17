@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 public typealias TryType<T> = NeverShortCircuit<T>
 
@@ -50,7 +51,7 @@ public typealias TryType<T> = NeverShortCircuit<T>
  * Let's add a new generic parameter `R` for that type, and bound it to the
  * output type that we want:
  * ```kotlin
- * fun <Residual, A, T, R : Try<A>> simpleTryFold1(iter: Any, accum: A, f: (A, T) -> R): R {
+ * fun <Residual, A, T, R : Try<A, Residual>> simpleTryFold1(iter: Any, accum: A, f: (A, T) -> R): R {
  *     return error("unsupported")
  * }
  * ```
@@ -58,7 +59,7 @@ public typealias TryType<T> = NeverShortCircuit<T>
  * If we get through the entire iterator, we need to wrap up the accumulator
  * into the return type using [Try.fromOutput]:
  * ```kotlin
- * fun <Residual, A, T, R : Try<A>> simpleTryFold2(iter: Any, accum: A, f: (A, T) -> R, fromOutputRFn: (A) -> R): R {
+ * fun <Residual, A, T, R : Try<A, Residual>> simpleTryFold2(iter: Any, accum: A, f: (A, T) -> R, fromOutputRFn: (A) -> R): R {
  *     var accum = accum
  *     for (x in iter) {
  *         val cf = f(accum, x).branch()
@@ -79,7 +80,7 @@ public typealias TryType<T> = NeverShortCircuit<T>
  * need to mention it in the bounds.  All types which implement `Try` can be
  * recreated from their corresponding residual, so we'll just call it:
  * ```kotlin
- * fun <Residual, A, T, R : Try<A>> simpleTryFold3(iter: Any, accum: A, f: (A, T) -> R, fromResidualRFn: (Any?) -> R, fromOutputRFn: (A) -> R): R {
+ * fun <Residual, A, T, R : Try<A, Residual>> simpleTryFold3(iter: Any, accum: A, f: (A, T) -> R, fromResidualRFn: (Any?) -> R, fromOutputRFn: (A) -> R): R {
  *     var accum = accum
  *     for (x in iter) {
  *         val cf = f(accum, x).branch()
@@ -102,7 +103,7 @@ public typealias TryType<T> = NeverShortCircuit<T>
  * `Break`" is exactly what happens inside the `?` operator.  So rather than
  * do all this manually, we can just use `?` instead:
  * ```kotlin
- * fun <Residual, A, T, R : Try<A>> simpleTryFold(iter: Any, accum: A, f: (A, T) -> R, fromOutputRFn: (A) -> R): R {
+ * fun <Residual, A, T, R : Try<A, Residual>> simpleTryFold(iter: Any, accum: A, f: (A, T) -> R, fromOutputRFn: (A) -> R): R {
  *     var accum = accum
  *     for (x in iter) {
  *         accum = f(accum, x).getOrElse { return Result.failure(it) }

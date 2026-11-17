@@ -130,10 +130,10 @@ public interface SimdInt<SelfType, out Mask, out Scalar, out Unsigned, out Cast>
      * # Examples
      *
      * ```kotlin
-     * val v = fromArray(listOf(1, 2, 3, 4))
+     * val v = Simd<Int>((listOf(1, 2, 3, 4)).toList())
      * check(v.reduceSum() == 10)
      * // SIMD integer addition is always wrapping
-     * val v1 = fromArray(intArrayOf(Int.MAX_VALUE, 1, 0, 0))
+     * val v1 = Simd<Int>((intArrayOf(Int.MAX_VALUE, 1, 0, 0)).toList())
      * check(v1.reduceSum() == Int.MIN_VALUE)
      * ```
      */
@@ -145,10 +145,10 @@ public interface SimdInt<SelfType, out Mask, out Scalar, out Unsigned, out Cast>
      * # Examples
      *
      * ```kotlin
-     * val v = fromArray(listOf(1, 2, 3, 4))
+     * val v = Simd<Int>((listOf(1, 2, 3, 4)).toList())
      * check(v.reduceProduct() == 24)
      * // SIMD integer multiplication is always wrapping
-     * val v1 = fromArray(intArrayOf(Int.MAX_VALUE, 2, 1, 1))
+     * val v1 = Simd<Int>((intArrayOf(Int.MAX_VALUE, 2, 1, 1)).toList())
      * check(v1.reduceProduct() < Int.MAX_VALUE)
      * ```
      */
@@ -160,7 +160,7 @@ public interface SimdInt<SelfType, out Mask, out Scalar, out Unsigned, out Cast>
      * # Examples
      *
      * ```kotlin
-     * val v = fromArray(listOf(1, 2, 3, 4))
+     * val v = Simd<Int>((listOf(1, 2, 3, 4)).toList())
      * check(v.reduceMax() == 4)
      * ```
      */
@@ -172,7 +172,7 @@ public interface SimdInt<SelfType, out Mask, out Scalar, out Unsigned, out Cast>
      * # Examples
      *
      * ```kotlin
-     * val v = fromArray(listOf(1, 2, 3, 4))
+     * val v = Simd<Int>((listOf(1, 2, 3, 4)).toList())
      * check(v.reduceMin() == 1)
      * ```
      */

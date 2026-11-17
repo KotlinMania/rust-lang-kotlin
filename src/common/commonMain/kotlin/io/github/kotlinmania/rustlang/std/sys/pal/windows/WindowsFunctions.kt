@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.windows
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
@@ -14,7 +15,6 @@ import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.constError
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.getLastError
@@ -161,7 +161,7 @@ public fun <T> fillUtf16Buf(f1: (MutPtr, UInt) -> UInt, f2: (List<UShort>) -> T)
                     val matchVal = f1(MutPtr((buf.asMutPtr()).rawAddress), n.toUInt())
                     when {
                         matchVal == 0 && getLastError().code == 0 -> 0
-                        matchVal == 0 -> { return Result.Err<T, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError()) }
+                        matchVal == 0 -> { return Result.Err<T, Error>(Error.lastOsError()) }
                         else -> {
                             val n1 = matchVal
                             n1
@@ -208,7 +208,7 @@ public fun ensureNoNuls(s: OsStr): Result<OsStr, Error> =
 
 public fun <I : IsZero> cvt(i: I): Result<I, Error> =
     if (i.isZero()) {
-        Result.Err<I, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
+        Result.Err<I, Error>(Error.lastOsError())
     } else {
         Result.Ok<I, Error>(i)
     }
@@ -217,7 +217,7 @@ public fun <I : IsZero> cvtNz(i: I): Result<Unit, Error> =
     if (i.isZero()) {
         Result.Ok<Unit, Error>(Unit)
     } else {
-        Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
+        Result.Err<Unit, Error>(Error.lastOsError())
     }
 
 public fun dur2timeout(dur: Duration): UInt {
@@ -256,7 +256,7 @@ public fun abortInternal(): Nothing =
         Unit
     }
 
-public fun <T> Result<T, WinError>.ioResult(): Result<T, Error> = this.mapErr({ e -> io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(e.code) })
+public fun <T> Result<T, WinError>.ioResult(): Result<T, Error> = this.mapErr({ e -> Error.fromRawOsError(e.code) })
 
 public fun Byte.isZero(): Boolean = (this == 0.toByte()).toUByte()
 

@@ -3,8 +3,9 @@ package io.github.kotlinmania.rustlang.std.sys.pal.unsupported
 
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
 import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 // SAFETY: must be called only once during runtime initialization.
 // NOTE: this is not guaranteed to run, for example when Rust code is called externally.
@@ -14,7 +15,7 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {}
 // NOTE: this is not guaranteed to run, for example when the program aborts.
 public fun cleanup() {}
 
-public fun <T> unsupported(): Result<T> = Result.Err(unsupportedErr())
+public fun <T> unsupported(): Result<T> = RustResult.Err(unsupportedErr())
 
 public fun unsupportedErr(): Error = Error.UNSUPPORTED_PLATFORM
 

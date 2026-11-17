@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.procmacro.escape
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 public open class EscapeOptions(
     /**

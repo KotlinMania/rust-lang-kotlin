@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.core.str.error
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // Defines utf8 error type.

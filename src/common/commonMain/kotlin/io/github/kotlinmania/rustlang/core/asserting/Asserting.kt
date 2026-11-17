@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.asserting
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // ***** TryCapture - Generic *****
@@ -41,7 +42,7 @@ public interface TryCaptureGeneric<E, M> {
 
 public fun <E> Wrapper<E>.tryCapture(arg0: Capture<E, TryCaptureWithoutDebug>) {}
 
-public fun <E> Capture<E, TryCaptureWithoutDebug>.fmt(f: Formatter): Result<Unit, Error> = run { f.append("N/A"); Result.Ok(Unit) }
+public fun <E> Capture<E, TryCaptureWithoutDebug>.fmt(f: Formatter): Result<Unit, Error> = run { f.append("N/A"); Result.Ok<Unit, Error>(Unit) }
 
 // ***** TryCapture - Printable *****
 

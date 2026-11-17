@@ -13,6 +13,7 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 
 // Advanced Vector Extensions (AVX)
 //
@@ -119,8 +120,8 @@ public fun testMm256MaxPd() {
     val x = mm256MaxPd(mm256Set1Pd(-0.0), mm256Set1Pd(0.0))
     val wu = mm256CastpdSi256(w).asU64x4()
     val xu = mm256CastpdSi256(x).asU64x4()
-    check(wu == u64x4.splat(0x8000000000000000uL))
-    check(xu == u64x4.splat(0uL))
+    check(wu == Simd<ULong>(List(4) { 0x8000000000000000uL }))
+    check(xu == Simd<ULong>(List(4) { 0uL }))
     // > If only one value is a NaN (SNaN or QNaN) for this instruction, the
     // > second operand (source operand), either a NaN or a valid
     // > floating-point value, is written to the result.
@@ -143,8 +144,8 @@ public fun testMm256MaxPs() {
     val x = mm256MaxPs(mm256Set1Ps(-0.0f), mm256Set1Ps(0.0f))
     val wu = mm256CastpsSi256(w).asU32x8()
     val xu = mm256CastpsSi256(x).asU32x8()
-    check(wu == u32x8.splat(0x80000000u))
-    check(xu == u32x8.splat(0u))
+    check(wu == Simd<UInt>(List(8) { 0x80000000u }))
+    check(xu == Simd<UInt>(List(8) { 0u }))
     // > If only one value is a NaN (SNaN or QNaN) for this instruction, the
     // > second operand (source operand), either a NaN or a valid
     // > floating-point value, is written to the result.
@@ -167,8 +168,8 @@ public fun testMm256MinPd() {
     val x = mm256MinPd(mm256Set1Pd(-0.0), mm256Set1Pd(0.0))
     val wu = mm256CastpdSi256(w).asU64x4()
     val xu = mm256CastpdSi256(x).asU64x4()
-    check(wu == u64x4.splat(0x8000000000000000uL))
-    check(xu == u64x4.splat(0uL))
+    check(wu == Simd<ULong>(List(4) { 0x8000000000000000uL }))
+    check(xu == Simd<ULong>(List(4) { 0uL }))
     // > If only one value is a NaN (SNaN or QNaN) for this instruction, the
     // > second operand (source operand), either a NaN or a valid
     // > floating-point value, is written to the result.
@@ -191,8 +192,8 @@ public fun testMm256MinPs() {
     val x = mm256MinPs(mm256Set1Ps(-0.0f), mm256Set1Ps(0.0f))
     val wu = mm256CastpsSi256(w).asU32x8()
     val xu = mm256CastpsSi256(x).asU32x8()
-    check(wu == u32x8.splat(0x80000000u))
-    check(xu == u32x8.splat(0u))
+    check(wu == Simd<UInt>(List(8) { 0x80000000u }))
+    check(xu == Simd<UInt>(List(8) { 0u }))
     // > If only one value is a NaN (SNaN or QNaN) for this instruction, the
     // > second operand (source operand), either a NaN or a valid
     // > floating-point value, is written to the result.

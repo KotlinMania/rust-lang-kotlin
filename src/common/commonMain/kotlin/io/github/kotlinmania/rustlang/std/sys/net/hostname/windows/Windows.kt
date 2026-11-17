@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getHostNa
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.lstrlenW
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.winsock.startup
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public fun hostname(): Result<OsString> {
     startup()
@@ -18,7 +19,7 @@ public fun hostname(): Result<OsString> {
     // always enough.
     val buffer = MutableList(256) { MaybeUninit.uninit(PrimitiveLayouts.U16) }
     // SAFETY: these parameters specify a valid, writable region of memory.
-    when (val tryResult = cvt(getHostNameW(buffer.asMutPtr().cast(), buffer.size))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(getHostNameW(buffer.asMutPtr().cast(), buffer.size))) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
     // Use `lstrlenW` here as it does not require the bytes after the nul
     // terminator to be initialized.
     // SAFETY: if `GetHostNameW` returns successfully, the name is nul-terminated.
@@ -26,5 +27,5 @@ public fun hostname(): Result<OsString> {
     // SAFETY: the length of the name is `len`, hence `len` bytes have been
     // initialized by `GetHostNameW`.
     val name = buffer[0 until len].assumeInitRef()
-    return Result.Ok(OsString.fromWide(name))
+    return RustResult.Ok(OsString.fromWide(name))
 }

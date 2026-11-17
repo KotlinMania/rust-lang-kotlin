@@ -50,8 +50,8 @@ public open class Parker internal constructor(
         run {
             val matchVal = this.state.compareExchange(EMPTY, PARKED, Relaxed, Relaxed)
             when {
-                matchVal is Result.Ok -> {}
-                matchVal is Result.Err && matchVal.error == NOTIFIED -> {
+                matchVal is Result.Ok<*, *> -> {}
+                matchVal is Result.Err<*, *> && matchVal.error == NOTIFIED -> {
                     val Notified = matchVal.error
                     // We must read here, even though we know it will be `NOTIFIED`.
                     // This is because `unpark` may have been called again since we read
@@ -75,9 +75,9 @@ public open class Parker internal constructor(
             this.cvar().wait(this.lock())
             run {
                 val matchVal1 = this.state.compareExchange(NOTIFIED, EMPTY, Acquire, Relaxed)
-                when (matchVal1) { is Result.Ok -> {
+                when (matchVal1) { is Result.Ok<*, *> -> {
                     break
-                }; is Result.Err -> {} }
+                }; is Result.Err<*, *> -> {} }
             }
         }
         this.lock().unlock()
@@ -97,8 +97,8 @@ public open class Parker internal constructor(
         run {
             val matchVal = this.state.compareExchange(EMPTY, PARKED, Relaxed, Relaxed)
             when {
-                matchVal is Result.Ok -> {}
-                matchVal is Result.Err && matchVal.error == NOTIFIED -> {
+                matchVal is Result.Ok<*, *> -> {}
+                matchVal is Result.Err<*, *> && matchVal.error == NOTIFIED -> {
                     val Notified = matchVal.error
                     // We must read again here, see `park`.
                     val old = this.state.swap(EMPTY, Acquire)

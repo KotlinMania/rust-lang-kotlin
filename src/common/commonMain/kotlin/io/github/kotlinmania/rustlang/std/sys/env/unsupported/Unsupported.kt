@@ -37,6 +37,6 @@ public fun env(): Env {
 
 public fun getenv(arg0: OsStr): OsString? = null
 
-public fun setenv(arg0: OsStr, arg1: OsStr): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Err<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(constError(ErrorKind.Unsupported, "cannot set env vars on this platform"))
+public fun setenv(arg0: OsStr, arg1: OsStr): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = Result.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(constError(ErrorKind.Unsupported, "cannot set env vars on this platform"))
 
-public fun unsetenv(arg0: OsStr): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Err<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(constError(ErrorKind.Unsupported, "cannot unset env vars on this platform"))
+public fun unsetenv(arg0: OsStr): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = Result.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(constError(ErrorKind.Unsupported, "cannot unset env vars on this platform"))

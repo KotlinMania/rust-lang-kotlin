@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.key.keybased
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.rt.threadCleanup
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy.LazyKey
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.get

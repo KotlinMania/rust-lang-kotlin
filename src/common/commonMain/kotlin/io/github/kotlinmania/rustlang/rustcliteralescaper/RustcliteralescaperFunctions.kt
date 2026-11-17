@@ -122,7 +122,7 @@ public fun simpleEscape(c: Char): Result<NonZero<UByte, NonZeroU8Inner>, Char> {
         't' -> 9u
         '\\' -> 92u
         '\'' -> 39u
-        else -> when (val tryResult = Result.Err<NonZero<UByte, NonZeroU8Inner>, Char>(c)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonZero<UByte, NonZeroU8Inner>, Char>(tryResult.error) }
+        else -> when (val tryResult = Result.Err<NonZero<UByte, NonZeroU8Inner>, Char>(c)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonZero<UByte, NonZeroU8Inner>, Char>(tryResult.error) }
     }))!!)
 }
 
@@ -134,10 +134,10 @@ public fun simpleEscape(c: Char): Result<NonZero<UByte, NonZeroU8Inner>, Char> {
  * Parses the two hexadecimal characters of a hexadecimal escape without the leading r"\x".
  */
 public fun hexEscape(chars: Any): Result<UByte, EscapeError> {
-    val hi = when (val tryResult = (chars.next()?.let { Result.Ok<UByte, EscapeError>(it) } ?: Result.Err<UByte, EscapeError>(EscapeError.TooShortHexEscape))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UByte, EscapeError>(tryResult.error) }
-    val hi1 = when (val tryResult = hi.toDigit(16u).okOr(EscapeError.InvalidCharInHexEscape)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UByte, EscapeError>(tryResult.error) }
-    val lo = when (val tryResult = (chars.next()?.let { Result.Ok<UByte, EscapeError>(it) } ?: Result.Err<UByte, EscapeError>(EscapeError.TooShortHexEscape))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UByte, EscapeError>(tryResult.error) }
-    val lo1 = when (val tryResult = lo.toDigit(16u).okOr(EscapeError.InvalidCharInHexEscape)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UByte, EscapeError>(tryResult.error) }
+    val hi = when (val tryResult = (chars.next()?.let { Result.Ok<UByte, EscapeError>(it) } ?: Result.Err<UByte, EscapeError>(EscapeError.TooShortHexEscape))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UByte, EscapeError>(tryResult.error) }
+    val hi1 = when (val tryResult = hi.toDigit(16u).okOr(EscapeError.InvalidCharInHexEscape)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UByte, EscapeError>(tryResult.error) }
+    val lo = when (val tryResult = (chars.next()?.let { Result.Ok<UByte, EscapeError>(it) } ?: Result.Err<UByte, EscapeError>(EscapeError.TooShortHexEscape))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UByte, EscapeError>(tryResult.error) }
+    val lo1 = when (val tryResult = lo.toDigit(16u).okOr(EscapeError.InvalidCharInHexEscape)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UByte, EscapeError>(tryResult.error) }
     return Result.Ok<UByte, EscapeError>((hi1 * 16 + lo1).toUByte())
 }
 
@@ -155,12 +155,12 @@ public fun unicodeEscape(chars: Any): Result<UInt, EscapeError> {
     }
     // First character must be a hexadecimal digit.
     var value: UInt =
-        when (val matchVal = when (val tryResult = (chars.next()?.let { Result.Ok(it) } ?: Result.Err(EscapeError.UnclosedUnicodeEscape))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UInt, EscapeError>(tryResult.error) }) {
+        when (val matchVal = when (val tryResult = (chars.next()?.let { Result.Ok(it) } ?: Result.Err(EscapeError.UnclosedUnicodeEscape))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UInt, EscapeError>(tryResult.error) }) {
             '_' -> { return Result.Err<UInt, EscapeError>(EscapeError.LeadingUnderscoreUnicodeEscape) }
             '}' -> { return Result.Err<UInt, EscapeError>(EscapeError.EmptyUnicodeEscape) }
             else -> {
                 val c = matchVal
-                when (val tryResult = c.toDigit(16u).okOr(EscapeError.InvalidCharInUnicodeEscape)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UInt, EscapeError>(tryResult.error) }
+                when (val tryResult = c.toDigit(16u).okOr(EscapeError.InvalidCharInUnicodeEscape)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UInt, EscapeError>(tryResult.error) }
             }
         }
     // First character is valid, now parse the rest of the number
@@ -181,7 +181,7 @@ public fun unicodeEscape(chars: Any): Result<UInt, EscapeError> {
             }
             else -> {
                 val c1 = matchVal1
-                val digit: UInt = when (val tryResult = c1.toDigit(16u).okOr(EscapeError.InvalidCharInUnicodeEscape)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UInt, EscapeError>(tryResult.error) }
+                val digit: UInt = when (val tryResult = c1.toDigit(16u).okOr(EscapeError.InvalidCharInUnicodeEscape)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UInt, EscapeError>(tryResult.error) }
                 nDigits += 1
                 if (nDigits > 6) {
                     // Stop updating value since we're sure that it's incorrect already.
@@ -239,7 +239,7 @@ public fun checkForErrors(src: String, mode: Mode, errorCallback: (IntRange, Esc
         Mode.Char -> {
             val chars = src.chars()
             when (val matchVal = String.unescapeSingle(chars)) {
-                is Result.Err -> {
+                is Result.Err<*, *> -> {
                     val e = matchVal.error
                     errorCallback(0 until (src.length - chars.asStr().length), e)
                 }
@@ -249,7 +249,7 @@ public fun checkForErrors(src: String, mode: Mode, errorCallback: (IntRange, Esc
         Mode.Byte -> {
             val chars1 = src.chars()
             when (val matchVal1 = List.unescapeSingle(chars1)) {
-                is Result.Err -> {
+                is Result.Err<*, *> -> {
                     val e1 = matchVal1.error
                     errorCallback(0 until (src.length - chars1.asStr().length), e1)
                 }
@@ -257,37 +257,37 @@ public fun checkForErrors(src: String, mode: Mode, errorCallback: (IntRange, Esc
             }
         }
         Mode.Str -> unescapeStr(src, { range, res ->
-            if (res is Result.Err) {
+            if (res is Result.Err<*, *>) {
                 val e2 = res.error
                 errorCallback(range, e2)
             }
         })
         Mode.ByteStr -> unescapeByteStr(src, { range, res ->
-            if (res is Result.Err) {
+            if (res is Result.Err<*, *>) {
                 val e2 = res.error
                 errorCallback(range, e2)
             }
         })
         Mode.CStr -> unescapeCStr(src, { range, res ->
-            if (res is Result.Err) {
+            if (res is Result.Err<*, *>) {
                 val e2 = res.error
                 errorCallback(range, e2)
             }
         })
         Mode.RawStr -> checkRawStr(src, { range, res ->
-            if (res is Result.Err) {
+            if (res is Result.Err<*, *>) {
                 val e2 = res.error
                 errorCallback(range, e2)
             }
         })
         Mode.RawByteStr -> checkRawByteStr(src, { range, res ->
-            if (res is Result.Err) {
+            if (res is Result.Err<*, *>) {
                 val e2 = res.error
                 errorCallback(range, e2)
             }
         })
         Mode.RawCStr -> checkRawCStr(src, { range, res ->
-            if (res is Result.Err) {
+            if (res is Result.Err<*, *>) {
                 val e2 = res.error
                 errorCallback(range, e2)
             }
@@ -335,5 +335,5 @@ public fun unescapeChar2unitCStr(c: Char): Result<MixedUnit, EscapeError> = c.tr
 public fun unescapeHex2unitCStr(byte: UByte): Result<MixedUnit, EscapeError> = byte.tryInto()
 
 public fun unescapeUnicode2unitCStr(r: Result<Char, EscapeError>): Result<MixedUnit, EscapeError> {
-    return CStr.char2unit(when (val tryResult = r) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<MixedUnit, EscapeError>(tryResult.error) })
+    return CStr.char2unit(when (val tryResult = r) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<MixedUnit, EscapeError>(tryResult.error) })
 }

@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.pal.windows.handle
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.alloc.io.read.defaultReadVectored
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
@@ -19,7 +20,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.windows.io.AsHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.AsRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
@@ -27,6 +27,10 @@ import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.IntoRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.OwnedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
+import io.github.kotlinmania.rustlang.std.os.windows.io.asHandle
+import io.github.kotlinmania.rustlang.std.os.windows.io.asRawHandle
+import io.github.kotlinmania.rustlang.std.os.windows.io.fromRawHandle
+import io.github.kotlinmania.rustlang.std.os.windows.io.intoRawHandle
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
@@ -78,7 +82,7 @@ public open class Handle(
     public open fun read(buf: MutableList<UByte>): Result<Int, Error> {
         val res = this.synchronousRead(buf.asMutPtr(), buf.size, null)
         return when {
-            res is Result.Ok -> {
+            res is Result.Ok<*, *> -> {
                 val read = res.value
                 Result.Ok<Int, Error>(read)
             }
@@ -86,12 +90,12 @@ public open class Handle(
             // pipe semantics, which yields this error when *reading* from
             // a pipe after the other end has closed; we interpret that as
             // EOF on the pipe.
-            res is Result.Err && (res as Result.Err).error.kind() == ErrorKind.BrokenPipe -> {
+            res is Result.Err<*, *> && res.error.kind() == ErrorKind.BrokenPipe -> {
                 val e = res.error
                 Result.Ok<Int, Error>(0)
             }
             else -> {
-                val e1 = res.error
+                val e1 = (res as Result.Err<*, *>).error
                 Result.Err<Int, Error>(e1)
             }
         }
@@ -104,16 +108,16 @@ public open class Handle(
     public open fun readAt(buf: MutableList<UByte>, offset: ULong): Result<Int, Error> {
         val res = this.synchronousRead(buf.asMutPtr(), buf.size, offset)
         return when {
-            res is Result.Ok -> {
+            res is Result.Ok<*, *> -> {
                 val read = res.value
                 Result.Ok<Int, Error>(read)
             }
-            res is Result.Err && (res as Result.Err).error.rawOsError() == ERROR_HANDLE_EOF.toInt() -> {
+            res is Result.Err<*, *> && res.error.rawOsError() == ERROR_HANDLE_EOF.toInt() -> {
                 val e = res.error
                 Result.Ok<Int, Error>(0)
             }
             else -> {
-                val e1 = res.error
+                val e1 = (res as Result.Err<*, *>).error
                 Result.Err<Int, Error>(e1)
             }
         }
@@ -122,7 +126,7 @@ public open class Handle(
     public open fun readBuf(cursor: BorrowedCursor<UByte>): Result<Unit, Error> {
         val res = this.synchronousRead(cursor.asMut().asMutPtr(), cursor.capacity(), null)
         return when {
-            res is Result.Ok -> {
+            res is Result.Ok<*, *> -> {
                 val read = res.value
                 // Safety: `read` bytes were written to the initialized portion of the buffer
                 run {
@@ -134,12 +138,12 @@ public open class Handle(
             // pipe semantics, which yields this error when *reading* from
             // a pipe after the other end has closed; we interpret that as
             // EOF on the pipe.
-            res is Result.Err && (res as Result.Err).error.kind() == ErrorKind.BrokenPipe -> {
+            res is Result.Err<*, *> && res.error.kind() == ErrorKind.BrokenPipe -> {
                 val e = res.error
                 Result.Ok<Unit, Error>(Unit)
             }
             else -> {
-                val e1 = res.error
+                val e1 = (res as Result.Err<*, *>).error
                 Result.Err<Unit, Error>(e1)
             }
         }
@@ -147,7 +151,7 @@ public open class Handle(
 
     public open fun readBufAt(cursor: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> {
         // SAFETY: `cursor.asMut()` starts with `cursor.capacity()` writable bytes
-        val read = when (val tryResult = this.synchronousRead(cursor.asMut().asMutPtr(), cursor.capacity(), offset)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        val read = when (val tryResult = this.synchronousRead(cursor.asMut().asMutPtr(), cursor.capacity(), offset)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         // SAFETY: `read` bytes were written to the initialized portion of the buffer
         run {
             cursor.advance(read)
@@ -171,9 +175,9 @@ public open class Handle(
                 val res = cvt(readFile(this.asRawHandle(), MutPtr((buf.asMutPtr()).rawAddress), len, RustMutableReference(localStorageL163C12.asMutPtr(), localStorageL163C12.layout), overlapped))
                 Pair(res, amt)
             }
-        return when (res1) { is Result.Ok -> {
+        return when (res1) { is Result.Ok<*, *> -> {
             Result.Ok<Int?, Error>(amt1.toInt())
-        }; is Result.Err -> {
+        }; is Result.Err<*, *> -> {
             val e = res1.error
             if (e.rawOsError() == ERROR_IO_PENDING.toInt()) {
                 Result.Ok<Int?, Error>(null)
@@ -196,9 +200,9 @@ public open class Handle(
                     FALSE
                 }
             val res = cvt(getOverlappedResult(this.asRawHandle(), overlapped, RustMutableReference(localStorageL193C12.asMutPtr(), localStorageL193C12.layout), wait1))
-            when (res) { is Result.Ok -> {
+            when (res) { is Result.Ok<*, *> -> {
                 Result.Ok<Int, Error>(bytes)
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val e = res.error
                 if (e.rawOsError() == ERROR_HANDLE_EOF.toInt() || e.rawOsError() == ERROR_BROKEN_PIPE.toInt()) {
                     Result.Ok<Int, Error>(0)
@@ -219,11 +223,11 @@ public open class Handle(
     public open fun writeAt(buf: List<UByte>, offset: ULong): Result<Int, Error> = this.synchronousWrite(buf, offset)
 
     public open fun tryClone(): Result<Handle, Error> {
-        return Result.Ok<Handle, Error>(Handle(when (val tryResult = this.value.tryClone()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Handle, Error>(tryResult.error) }))
+        return Result.Ok<Handle, Error>(Handle(when (val tryResult = this.value.tryClone()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Handle, Error>(tryResult.error) }))
     }
 
     public open fun duplicate(access: UInt, inherit: Boolean, options: UInt): Result<Handle, Error> {
-        return Result.Ok<Handle, Error>(Handle(when (val tryResult = this.value.asHandle().duplicate(access, inherit, options)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Handle, Error>(tryResult.error) }))
+        return Result.Ok<Handle, Error>(Handle(when (val tryResult = this.value.asHandle().duplicate(access, inherit, options)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Handle, Error>(tryResult.error) }))
     }
 
     /**
@@ -275,7 +279,7 @@ public open class Handle(
             else -> {
                 val status3 = status1
                 val error = rtlNtStatusToDosError(status3)
-                Result.Err<Int, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(((error as Any?) as Result<Int, Error>)))
+                Result.Err<Int, Error>(Error.fromRawOsError(error))
             }
         }
     }
@@ -325,7 +329,7 @@ public open class Handle(
             else -> {
                 val status3 = status1
                 val error = rtlNtStatusToDosError(status3)
-                Result.Err<Int, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(((error as Any?) as Result<Int, Error>)))
+                Result.Err<Int, Error>(Error.fromRawOsError(error))
             }
         }
     }
@@ -335,7 +339,7 @@ public open class Handle(
             run {
                 val event = createEventW(MutPtr(0L), manual.toInt(), init.toInt(), ConstPtr(0L))
                 if (event.isNull()) {
-                    Result.Err<Handle, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
+                    Result.Err<Handle, Error>(Error.lastOsError())
                 } else {
                     Result.Ok<Handle, Error>(Handle.fromRawHandle(event))
                 }

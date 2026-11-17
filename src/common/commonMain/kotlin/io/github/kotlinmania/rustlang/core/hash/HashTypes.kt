@@ -491,13 +491,10 @@ public interface BuildHasher<Hasher> {
      * ```kotlin
      * import std.cmp.max
      *
-     * open class OrderAmbivalentPair<T>(public var field0: T, public var field1: T) : Hash<OrderAmbivalentPair<T>> {
-     *     public override fun hashCode(): Int {
-     *         var hasher = 0
-     *         hasher = 31 * hasher + (minOf(this.field0, this.field1)).hashCode()
-     *         hasher = 31 * hasher + (max(this.field0, this.field1)).hashCode()
-     *         return hasher
-     *     }
+     * open class OrderAmbivalentPair<T>(public var field0: T, public var field1: T)
+     * fun <T : Hash<T>, H> OrderAmbivalentPair<T>.hash(hasher: H) {
+     *     minOf(this.field0, this.field1).hash(hasher)
+     *     max(this.field0, this.field1).hash(hasher)
      * }
      * // Then later, in a `@Test` for the type...
      * val bh = Hash.RandomState.new()

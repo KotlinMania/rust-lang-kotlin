@@ -8,10 +8,10 @@ import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.Env
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsStr
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsString
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.dlIteratePhdr
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.DlPhdrInfo

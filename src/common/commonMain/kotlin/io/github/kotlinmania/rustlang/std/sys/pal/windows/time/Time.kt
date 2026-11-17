@@ -90,7 +90,7 @@ public open class WaitableTimer internal constructor(
         // Convert the Duration to a format similar to FILETIME.
         // Negative values are relative times whereas positive values are absolute.
         // Therefore we negate the relative duration.
-        val time = when (val tryResult = checkedDur2intervals(duration).okOr()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }.neg()
+        val time = when (val tryResult = (checkedDur2intervals(duration)?.let { Result.Ok<Long, Unit>(it) } ?: Result.Err<Long, Unit>(Unit))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }.neg()
         val result = setWaitableTimer(this.handle, time, 0, null, ConstPtr(0L), FALSE)
         return if (result != 0) {
             Result.Ok<Unit, Unit>(Unit)

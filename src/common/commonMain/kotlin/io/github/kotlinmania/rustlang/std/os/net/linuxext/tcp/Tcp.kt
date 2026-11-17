@@ -1,9 +1,9 @@
 // port-lint: source os/net/linux_ext/tcp.rs
 package io.github.kotlinmania.rustlang.std.os.net.linuxext.tcp
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.net.tcp.TcpStream
 
 // Linux and Android-specific tcp extensions to primitives in the [std.net] module.

@@ -65,11 +65,11 @@ public sealed class SocketAddr {
     public open fun ip(): IpAddr =
         when (this) {
             is SocketAddr.V4 -> {
-                val (a) = this
+                val (a) = this as SocketAddr.V4
                 IpAddr.v4(a.ip())
             }
             is SocketAddr.V6 -> {
-                val (a1) = this
+                val (a1) = this as SocketAddr.V6
                 IpAddr.v6(a1.ip())
             }
         }
@@ -130,11 +130,11 @@ public sealed class SocketAddr {
     public open fun port(): UShort =
         when (this) {
             is SocketAddr.V4 -> {
-                val (a) = this
+                val (a) = this as SocketAddr.V4
                 a.port()
             }
             is SocketAddr.V6 -> {
-                val (a1) = this
+                val (a1) = this as SocketAddr.V6
                 a1.port()
             }
         }
@@ -157,11 +157,11 @@ public sealed class SocketAddr {
     public open fun setPort(newPort: UShort) {
         when (this) {
             is SocketAddr.V4 -> {
-                val (a) = this
+                val (a) = this as SocketAddr.V4
                 a.setPort(newPort)
             }
             is SocketAddr.V6 -> {
-                val (a1) = this
+                val (a1) = this as SocketAddr.V6
                 a1.setPort(newPort)
             }
         }
@@ -220,16 +220,16 @@ public sealed class SocketAddr {
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
         when (this) {
             is SocketAddr.V4 -> {
-                val (a) = this
+                val (a) = this as SocketAddr.V4
                 a.fmt(f)
             }
             is SocketAddr.V6 -> {
-                val (a1) = this
+                val (a1) = this as SocketAddr.V6
                 a1.fmt(f)
             }
         }
 
-    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         /**
@@ -445,11 +445,11 @@ public open class SocketAddrV4(
             val buf = DisplayBuffer.buffer(LONGEST_IPV4_SOCKET_ADDR.len())
             val buf1 = DisplayBuffer.new(buf)
             buf1.writeFmt("${this.ip()}:${this.port()}").unwrap()
-            run { f.append(buf1.asStr()); Result.Ok(Unit) }
+            run { f.append(buf1.asStr()); Result.Ok<Unit, Unit>(Unit) }
         }
     }
 
-    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         /**
@@ -711,11 +711,11 @@ public open class SocketAddrV6(
                     buf1.writeFmt("[${this.ip()}%$scopeId1]:${this.port()}")
                 }
             }.unwrap()
-            run { f.append(buf1.asStr()); Result.Ok(Unit) }
+            run { f.append(buf1.asStr()); Result.Ok<Unit, Unit>(Unit) }
         }
     }
 
-    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         /**

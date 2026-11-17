@@ -33,7 +33,7 @@ public open class ParIter<T>(
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val iter = this.inner.iter().map({ x -> x.asRef() })
-        return object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(iter).finish()
+        return run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(iter).finish(); Result.Ok<Unit, Error>(Unit) }
     }
 }
 

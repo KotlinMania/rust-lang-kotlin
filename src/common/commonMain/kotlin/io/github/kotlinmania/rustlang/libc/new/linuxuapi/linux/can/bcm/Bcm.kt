@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.can.bcm
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.can.CanFrame
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.can.CanidT
 

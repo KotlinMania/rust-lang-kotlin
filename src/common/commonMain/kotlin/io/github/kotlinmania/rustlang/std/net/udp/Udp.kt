@@ -1,6 +1,7 @@
 // port-lint: source net/udp.rs
 package io.github.kotlinmania.rustlang.std.net.udp
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv6Addr
@@ -8,8 +9,8 @@ import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.io.constError
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.net.socketaddr.ToSocketAddrs
+import io.github.kotlinmania.rustlang.std.net.socketaddr.toSocketAddrs
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
@@ -149,7 +150,7 @@ public open class UdpSocket(
      * [Issue #34202]: https://github.com/rust-lang/rust/issues/34202
      */
     public open fun <Iter, A : ToSocketAddrs<Iter>> sendTo(buf: List<UByte>, addr: A): Result<Int, Error> {
-        return when (val matchVal = when (val tryResult = addr.toSocketAddrs()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }.next()) {
+        return when (val matchVal = when (val tryResult = addr.toSocketAddrs()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.error) }.next()) {
             null -> Result.Err<Int, Error>(constError(ErrorKind.InvalidInput, "no addresses to send data to"))
             else -> {
                 val addr1 = matchVal
@@ -659,14 +660,14 @@ public open class UdpSocket(
      *             println("No error")
      *         }
      *         else -> {
-     *             val (error1) = matchVal
+     *             val (error1) = matchVal as Err
      *             println("UdpSocket.takeError failed: $error")
      *         }
      *     }
      * }
      * ```
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value.takeError()
+    public open fun takeError(): Result<Error?, Error> = this.value.takeError()
 
     /**
      * Connects this UDP socket to a remote address, allowing the `send` and
@@ -841,14 +842,14 @@ public open class UdpSocket(
      *                 val (n) = matchVal
      *                 break
      *             }
-     *             matchVal is Err && (matchVal as Err).value.kind() == io.ErrorKind.WouldBlock -> {
+     *             matchVal is Err && matchVal.value.kind() == io.ErrorKind.WouldBlock -> {
      *                 val (e) = matchVal
      *                 // wait until network socket is ready, typically implemented
      *                 // via platform-specific APIs such as epoll or IOCP
      *                 waitForFd()
      *             }
      *             else -> {
-     *                 val (e1) = matchVal
+     *                 val (e1) = matchVal as Err
      *                 error("encountered IO error: $e")
      *             }
      *         }

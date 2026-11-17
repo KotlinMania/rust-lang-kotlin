@@ -143,7 +143,7 @@ public class DebugStruct(
  *         var data2 = data1.lock().unwrap()
  *         data2 += 1
  *         if (data2 == N) {
- *             tx1.send().unwrap()
+ *             tx1.send(Unit).unwrap()
  *         }
  *     })
  * }
@@ -292,7 +292,7 @@ public open class Mutex<T>(
                 val guard = matchVal.value
                 Result.Ok<T, PoisonError<Unit>>(guard.clone())
             }; is Result.Err<*, *> -> {
-                Result.Err<T, PoisonError<Unit>>(PoisonError.new())
+                Result.Err<T, PoisonError<Unit>>(PoisonError.new(Unit))
             } }
         }
 
@@ -590,12 +590,12 @@ public open class Mutex<T>(
             val matchVal = this.tryLock()
             when {
                 matchVal is Result.Ok<*, *> -> {
-                    val guard = (matchVal as Result.Ok<*, *>).value
+                    val guard = matchVal.value
                     d.field("data", guard)
                 }
-                matchVal is Result.Err<*, *> && matchVal.error is TryLockError.Poisoned -> {
-                    val errorVal = (matchVal as Result.Err<*, *>).error
-                    val (err) = errorVal as TryLockError.Poisoned
+                matchVal is Result.Err<*, *> && matchVal.error is TryLockError.Poisoned<*> -> {
+                    val errorVal = matchVal.error
+                    val (err) = errorVal as TryLockError.Poisoned<*>
                     d.field("data", err.getRef())
                 }
                 else -> {
@@ -677,7 +677,7 @@ public open class MutexGuard<T>(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
@@ -774,7 +774,7 @@ public open class MappedMutexGuard<T>(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 

@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.thread.lifecycle
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.maybedangling.MaybeDangling
 import io.github.kotlinmania.rustlang.core.mem.transmute
@@ -12,14 +13,13 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.backtrace.rustBeginShortBacktrace
-import io.github.kotlinmania.rustlang.std.sys.env.common.Env
+import io.github.kotlinmania.rustlang.std.sys.intoInner
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.thread.unix.DEFAULT_MIN_STACK_SIZE
 import io.github.kotlinmania.rustlang.std.sys.thread.unix.setName
@@ -30,11 +30,12 @@ import io.github.kotlinmania.rustlang.std.thread.scoped.ScopeData
 import io.github.kotlinmania.rustlang.std.thread.spawnhook.ChildSpawnHooks
 import io.github.kotlinmania.rustlang.std.thread.spawnhook.runSpawnHooks
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 // The inner logic for thread spawning and joining.
 
 // even without panics, this helps for Miri backtraces
-public fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean, scopeData: ScopeData?, f: () -> T): Result<JoinInner<T>, Error> {
+public fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean, scopeData: ScopeData?, f: () -> T): RustResult<JoinInner<T>, Error> {
     val stackSize1 =
         (stackSize ?: closure1@{
             var MIN: Atomic<Int, Align8<Int>> = AtomicUsize.new(0)
@@ -45,7 +46,7 @@ public fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean, 
                     return@closure1 n - 1
                 }
             }
-            val amt = Env.varOs("RUST_MIN_STACK").andThen({ s -> s.toStr().andThen({ s1 -> s1.parse().ok() }) }).unwrapOr(DEFAULT_MIN_STACK_SIZE)
+            val amt = env.varOs("RUST_MIN_STACK").andThen({ s -> s.toStr().andThen({ s1 -> s1.parse().ok() }) }).unwrapOr(DEFAULT_MIN_STACK_SIZE)
             MIN.store(amt + 1, Ordering.Relaxed)
             amt
         }())
@@ -98,7 +99,7 @@ public fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean, 
             Box.fromRaw(ptr1)
         }
     val init = ThreadInit(handle = thread.clone(), rustStart = rustStart1)
-    return Result.Ok<JoinInner<T>, Error>(JoinInner(native = when (val tryResult = io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread.new(stackSize1, init)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<JoinInner<T>, Error>((tryResult.error as Error)); else -> error("Unexpected Result variant: $tryResult") }, thread = thread, packet = myPacket))
+    return RustResult.Ok<JoinInner<T>, Error>(JoinInner(native = when (val tryResult = io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread.new(stackSize1, init)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<JoinInner<T>, Error>((tryResult.error as Error)); else -> error("Unexpected RustResult variant: $tryResult") }, thread = thread, packet = myPacket))
 }
 
 /**
@@ -121,7 +122,7 @@ public open class ThreadInit(
         // why we take Holder<Self>, to ensure the Holder is not destroyed until after this point.
         // Cloning the handle does not invoke the global allocator, it is an Arc.
         when (val matchVal = setCurrent(this.handle.clone())) {
-            is Result.Err -> {
+            is RustResult.Err<*, *> -> {
                 run {
                     when (val matchVal1 = panicOutput()) {
                         null -> {}
@@ -178,7 +179,7 @@ public open class Packet<T> internal constructor(
         // the scope function will panic.
         val unhandledPanic =
             when (val matchVal = this.result.getMut()) {
-                is Result.Err -> true
+                is RustResult.Err<*, *> -> true
                 else -> false
             }
         // Drop the result without causing unwinding.
@@ -194,7 +195,7 @@ public open class Packet<T> internal constructor(
         when (val matchVal1 = catchUnwind(AssertUnwindSafe({
             this.result.getMut() = null
         }))) {
-            is Result.Err -> {
+            is RustResult.Err<*, *> -> {
                 run {
                     when (val matchVal2 = panicOutput()) {
                         null -> {}

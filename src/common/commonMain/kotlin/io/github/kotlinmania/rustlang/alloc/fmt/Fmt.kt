@@ -1,6 +1,7 @@
 // port-lint: source fmt.rs
 package io.github.kotlinmania.rustlang.alloc.fmt
 
+import io.github.kotlinmania.rustlang.alloc.borrow.toOwned
 import io.github.kotlinmania.rustlang.core.fmt.Arguments
 
 // Utilities for formatting and printing `String`s.
@@ -614,10 +615,10 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
  * check(s == "Hello, world!")
  * ```
  */
-public fun format(args: Arguments): String {
-    fun formatInner(args1: Arguments): String {
+public fun format(args: Arguments): string.String {
+    fun formatInner(args1: Arguments): string.String {
         val capacity = args1.estimatedCapacity()
-        val output = String.String.withCapacity(capacity)
+        val output = string.String.withCapacity(capacity)
         output.writeFmt(args1).expect("a formatting trait implementation returned an error when the underlying stream did not")
         return output
     }

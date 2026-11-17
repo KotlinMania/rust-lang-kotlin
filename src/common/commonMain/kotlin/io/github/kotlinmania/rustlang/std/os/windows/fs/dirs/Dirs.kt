@@ -1,15 +1,14 @@
 // port-lint: source os/windows/fs/dirs.rs
 package io.github.kotlinmania.rustlang.std.os.windows.fs.dirs
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.fs.dirs.HomeDirs
 import io.github.kotlinmania.rustlang.std.fs.dirs.MediaDirs
 import io.github.kotlinmania.rustlang.std.io.constError
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.PathBuf
-import io.github.kotlinmania.rustlang.std.sys.env.windows.Env
 import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Slice
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FOLDERID_DESKTOP
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FOLDERID_DOCUMENTS
@@ -331,8 +330,8 @@ public interface MediaDirsExt<T> {
 }
 
 public fun homeDirsExtAppdataEnvHomeDirs(): Result<HomeDirs, Error> {
-    val roamingAppData = when (val tryResult = Env.varOs("APPDATA").map(PathBuf::from).filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "non-absolute %APPDATA%"))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<HomeDirs, Error>(tryResult.error) }
-    val localAppData = when (val tryResult = Env.varOs("LOCALAPPDATA").map(PathBuf::from).filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "non-absolute %LOCALAPPDATA%"))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<HomeDirs, Error>(tryResult.error) }
+    val roamingAppData = when (val tryResult = env.varOs("APPDATA").map(PathBuf::from).filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "non-absolute %APPDATA%"))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<HomeDirs, Error>(tryResult.error) }
+    val localAppData = when (val tryResult = env.varOs("LOCALAPPDATA").map(PathBuf::from).filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "non-absolute %LOCALAPPDATA%"))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<HomeDirs, Error>(tryResult.error) }
     // AppData/Local -- system-local, doesn't make sense to sync to another
     // AppData/Roaming -- data that makes sense to sync across machines
     val dirs = HomeDirs.empty()
@@ -344,8 +343,8 @@ public fun homeDirsExtAppdataEnvHomeDirs(): Result<HomeDirs, Error> {
 }
 
 public fun homeDirsExtKnownFoldersHomeDirs(): Result<HomeDirs, Error> {
-    val localAppData = when (val tryResult = getKnownFolderPath(FOLDERID_LOCAL_APP_DATA)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<HomeDirs, Error>(tryResult.error) }
-    val roamingAppData = when (val tryResult = getKnownFolderPath(FOLDERID_ROAMING_APP_DATA)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<HomeDirs, Error>(tryResult.error) }
+    val localAppData = when (val tryResult = getKnownFolderPath(FOLDERID_LOCAL_APP_DATA)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<HomeDirs, Error>(tryResult.error) }
+    val roamingAppData = when (val tryResult = getKnownFolderPath(FOLDERID_ROAMING_APP_DATA)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<HomeDirs, Error>(tryResult.error) }
     // AppData/Local -- system-local, doesn't make sense to sync to another
     // AppData/Roaming -- data that makes sense to sync across machines
     val dirs = HomeDirs.empty()
@@ -357,12 +356,12 @@ public fun homeDirsExtKnownFoldersHomeDirs(): Result<HomeDirs, Error> {
 }
 
 public fun mediaDirsExtKnownFoldersMediaDirs(): Result<MediaDirs, Error> {
-    val desktop = when (val tryResult = getKnownFolderPath(FOLDERID_DESKTOP)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<MediaDirs, Error>(tryResult.error) }
-    val documents = when (val tryResult = getKnownFolderPath(FOLDERID_DOCUMENTS)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<MediaDirs, Error>(tryResult.error) }
-    val downloads = when (val tryResult = getKnownFolderPath(FOLDERID_DOWNLOADS)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<MediaDirs, Error>(tryResult.error) }
-    val music = when (val tryResult = getKnownFolderPath(FOLDERID_MUSIC)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<MediaDirs, Error>(tryResult.error) }
-    val pictures = when (val tryResult = getKnownFolderPath(FOLDERID_PICTURES)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<MediaDirs, Error>(tryResult.error) }
-    val videos = when (val tryResult = getKnownFolderPath(FOLDERID_VIDEOS)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<MediaDirs, Error>(tryResult.error) }
+    val desktop = when (val tryResult = getKnownFolderPath(FOLDERID_DESKTOP)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<MediaDirs, Error>(tryResult.error) }
+    val documents = when (val tryResult = getKnownFolderPath(FOLDERID_DOCUMENTS)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<MediaDirs, Error>(tryResult.error) }
+    val downloads = when (val tryResult = getKnownFolderPath(FOLDERID_DOWNLOADS)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<MediaDirs, Error>(tryResult.error) }
+    val music = when (val tryResult = getKnownFolderPath(FOLDERID_MUSIC)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<MediaDirs, Error>(tryResult.error) }
+    val pictures = when (val tryResult = getKnownFolderPath(FOLDERID_PICTURES)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<MediaDirs, Error>(tryResult.error) }
+    val videos = when (val tryResult = getKnownFolderPath(FOLDERID_VIDEOS)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<MediaDirs, Error>(tryResult.error) }
     val dirs = MediaDirs.empty()
     dirs.desktop = desktop
     dirs.documents = documents
@@ -407,7 +406,7 @@ public fun getKnownFolderPath(id: Guid): Result<PathBuf?, Error> {
             }
             else -> {
                 // Miscellaneous error
-                Result.Err<PathBuf?, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(hr))
+                Result.Err<PathBuf?, Error>(Error.fromRawOsError(hr))
             }
         }
     // SAFETY: The caller is responsible for freeing the path returned by

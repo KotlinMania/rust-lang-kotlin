@@ -4,12 +4,12 @@ package io.github.kotlinmania.rustlang.std.sync.poison
 import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread
 
 // Synchronization objects that employ poisoning.
 //
@@ -113,7 +113,7 @@ public open class Flag internal constructor(
      */
     public open fun borrow(): LockResult<Unit> =
         if (this.get()) {
-            Result.Err(PoisonError.new())
+            Result.Err(PoisonError.new(Unit))
         } else {
             Result.Ok(Unit)
         }
@@ -122,7 +122,7 @@ public open class Flag internal constructor(
      * Checks the flag for a guarded borrow, where we may also set poison when `done`.
      */
     public open fun guard(): LockResult<Guard> {
-        val ret = Guard(panicking = Thread.panicking())
+        val ret = Guard(panicking = thread.panicking())
         return if (this.get()) {
             Result.Err(PoisonError.new(ret))
         } else {
@@ -131,7 +131,7 @@ public open class Flag internal constructor(
     }
 
     public open fun done(guard: Guard) {
-        if (!guard.panicking && Thread.panicking()) {
+        if (!guard.panicking && thread.panicking()) {
             this.failed.store(true, Ordering.Relaxed)
         }
     }
@@ -219,7 +219,7 @@ public open class PoisonError<T>(
     public var data: T,
     public var never: Nothing,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "PoisonError").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "PoisonError").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = "poisoned lock: another task failed inside".fmt(f)
 
@@ -294,20 +294,20 @@ public sealed class TryLockError<T> {
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is TryLockError.Poisoned -> "Poisoned(..)".fmt(f)
+            is TryLockError.Poisoned<*> -> "Poisoned(..)".fmt(f)
             TryLockError.WouldBlock -> "WouldBlock".fmt(f)
         }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is TryLockError.Poisoned -> "poisoned lock: another task failed inside"
+            is TryLockError.Poisoned<*> -> "poisoned lock: another task failed inside"
             TryLockError.WouldBlock -> "try_lock failed because the operation would block"
         }.fmt(f)
 
     public open fun cause(): Any? =
         when (this) {
-            is TryLockError.Poisoned -> {
-                val (p) = this
+            is TryLockError.Poisoned<*> -> {
+                val (p) = this as TryLockError.Poisoned<T>
                 p
             }
             else -> null
@@ -344,7 +344,7 @@ public typealias TryLockResult<Guard> = Result<Guard, TryLockError<Guard>>
 public fun <T, U> mapResult(result: LockResult<T>, f: (T) -> U): LockResult<U> =
     when {
         result is Result.Ok<*, *> -> {
-            val t = (result as Result.Ok<*, *>).value
+            val t = result.value
             Result.Ok(f(t))
         }
         else -> {

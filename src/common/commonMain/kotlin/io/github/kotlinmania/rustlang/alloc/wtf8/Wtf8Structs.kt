@@ -42,7 +42,7 @@ public open class Wtf8Buf(
      * For example, the code units [U+0061, U+D800, U+000A] are formatted as
      * `"a\u(D800)\n"`.
      */
-    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Formats the string with unpaired surrogates substituted with the replacement
@@ -51,11 +51,11 @@ public open class Wtf8Buf(
     public open fun fmtDisplay(formatter: StringBuilder): Result<Unit, Error> =
         when (val matchVal = this.asKnownUtf8()) {
             null -> {
-                run { formatter.append((this).toString()); Result.Ok(Unit) }
+                run { formatter.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
             }
             else -> {
                 val s = matchVal
-                run { formatter.append((s).toString()); Result.Ok(Unit) }
+                run { formatter.append((s).toString()); Result.Ok<Unit, Error>(Unit) }
             }
         }
 
@@ -428,10 +428,10 @@ public open class Wtf8Buf(
         public fun fromWide(v: List<UShort>): Wtf8Buf {
             val string = Wtf8Buf.withCapacity(v.size)
             for (item in Char.decodeUtf16(v.iter().cloned())) {
-                when (item) { is Result.Ok -> {
+                when (item) { is Result.Ok<*, *> -> {
                     val ch = item.value
                     string.pushChar(ch)
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     val surrogate = item.error
                     val surrogate1 = surrogate.unpairedSurrogate()
                     // SAFETY: Surrogates are known to be in the code point range.

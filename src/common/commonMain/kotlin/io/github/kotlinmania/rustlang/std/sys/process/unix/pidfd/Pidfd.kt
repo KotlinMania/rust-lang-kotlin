@@ -1,13 +1,13 @@
 // port-lint: source sys/process/unix/pidfd.rs
 package io.github.kotlinmania.rustlang.std.sys.process.unix.pidfd
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.SysPidfdOpen
 import io.github.kotlinmania.rustlang.libc.SysPidfdSendSignal
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.pidfd.PIDFD_GET_INFO
@@ -25,10 +25,12 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.Ioctl
 import io.github.kotlinmania.rustlang.libc.wasi.ECHILD
 import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
 import io.github.kotlinmania.rustlang.libc.wasi.ENOTTY
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
+import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.intoRawFd
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.process.id
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
@@ -37,6 +39,7 @@ import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtR
 import io.github.kotlinmania.rustlang.std.sys.process.unix.unix.ExitStatus
+import io.github.kotlinmania.rustlang.std.sys.weak.weak
 
 public open class PidFd(
     public var value: FileDesc,
@@ -59,8 +62,8 @@ public open class PidFd(
         run {
             val matchVal = cvt(Ioctl(this.value.asRawFd(), PIDFD_GET_INFO, RustMutableReference(localStorageL31C8.asMutPtr(), localStorageL31C8.layout)))
             when {
-                matchVal is Result.Ok -> {}
-                matchVal is Result.Err && when (val matchVal1 = (matchVal as Result.Err).error.rawOsError()) {
+                matchVal is Result.Ok<*, *> -> {}
+                matchVal is Result.Err<*, *> && when (val matchVal1 = matchVal.error.rawOsError()) {
                     EINVAL, ENOTTY -> true
                     else -> false
                 } -> {
@@ -71,14 +74,14 @@ public open class PidFd(
                         null -> {}
                         else -> {
                             val pidfdGetpid = matchVal2
-                            val pid: CInt = when (val tryResult = cvt(pidfdGetpid(this.value.asRawFd()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UInt, Error>(tryResult.error) }
+                            val pid: CInt = when (val tryResult = cvt(pidfdGetpid(this.value.asRawFd()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UInt, Error>(tryResult.error) }
                             return Result.Ok<UInt, Error>(pid.toUInt())
                         }
                     }
                     return Result.Err<UInt, Error>(e)
                 }
                 else -> {
-                    val e1 = matchVal.error
+                    val e1 = (matchVal as Result.Err<*, *>).error
                     return Result.Err<UInt, Error>(e1)
                 }
             }
@@ -92,7 +95,7 @@ public open class PidFd(
         val localStorageL56C8 = AddressableLocal(PidfdInfo(), UnresolvedTypeLayout<PidfdInfo>())
         val pidfdInfo by localStorageL56C8
         pidfdInfo.mask = PIDFD_INFO_EXIT.toULong()
-        when (val tryResult = cvt(Ioctl(this.value.asRawFd(), PIDFD_GET_INFO, RustMutableReference(localStorageL56C8.asMutPtr(), localStorageL56C8.layout)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ExitStatus, Error>(tryResult.error) }
+        when (val tryResult = cvt(Ioctl(this.value.asRawFd(), PIDFD_GET_INFO, RustMutableReference(localStorageL56C8.asMutPtr(), localStorageL56C8.layout)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ExitStatus, Error>(tryResult.error) }
         return Result.Ok<ExitStatus, Error>(ExitStatus.new(pidfdInfo.exitCode))
     }
 
@@ -101,20 +104,20 @@ public open class PidFd(
         val siginfo by localStorageL63C8
         val r = cvtR({ io.github.kotlinmania.rustlang.libc.waitid(P_PIDFD, this.value.asRawFd().toUInt(), RustMutableReference(localStorageL63C8.asMutPtr(), localStorageL63C8.layout), options) })
         when {
-            r is Result.Err && (r as Result.Err).error.rawOsError() == ECHILD -> {
+            r is Result.Err<*, *> && r.error.rawOsError() == ECHILD -> {
                 val waitidErr = r.error
                 // already reaped
                 run {
                     val matchVal = this.exitForReapedChild()
-                    when (matchVal) { is Result.Ok -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         val exitStatus = matchVal.value
                         return Result.Ok<ExitStatus?, Error>(exitStatus)
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         return Result.Err<ExitStatus?, Error>(waitidErr)
                     } }
                 }
             }
-            r is Result.Err -> {
+            r is Result.Err<*, *> -> {
                 val e = r.error
                 return Result.Err<ExitStatus?, Error>(e)
             }
@@ -136,7 +139,7 @@ public open class PidFd(
     }
 
     public open fun wait(): Result<ExitStatus, Error> {
-        val r = when (val tryResult = this.waitid(WEXITED)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ExitStatus, Error>(tryResult.error) }
+        val r = when (val tryResult = this.waitid(WEXITED)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ExitStatus, Error>(tryResult.error) }
         return when (r) {
             null -> error("waitid with WEXITED should not return None")
             else -> {
@@ -158,7 +161,7 @@ public open class PidFd(
         @kotlin.test.Test
         public fun currentProcess(): Result<PidFd, Error> {
             val pid = id()
-            val pidfd = when (val tryResult = cvt(syscall(SysPidfdOpen, pid.toLong(), 0L))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<PidFd, Error>(tryResult.error) }
+            val pidfd = when (val tryResult = cvt(syscall(SysPidfdOpen, pid.toLong(), 0L))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<PidFd, Error>(tryResult.error) }
             return Result.Ok<PidFd, Error>(PidFd.fromRawFd(pidfd.toInt()))
         }
 

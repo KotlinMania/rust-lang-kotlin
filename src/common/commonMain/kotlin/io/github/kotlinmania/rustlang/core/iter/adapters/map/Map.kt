@@ -2,17 +2,13 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.map
 
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -98,50 +94,12 @@ public open class Map<I, F>(
     // Used for `SplitWhitespace` and `SplitAsciiWhitespace` `asStr` methods
     public var iter: I,
     public var f: F,
-) : TrustedFused, TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, SourceIter<Source>, InPlaceIterable, Iterable<B> {
-    override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
-        override fun computeNext() {
-            when (val v = this@Map.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
+) {
     public open fun clone(): Map<I, F> = Map(iter, f)
 
     public open fun intoInner(): I = this.iter
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Map").field("iter", this.iter).finish()
-
-    public override fun next(): B? = this.iter.next()?.let(this.f)
-
-    public override fun sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
-
-    public override fun <Residual, Acc, R> tryFold(init: Acc, g: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, mapTryFold(this.f, g))
-
-    public override fun <Acc> fold(init: Acc, g: (Acc, B) -> Acc): Acc = this.iter.fold(init, mapFold(this.f, g))
-
-    public override fun iteratorGetUnchecked(idx: Int): B {
-        // SAFETY: the caller must uphold the contract for
-        // `Iterator.__iterator_get_unchecked`.
-        return (this.f)(tryGetUnchecked(this.iter, idx))
-    }
-
-    public open fun nextBack(): B? = this.iter.nextBack()?.let(this.f)
-
-    public open fun <Residual, Acc, R> tryRfold(init: Acc, g: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, mapTryFold(this.f, g))
-
-    public open fun <Acc> rfold(init: Acc, g: (Acc, B) -> Acc): Acc = this.iter.rfold(init, mapFold(this.f, g))
-
-    public open fun len(): Int = this.iter.len()
-
-    public open fun isEmpty(): Boolean = this.iter.isEmpty()
-
-    public override fun asInner(): Source {
-        // SAFETY: unchecked function forwarding to unchecked function with the same requirements
-        return this.iter.asInner()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Map").field("iter", this.iter).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun <I, F> typeLayout(typeLayoutI: TypeLayout<I>, typeLayoutF: TypeLayout<F>): TypeLayout<Map<I, F>> =
@@ -170,15 +128,44 @@ public open class Map<I, F>(
             }
 
         public fun <I, F> new(iter: I, f: F): Map<I, F> = Map(iter = iter, f = f)
-
-        public val MAY_HAVE_SIDE_EFFECT: Boolean = true
-
-        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
-
-        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }
 
 public fun <T, B, Acc> mapFold(f: (T) -> B, g: (Acc, B) -> Acc): (Acc, T) -> Acc = { acc, elt -> g(acc, f(elt)) }
 
 public fun <T, B, Acc, R> mapTryFold(f: (T) -> B, g: (Acc, B) -> R): (Acc, T) -> R = { acc, elt -> g(acc, f(elt)) }
+
+public fun <B, I> Map<I, F>.next(): B? = this.iter.next()?.let(this.f)
+
+public fun <B, I> Map<I, F>.sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
+
+public fun <Residual, B, I, Acc, R> Map<I, F>.tryFold(init: Acc, g: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, mapTryFold(this.f, g))
+
+public fun <B, I, Acc> Map<I, F>.fold(init: Acc, g: (Acc, B) -> Acc): Acc = this.iter.fold(init, mapFold(this.f, g))
+
+public fun <B, I> Map<I, F>.iteratorGetUnchecked(idx: Int): B {
+    // SAFETY: the caller must uphold the contract for
+    // `Iterator.__iterator_get_unchecked`.
+    return (this.f)(tryGetUnchecked(this.iter, idx))
+}
+
+public fun <B, I> Map<I, F>.nextBack(): B? = this.iter.nextBack()?.let(this.f)
+
+public fun <Residual, B, I, Acc, R> Map<I, F>.tryRfold(init: Acc, g: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, mapTryFold(this.f, g))
+
+public fun <B, I, Acc> Map<I, F>.rfold(init: Acc, g: (Acc, B) -> Acc): Acc = this.iter.rfold(init, mapFold(this.f, g))
+
+public fun <B, I> Map<I, F>.len(): Int = this.iter.len()
+
+public fun <B, I> Map<I, F>.isEmpty(): Boolean = this.iter.isEmpty()
+
+public val MAY_HAVE_SIDE_EFFECT: Boolean = true
+
+public fun <Source, I, F> Map<I, F>.asInner(): Source where I : SourceIter<Source> {
+    // SAFETY: unchecked function forwarding to unchecked function with the same requirements
+    return this.iter.asInner()
+}
+
+public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
+
+public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY

@@ -26,11 +26,12 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.SysPidfdOpen
 import io.github.kotlinmania.rustlang.libc.WCOREDUMP
 import io.github.kotlinmania.rustlang.libc.WEXITSTATUS
@@ -117,6 +118,7 @@ import io.github.kotlinmania.rustlang.libc.windows.SIGINT
 import io.github.kotlinmania.rustlang.libc.windows.SIGSEGV
 import io.github.kotlinmania.rustlang.libc.windows.SIGTERM
 import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.panic.alwaysAbort
 import io.github.kotlinmania.rustlang.std.process.Child
 import io.github.kotlinmania.rustlang.std.process.StdioPipes
@@ -138,7 +140,7 @@ import io.github.kotlinmania.rustlang.std.sys.process.unix.pidfd.PidFd
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 
 public fun interface FnCallback {
-    public operator fun invoke(arg0: MutPtr, arg1: ConstPtr): io.github.kotlinmania.rustlang.libc.CInt
+    public operator fun invoke(arg0: MutPtr, arg1: ConstPtr): CInt
 }
 
 public fun interface FnCallback1 {
@@ -199,16 +201,16 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
     if (this.sawNul()) {
         return Result.Err<Pair<Process, StdioPipes>, Error>(constError(ErrorKind.InvalidInput, "nul byte found in provided data"))
     }
-    val (ours, theirs) = when (val tryResult = this.setupIo(default, needsStdin)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }
-    when (val matchVal = when (val tryResult = this.posixSpawn(theirs, envp.asRef())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }) {
+    val (ours, theirs) = when (val tryResult = this.setupIo(default, needsStdin)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }
+    when (val matchVal = when (val tryResult = this.posixSpawn(theirs, envp.asRef())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }) {
         null -> {}
         else -> {
             val ret = matchVal
             return Result.Ok<Pair<Process, StdioPipes>, Error>(Pair(ret, ours))
         }
     }
-    val (input, output) = when (val tryResult = Socket.newPair(AF_UNIX, SOCK_SEQPACKET)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }
-    val (input1, output1) = when (val tryResult = pipe()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }
+    val (input, output) = when (val tryResult = Socket.newPair(AF_UNIX, SOCK_SEQPACKET)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }
+    val (input1, output1) = when (val tryResult = pipe()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }
     // Whatever happens after the fork is almost for sure going to touch or
     // look at the environment in one way or another (PATH in `execvp` or
     // accessing the `environ` pointer ourselves). Make sure no other thread
@@ -220,7 +222,7 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
     // The child calls `mem.forget` to leak the lock, which is crucial because
     // releasing a lock is not async-signal-safe.
     val envLock = envReadLock()
-    val pid = when (val tryResult = this.doFork()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }
+    val pid = when (val tryResult = this.doFork()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }
     if (pid == 0) {
         alwaysAbort()
         forget(envLock)
@@ -266,11 +268,11 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
         run {
             val matchVal2 = input1.read(bytes1)
             when {
-                matchVal2 is Result.Ok && matchVal2.value == 0 -> {
+                matchVal2 is Result.Ok<*, *> && matchVal2.value == 0 -> {
                     val valueVal = matchVal2.value
                     return Result.Ok<Pair<Process, StdioPipes>, Error>(Pair(p, ours))
                 }
-                matchVal2 is Result.Ok && matchVal2.value == 8 -> {
+                matchVal2 is Result.Ok<*, *> && matchVal2.value == 8 -> {
                     val valueVal1 = matchVal2.value
                     val (errno2, footer) = bytes1.splitAt(4)
                     check(CLOEXEC_MSG_FOOTER == footer)
@@ -278,10 +280,10 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
                     check(p.wait().isOk()) { "wait() should either return Ok or panic" }
                     return Result.Err<Pair<Process, StdioPipes>, Error>(Error.fromRawOsError(errno3))
                 }
-                matchVal2 is Result.Err && (matchVal2 as Result.Err).error.isInterrupted() -> {
+                matchVal2 is Result.Err<*, *> && matchVal2.error.isInterrupted() -> {
                     val e = matchVal2.error
                 }
-                matchVal2 is Result.Err -> {
+                matchVal2 is Result.Err<*, *> -> {
                     val e1 = matchVal2.error
                     check(p.wait().isOk()) { "wait() should either return Ok or panic" }
                     error("the CLOEXEC pipe failed: $e")
@@ -305,16 +307,16 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
 // way to avoid that all-together.
 public val ERR_APPLE_TV_WATCH_NO_FORK_EXEC: Error = constError(ErrorKind.Unsupported, "`fork`+`exec`-based process spawning is not supported on this target")
 
-public fun Command.doFork(): Result<PidT, io.github.kotlinmania.rustlang.core.io.error.Error> = Result.Err<PidT, io.github.kotlinmania.rustlang.core.io.error.Error>(Command.ERR_APPLE_TV_WATCH_NO_FORK_EXEC)
+public fun Command.doFork(): Result<PidT, Error> = Result.Err<PidT, Error>(Command.ERR_APPLE_TV_WATCH_NO_FORK_EXEC)
 
-public fun Command.exec(default: Stdio): io.github.kotlinmania.rustlang.core.io.error.Error {
+public fun Command.exec(default: Stdio): Error {
     val envp = this.captureEnv()
     if (this.sawNul()) {
         return constError(ErrorKind.InvalidInput, "nul byte found in provided data")
     }
     return run {
         val matchVal = this.setupIo(default, true)
-        when (matchVal) { is Result.Ok -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val okVal = matchVal.value
             val theirs = okVal.second
             run {
@@ -324,7 +326,7 @@ public fun Command.exec(default: Stdio): io.github.kotlinmania.rustlang.core.io.
                 val e = this.doExec(theirs, envp.asRef())
                 e
             }
-        }; is Result.Err -> {
+        }; is Result.Err<*, *> -> {
             val e1 = matchVal.error
             e1
         } }
@@ -361,26 +363,26 @@ public fun Command.exec(default: Stdio): io.github.kotlinmania.rustlang.core.io.
 // allocation). Instead we just close it manually. This will never
 // have the drop glue anyway because this code never returns (the
 // child will either exec() or invoke libc.exit)
-public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<Nothing, io.github.kotlinmania.rustlang.core.io.error.Error> {
+public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<Nothing, Error> {
     when (val matchVal = stdio.stdin.fd()) {
         null -> {}
         else -> {
             val fd = matchVal
-            when (val tryResult = cvtR({ dup2(fd, STDIN_FILENO) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Nothing, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+            when (val tryResult = cvtR({ dup2(fd, STDIN_FILENO) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
         }
     }
     when (val matchVal1 = stdio.stdout.fd()) {
         null -> {}
         else -> {
             val fd1 = matchVal1
-            when (val tryResult = cvtR({ dup2(fd1, STDOUT_FILENO) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Nothing, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+            when (val tryResult = cvtR({ dup2(fd1, STDOUT_FILENO) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
         }
     }
     when (val matchVal2 = stdio.stderr.fd()) {
         null -> {}
         else -> {
             val fd2 = matchVal2
-            when (val tryResult = cvtR({ dup2(fd2, STDERR_FILENO) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Nothing, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+            when (val tryResult = cvtR({ dup2(fd2, STDERR_FILENO) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
         }
     }
     run {
@@ -389,14 +391,14 @@ public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<N
             else -> {
                 val g = matchVal3
                 // Note: Redox kernel does not support setgroups yet
-                when (val tryResult = cvt(setgroups(g.len().tryInto().unwrap(), g.asPtr()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Nothing, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+                when (val tryResult = cvt(setgroups(g.len().tryInto().unwrap(), g.asPtr()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
             }
         }
         when (val matchVal4 = this.getGid()) {
             null -> {}
             else -> {
                 val u = matchVal4
-                when (val tryResult = cvt(setgid(u.toUInt()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Nothing, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+                when (val tryResult = cvt(setgid(u.toUInt()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
             }
         }
         when (val matchVal5 = this.getUid()) {
@@ -412,17 +414,17 @@ public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<N
                 // Note: Redox kernel does not support setgroups yet
                 if (this.getGroups() == null) {
                     val res = cvt(setgroups(0, ConstPtr(0L)))
-                    if (res is Result.Err) {
+                    if (res is Result.Err<*, *>) {
                         val e = res.error
                         // Here we ignore the case of not having CAP_SETGID.
                         // An alternative would be to require CAP_SETGID (in
                         // addition to CAP_SETUID) for setting the UID.
                         if (e.rawOsError() != EPERM) {
-                            return Result.Err<Nothing, io.github.kotlinmania.rustlang.core.io.error.Error>(e)
+                            return Result.Err<Nothing, Error>(e)
                         }
                     }
                 }
-                when (val tryResult = cvt(setuid(u1.toUInt()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Nothing, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+                when (val tryResult = cvt(setuid(u1.toUInt()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
             }
         }
     }
@@ -430,36 +432,36 @@ public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<N
         null -> {}
         else -> {
             val chroot = matchVal6
-            when (val tryResult = cvt(chroot(chroot.asPtr()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Nothing, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+            when (val tryResult = cvt(chroot(chroot.asPtr()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
         }
     }
     when (val matchVal7 = this.getCwd()) {
         null -> {}
         else -> {
             val cwd = matchVal7
-            when (val tryResult = cvt(chdir(cwd.asPtr()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Nothing, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+            when (val tryResult = cvt(chdir(cwd.asPtr()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
         }
     }
     when (val matchVal8 = this.getPgroup()) {
         null -> {}
         else -> {
             val pgroup = matchVal8
-            when (val tryResult = cvt(setpgid(0, pgroup))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Nothing, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+            when (val tryResult = cvt(setpgid(0, pgroup))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
         }
     }
     if (this.getSetsid()) {
-        when (val tryResult = cvt(setsid())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Nothing, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+        when (val tryResult = cvt(setsid())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
     }
     // emscripten has no signal support.
     if (!onBrokenPipeUsed()) {
         run {
             val action: Sigaction  = Sigaction()
             action.saSigaction = SIG_DFL
-            when (val tryResult = cvt(Sigaction(SIGPIPE, action, MutPtr(0L)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Nothing, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+            when (val tryResult = cvt(Sigaction(SIGPIPE, action, MutPtr(0L)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
         }
     }
     for (callback in this.getClosures().iterMut()) {
-        when (val tryResult = callback()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Nothing, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+        when (val tryResult = callback()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
     }
     // Although we're performing an exec here we may also return with an
     // error from this function (without actually exec'ing) in which case we
@@ -488,7 +490,7 @@ public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<N
         (PrimitiveLayouts.constPtrLayout(64L)).writeNative((environ()).rawAddress, envp.asPtr())
     }
     execvp(this.getProgramCstr().asPtr(), this.getArgv().asPtr())
-    return Result.Err<Nothing, io.github.kotlinmania.rustlang.core.io.error.Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
+    return Result.Err<Nothing, Error>(Error.lastOsError())
 }
 
 public fun Command.posixSpawn(arg0: ChildPipes, arg1: CStringArray?): Result<Process?, Error> = Result.Ok<Process?, Error>(null)
@@ -513,12 +515,12 @@ public fun Command.sendPidfd(sock: Socket) {
         msg.msgIovlen = 1
         // only attach cmsg if we successfully acquired the pidfd
         if (pidfd >= 0) {
-            msg.msgControllen = ((sizeOfVal(cmsg.buf, typeLayoutT = PrimitiveArrayLayouts.uByteArray((cmsgSpace(SCM_MSG_LEN.toUInt()).toInt()).toInt())) as Any?) as Unit)
+            msg.msgControllen = sizeOfVal(cmsg.buf, typeLayoutT = PrimitiveArrayLayouts.uByteArray((cmsgSpace(SCM_MSG_LEN.toUInt()).toInt()).toInt()))
             msg.msgControl = (addrOfMut(cmsg.buf))
             val hdr = cmsgFirsthdr((localStorageL876C12.asMutPtr()))
             hdr.cmsgLevel = SOL_SOCKET
             hdr.cmsgType = SCM_RIGHTS
-            hdr.cmsgLen = ((cmsgLen(((SCM_MSG_LEN as Any?) as Unit)) as Any?) as Unit)
+            hdr.cmsgLen = cmsgLen(SCM_MSG_LEN)
             val data = cmsgData(hdr)
             copyNonoverlapping(ConstPtr((localStorageL862C12.elementConstPtr(0)).rawAddress), mutPtrFromRustCast(data), SCM_MSG_LEN, typeLayoutT = PrimitiveLayouts.U8)
         }
@@ -527,7 +529,7 @@ public fun Command.sendPidfd(sock: Socket) {
         run {
             val matchVal = cvtR({ sendmsg(sock.asRaw(), msg, MSG_EOR) })
             when {
-                matchVal is Result.Ok && matchVal.value == 0 -> {
+                matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
                     val valueVal = matchVal.value
                 }
                 else -> {
@@ -569,7 +571,7 @@ public fun Command.recvPidfd(sock: Socket): PidT {
             return -1
         }
         val hdr = cmsgFirsthdr((localStorageL926C12.asMutPtr()))
-        if (hdr.isNull() || hdr.cmsgLevel != SOL_SOCKET || hdr.cmsgType != SCM_RIGHTS || hdr.cmsgLen != cmsgLen(SCM_MSG_LEN.toInt()).toInt()) {
+        if (hdr.isNull() || hdr.cmsgLevel != SOL_SOCKET || hdr.cmsgType != SCM_RIGHTS || hdr.cmsgLen != cmsgLen(SCM_MSG_LEN)) {
             return -1
         }
         val data = cmsgData(hdr)
@@ -646,13 +648,13 @@ public open class Process(
             null -> {}
             else -> {
                 val pidFd = matchVal1
-                val status1 = when (val tryResult = pidFd.wait()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ExitStatus, Error>(tryResult.error) }
+                val status1 = when (val tryResult = pidFd.wait()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ExitStatus, Error>(tryResult.error) }
                 this.status = status1
                 return Result.Ok<ExitStatus, Error>(status1)
             }
         }
         val status2 = 0
-        when (val tryResult = cvtR({ waitpid(this.pid, status2, 0) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ExitStatus, Error>(tryResult.error) }
+        when (val tryResult = cvtR({ waitpid(this.pid, status2, 0) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ExitStatus, Error>(tryResult.error) }
         this.status = ExitStatus.new(status2)
         return Result.Ok<ExitStatus, Error>(ExitStatus.new(status2))
     }
@@ -669,7 +671,7 @@ public open class Process(
             null -> {}
             else -> {
                 val pidFd = matchVal1
-                val status1 = when (val tryResult = pidFd.tryWait()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ExitStatus?, Error>(tryResult.error) }
+                val status1 = when (val tryResult = pidFd.tryWait()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ExitStatus?, Error>(tryResult.error) }
                 if (status1 != null) {
                     val status2 = status1
                     this.status = status2
@@ -678,7 +680,7 @@ public open class Process(
             }
         }
         val status3 = 0
-        val pid = when (val tryResult = cvt(waitpid(this.pid, status3, WNOHANG))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ExitStatus?, Error>(tryResult.error) }
+        val pid = when (val tryResult = cvt(waitpid(this.pid, status3, WNOHANG))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ExitStatus?, Error>(tryResult.error) }
         return if (pid == 0) {
             Result.Ok<ExitStatus?, Error>(null)
         } else {
@@ -730,10 +732,10 @@ public open class ExitStatus(
         // unix/tests.rs) will spot it. `ExitStatusError.code` assumes this too.
         return run {
             val matchVal = NonZero.tryFrom(this.value)
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val failure = matchVal.value
                 Result.Err<Unit, ExitStatusError>(ExitStatusError(failure))
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 Result.Ok<Unit, ExitStatusError>(Unit)
             } }
         }
@@ -751,7 +753,7 @@ public open class ExitStatus(
 
     public open fun intoRaw(): CInt = this.value
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("unix_wait_status(${this.value}, \"${this}\")"); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("unix_wait_status(${this.value}, \"${this}\")"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         when (val matchVal4 = this.code()) {
@@ -910,7 +912,7 @@ public open class ExitStatusError internal constructor(
 
     public open fun into(): ExitStatus = ExitStatus(this.value.into())
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugTuple(f, "unix_wait_status").field(this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugTuple(f, "unix_wait_status").field(this.value).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun code(): NonZero<Int, NonZeroI32Inner>? = ExitStatus(this.value.into()).code()?.let({ st -> st.tryInto().unwrap() })
 

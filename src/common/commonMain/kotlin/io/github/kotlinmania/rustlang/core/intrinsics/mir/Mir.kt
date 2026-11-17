@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.intrinsics.mir
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 // Rustc internal tooling for hand-writing MIR.
 //

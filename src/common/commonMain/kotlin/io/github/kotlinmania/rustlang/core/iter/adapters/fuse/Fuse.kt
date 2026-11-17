@@ -2,11 +2,8 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.fuse
 
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
@@ -26,7 +23,7 @@ public open class Fuse<I>(
     // we still have to be prepared for that state due to variance.
     // See rust-lang/rust#85863
     public var iter: I?,
-) : TrustedFused, TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, FuseImpl<I, Item>, SourceIter<Source>, Iterable<Item> {
+) : FuseImpl<I, Item>, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Fuse.next()) {
@@ -48,7 +45,7 @@ public open class Fuse<I>(
 
     public override fun nth(n: Int): Item? = this.nth(n)
 
-    public override fun last(): Item? =
+    public open fun last(): Item? =
         when (val matchVal = this.iter) {
             null -> null
             else -> {
@@ -57,7 +54,7 @@ public open class Fuse<I>(
             }
         }
 
-    public override fun count(): Int =
+    public open fun count(): Int =
         when (val matchVal = this.iter) {
             null -> 0
             else -> {
@@ -66,7 +63,7 @@ public open class Fuse<I>(
             }
         }
 
-    public override fun sizeHint(): Pair<Int, Int?> =
+    public open fun sizeHint(): Pair<Int, Int?> =
         when (val matchVal = this.iter) {
             null -> Pair(0, 0)
             else -> {
@@ -77,7 +74,7 @@ public open class Fuse<I>(
 
     public override fun <Residual, Acc, R> tryFold(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.tryFold(acc, fold)
 
-    public override fun <Acc> fold(acc: Acc, fold: (Acc, Item) -> Acc): Acc {
+    public open fun <Acc> fold(acc: Acc, fold: (Acc, Item) -> Acc): Acc {
         var acc1 = acc
         when (val matchVal = this.iter) {
             null -> {}
@@ -91,7 +88,7 @@ public open class Fuse<I>(
 
     public override fun find(predicate: (Item) -> Boolean): Item? = this.find(predicate)
 
-    public override fun iteratorGetUnchecked(idx: Int): Item =
+    public open fun iteratorGetUnchecked(idx: Int): Item =
         when (val matchVal = this.iter) {
             // SAFETY: the caller asserts there is an item at `i`, so we're not exhausted.
             null -> error("Entered Rust intrinsics::unreachable")
@@ -143,16 +140,6 @@ public open class Fuse<I>(
             }
         }
 
-    // SAFETY: `TrustedLen` requires that an accurate length is reported via `sizeHint()`. As `Fuse`
-    // is just forwarding this to the wrapped iterator `I` this property is preserved and it is safe to
-    // implement `TrustedLen` here.
-
-    // SAFETY: `TrustedRandomAccess` requires that `sizeHint()` must be exact and cheap to call, and
-    // `Iterator.__iterator_get_unchecked()` must be implemented accordingly.
-    //
-    // This is safe to implement as `Fuse` is just forwarding these to the wrapped iterator `I`, which
-    // preserves these properties.
-
     /**
      * General `Fuse` impl which sets `iter = None` when exhausted.
      */
@@ -181,7 +168,7 @@ public open class Fuse<I>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = iter.tryFold(acc1, fold)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                acc1 = when (val tryResult = iter.tryFold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 this.iter = null
             }
         }
@@ -215,7 +202,7 @@ public open class Fuse<I>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = iter.tryRfold(acc1, fold)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                acc1 = when (val tryResult = iter.tryRfold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 this.iter = null
             }
         }
@@ -257,7 +244,7 @@ public open class Fuse<I>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = iter.tryFold(acc1, fold)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                acc1 = when (val tryResult = iter.tryFold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             }
         }
         return acc1
@@ -296,7 +283,7 @@ public open class Fuse<I>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = iter.tryRfold(acc1, fold)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                acc1 = when (val tryResult = iter.tryRfold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             }
         }
         return acc1
@@ -304,14 +291,6 @@ public open class Fuse<I>(
 
     public open fun rfindII(predicate: (Item) -> Boolean): Item? {
         return (this.iter ?: return null).rfind(predicate)
-    }
-
-    // This is used by Flatten's SourceIter impl
-    public override fun asInner(): Source {
-        // SAFETY: unchecked function forwarding to unchecked function with the same requirements.
-        // TrustedFused guarantees that we'll never encounter a case where `self.iter` would
-        // be set to None.
-        return this.iter.unwrapUnchecked().asInner()
     }
 
     public companion object {
@@ -351,10 +330,20 @@ public open class Fuse<I>(
          * [^fuseNote]: if `I` does not override `Iterator.fuse`s default implementation
          */
         public fun <I> default(defaultIFn: () -> I): Fuse<I> = Fuse(iter = defaultIFn())
-
-        public val MAY_HAVE_SIDE_EFFECT: Boolean = I.MAY_HAVE_SIDE_EFFECT
     }
 }
+
+// SAFETY: `TrustedLen` requires that an accurate length is reported via `sizeHint()`. As `Fuse`
+// is just forwarding this to the wrapped iterator `I` this property is preserved and it is safe to
+// implement `TrustedLen` here.
+
+// SAFETY: `TrustedRandomAccess` requires that `sizeHint()` must be exact and cheap to call, and
+// `Iterator.__iterator_get_unchecked()` must be implemented accordingly.
+//
+// This is safe to implement as `Fuse` is just forwarding these to the wrapped iterator `I`, which
+// preserves these properties.
+
+public val MAY_HAVE_SIDE_EFFECT: Boolean = I.MAY_HAVE_SIDE_EFFECT
 
 /**
  * Fuse specialization trait
@@ -382,6 +371,14 @@ public interface FuseImpl<I, Item> {
     public fun <Residual, Acc, R> tryRfold(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual>
 
     public fun rfind(predicate: (Item) -> Boolean): Item?
+}
+
+// This is used by Flatten's SourceIter impl
+public fun <Source, I> Fuse<I>.asInner(): Source where I : SourceIter<Source>, I : TrustedFused {
+    // SAFETY: unchecked function forwarding to unchecked function with the same requirements.
+    // TrustedFused guarantees that we'll never encounter a case where `self.iter` would
+    // be set to None.
+    return this.iter.unwrapUnchecked().asInner()
 }
 
 public fun <T, U> andThenOrClear(opt: T?, f: (T) -> U?): U? {

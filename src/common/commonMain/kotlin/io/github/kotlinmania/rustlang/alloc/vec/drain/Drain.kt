@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -77,7 +78,7 @@ public open class Drain<T, A : Allocator> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Drain").field(this.iter.toList()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "Drain").field(this.iter.toList()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Returns the remaining items of this iterator as a slice.

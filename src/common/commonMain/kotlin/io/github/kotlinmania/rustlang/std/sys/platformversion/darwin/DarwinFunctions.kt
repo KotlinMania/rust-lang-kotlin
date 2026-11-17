@@ -19,7 +19,6 @@ import io.github.kotlinmania.rustlang.libc.sysctlbyname
 import io.github.kotlinmania.rustlang.std.fs.read
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
-import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 import io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.corefoundation.CFDictionaryRef
 import io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.corefoundation.CFHandle
 import io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.corefoundation.CFStringRef
@@ -276,23 +275,23 @@ public fun stringVersionKey(cfHandle: CFHandle, plist: CFDictionaryRef, lookupKe
 public fun parseOsVersion(version: List<UByte>): Result<OSVersion, ParseIntError> {
     return when (val matchVal = version.splitOnce({ b -> b == 46u })) {
         null -> {
-            val major = when (val tryResult = UShort.fromAsciiBytes(version)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
+            val major = when (val tryResult = UShort.fromAsciiBytes(version)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
             Result.Ok<OSVersion, ParseIntError>(packOsVersion(major, 0u, 0u))
         }
         else -> {
             val major1 = matchVal.first
             val minor = matchVal.second
-            val major2 = when (val tryResult = UShort.fromAsciiBytes(major1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
+            val major2 = when (val tryResult = UShort.fromAsciiBytes(major1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
             when (val matchVal1 = minor.let { s -> val d = { b -> b == 46u }; val idx = s.indexOf(d); if (idx < 0) null else Pair(s.substring(0, idx), s.substring(idx + d.length)) }) {
                 null -> {
-                    val minor1 = when (val tryResult = UByte.fromAsciiBytes(minor)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
+                    val minor1 = when (val tryResult = UByte.fromAsciiBytes(minor)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
                     Result.Ok<OSVersion, ParseIntError>(packOsVersion(major2, minor1, 0u))
                 }
                 else -> {
                     val minor2 = matchVal1.first
                     val patch = matchVal1.second
-                    val minor3 = when (val tryResult = UByte.fromAsciiBytes(minor2)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
-                    val patch1 = when (val tryResult = UByte.fromAsciiBytes(patch)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
+                    val minor3 = when (val tryResult = UByte.fromAsciiBytes(minor2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
+                    val patch1 = when (val tryResult = UByte.fromAsciiBytes(patch)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
                     Result.Ok<OSVersion, ParseIntError>(packOsVersion(major2, minor3, patch1))
                 }
             }
@@ -305,7 +304,7 @@ public fun parseOsVersion(version: List<UByte>): Result<OSVersion, ParseIntError
  */
 public fun rootRelative(path: String): Path =
     if (false) {
-        val root = PathBuf.from(Env.varOs("IPHONE_SIMULATOR_ROOT").expect("environment variable `IPHONE_SIMULATOR_ROOT` must be set when executing under simulator"))
+        val root = PathBuf.from(env.varOs("IPHONE_SIMULATOR_ROOT").expect("environment variable `IPHONE_SIMULATOR_ROOT` must be set when executing under simulator"))
         // Convert absolute path to relative path, to make the `.push` work as expected.
         root.push((Path.new(path).takeIf { it.startsWith("/") }?.removePrefix("/"))!!)
         root.into()

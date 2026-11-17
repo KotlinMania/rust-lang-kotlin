@@ -89,9 +89,9 @@ public open class EscapeDefault internal constructor(
 
     public open fun len(): Int = this.value.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok<Unit, Unit>(Unit) }
 
-    public open fun fmtDebug(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "EscapeDefault").finishNonExhaustive()
+    public open fun fmtDebug(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "EscapeDefault").finishNonExhaustive(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public operator fun invoke(

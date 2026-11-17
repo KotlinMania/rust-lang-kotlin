@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.alloc.io.copy.CopyState
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.write.Write
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 // Provides specialization for `io.copy`.
 
@@ -16,7 +17,7 @@ public interface SpecCopyInner {
     public fun <W : Write> copy(writer: W): Result<CopyState>
 }
 
-public fun <R : Read<R>, W : Write> R.copy(writer: W): Result<CopyState> = Result.Ok(CopyState.Fallback(0))
+public fun <R : Read<R>, W : Write> R.copy(writer: W): Result<CopyState> = RustResult.Ok(CopyState.Fallback(0))
 
 public fun <R : SpecCopy<R>, W : Write> R.copy(writer: W, copyRFn: (R, W) -> Result<CopyState>): Result<CopyState> = copyRFn(this, writer)
 

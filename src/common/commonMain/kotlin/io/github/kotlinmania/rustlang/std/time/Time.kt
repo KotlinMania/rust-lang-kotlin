@@ -777,7 +777,7 @@ public open class SystemTimeError(
      */
     public open fun duration(): Duration = this.value
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("second time provided was later than self"); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("second time provided was later than self"); Result.Ok<Unit, Error>(Unit) }
 }
 
 //

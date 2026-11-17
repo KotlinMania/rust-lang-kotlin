@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.iter.sources.repeatn.repeatN
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.test.term.terminfo.parm.Param.*
 import io.github.kotlinmania.rustlang.test.term.terminfo.parm.States.*
@@ -207,7 +208,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                             else -> {
                                 val arg = matchVal6
                                 val flags = Flags.new()
-                                val res = when (val tryResult = format(arg, FormatOp.fromChar(cur), flags)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, String>(tryResult.error) }
+                                val res = when (val tryResult = format(arg, FormatOp.fromChar(cur), flags)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UByte>, String>(tryResult.error) }
                                 output.extend(res.iter().cloned())
                             }
                         }
@@ -335,7 +336,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                                 }
                                 else -> {
                                     val arg3 = matchVal14
-                                    val res1 = when (val tryResult = format(arg3, FormatOp.fromChar(cur), flags2)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, String>(tryResult.error) }
+                                    val res1 = when (val tryResult = format(arg3, FormatOp.fromChar(cur), flags2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UByte>, String>(tryResult.error) }
                                     output.extend(res1.iter().cloned())
                                     // will cause state to go to Nothing
                                     oldState = FormatPattern(flags2, fstate1)
@@ -349,7 +350,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                                 }
                                 else -> {
                                     val arg4 = matchVal15
-                                    val res2 = when (val tryResult = format(arg4, FormatOp.fromChar(cur), flags2)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, String>(tryResult.error) }
+                                    val res2 = when (val tryResult = format(arg4, FormatOp.fromChar(cur), flags2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UByte>, String>(tryResult.error) }
                                     output.extend(res2.iter().cloned())
                                     oldState = FormatPattern(flags2, fstate1)
                                 }
@@ -362,7 +363,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                                 }
                                 else -> {
                                     val arg5 = matchVal16
-                                    val res3 = when (val tryResult = format(arg5, FormatOp.fromChar(cur), flags2)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, String>(tryResult.error) }
+                                    val res3 = when (val tryResult = format(arg5, FormatOp.fromChar(cur), flags2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UByte>, String>(tryResult.error) }
                                     output.extend(res3.iter().cloned())
                                     oldState = FormatPattern(flags2, fstate1)
                                 }
@@ -375,7 +376,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                                 }
                                 else -> {
                                     val arg6 = matchVal17
-                                    val res4 = when (val tryResult = format(arg6, FormatOp.fromChar(cur), flags2)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, String>(tryResult.error) }
+                                    val res4 = when (val tryResult = format(arg6, FormatOp.fromChar(cur), flags2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UByte>, String>(tryResult.error) }
                                     output.extend(res4.iter().cloned())
                                     oldState = FormatPattern(flags2, fstate1)
                                 }
@@ -388,7 +389,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                                 }
                                 else -> {
                                     val arg7 = matchVal18
-                                    val res5 = when (val tryResult = format(arg7, FormatOp.fromChar(cur), flags2)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, String>(tryResult.error) }
+                                    val res5 = when (val tryResult = format(arg7, FormatOp.fromChar(cur), flags2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UByte>, String>(tryResult.error) }
                                     output.extend(res5.iter().cloned())
                                     oldState = FormatPattern(flags2, fstate1)
                                 }

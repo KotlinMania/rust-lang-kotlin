@@ -14,6 +14,7 @@ import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.corearch.simd.M16x8
 import io.github.kotlinmania.rustlang.corearch.simd.M32x4
 import io.github.kotlinmania.rustlang.corearch.simd.M8x16
@@ -1288,7 +1289,7 @@ public fun vecSplatU8(imm5: Byte): VectorUnsignedChar {
     run {
         check((-1 shl (5 - 1).toInt()) - 1 <= imm5 && imm5 < (1 shl (5 - 1).toInt())) { "IMM5 doesn't fit in 5 bits (signed)" }
     }
-    return transmute(u8x16.splat(imm5.toUByte()))
+    return transmute(Simd<UByte>(List(16) { imm5.toUByte() }))
 }
 
 /**
@@ -1298,7 +1299,7 @@ public fun vecSplatS8(imm5: Byte): VectorSignedChar {
     run {
         check((-1 shl (5 - 1).toInt()) - 1 <= imm5 && imm5 < (1 shl (5 - 1).toInt())) { "IMM5 doesn't fit in 5 bits (signed)" }
     }
-    return transmute(i8x16.splat(imm5))
+    return transmute(Simd<Byte>(List(16) { imm5 }))
 }
 
 /**
@@ -1308,7 +1309,7 @@ public fun vecSplatU16(imm5: Byte): VectorUnsignedShort {
     run {
         check((-1 shl (5 - 1).toInt()) - 1 <= imm5 && imm5 < (1 shl (5 - 1).toInt())) { "IMM5 doesn't fit in 5 bits (signed)" }
     }
-    return transmute(u16x8.splat(imm5.toUShort()))
+    return transmute(Simd<UShort>(List(8) { imm5.toUShort() }))
 }
 
 /**
@@ -1318,7 +1319,7 @@ public fun vecSplatS16(imm5: Byte): VectorSignedShort {
     run {
         check((-1 shl (5 - 1).toInt()) - 1 <= imm5 && imm5 < (1 shl (5 - 1).toInt())) { "IMM5 doesn't fit in 5 bits (signed)" }
     }
-    return transmute(i16x8.splat(imm5.toShort()))
+    return transmute(Simd<Short>(List(8) { imm5.toShort() }))
 }
 
 /**
@@ -1328,7 +1329,7 @@ public fun vecSplatU32(imm5: Byte): VectorUnsignedInt {
     run {
         check((-1 shl (5 - 1).toInt()) - 1 <= imm5 && imm5 < (1 shl (5 - 1).toInt())) { "IMM5 doesn't fit in 5 bits (signed)" }
     }
-    return transmute(u32x4.splat(imm5.toUInt()))
+    return transmute(Simd<UInt>(List(4) { imm5.toUInt() }))
 }
 
 /**
@@ -1338,7 +1339,7 @@ public fun vecSplatS32(imm5: Byte): VectorSignedInt {
     run {
         check((-1 shl (5 - 1).toInt()) - 1 <= imm5 && imm5 < (1 shl (5 - 1).toInt())) { "IMM5 doesn't fit in 5 bits (signed)" }
     }
-    return transmute(i32x4.splat(imm5.toInt()))
+    return transmute(Simd<Int>(List(4) { imm5.toInt() }))
 }
 
 /**

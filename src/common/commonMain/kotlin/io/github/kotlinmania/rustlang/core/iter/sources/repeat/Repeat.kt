@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -82,16 +83,16 @@ public open class Repeat<A>(
 
     public open fun clone(): Repeat<A> = Repeat(element)
 
-    public override fun next(): A? = this.element.clone()
+    public open fun next(): A? = this.element.clone()
 
-    public override fun sizeHint(): Pair<Int, Int?> = Pair(Int.MAX_VALUE, null)
+    public open fun sizeHint(): Pair<Int, Int?> = Pair(Int.MAX_VALUE, null)
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         // Advancing an infinite iterator of a single element is a no-op.
         return Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
     }
 
-    public override fun nth(n: Int): A? = this.element.clone()
+    public open fun nth(n: Int): A? = this.element.clone()
 
     /**
      * Consumes the iterator and panics.
@@ -100,7 +101,7 @@ public open class Repeat<A>(
      *
      * This method always panics because `Repeat` is infinite.
      */
-    public override fun last(): A? {
+    public open fun last(): A? {
         error("iterator is infinite")
     }
 
@@ -111,7 +112,7 @@ public open class Repeat<A>(
      *
      * This method always panics because `Repeat` is infinite.
      */
-    public override fun count(): Int {
+    public open fun count(): Int {
         error("iterator is infinite")
     }
 

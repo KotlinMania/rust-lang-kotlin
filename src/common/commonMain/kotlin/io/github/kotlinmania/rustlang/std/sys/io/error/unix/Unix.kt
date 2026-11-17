@@ -76,7 +76,7 @@ public fun setErrno(e: Int) {
     (UnresolvedTypeLayout<CInt>()).writeNative((errnoLocation()).rawAddress, e)
 }
 
-public expect var LIBC_ERRNO: io.github.kotlinmania.rustlang.libc.CInt
+public expect var LIBC_ERRNO: CInt
 
 public fun isInterrupted(errno: Int): Boolean = (errno == EINTR).toUByte()
 
@@ -158,6 +158,6 @@ public fun formatError(errno: Int, f: StringBuilder): Result<Unit, Error> {
         val p1 = ConstPtr(p.rawAddress, p.rawMeta)
         // We can't always expect a UTF-8 environment. When we don't get that luxury,
         // it's better to give a low-quality error message than none at all.
-        run { f.append("${CStr.fromPtr(p1).display()}"); Result.Ok(Unit) }
+        run { f.append("${CStr.fromPtr(p1).display()}"); Result.Ok<Unit, Error>(Unit) }
     }
 }

@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
@@ -170,7 +171,7 @@ public interface Pattern<Searcher> {
         run {
             val matchVal = this.intoSearcher(haystack).nextBack()
             when {
-                matchVal is SearchStep.Match && haystack.length == (matchVal as SearchStep.Match).field1 -> {
+                matchVal is SearchStep.Match && haystack.length == matchVal.field1 -> {
                     val (_, j) = matchVal
                     true
                 }
@@ -1037,7 +1038,7 @@ public open class CharPredicateSearcher<F, Output>(
 
     public open fun clone(): CharPredicateSearcher<F, Output> = CharPredicateSearcher(value)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "CharPredicateSearcher").field("haystack", this.value.haystack).field("char_indices", this.value.charIndices).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "CharPredicateSearcher").field("haystack", this.value.haystack).field("char_indices", this.value.charIndices).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public override fun haystack(): String = this.value.haystack()
 

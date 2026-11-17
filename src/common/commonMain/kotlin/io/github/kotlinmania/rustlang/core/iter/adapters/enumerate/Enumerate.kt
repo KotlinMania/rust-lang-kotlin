@@ -2,12 +2,7 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.enumerate
 
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -15,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public typealias Source<I> = I.Source
@@ -31,7 +27,7 @@ public typealias Source<I> = I.Source
 public open class Enumerate<I>(
     public var iter: I,
     public var count: Int,
-) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedFused, TrustedLen, SourceIter<Source>, InPlaceIterable, Iterable<Pair<Int, Item>> {
+) : Iterable<Pair<Int, Item>> {
     override fun iterator(): Iterator<Pair<Int, Item>> = object : AbstractIterator<Pair<Int, Item>>() {
         override fun computeNext() {
             when (val v = this@Enumerate.next()) {
@@ -82,25 +78,25 @@ public open class Enumerate<I>(
      *
      * Might panic if the index of the element overflows a `Int`.
      */
-    public override fun next(): Pair<Int, Item>? {
+    public open fun next(): Pair<Int, Item>? {
         val a = (this.iter.next() ?: return null)
         val i = this.count
         this.count += 1
         return Pair(i, a)
     }
 
-    public override fun sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
+    public open fun sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
 
-    public override fun nth(n: Int): Pair<Int, Item>? {
+    public open fun nth(n: Int): Pair<Int, Item>? {
         val a = (this.iter.nth(n) ?: return null)
         val i = this.count + n
         this.count = i + 1
         return Pair(i, a)
     }
 
-    public override fun count(): Int = this.iter.count()
+    public open fun count(): Int = this.iter.count()
 
-    public override fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Pair<Int, Item>) -> R): R where R : Try<R, Acc, Residual> {
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Pair<Int, Item>) -> R): R where R : Try<R, Acc, Residual> {
         fun <T, Acc, R> enumerate(count: RustMutableReference<Int>, fold1: (Acc, Pair<Int, T>) -> R): (Acc, T) -> R {
             val count1 = count
             return { acc, item ->
@@ -112,7 +108,7 @@ public open class Enumerate<I>(
         return this.iter.tryFold(init, enumerate(this.count, fold))
     }
 
-    public override fun <Acc> fold(init: Acc, fold: (Acc, Pair<Int, Item>) -> Acc): Acc {
+    public open fun <Acc> fold(init: Acc, fold: (Acc, Pair<Int, Item>) -> Acc): Acc {
         fun <T, Acc> enumerate(count: Int, fold1: (Acc, Pair<Int, T>) -> Acc): (Acc, T) -> Acc {
             var count1 = count
             return { acc, item ->
@@ -124,12 +120,12 @@ public open class Enumerate<I>(
         return this.iter.fold(init, enumerate(this.count, fold))
     }
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val remaining = this.iter.advanceBy(n)
         val advanced =
-            when (remaining) { is Result.Ok -> {
+            when (remaining) { is Result.Ok<*, *> -> {
                 n
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val rem = remaining.error
                 n - rem.get()
             } }
@@ -137,7 +133,7 @@ public open class Enumerate<I>(
         return remaining
     }
 
-    public override fun iteratorGetUnchecked(idx: Int): Item {
+    public open fun iteratorGetUnchecked(idx: Int): Item {
         // SAFETY: the caller must uphold the contract for
         // `Iterator.__iterator_get_unchecked`.
         val value = tryGetUnchecked(this.iter, idx)
@@ -198,11 +194,6 @@ public open class Enumerate<I>(
 
     public open fun isEmpty(): Boolean = this.iter.isEmpty()
 
-    public override fun asInner(): Source {
-        // SAFETY: unchecked function forwarding to unchecked function with the same requirements
-        return this.iter.asInner()
-    }
-
     public companion object {
         public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<Enumerate<I>> =
             object : TypeLayout<Enumerate<I>> {
@@ -231,12 +222,6 @@ public open class Enumerate<I>(
 
         public fun <I> new(iter: I): Enumerate<I> = Enumerate(iter = iter, count = 0)
 
-        public val MAY_HAVE_SIDE_EFFECT: Boolean = I.MAY_HAVE_SIDE_EFFECT
-
-        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
-
-        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
-
         /**
          * Creates an `Enumerate` iterator from the default value of `I`
          * ```kotlin
@@ -247,3 +232,14 @@ public open class Enumerate<I>(
         public fun <I> default(defaultIFn: () -> I): Enumerate<I> = Enumerate.new(defaultIFn())
     }
 }
+
+public val MAY_HAVE_SIDE_EFFECT: Boolean = I.MAY_HAVE_SIDE_EFFECT
+
+public fun <Source, I> Enumerate<I>.asInner(): Source where I : SourceIter<Source> {
+    // SAFETY: unchecked function forwarding to unchecked function with the same requirements
+    return this.iter.asInner()
+}
+
+public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
+
+public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY

@@ -26,7 +26,7 @@ public open class TryReserveError(
                     " because the memory allocator returned an error"
                 }
             }
-        return run { fmt.append(reason); Result.Ok(Unit) }
+        return run { fmt.append(reason); Result.Ok<Unit, Error>(Unit) }
     }
 
     public companion object {

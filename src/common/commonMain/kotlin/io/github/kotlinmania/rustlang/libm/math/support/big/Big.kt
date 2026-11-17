@@ -15,6 +15,7 @@ import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
 import io.github.kotlinmania.rustlang.core.ops.bit.Not
 import io.github.kotlinmania.rustlang.core.ops.bit.Shl
 import io.github.kotlinmania.rustlang.core.ops.bit.Shr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.DInt
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
@@ -109,7 +110,7 @@ public open class U256(
 
     public override fun hi(): U128 = this.hi
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun fmtLowerHex(f: StringBuilder): Result<Unit, Error> = cfgSelectNofmt(feature, "compiler-builtins", f, unsupportedBranch, pfx, f, alternate, "0x", "", write, f, "{pfx}{:032x}{:032x}", this, hi, this, lo)
 
@@ -240,9 +241,9 @@ public open class I256(
 
     public override fun hi(): I128 = this.hi
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.unsigned()).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.unsigned()).toString()); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtLowerHex(f: StringBuilder): Result<Unit, Error> = run { f.append((this.unsigned()).toString()); Result.Ok(Unit) }
+    public open fun fmtLowerHex(f: StringBuilder): Result<Unit, Error> = run { f.append((this.unsigned()).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<I256> =

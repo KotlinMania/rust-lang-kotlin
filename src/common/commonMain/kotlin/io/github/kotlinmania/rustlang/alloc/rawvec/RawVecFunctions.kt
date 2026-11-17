@@ -26,7 +26,7 @@ public fun <T> newCap(cap: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayou
     return if (((typeLayoutT).sizeBytes == 0L)) {
         ZERO_CAP
     } else {
-        Cap.newUnchecked(cap)
+        UsizeNoHighBit.newUnchecked(cap)
     }
 }
 

@@ -13,6 +13,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // C's "variable arguments"
@@ -200,7 +201,7 @@ public open class VaList(
 ) {
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
         // No need to include `_marker` in debug output.
-        return DebugTuple(f, "VaList").field(this.inner).finish()
+        return run { DebugTuple(f, "VaList").field(this.inner).finish(); Result.Ok<Unit, Unit>(Unit) }
     }
 
     // Helper used in the implementation of the `vaCopy` intrinsic.

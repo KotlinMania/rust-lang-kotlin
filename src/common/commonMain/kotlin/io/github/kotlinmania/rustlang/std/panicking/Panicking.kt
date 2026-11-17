@@ -33,9 +33,7 @@ import io.github.kotlinmania.rustlang.std.sync.nonpoison.rwlock.RwLock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.PrintFmt
 import io.github.kotlinmania.rustlang.std.sys.backtrace.lock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.rustEndShortBacktrace
-import io.github.kotlinmania.rustlang.std.sys.process.unix.unix.Process
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread
 
 // Implementation of various bits and pieces of the `panic` macro and
 // associated runtime pieces.
@@ -126,7 +124,7 @@ public sealed class Hook {
         when (this) {
             Hook.Default -> ::defaultHook
             is Hook.Custom -> {
-                val (hook) = this
+                val (hook) = this as Hook.Custom
                 hook
             }
         }
@@ -172,7 +170,7 @@ public var HOOK: RwLock<Hook> = RwLock.new(Hook.Default)
  * ```
  */
 public fun setHook(hook: (PanicHookInfo) -> Unit) {
-    if (Thread.panicking()) {
+    if (thread.panicking()) {
         error("cannot modify the panic hook from a panicking thread")
     }
     // Drop the old hook after changing the hook to avoid deadlocking if its
@@ -209,7 +207,7 @@ public fun setHook(hook: (PanicHookInfo) -> Unit) {
  * ```
  */
 public fun takeHook(): (PanicHookInfo) -> Unit {
-    if (Thread.panicking()) {
+    if (thread.panicking()) {
         error("cannot modify the panic hook from a panicking thread")
     }
     return HOOK.replace(Hook.Default).intoBox()
@@ -250,7 +248,7 @@ public fun takeHook(): (PanicHookInfo) -> Unit {
  * ```
  */
 public fun updateHook(hookFn: ((PanicHookInfo) -> Unit, PanicHookInfo) -> Unit) {
-    if (Thread.panicking()) {
+    if (thread.panicking()) {
         error("cannot modify the panic hook from a panicking thread")
     }
     var hook = HOOK.write()
@@ -280,9 +278,9 @@ public fun defaultHook(info: PanicHookInfo) {
             // Use a lock to prevent mixed output in multithreading context.
             // Some platforms also require it when printing a backtrace, like `SymFromAddr` on Windows.
             var lock = lock()
-            Thread.withCurrentName({ name ->
+            thread.withCurrentName({ name ->
                 val name1 = name.unwrapOr("<unnamed>")
-                val tid = Thread.currentOsId()
+                val tid = thread.currentOsId()
                 // Try to write the panic message to a buffer first to prevent other concurrent outputs
                 // interleaving with it.
                 var buffer = UByteArray(512) { 0u.toUByte() }
@@ -322,7 +320,7 @@ public fun defaultHook(info: PanicHookInfo) {
         }
     run {
         val matchVal1 = trySetOutputCapture(null)
-        if (matchVal1 is Result.Ok && matchVal1.value != null) {
+        if (matchVal1 is Result.Ok<*, *> && matchVal1.value != null) {
             val valueVal = matchVal1.value
             val local = valueVal
             write(local.lock().unwrapOrElse({ e -> e.intoInner() }))
@@ -381,11 +379,11 @@ public fun panicHandler(info: PanicInfo): Nothing {
         public open fun fmt(f: StringBuilder): Result<Unit, Error> =
             when (val matchVal = this.string) {
                 null -> {
-                    run { f.append((this.inner).toString()); Result.Ok(Unit) }
+                    run { f.append((this.inner).toString()); Result.Ok<Unit, Error>(Unit) }
                 }
                 else -> {
                     val s = matchVal
-                    run { f.append(s); Result.Ok(Unit) }
+                    run { f.append(s); Result.Ok<Unit, Error>(Unit) }
                 }
             }
     }
@@ -404,7 +402,7 @@ public fun panicHandler(info: PanicInfo): Nothing {
 
         public open fun asStr(): String? = this.value
 
-        public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(this.value); Result.Ok(Unit) }
+        public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(this.value); Result.Ok<Unit, Error>(Unit) }
     }
     val loc = info.location().unwrap()
     // The current implementation always returns Some
@@ -443,7 +441,7 @@ public fun <M> beginPanic(msg: M): Nothing {
             // propagate this allocation to be performed in the parent of this thread instead of the
             // thread that's panicking.
             return when (val matchVal = this.inner.also { this.inner = null }) {
-                null -> Process.abort()
+                null -> process.abort()
                 else -> {
                     val a = matchVal
                     RustAny.from(a)
@@ -453,7 +451,7 @@ public fun <M> beginPanic(msg: M): Nothing {
 
         public open fun get(): RustAny =
             when (val matchVal = this.inner) {
-                null -> Process.abort()
+                null -> process.abort()
                 else -> {
                     val a = matchVal
                     a
@@ -462,10 +460,10 @@ public fun <M> beginPanic(msg: M): Nothing {
 
         public open fun fmt(f: StringBuilder): Result<Unit, Error> =
             when (val matchVal = this.inner) {
-                null -> Process.abort()
+                null -> process.abort()
                 else -> {
                     val a = matchVal
-                    run { f.append(payloadAsStr(a)); Result.Ok(Unit) }
+                    run { f.append(payloadAsStr(a)); Result.Ok<Unit, Error>(Unit) }
                 }
             }
     }
@@ -541,7 +539,7 @@ public fun panicWithHook(payload: PanicPayload, location: Location, canUnwind: B
                 defaultHook(PanicHookInfo.new(location, payload.get(), canUnwind, forceNoBacktrace))
             }
             else -> {
-                val (hook) = matchVal
+                val (hook) = matchVal as Hook.Custom
                 hook(PanicHookInfo.new(location, payload.get(), canUnwind, forceNoBacktrace))
             }
         }
@@ -580,11 +578,11 @@ public fun resumeUnwind(payload: RustAny): Nothing {
                 value = v
             }
 
-        public open fun takeBox(): RustAny = replace(this.value, Box.new())
+        public open fun takeBox(): RustAny = replace(this.value, Box.new(Unit))
 
         public open fun get(): RustAny = this.value
 
-        public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(payloadAsStr(this.value)); Result.Ok(Unit) }
+        public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(payloadAsStr(this.value)); Result.Ok<Unit, Error>(Unit) }
     }
     when (val matchVal = increase(false)) {
         null -> {}

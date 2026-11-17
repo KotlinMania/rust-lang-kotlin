@@ -90,10 +90,10 @@ public fun fromUtf8(v: List<UByte>): Result<String, Utf8Error> {
     // Note(const-Note): This should use `?` again, once it's `const`
     return run {
         val matchVal = runUtf8Validation(v)
-        when (matchVal) { is Result.Ok -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             // SAFETY: validation succeeded.
             Result.Ok<String, Utf8Error>(fromUtf8Unchecked(v))
-        }; is Result.Err -> {
+        }; is Result.Err<*, *> -> {
             val err = matchVal.error
             Result.Err<String, Utf8Error>(err)
         } }
@@ -135,10 +135,10 @@ public fun fromUtf8Mut(v: MutableList<UByte>): Result<String, Utf8Error> {
     // Note(const-Note): This should use `?` again, once it's `const`
     return run {
         val matchVal = runUtf8Validation(v)
-        when (matchVal) { is Result.Ok -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             // SAFETY: validation succeeded.
             Result.Ok<String, Utf8Error>(fromUtf8UncheckedMut(v))
-        }; is Result.Err -> {
+        }; is Result.Err<*, *> -> {
             val err = matchVal.error
             Result.Err<String, Utf8Error>(err)
         } }

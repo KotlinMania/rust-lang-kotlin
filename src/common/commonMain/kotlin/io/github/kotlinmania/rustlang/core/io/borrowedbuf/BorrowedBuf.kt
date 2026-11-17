@@ -12,7 +12,9 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.fromMut
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -197,7 +199,7 @@ public open class BorrowedBufDebug(
     public var filled: Int,
     public var capacity: Int,
 ) {
-    public open fun fmt(f: Formatter): Result<Unit, Unit> = DebugStruct(f, "BorrowedBuf").field("init", this.init).field("filled", this.filled).field("capacity", this.capacity).finish()
+    public open fun fmt(f: Formatter): Result<Unit, Unit> = run { DebugStruct(f, "BorrowedBuf").field("init", this.init).field("filled", this.filled).field("capacity", this.capacity).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<BorrowedBufDebug> =
@@ -284,7 +286,7 @@ public open class BorrowedCursor<T> internal constructor(
 
     public open fun fmt(f: Formatter): Result<Unit, Unit> {
         val buf = BorrowedBufDebug(init = this.isBufInit(), filled = this.filled(), capacity = this.bufLen())
-        return DebugStruct(f, "BorrowedCursor").field("buf", buf).finish()
+        return run { DebugStruct(f, "BorrowedCursor").field("buf", buf).finish(); Result.Ok<Unit, Unit>(Unit) }
     }
 
     // Helpers to access underlying buffer state.

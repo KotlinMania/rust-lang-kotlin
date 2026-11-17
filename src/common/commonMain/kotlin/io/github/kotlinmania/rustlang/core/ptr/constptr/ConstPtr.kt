@@ -24,6 +24,10 @@ import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawParts
 import io.github.kotlinmania.rustlang.core.ptr.metadata.metadata
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.exposeProvenance
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.mapAddr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.withAddr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingByteOffset
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.readVolatile
@@ -51,7 +55,7 @@ public fun ConstPtr.isNull(): Boolean {
 /**
  * Casts to a pointer of another type.
  */
-public fun ConstPtr.cast(): ConstPtr = ConstPtr(this.rawAddress, this.rawMeta)
+public fun ConstPtr.cast(): ConstPtr = this
 
 /**
  * Try to cast to a pointer of another type by checking alignment.
@@ -148,7 +152,7 @@ public fun ConstPtr.withMetadataOf(meta: ConstPtr): ConstPtr = linearSliceView(C
  * This is a bit safer than `as` because it wouldn't silently change the type if the code is
  * refactored.
  */
-public fun ConstPtr.castMut(): MutPtr = MutPtr(this.rawAddress, this.rawMeta)
+public fun ConstPtr.castMut(): MutPtr = this
 
 public fun ConstPtr.addr(): Int {
     // A pointer-to-integer reinterpret currently has exactly the right semantics: it returns the
@@ -1246,7 +1250,7 @@ public fun ConstPtr.isAlignedTo(align: Int): Boolean {
 /**
  * Casts from a type to its maybe-uninitialized version.
  */
-public fun ConstPtr.castUninit(): ConstPtr = ConstPtr(this.rawAddress, this.rawMeta)
+public fun ConstPtr.castUninit(): ConstPtr = this
 
 /**
  * Forms a raw slice from a pointer and a length.
@@ -1287,7 +1291,7 @@ public fun ConstPtr.castSlice(len: Int): ConstPtr = sliceFromRawParts(this, len)
  * This is always safe, since UB can only occur if the pointer is read
  * before being initialized.
  */
-public fun ConstPtr.castInit(): ConstPtr = ConstPtr(this.rawAddress, this.rawMeta)
+public fun ConstPtr.castInit(): ConstPtr = this
 
 /**
  * Returns the length of a raw slice.

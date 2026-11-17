@@ -1,6 +1,7 @@
 // port-lint: source sys/net/hostname/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.net.hostname.unix
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -11,7 +12,6 @@ import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
 import io.github.kotlinmania.rustlang.libc.wasi.ENAMETOOLONG
 import io.github.kotlinmania.rustlang.libc.wasi.SC_HOST_NAME_MAX
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.sys.io.error.unix.errno
 
 public fun hostname(): Result<OsString, Error> {
@@ -27,7 +27,7 @@ public fun hostname(): Result<OsString, Error> {
             }
         }
     // Reserve space for the nul terminator too.
-    val buf = when (val tryResult = Vec.tryWithCapacity(hostNameMax + 1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OsString, Error>(tryResult.error) }
+    val buf = when (val tryResult = Vec.tryWithCapacity(hostNameMax + 1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OsString, Error>(tryResult.error) }
     while (true) {
         // SAFETY: `buf.capacity()` bytes of `buf` are writable.
         val r = gethostname(buf.asMutPtr().cast(), buf.capacity())
@@ -69,10 +69,10 @@ public fun hostname(): Result<OsString, Error> {
             // size and should be returned to the user.
             else -> {
                 val err = matchVal1
-                return Result.Err<OsString, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(err))
+                return Result.Err<OsString, Error>(Error.fromRawOsError(err))
             }
         }
         // Resize the buffer (according to `List`s resizing rules) and try again.
-        when (val tryResult = buf.tryReserve(buf.capacity() + 1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OsString, Error>(tryResult.error) }
+        when (val tryResult = buf.tryReserve(buf.capacity() + 1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OsString, Error>(tryResult.error) }
     }
 }

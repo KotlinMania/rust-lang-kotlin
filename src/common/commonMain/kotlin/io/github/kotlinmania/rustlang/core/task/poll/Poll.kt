@@ -46,8 +46,8 @@ public sealed class Poll<T> {
      */
     public open fun <U> map(f: (T) -> U): Poll<U> =
         when (this) {
-            is Poll.Ready -> {
-                val (t) = this
+            is Poll.Ready<*> -> {
+                val (t) = this as Poll.Ready<T>
                 Poll.Ready(f(t))
             }
             Poll.Pending -> Poll.Pending
@@ -67,7 +67,7 @@ public sealed class Poll<T> {
      */
     public open fun isReady(): Boolean =
         when (this) {
-            is Poll.Ready -> true
+            is Poll.Ready<*> -> true
             else -> false
         }
 
@@ -118,12 +118,12 @@ public sealed class Poll<T> {
  */
 public fun <T, E, U> Poll<Result<T, E>>.mapOk(f: (T) -> U): Poll<Result<U, E>> =
     when {
-        this is Poll.Ready && (this as Poll.Ready<T>).value is Result.Ok -> {
-            val t = ((this as Poll.Ready<T>).value as Result.Ok).value
+        this is Poll.Ready<*> && (this as Poll.Ready<T>).value is Result.Ok<*, *> -> {
+            val t = ((this as Poll.Ready<T>).value as Result.Ok<*, *>).value
             Poll.Ready(Result.Ok(f(t)))
         }
-        this is Poll.Ready && (this as Poll.Ready<T>).value is Result.Err -> {
-            val e = ((this as Poll.Ready<T>).value as Result.Err).error
+        this is Poll.Ready<*> && (this as Poll.Ready<T>).value is Result.Err<*, *> -> {
+            val e = ((this as Poll.Ready<T>).value as Result.Err<*, *>).error
             Poll.Ready(Result.Err(e))
         }
         else -> Poll.Pending
@@ -147,12 +147,12 @@ public fun <T, E, U> Poll<Result<T, E>>.mapOk(f: (T) -> U): Poll<Result<U, E>> =
  */
 public fun <T, E, U> Poll<Result<T, E>>.mapErr(f: (E) -> U): Poll<Result<T, U>> =
     when {
-        this is Poll.Ready && (this as Poll.Ready<T>).value is Result.Ok -> {
-            val t = ((this as Poll.Ready<T>).value as Result.Ok).value
+        this is Poll.Ready<*> && (this as Poll.Ready<T>).value is Result.Ok<*, *> -> {
+            val t = ((this as Poll.Ready<T>).value as Result.Ok<*, *>).value
             Poll.Ready(Result.Ok(t))
         }
-        this is Poll.Ready && (this as Poll.Ready<T>).value is Result.Err -> {
-            val e = ((this as Poll.Ready<T>).value as Result.Err).error
+        this is Poll.Ready<*> && (this as Poll.Ready<T>).value is Result.Err<*, *> -> {
+            val e = ((this as Poll.Ready<T>).value as Result.Err<*, *>).error
             Poll.Ready(Result.Err(f(e)))
         }
         else -> Poll.Pending
@@ -162,12 +162,12 @@ public fun <T, E> tryFromOutputPollResultTE(c: Poll<T>): Poll<Result<T, E>> = c.
 
 public fun <T, E> Poll<Result<T, E>>.branch(): ControlFlow<Result<Nothing, E>, Poll<T>> =
     when {
-        this is Poll.Ready && (this as Poll.Ready<T>).value is Result.Ok -> {
-            val x = ((this as Poll.Ready<T>).value as Result.Ok).value
+        this is Poll.Ready<*> && (this as Poll.Ready<T>).value is Result.Ok<*, *> -> {
+            val x = ((this as Poll.Ready<T>).value as Result.Ok<*, *>).value
             ControlFlow.Continue(Poll.Ready(x))
         }
-        this is Poll.Ready && (this as Poll.Ready<T>).value is Result.Err -> {
-            val e = ((this as Poll.Ready<T>).value as Result.Err).error
+        this is Poll.Ready<*> && (this as Poll.Ready<T>).value is Result.Err<*, *> -> {
+            val e = ((this as Poll.Ready<T>).value as Result.Err<*, *>).error
             ControlFlow.Break(Result.Err(e))
         }
         else -> ControlFlow.Continue(Poll.Pending)
@@ -175,7 +175,7 @@ public fun <T, E> Poll<Result<T, E>>.branch(): ControlFlow<Result<Nothing, E>, P
 
 public fun <T, E, F> fromResidualPollResultTF(x: Result<Nothing, E>): Poll<Result<T, F>> =
     when (x) {
-        is Result.Err -> {
+        is Result.Err<*, *> -> {
             val e = x.error
             Poll.Ready(Result.Err(From.from(e)))
         }
@@ -185,7 +185,7 @@ public fun <T, E> tryFromOutputPollOptionResultTE(c: Poll<T?>): Poll<Result<T, E
 
 public fun <T, E, F> fromResidualPollOptionResultTF(x: Result<Nothing, E>): Poll<Result<T, F>?> =
     when (x) {
-        is Result.Err -> {
+        is Result.Err<*, *> -> {
             val e = x.error
             Poll.Ready(Result.Err(From.from(e)))
         }

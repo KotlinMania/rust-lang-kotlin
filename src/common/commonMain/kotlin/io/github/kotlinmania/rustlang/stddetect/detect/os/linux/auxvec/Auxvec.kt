@@ -2,15 +2,17 @@
 package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.chunks
-import io.github.kotlinmania.rustlang.libc.CUlong
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.readFile
 
 // Parses ELF auxiliary vectors.
@@ -112,7 +114,7 @@ public open class AuxVec(
 public fun auxv(): Result<AuxVec, Unit> {
     // Try to call a getauxval function.
     when (val matchVal = getauxval(AT_HWCAP)) {
-        is Result.Ok -> {
+        is Result.Ok<*, *> -> {
             val hwcap = matchVal.value
             // Targets with only AT_HWCAP:
             if (hwcap != 0) {
@@ -120,7 +122,7 @@ public fun auxv(): Result<AuxVec, Unit> {
             }
             // Targets with AT_HWCAP and AT_HWCAP2:
             when (val matchVal1 = getauxval(AT_HWCAP2)) {
-                is Result.Ok -> {
+                is Result.Ok<*, *> -> {
                     val hwcap2 = matchVal1.value
                     // Zero could indicate that no features were detected, but it's also used to indicate
                     // an error. In particular, on many platforms AT_HWCAP2 will be legitimately zero,
@@ -155,7 +157,7 @@ public fun getauxval(key: Int): Result<Int, Unit> {
  * function returns `Err`.
  */
 public fun auxvFromFile(file: CStr): Result<AuxVec, String> {
-    val file1 = when (val tryResult = readFile(file)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<AuxVec, String>(tryResult.error) }
+    val file1 = when (val tryResult = readFile(file)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<AuxVec, String>(tryResult.error) }
     return auxvFromFileBytes(file1)
 }
 

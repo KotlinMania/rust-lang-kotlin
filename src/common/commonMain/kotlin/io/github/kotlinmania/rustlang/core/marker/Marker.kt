@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 // Primitive traits and types representing basic properties of types.
 //
@@ -551,7 +552,7 @@ public open class PhantomData<T> : Copy, TrivialClone<PhantomData<T>>, Structura
 
     public open fun cmp(other: PhantomData<T>): cmp.Ordering = cmp.Ordering.Equal
 
-    public override fun clone(): PhantomData<T> = PhantomData()
+    public open fun clone(): PhantomData<T> = PhantomData()
 
     public companion object {
         public fun <T> typeLayout(): TypeLayout<PhantomData<T>> =

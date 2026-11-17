@@ -8,14 +8,15 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public open class Stdin : Read {
-    public open fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Ok<Int, io.github.kotlinmania.rustlang.std.io.error.Error>(0)
+    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = Result.Ok<Int, Error>(0)
 
-    public open fun readBuf(cursor: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Ok<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(Unit)
+    public open fun readBuf(cursor: BorrowedCursor<UByte>): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Ok<Int, io.github.kotlinmania.rustlang.std.io.error.Error>(0)
+    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = Result.Ok<Int, Error>(0)
 
     public open fun isReadVectored(): Boolean {
         // Do not force `Chain<Empty, T>` or `Chain<T, Empty>` to use vectored
@@ -23,23 +24,23 @@ public open class Stdin : Read {
         return false
     }
 
-    public open fun readExact(buf: MutableList<UByte>): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> =
+    public open fun readExact(buf: MutableList<UByte>): Result<Unit, Error> =
         if (!buf.isEmpty()) {
-            Result.Err<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(Error.READ_EXACT_EOF)
+            Result.Err<Unit, Error>(Error.READ_EXACT_EOF)
         } else {
-            Result.Ok<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(Unit)
+            Result.Ok<Unit, Error>(Unit)
         }
 
-    public open fun readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> =
+    public open fun readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit, Error> =
         if (cursor.capacity() != 0) {
-            Result.Err<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(Error.READ_EXACT_EOF)
+            Result.Err<Unit, Error>(Error.READ_EXACT_EOF)
         } else {
-            Result.Ok<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(Unit)
+            Result.Ok<Unit, Error>(Unit)
         }
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Ok<Int, io.github.kotlinmania.rustlang.std.io.error.Error>(0)
+    public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = Result.Ok<Int, Error>(0)
 
-    public open fun readToString(buf: String): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Ok<Int, io.github.kotlinmania.rustlang.std.io.error.Error>(0)
+    public open fun readToString(buf: String): Result<Int, Error> = Result.Ok<Int, Error>(0)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stdin> =
@@ -61,21 +62,21 @@ public open class Stdin : Read {
 }
 
 public open class Stdout : Write {
-    public open fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Ok<Int, io.github.kotlinmania.rustlang.std.io.error.Error>(buf.size)
+    public open fun write(buf: List<UByte>): Result<Int, Error> = Result.Ok<Int, Error>(buf.size)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> {
         val totalLen = bufs.map({ b -> b.len() }).sum()
-        return Result.Ok<Int, io.github.kotlinmania.rustlang.std.io.error.Error>(totalLen)
+        return Result.Ok<Int, Error>(totalLen)
     }
 
     public open fun isWriteVectored(): Boolean = true
 
-    public open fun writeAll(buf: List<UByte>): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Ok<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(Unit)
+    public open fun writeAll(buf: List<UByte>): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
-    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Ok<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(Unit)
+    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
     // Keep the default writeFmt so the `fmt.Arguments` are still evaluated.
-    public open fun flush(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Ok<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(Unit)
+    public open fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stdout> =

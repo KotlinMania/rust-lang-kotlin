@@ -1,7 +1,6 @@
 // port-lint: source iter/sources/once_with.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.oncewith
 
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -65,33 +64,24 @@ public fun <A> onceWith(make: () -> A): OnceWith<() -> A> = OnceWith(make = make
  */
 public open class OnceWith<F>(
     public var make: F?,
-) : TrustedLen, Iterable<A> {
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@OnceWith.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
+) {
     public open fun clone(): OnceWith<F> = OnceWith(make)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
         if (this.make != null) {
-            run { f.append("OnceWith(Some(_))"); Result.Ok(Unit) }
+            run { f.append("OnceWith(Some(_))"); Result.Ok<Unit, Unit>(Unit) }
         } else {
-            run { f.append("OnceWith(None)"); Result.Ok(Unit) }
+            run { f.append("OnceWith(None)"); Result.Ok<Unit, Unit>(Unit) }
         }
-
-    public override fun next(): A? {
-        val f = (this.make.also { this.make = null } ?: return null)
-        return f()
-    }
-
-    public override fun sizeHint(): Pair<Int, Int?> = this.make.iter().sizeHint()
-
-    public open fun nextBack(): A? = this.next()
-
-    public open fun len(): Int = this.make.iter().len()
 }
+
+public fun <A> OnceWith<F>.next(): A? {
+    val f = (this.make.also { this.make = null } ?: return null)
+    return f()
+}
+
+public fun <A> OnceWith<F>.sizeHint(): Pair<Int, Int?> = this.make.iter().sizeHint()
+
+public fun <A> OnceWith<F>.nextBack(): A? = this.next()
+
+public fun <A> OnceWith<F>.len(): Int = this.make.iter().len()

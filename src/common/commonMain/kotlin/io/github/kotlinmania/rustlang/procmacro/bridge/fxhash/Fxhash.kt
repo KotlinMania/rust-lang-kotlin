@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.rotateLeft
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 // This is a copy of the `rustcHash` crate, adapted to work as a module.
 //

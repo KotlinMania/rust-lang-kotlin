@@ -18,6 +18,7 @@ import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.stash.Stash
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.get
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
@@ -270,7 +271,7 @@ public open class Object internal constructor(
         val debugName = name.substring(7).encodeToByteArray().map { it.toUByte() }
         val compressedSection =
             (this.sections.iter().mapNotNull(closure3@{ header1 ->
-                val name1 = when (val tryResult = this.sections.sectionName(this.endian, header1).ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err(tryResult.error) }
+                val name1 = when (val tryResult = this.sections.sectionName(this.endian, header1).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
                 if (name1.startsWith(".zdebug_".encodeToByteArray()) && name1[8 until name1.size] == debugName) {
                     header1
                 } else {
@@ -294,10 +295,10 @@ public open class Object internal constructor(
         val i2 =
             run {
                 val matchVal = this.syms.binarySearchByKey(addr, { sym -> sym.address })
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val i = matchVal.value
                     i
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     val i1 = matchVal.error
                     (i1.checkedSub(1) ?: return null)
                 } }
@@ -316,13 +317,13 @@ public open class Object internal constructor(
         for (section in this.sections.iter()) {
             run {
                 val matchVal = section.notes(this.endian, this.data)
-                if (matchVal is Result.Ok && matchVal.value != null) {
+                if (matchVal is Result.Ok<*, *> && matchVal.value != null) {
                     val valueVal = matchVal.value
                     val notes = valueVal
                     while (true) {
                         val matchVal1 = notes.next()
-                        if (!(matchVal1 is Result.Ok && matchVal1.value != null)) break
-                        val valueVal1 = (matchVal1 as Result.Ok).value
+                        if (!(matchVal1 is Result.Ok<*, *> && matchVal1.value != null)) break
+                        val valueVal1 = (matchVal1 as Result.Ok<*, *>).value
                         val note = valueVal1
                         if (note.name() == ELF_NOTE_GNU && note.nType(this.endian) == NT_GNU_BUILD_ID) {
                             return note.desc()
@@ -414,11 +415,11 @@ public fun decompressZstd(input: List<UByte>, output: MutableList<UByte>): Unit?
             run {
                 val matchVal = StreamingDecoder.new(input1)
                 when {
-                    matchVal is Result.Ok -> {
+                    matchVal is Result.Ok<*, *> -> {
                         val decoder = matchVal.value
                         decoder
                     }
-                    matchVal is Result.Err && matchVal.error is FrameDecoderError.ReadFrameHeaderError && (matchVal.error as FrameDecoderError.ReadFrameHeaderError).value is ReadFrameHeaderError.SkipFrame -> {
+                    matchVal is Result.Err<*, *> && matchVal.error is FrameDecoderError.ReadFrameHeaderError && (matchVal.error as FrameDecoderError.ReadFrameHeaderError).value is ReadFrameHeaderError.SkipFrame -> {
                         val errorVal = matchVal.error
                         val length = ((errorVal as FrameDecoderError.ReadFrameHeaderError).value as ReadFrameHeaderError.SkipFrame).length
                         input1 = (input1.get(length.toInt() until Int.MAX_VALUE) ?: return null)
@@ -570,7 +571,7 @@ public fun handleSplitDwarf(pkg: gimli.DwarfPackage<EndianSlice<Endian>>?, stash
             val dwp = matchVal
             run {
                 val matchVal1 = dwp.findCu(load.dwoId, load.parent)
-                if (matchVal1 is Result.Ok && matchVal1.value != null) {
+                if (matchVal1 is Result.Ok<*, *> && matchVal1.value != null) {
                     val valueVal = matchVal1.value
                     val cu = valueVal
                     return cu

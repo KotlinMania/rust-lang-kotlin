@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.alloc.alloc.handleAllocError
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow
 import io.github.kotlinmania.rustlang.alloc.borrow.ToOwned
 import io.github.kotlinmania.rustlang.alloc.boxed.Box
+import io.github.kotlinmania.rustlang.alloc.rcs.rc.MarkerEq
 import io.github.kotlinmania.rustlang.alloc.rcs.rc.isDangling
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.RustAny
@@ -17,6 +18,7 @@ import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorNightly
 import io.github.kotlinmania.rustlang.core.alloc.StaticAllocator
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.borrow.BorrowMut
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.clone.Share
 import io.github.kotlinmania.rustlang.core.clone.UseCloned
@@ -25,6 +27,8 @@ import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSpinLoopHint
+import io.github.kotlinmania.rustlang.core.iter
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -53,6 +57,8 @@ import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.read
+import io.github.kotlinmania.rustlang.core.ptr.withoutProvenance
 import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
@@ -180,7 +186,7 @@ public fun panicArcOverflow(): Nothing {
  * functions, called using [fully qualified syntax]:
  *
  * ```kotlin
- * val myArc = Arc.new()
+ * val myArc = Arc.new(Unit)
  * val myWeak = Arc.downgrade(myArc)
  * ```
  *
@@ -189,7 +195,7 @@ public fun panicArcOverflow(): Nothing {
  * while others prefer using method-call syntax.
  *
  * ```kotlin
- * val arc = Arc.new()
+ * val arc = Arc.new(Unit)
  * // Method-call syntax
  * val arc2 = arc.clone()
  * // Fully qualified syntax
@@ -253,7 +259,7 @@ public open class Arc<T, A : Allocator> internal constructor(
     ptrCtorArg: NonNull,
     public var phantom: Unit,
     public var alloc: A,
-) : UseCloned, Share, PinSafePointer, DerefPure, ArcEqIdent<T, A>, AsRef<T>, Allocator, AllocatorNightly, AllocatorClone {
+) : UseCloned, Share, PinSafePointer, DerefPure, ArcEqIdent<T, A>, AsRef<T> {
     public var ptr: NonNull = ptrCtorArg
         internal set
 
@@ -385,19 +391,6 @@ public open class Arc<T, A : Allocator> internal constructor(
     public override fun ne(other: Arc<T, A>): Boolean = this != other
 
     /**
-     * We're doing this specialization here, and not as a more general optimization on `T`, because it
-     * would otherwise add a cost to all equality checks on refs. We assume that `Arc`s are used to
-     * store large values, that are slow to clone, but also heavy to check for equality, causing this
-     * cost to pay off more easily. It's also more likely to have two `Arc` clones, that point to
-     * the same value, than two `T`s.
-     *
-     * We can only do this when `T: Eq` as a `PartialEq` might be deliberately irreflexive.
-     */
-    public open fun eqTA(other: Arc<T, A>): Boolean = io.github.kotlinmania.rustlang.core.ptr.eq((this.ptr.asPtr()).asConstPtr(), (other.ptr.asPtr()).asConstPtr()) || this == other
-
-    public open fun neTA(other: Arc<T, A>): Boolean = !eq((this.ptr.asPtr()).asConstPtr(), (other.ptr.asPtr()).asConstPtr()) && this != other
-
-    /**
      * Equality for two `Arc`s.
      *
      * Two `Arc`s are equal if their inner values are equal, even if they are
@@ -520,11 +513,11 @@ public open class Arc<T, A : Allocator> internal constructor(
      */
     public open fun cmp(other: Arc<T, A>): Ordering = this.cmp(other)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtPointer(f: StringBuilder): Result<Unit, Error> = run { f.append(((this)).toString()); Result.Ok(Unit) }
+    public open fun fmtPointer(f: StringBuilder): Result<Unit, Error> = run { f.append(((this)).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public override fun hashCode(): Int {
         var state = 0
@@ -535,34 +528,6 @@ public open class Arc<T, A : Allocator> internal constructor(
     public open fun borrow(): T = this
 
     public open fun asRef(): T = this
-
-    public open fun allocate(layout: Layout): Result<NonNull, AllocError> = this.allocate(layout)
-
-    public open fun allocateZeroed(layout: Layout): Result<NonNull, AllocError> = this.allocateZeroed(layout)
-
-    public open fun deallocate(ptr: NonNull, layout: Layout) {
-        // SAFETY: the safety contract must be upheld by the caller
-        this.deallocate(ptr, layout)
-    }
-
-    public open fun grow(ptr: NonNull, oldLayout: Layout, newLayout: Layout): Result<NonNull, AllocError> {
-        // SAFETY: the safety contract must be upheld by the caller
-        return this.grow(ptr, oldLayout, newLayout)
-    }
-
-    public open fun growZeroed(ptr: NonNull, oldLayout: Layout, newLayout: Layout): Result<NonNull, AllocError> {
-        // SAFETY: the safety contract must be upheld by the caller
-        return this.growZeroed(ptr, oldLayout, newLayout)
-    }
-
-    public open fun shrink(ptr: NonNull, oldLayout: Layout, newLayout: Layout): Result<NonNull, AllocError> {
-        // SAFETY: the safety contract must be upheld by the caller
-        return this.shrink(ptr, oldLayout, newLayout)
-    }
-
-    /**
-     * This trait impl is unstable and only usable on nightly with `feature(allocatorExt)`.
-     */
 
     public companion object {
         public operator fun <T, A : Allocator> invoke(
@@ -752,7 +717,7 @@ public open class Arc<T, A : Allocator> internal constructor(
          */
         public fun <T, A : Allocator> tryPinIn(data: T, alloc: A): Result<Pin<Arc<T, A>>, AllocError> where A : StaticAllocator {
             // SAFETY: We own and create the pinned pointer.
-            return Result.Ok<Pin<Arc<T, A>>, AllocError>(Pin.newUnchecked(when (val tryResult = Arc.tryNewIn(data, alloc)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pin<Arc<T, A>>, AllocError>(tryResult.error) }))
+            return Result.Ok<Pin<Arc<T, A>>, AllocError>(Pin.newUnchecked(when (val tryResult = Arc.tryNewIn(data, alloc)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pin<Arc<T, A>>, AllocError>(tryResult.error) }))
         }
 
         /**
@@ -773,7 +738,7 @@ public open class Arc<T, A : Allocator> internal constructor(
         public fun <T, A : Allocator> tryNewIn(data: T, alloc: A): Result<Arc<T, A>, AllocError> {
             // Start the weak pointer count as 1 which is the weak pointer that's
             // held by all the strong pointers (kinda), see std/rc.rs for more info
-            val x = when (val tryResult = Box.tryNewIn(ArcInner(strong = AtomicUsize.new(1), weak = AtomicUsize.new(1), data = data), alloc)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Arc<T, A>, AllocError>(tryResult.error) }
+            val x = when (val tryResult = Box.tryNewIn(ArcInner(strong = AtomicUsize.new(1), weak = AtomicUsize.new(1), data = data), alloc)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Arc<T, A>, AllocError>(tryResult.error) }
             val (ptr, alloc1) = Box.intoNonNullWithAllocator(x)
             // SAFETY: Pointer is valid since we created it.
             return Result.Ok<Arc<T, A>, AllocError>(Arc.fromInnerIn(ptr, alloc1))
@@ -804,7 +769,7 @@ public open class Arc<T, A : Allocator> internal constructor(
          */
         public fun <T, A : Allocator> tryNewUninitIn(alloc: A, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<Arc<MaybeUninit<T>, A>, AllocError> {
             // ignore-tidy-undocumented-unchecked
-            return Result.Ok<Arc<MaybeUninit<T>, A>, AllocError>(Arc.fromPtrIn(when (val tryResult = Arc.tryAllocateForLayout(Layout.new<T>(typeLayoutT = typeLayoutT), { layout -> alloc.allocate(layout) }, MutPtr.cast)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Arc<MaybeUninit<T>, A>, AllocError>(tryResult.error) }, alloc))
+            return Result.Ok<Arc<MaybeUninit<T>, A>, AllocError>(Arc.fromPtrIn(when (val tryResult = Arc.tryAllocateForLayout(Layout.new<T>(typeLayoutT = typeLayoutT), { layout -> alloc.allocate(layout) }, MutPtr.cast)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Arc<MaybeUninit<T>, A>, AllocError>(tryResult.error) }, alloc))
         }
 
         /**
@@ -833,7 +798,7 @@ public open class Arc<T, A : Allocator> internal constructor(
          */
         public fun <T, A : Allocator> tryNewZeroedIn(alloc: A, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<Arc<MaybeUninit<T>, A>, AllocError> {
             // ignore-tidy-undocumented-unchecked
-            return Result.Ok<Arc<MaybeUninit<T>, A>, AllocError>(Arc.fromPtrIn(when (val tryResult = Arc.tryAllocateForLayout(Layout.new<T>(typeLayoutT = typeLayoutT), { layout -> alloc.allocateZeroed(layout) }, MutPtr.cast)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Arc<MaybeUninit<T>, A>, AllocError>(tryResult.error) }, alloc))
+            return Result.Ok<Arc<MaybeUninit<T>, A>, AllocError>(Arc.fromPtrIn(when (val tryResult = Arc.tryAllocateForLayout(Layout.new<T>(typeLayoutT = typeLayoutT), { layout -> alloc.allocateZeroed(layout) }, MutPtr.cast)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Arc<MaybeUninit<T>, A>, AllocError>(tryResult.error) }, alloc))
         }
 
         /**
@@ -1068,11 +1033,11 @@ public open class Arc<T, A : Allocator> internal constructor(
                     val (ptr, alloc) = Arc.intoRawWithAllocator(thisRef)
                     val value = ptr.read()
                     val allocation = Arc.fromRawIn(ptr.cast(), alloc)
-                    Arc.getMutUnchecked(allocation).write(when (val tryResult = f(value)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) })
+                    Arc.getMutUnchecked(allocation).write(when (val tryResult = f(value)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") })
                     allocation.assumeInit()
                 }
             } else {
-                val output = when (val tryResult = f(thisRef)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                val output = when (val tryResult = f(thisRef)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
                 val (ptr1, alloc1) = Arc.intoRawWithAllocator(thisRef)
                 // ignore-tidy-undocumented-unchecked
                 Arc.decrementStrongCountIn(ptr1, alloc1)
@@ -1130,7 +1095,7 @@ public open class Arc<T, A : Allocator> internal constructor(
          */
         public fun <T, A : Allocator> tryCloneFromRefIn(value: T, alloc: A): Result<Arc<T, A>, AllocError> {
             // `inProgress` drops the allocation if we panic before finishing initializing it.
-            val inProgress: UniqueArcUninit<T, A>  = when (val tryResult = UniqueArcUninit.tryNew(value, alloc)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Arc<T, A>, AllocError>(tryResult.error) }
+            val inProgress: UniqueArcUninit<T, A>  = when (val tryResult = UniqueArcUninit.tryNew(value, alloc)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Arc<T, A>, AllocError>(tryResult.error) }
             // Initialize with clone of value.
             // ignore-tidy-undocumented-unchecked
             val initializedClone =
@@ -1318,11 +1283,11 @@ public open class Arc<T, A : Allocator> internal constructor(
                 // events prior to that write happen before this read.
                 run {
                     val matchVal = thisRef.inner().weak.compareExchangeWeak(cur, cur + 1, Acquire, Relaxed)
-                    when (matchVal) { is Result.Ok -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         // Make sure we do not create a dangling Weak
                         check(!isDangling(thisRef.ptr.asPtr()))
                         return Weak(ptr = thisRef.ptr, alloc = thisRef.alloc.clone())
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         val old = matchVal.error
                         cur = old
                     } }
@@ -1893,7 +1858,7 @@ public open class Weak<T, A : Allocator> internal constructor(
     public var ptr: NonNull = ptrCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("(Weak)"); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("(Weak)"); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Returns a reference to the underlying allocator.
@@ -2127,7 +2092,7 @@ public open class Weak<T, A : Allocator> internal constructor(
      * val first = Weak.new()
      * val second = Weak.new()
      * check(first.ptrEq(second))
-     * val thirdRc = Arc.new()
+     * val thirdRc = Arc.new(Unit)
      * val third = Arc.downgrade(thirdRc)
      * check(!first.ptrEq(third))
      * ```
@@ -2481,7 +2446,7 @@ public fun <T> Arc.Companion.pin(data: T): Pin<Arc<T, Global>> {
  */
 public fun <T> Arc.Companion.tryPin(data: T): Result<Pin<Arc<T, Global>>, AllocError> {
     // SAFETY: We own and create the pinned pointer.
-    return Result.Ok<Pin<Arc<T, Global>>, AllocError>(Pin.newUnchecked(when (val tryResult = Arc.tryNew(data)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pin<Arc<T, Global>>, AllocError>(tryResult.error) }))
+    return Result.Ok<Pin<Arc<T, Global>>, AllocError>(Pin.newUnchecked(when (val tryResult = Arc.tryNew(data)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pin<Arc<T, Global>>, AllocError>(tryResult.error) }))
 }
 
 /**
@@ -2500,7 +2465,7 @@ public fun <T> Arc.Companion.tryPin(data: T): Result<Pin<Arc<T, Global>>, AllocE
 public fun <T> Arc.Companion.tryNew(data: T): Result<Arc<T, Global>, AllocError> {
     // Start the weak pointer count as 1 which is the weak pointer that's
     // held by all the strong pointers (kinda), see std/rc.rs for more info
-    val x: Box = when (val tryResult = Box.tryNew(ArcInner(strong = AtomicUsize.new(1), weak = AtomicUsize.new(1), data = data))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Arc<T, Global>, AllocError>(tryResult.error) }
+    val x: Box = when (val tryResult = Box.tryNew(ArcInner(strong = AtomicUsize.new(1), weak = AtomicUsize.new(1), data = data))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Arc<T, Global>, AllocError>(tryResult.error) }
     // SAFETY: Pointer is valid.
     return Result.Ok<Arc<T, Global>, AllocError>(Arc.fromInner(Box.intoNonNull(x)))
 }
@@ -2525,7 +2490,7 @@ public fun <T> Arc.Companion.tryNew(data: T): Result<Arc<T, Global>, AllocError>
  */
 public fun <T> Arc.Companion.tryNewUninit(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<Arc<MaybeUninit<T>, Global>, AllocError> {
     // ignore-tidy-undocumented-unchecked
-    return Result.Ok<Arc<MaybeUninit<T>, Global>, AllocError>(Arc.fromPtr(when (val tryResult = Arc.tryAllocateForLayout(Layout.new<T>(typeLayoutT = typeLayoutT), { layout -> Global().allocate(layout) }, MutPtr.cast)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Arc<MaybeUninit<T>, Global>, AllocError>(tryResult.error) }))
+    return Result.Ok<Arc<MaybeUninit<T>, Global>, AllocError>(Arc.fromPtr(when (val tryResult = Arc.tryAllocateForLayout(Layout.new<T>(typeLayoutT = typeLayoutT), { layout -> Global().allocate(layout) }, MutPtr.cast)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Arc<MaybeUninit<T>, Global>, AllocError>(tryResult.error) }))
 }
 
 /**
@@ -2551,7 +2516,7 @@ public fun <T> Arc.Companion.tryNewUninit(typeLayoutT: TypeLayout<T> = Unresolve
  */
 public fun <T> Arc.Companion.tryNewZeroed(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<Arc<MaybeUninit<T>, Global>, AllocError> {
     // ignore-tidy-undocumented-unchecked
-    return Result.Ok<Arc<MaybeUninit<T>, Global>, AllocError>(Arc.fromPtr(when (val tryResult = Arc.tryAllocateForLayout(Layout.new<T>(typeLayoutT = typeLayoutT), { layout -> Global().allocateZeroed(layout) }, MutPtr.cast)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Arc<MaybeUninit<T>, Global>, AllocError>(tryResult.error) }))
+    return Result.Ok<Arc<MaybeUninit<T>, Global>, AllocError>(Arc.fromPtr(when (val tryResult = Arc.tryAllocateForLayout(Layout.new<T>(typeLayoutT = typeLayoutT), { layout -> Global().allocateZeroed(layout) }, MutPtr.cast)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Arc<MaybeUninit<T>, Global>, AllocError>(tryResult.error) }))
 }
 
 /**
@@ -2973,20 +2938,20 @@ public fun Arc.Companion.allocateForLayout(valueLayout: Layout, allocate: (Layou
  */
 public fun Arc.Companion.tryAllocateForLayout(valueLayout: Layout, allocate: (Layout) -> Result<NonNull, AllocError>, memToArcinner: (MutPtr) -> MutPtr): Result<MutPtr, AllocError> {
     val layout = arcinnerLayoutForValueLayout(valueLayout)
-    val ptr = when (val tryResult = allocate(layout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<MutPtr, AllocError>(tryResult.error) }
+    val ptr = when (val tryResult = allocate(layout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<MutPtr, AllocError>(tryResult.error) }
     // ignore-tidy-undocumented-unchecked
     val inner = Arc.initializeArcinner(ptr, layout, memToArcinner)
     return Result.Ok<MutPtr, AllocError>(inner)
 }
 
-public fun Arc.Companion.initializeArcinner(ptr: NonNull, layout: Layout, memToArcinner: (MutPtr) -> MutPtr): MutPtr {
+public fun <T> Arc.Companion.initializeArcinner(ptr: NonNull, layout: Layout, memToArcinner: (MutPtr) -> MutPtr): MutPtr {
     val inner = memToArcinner(ptr.asNonNullPtr().asPtr())
     // SAFETY: Upheld by caller.
     check(Layout.forValueRaw(inner) == layout)
     // ignore-tidy-undocumented-unchecked
     run {
-        (addrOfMut(inner.strong)).write(AtomicUsize.new(1))
-        (addrOfMut(inner.weak)).write(AtomicUsize.new(1))
+        (UnresolvedTypeLayout<Atomic<Int, Align8<Int>>>()).writeNative(((addrOfMut((UnresolvedTypeLayout<ArcInner<T>>()).readNative((inner).rawAddress).strong))).rawAddress, AtomicUsize.new(1))
+        (UnresolvedTypeLayout<Atomic<Int, Align8<Int>>>()).writeNative(((addrOfMut((UnresolvedTypeLayout<ArcInner<T>>()).readNative((inner).rawAddress).weak))).rawAddress, AtomicUsize.new(1))
     }
     return inner
 }
@@ -3278,6 +3243,19 @@ public interface ArcEqIdent<T, A : Allocator> {
 }
 
 /**
+ * We're doing this specialization here, and not as a more general optimization on `T`, because it
+ * would otherwise add a cost to all equality checks on refs. We assume that `Arc`s are used to
+ * store large values, that are slow to clone, but also heavy to check for equality, causing this
+ * cost to pay off more easily. It's also more likely to have two `Arc` clones, that point to
+ * the same value, than two `T`s.
+ *
+ * We can only do this when `T: Eq` as a `PartialEq` might be deliberately irreflexive.
+ */
+public fun <T : MarkerEq, A : Allocator> Arc<T, A>.eq(other: Arc<T, A>): Boolean = io.github.kotlinmania.rustlang.core.ptr.eq((this.ptr.asPtr()).asConstPtr(), (other.ptr.asPtr()).asConstPtr()) || this == other
+
+public fun <T : MarkerEq, A : Allocator> Arc<T, A>.ne(other: Arc<T, A>): Boolean = !eq((this.ptr.asPtr()).asConstPtr(), (other.ptr.asPtr()).asConstPtr()) && this != other
+
+/**
  * Creates a new `Arc<T>`, with the `Default` value for `T`.
  *
  * # Examples
@@ -3489,11 +3467,11 @@ public fun <T, A : AllocatorNightly> fromArcTSliceA(v: List<T>): Arc<List<T>, A>
  */
 public fun <Owned, B> fromArcB(cow: B): Arc<B, Global> where B : ToOwned<Owned> =
     when (cow) {
-        is Cow.Borrowed -> {
+        is Cow.Borrowed<*> -> {
             val (s) = cow
             Arc.from(s)
         }
-        is Cow.Owned -> {
+        is Cow.Owned<*> -> {
             val (s1) = cow
             Arc.from(s1)
         }
@@ -3687,7 +3665,7 @@ public open class UniqueArcUninit<T, A : Allocator> internal constructor(
         public fun <T, A : Allocator> tryNew(forValue: T, alloc: A): Result<UniqueArcUninit<T, A>, AllocError> {
             val layout = Layout.forValue(forValue)
             // ignore-tidy-undocumented-unchecked
-            val ptr = when (val tryResult = Arc.tryAllocateForLayout(layout, { layoutForArcinner -> alloc.allocate(layoutForArcinner) }, { mem -> mem.withMetadataOf(constPtrFromRustCast(forValue)) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UniqueArcUninit<T, A>, AllocError>(tryResult.error) }
+            val ptr = when (val tryResult = Arc.tryAllocateForLayout(layout, { layoutForArcinner -> alloc.allocate(layoutForArcinner) }, { mem -> mem.withMetadataOf(constPtrFromRustCast(forValue)) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UniqueArcUninit<T, A>, AllocError>(tryResult.error) }
             return Result.Ok<UniqueArcUninit<T, A>, AllocError>(UniqueArcUninit(ptr = NonNull.new(ptr)!!, layoutForValue = layout, alloc = alloc))
         }
     }
@@ -3749,11 +3727,11 @@ public open class UniqueArc<T, A : Allocator> internal constructor(
 
     // @unstable(feature = "coerceUnsized", issue = "18598")
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtPointer(f: StringBuilder): Result<Unit, Error> = run { f.append(((this)).toString()); Result.Ok(Unit) }
+    public open fun fmtPointer(f: StringBuilder): Result<Unit, Error> = run { f.append(((this)).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun borrow(): T = this
 
@@ -3970,7 +3948,7 @@ public open class UniqueArc<T, A : Allocator> internal constructor(
          * fails, instead of calling [handleAllocError].
          */
         public fun <T, A : Allocator> tryNewIn(data: T, alloc: A): Result<UniqueArc<T, A>, AllocError> {
-            val (ptr, alloc1) = Box.intoNonNullWithAllocator(when (val tryResult = Box.tryNewIn(ArcInner(strong = AtomicUsize.new(0), weak = AtomicUsize.new(1), data = data), alloc)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UniqueArc<T, A>, AllocError>(tryResult.error) })
+            val (ptr, alloc1) = Box.intoNonNullWithAllocator(when (val tryResult = Box.tryNewIn(ArcInner(strong = AtomicUsize.new(0), weak = AtomicUsize.new(1), data = data), alloc)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UniqueArc<T, A>, AllocError>(tryResult.error) })
             return Result.Ok<UniqueArc<T, A>, AllocError>(UniqueArc(ptr = ptr, marker = Unit, marker2 = Unit, alloc = alloc1))
         }
 
@@ -4063,11 +4041,11 @@ public open class UniqueArc<T, A : Allocator> internal constructor(
                     val (ptr, alloc) = UniqueArc.intoRawWithAllocator(thisRef)
                     val value = ptr.read()
                     val allocation = UniqueArc.fromRawWithAllocator(ptr.cast(), alloc)
-                    UniqueArc.write(allocation, when (val tryResult = f(value)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) })
+                    UniqueArc.write(allocation, when (val tryResult = f(value)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") })
                 }
             } else {
                 val (value, alloc1) = UniqueArc.unwrapWithAllocator(thisRef)
-                UniqueArc.newIn(when (val tryResult = f(value)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }, alloc1)
+                UniqueArc.newIn(when (val tryResult = f(value)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }, alloc1)
             }
         }
 
@@ -4205,3 +4183,31 @@ public fun <T, A : Allocator> UniqueArc<MaybeUninit<T>, A>.assumeInit(): UniqueA
     // SAFETY: Upheld by caller.
     return UniqueArc.fromInnerIn(ptr.cast(), alloc)
 }
+
+public fun <T : Allocator, A : Allocator> Arc<T, A>.allocate(layout: Layout): Result<NonNull, AllocError> = this.allocate(layout)
+
+public fun <T : Allocator, A : Allocator> Arc<T, A>.allocateZeroed(layout: Layout): Result<NonNull, AllocError> = this.allocateZeroed(layout)
+
+public fun <T : Allocator, A : Allocator> Arc<T, A>.deallocate(ptr: NonNull, layout: Layout) {
+    // SAFETY: the safety contract must be upheld by the caller
+    this.deallocate(ptr, layout)
+}
+
+public fun <T : Allocator, A : Allocator> Arc<T, A>.grow(ptr: NonNull, oldLayout: Layout, newLayout: Layout): Result<NonNull, AllocError> {
+    // SAFETY: the safety contract must be upheld by the caller
+    return this.grow(ptr, oldLayout, newLayout)
+}
+
+public fun <T : Allocator, A : Allocator> Arc<T, A>.growZeroed(ptr: NonNull, oldLayout: Layout, newLayout: Layout): Result<NonNull, AllocError> {
+    // SAFETY: the safety contract must be upheld by the caller
+    return this.growZeroed(ptr, oldLayout, newLayout)
+}
+
+public fun <T : Allocator, A : Allocator> Arc<T, A>.shrink(ptr: NonNull, oldLayout: Layout, newLayout: Layout): Result<NonNull, AllocError> {
+    // SAFETY: the safety contract must be upheld by the caller
+    return this.shrink(ptr, oldLayout, newLayout)
+}
+
+/**
+ * This trait impl is unstable and only usable on nightly with `feature(allocatorExt)`.
+ */

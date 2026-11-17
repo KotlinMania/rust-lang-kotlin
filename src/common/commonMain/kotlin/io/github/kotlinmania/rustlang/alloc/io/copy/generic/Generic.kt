@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.alloc.io.buffered.bufreader.BufReader
 import io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter.BufWriter
 import io.github.kotlinmania.rustlang.alloc.io.read.DEFAULT_BUF_SIZE
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
+import io.github.kotlinmania.rustlang.alloc.io.read.read
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedBuf
 import io.github.kotlinmania.rustlang.core.io.error.Result
@@ -13,6 +14,7 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 /**
  * The userspace read-write-loop implementation of `io.copy` that is used when
@@ -46,12 +48,12 @@ public typealias BufferPriority = Int
 /**
  * Unbuffered readers and writers have the lowest priority.
  */
-public val UNBUFFERED: BufferPriority = BufferPriority.MIN_VALUE
+public val UNBUFFERED: BufferPriority = Int.MIN_VALUE
 
 /**
  * Readers and writers with their entire contents have the highest priority.
  */
-public val IN_MEMORY: BufferPriority = BufferPriority.MAX_VALUE
+public val IN_MEMORY: BufferPriority = Int.MAX_VALUE
 
 /**
  * Specialization of the read-write loop in [genericCopy] that reuses the
@@ -75,9 +77,9 @@ public fun List<UByte>.bufferPriority(): BufferPriority = IN_MEMORY
 public fun List<UByte>.copyTo(to: Write): Result<ULong> {
     var selfMut = this
     val len = selfMut.size
-    when (val tryResult = to.writeAll(selfMut)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+    when (val tryResult = to.writeAll(selfMut)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
     selfMut = ((selfMut).subList(len, (selfMut).size))
-    return Result.Ok(len.toULong())
+    return RustResult.Ok(len.toULong())
 }
 
 public fun <A : Allocator> VecDeque<UByte, A>.bufferPriority(): BufferPriority = IN_MEMORY
@@ -86,9 +88,9 @@ public fun <A : Allocator> VecDeque<UByte, A>.copyTo(to: Write): Result<ULong> {
     val len = this.len()
     val (front, back) = this.asSlices()
     val bufs = listOf(IoSlice.new(front), IoSlice.new(back))
-    when (val tryResult = to.writeAllVectored(bufs)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+    when (val tryResult = to.writeAllVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
     this.clear()
-    return Result.Ok(len.toULong())
+    return RustResult.Ok(len.toULong())
 }
 
 public fun <I> BufReader<I>.bufferPriority(): BufferPriority = this.capacity()
@@ -103,27 +105,27 @@ public fun <I> BufReader<I>.copyTo(to: Write): Result<ULong> {
         run {
             val matchVal = this.read(listOf())
             when {
-                matchVal is Result.Ok -> {}
-                matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                matchVal is RustResult.Ok<*, *> -> {}
+                matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
                     val e = matchVal.error
                     continue
                 }
                 else -> {
-                    val e1 = matchVal.error
-                    return Result.Err(e1)
+                    val e1 = (matchVal as RustResult.Err<*, *>).error
+                    return RustResult.Err(e1)
                 }
             }
         }
         val buf = this.buffer()
         if (this.buffer().isEmpty()) {
-            return Result.Ok(len)
+            return RustResult.Ok(len)
         }
         // In case the writer side is a BufWriter then its writeAll
         // implements an optimization that passes through large
         // buffers to the underlying writer. That code path is @cold
         // but we're still avoiding redundant memcopies when doing
         // a copy between buffered inputs and outputs.
-        when (val tryResult = to.writeAll(buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = to.writeAll(buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
         len += buf.len().toULong()
         this.discardBuffer()
     }
@@ -170,30 +172,30 @@ public fun <I : Write, R : Read<R>> BufWriter<I>.copyFrom(reader: R): Result<ULo
             run {
                 val matchVal = reader.readBuf(cursor.reborrow())
                 when {
-                    matchVal is Result.Ok -> {
+                    matchVal is RustResult.Ok<*, *> -> {
                         val valueVal = matchVal.value
                         val bytesRead = cursor.written()
                         if (bytesRead == 0) {
-                            return Result.Ok(len)
+                            return RustResult.Ok(len)
                         }
                         init = readBuf.isInit()
                         len += bytesRead.toULong()
                         // SAFETY: BorrowedBuf guarantees all of its filled bytes are init
                         buf.setLen(buf.len() + bytesRead)
                     }
-                    matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                    matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
                         val e = matchVal.error
                     }
                     else -> {
-                        val e1 = matchVal.error
-                        return Result.Err(e1)
+                        val e1 = (matchVal as RustResult.Err<*, *>).error
+                        return RustResult.Err(e1)
                     }
                 }
             }
         } else {
             // SAFETY: `flushBuf` will not de-initialize any elements of
             // the spare capacity so we can remember `init` across this.
-            when (val tryResult = this.flushBuf()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
         }
     }
 }
@@ -211,16 +213,16 @@ public fun <R : Read<R>, W : Write> stackBufferCopy(reader: R, writer: W): Resul
         run {
             val matchVal = reader.readBuf(buf1.unfilled())
             when {
-                matchVal is Result.Ok -> {
+                matchVal is RustResult.Ok<*, *> -> {
                     val valueVal = matchVal.value
                 }
-                matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
                     val e = matchVal.error
                     continue
                 }
                 else -> {
-                    val e1 = matchVal.error
-                    return Result.Err(e1)
+                    val e1 = (matchVal as RustResult.Err<*, *>).error
+                    return RustResult.Err(e1)
                 }
             }
         }
@@ -228,8 +230,8 @@ public fun <R : Read<R>, W : Write> stackBufferCopy(reader: R, writer: W): Resul
             break
         }
         len += buf1.filled().len().toULong()
-        when (val tryResult = writer.writeAll(buf1.filled())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = writer.writeAll(buf1.filled())) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
         buf1.clear()
     }
-    return Result.Ok(len)
+    return RustResult.Ok(len)
 }

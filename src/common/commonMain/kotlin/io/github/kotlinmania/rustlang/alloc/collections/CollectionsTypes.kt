@@ -23,7 +23,7 @@ public sealed class TryReserveErrorKind {
         when (this) {
             TryReserveErrorKind.CapacityOverflow -> TryReserveErrorKind.CapacityOverflow
             is TryReserveErrorKind.AllocError -> {
-                val layout = this.layout
+                val layout = (this as TryReserveErrorKind.AllocError).layout
                 TryReserveErrorKind.AllocError(layout = layout, nonExhaustive = Unit)
             }
         }

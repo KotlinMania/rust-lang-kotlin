@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
@@ -45,7 +46,7 @@ public open class ZeroToken internal constructor(
             value = v
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(((this.value).rawAddress.toInt()).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(((this.value).rawAddress.toInt()).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<ZeroToken> =

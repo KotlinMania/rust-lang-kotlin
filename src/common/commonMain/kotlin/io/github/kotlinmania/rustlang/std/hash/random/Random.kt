@@ -7,10 +7,10 @@ import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.hash.sip.SipHasher13
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sys.random.hashmapRandomKeys
-import io.github.kotlinmania.rustlang.std.thread.LocalKey
-import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
+import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalProcessAttrs
 
 // This module exists to isolate [RandomState] and [DefaultHasher] outside of the
 // [collections] module without actually publicly exporting them, so that parts of that
@@ -69,7 +69,7 @@ public open class RandomState(
 
     public open fun buildHasher(): DefaultHasher = DefaultHasher(SipHasher13.newWithKeys(this.k0, this.k1))
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "RandomState").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "RandomState").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<RandomState> =
@@ -110,7 +110,7 @@ public open class RandomState(
          * ```
          */
         public fun new(): RandomState {
-            val KEYS: LocalKey<Cell<Pair<ULong, ULong>>> = threadLocalInner(key, Cell, Cell.new(hashmapRandomKeys()))
+            threadLocalProcessAttrs(KEYS, Cell, Cell, new, hashmapRandomKeys)
             return KEYS.with({ keys ->
                 val (k0, k1) = keys.get()
                 keys.set(Pair(k0.wrappingAdd(1), k1))

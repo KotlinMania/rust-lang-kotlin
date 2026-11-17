@@ -66,30 +66,21 @@ public fun <T> successors(first: T?, succ: (T) -> T?): Successors<T, (T) -> T?> 
 public open class Successors<T, F>(
     public var next: T?,
     public var succ: F,
-) : Iterable<T> {
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@Successors.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
+) {
     public open fun clone(): Successors<T, F> = Successors(next, succ)
 
-    public open fun next(): T? {
-        val item = (this.next.also { this.next = null } ?: return null)
-        this.next = (this.succ)(item)
-        return item
-    }
-
-    public open fun sizeHint(): Pair<Int, Int?> =
-        if (this.next != null) {
-            Pair(1, null)
-        } else {
-            Pair(0, 0)
-        }
-
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Successors").field("next", this.next).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Successors").field("next", this.next).finish(); Result.Ok<Unit, Unit>(Unit) }
 }
+
+public fun <T> Successors<T, F>.next(): T? {
+    val item = (this.next.also { this.next = null } ?: return null)
+    this.next = (this.succ)(item)
+    return item
+}
+
+public fun <T> Successors<T, F>.sizeHint(): Pair<Int, Int?> =
+    if (this.next != null) {
+        Pair(1, null)
+    } else {
+        Pair(0, 0)
+    }

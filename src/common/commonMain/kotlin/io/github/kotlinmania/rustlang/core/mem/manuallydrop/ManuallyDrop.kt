@@ -189,7 +189,7 @@ public open class ManuallyDrop<T>(
          * # Examples
          *
          * ```kotlin
-         * val x = Holder.new()
+         * val x = Holder.new(Unit)
          * val unused: Unit = ManuallyDrop.intoInner(x)
          * // This drops the `Holder`.
          * ```

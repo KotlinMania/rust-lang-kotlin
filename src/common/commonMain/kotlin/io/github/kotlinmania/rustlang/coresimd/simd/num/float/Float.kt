@@ -167,7 +167,7 @@ public interface SimdFloat<SelfType, out Mask, Scalar, Bits, out Cast> {
      * # Examples
      *
      * ```kotlin
-     * val v = fromArray(listOf(1.0, 2.0))
+     * val v = Simd<Float>((listOf(1.0, 2.0)).toList())
      * check(v.reduceSum() == 3.0)
      * ```
      */
@@ -179,7 +179,7 @@ public interface SimdFloat<SelfType, out Mask, Scalar, Bits, out Cast> {
      * # Examples
      *
      * ```kotlin
-     * val v = fromArray(listOf(3.0, 4.0))
+     * val v = Simd<Float>((listOf(3.0, 4.0)).toList())
      * check(v.reduceProduct() == 12.0)
      * ```
      */
@@ -196,13 +196,13 @@ public interface SimdFloat<SelfType, out Mask, Scalar, Bits, out Cast> {
      * # Examples
      *
      * ```kotlin
-     * val v = fromArray(listOf(1.0, 2.0))
+     * val v = Simd<Float>((listOf(1.0, 2.0)).toList())
      * check(v.reduceMax() == 2.0)
      * // NaN values are skipped...
-     * val v1 = fromArray(floatArrayOf(1.0f, Float.NaN))
+     * val v1 = Simd<Float>((floatArrayOf(1.0f, Float.NaN)).toList())
      * check(v1.reduceMax() == 1.0)
      * // ...unless all values are NaN
-     * val v2 = fromArray(floatArrayOf(Float.NaN, Float.NaN))
+     * val v2 = Simd<Float>((floatArrayOf(Float.NaN, Float.NaN)).toList())
      * check(v2.reduceMax().isNan())
      * ```
      */
@@ -219,13 +219,13 @@ public interface SimdFloat<SelfType, out Mask, Scalar, Bits, out Cast> {
      * # Examples
      *
      * ```kotlin
-     * val v = fromArray(listOf(3.0, 7.0))
+     * val v = Simd<Float>((listOf(3.0, 7.0)).toList())
      * check(v.reduceMin() == 3.0)
      * // NaN values are skipped...
-     * val v1 = fromArray(floatArrayOf(1.0f, Float.NaN))
+     * val v1 = Simd<Float>((floatArrayOf(1.0f, Float.NaN)).toList())
      * check(v1.reduceMin() == 1.0)
      * // ...unless all values are NaN
-     * val v2 = fromArray(floatArrayOf(Float.NaN, Float.NaN))
+     * val v2 = Simd<Float>((floatArrayOf(Float.NaN, Float.NaN)).toList())
      * check(v2.reduceMin().isNan())
      * ```
      */

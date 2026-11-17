@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Buf
 
 // Windows-specific extensions to primitives in the [std.ffi] module.
@@ -139,7 +140,7 @@ public open class EncodeWide(
 
     public open fun clone(): EncodeWide = EncodeWide(inner)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun next(): UShort? = this.inner.next()
 

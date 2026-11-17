@@ -78,7 +78,7 @@ public open class BuildHasherDefault<H>(
             value = v
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "BuildHasherDefault").finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "BuildHasherDefault").finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public override fun buildHasher(defaultHFn: () -> H): H = defaultHFn()
 

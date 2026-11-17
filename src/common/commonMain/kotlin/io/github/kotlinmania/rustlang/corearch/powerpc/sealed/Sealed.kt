@@ -13,6 +13,7 @@ import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.corearch.powerpc.VectorBoolChar
 import io.github.kotlinmania.rustlang.corearch.powerpc.VectorBoolInt
@@ -144,6 +145,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.F32x4
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8
 import io.github.kotlinmania.rustlang.corearch.simd.I32x4
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.U16x8
 import io.github.kotlinmania.rustlang.corearch.simd.U32x4
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
@@ -760,7 +762,7 @@ public fun vecVcmpneb(a: VectorSignedChar, b: VectorSignedChar): VectorBoolChar 
     if (false) {
         vcmpneb(transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(a, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>()), transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>()))
     } else {
-        val zero = transmute(i32x4.new(0, 0, 0, 0))
+        val zero = transmute(Simd<Int>(listOf(0, 0, 0, 0)))
         vecNor(vecCmpeq(a, b), zero)
     }
 
@@ -768,7 +770,7 @@ public fun vecVcmpneh(a: VectorSignedShort, b: VectorSignedShort): VectorBoolSho
     if (false) {
         vcmpneh(transmuteWithLayouts<VectorSignedShort, VectorBoolShort>(a, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorBoolShort>()), transmuteWithLayouts<VectorSignedShort, VectorBoolShort>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorBoolShort>()))
     } else {
-        val zero = transmute(i32x4.new(0, 0, 0, 0))
+        val zero = transmute(Simd<Int>(listOf(0, 0, 0, 0)))
         vecNor(vecCmpeq(a, b), zero)
     }
 
@@ -776,7 +778,7 @@ public fun vecVcmpnew(a: VectorSignedInt, b: VectorSignedInt): VectorBoolInt =
     if (false) {
         vcmpnew(transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(a, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>()), transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>()))
     } else {
-        val zero = transmute(i32x4.new(0, 0, 0, 0))
+        val zero = transmute(Simd<Int>(listOf(0, 0, 0, 0)))
         vecNor(vecCmpeq(a, b), zero)
     }
 
@@ -1070,7 +1072,7 @@ public fun VectorSignedInt.vecAvg(b: VectorSignedInt): VectorSignedInt = vecVavg
 public fun andc(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
     val a1 = a
     val b1 = b
-    return transmute(run { val _simdArg0 = run { val _simdArg0 = u8x16.splat(0xff); val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; _simdArg0 })
+    return transmute(run { val _simdArg0 = run { val _simdArg0 = Simd<UByte>(List(16) { 0xffu.toUByte() }); val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; _simdArg0 })
 }
 
 public interface VectorAndc<Other, out Result> {
@@ -1098,7 +1100,7 @@ public fun VectorSignedInt.vecAndc(b: VectorSignedInt): VectorSignedInt = transm
 public fun orc(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
     val a1 = a
     val b1 = b
-    return transmute(run { val _simdArg0 = run { val _simdArg0 = u8x16.splat(0xff); val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; _simdArg0 })
+    return transmute(run { val _simdArg0 = run { val _simdArg0 = Simd<UByte>(List(16) { 0xffu.toUByte() }); val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; _simdArg0 })
 }
 
 public interface VectorOrc<Other, out Result> {
@@ -1289,7 +1291,7 @@ public fun VectorSignedInt.vecAbs(): VectorSignedInt = vecAbsI32(this)
 
 public fun vecAbsF32(v: VectorFloat): VectorFloat {
     val v1: U32x4 = transmuteWithLayouts<VectorFloat, U32x4>(v, UnresolvedTypeLayout<VectorFloat>(), UnresolvedTypeLayout<U32x4>())
-    return transmute(run { val _simdArg0 = v1; val _simdArg1 = u32x4.splat(0x7FFFFFFF); _simdArg0 })
+    return transmute(run { val _simdArg0 = v1; val _simdArg1 = Simd<UInt>(List(4) { 0x7FFFFFFFu }); _simdArg0 })
 }
 
 public fun VectorFloat.vecAbs(): VectorFloat = vecAbsF32(this)
@@ -1323,21 +1325,21 @@ public fun vspltb(a: VectorSignedChar, imm4: UInt): VectorSignedChar {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = u32x16.splat(imm4); _simdArg0 }
+    return run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = Simd<UInt>(List(16) { imm4 }); _simdArg0 }
 }
 
 public fun vsplth(a: VectorSignedShort, imm3: UInt): VectorSignedShort {
     run {
         check(0u <= imm3 && imm3 < (1u shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = u32x8.splat(imm3); _simdArg0 }
+    return run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = Simd<UInt>(List(8) { imm3 }); _simdArg0 }
 }
 
 public fun vspltw(a: VectorSignedInt, imm2: UInt): VectorSignedInt {
     run {
         check(0u <= imm2 && imm2 < (1u shl 2)) { "IMM2 doesn't fit in 2 bits (unsigned)" }
     }
-    return run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = u32x4.splat(imm2); _simdArg0 }
+    return run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = Simd<UInt>(List(4) { imm2 }); _simdArg0 }
 }
 
 public interface VectorSplat<T> {
@@ -1362,19 +1364,19 @@ public fun VectorUnsignedInt.vecSplat(imm: UInt): VectorUnsignedInt = transmute(
 
 public fun VectorBoolInt.vecSplat(imm: UInt): VectorBoolInt = transmute(vspltw(this, imm))
 
-public fun splatsU8(v: UByte): VectorUnsignedChar = transmute(u8x16.splat(v))
+public fun splatsU8(v: UByte): VectorUnsignedChar = transmute(Simd<UByte>(List(16) { v }))
 
-public fun splatsU16(v: UShort): VectorUnsignedShort = transmute(u16x8.splat(v))
+public fun splatsU16(v: UShort): VectorUnsignedShort = transmute(Simd<UShort>(List(8) { v }))
 
-public fun splatsU32(v: UInt): VectorUnsignedInt = transmute(u32x4.splat(v))
+public fun splatsU32(v: UInt): VectorUnsignedInt = transmute(Simd<UInt>(List(4) { v }))
 
-public fun splatsI8(v: Byte): VectorSignedChar = transmute(i8x16.splat(v))
+public fun splatsI8(v: Byte): VectorSignedChar = transmute(Simd<Byte>(List(16) { v }))
 
-public fun splatsI16(v: Short): VectorSignedShort = transmute(i16x8.splat(v))
+public fun splatsI16(v: Short): VectorSignedShort = transmute(Simd<Short>(List(8) { v }))
 
-public fun splatsI32(v: Int): VectorSignedInt = transmute(i32x4.splat(v))
+public fun splatsI32(v: Int): VectorSignedInt = transmute(Simd<Int>(List(4) { v }))
 
-public fun splatsF32(v: Float): VectorFloat = transmute(f32x4.splat(v))
+public fun splatsF32(v: Float): VectorFloat = transmute(Simd<Float>(List(4) { v }))
 
 public fun vecSplatsU8(v: UByte): VectorUnsignedChar = splatsU8(v)
 
@@ -1793,13 +1795,13 @@ public interface VectorAdde<T> {
 }
 
 public fun VectorUnsignedInt.vecAdde(b: VectorUnsignedInt, c: VectorUnsignedInt): VectorUnsignedInt {
-    val mask: VectorUnsignedInt = transmute(u32x4.new(1, 1, 1, 1))
+    val mask: VectorUnsignedInt = transmute(Simd<UInt>(listOf(1u, 1u, 1u, 1u)))
     val carry = vecAnd(c, mask)
     return vecAdd(vecAdd(this, b), carry)
 }
 
 public fun VectorSignedInt.vecAdde(b: VectorSignedInt, c: VectorSignedInt): VectorSignedInt {
-    val mask: VectorSignedInt = transmute(i32x4.new(1, 1, 1, 1))
+    val mask: VectorSignedInt = transmute(Simd<Int>(listOf(1, 1, 1, 1)))
     val carry = vecAnd(c, mask)
     return vecAdd(vecAdd(this, b), carry)
 }
@@ -2001,7 +2003,7 @@ public fun vecVsel(a: VectorSignedChar, b: VectorSignedChar, c: VectorSignedChar
     val a1: I8x16 = transmuteWithLayouts<VectorSignedChar, I8x16>(a, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<I8x16>())
     val b1: I8x16 = transmuteWithLayouts<VectorSignedChar, I8x16>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<I8x16>())
     val c1: I8x16 = transmuteWithLayouts<VectorSignedChar, I8x16>(c, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<I8x16>())
-    val notC = run { val _simdArg0 = c1; val _simdArg1 = i8x16.splat(0.inv()); _simdArg0 }
+    val notC = run { val _simdArg0 = c1; val _simdArg1 = Simd<Byte>(List(16) { (0.inv()).toByte() }); _simdArg0 }
     return transmute(run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = notC; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = b1; val _simdArg1 = c1; _simdArg0 }; _simdArg0 })
 }
 
@@ -2172,32 +2174,32 @@ public fun VectorSignedInt.vecCtf(imm5: Int): VectorFloat = vecCtfI32(this, imm5
 public fun VectorUnsignedInt.vecCtf(imm5: Int): VectorFloat = vecCtfU32(this, imm5)
 
 public fun vecVmrglb(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
-    val mergelPerm = transmute(u8x16.new(0x08, 0x18, 0x09, 0x19, 0x0A, 0x1A, 0x0B, 0x1B, 0x0C, 0x1C, 0x0D, 0x1D, 0x0E, 0x1E, 0x0F, 0x1F))
+    val mergelPerm = transmute(Simd<UByte>(listOf(0x08u.toUByte(), 0x18u.toUByte(), 0x09u.toUByte(), 0x19u.toUByte(), 0x0Au.toUByte(), 0x1Au.toUByte(), 0x0Bu.toUByte(), 0x1Bu.toUByte(), 0x0Cu.toUByte(), 0x1Cu.toUByte(), 0x0Du.toUByte(), 0x1Du.toUByte(), 0x0Eu.toUByte(), 0x1Eu.toUByte(), 0x0Fu.toUByte(), 0x1Fu.toUByte())))
     return vecPerm(a, b, mergelPerm)
 }
 
 public fun vecVmrglh(a: VectorSignedShort, b: VectorSignedShort): VectorSignedShort {
-    val mergelPerm = transmute(u8x16.new(0x08, 0x09, 0x18, 0x19, 0x0A, 0x0B, 0x1A, 0x1B, 0x0C, 0x0D, 0x1C, 0x1D, 0x0E, 0x0F, 0x1E, 0x1F))
+    val mergelPerm = transmute(Simd<UByte>(listOf(0x08u.toUByte(), 0x09u.toUByte(), 0x18u.toUByte(), 0x19u.toUByte(), 0x0Au.toUByte(), 0x0Bu.toUByte(), 0x1Au.toUByte(), 0x1Bu.toUByte(), 0x0Cu.toUByte(), 0x0Du.toUByte(), 0x1Cu.toUByte(), 0x1Du.toUByte(), 0x0Eu.toUByte(), 0x0Fu.toUByte(), 0x1Eu.toUByte(), 0x1Fu.toUByte())))
     return vecPerm(a, b, mergelPerm)
 }
 
 public fun vecVmrglw(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt {
-    val mergelPerm = transmute(u8x16.new(0x08, 0x09, 0x0A, 0x0B, 0x18, 0x19, 0x1A, 0x1B, 0x0C, 0x0D, 0x0E, 0x0F, 0x1C, 0x1D, 0x1E, 0x1F))
+    val mergelPerm = transmute(Simd<UByte>(listOf(0x08u.toUByte(), 0x09u.toUByte(), 0x0Au.toUByte(), 0x0Bu.toUByte(), 0x18u.toUByte(), 0x19u.toUByte(), 0x1Au.toUByte(), 0x1Bu.toUByte(), 0x0Cu.toUByte(), 0x0Du.toUByte(), 0x0Eu.toUByte(), 0x0Fu.toUByte(), 0x1Cu.toUByte(), 0x1Du.toUByte(), 0x1Eu.toUByte(), 0x1Fu.toUByte())))
     return vecPerm(a, b, mergelPerm)
 }
 
 public fun vecVmrghb(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
-    val mergelPerm = transmute(u8x16.new(0x00, 0x10, 0x01, 0x11, 0x02, 0x12, 0x03, 0x13, 0x04, 0x14, 0x05, 0x15, 0x06, 0x16, 0x07, 0x17))
+    val mergelPerm = transmute(Simd<UByte>(listOf(0x00u.toUByte(), 0x10u.toUByte(), 0x01u.toUByte(), 0x11u.toUByte(), 0x02u.toUByte(), 0x12u.toUByte(), 0x03u.toUByte(), 0x13u.toUByte(), 0x04u.toUByte(), 0x14u.toUByte(), 0x05u.toUByte(), 0x15u.toUByte(), 0x06u.toUByte(), 0x16u.toUByte(), 0x07u.toUByte(), 0x17u.toUByte())))
     return vecPerm(a, b, mergelPerm)
 }
 
 public fun vecVmrghh(a: VectorSignedShort, b: VectorSignedShort): VectorSignedShort {
-    val mergelPerm = transmute(u8x16.new(0x00, 0x01, 0x10, 0x11, 0x02, 0x03, 0x12, 0x13, 0x04, 0x05, 0x14, 0x15, 0x06, 0x07, 0x16, 0x17))
+    val mergelPerm = transmute(Simd<UByte>(listOf(0x00u.toUByte(), 0x01u.toUByte(), 0x10u.toUByte(), 0x11u.toUByte(), 0x02u.toUByte(), 0x03u.toUByte(), 0x12u.toUByte(), 0x13u.toUByte(), 0x04u.toUByte(), 0x05u.toUByte(), 0x14u.toUByte(), 0x15u.toUByte(), 0x06u.toUByte(), 0x07u.toUByte(), 0x16u.toUByte(), 0x17u.toUByte())))
     return vecPerm(a, b, mergelPerm)
 }
 
 public fun vecVmrghw(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt {
-    val mergelPerm = transmute(u8x16.new(0x00, 0x01, 0x02, 0x03, 0x10, 0x11, 0x12, 0x13, 0x04, 0x05, 0x06, 0x07, 0x14, 0x15, 0x16, 0x17))
+    val mergelPerm = transmute(Simd<UByte>(listOf(0x00u.toUByte(), 0x01u.toUByte(), 0x02u.toUByte(), 0x03u.toUByte(), 0x10u.toUByte(), 0x11u.toUByte(), 0x12u.toUByte(), 0x13u.toUByte(), 0x04u.toUByte(), 0x05u.toUByte(), 0x06u.toUByte(), 0x07u.toUByte(), 0x14u.toUByte(), 0x15u.toUByte(), 0x16u.toUByte(), 0x17u.toUByte())))
     return vecPerm(a, b, mergelPerm)
 }
 
@@ -2252,9 +2254,9 @@ public fun VectorFloat.vecMergel(b: VectorFloat): VectorFloat = transmuteWithLay
 public fun vecVpkuhum(a: VectorSignedShort, b: VectorSignedShort): VectorSignedChar {
     val packPerm =
         if (true) {
-            transmute(u8x16.new(0x00, 0x02, 0x04, 0x06, 0x08, 0x0A, 0x0C, 0x0E, 0x10, 0x12, 0x14, 0x16, 0x18, 0x1A, 0x1C, 0x1E))
+            transmute(Simd<UByte>(listOf(0x00u.toUByte(), 0x02u.toUByte(), 0x04u.toUByte(), 0x06u.toUByte(), 0x08u.toUByte(), 0x0Au.toUByte(), 0x0Cu.toUByte(), 0x0Eu.toUByte(), 0x10u.toUByte(), 0x12u.toUByte(), 0x14u.toUByte(), 0x16u.toUByte(), 0x18u.toUByte(), 0x1Au.toUByte(), 0x1Cu.toUByte(), 0x1Eu.toUByte())))
         } else {
-            transmute(u8x16.new(0x01, 0x03, 0x05, 0x07, 0x09, 0x0B, 0x0D, 0x0F, 0x11, 0x13, 0x15, 0x17, 0x19, 0x1B, 0x1D, 0x1F))
+            transmute(Simd<UByte>(listOf(0x01u.toUByte(), 0x03u.toUByte(), 0x05u.toUByte(), 0x07u.toUByte(), 0x09u.toUByte(), 0x0Bu.toUByte(), 0x0Du.toUByte(), 0x0Fu.toUByte(), 0x11u.toUByte(), 0x13u.toUByte(), 0x15u.toUByte(), 0x17u.toUByte(), 0x19u.toUByte(), 0x1Bu.toUByte(), 0x1Du.toUByte(), 0x1Fu.toUByte())))
         }
     return transmuteWithLayouts<T, VectorSignedChar>(vecPerm(a, b, packPerm), UnresolvedTypeLayout<T>(), UnresolvedTypeLayout<VectorSignedChar>())
 }
@@ -2262,9 +2264,9 @@ public fun vecVpkuhum(a: VectorSignedShort, b: VectorSignedShort): VectorSignedC
 public fun vecVpkuwum(a: VectorSignedInt, b: VectorSignedInt): VectorSignedShort {
     val packPerm =
         if (true) {
-            transmute(u8x16.new(0x00, 0x01, 0x04, 0x05, 0x08, 0x09, 0x0C, 0x0D, 0x10, 0x11, 0x14, 0x15, 0x18, 0x19, 0x1C, 0x1D))
+            transmute(Simd<UByte>(listOf(0x00u.toUByte(), 0x01u.toUByte(), 0x04u.toUByte(), 0x05u.toUByte(), 0x08u.toUByte(), 0x09u.toUByte(), 0x0Cu.toUByte(), 0x0Du.toUByte(), 0x10u.toUByte(), 0x11u.toUByte(), 0x14u.toUByte(), 0x15u.toUByte(), 0x18u.toUByte(), 0x19u.toUByte(), 0x1Cu.toUByte(), 0x1Du.toUByte())))
         } else {
-            transmute(u8x16.new(0x02, 0x03, 0x06, 0x07, 0x0A, 0x0B, 0x0E, 0x0F, 0x12, 0x13, 0x16, 0x17, 0x1A, 0x1B, 0x1E, 0x1F))
+            transmute(Simd<UByte>(listOf(0x02u.toUByte(), 0x03u.toUByte(), 0x06u.toUByte(), 0x07u.toUByte(), 0x0Au.toUByte(), 0x0Bu.toUByte(), 0x0Eu.toUByte(), 0x0Fu.toUByte(), 0x12u.toUByte(), 0x13u.toUByte(), 0x16u.toUByte(), 0x17u.toUByte(), 0x1Au.toUByte(), 0x1Bu.toUByte(), 0x1Eu.toUByte(), 0x1Fu.toUByte())))
         }
     return transmuteWithLayouts<T, VectorSignedShort>(vecPerm(a, b, packPerm), UnresolvedTypeLayout<T>(), UnresolvedTypeLayout<VectorSignedShort>())
 }
@@ -2499,10 +2501,10 @@ public fun vsldoi(a: VectorUnsignedChar, b: VectorUnsignedChar, uimm4: Int): Vec
     }
     val d = uimm4.toUByte()
     return if (true) {
-        val perm = u8x16.new(16u - d, 17u - d, 18u - d, 19u - d, 20u - d, 21u - d, 22u - d, 23u - d, 24u - d, 25u - d, 26u - d, 27u - d, 28u - d, 29u - d, 30u - d, 31u - d)
+        val perm = Simd<UByte>(listOf((16u - d).toUByte(), (17u - d).toUByte(), (18u - d).toUByte(), (19u - d).toUByte(), (20u - d).toUByte(), (21u - d).toUByte(), (22u - d).toUByte(), (23u - d).toUByte(), (24u - d).toUByte(), (25u - d).toUByte(), (26u - d).toUByte(), (27u - d).toUByte(), (28u - d).toUByte(), (29u - d).toUByte(), (30u - d).toUByte(), (31u - d).toUByte()))
         vecPerm(b, a, transmute(perm))
     } else {
-        val perm1 = u8x16.new(d, d + 1u, d + 2u, d + 3u, d + 4u, d + 5u, d + 6u, d + 7u, d + 8u, d + 9u, d + 10u, d + 11u, d + 12u, d + 13u, d + 14u, d + 15u)
+        val perm1 = Simd<UByte>(listOf(d, (d + 1u).toUByte(), (d + 2u).toUByte(), (d + 3u).toUByte(), (d + 4u).toUByte(), (d + 5u).toUByte(), (d + 6u).toUByte(), (d + 7u).toUByte(), (d + 8u).toUByte(), (d + 9u).toUByte(), (d + 10u).toUByte(), (d + 11u).toUByte(), (d + 12u).toUByte(), (d + 13u).toUByte(), (d + 14u).toUByte(), (d + 15u).toUByte()))
         vecPerm(a, b, transmute(perm1))
     }
 }
@@ -2514,10 +2516,10 @@ public fun xxsldwi(a: VectorUnsignedChar, b: VectorUnsignedChar, uimm2: Int): Ve
     }
     val d = (uimm2 shl 2).toUByte()
     return if (true) {
-        val perm = u8x16.new(16u - d, 17u - d, 18u - d, 19u - d, 20u - d, 21u - d, 22u - d, 23u - d, 24u - d, 25u - d, 26u - d, 27u - d, 28u - d, 29u - d, 30u - d, 31u - d)
+        val perm = Simd<UByte>(listOf((16u - d).toUByte(), (17u - d).toUByte(), (18u - d).toUByte(), (19u - d).toUByte(), (20u - d).toUByte(), (21u - d).toUByte(), (22u - d).toUByte(), (23u - d).toUByte(), (24u - d).toUByte(), (25u - d).toUByte(), (26u - d).toUByte(), (27u - d).toUByte(), (28u - d).toUByte(), (29u - d).toUByte(), (30u - d).toUByte(), (31u - d).toUByte()))
         vecPerm(b, a, transmute(perm))
     } else {
-        val perm1 = u8x16.new(d, d + 1u, d + 2u, d + 3u, d + 4u, d + 5u, d + 6u, d + 7u, d + 8u, d + 9u, d + 10u, d + 11u, d + 12u, d + 13u, d + 14u, d + 15u)
+        val perm1 = Simd<UByte>(listOf(d, (d + 1u).toUByte(), (d + 2u).toUByte(), (d + 3u).toUByte(), (d + 4u).toUByte(), (d + 5u).toUByte(), (d + 6u).toUByte(), (d + 7u).toUByte(), (d + 8u).toUByte(), (d + 9u).toUByte(), (d + 10u).toUByte(), (d + 11u).toUByte(), (d + 12u).toUByte(), (d + 13u).toUByte(), (d + 14u).toUByte(), (d + 15u).toUByte()))
         vecPerm(a, b, transmute(perm1))
     }
 }

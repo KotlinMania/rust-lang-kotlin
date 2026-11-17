@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -50,7 +51,7 @@ public open class ThreadInfo(
     public var guardPageRange: IntRange,
 )
 
-public var LOCK: Mutex<Unit> = Mutex.new()
+public var LOCK: Mutex<Unit> = Mutex.new(Unit)
 
 public var SPIN_LOCK: AtomicUsize = AtomicUsize.new(0)
 
@@ -114,8 +115,8 @@ public fun <R> withCurrentInfo(f: (ThreadInfo?) -> R): R {
             run {
                 val matchVal1 = SPIN_LOCK.compareExchange(0, thisRef, Ordering.Acquire, Ordering.Relaxed)
                 when {
-                    matchVal1 is Result.Ok -> { break }
-                    matchVal1 is Result.Err && (matchVal1 as Result.Err).error == thisRef -> {
+                    matchVal1 is Result.Ok<*, *> -> { break }
+                    matchVal1 is Result.Err<*, *> && matchVal1.error == thisRef -> {
                         val owner = matchVal1.error
                         run {
                             when (val matchVal2 = panicOutput()) {
@@ -151,8 +152,8 @@ public fun spinLockInSetup(thisRef: Int): UnlockOnDrop {
         run {
             val matchVal = SPIN_LOCK.compareExchange(0, thisRef, Ordering.Acquire, Ordering.Relaxed)
             when {
-                matchVal is Result.Ok -> { return UnlockOnDrop() }
-                matchVal is Result.Err && (matchVal as Result.Err).error == thisRef -> {
+                matchVal is Result.Ok<*, *> -> { return UnlockOnDrop() }
+                matchVal is Result.Err<*, *> && matchVal.error == thisRef -> {
                     val owner = matchVal.error
                     error("the thread info setup logic isn't recursive")
                 }

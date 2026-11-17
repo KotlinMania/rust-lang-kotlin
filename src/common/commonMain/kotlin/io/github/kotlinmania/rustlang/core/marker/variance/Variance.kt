@@ -202,7 +202,7 @@ public open class PhantomCovariant<T> internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt(("PhantomCovariant").toString() + "<" + ("PhantomCovariant").toString() + ">")
 
-    public override fun clone(): PhantomCovariant<T> = PhantomCovariant(this.value)
+    public open fun clone(): PhantomCovariant<T> = PhantomCovariant(this.value)
 
     public open fun eq(arg0: PhantomCovariant<T>): Boolean = true
 
@@ -265,7 +265,7 @@ public open class PhantomContravariant<T> internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt(("PhantomContravariant").toString() + "<" + ("PhantomContravariant").toString() + ">")
 
-    public override fun clone(): PhantomContravariant<T> = PhantomContravariant(this.value)
+    public open fun clone(): PhantomContravariant<T> = PhantomContravariant(this.value)
 
     public open fun eq(arg0: PhantomContravariant<T>): Boolean = true
 
@@ -325,7 +325,7 @@ public open class PhantomInvariant<T> internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt(("PhantomInvariant").toString() + "<" + ("PhantomInvariant").toString() + ">")
 
-    public override fun clone(): PhantomInvariant<T> = PhantomInvariant(this.value)
+    public open fun clone(): PhantomInvariant<T> = PhantomInvariant(this.value)
 
     public open fun eq(arg0: PhantomInvariant<T>): Boolean = true
 
@@ -381,7 +381,7 @@ public interface Variance<T> : PrivateItems<T>
  *
  * @feature(phantomVarianceMarkers)
  * public fun doctestEntry() {
- *     open class BoundFn<F, P, R>(
+ *     open class BoundFn<F, P, R, Output>(
  *         public var function: F,
  *         public var parameter: P,
  *         public var returnValue: PhantomCovariant<R>,

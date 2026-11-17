@@ -1,15 +1,16 @@
 // port-lint: source sys/process/unsupported.rs
 package io.github.kotlinmania.rustlang.std.sys.process.unsupported
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.iter.Iter
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
 import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
 import io.github.kotlinmania.rustlang.std.path.Path
@@ -196,7 +197,7 @@ public open class ExitStatus {
 
     public open fun code(): Int? = 0
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("<dummy exit status>"); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("<dummy exit status>"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<ExitStatus> =
@@ -318,7 +319,7 @@ public open class CommandArgs internal constructor(
 
     public open fun isEmpty(): Boolean = this.iter.isEmpty()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(ArrayDeque(this.iter)).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(ArrayDeque(this.iter)).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public operator fun invoke(

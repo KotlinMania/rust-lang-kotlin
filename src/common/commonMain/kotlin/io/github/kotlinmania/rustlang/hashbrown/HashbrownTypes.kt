@@ -59,6 +59,6 @@ public sealed class TryReserveError {
                 }
                 is TryReserveError.AllocError -> " because the memory allocator returned an error"
             }
-        return run { f.append(reason); Result.Ok(Unit) }
+        return run { f.append(reason); Result.Ok<Unit, Error>(Unit) }
     }
 }

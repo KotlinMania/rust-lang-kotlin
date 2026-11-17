@@ -1,7 +1,7 @@
 package io.github.kotlinmania.rustlang.std.os.windows.io
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.io.error.Error
 
 public interface StdioExt {
     /**

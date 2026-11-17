@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.iter.sources.fromfn
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -80,27 +81,16 @@ public fun <T> fromFn(f: () -> T?): FromFn<() -> T?> = FromFn(f)
  */
 public open class FromFn<F>(
     public var value: F,
-) : Iterable<T> {
+) {
     public var field0: F
         get() = value
         set(v) {
             value = v
         }
 
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@FromFn.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
     public open fun clone(): FromFn<F> = FromFn(value)
 
-    public open fun next(): T? = (this.value)()
-
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "FromFn").finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "FromFn").finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun <F> typeLayout(typeLayoutF: TypeLayout<F>): TypeLayout<FromFn<F>> =
@@ -124,3 +114,5 @@ public open class FromFn<F>(
             }
     }
 }
+
+public fun <T> FromFn<F>.next(): T? = (this.value)()

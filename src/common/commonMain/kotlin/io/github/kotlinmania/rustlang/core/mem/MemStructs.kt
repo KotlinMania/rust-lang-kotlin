@@ -96,7 +96,7 @@ public open class Discriminant<T>(
 
     // N.B. These trait implementations cannot be derived because we don't want any bounds on T.
 
-    public override fun clone(): Discriminant<T> = Discriminant(this.value)
+    public open fun clone(): Discriminant<T> = Discriminant(this.value)
 
     public open fun eq(rhs: Discriminant<T>): Boolean = this.value == rhs.value
 
@@ -106,7 +106,7 @@ public open class Discriminant<T>(
         return state
     }
 
-    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = DebugTuple(fmt, "Discriminant").field(this.value).finish()
+    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = run { DebugTuple(fmt, "Discriminant").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 }
 
 /**
@@ -121,7 +121,7 @@ public open class DiscriminantOrd<T>(
             value = v
         }
 
-    public override fun clone(): DiscriminantOrd<T> = DiscriminantOrd(this.value)
+    public open fun clone(): DiscriminantOrd<T> = DiscriminantOrd(this.value)
 
     public open fun eq(rhs: DiscriminantOrd<T>): Boolean = this.value == rhs.value
 
@@ -131,7 +131,7 @@ public open class DiscriminantOrd<T>(
         return state
     }
 
-    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = DebugTuple(fmt, "DiscriminantOrd").field(this.value).finish()
+    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = run { DebugTuple(fmt, "DiscriminantOrd").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun partialCmp(other: DiscriminantOrd<T>): cmp.Ordering? = this.value.partialCmp(other.value)
 

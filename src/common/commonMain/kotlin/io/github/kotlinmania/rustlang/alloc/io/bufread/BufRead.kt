@@ -9,9 +9,11 @@ import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 /**
  * A `BufRead` is a type of [Read]er which has an internal buffer, allowing it
@@ -353,7 +355,7 @@ public interface BufRead<T> : Read<T> {
      * check(splitIter.next() == null)
      * ```
      */
-    public fun split(byte: UByte): Split<T> = Split(this, byte)
+    public fun split(byte: UByte): Split<T> = split(this, byte)
 
     /**
      * Returns an iterator over the lines of this reader.
@@ -394,17 +396,17 @@ public fun <R : BufRead<R>> defaultReadUntil(r: R, delim: UByte, buf: List<UByte
                 run {
                     val matchVal = r.fillBuf()
                     when {
-                        matchVal is Result.Ok -> {
+                        matchVal is RustResult.Ok<*, *> -> {
                             val n = matchVal.value
                             n
                         }
-                        matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                        matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
                             val e = matchVal.error
                             continue
                         }
                         else -> {
-                            val e1 = matchVal.error
-                            return Result.Err(e1)
+                            val e1 = (matchVal as RustResult.Err<*, *>).error
+                            return RustResult.Err(e1)
                         }
                     }
                 }
@@ -418,7 +420,7 @@ public fun <R : BufRead<R>> defaultReadUntil(r: R, delim: UByte, buf: List<UByte
                 }
             run {
                 val count = available1.len()
-                when (val tryResult = buf.tryReserve(count)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                when (val tryResult = buf.tryReserve(count)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
                 // SAFETY:
                 // * self and buf are non-overlapping
                 // * buf[..len] is already initialized
@@ -436,7 +438,7 @@ public fun <R : BufRead<R>> defaultReadUntil(r: R, delim: UByte, buf: List<UByte
         r.consume(used)
         read += used
         if (done1 || used == 0) {
-            return Result.Ok(read)
+            return RustResult.Ok(read)
         }
     }
 }
@@ -449,17 +451,17 @@ public fun <R : BufRead<R>> defaultSkipUntil(r: R, delim: UByte): Result<Int> {
                 run {
                     val matchVal = r.fillBuf()
                     when {
-                        matchVal is Result.Ok -> {
+                        matchVal is RustResult.Ok<*, *> -> {
                             val n = matchVal.value
                             n
                         }
-                        matchVal is Result.Err && (matchVal as Result.Err).error.kind() == ErrorKind.Interrupted -> {
+                        matchVal is RustResult.Err<*, *> && matchVal.error.kind() == ErrorKind.Interrupted -> {
                             val e = matchVal.error
                             continue
                         }
                         else -> {
-                            val e1 = matchVal.error
-                            return Result.Err(e1)
+                            val e1 = (matchVal as RustResult.Err<*, *>).error
+                            return RustResult.Err(e1)
                         }
                     }
                 }
@@ -474,7 +476,7 @@ public fun <R : BufRead<R>> defaultSkipUntil(r: R, delim: UByte): Result<Int> {
         r.consume(used)
         read += used
         if (done || used == 0) {
-            return Result.Ok(read)
+            return RustResult.Ok(read)
         }
     }
 }

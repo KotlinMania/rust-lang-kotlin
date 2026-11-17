@@ -99,9 +99,9 @@ public open class OnceCell<T>(
     public open fun set(value: T): Result<Unit, T> =
         run {
             val matchVal = this.tryInsert(value)
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 Result.Ok<Unit, T>(Unit)
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val value1 = matchVal.error.second
                 Result.Err<Unit, T>(value1)
             } }
@@ -173,7 +173,7 @@ public open class OnceCell<T>(
      */
     public open fun getOrInit(f: () -> T): T =
         when (val matchVal = this.getOrTryInit({ Result.Ok<T, Nothing>(f()) })) {
-            is Result.Ok -> {
+            is Result.Ok<*, *> -> {
                 val value = matchVal.value
                 value
             }
@@ -207,7 +207,7 @@ public open class OnceCell<T>(
      */
     public open fun getMutOrInit(f: () -> T): T =
         when (val matchVal = this.getMutOrTryInit({ Result.Ok<T, Nothing>(f()) })) {
-            is Result.Ok -> {
+            is Result.Ok<*, *> -> {
                 val value = matchVal.value
                 value
             }
@@ -289,7 +289,7 @@ public open class OnceCell<T>(
      */
     public open fun <E> getMutOrTryInit(f: () -> Result<T, E>): Result<T, E> {
         if (this.get() == null) {
-            when (val tryResult = this.tryInit(f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<T, E>(tryResult.error) }
+            when (val tryResult = this.tryInit(f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<T, E>(tryResult.error) }
         }
         return Result.Ok<T, E>(this.getMut()!!)
     }
@@ -297,13 +297,13 @@ public open class OnceCell<T>(
     // Avoid inlining the initialization closure into the common path that fetches
     // the already initialized value
     public open fun <E> tryInit(f: () -> Result<T, E>): Result<T, E> {
-        val value = when (val tryResult = f()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<T, E>(tryResult.error) }
+        val value = when (val tryResult = f()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<T, E>(tryResult.error) }
         // Note that *some* forms of reentrant initialization might lead to
         // UB (see `reentrantInit` test). I believe that just removing this
         // `panic`, while keeping `tryInsert` would be sound, but it seems
         // better to panic, rather than to silently use an old value.
         return when (val matchVal = this.tryInsert(value)) {
-            is Result.Ok -> {
+            is Result.Ok<*, *> -> {
                 val value1 = matchVal.value
                 Result.Ok<T, E>(value1)
             }

@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.sctp
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S32
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U16

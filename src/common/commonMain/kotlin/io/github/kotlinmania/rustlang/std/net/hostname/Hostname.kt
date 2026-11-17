@@ -1,9 +1,9 @@
 // port-lint: source net/hostname.rs
 package io.github.kotlinmania.rustlang.std.net.hostname
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.error.Error
 
 /**
  * Returns the system hostname.

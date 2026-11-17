@@ -2,9 +2,13 @@
 package io.github.kotlinmania.rustlang.corearch.armshared.barrier.common
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.corearch.armshared.Dmb
 import io.github.kotlinmania.rustlang.corearch.armshared.Dsb
 import io.github.kotlinmania.rustlang.corearch.armshared.Isb
+import io.github.kotlinmania.rustlang.corearch.armshared.dmb
+import io.github.kotlinmania.rustlang.corearch.armshared.dsb
+import io.github.kotlinmania.rustlang.corearch.armshared.isb
 
 // Access types available on all architectures
 

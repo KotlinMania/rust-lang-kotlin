@@ -347,7 +347,7 @@ public open class RawEntryBuilderMut<K, V, S, A : Allocator>(
             }
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "RawEntryBuilder").finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "RawEntryBuilder").finish(); Result.Ok<Unit, Error>(Unit) }
 }
 
 /**
@@ -515,13 +515,13 @@ public sealed class RawEntryMut<K, V, S, A : Allocator> {
      */
     public open fun insert(key: K, value: V): RawOccupiedEntryMut<K, V, S, A> =
         when (this) {
-            is RawEntryMut.Occupied -> {
-                val (entry) = this
+            is RawEntryMut.Occupied<*, *, *, *> -> {
+                val (entry) = this as RawEntryMut.Occupied<K, V, S, A>
                 entry.insert(value)
                 entry
             }
-            is RawEntryMut.Vacant -> {
-                val (entry1) = this
+            is RawEntryMut.Vacant<*, *, *, *> -> {
+                val (entry1) = this as RawEntryMut.Vacant<K, V, S, A>
                 entry1.insertEntry(key, value)
             }
         }
@@ -544,12 +544,12 @@ public sealed class RawEntryMut<K, V, S, A : Allocator> {
      */
     public open fun orInsert(defaultKey: K, defaultVal: V): Pair<K, V> =
         when (this) {
-            is RawEntryMut.Occupied -> {
-                val (entry) = this
+            is RawEntryMut.Occupied<*, *, *, *> -> {
+                val (entry) = this as RawEntryMut.Occupied<K, V, S, A>
                 entry.intoKeyValue()
             }
-            is RawEntryMut.Vacant -> {
-                val (entry1) = this
+            is RawEntryMut.Vacant<*, *, *, *> -> {
+                val (entry1) = this as RawEntryMut.Vacant<K, V, S, A>
                 entry1.insert(defaultKey, defaultVal)
             }
         }
@@ -572,12 +572,12 @@ public sealed class RawEntryMut<K, V, S, A : Allocator> {
      */
     public open fun orInsertWith(default: () -> Pair<K, V>): Pair<K, V> =
         when (this) {
-            is RawEntryMut.Occupied -> {
-                val (entry) = this
+            is RawEntryMut.Occupied<*, *, *, *> -> {
+                val (entry) = this as RawEntryMut.Occupied<K, V, S, A>
                 entry.intoKeyValue()
             }
-            is RawEntryMut.Vacant -> {
-                val (entry1) = this
+            is RawEntryMut.Vacant<*, *, *, *> -> {
+                val (entry1) = this as RawEntryMut.Vacant<K, V, S, A>
                 val (k, v) = default()
                 entry1.insert(k, v)
             }
@@ -605,16 +605,16 @@ public sealed class RawEntryMut<K, V, S, A : Allocator> {
      */
     public open fun andModify(f: (K, V) -> Unit): RawEntryMut<K, V, S, A> =
         when (this) {
-            is RawEntryMut.Occupied -> {
-                val (entry) = this
+            is RawEntryMut.Occupied<*, *, *, *> -> {
+                val (entry) = this as RawEntryMut.Occupied<K, V, S, A>
                 run {
                     val (k, v) = entry.getKeyValueMut()
                     f(k, v)
                 }
                 RawEntryMut.Occupied(entry)
             }
-            is RawEntryMut.Vacant -> {
-                val (entry1) = this
+            is RawEntryMut.Vacant<*, *, *, *> -> {
+                val (entry1) = this as RawEntryMut.Vacant<K, V, S, A>
                 RawEntryMut.Vacant(entry1)
             }
         }
@@ -661,22 +661,22 @@ public sealed class RawEntryMut<K, V, S, A : Allocator> {
      */
     public open fun andReplaceEntryWith(f: (K, V) -> V?): RawEntryMut<K, V, S, A> =
         when (this) {
-            is RawEntryMut.Occupied -> {
-                val (entry) = this
+            is RawEntryMut.Occupied<*, *, *, *> -> {
+                val (entry) = this as RawEntryMut.Occupied<K, V, S, A>
                 entry.replaceEntryWith(f)
             }
-            is RawEntryMut.Vacant -> this
+            is RawEntryMut.Vacant<*, *, *, *> -> this
         }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is RawEntryMut.Vacant -> {
-                val (v) = this
-                DebugTuple(f, "RawEntry").field(v).finish()
+            is RawEntryMut.Vacant<*, *, *, *> -> {
+                val (v) = this as RawEntryMut.Vacant<K, V, S, A>
+                run { DebugTuple(f, "RawEntry").field(v).finish(); Result.Ok<Unit, Error>(Unit) }
             }
-            is RawEntryMut.Occupied -> {
-                val (o) = this
-                DebugTuple(f, "RawEntry").field(o).finish()
+            is RawEntryMut.Occupied<*, *, *, *> -> {
+                val (o) = this as RawEntryMut.Occupied<K, V, S, A>
+                run { DebugTuple(f, "RawEntry").field(o).finish(); Result.Ok<Unit, Error>(Unit) }
             }
         }
 }
@@ -1138,7 +1138,7 @@ public open class RawOccupiedEntryMut<K, V, S, A : Allocator> internal construct
         run {
             val tag =
                 this.table.replaceBucketWith(this.elem.clone(), { (key, value) ->
-                    f(key, value).map({ newValue -> Pair(key, newValue) })
+                    f(key, value)?.let({ newValue -> Pair(key, newValue) })
                 })
             if (tag == null) {
                 RawEntryMut.Occupied(this)
@@ -1147,7 +1147,7 @@ public open class RawOccupiedEntryMut<K, V, S, A : Allocator> internal construct
             }
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "RawOccupiedEntryMut").field("key", this.key()).field("value", this.get()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "RawOccupiedEntryMut").field("key", this.key()).field("value", this.get()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <K, V, S, A : Allocator> invoke(
@@ -1335,7 +1335,7 @@ public open class RawVacantEntryMut<K, V, S, A : Allocator> internal constructor
         return RawOccupiedEntryMut(elem = elem, table = this.table, hashBuilder = this.hashBuilder)
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "RawVacantEntryMut").finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "RawVacantEntryMut").finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <K, V, S, A : Allocator> invoke(
@@ -1456,5 +1456,5 @@ public open class RawEntryBuilder<K, V, S, A : Allocator>(
      */
     public open fun fromHash(hash: ULong, isMatch: (K) -> Boolean): Pair<K, V>? = this.search(hash, isMatch)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "RawEntryBuilder").finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "RawEntryBuilder").finish(); Result.Ok<Unit, Error>(Unit) }
 }

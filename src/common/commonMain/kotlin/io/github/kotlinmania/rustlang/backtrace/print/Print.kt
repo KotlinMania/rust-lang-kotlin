@@ -65,7 +65,7 @@ public open class BacktraceFmt internal constructor(
      * and won't increment the `frameIndex` unlike the `frame`
      * method.
      */
-    public open fun message(msg: String): Result<Unit, Error> = run { this.fmt.append(msg); Result.Ok(Unit) }
+    public open fun message(msg: String): Result<Unit, Error> = run { this.fmt.append(msg); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Return the inner formatter.
@@ -140,10 +140,10 @@ public open class BacktraceFrameFmt(
     public open fun backtraceFrame(frame: BacktraceFrame): Result<Unit, Error> {
         val symbols = frame.symbols()
         for (symbol in symbols) {
-            when (val tryResult = this.backtraceSymbol(frame, symbol)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = this.backtraceSymbol(frame, symbol)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         }
         if (symbols.isEmpty()) {
-            when (val tryResult = this.printRaw(frame.ip(), null, null, null)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = this.printRaw(frame.ip(), null, null, null)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         }
         return Result.Ok<Unit, Error>(Unit)
     }
@@ -157,7 +157,7 @@ public open class BacktraceFrameFmt(
      * enabled, and the `std` feature is enabled by default.
      */
     public open fun backtraceSymbol(frame: BacktraceFrame, symbol: BacktraceSymbol): Result<Unit, Error> {
-        when (val tryResult = this.printRawWithColumn(frame.ip(), symbol.name(), symbol.filename().andThen(closure@{ p -> BytesOrWideString.Bytes((when (val tryResult = p.toStr()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }).encodeToByteArray().map { it.toUByte() }) }), symbol.lineno(), symbol.colno())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = this.printRawWithColumn(frame.ip(), symbol.name(), symbol.filename().andThen(closure@{ p -> BytesOrWideString.Bytes((when (val tryResult = p.toStr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }).encodeToByteArray().map { it.toUByte() }) }), symbol.lineno(), symbol.colno())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         return Result.Ok<Unit, Error>(Unit)
     }
 
@@ -166,7 +166,7 @@ public open class BacktraceFrameFmt(
      * callbacks of this crate.
      */
     public open fun symbol(frame: Frame, symbol: Symbol): Result<Unit, Error> {
-        when (val tryResult = this.printRawWithColumn(frame.ip(), symbol.name(), symbol.filenameRaw(), symbol.lineno(), symbol.colno())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = this.printRawWithColumn(frame.ip(), symbol.name(), symbol.filenameRaw(), symbol.lineno(), symbol.colno())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         return Result.Ok<Unit, Error>(Unit)
     }
 
@@ -191,9 +191,9 @@ public open class BacktraceFrameFmt(
         // format which can be used to symbolize later. Print that instead of
         // printing addresses in our own format here.
         if (false) {
-            when (val tryResult = this.printRawFuchsia(frameIp)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = this.printRawFuchsia(frameIp)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         } else {
-            when (val tryResult = this.printRawGeneric(frameIp, symbolName, filename, lineno, colno)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = this.printRawGeneric(frameIp, symbolName, filename, lineno, colno)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         }
         this.symbolIndex += 1
         return Result.Ok<Unit, Error>(Unit)
@@ -243,7 +243,7 @@ public open class BacktraceFrameFmt(
         if (Pair(filename, lineno) != null) {
             val file = Pair(filename, lineno).first
             val line = Pair(filename, lineno).second
-            when (val tryResult = this.printFileline(file, line, colno)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = this.printFileline(file, line, colno)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         }
         return Result.Ok<Unit, Error>(Unit)
     }
@@ -257,7 +257,7 @@ public open class BacktraceFrameFmt(
         this.fmt.fmt.append("             at ")
         // Delegate to our internal callback to print the filename and then
         // print out the line number.
-        when (val tryResult = (this.fmt.printPath)(this.fmt.fmt, file)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = (this.fmt.printPath)(this.fmt.fmt, file)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         this.fmt.fmt.append(":$line")
         // Add column number, if available.
         if (colno != null) {

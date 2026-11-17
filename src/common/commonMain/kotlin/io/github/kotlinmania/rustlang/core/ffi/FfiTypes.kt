@@ -42,7 +42,7 @@ public sealed class CVoid {
     public data object Variant1 : CVoid()
     public data object Variant2 : CVoid()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "c_void").finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "c_void").finish(); Result.Ok<Unit, Unit>(Unit) }
 }
 
 public expect fun memcpy(dest: MutPtr, src: ConstPtr, n: ULong): MutPtr

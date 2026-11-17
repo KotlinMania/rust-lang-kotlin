@@ -1,7 +1,6 @@
 // port-lint: source io/error/os_functions_atomic.rs
 package io.github.kotlinmania.rustlang.core.io.error.osfunctionsatomic
 
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.OsFunctions
@@ -10,7 +9,8 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
+import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 // OS-dependent functions
 //
@@ -22,7 +22,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 /**
  * These default functions are not reachable, but have them just to be safe.
  */
-public var OS_FUNCTIONS: AtomicPtr = Atomic.AtomicPtr.new((ConstPtr(OsFunctions.DEFAULT.toLong())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })
+public var OS_FUNCTIONS: AtomicPtr = AtomicPtr.new((ConstPtr(OsFunctions.DEFAULT.toLong())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })
 
 public fun getOsFunctions(): OsFunctions {
     // SAFETY:
@@ -32,7 +32,7 @@ public fun getOsFunctions(): OsFunctions {
     // * `Relaxed` ordering is sufficient as the only way to write to `OS_FUNCTIONS` is through
     // `setFunctions`, which has as a safety precondition that any value passed in must
     // be constant and not created during runtime.
-    return OS_FUNCTIONS.load(Atomic.Ordering.Relaxed)
+    return OS_FUNCTIONS.load(Ordering.Relaxed)
 }
 
 /**
@@ -43,9 +43,9 @@ public fun getOsFunctions(): OsFunctions {
  */
 public fun setFunctions(f: OsFunctions) {
     fun setFunctionsInner(f1: OsFunctions) {
-        OS_FUNCTIONS.store((constPtrFromRustCast(f1)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, Atomic.Ordering.Relaxed)
+        OS_FUNCTIONS.store((constPtrFromRustCast(f1)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, Ordering.Relaxed)
     }
-    if (((OS_FUNCTIONS.load(Atomic.Ordering.Relaxed)).rawAddress.toULong() != ((constPtrFromRustCast(f)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).rawAddress.toULong())) {
+    if (((OS_FUNCTIONS.load(Ordering.Relaxed)).rawAddress.toULong() != ((constPtrFromRustCast(f)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).rawAddress.toULong())) {
         setFunctionsInner(f)
     }
 }

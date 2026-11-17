@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common.is8digits
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.decimal.Decimal
 import io.github.kotlinmania.rustlang.core.num.imp.traits.Float
+import io.github.kotlinmania.rustlang.core.slice.splitFirst
 
 // Functions to parse floating-point numbers.
 
@@ -188,7 +189,7 @@ public fun parsePartialNumber(s: List<UByte>): Pair<Decimal, Int>? {
             }
         }
     }
-    val len = ((s1.offsetFrom(start) as Any?) as Pair<Decimal, Int>?)
+    val len = s1.offsetFrom(start)
     // handle uncommon case with many digits
     if (nDigits <= 19) {
         return Pair(Decimal(exponent = exponent, mantissa = mantissa, negative = false, manyDigits = false), len)

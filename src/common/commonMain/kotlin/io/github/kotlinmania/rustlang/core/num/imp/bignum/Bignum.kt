@@ -8,14 +8,15 @@ import io.github.kotlinmania.rustlang.core.clone.UseCloned
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
+import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.trailingZeros
-import io.github.kotlinmania.rustlang.core.option.Iter
 import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 // Custom arbitrary-precision number (bignum) implementation.
 //
@@ -187,7 +188,7 @@ public open class Big64x20(
     public open fun add(other: Big64x20): Big64x20 {
         var sz = cmp.max(this.size, other.size)
         var carry = false
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = Iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(b, carry)
             a = v
             carry = c
@@ -222,7 +223,7 @@ public open class Big64x20(
     public open fun sub(other: Big64x20): Big64x20 {
         val sz = cmp.max(this.size, other.size)
         var noborrow = true
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = Iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(!b, noborrow)
             a = v
             noborrow = c
@@ -377,7 +378,7 @@ public open class Big64x20(
         return lhs.cmp(rhs)
     }
 
-    public override fun clone(): Big64x20 = Big64x20(size = this.size, base = this.base)
+    public open fun clone(): Big64x20 = Big64x20(size = this.size, base = this.base)
 
     public open fun fmt(f: Formatter): Result {
         val sz =
@@ -386,9 +387,9 @@ public open class Big64x20(
             } else {
                 this.size
             }
-        when (val tryResult = f.writeFmt("${this.base[sz - 1]}")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = f.writeFmt("${this.base[sz - 1]}")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
         for (v in ((this.base).sliceArray(0 until sz - 1)).iter().rev()) {
-            when (val tryResult = f.writeFmt("_$v")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = f.writeFmt("_$v")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
         }
         return io.github.kotlinmania.rustlang.core.result.Result.Ok(Unit)
     }
@@ -518,7 +519,7 @@ public open class Big8x3(
     public open fun add(other: Big8x3): Big8x3 {
         var sz = cmp.max(this.size, other.size)
         var carry = false
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = Iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(b, carry)
             a = v
             carry = c
@@ -553,7 +554,7 @@ public open class Big8x3(
     public open fun sub(other: Big8x3): Big8x3 {
         val sz = cmp.max(this.size, other.size)
         var noborrow = true
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = Iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(!b, noborrow)
             a = v
             noborrow = c
@@ -708,7 +709,7 @@ public open class Big8x3(
         return lhs.cmp(rhs)
     }
 
-    public override fun clone(): Big8x3 = Big8x3(size = this.size, base = this.base)
+    public open fun clone(): Big8x3 = Big8x3(size = this.size, base = this.base)
 
     public open fun fmt(f: Formatter): Result {
         val sz =
@@ -717,9 +718,9 @@ public open class Big8x3(
             } else {
                 this.size
             }
-        when (val tryResult = f.writeFmt("${this.base[sz - 1]}")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = f.writeFmt("${this.base[sz - 1]}")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
         for (v in ((this.base).sliceArray(0 until sz - 1)).iter().rev()) {
-            when (val tryResult = f.writeFmt("_$v")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = f.writeFmt("_$v")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
         }
         return io.github.kotlinmania.rustlang.core.result.Result.Ok(Unit)
     }

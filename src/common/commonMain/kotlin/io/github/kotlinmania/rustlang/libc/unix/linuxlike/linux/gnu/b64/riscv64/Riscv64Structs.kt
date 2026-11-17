@@ -18,6 +18,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.unix.GidT
@@ -965,7 +966,7 @@ public open class RiscvMcFpState(
     public var d: RiscvMcDExtState? = null,
     public var q: RiscvMcQExtState? = null,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__riscv_mc_fp_state").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "__riscv_mc_fp_state").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 }
 
 public open class RiscvMcFExtState(

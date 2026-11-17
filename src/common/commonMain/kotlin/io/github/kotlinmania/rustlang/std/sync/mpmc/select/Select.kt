@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sync.mpmc.select
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.std.sync.mpmc.array.ArrayToken
 import io.github.kotlinmania.rustlang.std.sync.mpmc.list.ListToken
 import io.github.kotlinmania.rustlang.std.sync.mpmc.zero.ZeroToken

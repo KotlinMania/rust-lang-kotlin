@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -121,7 +122,7 @@ public open class IndexRange(
         assertUnchecked(this.start <= this.end)
     }
 
-    public override fun next(): Int? =
+    public open fun next(): Int? =
         if (this.len() > 0) {
             // SAFETY: We just checked that the range is non-empty
             this.nextUnchecked()
@@ -129,19 +130,19 @@ public open class IndexRange(
             null
         }
 
-    public override fun sizeHint(): Pair<Int, Int?> {
+    public open fun sizeHint(): Pair<Int, Int?> {
         val len = this.len()
         return Pair(len, len)
     }
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val taken = this.takePrefix(n)
         return ((NonZero.new<NonZeroUsizeInner, Int>(n - taken.len()))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
-    public override fun <B> fold(init: B, f: (B, Int) -> B): B = this.tryFold(init, NeverShortCircuit.wrapMut2(f)).first
+    public open fun <B> fold(init: B, f: (B, Int) -> B): B = this.tryFold(init, NeverShortCircuit.wrapMut2(f)).first
 
-    public override fun <Residual, B, R> tryFold(accum: B, f: (B, Int) -> R): R where R : Try<R, B, Residual> {
+    public open fun <Residual, B, R> tryFold(accum: B, f: (B, Int) -> R): R where R : Try<R, B, Residual> {
         var accum1 = accum
         // `Range` needs to check `start<end`, but thanks to our type invariant
         // we can loop on the stricter `start != end`.
@@ -149,7 +150,7 @@ public open class IndexRange(
         while (this.start != this.end) {
             // SAFETY: We just checked that the range is non-empty
             val i = this.nextUnchecked()
-            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
         }
         return accum1
     }
@@ -177,7 +178,7 @@ public open class IndexRange(
         while (this.start != this.end) {
             // SAFETY: We just checked that the range is non-empty
             val i = this.nextBackUnchecked()
-            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
         }
         return accum1
     }

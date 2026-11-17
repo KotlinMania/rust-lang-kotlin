@@ -17,42 +17,42 @@ public interface CarryingMulAdd<T, out Unsigned> {
 
 public fun UByte.carryingMulAdd(a: UByte, b: UByte, c: UByte): Pair<UByte, UByte> {
     val wide = (this.toUShort()) * (a.toUShort()) + (b.toUShort()) + (c.toUShort())
-    return Pair(((wide as Any?) as Pair<UByte, UByte>), ((((wide.toUInt() shr (8u.toInt())).toUShort()) as Any?) as Pair<UByte, UByte>))
+    return Pair(wide, ((wide.toUInt() shr (8u.toInt())).toUShort()))
 }
 
 public fun UShort.carryingMulAdd(a: UShort, b: UShort, c: UShort): Pair<UShort, UShort> {
     val wide = (this.toUInt()) * (a.toUInt()) + (b.toUInt()) + (c.toUInt())
-    return Pair(((wide as Any?) as Pair<UShort, UShort>), (((wide shr 16u.toInt()) as Any?) as Pair<UShort, UShort>))
+    return Pair(wide, (wide shr 16u.toInt()))
 }
 
 public fun UInt.carryingMulAdd(a: UInt, b: UInt, c: UInt): Pair<UInt, UInt> {
     val wide = (this.toULong()) * (a.toULong()) + (b.toULong()) + (c.toULong())
-    return Pair(((wide as Any?) as Pair<UInt, UInt>), (((wide shr 32u.toInt()) as Any?) as Pair<UInt, UInt>))
+    return Pair(wide, (wide shr 32u.toInt()))
 }
 
 public fun ULong.carryingMulAdd(a: ULong, b: ULong, c: ULong): Pair<ULong, ULong> {
     val wide = (U128.fromULong(this)) * (U128.fromULong(a)) + (U128.fromULong(b)) + (U128.fromULong(c))
-    return Pair(((wide as Any?) as Pair<ULong, ULong>), (((wide shr 64u.toInt()) as Any?) as Pair<ULong, ULong>))
+    return Pair(wide, (wide shr 64u.toInt()))
 }
 
 public fun Int.carryingMulAdd(a: Int, b: Int, c: Int): Pair<Int, Int> {
     val wide = (U128.fromInt(this)) * (U128.fromInt(a)) + (U128.fromInt(b)) + (U128.fromInt(c))
-    return Pair(((wide as Any?) as Pair<Int, Int>), (((wide shr 32u.toInt()) as Any?) as Pair<Int, Int>))
+    return Pair(wide, (wide shr 32u.toInt()))
 }
 
 public fun Byte.carryingMulAdd(a: Byte, b: Byte, c: Byte): Pair<UByte, Byte> {
     val wide = (this.toShort()) * (a.toShort()) + (b.toShort()) + (c.toShort())
-    return Pair(((wide as Any?) as Pair<UByte, Byte>), (((wide shr 8u.toInt()) as Any?) as Pair<UByte, Byte>))
+    return Pair(wide, (wide shr 8u.toInt()))
 }
 
 public fun Short.carryingMulAdd(a: Short, b: Short, c: Short): Pair<UShort, Short> {
     val wide = (this.toInt()) * (a.toInt()) + (b.toInt()) + (c.toInt())
-    return Pair(((wide as Any?) as Pair<UShort, Short>), (((wide shr 16u.toInt()) as Any?) as Pair<UShort, Short>))
+    return Pair(wide, (wide shr 16u.toInt()))
 }
 
 public fun Long.carryingMulAdd(a: Long, b: Long, c: Long): Pair<ULong, Long> {
     val wide = (I128.fromLong(this)) * (I128.fromLong(a)) + (I128.fromLong(b)) + (I128.fromLong(c))
-    return Pair(((wide as Any?) as Pair<ULong, Long>), (((wide shr 64u.toInt()) as Any?) as Pair<ULong, Long>))
+    return Pair(wide, (wide shr 64u.toInt()))
 }
 
 public typealias UDoubleSize = U128

@@ -11,4 +11,4 @@ public fun isInterrupted(code: Int): Boolean = false
 
 public fun decodeErrorKind(code: Int): ErrorKind = ErrorKind.Uncategorized
 
-public fun formatError(errno: Int, f: StringBuilder): Result<Unit, Error> = run { f.append("operation successful"); Result.Ok(Unit) }
+public fun formatError(errno: Int, f: StringBuilder): Result<Unit, Error> = run { f.append("operation successful"); Result.Ok<Unit, Error>(Unit) }

@@ -14,10 +14,8 @@ import io.github.kotlinmania.rustlang.corearch.simd.I128x2
 import io.github.kotlinmania.rustlang.corearch.simd.I128x4
 import io.github.kotlinmania.rustlang.corearch.simd.I16x16
 import io.github.kotlinmania.rustlang.corearch.simd.I16x32
-import io.github.kotlinmania.rustlang.corearch.simd.I16x4
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8
 import io.github.kotlinmania.rustlang.corearch.simd.I32x16
-import io.github.kotlinmania.rustlang.corearch.simd.I32x2
 import io.github.kotlinmania.rustlang.corearch.simd.I32x4
 import io.github.kotlinmania.rustlang.corearch.simd.I32x8
 import io.github.kotlinmania.rustlang.corearch.simd.I64x2
@@ -25,7 +23,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.I64x4
 import io.github.kotlinmania.rustlang.corearch.simd.I64x8
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 import io.github.kotlinmania.rustlang.corearch.simd.I8x32
-import io.github.kotlinmania.rustlang.corearch.simd.I8x8
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.U128x2
 import io.github.kotlinmania.rustlang.corearch.simd.U128x4
 import io.github.kotlinmania.rustlang.corearch.simd.U16x16
@@ -158,22 +156,22 @@ public fun <Elem, T : SimdExt<T, Elem>> simdExtLdi(i: Int): T {
     val r =
         if ((i and 0x1000) == 0) {
             when ((i shr 10) and 3) {
-                0 -> transmute(I8x8.splat(imm8.toByte()))
-                1 -> transmute(I16x4.splat(sext(imm10, 10u).toShort()))
-                2 -> transmute(I32x2.splat(sext(imm10, 10u).toInt()))
+                0 -> transmute(Simd<Byte>(List(8) { imm8.toByte() }))
+                1 -> transmute(Simd<Short>(List(4) { sext(imm10, 10u).toShort() }))
+                2 -> transmute(Simd<Int>(List(2) { sext(imm10, 10u).toInt() }))
                 3 -> sext(imm10, 10u)
                 else -> error("unreachable")
             }
         } else {
             when ((i shr 8) and 0xf) {
-                in 0..3 -> { transmute(I32x2.splat(imm8 shl (8 * ((i shr 8) and 3)))) }
-                in 4..5 -> transmute(I16x4.splat((imm8.toShort()) shl (8 * ((i shr 8) and 1))))
-                6 -> transmute(I32x2.splat((imm8 shl 8) or 0xff))
-                7 -> transmute(I32x2.splat((imm8 shl 16) or 0xffff))
-                8 -> transmute(I8x8.splat(imm8.toByte()))
+                in 0..3 -> { transmute(Simd<Int>(List(2) { imm8 shl (8 * ((i shr 8) and 3)) })) }
+                in 4..5 -> transmute(Simd<Short>(List(4) { ((imm8.toShort()) shl (8 * ((i shr 8) and 1))).toShort() }))
+                6 -> transmute(Simd<Int>(List(2) { (imm8 shl 8) or 0xff }))
+                7 -> transmute(Simd<Int>(List(2) { (imm8 shl 16) or 0xffff }))
+                8 -> transmute(Simd<Byte>(List(8) { imm8.toByte() }))
                 9 -> expandU8(imm8).toLong()
-                10 -> transmute(I32x2.splat(fp32Imm(i)))
-                11 -> transmute(I32x2.fromArray(intArrayOf(fp32Imm(i), 0)))
+                10 -> transmute(Simd<Int>(List(2) { fp32Imm(i) }))
+                11 -> transmute(Simd<Int>((intArrayOf(fp32Imm(i), 0)).toList()))
                 12 -> fp64Imm(i)
                 else -> error("unreachable")
             }

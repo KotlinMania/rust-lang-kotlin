@@ -1,4 +1,6 @@
 // port-lint: source x86/f16c.rs
+@file:OptIn(ExperimentalUnsignedTypes::class)
+
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
@@ -29,7 +31,7 @@ public expect fun llvmVcvtps2ph256(a: F32x8, rounding: Int): I16x8
 public fun mmCvtphPs(a: M128i): M128 =
     run {
         val a1: F16x8 = transmuteWithLayouts<M128i, F16x8>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<F16x8>())
-        val a2: F16x4 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+        val a2: F16x4 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }
         run { val _simdArg0 = a2; _simdArg0 }
     }
 

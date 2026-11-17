@@ -9,7 +9,6 @@ import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
-import io.github.kotlinmania.rustlang.core.alloc.AllocatorNightly
 import io.github.kotlinmania.rustlang.core.alloc.StaticAllocator
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
@@ -41,7 +40,9 @@ import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.pin.PinSafePointer
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.dangling
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -274,7 +275,7 @@ public fun <T> fromNonNullT(value: BoxRaw<T>): NonNull = value.asNonNullPtr()
 public open class Box<T, A : Allocator>(
     public var field0: BoxRaw<T>,
     public var field1: A,
-) : DerefPure, LegacyReceiver, PinSafePointer, Borrow<T>, BorrowMut<T>, AsRef<T>, AsMut<T>, Allocator, AllocatorNightly {
+) : DerefPure, LegacyReceiver, PinSafePointer, Borrow<T>, BorrowMut<T>, AsRef<T>, AsMut<T> {
     public open fun drop() {
         // the T in the Holder is dropped by the compiler before the destructor is run
         val ptr = this.field0
@@ -427,13 +428,13 @@ public open class Box<T, A : Allocator>(
         this.append(s)
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun fmtPointer(f: StringBuilder): Result<Unit, Error> {
         val ptr: ConstPtr = this
-        return run { f.append((ptr).toString()); Result.Ok(Unit) }
+        return run { f.append((ptr).toString()); Result.Ok<Unit, Error>(Unit) }
     }
 
     public open fun deref(): T = this
@@ -491,34 +492,6 @@ public open class Box<T, A : Allocator>(
     // could have a method to project a Pin<T> from it.
     //
 
-    public open fun allocate(layout: Layout): Result<NonNull, AllocError> = this.allocate(layout)
-
-    public open fun allocateZeroed(layout: Layout): Result<NonNull, AllocError> = this.allocateZeroed(layout)
-
-    public open fun deallocate(ptr: NonNull, layout: Layout) {
-        // SAFETY: the safety contract must be upheld by the caller
-        this.deallocate(ptr, layout)
-    }
-
-    public open fun grow(ptr: NonNull, oldLayout: Layout, newLayout: Layout): Result<NonNull, AllocError> {
-        // SAFETY: the safety contract must be upheld by the caller
-        return this.grow(ptr, oldLayout, newLayout)
-    }
-
-    public open fun growZeroed(ptr: NonNull, oldLayout: Layout, newLayout: Layout): Result<NonNull, AllocError> {
-        // SAFETY: the safety contract must be upheld by the caller
-        return this.growZeroed(ptr, oldLayout, newLayout)
-    }
-
-    public open fun shrink(ptr: NonNull, oldLayout: Layout, newLayout: Layout): Result<NonNull, AllocError> {
-        // SAFETY: the safety contract must be upheld by the caller
-        return this.shrink(ptr, oldLayout, newLayout)
-    }
-
-    /**
-     * This trait impl is unstable and only usable on nightly with `feature(allocatorExt)`.
-     */
-
     public companion object {
         /**
          * Allocates memory in the given allocator then places `x` into it.
@@ -565,7 +538,7 @@ public open class Box<T, A : Allocator>(
          * [memory layout]: self#memory-layout
          */
         public fun <T, A : Allocator> tryNewIn(x: T, alloc: A): Result<Box<T, A>, AllocError> {
-            val boxed = when (val tryResult = Box.tryNewUninitIn(alloc)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Box<T, A>, AllocError>(tryResult.error) }
+            val boxed = when (val tryResult = Box.tryNewUninitIn(alloc)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Box<T, A>, AllocError>(tryResult.error) }
             boxed.write(x)
             // SAFETY: Initialised by the above.
             return Result.Ok<Box<T, A>, AllocError>(boxed.assumeInit())
@@ -595,10 +568,10 @@ public open class Box<T, A : Allocator>(
             // That would make code size bigger.
             return run {
                 val matchVal = Box.tryNewUninitIn(alloc)
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val m = matchVal.value
                     m
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     handleAllocError(layout)
                 } }
             }
@@ -630,7 +603,7 @@ public open class Box<T, A : Allocator>(
                     NonNull.dangling()
                 } else {
                     val layout = Layout.new<MaybeUninit<T>>(typeLayoutT = UnresolvedTypeLayout<MaybeUninit<T>>())
-                    when (val tryResult = alloc.allocate(layout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Box<MaybeUninit<T>, A>, AllocError>(tryResult.error) }.cast()
+                    when (val tryResult = alloc.allocate(layout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Box<MaybeUninit<T>, A>, AllocError>(tryResult.error) }.cast()
                 }
             // SAFETY: Pointer is nonnull and matches the allocator.
             return Result.Ok<Box<MaybeUninit<T>, A>, AllocError>(Box.fromRawIn(ptr.asPtr(), alloc))
@@ -664,10 +637,10 @@ public open class Box<T, A : Allocator>(
             // That would make code size bigger.
             return run {
                 val matchVal = Box.tryNewZeroedIn(alloc)
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val m = matchVal.value
                     m
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     handleAllocError(layout)
                 } }
             }
@@ -703,7 +676,7 @@ public open class Box<T, A : Allocator>(
                     NonNull.dangling()
                 } else {
                     val layout = Layout.new<MaybeUninit<T>>(typeLayoutT = UnresolvedTypeLayout<MaybeUninit<T>>())
-                    when (val tryResult = alloc.allocateZeroed(layout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Box<MaybeUninit<T>, A>, AllocError>(tryResult.error) }.cast()
+                    when (val tryResult = alloc.allocateZeroed(layout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Box<MaybeUninit<T>, A>, AllocError>(tryResult.error) }.cast()
                 }
             // SAFETY: Pointer is nonnull and matches the allocator.
             return Result.Ok<Box<MaybeUninit<T>, A>, AllocError>(Box.fromRawIn(ptr.asPtr(), alloc))
@@ -848,14 +821,14 @@ public open class Box<T, A : Allocator>(
             val (raw, alloc) = Box.intoNonNullWithAllocator(allocation)
             return if (sizeOf<T>(typeLayoutT = typeLayoutT) == sizeOf<Output>(typeLayoutT = UnresolvedTypeLayout<Output>()) && alignOf<T>(typeLayoutT = typeLayoutT) == alignOf<Output>(typeLayoutT = UnresolvedTypeLayout<Output>())) {
                 val allocation1 = Box.fromNonNullIn(raw.cast(), alloc)
-                Box.write(allocation1, when (val tryResult = f(value)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) })
+                Box.write(allocation1, when (val tryResult = f(value)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") })
             } else {
                 if (sizeOf<T>(typeLayoutT = typeLayoutT) != 0) {
                     // SAFETY: `raw` isn't dangling since it points to a non-zero-sized
                     // allocation and is never used again after this point.
                     alloc.deallocate(raw.cast(), Layout.forValue(value))
                 }
-                Box.newIn(when (val tryResult = f(value)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }, alloc)
+                Box.newIn(when (val tryResult = f(value)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }, alloc)
             }
         }
 
@@ -884,10 +857,10 @@ public open class Box<T, A : Allocator>(
             val layout = Layout.forValue<T>(src)
             return run {
                 val matchVal = Box.tryCloneFromRefIn(src, alloc)
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val bx = matchVal.value
                     bx
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     handleAllocError(layout)
                 } }
             }
@@ -958,7 +931,7 @@ public open class Box<T, A : Allocator>(
                     Pair(layout.danglingPtr(), null)
                 } else {
                     // Safety: layout is non-zero-sized
-                    val ptr = when (val tryResult = alloc.allocate(layout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Box<T, A>, AllocError>(tryResult.error) }.cast()
+                    val ptr = when (val tryResult = alloc.allocate(layout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Box<T, A>, AllocError>(tryResult.error) }.cast()
                     Pair(ptr, DeallocDropGuard(layout, alloc, ptr))
                 }
             val ptr2 = ptr1.asPtr()
@@ -1465,10 +1438,10 @@ public fun boxNewUninit(layout: Layout): MutPtr {
     }
     return run {
         val matchVal = Global().allocate(layout)
-        when (matchVal) { is Result.Ok -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val ptr = matchVal.value
             ptr.asMutPtr()
-        }; is Result.Err -> {
+        }; is Result.Err<*, *> -> {
             handleAllocError(layout)
         } }
     }
@@ -1739,14 +1712,14 @@ public fun <T> Box.Companion.tryNewUninitSlice(len: Int, typeLayoutT: TypeLayout
             val layout =
                 run {
                     val matchVal = Layout.array<MaybeUninit<T>>(len, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<T>>())
-                    when (matchVal) { is Result.Ok -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         val l = matchVal.value
                         l
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         return Result.Err<Box<List<MaybeUninit<T>>, Global>, AllocError>(AllocError())
                     } }
                 }
-            when (val tryResult = Global().allocate(layout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Box<List<MaybeUninit<T>>, Global>, AllocError>(tryResult.error) }.cast()
+            when (val tryResult = Global().allocate(layout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Box<List<MaybeUninit<T>>, Global>, AllocError>(tryResult.error) }.cast()
         }
     // SAFETY: `ptr` was just allocated with `Global` with the layout for an array of length
     // `len`, and the layout creation would have failed if `len` overflowed an isize.
@@ -1784,14 +1757,14 @@ public fun <T> Box.Companion.tryNewZeroedSlice(len: Int, typeLayoutT: TypeLayout
             val layout =
                 run {
                     val matchVal = Layout.array<MaybeUninit<T>>(len, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<T>>())
-                    when (matchVal) { is Result.Ok -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         val l = matchVal.value
                         l
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         return Result.Err<Box<List<MaybeUninit<T>>, Global>, AllocError>(AllocError())
                     } }
                 }
-            when (val tryResult = Global().allocateZeroed(layout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Box<List<MaybeUninit<T>>, Global>, AllocError>(tryResult.error) }.cast()
+            when (val tryResult = Global().allocateZeroed(layout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Box<List<MaybeUninit<T>>, Global>, AllocError>(tryResult.error) }.cast()
         }
     // SAFETY: `ptr` was just allocated with `Global` with the layout for an array of length
     // `len`, and the layout creation would have failed if `len` overflowed an isize.
@@ -1882,14 +1855,14 @@ public fun <T, A : Allocator> Box.Companion.tryNewUninitSliceIn(len: Int, alloc:
             val layout =
                 run {
                     val matchVal = Layout.array<MaybeUninit<T>>(len, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<T>>())
-                    when (matchVal) { is Result.Ok -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         val l = matchVal.value
                         l
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         return Result.Err<Box<List<MaybeUninit<T>>, A>, AllocError>(AllocError())
                     } }
                 }
-            when (val tryResult = alloc.allocate(layout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Box<List<MaybeUninit<T>>, A>, AllocError>(tryResult.error) }.cast()
+            when (val tryResult = alloc.allocate(layout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Box<List<MaybeUninit<T>>, A>, AllocError>(tryResult.error) }.cast()
         }
     // SAFETY: `ptr` was just allocated with `alloc` with the layout for an array of length
     // `len`, and the layout creation would have failed if `len` overflowed an isize.
@@ -1929,14 +1902,14 @@ public fun <T, A : Allocator> Box.Companion.tryNewZeroedSliceIn(len: Int, alloc:
             val layout =
                 run {
                     val matchVal = Layout.array<MaybeUninit<T>>(len, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<T>>())
-                    when (matchVal) { is Result.Ok -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         val l = matchVal.value
                         l
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         return Result.Err<Box<List<MaybeUninit<T>>, A>, AllocError>(AllocError())
                     } }
                 }
-            when (val tryResult = alloc.allocateZeroed(layout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Box<List<MaybeUninit<T>>, A>, AllocError>(tryResult.error) }.cast()
+            when (val tryResult = alloc.allocateZeroed(layout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Box<List<MaybeUninit<T>>, A>, AllocError>(tryResult.error) }.cast()
         }
     // SAFETY: `ptr` was just allocated with `alloc` with the layout for an array of length
     // `len`, and the layout creation would have failed if `len` overflowed an isize.
@@ -2400,11 +2373,11 @@ public fun <T, A : Allocator> Box<List<T>, A>.cloneFrom(source: Box<List<T>, A>)
     }
 }
 
-public fun <Args, F : FnOnce<Args>, A : Allocator> Box<F, A>.callOnce(args: Args, callOnceFFn: (Box<F, A>, Args) -> Output): Output = callOnceFFn(this, args)
+public fun <Output, Args, F : FnOnce<Args, Output>, A : Allocator> Box<F, A>.callOnce(args: Args, callOnceFFn: (Box<F, A>, Args) -> Output): Output = callOnceFFn(this, args)
 
-public fun <Args, F : FnMut<Args>, A : Allocator> Box<F, A>.callMut(args: Args, callMutFFn: (Box<F, A>, Args) -> Output): Output = callMutFFn(this, args)
+public fun <Output, Args, F : FnMut<Args, Output>, A : Allocator> Box<F, A>.callMut(args: Args, callMutFFn: (Box<F, A>, Args) -> Output): Output = callMutFFn(this, args)
 
-public fun <Args, F : Fn<Args>, A : Allocator> Box<F, A>.call(args: Args, callFFn: (Box<F, A>, Args) -> Output): Output = callFFn(this, args)
+public fun <Output, Args, F : Fn<Args, Output>, A : Allocator> Box<F, A>.call(args: Args, callFFn: (Box<F, A>, Args) -> Output): Output = callFFn(this, args)
 
 public fun <Args, F : AsyncFnOnce<Args>, A : Allocator> Box<F, A>.asyncCallOnce(args: Args, asyncCallOnceFFn: (Box<F, A>, Args) -> CallOnceFuture): CallOnceFuture = asyncCallOnceFFn(this, args)
 
@@ -2429,6 +2402,34 @@ public fun <E, A : Allocator> Box<E, A>.source(): Any? = Error.source(this)
 public fun <E, A : Allocator> Box<E, A>.provide(request: Request) {
     Error.provide(this, request)
 }
+
+public fun <T : Allocator, A : Allocator> Box<T, A>.allocate(layout: Layout): Result<NonNull, AllocError> = this.allocate(layout)
+
+public fun <T : Allocator, A : Allocator> Box<T, A>.allocateZeroed(layout: Layout): Result<NonNull, AllocError> = this.allocateZeroed(layout)
+
+public fun <T : Allocator, A : Allocator> Box<T, A>.deallocate(ptr: NonNull, layout: Layout) {
+    // SAFETY: the safety contract must be upheld by the caller
+    this.deallocate(ptr, layout)
+}
+
+public fun <T : Allocator, A : Allocator> Box<T, A>.grow(ptr: NonNull, oldLayout: Layout, newLayout: Layout): Result<NonNull, AllocError> {
+    // SAFETY: the safety contract must be upheld by the caller
+    return this.grow(ptr, oldLayout, newLayout)
+}
+
+public fun <T : Allocator, A : Allocator> Box<T, A>.growZeroed(ptr: NonNull, oldLayout: Layout, newLayout: Layout): Result<NonNull, AllocError> {
+    // SAFETY: the safety contract must be upheld by the caller
+    return this.growZeroed(ptr, oldLayout, newLayout)
+}
+
+public fun <T : Allocator, A : Allocator> Box<T, A>.shrink(ptr: NonNull, oldLayout: Layout, newLayout: Layout): Result<NonNull, AllocError> {
+    // SAFETY: the safety contract must be upheld by the caller
+    return this.shrink(ptr, oldLayout, newLayout)
+}
+
+/**
+ * This trait impl is unstable and only usable on nightly with `feature(allocatorExt)`.
+ */
 
 public fun <R : Rng, A : Allocator> Box<R, A>.fillBytes(bytes: MutableList<UByte>) {
     this.fillBytes(bytes)

@@ -6,6 +6,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.procmacro.bridge.Decode
 import io.github.kotlinmania.rustlang.procmacro.bridge.Encode
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
+import io.github.kotlinmania.rustlang.procmacro.bridge.decode
+import io.github.kotlinmania.rustlang.procmacro.bridge.encode
 
 /**
  * Simplified version of panic payloads, ignoring
@@ -19,11 +21,11 @@ public sealed class PanicMessage : Encode<S>, Decode<S, PanicMessage> {
     public open fun asStr(): String? =
         when (this) {
             is PanicMessage.StaticStr -> {
-                val (s) = this
+                val (s) = this as PanicMessage.StaticStr
                 s
             }
             is PanicMessage.String -> {
-                val (s1) = this
+                val (s1) = this as PanicMessage.String
                 s1
             }
             PanicMessage.Unknown -> null
@@ -32,11 +34,11 @@ public sealed class PanicMessage : Encode<S>, Decode<S, PanicMessage> {
     public open fun intoString(): String? =
         when (this) {
             is PanicMessage.StaticStr -> {
-                val (s) = this
+                val (s) = this as PanicMessage.StaticStr
                 s.into()
             }
             is PanicMessage.String -> {
-                val (s1) = this
+                val (s1) = this as PanicMessage.String
                 s1
             }
             PanicMessage.Unknown -> null
@@ -56,7 +58,7 @@ public sealed class PanicMessage : Encode<S>, Decode<S, PanicMessage> {
                 }
             }
             when (val matchVal1 = payload.downcast<String>()) {
-                is Result.Ok -> {
+                is Result.Ok<*, *> -> {
                     val s1 = matchVal1.value
                     return PanicMessage.String(s1)
                 }

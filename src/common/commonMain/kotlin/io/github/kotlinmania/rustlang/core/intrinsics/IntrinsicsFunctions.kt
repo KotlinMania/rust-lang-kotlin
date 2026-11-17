@@ -731,16 +731,10 @@ public fun contractCheckRequires(cond: () -> Boolean) {
  */
 public fun <Ret> contractCheckEnsures(cond: (Ret) -> Boolean?, ret: Ret): Ret =
     run {
-        fun <Ret> runtime(cond1: (Ret) -> Boolean?, ret1: Ret): Ret =
-            run {
-                if (cond1 != null && !cond1(ret1)) {
-                    // Emit no unwind panic in case this was a safety requirement.
-                    panicNounwind("failed ensures check")
-                }
-                ret1
-            }
-        fun <Ret> compiletime(cond1: (Ret) -> Boolean?, ret1: Ret): Ret = ret1
-        constEvalSelect(Pair(cond, ret), ::compiletime, ::runtime)
+        if (cond != null && !cond(ret)) {
+            panicNounwind("failed ensures check")
+        }
+        ret
     }
 
 /**

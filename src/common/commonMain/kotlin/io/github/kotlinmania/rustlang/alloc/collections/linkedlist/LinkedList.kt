@@ -1075,7 +1075,7 @@ public open class LinkedList<T, A : Allocator> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public override fun hashCode(): Int {
         var state = 0
@@ -1175,7 +1175,7 @@ public open class Iter<T> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Iter").field(LinkedList(head = this.head, tail = this.tail, len = this.len, alloc = Global(), marker = Unit)).field(this.len).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "Iter").field(LinkedList(head = this.head, tail = this.tail, len = this.len, alloc = Global(), marker = Unit)).field(this.len).finish(); Result.Ok<Unit, Error>(Unit) }
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Iter<T> = Iter(this.head, this.tail, this.len, this.marker).copy()
@@ -1270,7 +1270,7 @@ public open class IterMut<T> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "IterMut").field(LinkedList(head = this.head, tail = this.tail, len = this.len, alloc = Global(), marker = Unit)).field(this.len).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "IterMut").field(LinkedList(head = this.head, tail = this.tail, len = this.len, alloc = Global(), marker = Unit)).field(this.len).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun next(): T? {
         if (this.len == 0) {
@@ -1350,7 +1350,7 @@ public open class IntoIter<T, A : Allocator> internal constructor(
 
     public open fun clone(): IntoIter<T, A> = IntoIter(list)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "IntoIter").field(this.list).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "IntoIter").field(this.list).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun next(): T? = this.list.removeFirstOrNull()
 
@@ -1465,7 +1465,7 @@ public open class Cursor<T, A : Allocator> internal constructor(
         return Cursor(index = index, current = current, list = list)
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Cursor").field(this.list).field(this.index()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "Cursor").field(this.list).field(this.index()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Returns the cursor position index within the `LinkedList`.
@@ -1644,7 +1644,7 @@ public open class CursorMut<T, A : Allocator> internal constructor(
     public var list: LinkedList<T, A> = listCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "CursorMut").field(this.list).field(this.index()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "CursorMut").field(this.list).field(this.index()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Returns the cursor position index within the `LinkedList`.
@@ -2171,45 +2171,17 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
     public var pred: F,
     public var idx: Int,
     public var oldLen: Int,
-) : Iterable<T> {
+) {
     public var list: LinkedList<T, A> = listCtorArg
         internal set
 
     public var it: NonNull? = itCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@ExtractIf.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
-    public open fun next(): T? {
-        while (this.it != null) {
-            val node = this.it
-            // SAFETY: `node` is a pointer to a live node in `list`, which don't have mutable reference.
-            run {
-                this.it = node.asRef().next
-                this.idx += 1
-                if ((this.pred)(node.asMut().element)) {
-                    // `unlinkNode` is okay with aliasing `element` references.
-                    this.list.unlinkNode(node)
-                    return Box.fromRawIn(node.asPtr(), this.list.alloc).element
-                }
-            }
-        }
-        return null
-    }
-
-    public open fun sizeHint(): Pair<Int, Int?> = Pair(0, this.oldLen - this.idx)
-
     public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         // SAFETY: If `node` is `Some`, then `node` is a pointer to a live node in `list`.
         val peek = this.it?.let({ node -> node.asRef().element })
-        return DebugStruct(f, "ExtractIf").field("peek", peek).finishNonExhaustive()
+        return run { DebugStruct(f, "ExtractIf").field("peek", peek).finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
     }
 
     public companion object {
@@ -2228,6 +2200,25 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
         )
     }
 }
+
+public fun <T, A : Allocator> ExtractIf<T, F, A>.next(): T? {
+    while (this.it != null) {
+        val node = this.it
+        // SAFETY: `node` is a pointer to a live node in `list`, which don't have mutable reference.
+        run {
+            this.it = node.asRef().next
+            this.idx += 1
+            if ((this.pred)(node.asMut().element)) {
+                // `unlinkNode` is okay with aliasing `element` references.
+                this.list.unlinkNode(node)
+                return Box.fromRawIn(node.asPtr(), this.list.alloc).element
+            }
+        }
+    }
+    return null
+}
+
+public fun <T, A : Allocator> ExtractIf<T, F, A>.sizeHint(): Pair<Int, Int?> = Pair(0, this.oldLen - this.idx)
 
 /**
  * Creates an empty `linkedList.IntoIter`.

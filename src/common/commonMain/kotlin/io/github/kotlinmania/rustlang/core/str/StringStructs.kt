@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ops.function.Fn
 import io.github.kotlinmania.rustlang.core.ops.function.FnMut
 import io.github.kotlinmania.rustlang.core.ops.function.FnOnce
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
 import io.github.kotlinmania.rustlang.core.str.iter.EscapeDebug
 import io.github.kotlinmania.rustlang.core.str.iter.EscapeDefault

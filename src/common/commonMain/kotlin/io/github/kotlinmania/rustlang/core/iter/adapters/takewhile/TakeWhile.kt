@@ -2,17 +2,18 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.takewhile
 
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -55,70 +56,10 @@ public open class TakeWhile<I, P>(
     public var iter: I,
     public var flag: Boolean,
     public var predicate: P,
-) : TrustedFused, SourceIter<Source>, Iterable<Item> {
-    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
-        override fun computeNext() {
-            when (val v = this@TakeWhile.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
+) {
     public open fun clone(): TakeWhile<I, P> = TakeWhile(iter, flag, predicate)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "TakeWhile").field("iter", this.iter).field("flag", this.flag).finish()
-
-    public open fun next(): Item? {
-        return if (this.flag) {
-            null
-        } else {
-            val x = (this.iter.next() ?: return null)
-            if ((this.predicate)(x)) {
-                x
-            } else {
-                this.flag = true
-                null
-            }
-        }
-    }
-
-    public open fun sizeHint(): Pair<Int, Int?> =
-        if (this.flag) {
-            Pair(0, 0)
-        } else {
-            val (_, upper) = this.iter.sizeHint()
-            Pair(0, upper)
-            // can't know a lower bound, due to the predicate
-        }
-
-    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
-        fun <Residual, T, Acc, R : Try<R, Acc, Residual>> check(flag: RustMutableReference<Boolean>, p: (T) -> Boolean, fold1: (Acc, T) -> R): (Acc, T) -> ControlFlow<R, Acc> {
-            val flag1 = flag
-            return { acc, x ->
-                if (p(x)) {
-                    ControlFlow.fromTry(fold1(acc, x))
-                } else {
-                    (flag1).write(true)
-                    ControlFlow.Break(acc)
-                }
-            }
-        }
-        return if (this.flag) {
-            init
-        } else {
-            val flag = this.flag
-            val p = this.predicate
-            this.iter.tryFold(init, check(flag, p, fold)).intoTry()
-        }
-    }
-
-    public open fun <Aaa> fold(init: Aaa, fold: (Aaa, Item) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
-
-    public override fun asInner(): Source {
-        // SAFETY: unchecked function forwarding to unchecked function with the same requirements
-        return this.iter.asInner()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "TakeWhile").field("iter", this.iter).field("flag", this.flag).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun <I, P> typeLayout(typeLayoutI: TypeLayout<I>, typeLayoutP: TypeLayout<P>): TypeLayout<TakeWhile<I, P>> =
@@ -153,6 +94,57 @@ public open class TakeWhile<I, P>(
 
         public fun <I, P> new(iter: I, predicate: P): TakeWhile<I, P> = TakeWhile(iter = iter, flag = false, predicate = predicate)
     }
+}
+
+public fun <I> TakeWhile<I, P>.next(): Item? {
+    return if (this.flag) {
+        null
+    } else {
+        val x = (this.iter.next() ?: return null)
+        if ((this.predicate)(x)) {
+            x
+        } else {
+            this.flag = true
+            null
+        }
+    }
+}
+
+public fun <I> TakeWhile<I, P>.sizeHint(): Pair<Int, Int?> =
+    if (this.flag) {
+        Pair(0, 0)
+    } else {
+        val (_, upper) = this.iter.sizeHint()
+        Pair(0, upper)
+        // can't know a lower bound, due to the predicate
+    }
+
+public fun <Residual, I, Acc, R> TakeWhile<I, P>.tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+    fun <Residual, T, Acc, R : Try<R, Acc, Residual>> check(flag: RustMutableReference<Boolean>, p: (T) -> Boolean, fold1: (Acc, T) -> R): (Acc, T) -> ControlFlow<R, Acc> {
+        val flag1 = flag
+        return { acc, x ->
+            if (p(x)) {
+                ControlFlow.fromTry(fold1(acc, x))
+            } else {
+                (flag1).write(true)
+                ControlFlow.Break(acc)
+            }
+        }
+    }
+    return if (this.flag) {
+        init
+    } else {
+        val flag = RustMutableReference(allocateNativeCell(this.flag, PrimitiveLayouts.BOOL), PrimitiveLayouts.BOOL)
+        val p = this.predicate
+        this.iter.tryFold(init, check(flag, p, fold)).intoTry()
+    }
+}
+
+public fun <I, Aaa> TakeWhile<I, P>.fold(init: Aaa, fold: (Aaa, Item) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
+
+public fun <Source, P, I> TakeWhile<I, P>.asInner(): Source where I : SourceIter<Source> {
+    // SAFETY: unchecked function forwarding to unchecked function with the same requirements
+    return this.iter.asInner()
 }
 
 public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY

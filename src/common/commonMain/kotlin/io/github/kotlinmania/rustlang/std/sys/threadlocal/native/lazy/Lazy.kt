@@ -70,7 +70,7 @@ public open class Storage<T, D> internal constructor(
         when (val matchVal = this.state.get()) {
             State.Uninitialized -> {}
             State.Alive -> { return this.value.get().cast() }
-            is State.Destroyed -> { return ConstPtr(0L) }
+            is State.Destroyed<*> -> { return ConstPtr(0L) }
         }
         val v = (i?.let(Option::take) ?: f())
         // SAFETY: we cannot be inside a `LocalKey.with` scope, as the initializer
@@ -87,7 +87,7 @@ public open class Storage<T, D> internal constructor(
             // Recursive initialization, we only need to drop the old value
             // as we've already registered the destructor.
             State.Alive -> oldValue.assumeInitDrop()
-            is State.Destroyed -> {
+            is State.Destroyed<*> -> {
                 when (val matchVal2 = panicOutput()) {
                     null -> {}
                     else -> {
@@ -130,7 +130,7 @@ public fun <T> destroy(ptr: MutPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeL
     // Print a nice abort message if a panic occurs.
     abortOnDtorUnwind({
         val storage = (UnresolvedTypeLayout<Storage<T, Unit>>()).readNative(((ConstPtr(ptr.rawAddress, ptr.rawMeta))).rawAddress)
-        if (storage.state.replace(State.Destroyed()) == State.Alive) {
+        if (storage.state.replace(State.Destroyed(Unit)) == State.Alive) {
             // SAFETY: we ensured the state was Alive so the value was initialized.
             // We also updated the state to Destroyed to prevent the destructor
             // from accessing the thread-local variable, as this would violate

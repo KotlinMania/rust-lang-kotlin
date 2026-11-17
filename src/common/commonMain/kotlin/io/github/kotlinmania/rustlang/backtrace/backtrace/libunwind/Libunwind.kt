@@ -1,12 +1,13 @@
 // port-lint: source backtrace/libunwind.rs
 package io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.CInt
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.libc.unix.UintptrT
 
 // Backtrace support using libunwind/gccS/etc APIs.
@@ -106,11 +107,11 @@ public sealed class Frame {
         val ctx1 =
             when (this) {
                 is Frame.Raw -> {
-                    val (ctx) = this
+                    val (ctx) = this as Frame.Raw
                     ctx
                 }
                 is Frame.Cloned -> {
-                    val ip = this.ip
+                    val ip = (this as Frame.Cloned).ip
                     return ip
                 }
             }
@@ -121,11 +122,11 @@ public sealed class Frame {
     public open fun sp(): MutPtr =
         when (this) {
             is Frame.Raw -> {
-                val (ctx) = this
+                val (ctx) = this as Frame.Raw
                 MutPtr(getSp(ctx).toLong())
             }
             is Frame.Cloned -> {
-                val sp = this.sp
+                val sp = (this as Frame.Cloned).sp
                 sp
             }
         }

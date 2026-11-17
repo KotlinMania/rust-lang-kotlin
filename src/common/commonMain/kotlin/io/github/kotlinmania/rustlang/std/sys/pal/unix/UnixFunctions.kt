@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.unix
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -7,7 +8,6 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.Poll
 import io.github.kotlinmania.rustlang.libc.Signal
 import io.github.kotlinmania.rustlang.libc.abort
@@ -29,7 +29,7 @@ import io.github.kotlinmania.rustlang.libc.wasi.F_GETFD
 import io.github.kotlinmania.rustlang.libc.wasi.NfdsT
 import io.github.kotlinmania.rustlang.libc.wasi.O_RDWR
 import io.github.kotlinmania.rustlang.libc.wasi.POLLNVAL
-import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sys.io.Errno
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.thread.unix.setName
@@ -185,7 +185,7 @@ public fun cleanup() {}
  */
 public fun <T : IsMinusOne> cvt(t: T): Result<T, Error> =
     if (t.isMinusOne()) {
-        Result.Err<T, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
+        Result.Err<T, Error>(Error.lastOsError())
     } else {
         Result.Ok<T, Error>(t)
     }
@@ -198,7 +198,7 @@ public fun <T> cvtR(f: () -> T): Result<T, Error> where T : IsMinusOne {
         run {
             val matchVal = cvt(f())
             when {
-                matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                matchVal is Result.Err<*, *> && matchVal.error.isInterrupted() -> {
                     val e = matchVal.error
                 }
                 else -> {
@@ -219,7 +219,7 @@ public fun cvtNz(error: CInt): Result<Unit, Error> =
     if (error == 0) {
         Result.Ok<Unit, Error>(Unit)
     } else {
-        Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(error))
+        Result.Err<Unit, Error>(Error.fromRawOsError(error))
     }
 
 // libc.abort() will run the SIGABRT handler.  That's fine because anyone who

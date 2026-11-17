@@ -8,8 +8,11 @@ import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
@@ -18,6 +21,7 @@ import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
@@ -329,7 +333,7 @@ public open class CString(
      * Delegates to the [CStr] implementation of [fmt.Debug],
      * showing invalid UTF-8 as hex escapes.
      */
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.asCStr()).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.asCStr()).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun borrow(): CStr = this
 
@@ -515,9 +519,9 @@ public open class CString(
                  * Provided by libc or compilerBuiltins.
                  */
                 fun strlen(s: ConstPtr): ULong = 0uL
-                val len = strlen(ptr) + 1
+                val len = strlen(ptr) + 1uL
                 // Including the NUL byte
-                val slice = Slice.fromRawPartsMut(ptr, len)
+                val slice = linearMutSliceView(ptr, len.toInt(), UnresolvedTypeLayout<CChar>())
                 CString(inner = Box.fromRaw((mutPtrFromRustCast(slice)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }))
             }
         }
@@ -708,7 +712,7 @@ public open class NulError(
      */
     public open fun intoVec(): List<UByte> = this.field1
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("nul byte found in provided data at position: ${this.field0}"); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("nul byte found in provided data at position: ${this.field0}"); Result.Ok<Unit, Error>(Unit) }
 }
 
 public sealed class FromBytesWithNulErrorKind {
@@ -786,10 +790,10 @@ public open class FromVecWithNulError(
         when (val matchVal = this.errorKind) {
             is FromBytesWithNulErrorKind.InteriorNul -> {
                 val (pos) = matchVal
-                run { f.append("data provided contains an interior nul byte at pos $pos"); Result.Ok(Unit) }
+                run { f.append("data provided contains an interior nul byte at pos $pos"); Result.Ok<Unit, Error>(Unit) }
             }
             FromBytesWithNulErrorKind.NotNulTerminated -> {
-                run { f.append("data provided is not nul terminated"); Result.Ok(Unit) }
+                run { f.append("data provided is not nul terminated"); Result.Ok<Unit, Error>(Unit) }
             }
         }
 }

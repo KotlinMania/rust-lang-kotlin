@@ -60,14 +60,14 @@ public sealed class CoroutineState<Y, R> {
  *             "foo"
  *         }
  *         run {
- *             val matchVal = Pin.new(coroutine).resume()
+ *             val matchVal = Pin.new(coroutine).resume(Unit)
  *             when {
  *                 matchVal is CoroutineState.Yielded && matchVal.value == 1 -> {}
  *                 else -> error("unexpected return from resume")
  *             }
  *         }
  *         run {
- *             val matchVal1 = Pin.new(coroutine).resume()
+ *             val matchVal1 = Pin.new(coroutine).resume(Unit)
  *             when {
  *                 matchVal1 is CoroutineState.Complete && matchVal1.value == "foo" -> {}
  *                 else -> error("unexpected return from resume")

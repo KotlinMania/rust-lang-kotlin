@@ -103,9 +103,9 @@ public open class ParIter<T> internal constructor(
 public open class ParDifference<T, S, A : Allocator>(
     public var a: MutableSet<T>,
     public var b: MutableSet<T>,
-) : ParallelIterator {
-    public open fun <C> driveUnindexed(consumer: C): Result where C : UnindexedConsumer<T> = this.a.intoParIter().filter({ x -> !this.b.contains(x) }).driveUnindexed(consumer)
-}
+)
+
+public fun <T, S, A, C> ParDifference<T, S, A>.driveUnindexed(consumer: C): Result where S : BuildHasher, A : Allocator, C : UnindexedConsumer<T> = this.a.intoParIter().filter({ x -> !this.b.contains(x) }).driveUnindexed(consumer)
 
 /**
  * Parallel iterator over shared references to elements in the symmetric
@@ -120,9 +120,9 @@ public open class ParDifference<T, S, A : Allocator>(
 public open class ParSymmetricDifference<T, S, A : Allocator>(
     public var a: MutableSet<T>,
     public var b: MutableSet<T>,
-) : ParallelIterator {
-    public open fun <C> driveUnindexed(consumer: C): Result where C : UnindexedConsumer<T> = this.a.parDifference(this.b).chain(this.b.parDifference(this.a)).driveUnindexed(consumer)
-}
+)
+
+public fun <T, S, A, C> ParSymmetricDifference<T, S, A>.driveUnindexed(consumer: C): Result where S : BuildHasher, A : Allocator, C : UnindexedConsumer<T> = this.a.parDifference(this.b).chain(this.b.parDifference(this.a)).driveUnindexed(consumer)
 
 /**
  * Parallel iterator over shared references to elements in the intersection of
@@ -136,9 +136,9 @@ public open class ParSymmetricDifference<T, S, A : Allocator>(
 public open class ParIntersection<T, S, A : Allocator>(
     public var a: MutableSet<T>,
     public var b: MutableSet<T>,
-) : ParallelIterator {
-    public open fun <C> driveUnindexed(consumer: C): Result where C : UnindexedConsumer<T> = this.a.intoParIter().filter({ x -> this.b.contains(x) }).driveUnindexed(consumer)
-}
+)
+
+public fun <T, S, A, C> ParIntersection<T, S, A>.driveUnindexed(consumer: C): Result where S : BuildHasher, A : Allocator, C : UnindexedConsumer<T> = this.a.intoParIter().filter({ x -> this.b.contains(x) }).driveUnindexed(consumer)
 
 /**
  * Parallel iterator over shared references to elements in the union of sets.
@@ -151,18 +151,18 @@ public open class ParIntersection<T, S, A : Allocator>(
 public open class ParUnion<T, S, A : Allocator>(
     public var a: MutableSet<T>,
     public var b: MutableSet<T>,
-) : ParallelIterator {
-    public open fun <C> driveUnindexed(consumer: C): Result where C : UnindexedConsumer<T> {
-        // We'll iterate one set in full, and only the remaining difference from the other.
-        // Use the smaller set for the difference in order to reduce hash lookups.
-        val (smaller, larger) =
-            if (this.a.size <= this.b.size) {
-                Pair(this.a, this.b)
-            } else {
-                Pair(this.b, this.a)
-            }
-        return larger.intoParIter().chain(smaller.parDifference(larger)).driveUnindexed(consumer)
-    }
+)
+
+public fun <T, S, A, C> ParUnion<T, S, A>.driveUnindexed(consumer: C): Result where S : BuildHasher, A : Allocator, C : UnindexedConsumer<T> {
+    // We'll iterate one set in full, and only the remaining difference from the other.
+    // Use the smaller set for the difference in order to reduce hash lookups.
+    val (smaller, larger) =
+        if (this.a.size <= this.b.size) {
+            Pair(this.a, this.b)
+        } else {
+            Pair(this.b, this.a)
+        }
+    return larger.intoParIter().chain(smaller.parDifference(larger)).driveUnindexed(consumer)
 }
 
 /**

@@ -131,7 +131,7 @@ public open class Once(
                     if (!queued) {
                         stateAndQueued += QUEUED
                         when (val matchVal = this.stateAndQueued.compareExchangeWeak(state, stateAndQueued, Relaxed, Acquire)) {
-                            is Result.Err -> {
+                            is Result.Err<*, *> -> {
                                 val new = matchVal.error
                                 stateAndQueued = new
                                 continue
@@ -167,7 +167,7 @@ public open class Once(
                                 0u
                             }
                     when (val matchVal = this.stateAndQueued.compareExchangeWeak(stateAndQueued, next, Acquire, Acquire)) {
-                        is Result.Err -> {
+                        is Result.Err<*, *> -> {
                             val new = matchVal.error
                             stateAndQueued = new
                             continue
@@ -190,7 +190,7 @@ public open class Once(
                     if (!queued) {
                         stateAndQueued += QUEUED
                         when (val matchVal1 = this.stateAndQueued.compareExchangeWeak(state, stateAndQueued, Relaxed, Acquire)) {
-                            is Result.Err -> {
+                            is Result.Err<*, *> -> {
                                 val new1 = matchVal1.error
                                 stateAndQueued = new1
                                 continue

@@ -7,10 +7,9 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.conjureZst
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
-import io.github.kotlinmania.rustlang.core.ops.function.FnMut
-import io.github.kotlinmania.rustlang.core.ops.function.FnOnce
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.fromMut
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 
@@ -34,32 +33,7 @@ public open class Drain<T, F>(
     public var endOrLen: MutPtr,
     public var f: F,
     public var l: Unit,
-) : FnOnce<Int<Drain<T, F>>, U>, FnMut<Int<Drain<T, F>>, Any> {
-    /**
-     * This implementation is useless.
-     */
-    public override fun callOnce(args: Int): U = this.callMut(args)
-
-    // Note(const-Note): ideally this would be an unchecked fn `next()`, and to use it you would instead `| _ | unchecked ( drain.next() )`.
-    public override fun callMut(tupleArg0: Int, typeLayoutT: TypeLayout<T>): U =
-        if (((typeLayoutT).sizeBytes == 0L)) {
-            val len = transmuteWithLayouts<MutPtr, Int>(this.endOrLen, PrimitiveLayouts.mutPtrLayout(64L), PrimitiveLayouts.USIZE64)
-            // SAFETY:
-            // The caller guarantees that this is never called more than N times
-            // (see `Drain.new`), hence this cannot underflow.
-            this.endOrLen = withoutProvenanceMut(len.uncheckedSub(1))
-            // its UB to call this more than N times, so returning more ZSTs is valid.
-            // SAFETY: its a ZST? we conjur.
-            (this.f)(conjureZst<T>())
-        } else {
-            // increment before moving; if `f` panics, we drop the rest.
-            val p = this.ptr
-            // SAFETY: caller guarantees never called more than N times (see `Drain.new`)
-            this.ptr = this.ptr.add(1)
-            // SAFETY: we are allowed to move this.
-            (this.f)(p.read())
-        }
-
+) {
     public open fun drop(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         val slice =
             if (((typeLayoutT).sizeBytes == 0L)) {
@@ -104,3 +78,28 @@ public open class Drain<T, F>(
         }
     }
 }
+
+/**
+ * This implementation is useless.
+ */
+public fun <T, U> Drain<T, F>.callOnce(args: Int): U = this.callMut(args)
+
+// Note(const-Note): ideally this would be an unchecked fn `next()`, and to use it you would instead `| _ | unchecked ( drain.next() )`.
+public fun <T, U> Drain<T, F>.callMut(tupleArg0: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Output =
+    if (((typeLayoutT).sizeBytes == 0L)) {
+        val len = transmuteWithLayouts<MutPtr, Int>(this.endOrLen, PrimitiveLayouts.mutPtrLayout(64L), PrimitiveLayouts.USIZE64)
+        // SAFETY:
+        // The caller guarantees that this is never called more than N times
+        // (see `Drain.new`), hence this cannot underflow.
+        this.endOrLen = withoutProvenanceMut(len.uncheckedSub(1))
+        // its UB to call this more than N times, so returning more ZSTs is valid.
+        // SAFETY: its a ZST? we conjur.
+        (this.f)(conjureZst<T>())
+    } else {
+        // increment before moving; if `f` panics, we drop the rest.
+        val p = this.ptr
+        // SAFETY: caller guarantees never called more than N times (see `Drain.new`)
+        this.ptr = this.ptr.add(1)
+        // SAFETY: we are allowed to move this.
+        (this.f)(p.read())
+    }

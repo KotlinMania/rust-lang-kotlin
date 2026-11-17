@@ -2,7 +2,8 @@
 package io.github.kotlinmania.rustlang.test.console
 
 import io.github.kotlinmania.rustlang.core.fmt.Write
-import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.fmt.write
+import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.std.fs.File
@@ -32,40 +33,41 @@ import io.github.kotlinmania.rustlang.test.types.NamePadding
 import io.github.kotlinmania.rustlang.test.types.TestDesc
 import io.github.kotlinmania.rustlang.test.types.TestDescAndFn
 import io.github.kotlinmania.rustlang.test.types.TestList
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 // Module providing interface for running tests in the console.
 
 /**
  * Generic wrapper over stdout.
  */
-public sealed class OutputLocation<T> : Write {
+public sealed class OutputLocation<T> {
     public data class Pretty<T>(public var value: StdoutTerminal) : OutputLocation<T>()
     public data class Raw<T>(public var value: T) : OutputLocation<T>()
-
-    public open fun write(buf: List<UByte>): Result<Int> =
-        when (this) {
-            is OutputLocation.Pretty -> {
-                val (term) = this
-                term.write(buf)
-            }
-            is OutputLocation.Raw -> {
-                val (stdout) = this
-                stdout.write(buf)
-            }
-        }
-
-    public open fun flush(): Result<Unit> =
-        when (this) {
-            is OutputLocation.Pretty -> {
-                val (term) = this
-                term.flush()
-            }
-            is OutputLocation.Raw -> {
-                val (stdout) = this
-                stdout.flush()
-            }
-        }
 }
+
+public fun <T : Write> OutputLocation<T>.write(buf: List<UByte>): Result<Int> =
+    when (this) {
+        is OutputLocation.Pretty<*> -> {
+            val (term) = this as OutputLocation.Pretty<T>
+            term.write(buf)
+        }
+        is OutputLocation.Raw<*> -> {
+            val (stdout) = this as OutputLocation.Raw<T>
+            stdout.write(buf)
+        }
+    }
+
+public fun <T : Write> OutputLocation<T>.flush(): Result<Unit> =
+    when (this) {
+        is OutputLocation.Pretty<*> -> {
+            val (term) = this as OutputLocation.Pretty<T>
+            term.flush()
+        }
+        is OutputLocation.Raw<*> -> {
+            val (stdout) = this as OutputLocation.Raw<T>
+            stdout.flush()
+        }
+    }
 
 public open class ConsoleTestDiscoveryState(
     public var logOut: File?,
@@ -75,7 +77,7 @@ public open class ConsoleTestDiscoveryState(
 ) {
     public open fun writeLog(msg: () -> S): Result<Unit> =
         when (val matchVal = this.logOut) {
-            null -> Result.Ok(Unit)
+            null -> RustResult.Ok(Unit)
             else -> {
                 val o = matchVal
                 val msg1 = msg()
@@ -91,10 +93,10 @@ public open class ConsoleTestDiscoveryState(
                     null -> null
                     else -> {
                         val path = matchVal
-                        when (val tryResult = File.create(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ConsoleTestDiscoveryState, Error>(tryResult.error) }
+                        when (val tryResult = File.create(path)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<ConsoleTestDiscoveryState, Error>(tryResult.error) }
                     }
                 }
-            return Result.Ok(ConsoleTestDiscoveryState(logOut = logOut, tests = 0, benchmarks = 0, ignored = 0))
+            return RustResult.Ok(ConsoleTestDiscoveryState(logOut = logOut, tests = 0, benchmarks = 0, ignored = 0))
         }
     }
 }
@@ -117,7 +119,7 @@ public open class ConsoleTestState(
 ) {
     public open fun writeLog(msg: () -> S): Result<Unit> =
         when (val matchVal = this.logOut) {
-            null -> Result.Ok(Unit)
+            null -> RustResult.Ok(Unit)
             else -> {
                 val o = matchVal
                 val msg1 = msg()
@@ -150,9 +152,9 @@ public open class ConsoleTestState(
                 }
                 TestResult.TrTimedFail -> "failed (time limit exceeded)".toOwned()
             }).toString() + " " + (name).toString()
-        })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        })) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
         if (execTime != null) {
-            when (val tryResult = this.writeLog({ " <$execTime>" })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = this.writeLog({ " <$execTime>" })) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
         }
         return this.writeLog({ "\n" })
     }
@@ -166,10 +168,10 @@ public open class ConsoleTestState(
                     null -> null
                     else -> {
                         val path = matchVal
-                        when (val tryResult = File.create(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ConsoleTestState, Error>(tryResult.error) }
+                        when (val tryResult = File.create(path)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<ConsoleTestState, Error>(tryResult.error) }
                     }
                 }
-            return Result.Ok(ConsoleTestState(logOut = logOut, total = 0, passed = 0, failed = 0, ignored = 0, filteredOut = 0, measured = 0, execTime = null, metrics = MetricMap.new(), failures = mutableListOf(), notFailures = mutableListOf(), ignores = mutableListOf(), timeFailures = mutableListOf(), options = opts.options))
+            return RustResult.Ok(ConsoleTestState(logOut = logOut, total = 0, passed = 0, failed = 0, ignored = 0, filteredOut = 0, measured = 0, execTime = null, metrics = MetricMap.new(), failures = mutableListOf(), notFailures = mutableListOf(), ignores = mutableListOf(), timeFailures = mutableListOf(), options = opts.options))
         }
     }
 }
@@ -192,8 +194,8 @@ public fun listTestsConsole(opts: TestOpts, tests: TestList): Result<Unit> {
             OutputFormat.Terse -> TerseFormatter.new(output, false, 0, false)
             OutputFormat.Json -> JsonFormatter.new(output)
         }
-    val st = when (val tryResult = ConsoleTestDiscoveryState.new(opts)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
-    when (val tryResult = out.writeDiscoveryStart()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+    val st = when (val tryResult = ConsoleTestDiscoveryState.new(opts)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = out.writeDiscoveryStart()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
     for (test in filterTests(opts, tests)) {
         val desc = test.desc
         val testfn = test.testfn
@@ -230,8 +232,8 @@ public fun listTestsConsole(opts: TestOpts, tests: TestList): Result<Unit> {
             } else {
                 0
             }
-        when (val tryResult = out.writeTestDiscovered(desc, fntype)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
-        when (val tryResult = st.writeLog({ "$fntype ${desc.name}\n" })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = out.writeTestDiscovered(desc, fntype)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = st.writeLog({ "$fntype ${desc.name}\n" })) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
     }
     return out.writeDiscoveryFinish(st)
 }
@@ -279,7 +281,7 @@ public fun onTestEvent(event: TestEvent, st: ConsoleTestState, out: OutputFormat
         is TestEvent.TeFiltered -> {
             val (filteredTests, shuffleSeed) = matchVal
             st.total = filteredTests
-            when (val tryResult = out.writeRunStart(filteredTests, shuffleSeed)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = out.writeRunStart(filteredTests, shuffleSeed)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
         }
         is TestEvent.TeFilteredOut -> {
             val (filteredOut) = matchVal
@@ -287,11 +289,11 @@ public fun onTestEvent(event: TestEvent, st: ConsoleTestState, out: OutputFormat
         }
         is TestEvent.TeWait -> {
             val (test) = matchVal
-            when (val tryResult = out.writeTestStart(test)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = out.writeTestStart(test)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
         }
         is TestEvent.TeTimeout -> {
             val (test1) = matchVal
-            when (val tryResult = out.writeTimeout(test1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = out.writeTimeout(test1)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
         }
         is TestEvent.TeResult -> {
             val (completedTest) = matchVal
@@ -299,12 +301,12 @@ public fun onTestEvent(event: TestEvent, st: ConsoleTestState, out: OutputFormat
             val result = completedTest.result
             val execTime = completedTest.execTime
             val stdout = completedTest.stdout
-            when (val tryResult = st.writeLogResult(test2, result, execTime.asRef())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
-            when (val tryResult = out.writeResult(test2, result, execTime.asRef(), stdout, st)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = st.writeLogResult(test2, result, execTime.asRef())) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = out.writeResult(test2, result, execTime.asRef(), stdout, st)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
             handleTestResult(st, completedTest)
         }
     }
-    return Result.Ok(Unit)
+    return RustResult.Ok(Unit)
 }
 
 public fun getFormatter(opts: TestOpts, maxNameLen: Int): OutputFormatter {
@@ -338,13 +340,13 @@ public fun runTestsConsole(opts: TestOpts, tests: TestList): Result<Boolean> {
     // full list can be very long and we want to avoid ever iterating that list in Miri.
     val maxNameLen = filteredTests.iter().maxByKey({ t -> lenIfPadded(t) }).map({ t -> t.desc.name.asSlice().len() }).unwrapOr(0)
     val out = getFormatter(opts, maxNameLen)
-    val st = when (val tryResult = ConsoleTestState.new(opts)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+    val st = when (val tryResult = ConsoleTestState.new(opts)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
     // Prevent the usage of `Instant` in some cases:
     // - It's currently not supported for wasm targets without Emscripten nor WASI.
     // - It's currently not supported for zkvm targets.
     val isInstantUnsupported = (false && false) || false
     val startTime = (!isInstantUnsupported).then(Instant::now)
-    when (val tryResult = runTests(opts, filteredTests, allTestLen, { x -> onTestEvent(x, st, out) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+    when (val tryResult = runTests(opts, filteredTests, allTestLen, { x -> onTestEvent(x, st, out) })) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
     st.execTime = startTime.map({ t -> TestSuiteExecTime(t.elapsed()) })
     check(opts.failFast || st.currentTestCount() == st.total)
     return out.writeRunFinish(st)

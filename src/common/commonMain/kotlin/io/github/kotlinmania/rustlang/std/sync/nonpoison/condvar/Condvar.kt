@@ -5,8 +5,8 @@ import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.sync.WaitTimeoutResult
-import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
+import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.guardLock
 import io.github.kotlinmania.rustlang.std.time.Instant
 
 public class DebugStruct(
@@ -129,7 +129,7 @@ public open class Condvar(
      */
     public open fun <T> wait(guard: MutexGuard<T>) {
         run {
-            val lock = Mutex.guardLock(guard)
+            val lock = guardLock(guard)
             this.inner.wait(lock)
         }
     }
@@ -253,7 +253,7 @@ public open class Condvar(
     public open fun <T> waitTimeout(guard: MutexGuard<T>, dur: Duration): WaitTimeoutResult {
         val success =
             run {
-                val lock = Mutex.guardLock(guard)
+                val lock = guardLock(guard)
                 this.inner.waitTimeout(lock, dur)
             }
         return WaitTimeoutResult(!success)
@@ -419,7 +419,7 @@ public open class Condvar(
         this.inner.notifyAll()
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Condvar").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Condvar").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         /**

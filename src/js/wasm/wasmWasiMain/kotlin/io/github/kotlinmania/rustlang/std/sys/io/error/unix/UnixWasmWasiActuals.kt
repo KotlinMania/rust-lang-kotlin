@@ -12,7 +12,7 @@ private external fun wasiStdSysIoErrorUnixGetLIBCERRNO(): Int
 @kotlin.wasm.WasmImport("kmcore", "stdSysIoErrorUnixSetLIBCERRNO")
 private external fun wasiStdSysIoErrorUnixSetLIBCERRNO(value: Int): Unit
 
-public actual var LIBC_ERRNO: io.github.kotlinmania.rustlang.libc.CInt
+public actual var LIBC_ERRNO: CInt
     get() = wasiStdSysIoErrorUnixGetLIBCERRNO().toInt()
     set(value) {
         wasiStdSysIoErrorUnixSetLIBCERRNO(value)

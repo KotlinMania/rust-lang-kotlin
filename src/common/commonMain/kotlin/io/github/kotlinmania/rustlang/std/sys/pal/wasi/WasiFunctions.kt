@@ -9,19 +9,19 @@ public fun abortInternal(): Nothing = abort()
 
 public fun err2io(err: Errno): Error = Error.fromRawOsError(err.raw().into())
 
-public fun <T : IsMinusOne> cvt(t: T): Result<T, io.github.kotlinmania.rustlang.std.io.error.Error> =
+public fun <T : IsMinusOne> cvt(t: T): Result<T, Error> =
     if (t.isMinusOne()) {
-        Result.Err<T, io.github.kotlinmania.rustlang.std.io.error.Error>(Error.lastOsError())
+        Result.Err<T, Error>(Error.lastOsError())
     } else {
-        Result.Ok<T, io.github.kotlinmania.rustlang.std.io.error.Error>(t)
+        Result.Ok<T, Error>(t)
     }
 
-public fun <T> cvtR(f: () -> T): Result<T, io.github.kotlinmania.rustlang.std.io.error.Error> where T : IsMinusOne {
+public fun <T> cvtR(f: () -> T): Result<T, Error> where T : IsMinusOne {
     while (true) {
         run {
             val matchVal = cvt(f())
             when {
-                matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                matchVal is Result.Err<*, *> && matchVal.error.isInterrupted() -> {
                     val e = matchVal.error
                 }
                 else -> {

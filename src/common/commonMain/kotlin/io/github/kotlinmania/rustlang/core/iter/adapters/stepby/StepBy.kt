@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.stepby
 
 import io.github.kotlinmania.rustlang.core.iter.sources.fromfn.fromFn
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
@@ -13,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.range.iter.RangeIter
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
@@ -44,7 +44,7 @@ public open class StepBy<I>(
      */
     public var stepMinusOne: Int,
     public var firstTake: Boolean,
-) : TrustedLen, StepByImpl<I, Item>, StepByBackImpl<I, Item>, Iterable<Item> {
+) : StepByImpl<I, Item>, StepByBackImpl<I, Item>, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@StepBy.next()) {
@@ -66,15 +66,15 @@ public open class StepBy<I>(
         return NonZero.newUnchecked<NonZeroUsizeInner, Int>(((this.stepMinusOne) + (1)))
     }
 
-    public override fun next(): Item? = this.specNext()
+    public open fun next(): Item? = this.specNext()
 
-    public override fun sizeHint(): Pair<Int, Int?> = this.specSizeHint()
+    public open fun sizeHint(): Pair<Int, Int?> = this.specSizeHint()
 
-    public override fun nth(n: Int): Item? = this.specNth(n)
+    public open fun nth(n: Int): Item? = this.specNth(n)
 
-    public override fun <Residual, Acc, R> tryFold(acc: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.specTryFold(acc, f)
+    public open fun <Residual, Acc, R> tryFold(acc: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.specTryFold(acc, f)
 
-    public override fun <Acc> fold(acc: Acc, f: (Acc, Item) -> Acc): Acc = this.specFold(acc, f)
+    public open fun <Acc> fold(acc: Acc, f: (Acc, Item) -> Acc): Acc = this.specFold(acc, f)
 
     // The zero-based index starting from the end of the iterator of the
     // last element. Used in the `DoubleEndedIterator` implementation.
@@ -103,12 +103,6 @@ public open class StepBy<I>(
 
     // StepBy stops yielding items once the underlying iterator does, so it is fused
     // whenever the underlying iterator is fused.
-
-    // SAFETY: This adapter is shortening. TrustedLen requires the upper bound to be calculated correctly.
-    // These requirements can only be satisfied when the upper bound of the inner iterator's upper
-    // bound is never `None`. I: TrustedRandomAccess happens to provide this guarantee while
-    // I: TrustedLen would not.
-    // This also covers the Range specializations since the ranges also implement TRA
 
     public override fun specNext(): Item? {
         val stepSize =
@@ -190,7 +184,7 @@ public open class StepBy<I>(
                 null -> { return acc1 }
                 else -> {
                     val x = matchVal
-                    acc1 = when (val tryResult = f(acc1, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                    acc1 = when (val tryResult = f(acc1, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
                 }
             }
         }
@@ -230,7 +224,7 @@ public open class StepBy<I>(
             null -> init
             else -> {
                 val x = matchVal
-                val acc = when (val tryResult = f(init, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                val acc = when (val tryResult = f(init, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
                 fromFn(nthBack(this.iter, this.stepMinusOne)).tryFold(acc, f)
             }
         }
@@ -286,6 +280,12 @@ public open class StepBy<I>(
         }
     }
 }
+
+// SAFETY: This adapter is shortening. TrustedLen requires the upper bound to be calculated correctly.
+// These requirements can only be satisfied when the upper bound of the inner iterator's upper
+// bound is never `None`. I: TrustedRandomAccess happens to provide this guarantee while
+// I: TrustedLen would not.
+// This also covers the Range specializations since the ranges also implement TRA
 
 public interface SpecRangeSetup<T> {
     public fun setup(inner: T, step: Int): T
@@ -402,23 +402,23 @@ public fun StepBy<Range<UByte>>.specSizeHint(): Pair<Int, Int?> {
     return Pair(remaining, remaining)
 }
 
-public fun StepBy<Range<UByte>>.specNth(n: Int): Item? {
+public fun StepBy<Range<UByte>>.specNth(n: Int): I.Item? {
     (this.advanceBy(n).ok() ?: return null)
     return this.next()
 }
 
-public fun <Residual, Acc, R> StepBy<Range<UByte>>.specTryFold(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<Range<UByte>>.specTryFold(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<Range<UByte>>.specFold(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<Range<UByte>>.specFold(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     val step = UByte.tryFrom(this.originalStep().get()).unwrapOr(UByte.MAX_VALUE)
     val r = this.iter.asLegacyRange()
     val remaining = r.end
@@ -457,23 +457,23 @@ public fun StepBy<Range<UShort>>.specSizeHintRangeUShort(): Pair<Int, Int?> {
     return Pair(remaining, remaining)
 }
 
-public fun StepBy<Range<UShort>>.specNthRangeUShort(n: Int): Item? {
+public fun StepBy<Range<UShort>>.specNthRangeUShort(n: Int): I.Item? {
     (this.advanceBy(n).ok() ?: return null)
     return this.next()
 }
 
-public fun <Residual, Acc, R> StepBy<Range<UShort>>.specTryFoldRangeUShort(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<Range<UShort>>.specTryFoldRangeUShort(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<Range<UShort>>.specFoldRangeUShort(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<Range<UShort>>.specFoldRangeUShort(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     val step = UShort.tryFrom(this.originalStep().get()).unwrapOr(UShort.MAX_VALUE)
     val r = this.iter.asLegacyRange()
     val remaining = r.end
@@ -512,23 +512,23 @@ public fun StepBy<Range<UInt>>.specSizeHintRangeUInt(): Pair<Int, Int?> {
     return Pair(remaining, remaining)
 }
 
-public fun StepBy<Range<UInt>>.specNthRangeUInt(n: Int): Item? {
+public fun StepBy<Range<UInt>>.specNthRangeUInt(n: Int): I.Item? {
     (this.advanceBy(n).ok() ?: return null)
     return this.next()
 }
 
-public fun <Residual, Acc, R> StepBy<Range<UInt>>.specTryFoldRangeUInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<Range<UInt>>.specTryFoldRangeUInt(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<Range<UInt>>.specFoldRangeUInt(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<Range<UInt>>.specFoldRangeUInt(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     val step = UInt.tryFrom(this.originalStep().get()).unwrapOr(UInt.MAX_VALUE)
     val r = this.iter.asLegacyRange()
     val remaining = r.end
@@ -567,23 +567,23 @@ public fun StepBy<Range<ULong>>.specSizeHintRangeULong(): Pair<Int, Int?> {
     return Pair(remaining, remaining)
 }
 
-public fun StepBy<Range<ULong>>.specNthRangeULong(n: Int): Item? {
+public fun StepBy<Range<ULong>>.specNthRangeULong(n: Int): I.Item? {
     (this.advanceBy(n).ok() ?: return null)
     return this.next()
 }
 
-public fun <Residual, Acc, R> StepBy<Range<ULong>>.specTryFoldRangeULong(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<Range<ULong>>.specTryFoldRangeULong(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<Range<ULong>>.specFoldRangeULong(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<Range<ULong>>.specFoldRangeULong(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     val step = ULong.tryFrom(this.originalStep().get()).unwrapOr(ULong.MAX_VALUE)
     val r = this.iter.asLegacyRange()
     val remaining = r.end
@@ -622,23 +622,23 @@ public fun StepBy<IntRange>.specSizeHintRangeInt(): Pair<Int, Int?> {
     return Pair(remaining, remaining)
 }
 
-public fun StepBy<IntRange>.specNthRangeInt(n: Int): Item? {
+public fun StepBy<IntRange>.specNthRangeInt(n: Int): I.Item? {
     (this.advanceBy(n).ok() ?: return null)
     return this.next()
 }
 
-public fun <Residual, Acc, R> StepBy<IntRange>.specTryFoldRangeInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<IntRange>.specTryFoldRangeInt(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<IntRange>.specFoldRangeInt(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<IntRange>.specFoldRangeInt(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     val step = Int.tryFrom(this.originalStep().get()).unwrapOr(Int.MAX_VALUE)
     val r = this.iter.asLegacyRange()
     val remaining = r.end
@@ -677,23 +677,23 @@ public fun StepBy<RangeIter<UByte>>.specSizeHintRangeIterUByte(): Pair<Int, Int?
     return Pair(remaining, remaining)
 }
 
-public fun StepBy<RangeIter<UByte>>.specNthRangeIterUByte(n: Int): Item? {
+public fun StepBy<RangeIter<UByte>>.specNthRangeIterUByte(n: Int): I.Item? {
     (this.advanceBy(n).ok() ?: return null)
     return this.next()
 }
 
-public fun <Residual, Acc, R> StepBy<RangeIter<UByte>>.specTryFoldRangeIterUByte(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<RangeIter<UByte>>.specTryFoldRangeIterUByte(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<RangeIter<UByte>>.specFoldRangeIterUByte(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<RangeIter<UByte>>.specFoldRangeIterUByte(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     val step = UByte.tryFrom(this.originalStep().get()).unwrapOr(UByte.MAX_VALUE)
     val r = this.iter.asLegacyRange()
     val remaining = r.end
@@ -732,23 +732,23 @@ public fun StepBy<RangeIter<UShort>>.specSizeHintRangeIterUShort(): Pair<Int, In
     return Pair(remaining, remaining)
 }
 
-public fun StepBy<RangeIter<UShort>>.specNthRangeIterUShort(n: Int): Item? {
+public fun StepBy<RangeIter<UShort>>.specNthRangeIterUShort(n: Int): I.Item? {
     (this.advanceBy(n).ok() ?: return null)
     return this.next()
 }
 
-public fun <Residual, Acc, R> StepBy<RangeIter<UShort>>.specTryFoldRangeIterUShort(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<RangeIter<UShort>>.specTryFoldRangeIterUShort(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<RangeIter<UShort>>.specFoldRangeIterUShort(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<RangeIter<UShort>>.specFoldRangeIterUShort(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     val step = UShort.tryFrom(this.originalStep().get()).unwrapOr(UShort.MAX_VALUE)
     val r = this.iter.asLegacyRange()
     val remaining = r.end
@@ -787,23 +787,23 @@ public fun StepBy<RangeIter<UInt>>.specSizeHintRangeIterUInt(): Pair<Int, Int?> 
     return Pair(remaining, remaining)
 }
 
-public fun StepBy<RangeIter<UInt>>.specNthRangeIterUInt(n: Int): Item? {
+public fun StepBy<RangeIter<UInt>>.specNthRangeIterUInt(n: Int): I.Item? {
     (this.advanceBy(n).ok() ?: return null)
     return this.next()
 }
 
-public fun <Residual, Acc, R> StepBy<RangeIter<UInt>>.specTryFoldRangeIterUInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<RangeIter<UInt>>.specTryFoldRangeIterUInt(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<RangeIter<UInt>>.specFoldRangeIterUInt(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<RangeIter<UInt>>.specFoldRangeIterUInt(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     val step = UInt.tryFrom(this.originalStep().get()).unwrapOr(UInt.MAX_VALUE)
     val r = this.iter.asLegacyRange()
     val remaining = r.end
@@ -842,23 +842,23 @@ public fun StepBy<RangeIter<ULong>>.specSizeHintRangeIterULong(): Pair<Int, Int?
     return Pair(remaining, remaining)
 }
 
-public fun StepBy<RangeIter<ULong>>.specNthRangeIterULong(n: Int): Item? {
+public fun StepBy<RangeIter<ULong>>.specNthRangeIterULong(n: Int): I.Item? {
     (this.advanceBy(n).ok() ?: return null)
     return this.next()
 }
 
-public fun <Residual, Acc, R> StepBy<RangeIter<ULong>>.specTryFoldRangeIterULong(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<RangeIter<ULong>>.specTryFoldRangeIterULong(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<RangeIter<ULong>>.specFoldRangeIterULong(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<RangeIter<ULong>>.specFoldRangeIterULong(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     val step = ULong.tryFrom(this.originalStep().get()).unwrapOr(ULong.MAX_VALUE)
     val r = this.iter.asLegacyRange()
     val remaining = r.end
@@ -897,23 +897,23 @@ public fun StepBy<RangeIter<Int>>.specSizeHintRangeIterInt(): Pair<Int, Int?> {
     return Pair(remaining, remaining)
 }
 
-public fun StepBy<RangeIter<Int>>.specNthRangeIterInt(n: Int): Item? {
+public fun StepBy<RangeIter<Int>>.specNthRangeIterInt(n: Int): I.Item? {
     (this.advanceBy(n).ok() ?: return null)
     return this.next()
 }
 
-public fun <Residual, Acc, R> StepBy<RangeIter<Int>>.specTryFoldRangeIterInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<RangeIter<Int>>.specTryFoldRangeIterInt(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<RangeIter<Int>>.specFoldRangeIterInt(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<RangeIter<Int>>.specFoldRangeIterInt(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     val step = Int.tryFrom(this.originalStep().get()).unwrapOr(Int.MAX_VALUE)
     val r = this.iter.asLegacyRange()
     val remaining = r.end
@@ -926,7 +926,7 @@ public fun <Acc> StepBy<RangeIter<Int>>.specFoldRangeIterInt(init: Acc, f: (Acc,
     return acc
 }
 
-public fun StepBy<Range<UByte>>.specNextBack(): Item? {
+public fun StepBy<Range<UByte>>.specNextBack(): I.Item? {
     val step = this.originalStep().get().toUByte()
     val r = this.iter.asLegacyRangeMut()
     val remaining = r.end
@@ -939,25 +939,25 @@ public fun StepBy<Range<UByte>>.specNextBack(): Item? {
     }
 }
 
-public fun StepBy<Range<UByte>>.specNthBack(n: Int): Item? {
+public fun StepBy<Range<UByte>>.specNthBack(n: Int): I.Item? {
     if (this.advanceBackBy(n).isErr()) {
         return null
     }
     return this.nextBack()
 }
 
-public fun <Residual, Acc, R> StepBy<Range<UByte>>.specTryRfold(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<Range<UByte>>.specTryRfold(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<Range<UByte>>.specRfold(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<Range<UByte>>.specRfold(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
@@ -968,7 +968,7 @@ public fun <Acc> StepBy<Range<UByte>>.specRfold(init: Acc, f: (Acc, Item) -> Acc
     return accum
 }
 
-public fun StepBy<Range<UShort>>.specNextBackRangeUShort(): Item? {
+public fun StepBy<Range<UShort>>.specNextBackRangeUShort(): I.Item? {
     val step = this.originalStep().get().toUShort()
     val r = this.iter.asLegacyRangeMut()
     val remaining = r.end
@@ -981,25 +981,25 @@ public fun StepBy<Range<UShort>>.specNextBackRangeUShort(): Item? {
     }
 }
 
-public fun StepBy<Range<UShort>>.specNthBackRangeUShort(n: Int): Item? {
+public fun StepBy<Range<UShort>>.specNthBackRangeUShort(n: Int): I.Item? {
     if (this.advanceBackBy(n).isErr()) {
         return null
     }
     return this.nextBack()
 }
 
-public fun <Residual, Acc, R> StepBy<Range<UShort>>.specTryRfoldRangeUShort(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<Range<UShort>>.specTryRfoldRangeUShort(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<Range<UShort>>.specRfoldRangeUShort(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<Range<UShort>>.specRfoldRangeUShort(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
@@ -1010,7 +1010,7 @@ public fun <Acc> StepBy<Range<UShort>>.specRfoldRangeUShort(init: Acc, f: (Acc, 
     return accum
 }
 
-public fun StepBy<Range<UInt>>.specNextBackRangeUInt(): Item? {
+public fun StepBy<Range<UInt>>.specNextBackRangeUInt(): I.Item? {
     val step = this.originalStep().get().toUInt()
     val r = this.iter.asLegacyRangeMut()
     val remaining = r.end
@@ -1023,25 +1023,25 @@ public fun StepBy<Range<UInt>>.specNextBackRangeUInt(): Item? {
     }
 }
 
-public fun StepBy<Range<UInt>>.specNthBackRangeUInt(n: Int): Item? {
+public fun StepBy<Range<UInt>>.specNthBackRangeUInt(n: Int): I.Item? {
     if (this.advanceBackBy(n).isErr()) {
         return null
     }
     return this.nextBack()
 }
 
-public fun <Residual, Acc, R> StepBy<Range<UInt>>.specTryRfoldRangeUInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<Range<UInt>>.specTryRfoldRangeUInt(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<Range<UInt>>.specRfoldRangeUInt(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<Range<UInt>>.specRfoldRangeUInt(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
@@ -1052,7 +1052,7 @@ public fun <Acc> StepBy<Range<UInt>>.specRfoldRangeUInt(init: Acc, f: (Acc, Item
     return accum
 }
 
-public fun StepBy<IntRange>.specNextBackRangeInt(): Item? {
+public fun StepBy<IntRange>.specNextBackRangeInt(): I.Item? {
     val step = this.originalStep().get().toInt()
     val r = this.iter.asLegacyRangeMut()
     val remaining = r.end
@@ -1065,25 +1065,25 @@ public fun StepBy<IntRange>.specNextBackRangeInt(): Item? {
     }
 }
 
-public fun StepBy<IntRange>.specNthBackRangeInt(n: Int): Item? {
+public fun StepBy<IntRange>.specNthBackRangeInt(n: Int): I.Item? {
     if (this.advanceBackBy(n).isErr()) {
         return null
     }
     return this.nextBack()
 }
 
-public fun <Residual, Acc, R> StepBy<IntRange>.specTryRfoldRangeInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<IntRange>.specTryRfoldRangeInt(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<IntRange>.specRfoldRangeInt(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<IntRange>.specRfoldRangeInt(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
@@ -1094,7 +1094,7 @@ public fun <Acc> StepBy<IntRange>.specRfoldRangeInt(init: Acc, f: (Acc, Item) ->
     return accum
 }
 
-public fun StepBy<RangeIter<UByte>>.specNextBackRangeIterUByte(): Item? {
+public fun StepBy<RangeIter<UByte>>.specNextBackRangeIterUByte(): I.Item? {
     val step = this.originalStep().get().toUByte()
     val r = this.iter.asLegacyRangeMut()
     val remaining = r.end
@@ -1107,25 +1107,25 @@ public fun StepBy<RangeIter<UByte>>.specNextBackRangeIterUByte(): Item? {
     }
 }
 
-public fun StepBy<RangeIter<UByte>>.specNthBackRangeIterUByte(n: Int): Item? {
+public fun StepBy<RangeIter<UByte>>.specNthBackRangeIterUByte(n: Int): I.Item? {
     if (this.advanceBackBy(n).isErr()) {
         return null
     }
     return this.nextBack()
 }
 
-public fun <Residual, Acc, R> StepBy<RangeIter<UByte>>.specTryRfoldRangeIterUByte(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<RangeIter<UByte>>.specTryRfoldRangeIterUByte(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<RangeIter<UByte>>.specRfoldRangeIterUByte(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<RangeIter<UByte>>.specRfoldRangeIterUByte(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
@@ -1136,7 +1136,7 @@ public fun <Acc> StepBy<RangeIter<UByte>>.specRfoldRangeIterUByte(init: Acc, f: 
     return accum
 }
 
-public fun StepBy<RangeIter<UShort>>.specNextBackRangeIterUShort(): Item? {
+public fun StepBy<RangeIter<UShort>>.specNextBackRangeIterUShort(): I.Item? {
     val step = this.originalStep().get().toUShort()
     val r = this.iter.asLegacyRangeMut()
     val remaining = r.end
@@ -1149,25 +1149,25 @@ public fun StepBy<RangeIter<UShort>>.specNextBackRangeIterUShort(): Item? {
     }
 }
 
-public fun StepBy<RangeIter<UShort>>.specNthBackRangeIterUShort(n: Int): Item? {
+public fun StepBy<RangeIter<UShort>>.specNthBackRangeIterUShort(n: Int): I.Item? {
     if (this.advanceBackBy(n).isErr()) {
         return null
     }
     return this.nextBack()
 }
 
-public fun <Residual, Acc, R> StepBy<RangeIter<UShort>>.specTryRfoldRangeIterUShort(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<RangeIter<UShort>>.specTryRfoldRangeIterUShort(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<RangeIter<UShort>>.specRfoldRangeIterUShort(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<RangeIter<UShort>>.specRfoldRangeIterUShort(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
@@ -1178,7 +1178,7 @@ public fun <Acc> StepBy<RangeIter<UShort>>.specRfoldRangeIterUShort(init: Acc, f
     return accum
 }
 
-public fun StepBy<RangeIter<Int>>.specNextBackRangeIterInt(): Item? {
+public fun StepBy<RangeIter<Int>>.specNextBackRangeIterInt(): I.Item? {
     val step = this.originalStep().get().toInt()
     val r = this.iter.asLegacyRangeMut()
     val remaining = r.end
@@ -1191,25 +1191,25 @@ public fun StepBy<RangeIter<Int>>.specNextBackRangeIterInt(): Item? {
     }
 }
 
-public fun StepBy<RangeIter<Int>>.specNthBackRangeIterInt(n: Int): Item? {
+public fun StepBy<RangeIter<Int>>.specNthBackRangeIterInt(n: Int): I.Item? {
     if (this.advanceBackBy(n).isErr()) {
         return null
     }
     return this.nextBack()
 }
 
-public fun <Residual, Acc, R> StepBy<RangeIter<Int>>.specTryRfoldRangeIterInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Residual, Acc, R> StepBy<RangeIter<Int>>.specTryRfoldRangeIterInt(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
 
-public fun <Acc> StepBy<RangeIter<Int>>.specRfoldRangeIterInt(init: Acc, f: (Acc, Item) -> Acc): Acc {
+public fun <Acc> StepBy<RangeIter<Int>>.specRfoldRangeIterInt(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()

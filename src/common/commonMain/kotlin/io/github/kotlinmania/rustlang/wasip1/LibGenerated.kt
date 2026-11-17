@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.str.asPtr
@@ -89,7 +90,7 @@ public open class Clockid internal constructor(
             else -> unreachableUnchecked()
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Clockid").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Clockid").field("code", this.value).field("name", this.name()).field("message", this.message()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): Clockid = Clockid(value, fieldLayout)
@@ -307,9 +308,9 @@ public open class Errno internal constructor(
             else -> unreachableUnchecked()
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Errno").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Errno").field("code", this.value).field("name", this.name()).field("message", this.message()).finish(); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append("${this.name()} (error ${this.value})"); Result.Ok(Unit) }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append("${this.name()} (error ${this.value})"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(value: UShort, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()): Errno = Errno(value, fieldLayout)
@@ -1020,7 +1021,7 @@ public open class Whence internal constructor(
             else -> unreachableUnchecked()
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Whence").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Whence").field("code", this.value).field("name", this.name()).field("message", this.message()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Whence = Whence(value, fieldLayout)
@@ -1098,7 +1099,7 @@ public open class Filetype internal constructor(
             else -> unreachableUnchecked()
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Filetype").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Filetype").field("code", this.value).field("name", this.name()).field("message", this.message()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Filetype = Filetype(value, fieldLayout)
@@ -1212,7 +1213,7 @@ public open class Advice internal constructor(
             else -> unreachableUnchecked()
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Advice").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Advice").field("code", this.value).field("name", this.name()).field("message", this.message()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Advice = Advice(value, fieldLayout)
@@ -1438,7 +1439,7 @@ public open class Eventtype internal constructor(
             else -> unreachableUnchecked()
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Eventtype").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Eventtype").field("code", this.value).field("name", this.name()).field("message", this.message()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Eventtype = Eventtype(value, fieldLayout)
@@ -1775,7 +1776,7 @@ public open class Signal internal constructor(
             else -> unreachableUnchecked()
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Signal").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Signal").field("code", this.value).field("name", this.name()).field("message", this.message()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Signal = Signal(value, fieldLayout)
@@ -2040,7 +2041,7 @@ public open class Preopentype internal constructor(
             else -> unreachableUnchecked()
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Preopentype").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Preopentype").field("code", this.value).field("name", this.name()).field("message", this.message()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Preopentype = Preopentype(value, fieldLayout)
