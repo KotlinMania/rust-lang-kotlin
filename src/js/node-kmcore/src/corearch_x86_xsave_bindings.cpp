@@ -150,7 +150,7 @@ static Napi::Value corearchX86XsaveXsetbv_napi(const Napi::CallbackInfo& km_info
     return km_env.Undefined();
 }
 
-static Napi::Value corearchX86XsaveXgetbv_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchX86XsaveExternXgetbv_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     uint32_t v = static_cast<uint32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     typedef int64_t (*km_fn_t)(uint32_t);
@@ -319,7 +319,7 @@ static void register_x86_xsave_napi(Napi::Env env, Napi::Object exports) {
     exports.Set("corearchX86XsaveXsave", Napi::Function::New(env, corearchX86XsaveXsave_napi));
     exports.Set("corearchX86XsaveXrstor", Napi::Function::New(env, corearchX86XsaveXrstor_napi));
     exports.Set("corearchX86XsaveXsetbv", Napi::Function::New(env, corearchX86XsaveXsetbv_napi));
-    exports.Set("corearchX86XsaveXgetbv", Napi::Function::New(env, corearchX86XsaveXgetbv_napi));
+    exports.Set("corearchX86XsaveExternXgetbv", Napi::Function::New(env, corearchX86XsaveExternXgetbv_napi));
     exports.Set("corearchX86XsaveXsaveopt", Napi::Function::New(env, corearchX86XsaveXsaveopt_napi));
     exports.Set("corearchX86XsaveXsavec", Napi::Function::New(env, corearchX86XsaveXsavec_napi));
     exports.Set("corearchX86XsaveXsaves", Napi::Function::New(env, corearchX86XsaveXsaves_napi));

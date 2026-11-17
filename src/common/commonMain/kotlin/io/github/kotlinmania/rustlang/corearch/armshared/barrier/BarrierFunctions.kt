@@ -55,8 +55,8 @@ public fun <A> isb(arg: A) where A : Isb {
     arg.underlyingIsb()
 }
 
-public expect fun dmb(arg0: Int)
+public expect fun externDmb(arg0: Int)
 
-public expect fun dsb(arg0: Int)
+public expect fun externDsb(arg0: Int)
 
-public expect fun isb(arg0: Int)
+public expect fun externIsb(arg0: Int)

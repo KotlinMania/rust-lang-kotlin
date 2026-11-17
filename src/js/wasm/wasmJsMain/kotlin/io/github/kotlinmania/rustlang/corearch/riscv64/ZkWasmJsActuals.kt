@@ -7,56 +7,56 @@ private external fun initRiscv64ZkNapiAddon(): Boolean
 
 private val riscv64ZkNapiAvailable: Boolean = initRiscv64ZkNapiAddon()
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchRiscv64ZkAes64es(p0, p1)")
-private external fun wasmCorearchRiscv64ZkAes64es(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchRiscv64ZkExternAes64es(p0, p1)")
+private external fun wasmCorearchRiscv64ZkExternAes64es(p0: String, p1: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchRiscv64ZkAes64esm(p0, p1)")
-private external fun wasmCorearchRiscv64ZkAes64esm(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchRiscv64ZkExternAes64esm(p0, p1)")
+private external fun wasmCorearchRiscv64ZkExternAes64esm(p0: String, p1: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchRiscv64ZkAes64ds(p0, p1)")
-private external fun wasmCorearchRiscv64ZkAes64ds(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchRiscv64ZkExternAes64ds(p0, p1)")
+private external fun wasmCorearchRiscv64ZkExternAes64ds(p0: String, p1: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchRiscv64ZkAes64dsm(p0, p1)")
-private external fun wasmCorearchRiscv64ZkAes64dsm(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchRiscv64ZkExternAes64dsm(p0, p1)")
+private external fun wasmCorearchRiscv64ZkExternAes64dsm(p0: String, p1: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscv64ZkAes64im(p0)")
-private external fun wasmCorearchRiscv64ZkAes64im(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscv64ZkExternAes64im(p0)")
+private external fun wasmCorearchRiscv64ZkExternAes64im(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscv64ZkSha512sig0(p0)")
-private external fun wasmCorearchRiscv64ZkSha512sig0(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscv64ZkExternSha512sig0(p0)")
+private external fun wasmCorearchRiscv64ZkExternSha512sig0(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscv64ZkSha512sig1(p0)")
-private external fun wasmCorearchRiscv64ZkSha512sig1(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscv64ZkExternSha512sig1(p0)")
+private external fun wasmCorearchRiscv64ZkExternSha512sig1(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscv64ZkSha512sum0(p0)")
-private external fun wasmCorearchRiscv64ZkSha512sum0(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscv64ZkExternSha512sum0(p0)")
+private external fun wasmCorearchRiscv64ZkExternSha512sum0(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscv64ZkSha512sum1(p0)")
-private external fun wasmCorearchRiscv64ZkSha512sum1(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscv64ZkExternSha512sum1(p0)")
+private external fun wasmCorearchRiscv64ZkExternSha512sum1(p0: String): String
 
-public actual fun aes64es(rs1: Long, rs2: Long): Long =
-    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkAes64es(rs1.toString(), rs2.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externAes64es(rs1: Long, rs2: Long): Long =
+    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkExternAes64es(rs1.toString(), rs2.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun aes64esm(rs1: Long, rs2: Long): Long =
-    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkAes64esm(rs1.toString(), rs2.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externAes64esm(rs1: Long, rs2: Long): Long =
+    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkExternAes64esm(rs1.toString(), rs2.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun aes64ds(rs1: Long, rs2: Long): Long =
-    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkAes64ds(rs1.toString(), rs2.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externAes64ds(rs1: Long, rs2: Long): Long =
+    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkExternAes64ds(rs1.toString(), rs2.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun aes64dsm(rs1: Long, rs2: Long): Long =
-    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkAes64dsm(rs1.toString(), rs2.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externAes64dsm(rs1: Long, rs2: Long): Long =
+    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkExternAes64dsm(rs1.toString(), rs2.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun aes64im(rs1: Long): Long =
-    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkAes64im(rs1.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externAes64im(rs1: Long): Long =
+    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkExternAes64im(rs1.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sha512sig0(rs1: Long): Long =
-    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkSha512sig0(rs1.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSha512sig0(rs1: Long): Long =
+    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkExternSha512sig0(rs1.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sha512sig1(rs1: Long): Long =
-    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkSha512sig1(rs1.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSha512sig1(rs1: Long): Long =
+    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkExternSha512sig1(rs1.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sha512sum0(rs1: Long): Long =
-    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkSha512sum0(rs1.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSha512sum0(rs1: Long): Long =
+    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkExternSha512sum0(rs1.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sha512sum1(rs1: Long): Long =
-    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkSha512sum1(rs1.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSha512sum1(rs1: Long): Long =
+    if (riscv64ZkNapiAvailable) wasmCorearchRiscv64ZkExternSha512sum1(rs1.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")

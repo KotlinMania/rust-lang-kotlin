@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.alloc.string
 
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
+import io.github.kotlinmania.rustlang.alloc.collections.binaryheap.Iter
 import io.github.kotlinmania.rustlang.alloc.fmt.format
 import io.github.kotlinmania.rustlang.alloc.str.fromBoxedUtf8Unchecked
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
@@ -916,7 +917,7 @@ public open class RustAllocString(
                     front = end
                     Pair(prevFront, start)
                 }).collect()
-            rejections.intoIter().chain(listOf(Pair(front, this.len())))
+            rejections.intoIter().chain(Iter.once(Pair(front, this.len())))
         }
         var len = 0
         val ptr = this.vec.asMutPtr()
@@ -1976,7 +1977,7 @@ public open class RustAllocString(
          */
         public fun fromUtf8LossyOwned(v: List<UByte>): String =
             when (val matchVal = String.fromUtf8Lossy(v)) {
-                is Cow.Owned<*> -> {
+                is Cow.Owned<*, *> -> {
                     val (string) = matchVal
                     string
                 }

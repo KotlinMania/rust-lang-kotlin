@@ -19,8 +19,8 @@ private external fun wasmCorearchX86XsaveXrstor(p0: String, p1: Int, p2: Int)
 @JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX86XsaveXsetbv(p0, p1, p2)")
 private external fun wasmCorearchX86XsaveXsetbv(p0: Int, p1: Int, p2: Int)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchX86XsaveXgetbv(p0)")
-private external fun wasmCorearchX86XsaveXgetbv(p0: Int): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchX86XsaveExternXgetbv(p0)")
+private external fun wasmCorearchX86XsaveExternXgetbv(p0: Int): String
 
 @JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX86XsaveXsaveopt(p0, p1, p2)")
 private external fun wasmCorearchX86XsaveXsaveopt(p0: String, p1: Int, p2: Int)
@@ -58,8 +58,8 @@ public actual fun xsetbv(v: UInt, hi: UInt, lo: UInt) {
     }
 }
 
-public actual fun xgetbv(v: UInt): Long =
-    if (x86XsaveNapiAvailable) wasmCorearchX86XsaveXgetbv(v.toInt()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externXgetbv(v: UInt): Long =
+    if (x86XsaveNapiAvailable) wasmCorearchX86XsaveExternXgetbv(v.toInt()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun xsaveopt(p: MutPtr, hi: UInt, lo: UInt) {
     if (x86XsaveNapiAvailable) {

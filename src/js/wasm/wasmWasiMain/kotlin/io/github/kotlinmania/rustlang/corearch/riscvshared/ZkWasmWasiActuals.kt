@@ -15,41 +15,41 @@ private external fun wasiCorearchRiscvsharedZkSm4ks(rs1: Int, rs2: Int, bs: Int)
 public actual fun sm4ks(rs1: Int, rs2: Int, bs: Int): Int =
     wasiCorearchRiscvsharedZkSm4ks(rs1, rs2, bs).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkSm3p0")
-private external fun wasiCorearchRiscvsharedZkSm3p0(rs1: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkExternSm3p0")
+private external fun wasiCorearchRiscvsharedZkExternSm3p0(rs1: Int): Int
 
-public actual fun sm3p0(rs1: Int): Int =
-    wasiCorearchRiscvsharedZkSm3p0(rs1).toInt()
+public actual fun externSm3p0(rs1: Int): Int =
+    wasiCorearchRiscvsharedZkExternSm3p0(rs1).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkSm3p1")
-private external fun wasiCorearchRiscvsharedZkSm3p1(rs1: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkExternSm3p1")
+private external fun wasiCorearchRiscvsharedZkExternSm3p1(rs1: Int): Int
 
-public actual fun sm3p1(rs1: Int): Int =
-    wasiCorearchRiscvsharedZkSm3p1(rs1).toInt()
+public actual fun externSm3p1(rs1: Int): Int =
+    wasiCorearchRiscvsharedZkExternSm3p1(rs1).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkSha256sig0")
-private external fun wasiCorearchRiscvsharedZkSha256sig0(rs1: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkExternSha256sig0")
+private external fun wasiCorearchRiscvsharedZkExternSha256sig0(rs1: Int): Int
 
-public actual fun sha256sig0(rs1: Int): Int =
-    wasiCorearchRiscvsharedZkSha256sig0(rs1).toInt()
+public actual fun externSha256sig0(rs1: Int): Int =
+    wasiCorearchRiscvsharedZkExternSha256sig0(rs1).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkSha256sig1")
-private external fun wasiCorearchRiscvsharedZkSha256sig1(rs1: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkExternSha256sig1")
+private external fun wasiCorearchRiscvsharedZkExternSha256sig1(rs1: Int): Int
 
-public actual fun sha256sig1(rs1: Int): Int =
-    wasiCorearchRiscvsharedZkSha256sig1(rs1).toInt()
+public actual fun externSha256sig1(rs1: Int): Int =
+    wasiCorearchRiscvsharedZkExternSha256sig1(rs1).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkSha256sum0")
-private external fun wasiCorearchRiscvsharedZkSha256sum0(rs1: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkExternSha256sum0")
+private external fun wasiCorearchRiscvsharedZkExternSha256sum0(rs1: Int): Int
 
-public actual fun sha256sum0(rs1: Int): Int =
-    wasiCorearchRiscvsharedZkSha256sum0(rs1).toInt()
+public actual fun externSha256sum0(rs1: Int): Int =
+    wasiCorearchRiscvsharedZkExternSha256sum0(rs1).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkSha256sum1")
-private external fun wasiCorearchRiscvsharedZkSha256sum1(rs1: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkExternSha256sum1")
+private external fun wasiCorearchRiscvsharedZkExternSha256sum1(rs1: Int): Int
 
-public actual fun sha256sum1(rs1: Int): Int =
-    wasiCorearchRiscvsharedZkSha256sum1(rs1).toInt()
+public actual fun externSha256sum1(rs1: Int): Int =
+    wasiCorearchRiscvsharedZkExternSha256sum1(rs1).toInt()
 
 @kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkXperm864")
 private external fun wasiCorearchRiscvsharedZkXperm864(rs1: Long, rs2: Long): Long

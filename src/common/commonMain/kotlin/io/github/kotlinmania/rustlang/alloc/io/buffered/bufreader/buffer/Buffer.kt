@@ -96,7 +96,7 @@ public open class Buffer internal constructor(
             // no part will become uninitialized.
             buf.setInit()
         }
-        when (val tryResult = reader.readBuf(buf.unfilled())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+        when (val tryResult = reader.readBuf(buf.unfilled())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         this.filled += buf.len()
         this.initialized = buf.isInit()
         return RustResult.Ok(buf.len())
@@ -129,7 +129,7 @@ public open class Buffer internal constructor(
             this.pos = 0
             this.filled = buf.len()
             this.initialized = buf.isInit()
-            when (val tryResult = result) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, Error>(tryResult.errValue()) }
+            when (val tryResult = result) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         }
         return RustResult.Ok(this.buffer())
     }

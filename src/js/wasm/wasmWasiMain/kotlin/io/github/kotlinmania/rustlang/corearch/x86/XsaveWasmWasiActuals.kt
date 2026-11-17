@@ -20,11 +20,11 @@ private external fun wasiCorearchX86XsaveXsetbv(v: Int, hi: Int, lo: Int): Unit
 public actual fun xsetbv(v: UInt, hi: UInt, lo: UInt): Unit =
     wasiCorearchX86XsaveXsetbv(v.toInt(), hi.toInt(), lo.toInt())
 
-@kotlin.wasm.WasmImport("kmcore", "corearchX86XsaveXgetbv")
-private external fun wasiCorearchX86XsaveXgetbv(v: Int): Long
+@kotlin.wasm.WasmImport("kmcore", "corearchX86XsaveExternXgetbv")
+private external fun wasiCorearchX86XsaveExternXgetbv(v: Int): Long
 
-public actual fun xgetbv(v: UInt): Long =
-    wasiCorearchX86XsaveXgetbv(v.toInt()).toLong()
+public actual fun externXgetbv(v: UInt): Long =
+    wasiCorearchX86XsaveExternXgetbv(v.toInt()).toLong()
 
 public actual fun xsaveopt(p: MutPtr, hi: UInt, lo: UInt) {
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86XsaveXsaveopt")

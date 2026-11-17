@@ -2,7 +2,9 @@
 package io.github.kotlinmania.rustlang.core.cell.lazy
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.fmt.Write
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
+import io.github.kotlinmania.rustlang.core.marker.Forget
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -259,9 +261,9 @@ unreachableUnchecked()
                 val data = f1()
                 // SAFETY: `PoisonOnPanic` invariant, and we don't drop the old value.
                 run {
-                    write(guard.first, State.Init(data))
+                    Write(guard.first, State.Init(data))
                 }
-                forget(guard)
+                Forget(guard)
                 val data1 = state ?: error("unreachable")
                 return data1
             }

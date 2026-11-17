@@ -12,7 +12,9 @@ import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.process.ChildStderr
 import io.github.kotlinmania.rustlang.std.process.ChildStdin
 import io.github.kotlinmania.rustlang.std.process.ChildStdout
+import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.process.unix.common.ChildPipe
 import io.github.kotlinmania.rustlang.std.sys.process.unix.common.Stdio
 import io.github.kotlinmania.rustlang.std.sys.process.unix.common.getppid
@@ -421,7 +423,7 @@ public interface ExitStatusExt<T> {
     public fun intoRaw(): Int
 }
 
-public fun exitStatusExtFromRawExitStatus(raw: Int): process.ExitStatus = process.ExitStatus.fromInner(From.from(raw))
+public fun exitStatusExtFromRawExitStatus(raw: Int): process.ExitStatus = process.ExitStatus.FromInner(From.from(raw))
 
 public fun process.ExitStatus.signal(): Int? = this.asInner().signal()
 
@@ -547,7 +549,7 @@ public fun process.Child.killProcessGroup(): Result<Unit, Error> = this.handle.s
 public fun fromRawFdStdio(fd: RawFd): process.Stdio {
     val fd1 = FileDesc.fromRawFd(fd)
     val io = Stdio.Fd(fd1)
-    return process.Stdio.fromInner(io)
+    return process.Stdio.FromInner(io)
 }
 
 /**
@@ -557,7 +559,7 @@ public fun fromRawFdStdio(fd: RawFd): process.Stdio {
 public fun fromStdio(fd: OwnedFd): process.Stdio {
     val fd1 = FileDesc.fromInner(fd)
     val io = Stdio.Fd(fd1)
-    return process.Stdio.fromInner(io)
+    return process.Stdio.FromInner(io)
 }
 
 public fun process.ChildStdin.asRawFd(): RawFd = this.asInner().asRawFd()
@@ -586,8 +588,8 @@ public fun fromOwnedFd(childStdin: ChildStdin): OwnedFd = childStdin.intoInner()
  * with the `CLOEXEC` flag set.
  */
 public fun fromChildStdin(fd: OwnedFd): process.ChildStdin {
-    val pipe = ChildPipe.fromInner(fd)
-    return process.ChildStdin.fromInner(pipe)
+    val pipe = ChildPipe.FromInner(fd)
+    return process.ChildStdin.FromInner(pipe)
 }
 
 public fun ChildStdout.asFd(): BorrowedFd = this.asInner().asFd()
@@ -604,8 +606,8 @@ public fun fromOwnedFd(childStdout: ChildStdout): OwnedFd = childStdout.intoInne
  * with the `CLOEXEC` flag set.
  */
 public fun fromChildStdout(fd: OwnedFd): process.ChildStdout {
-    val pipe = ChildPipe.fromInner(fd)
-    return process.ChildStdout.fromInner(pipe)
+    val pipe = ChildPipe.FromInner(fd)
+    return process.ChildStdout.FromInner(pipe)
 }
 
 public fun ChildStderr.asFd(): BorrowedFd = this.asInner().asFd()
@@ -622,8 +624,8 @@ public fun fromOwnedFd(childStderr: ChildStderr): OwnedFd = childStderr.intoInne
  * with the `CLOEXEC` flag set.
  */
 public fun fromChildStderr(fd: OwnedFd): process.ChildStderr {
-    val pipe = ChildPipe.fromInner(fd)
-    return process.ChildStderr.fromInner(pipe)
+    val pipe = ChildPipe.FromInner(fd)
+    return process.ChildStderr.FromInner(pipe)
 }
 
 /**

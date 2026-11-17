@@ -150,7 +150,7 @@ public open class Drain<T, A : Allocator> internal constructor(
             val unyieldedLen = thisRef.iter.len()
             val unyieldedPtr = thisRef.iter.asSlice().asPtr()
             // ZSTs have no identity, so we don't need to move them around.
-            if ((((typeLayoutT).sizeBytes == 0L)).inv()) {
+            if (!((typeLayoutT).sizeBytes == 0L)) {
                 val startPtr = sourceVec.asMutPtr().add(start)
                 // memmove back unyielded elements
                 if (unyieldedPtr != startPtr) {

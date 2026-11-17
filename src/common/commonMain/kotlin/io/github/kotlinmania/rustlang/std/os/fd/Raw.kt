@@ -17,6 +17,7 @@ import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
 import io.github.kotlinmania.rustlang.std.io.stdio.StdoutLock
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sync.Arc
+import io.github.kotlinmania.rustlang.std.sys.FromInner
 
 // Raw Unix-like file descriptors.
 
@@ -173,12 +174,12 @@ public fun <T : AsRawFd> Rc.UniqueRc<T>.asRawFd(): RawFd = this.asRawFd()
 
 public fun PipeReader.asRawFd(): RawFd = this.value.asRawFd()
 
-public fun fromRawFdPipeReader(rawFd: RawFd): PipeReader = PipeReader.fromInner(FromRawFd.FromRawFd(rawFd))
+public fun fromRawFdPipeReader(rawFd: RawFd): PipeReader = PipeReader.FromInner(FromRawFd.FromRawFd(rawFd))
 
 public fun PipeReader.intoRawFd(): RawFd = this.value.intoRawFd()
 
 public fun PipeWriter.asRawFd(): RawFd = this.value.asRawFd()
 
-public fun fromRawFdPipeWriter(rawFd: RawFd): PipeWriter = PipeWriter.fromInner(FromRawFd.FromRawFd(rawFd))
+public fun fromRawFdPipeWriter(rawFd: RawFd): PipeWriter = PipeWriter.FromInner(FromRawFd.FromRawFd(rawFd))
 
 public fun PipeWriter.intoRawFd(): RawFd = this.value.intoRawFd()

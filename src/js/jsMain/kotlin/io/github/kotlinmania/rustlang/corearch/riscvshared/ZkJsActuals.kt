@@ -11,23 +11,23 @@ public actual fun sm4ed(rs1: Int, rs2: Int, bs: Int): Int =
 public actual fun sm4ks(rs1: Int, rs2: Int, bs: Int): Int =
     if (riscvsharedZkNapiAddon != null) (riscvsharedZkNapiAddon.corearchRiscvsharedZkSm4ks(rs1, rs2, bs) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sm3p0(rs1: Int): Int =
-    if (riscvsharedZkNapiAddon != null) (riscvsharedZkNapiAddon.corearchRiscvsharedZkSm3p0(rs1) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSm3p0(rs1: Int): Int =
+    if (riscvsharedZkNapiAddon != null) (riscvsharedZkNapiAddon.corearchRiscvsharedZkExternSm3p0(rs1) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sm3p1(rs1: Int): Int =
-    if (riscvsharedZkNapiAddon != null) (riscvsharedZkNapiAddon.corearchRiscvsharedZkSm3p1(rs1) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSm3p1(rs1: Int): Int =
+    if (riscvsharedZkNapiAddon != null) (riscvsharedZkNapiAddon.corearchRiscvsharedZkExternSm3p1(rs1) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sha256sig0(rs1: Int): Int =
-    if (riscvsharedZkNapiAddon != null) (riscvsharedZkNapiAddon.corearchRiscvsharedZkSha256sig0(rs1) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSha256sig0(rs1: Int): Int =
+    if (riscvsharedZkNapiAddon != null) (riscvsharedZkNapiAddon.corearchRiscvsharedZkExternSha256sig0(rs1) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sha256sig1(rs1: Int): Int =
-    if (riscvsharedZkNapiAddon != null) (riscvsharedZkNapiAddon.corearchRiscvsharedZkSha256sig1(rs1) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSha256sig1(rs1: Int): Int =
+    if (riscvsharedZkNapiAddon != null) (riscvsharedZkNapiAddon.corearchRiscvsharedZkExternSha256sig1(rs1) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sha256sum0(rs1: Int): Int =
-    if (riscvsharedZkNapiAddon != null) (riscvsharedZkNapiAddon.corearchRiscvsharedZkSha256sum0(rs1) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSha256sum0(rs1: Int): Int =
+    if (riscvsharedZkNapiAddon != null) (riscvsharedZkNapiAddon.corearchRiscvsharedZkExternSha256sum0(rs1) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sha256sum1(rs1: Int): Int =
-    if (riscvsharedZkNapiAddon != null) (riscvsharedZkNapiAddon.corearchRiscvsharedZkSha256sum1(rs1) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSha256sum1(rs1: Int): Int =
+    if (riscvsharedZkNapiAddon != null) (riscvsharedZkNapiAddon.corearchRiscvsharedZkExternSha256sum1(rs1) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun xperm864(rs1: Long, rs2: Long): Long =
     if (riscvsharedZkNapiAddon != null) (riscvsharedZkNapiAddon.corearchRiscvsharedZkXperm864(rs1.toString(), rs2.toString()) as String).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")

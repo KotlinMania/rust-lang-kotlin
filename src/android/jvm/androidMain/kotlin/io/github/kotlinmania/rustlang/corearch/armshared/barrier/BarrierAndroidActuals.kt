@@ -8,23 +8,23 @@ private object ArmsharedBarrierJniBridge {
     }
 
     @JvmStatic
-    external fun corearchArmsharedBarrierDmb(arg0: Int)
+    external fun corearchArmsharedBarrierExternDmb(arg0: Int)
 
     @JvmStatic
-    external fun corearchArmsharedBarrierDsb(arg0: Int)
+    external fun corearchArmsharedBarrierExternDsb(arg0: Int)
 
     @JvmStatic
-    external fun corearchArmsharedBarrierIsb(arg0: Int)
+    external fun corearchArmsharedBarrierExternIsb(arg0: Int)
 }
 
-public actual fun dmb(arg0: Int) {
-    ArmsharedBarrierJniBridge.corearchArmsharedBarrierDmb(arg0)
+public actual fun externDmb(arg0: Int) {
+    ArmsharedBarrierJniBridge.corearchArmsharedBarrierExternDmb(arg0)
 }
 
-public actual fun dsb(arg0: Int) {
-    ArmsharedBarrierJniBridge.corearchArmsharedBarrierDsb(arg0)
+public actual fun externDsb(arg0: Int) {
+    ArmsharedBarrierJniBridge.corearchArmsharedBarrierExternDsb(arg0)
 }
 
-public actual fun isb(arg0: Int) {
-    ArmsharedBarrierJniBridge.corearchArmsharedBarrierIsb(arg0)
+public actual fun externIsb(arg0: Int) {
+    ArmsharedBarrierJniBridge.corearchArmsharedBarrierExternIsb(arg0)
 }

@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.alloc.str
 
 import io.github.kotlinmania.rustlang.alloc.boxed.Box
 import io.github.kotlinmania.rustlang.alloc.slice.Join
-import io.github.kotlinmania.rustlang.alloc.slice.join
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.char.methods.isAscii
@@ -42,7 +41,7 @@ public typealias Owned = String
  * Note: `String` in `Concat<String>` is not meaningful here.
  * This type parameter of the trait only exists to enable another impl.
  */
-public fun concatSSlice(slice: List<S>): String = Join.join(slice, "")
+public fun concatSSlice(slice: List<S>): String = Join.Join(slice, "")
 
 public fun joinSSlice(slice: List<S>, sep: String): String {
     // SAFETY: slice can be borrowed as `[String]` and sep is `String`, both are valid UTF-8,

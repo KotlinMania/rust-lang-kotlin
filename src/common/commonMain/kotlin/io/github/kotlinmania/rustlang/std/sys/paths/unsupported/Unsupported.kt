@@ -13,7 +13,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.unsupported.unsupported
 
 public fun getcwd(): Result<PathBuf, Error> = unsupported()
 
-public fun chdir(arg0: path.Path): Result<Unit, Error> = unsupported()
+public fun chdir(arg0: Path): Result<Unit, Error> = unsupported()
 
 public open class SplitPaths(
     public var field0: Nothing,

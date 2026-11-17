@@ -420,7 +420,7 @@ public fun <R : BufRead<R>> defaultReadUntil(r: R, delim: UByte, buf: List<UByte
                 }
             run {
                 val count = available1.len()
-                when (val tryResult = buf.tryReserve(count)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
+                when (val tryResult = buf.tryReserve(count)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
                 // SAFETY:
                 // * self and buf are non-overlapping
                 // * buf[..len] is already initialized

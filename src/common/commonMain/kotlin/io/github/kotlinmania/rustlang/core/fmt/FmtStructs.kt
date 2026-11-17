@@ -3,6 +3,8 @@
 package io.github.kotlinmania.rustlang.core.fmt
 
 import io.github.kotlinmania.rustlang.core.cmp.min
+import io.github.kotlinmania.rustlang.core.convert.From
+import io.github.kotlinmania.rustlang.core.convert.TryFrom
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugList
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugMap
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugSet
@@ -31,6 +33,7 @@ import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.str.asPtr
 import io.github.kotlinmania.rustlang.core.str.chars
+import io.github.kotlinmania.rustlang.core.str.traits.FromStr
 import io.github.kotlinmania.rustlang.core.fmt.fmt as numfmt
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
@@ -502,7 +505,7 @@ public open class Formatter(
             }
         // The `width` field is more of a `min - width` parameter at this point.
         val min = this.options.width
-        return if (width >= Int.from(min)) {
+        return if (width >= Int.From(min)) {
             // We're over the minimum width, so then we can just write the bytes.
             when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
             this.buf.append(buf)
@@ -572,7 +575,7 @@ public open class Formatter(
                     val iter = s.charIndices()
                     val remaining1 =
                         run {
-                            val matchVal1 = iter.advanceBy(Int.from(maxCharCount))
+                            val matchVal1 = iter.advanceBy(Int.From(maxCharCount))
                             when (matchVal1) { is RustResult.Ok<*, *> -> {
                                 0
                             }; is RustResult.Err<*, *> -> {
@@ -583,11 +586,11 @@ public open class Formatter(
                     // SAFETY: The offset of `.charIndices()` is guaranteed to be
                     // in-bounds and between character boundaries.
                     val truncated = s.getUnchecked(0 until iter.offset())
-                    Pair(truncated, Int.from(maxCharCount) - remaining1)
+                    Pair(truncated, Int.From(maxCharCount) - remaining1)
                 }
             }
         // The `width` field is more of a minimum width parameter at this point.
-        return if (charCount < Int.from(this.options.width)) {
+        return if (charCount < Int.From(this.options.width)) {
             // If we're under the minimum width, then fill up the minimum width
             // with the specified string + some alignment.
             val postPadding = when (val tryResult = this.padding(this.options.width - charCount.toUShort(), Alignment.Left)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
@@ -654,7 +657,7 @@ public open class Formatter(
             // remaining parts go through the ordinary padding process.
             val len = formatted1.len()
             val ret =
-                if (Int.from(width) <= len) {
+                if (Int.From(width) <= len) {
                     // no padding
                     // SAFETY: Per the precondition.
                     this.writeFormattedParts(formatted1)
@@ -663,7 +666,7 @@ public open class Formatter(
                     // the formatted output is also shorter than `UShort.MAX`.
                     val len2 =
                         run {
-                            val matchVal = UShort.tryFrom(len)
+                            val matchVal = UShort.TryFrom(len)
                             when (matchVal) { is RustResult.Ok<*, *> -> {
                                 val len1 = matchVal.okValue()
                                 len1
@@ -1581,7 +1584,7 @@ public open class Arguments internal constructor(
                     template = template.add(n.toInt())
                 } else if (n == 128) {
                     // Long literal string piece.
-                    val len = Int.from(run { val bytesTmp1 = template.castArray().read(); ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort() })
+                    val len = Int.From(run { val bytesTmp1 = template.castArray().read(); ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort() })
                     length += len
                     template = template.add(2 + len)
                 } else {
@@ -1712,7 +1715,7 @@ public open class Arguments internal constructor(
         // Same as `fromStr`, but not const.
         // Used by formatArgs() expansion when arguments are inlined,
         // e.g. formatArgs("()", 123), which is not allowed in const.
-        public fun fromStrNonconst(s: String): Arguments = Arguments.fromStr(s)
+        public fun fromStrNonconst(s: String): Arguments = Arguments.FromStr(s)
 
         /**
          * Create a `fmt.Arguments` object for a single static string.

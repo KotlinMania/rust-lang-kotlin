@@ -256,7 +256,7 @@ public open class Condvar(
                 val lock = guardLock(guard)
                 this.inner.waitTimeout(lock, dur)
             }
-        return WaitTimeoutResult(success.inv())
+        return WaitTimeoutResult(!success)
     }
 
     /**

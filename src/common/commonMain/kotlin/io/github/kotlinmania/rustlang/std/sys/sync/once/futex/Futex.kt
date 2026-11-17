@@ -122,7 +122,7 @@ public open class Once(
             val queued = stateAndQueued and QUEUED != 0u
             when {
                 state == COMPLETE -> { return }
-                state == POISONED && ignorePoisoning.inv() -> {
+                state == POISONED && !ignorePoisoning -> {
                     // Panic to propagate the poison.
                     error("Once instance has previously been poisoned")
                 }
@@ -153,7 +153,7 @@ public open class Once(
             val queued = stateAndQueued and QUEUED != 0u
             when {
                 state == COMPLETE -> { return }
-                state == POISONED && ignorePoisoning.inv() -> {
+                state == POISONED && !ignorePoisoning -> {
                     // Panic to propagate the poison.
                     error("Once instance has previously been poisoned")
                 }

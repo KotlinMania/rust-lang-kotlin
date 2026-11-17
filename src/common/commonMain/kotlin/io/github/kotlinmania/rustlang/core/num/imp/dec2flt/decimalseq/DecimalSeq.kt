@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.core.num.imp.dec2flt.decimalseq
 
+import io.github.kotlinmania.rustlang.core.default.Default
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -271,7 +272,7 @@ public open class DecimalSeq(
  */
 public fun parseDecimalSeq(s: List<UByte>): DecimalSeq {
     var s1 = s
-    val d = DecimalSeq.default()
+    val d = DecimalSeq.Default()
     val start = s1
     while (true) {
         val matchVal = s1.splitFirst()

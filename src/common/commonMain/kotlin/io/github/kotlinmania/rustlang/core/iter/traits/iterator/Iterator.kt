@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.iter.traits.iterator
 
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.array.iterNextChunk
+import io.github.kotlinmania.rustlang.core.asynciter.fromiter.FromIter
 import io.github.kotlinmania.rustlang.core.cmp.KeyAndValue
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
@@ -40,12 +41,11 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.Zip
 import io.github.kotlinmania.rustlang.core.iter.traits.accum.Product
 import io.github.kotlinmania.rustlang.core.iter.traits.accum.Sum
-import io.github.kotlinmania.rustlang.core.iter.traits.accum.product
-import io.github.kotlinmania.rustlang.core.iter.traits.accum.sum
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.kmPartialCompareValues
 import io.github.kotlinmania.rustlang.core.mem.swap
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
@@ -1759,7 +1759,7 @@ public interface Iterator<SelfType, Item> {
             val hint = this.sizeHint()
             check(hint.second.isNoneOr({ high -> high >= hint.first })) { "Malformed size_hint $hint" }
         }
-        return FromIterator.fromIter(this)
+        return FromIterator.FromIter(this)
     }
 
     /**
@@ -3047,7 +3047,7 @@ public interface Iterator<SelfType, Item> {
      * check(sum1 == -0.0f)
      * ```
      */
-    public fun <S> sum(): S where S : Sum<Item, S> = Sum.sum(this)
+    public fun <S> sum(): S where S : Sum<Item, S> = Sum.Sum(this)
 
     /**
      * Iterates over the entire iterator, multiplying all the elements.
@@ -3074,7 +3074,7 @@ public interface Iterator<SelfType, Item> {
      * check(factorial(5u) == 120u)
      * ```
      */
-    public fun <P> product(): P where P : Product<Item, P> = Product.product(this)
+    public fun <P> product(): P where P : Product<Item, P> = Product.Product(this)
 
     /**
      * [Lexicographically](Ord#lexicographical-comparison) compares the elements of this [Iterator] with those
@@ -3273,7 +3273,7 @@ public interface Iterator<SelfType, Item> {
      * check(listOf(1, 2).iter().lt(listOf(1, 2).iter()) == false)
      * ```
      */
-    public fun <I> lt(other: I): Boolean = this.partialCmp(other) == Ordering.Less
+    public fun <I> lt(other: I): Boolean = kmPartialCompareValues(this, other)?.let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } } == Ordering.Less
 
     /**
      * Determines if the elements of this [Iterator] are [lexicographically](Ord#lexicographical-comparison)
@@ -3289,7 +3289,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun <I> le(other: I): Boolean =
-        when (val matchVal = this.partialCmp(other)) {
+        when (val matchVal = kmPartialCompareValues(this, other)?.let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } }) {
             Ordering.Less, Ordering.Equal -> true
             else -> false
         }
@@ -3307,7 +3307,7 @@ public interface Iterator<SelfType, Item> {
      * check(listOf(1, 2).iter().gt(listOf(1, 2).iter()) == false)
      * ```
      */
-    public fun <I> gt(other: I): Boolean = this.partialCmp(other) == Ordering.Greater
+    public fun <I> gt(other: I): Boolean = kmPartialCompareValues(this, other)?.let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } } == Ordering.Greater
 
     /**
      * Determines if the elements of this [Iterator] are [lexicographically](Ord#lexicographical-comparison)
@@ -3323,7 +3323,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun <I> ge(other: I): Boolean =
-        when (val matchVal = this.partialCmp(other)) {
+        when (val matchVal = kmPartialCompareValues(this, other)?.let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } }) {
             Ordering.Greater, Ordering.Equal -> true
             else -> false
         }

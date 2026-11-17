@@ -45,7 +45,7 @@ public interface SizedTypeProperties {
      *     // For negative checks, consider using UFCS to emphasize the negation
      *     check((((PrimitiveLayouts.I32).sizeBytes == 0L)).inv())
      *     // As it can sometimes hide in the type otherwise
-     *     check((((UnresolvedTypeLayout<String>()).sizeBytes == 0L)).inv())
+     *     check(!((UnresolvedTypeLayout<String>()).sizeBytes == 0L))
      * }
      * ```
      */

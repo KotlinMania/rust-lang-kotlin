@@ -2,14 +2,20 @@
 package io.github.kotlinmania.rustlang.core.sync.syncview
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.convert.AsMut
 import io.github.kotlinmania.rustlang.core.convert.AsRef
 import io.github.kotlinmania.rustlang.core.future.future.Future
+import io.github.kotlinmania.rustlang.core.hash.Hash
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.core.mem.kmPartialCompareValues
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ops.asyncfunction.AsyncFn
 import io.github.kotlinmania.rustlang.core.ops.asyncfunction.AsyncFnMut
@@ -212,11 +218,11 @@ public open class SyncView<T>(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.inner.hash(state)
+        Hash.Hash(this.inner, state)
         return state
     }
 
-    public open fun cmp(other: SyncView<T>): Ordering = this.inner.cmp(other.inner)
+    public open fun cmp(other: SyncView<T>): Ordering = kmCompareValues(this.inner, other.inner).let { cmpSign -> when { cmpSign < 0 -> io.github.kotlinmania.rustlang.core.cmp.Ordering.Less; cmpSign > 0 -> io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater; else -> io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal } }
 
     public companion object {
         public fun <T> default(fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(), defaultTFn: () -> T): SyncView<T> = SyncView(inner = defaultTFn(), fieldLayout = fieldLayout)
@@ -270,4 +276,4 @@ public fun <Yield, Return, R, G> SyncView<G>.resume(arg: R, resumeGFn: (G, R) ->
 
 public fun <T, U> SyncView<T>.eq(other: SyncView<U>): Boolean = this.inner == other.inner
 
-public fun <T, U> SyncView<T>.partialCmp(other: SyncView<U>): Ordering? = this.inner.partialCmp(other.inner)
+public fun <T, U> SyncView<T>.partialCmp(other: SyncView<U>): Ordering? = kmPartialCompareValues(this.inner, other.inner)?.let { cmpSign -> when { cmpSign < 0 -> io.github.kotlinmania.rustlang.core.cmp.Ordering.Less; cmpSign > 0 -> io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater; else -> io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal } }

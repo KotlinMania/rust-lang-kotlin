@@ -15,7 +15,7 @@
 #endif
 #endif
 
-uint64_t corearchX86RdtscRdtsc(void) {
+uint64_t corearchX86RdtscExternRdtsc(void) {
     typedef uint64_t (*km_fn_t)(void);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

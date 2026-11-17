@@ -1157,10 +1157,68 @@ public fun kmCompareValues(
         is I128 -> a.compareTo(b as I128)
         is ConstPtr -> a.rawAddress.toULong().compareTo((b as ConstPtr).rawAddress.toULong())
         is MutPtr -> a.rawAddress.toULong().compareTo((b as MutPtr).rawAddress.toULong())
+        is Pair<*, *> -> {
+            val rhs = b as Pair<*, *>
+            val c0 = kmCompareValues(a.first, rhs.first)
+            if (c0 != 0) c0 else kmCompareValues(a.second, rhs.second)
+        }
+        is Triple<*, *> -> {
+            val rhs = b as Triple<*, *>
+            val c0 = kmCompareValues(a.first, rhs.first)
+            if (c0 != 0) {
+                c0
+            } else {
+                val c1 = kmCompareValues(a.second, rhs.second)
+                if (c1 != 0) c1 else kmCompareValues(a.third, rhs.third)
+            }
+        }
+        is List<*> -> {
+            val rhs = b as List<*>
+            val minSize = minOf(a.size, rhs.size)
+            for (idx in 0 until minSize) {
+                val c = kmCompareValues(a[idx], rhs[idx])
+                if (c != 0) return c
+            }
+            a.size.compareTo(rhs.size)
+        }
         else -> {
             val leftName = a::class.simpleName ?: "Any"
             throw UnsupportedOperationException("Unsupported natural comparison for $leftName")
         }
+    }
+}
+
+public fun kmPartialCompareValues(
+    a: Any?,
+    b: Any?,
+): Int? {
+    if ((a is Float && a.isNaN()) || (b is Float && b.isNaN())) return null
+    if ((a is Double && a.isNaN()) || (b is Double && b.isNaN())) return null
+    if ((a is F16 && a.isNaN()) || (b is F16 && b.isNaN())) return null
+    if ((a is F128 && a.isNaN()) || (b is F128 && b.isNaN())) return null
+    return when {
+        a is Pair<*, *> && b is Pair<*, *> -> {
+            val c0 = kmPartialCompareValues(a.first, b.first) ?: return null
+            if (c0 != 0) c0 else kmPartialCompareValues(a.second, b.second)
+        }
+        a is Triple<*, *> && b is Triple<*, *> -> {
+            val c0 = kmPartialCompareValues(a.first, b.first) ?: return null
+            if (c0 != 0) {
+                c0
+            } else {
+                val c1 = kmPartialCompareValues(a.second, b.second) ?: return null
+                if (c1 != 0) c1 else kmPartialCompareValues(a.third, b.third)
+            }
+        }
+        a is List<*> && b is List<*> -> {
+            val minSize = minOf(a.size, b.size)
+            for (idx in 0 until minSize) {
+                val c = kmPartialCompareValues(a[idx], b[idx]) ?: return null
+                if (c != 0) return c
+            }
+            a.size.compareTo(b.size)
+        }
+        else -> kmCompareValues(a, b)
     }
 }
 

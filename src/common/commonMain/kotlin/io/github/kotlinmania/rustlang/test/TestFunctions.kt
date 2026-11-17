@@ -330,10 +330,10 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
     }
     val filteredOut = allTestsLen - filtered.totalLen()
     val event = TestEvent.TeFilteredOut(filteredOut)
-    when (val tryResult = notifyAboutTestEvent(event)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+    when (val tryResult = notifyAboutTestEvent(event)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     val shuffleSeed = getShuffleSeed(opts)
     val event1 = TestEvent.TeFiltered(filtered.totalLen(), shuffleSeed)
-    when (val tryResult = notifyAboutTestEvent(event1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+    when (val tryResult = notifyAboutTestEvent(event1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     val concurrency = opts.testThreads.unwrapOrElse(getConcurrency)
     val remaining = filtered.tests
     if (shuffleSeed != null) {
@@ -357,7 +357,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
         while (!remaining1.isEmpty()) {
             val (id, test1) = remaining1.removeFirstOrNull()!!
             val event2 = TestEvent.TeWait(test1.desc.clone())
-            when (val tryResult = notifyAboutTestEvent(event2)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+            when (val tryResult = notifyAboutTestEvent(event2)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             val joinHandle = runTest(opts, !opts.runTests, id, test1, runStrategy, tx.clone())
             // Wait for the test to complete.
             val completedTest = rx.recv().unwrap()
@@ -372,7 +372,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
                     TrTimedFail -> opts.failFast
                 }
             val event3 = TestEvent.TeResult(completedTest)
-            when (val tryResult = notifyAboutTestEvent(event3)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+            when (val tryResult = notifyAboutTestEvent(event3)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             if (failFast) {
                 return RustResult.Ok(Unit)
             }
@@ -384,7 +384,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
                 val timeout = getDefaultTestTimeout()
                 val desc1 = test2.desc.clone()
                 val event4 = TestEvent.TeWait(desc1.clone())
-                when (val tryResult = notifyAboutTestEvent(event4)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+                when (val tryResult = notifyAboutTestEvent(event4)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
                 // here no pad
                 val joinHandle1 = runTest(opts, !opts.runTests, id1, test2, runStrategy, tx.clone())
                 runningTests.insert(id1, RunningTest(joinHandle = joinHandle1))
@@ -403,7 +403,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
                         res = rx.recvTimeout(timeout1)
                         for (test3 in getTimedOutTests(runningTests, timeoutQueue)) {
                             val event5 = TestEvent.TeTimeout(test3)
-                            when (val tryResult = notifyAboutTestEvent(event5)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+                            when (val tryResult = notifyAboutTestEvent(event5)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
                         }
                         when {
                             res is RustResult.Err<*, *> && res.errValue() == RecvTimeoutError.Timeout -> {
@@ -430,7 +430,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
                     TrTimedFail -> opts.failFast
                 }
             val event6 = TestEvent.TeResult(completedTest1)
-            when (val tryResult = notifyAboutTestEvent(event6)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+            when (val tryResult = notifyAboutTestEvent(event6)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             pending -= 1
             if (failFast1) {
                 // Prevent remaining test threads from panicking
@@ -443,13 +443,13 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
         // All benchmarks run at the end, in serial.
         for ((id2, b) in filtered.benches) {
             val event7 = TestEvent.TeWait(b.desc.clone())
-            when (val tryResult = notifyAboutTestEvent(event7)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+            when (val tryResult = notifyAboutTestEvent(event7)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             val joinHandle2 = runTest(opts, false, id2, b, runStrategy, tx.clone())
             // Wait for the test to complete.
             val completedTest2 = rx.recv().unwrap()
             RunningTest(joinHandle = joinHandle2).join(completedTest2)
             val event8 = TestEvent.TeResult(completedTest2)
-            when (val tryResult = notifyAboutTestEvent(event8)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+            when (val tryResult = notifyAboutTestEvent(event8)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         }
     }
     return RustResult.Ok(Unit)

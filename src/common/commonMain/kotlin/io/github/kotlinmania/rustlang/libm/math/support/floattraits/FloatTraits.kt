@@ -38,6 +38,7 @@ import io.github.kotlinmania.rustlang.libm.math.roundeven.roundevenf
 import io.github.kotlinmania.rustlang.libm.math.roundeven.roundevenf128
 import io.github.kotlinmania.rustlang.libm.math.roundeven.roundevenf16
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.DisplayHex
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.CastFrom
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 // only used in c-b
@@ -251,7 +252,7 @@ public interface Float<T, Int, SignedInt> : DisplayHex, AddAssign, MulAssign, Ad
     /**
      * Returns the exponent, not adjusting for bias, not accounting for subnormals or zero.
      */
-    public fun ex(): UInt = UInt.castFrom(this.toBits() shr T.SIG_BITS.toInt()) and T.EXP_SAT
+    public fun ex(): UInt = UInt.CastFrom(this.toBits() shr T.SIG_BITS.toInt()) and T.EXP_SAT
 
     /**
      * Extract the exponent and adjust it for bias, not accounting for subnormals or zero.
@@ -278,7 +279,7 @@ public interface Float<T, Int, SignedInt> : DisplayHex, AddAssign, MulAssign, Ad
             } else {
                 T.Int.ZERO
             }
-        return this.fromBits((sign shl (T.BITS - 1).toInt()) or (T.Int.castFrom(exponent and T.EXP_SAT) shl T.SIG_BITS.toInt()) or (significand and T.SIG_MASK))
+        return this.fromBits((sign shl (T.BITS - 1).toInt()) or (T.Int.CastFrom(exponent and T.EXP_SAT) shl T.SIG_BITS.toInt()) or (significand and T.SIG_MASK))
     }
 
     public fun abs(): T

@@ -17,6 +17,7 @@ import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.os.windows.ffi.EncodeWide
 import io.github.kotlinmania.rustlang.std.os.windows.ffi.OsStringExt
 import io.github.kotlinmania.rustlang.std.os.windows.ffi.encodeWide
+import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.getLastError
@@ -71,7 +72,7 @@ public open class SplitPaths(
                 inProgress.add(b)
             }
         }
-        return if (mustYield.inv() && inProgress.isEmpty()) {
+        return if (!mustYield && inProgress.isEmpty()) {
             null
         } else {
             os2path(inProgress)
@@ -84,8 +85,8 @@ public fun splitPaths(unparsed: OsStr): SplitPaths = SplitPaths(data = unparsed.
 public open class SplitPathsRef(
     public var field0: Nothing,
     public var field1: Unit,
-) : Iterable<path.Path> {
-    override fun iterator(): Iterator<path.Path> = object : AbstractIterator<path.Path>() {
+) : Iterable<Path> {
+    override fun iterator(): Iterator<Path> = object : AbstractIterator<Path>() {
         override fun computeNext() {
             when (val v = this@SplitPathsRef.next()) {
                 null -> done()
@@ -94,7 +95,7 @@ public open class SplitPathsRef(
         }
     }
 
-    public open fun next(): path.Path? = this.field0
+    public open fun next(): Path? = this.field0
 }
 
 public fun splitPathsRef(unparsed: OsStr): SplitPathsRef? = null
@@ -145,7 +146,7 @@ public fun currentExe(): Result<PathBuf, io.github.kotlinmania.rustlang.core.io.
 
 public fun getcwd(): Result<PathBuf, io.github.kotlinmania.rustlang.core.io.error.Error> = fillUtf16Buf({ buf, sz -> getCurrentDirectoryW(sz, buf) }, os2path)
 
-public fun chdir(p: path.Path): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> {
+public fun chdir(p: Path): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> {
     val p1: OsStr = p.asRef()
     val p2 = p1.encodeWide().collect<Vec>()
     p2.push(0)

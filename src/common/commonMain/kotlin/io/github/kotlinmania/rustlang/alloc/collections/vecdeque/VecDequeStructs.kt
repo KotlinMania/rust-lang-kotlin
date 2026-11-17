@@ -9,13 +9,13 @@ import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.intoiter.IntoIt
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.iter.Iter
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.itermut.IterMut
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.specfromiter.SpecFromIter
-import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.specfromiter.specFromIter
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.splice.Splice
 import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Error
@@ -28,6 +28,7 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
@@ -2834,7 +2835,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * })
      * ```
      */
-    public open fun <B> binarySearchByKey(b: B, f: (T) -> B): Result<Int, Int> = this.binarySearchBy({ k -> f(k).cmp(b) })
+    public open fun <B> binarySearchByKey(b: B, f: (T) -> B): Result<Int, Int> = this.binarySearchBy({ k -> kmCompareValues(f(k), b).let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } } })
 
     /**
      * Returns the index of the partition point according to the given predicate
@@ -3376,7 +3377,7 @@ public fun <T, U, A : Allocator> VecDeque<T, A>.eqUArrayn(other: List<U>, n: Int
     return sa == oa && sb == ob
 }
 
-public fun <T, I : Iterable<T>> fromIteratorFromIterVecDequeT(iter: I): VecDeque<T, Global> = SpecFromIter.specFromIter(iter.iterator())
+public fun <T, I : Iterable<T>> fromIteratorFromIterVecDequeT(iter: I): VecDeque<T, Global> = SpecFromIter.SpecFromIter(iter.iterator())
 
 /**
  * Converts a `[T; N]` into a `VecDeque<T>`.
@@ -3390,7 +3391,7 @@ public fun <T, I : Iterable<T>> fromIteratorFromIterVecDequeT(iter: I): VecDeque
 public fun <T> fromVecDequeT(arr: List<T>, n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): VecDeque<T, Global> {
     val deq = VecDeque.withCapacity(n)
     val arr1 = arr
-    if ((((typeLayoutT).sizeBytes == 0L)).inv()) {
+    if (!((typeLayoutT).sizeBytes == 0L)) {
         // SAFETY: VecDeque.withCapacity ensures that there is enough capacity.
         run {
             copyNonoverlapping(arr1.asPtr(), deq.ptr(), n)

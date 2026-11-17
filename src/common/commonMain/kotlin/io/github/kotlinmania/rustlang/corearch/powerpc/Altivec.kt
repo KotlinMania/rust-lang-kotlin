@@ -1287,7 +1287,7 @@ public fun <T> vecSplat(a: T, imm: UInt): T where T : VectorSplat<T> = a.vecSpla
  */
 public fun vecSplatU8(imm5: Byte): VectorUnsignedChar {
     run {
-        check((-1 shl (5 - 1).toInt()) - 1 <= imm5 && imm5 < (1 shl (5 - 1).toInt())) { "IMM5 doesn't fit in 5 bits (signed)" }
+        check((((-1).toInt() shl ((5 - 1).toInt())).toByte()) - 1 <= imm5 && imm5 < ((1.toInt() shl ((5 - 1).toInt())).toByte())) { "IMM5 doesn't fit in 5 bits (signed)" }
     }
     return transmute(Simd<UByte>(List(16) { imm5.toUByte() }))
 }
@@ -1297,7 +1297,7 @@ public fun vecSplatU8(imm5: Byte): VectorUnsignedChar {
  */
 public fun vecSplatS8(imm5: Byte): VectorSignedChar {
     run {
-        check((-1 shl (5 - 1).toInt()) - 1 <= imm5 && imm5 < (1 shl (5 - 1).toInt())) { "IMM5 doesn't fit in 5 bits (signed)" }
+        check((((-1).toInt() shl ((5 - 1).toInt())).toByte()) - 1 <= imm5 && imm5 < ((1.toInt() shl ((5 - 1).toInt())).toByte())) { "IMM5 doesn't fit in 5 bits (signed)" }
     }
     return transmute(Simd<Byte>(List(16) { imm5 }))
 }
@@ -1307,7 +1307,7 @@ public fun vecSplatS8(imm5: Byte): VectorSignedChar {
  */
 public fun vecSplatU16(imm5: Byte): VectorUnsignedShort {
     run {
-        check((-1 shl (5 - 1).toInt()) - 1 <= imm5 && imm5 < (1 shl (5 - 1).toInt())) { "IMM5 doesn't fit in 5 bits (signed)" }
+        check((((-1).toInt() shl ((5 - 1).toInt())).toByte()) - 1 <= imm5 && imm5 < ((1.toInt() shl ((5 - 1).toInt())).toByte())) { "IMM5 doesn't fit in 5 bits (signed)" }
     }
     return transmute(Simd<UShort>(List(8) { imm5.toUShort() }))
 }
@@ -1317,7 +1317,7 @@ public fun vecSplatU16(imm5: Byte): VectorUnsignedShort {
  */
 public fun vecSplatS16(imm5: Byte): VectorSignedShort {
     run {
-        check((-1 shl (5 - 1).toInt()) - 1 <= imm5 && imm5 < (1 shl (5 - 1).toInt())) { "IMM5 doesn't fit in 5 bits (signed)" }
+        check((((-1).toInt() shl ((5 - 1).toInt())).toByte()) - 1 <= imm5 && imm5 < ((1.toInt() shl ((5 - 1).toInt())).toByte())) { "IMM5 doesn't fit in 5 bits (signed)" }
     }
     return transmute(Simd<Short>(List(8) { imm5.toShort() }))
 }
@@ -1327,7 +1327,7 @@ public fun vecSplatS16(imm5: Byte): VectorSignedShort {
  */
 public fun vecSplatU32(imm5: Byte): VectorUnsignedInt {
     run {
-        check((-1 shl (5 - 1).toInt()) - 1 <= imm5 && imm5 < (1 shl (5 - 1).toInt())) { "IMM5 doesn't fit in 5 bits (signed)" }
+        check((((-1).toInt() shl ((5 - 1).toInt())).toByte()) - 1 <= imm5 && imm5 < ((1.toInt() shl ((5 - 1).toInt())).toByte())) { "IMM5 doesn't fit in 5 bits (signed)" }
     }
     return transmute(Simd<UInt>(List(4) { imm5.toUInt() }))
 }
@@ -1337,7 +1337,7 @@ public fun vecSplatU32(imm5: Byte): VectorUnsignedInt {
  */
 public fun vecSplatS32(imm5: Byte): VectorSignedInt {
     run {
-        check((-1 shl (5 - 1).toInt()) - 1 <= imm5 && imm5 < (1 shl (5 - 1).toInt())) { "IMM5 doesn't fit in 5 bits (signed)" }
+        check((((-1).toInt() shl ((5 - 1).toInt())).toByte()) - 1 <= imm5 && imm5 < ((1.toInt() shl ((5 - 1).toInt())).toByte())) { "IMM5 doesn't fit in 5 bits (signed)" }
     }
     return transmute(Simd<Int>(List(4) { imm5.toInt() }))
 }

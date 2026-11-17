@@ -55,7 +55,7 @@ struct JNINativeInterface_ {
 #endif
 #endif
 
-JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkAes64es(JNIEnv* km_env, jclass km_clazz, jlong rs1, jlong rs2) {
+JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkExternAes64es(JNIEnv* km_env, jclass km_clazz, jlong rs1, jlong rs2) {
     (void)km_env;
     (void)km_clazz;
     typedef int64_t (*km_fn_t)(int64_t, int64_t);
@@ -88,7 +88,7 @@ JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Ris
     return (jlong)km_res;
 }
 
-JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkAes64esm(JNIEnv* km_env, jclass km_clazz, jlong rs1, jlong rs2) {
+JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkExternAes64esm(JNIEnv* km_env, jclass km_clazz, jlong rs1, jlong rs2) {
     (void)km_env;
     (void)km_clazz;
     typedef int64_t (*km_fn_t)(int64_t, int64_t);
@@ -121,7 +121,7 @@ JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Ris
     return (jlong)km_res;
 }
 
-JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkAes64ds(JNIEnv* km_env, jclass km_clazz, jlong rs1, jlong rs2) {
+JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkExternAes64ds(JNIEnv* km_env, jclass km_clazz, jlong rs1, jlong rs2) {
     (void)km_env;
     (void)km_clazz;
     typedef int64_t (*km_fn_t)(int64_t, int64_t);
@@ -154,7 +154,7 @@ JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Ris
     return (jlong)km_res;
 }
 
-JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkAes64dsm(JNIEnv* km_env, jclass km_clazz, jlong rs1, jlong rs2) {
+JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkExternAes64dsm(JNIEnv* km_env, jclass km_clazz, jlong rs1, jlong rs2) {
     (void)km_env;
     (void)km_clazz;
     typedef int64_t (*km_fn_t)(int64_t, int64_t);
@@ -187,7 +187,7 @@ JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Ris
     return (jlong)km_res;
 }
 
-JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkAes64im(JNIEnv* km_env, jclass km_clazz, jlong rs1) {
+JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkExternAes64im(JNIEnv* km_env, jclass km_clazz, jlong rs1) {
     (void)km_env;
     (void)km_clazz;
     typedef int64_t (*km_fn_t)(int64_t);
@@ -220,7 +220,7 @@ JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Ris
     return (jlong)km_res;
 }
 
-JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkSha512sig0(JNIEnv* km_env, jclass km_clazz, jlong rs1) {
+JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkExternSha512sig0(JNIEnv* km_env, jclass km_clazz, jlong rs1) {
     (void)km_env;
     (void)km_clazz;
     typedef int64_t (*km_fn_t)(int64_t);
@@ -253,7 +253,7 @@ JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Ris
     return (jlong)km_res;
 }
 
-JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkSha512sig1(JNIEnv* km_env, jclass km_clazz, jlong rs1) {
+JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkExternSha512sig1(JNIEnv* km_env, jclass km_clazz, jlong rs1) {
     (void)km_env;
     (void)km_clazz;
     typedef int64_t (*km_fn_t)(int64_t);
@@ -286,7 +286,7 @@ JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Ris
     return (jlong)km_res;
 }
 
-JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkSha512sum0(JNIEnv* km_env, jclass km_clazz, jlong rs1) {
+JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkExternSha512sum0(JNIEnv* km_env, jclass km_clazz, jlong rs1) {
     (void)km_env;
     (void)km_clazz;
     typedef int64_t (*km_fn_t)(int64_t);
@@ -319,7 +319,7 @@ JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Ris
     return (jlong)km_res;
 }
 
-JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkSha512sum1(JNIEnv* km_env, jclass km_clazz, jlong rs1) {
+JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscv64_Riscv64ZkJniBridge_corearchRiscv64ZkExternSha512sum1(JNIEnv* km_env, jclass km_clazz, jlong rs1) {
     (void)km_env;
     (void)km_clazz;
     typedef int64_t (*km_fn_t)(int64_t);

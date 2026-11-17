@@ -972,7 +972,7 @@ public fun U128.hi(): ULong = (this shr minIntBitsULong.toInt()).toULong()
 
 public fun Short.lo(): Byte = this.toByte()
 
-public fun Short.hi(): Byte = (this shr minIntBitsByte.toInt()).toByte()
+public fun Short.hi(): Byte = ((this.toInt() shr (minIntBitsByte.toInt())).toShort()).toByte()
 
 public fun Int.lo(): Short = this.toShort()
 
@@ -1034,7 +1034,7 @@ public fun Byte.zeroWidenMul(rhs: Byte): Short = (this.zeroWiden() * rhs.zeroWid
 
 public fun Byte.widenMul(rhs: Byte): Short = (this.widen() * rhs.widen().toShort()).toShort()
 
-public fun Byte.widenHi(): Short = ((this.toShort()) shl Byte.BITS.toInt()).toShort()
+public fun Byte.widenHi(): Short = ((this.toShort()).toInt() shl (Byte.BITS.toInt())).toShort()
 
 public fun Short.widen(): Int = this.toInt()
 

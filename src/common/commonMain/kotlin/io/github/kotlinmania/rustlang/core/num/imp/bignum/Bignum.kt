@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.Zip
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -188,7 +189,7 @@ public open class Big64x20(
     public open fun add(other: Big64x20): Big64x20 {
         var sz = cmp.max(this.size, other.size)
         var carry = false
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = iter.Zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(b, carry)
             a = v
             carry = c
@@ -223,7 +224,7 @@ public open class Big64x20(
     public open fun sub(other: Big64x20): Big64x20 {
         val sz = cmp.max(this.size, other.size)
         var noborrow = true
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = iter.Zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(!b, noborrow)
             a = v
             noborrow = c
@@ -519,7 +520,7 @@ public open class Big8x3(
     public open fun add(other: Big8x3): Big8x3 {
         var sz = cmp.max(this.size, other.size)
         var carry = false
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = iter.Zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(b, carry)
             a = v
             carry = c
@@ -554,7 +555,7 @@ public open class Big8x3(
     public open fun sub(other: Big8x3): Big8x3 {
         val sz = cmp.max(this.size, other.size)
         var noborrow = true
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = iter.Zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(!b, noborrow)
             a = v
             noborrow = c
@@ -615,7 +616,7 @@ public open class Big8x3(
             for (i2 in (digits + 1 until last).rev()) {
                 this.base[i2] = ((this.base[i2].toUInt() shl bits1).toUByte()) or ((this.base[i2 - 1].toUInt() shr (digitbits - bits1)).toUByte())
             }
-            this.base[digits] = this.base[digits] shl bits1
+            this.base[digits] = ((this.base[digits]).toUInt() shl bits1).toUByte()
         }
         this.size = sz
         return this

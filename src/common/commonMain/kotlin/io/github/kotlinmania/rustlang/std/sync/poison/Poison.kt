@@ -131,7 +131,7 @@ public open class Flag internal constructor(
     }
 
     public open fun done(guard: Guard) {
-        if (guard.panicking.inv() && thread.panicking()) {
+        if (!guard.panicking && thread.panicking()) {
             this.failed.store(true, Ordering.Relaxed)
         }
     }

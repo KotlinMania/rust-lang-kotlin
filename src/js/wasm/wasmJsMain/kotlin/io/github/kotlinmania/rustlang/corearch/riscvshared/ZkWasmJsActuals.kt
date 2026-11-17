@@ -13,23 +13,23 @@ private external fun wasmCorearchRiscvsharedZkSm4ed(p0: Int, p1: Int, p2: Int): 
 @JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkSm4ks(p0, p1, p2)")
 private external fun wasmCorearchRiscvsharedZkSm4ks(p0: Int, p1: Int, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkSm3p0(p0)")
-private external fun wasmCorearchRiscvsharedZkSm3p0(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkExternSm3p0(p0)")
+private external fun wasmCorearchRiscvsharedZkExternSm3p0(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkSm3p1(p0)")
-private external fun wasmCorearchRiscvsharedZkSm3p1(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkExternSm3p1(p0)")
+private external fun wasmCorearchRiscvsharedZkExternSm3p1(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkSha256sig0(p0)")
-private external fun wasmCorearchRiscvsharedZkSha256sig0(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkExternSha256sig0(p0)")
+private external fun wasmCorearchRiscvsharedZkExternSha256sig0(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkSha256sig1(p0)")
-private external fun wasmCorearchRiscvsharedZkSha256sig1(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkExternSha256sig1(p0)")
+private external fun wasmCorearchRiscvsharedZkExternSha256sig1(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkSha256sum0(p0)")
-private external fun wasmCorearchRiscvsharedZkSha256sum0(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkExternSha256sum0(p0)")
+private external fun wasmCorearchRiscvsharedZkExternSha256sum0(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkSha256sum1(p0)")
-private external fun wasmCorearchRiscvsharedZkSha256sum1(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkExternSha256sum1(p0)")
+private external fun wasmCorearchRiscvsharedZkExternSha256sum1(p0: Int): Int
 
 @JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkXperm864(p0, p1)")
 private external fun wasmCorearchRiscvsharedZkXperm864(p0: String, p1: String): String
@@ -43,23 +43,23 @@ public actual fun sm4ed(rs1: Int, rs2: Int, bs: Int): Int =
 public actual fun sm4ks(rs1: Int, rs2: Int, bs: Int): Int =
     if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkSm4ks(rs1, rs2, bs) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sm3p0(rs1: Int): Int =
-    if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkSm3p0(rs1) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSm3p0(rs1: Int): Int =
+    if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkExternSm3p0(rs1) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sm3p1(rs1: Int): Int =
-    if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkSm3p1(rs1) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSm3p1(rs1: Int): Int =
+    if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkExternSm3p1(rs1) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sha256sig0(rs1: Int): Int =
-    if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkSha256sig0(rs1) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSha256sig0(rs1: Int): Int =
+    if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkExternSha256sig0(rs1) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sha256sig1(rs1: Int): Int =
-    if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkSha256sig1(rs1) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSha256sig1(rs1: Int): Int =
+    if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkExternSha256sig1(rs1) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sha256sum0(rs1: Int): Int =
-    if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkSha256sum0(rs1) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSha256sum0(rs1: Int): Int =
+    if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkExternSha256sum0(rs1) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sha256sum1(rs1: Int): Int =
-    if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkSha256sum1(rs1) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSha256sum1(rs1: Int): Int =
+    if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkExternSha256sum1(rs1) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun xperm864(rs1: Long, rs2: Long): Long =
     if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkXperm864(rs1.toString(), rs2.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")

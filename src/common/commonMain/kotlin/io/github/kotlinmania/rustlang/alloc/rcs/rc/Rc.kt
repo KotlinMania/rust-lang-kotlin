@@ -2518,11 +2518,11 @@ public fun <T, A : AllocatorNightly> fromRcTSliceA(v: List<T>): Rc<List<T>, A> {
  */
 public fun <Owned, B> fromRcB(cow: B): Rc<B, Global> where B : ToOwned<Owned> =
     when (cow) {
-        is Cow.Borrowed<*> -> {
+        is Cow.Borrowed<*, *> -> {
             val (s) = cow
             Rc.from(s)
         }
-        is Cow.Owned<*> -> {
+        is Cow.Owned<*, *> -> {
             val (s1) = cow
             Rc.from(s1)
         }

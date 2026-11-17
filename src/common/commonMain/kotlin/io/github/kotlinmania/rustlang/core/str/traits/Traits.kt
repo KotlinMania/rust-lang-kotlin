@@ -142,9 +142,9 @@ public fun checkRange(slice: String, range: Range<Int>): Boolean {
  * // &s[3 .. 100];
  * ```
  */
-public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.get(slice: String): String? = range.Range.from(this).get(slice)
+public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.get(slice: String): String? = Range.from(this).get(slice)
 
-public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.getMut(slice: String): String? = range.Range.from(this).getMut(slice)
+public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.getMut(slice: String): String? = Range.from(this).getMut(slice)
 
 public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     val slice1 = ConstPtr(slice.rawAddress, slice.rawMeta)
@@ -167,11 +167,11 @@ public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.getUnchecked
     }
 }
 
-public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.index(slice: String): String = range.Range.from(this).index(slice)
+public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.index(slice: String): String = Range.from(this).index(slice)
 
-public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.indexMut(slice: String): String = range.Range.from(this).indexMut(slice)
+public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.indexMut(slice: String): String = Range.from(this).indexMut(slice)
 
-public fun range.Range<Int>.get(slice: String): String? {
+public fun Range<Int>.get(slice: String): String? {
     return if (checkRange(slice, this)) {
         // SAFETY: just checked that `self` is in bounds,
         // and we are passing in a safe reference, so the return value will also be one.
@@ -182,7 +182,7 @@ public fun range.Range<Int>.get(slice: String): String? {
     }
 }
 
-public fun range.Range<Int>.getMut(slice: String): String? =
+public fun Range<Int>.getMut(slice: String): String? =
     if (checkRange(slice, this)) {
         // SAFETY: just checked that `self` is in bounds.
         // We know the pointer is unique because we got it from `slice`.
@@ -191,7 +191,7 @@ public fun range.Range<Int>.getMut(slice: String): String? =
         null
     }
 
-public fun range.Range<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
+public fun Range<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     val slice1 = ConstPtr(slice.rawAddress, slice.rawMeta)
     Unit
     // SAFETY: the caller guarantees that `self` is in bounds of `slice`
@@ -202,7 +202,7 @@ public fun range.Range<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     }
 }
 
-public fun range.Range<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
+public fun Range<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
     val slice1 = MutPtr(slice.rawAddress, slice.rawMeta)
     Unit
     // SAFETY: see comments for `getUnchecked`.
@@ -212,7 +212,7 @@ public fun range.Range<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
     }
 }
 
-public fun range.Range<Int>.index(slice: String): String {
+public fun Range<Int>.index(slice: String): String {
     val (start, end) = Pair(this.start, this.end)
     return when (val matchVal = this.get(slice)) {
         null -> sliceErrorFail(slice, start.toInt(), end)
@@ -223,7 +223,7 @@ public fun range.Range<Int>.index(slice: String): String {
     }
 }
 
-public fun range.Range<Int>.indexMut(slice: String): String {
+public fun Range<Int>.indexMut(slice: String): String {
     // cannot reuse `get` as above, because of NLL trouble
     return if (checkRange(slice, this)) {
         // SAFETY: just checked that `self` is in bounds,
@@ -411,7 +411,7 @@ public fun RangeFrom<Int>.indexMut(slice: String): String {
     }
 }
 
-public fun range.RangeFrom<Int>.get(slice: String): String? {
+public fun io.github.kotlinmania.rustlang.core.range.RangeFrom<Int>.get(slice: String): String? {
     return if (slice.isCharBoundary(this.start)) {
         // SAFETY: just checked that `start` is on a char boundary,
         // and we are passing in a safe reference, so the return value will also be one.
@@ -421,7 +421,7 @@ public fun range.RangeFrom<Int>.get(slice: String): String? {
     }
 }
 
-public fun range.RangeFrom<Int>.getMut(slice: String): String? {
+public fun io.github.kotlinmania.rustlang.core.range.RangeFrom<Int>.getMut(slice: String): String? {
     return if (slice.isCharBoundary(this.start)) {
         // SAFETY: just checked that `start` is on a char boundary,
         // and we are passing in a safe reference, so the return value will also be one.
@@ -431,19 +431,19 @@ public fun range.RangeFrom<Int>.getMut(slice: String): String? {
     }
 }
 
-public fun range.RangeFrom<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
+public fun io.github.kotlinmania.rustlang.core.range.RangeFrom<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     val len = (ConstPtr(slice.rawAddress, slice.rawMeta)).len()
     // SAFETY: the caller has to uphold the safety contract for `getUnchecked`.
     return (this.start until len).getUnchecked(slice)
 }
 
-public fun range.RangeFrom<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
+public fun io.github.kotlinmania.rustlang.core.range.RangeFrom<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
     val len = (MutPtr(slice.rawAddress, slice.rawMeta)).len()
     // SAFETY: the caller has to uphold the safety contract for `getUncheckedMut`.
     return (this.start until len).getUncheckedMut(slice)
 }
 
-public fun range.RangeFrom<Int>.index(slice: String): String {
+public fun io.github.kotlinmania.rustlang.core.range.RangeFrom<Int>.index(slice: String): String {
     val (start, end) = Pair(this.start, slice.length)
     return when (val matchVal = this.get(slice)) {
         null -> sliceErrorFail(slice, start, end)
@@ -454,7 +454,7 @@ public fun range.RangeFrom<Int>.index(slice: String): String {
     }
 }
 
-public fun range.RangeFrom<Int>.indexMut(slice: String): String {
+public fun io.github.kotlinmania.rustlang.core.range.RangeFrom<Int>.indexMut(slice: String): String {
     return if (slice.isCharBoundary(this.start)) {
         // SAFETY: just checked that `start` is on a char boundary,
         // and we are passing in a safe reference, so the return value will also be one.
@@ -550,23 +550,23 @@ public fun RangeInclusive<Int>.indexMut(slice: String): String {
     return sliceErrorFail(slice, start, end)
 }
 
-public fun range.RangeInclusive<Int>.get(slice: String): String? = RangeInclusive.from(this).get(slice)
+public fun io.github.kotlinmania.rustlang.core.range.RangeInclusive<Int>.get(slice: String): String? = RangeInclusive.from(this).get(slice)
 
-public fun range.RangeInclusive<Int>.getMut(slice: String): String? = RangeInclusive.from(this).getMut(slice)
+public fun io.github.kotlinmania.rustlang.core.range.RangeInclusive<Int>.getMut(slice: String): String? = RangeInclusive.from(this).getMut(slice)
 
-public fun range.RangeInclusive<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
+public fun io.github.kotlinmania.rustlang.core.range.RangeInclusive<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     // SAFETY: the caller must uphold the safety contract for `getUnchecked`.
     return RangeInclusive.from(this).getUnchecked(slice)
 }
 
-public fun range.RangeInclusive<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
+public fun io.github.kotlinmania.rustlang.core.range.RangeInclusive<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
     // SAFETY: the caller must uphold the safety contract for `getUncheckedMut`.
     return RangeInclusive.from(this).getUncheckedMut(slice)
 }
 
-public fun range.RangeInclusive<Int>.index(slice: String): String = RangeInclusive.from(this).index(slice)
+public fun io.github.kotlinmania.rustlang.core.range.RangeInclusive<Int>.index(slice: String): String = RangeInclusive.from(this).index(slice)
 
-public fun range.RangeInclusive<Int>.indexMut(slice: String): String = RangeInclusive.from(this).indexMut(slice)
+public fun io.github.kotlinmania.rustlang.core.range.RangeInclusive<Int>.indexMut(slice: String): String = RangeInclusive.from(this).indexMut(slice)
 
 /**
  * Implements substring slicing with syntax `self[..= end]` or `&mut
@@ -618,23 +618,23 @@ public fun RangeToInclusive<Int>.indexMut(slice: String): String = (0..this.end)
  * (`last + 1` is either a starting byte offset as defined by
  * `isCharBoundary`, or equal to `len`), or if `last >= len`.
  */
-public fun range.RangeToInclusive<Int>.get(slice: String): String? = (0..this.last).get(slice)
+public fun io.github.kotlinmania.rustlang.core.range.RangeToInclusive<Int>.get(slice: String): String? = (0..this.last).get(slice)
 
-public fun range.RangeToInclusive<Int>.getMut(slice: String): String? = (0..this.last).getMut(slice)
+public fun io.github.kotlinmania.rustlang.core.range.RangeToInclusive<Int>.getMut(slice: String): String? = (0..this.last).getMut(slice)
 
-public fun range.RangeToInclusive<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
+public fun io.github.kotlinmania.rustlang.core.range.RangeToInclusive<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     // SAFETY: the caller must uphold the safety contract for `getUnchecked`.
     return (0..this.last).getUnchecked(slice)
 }
 
-public fun range.RangeToInclusive<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
+public fun io.github.kotlinmania.rustlang.core.range.RangeToInclusive<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
     // SAFETY: the caller must uphold the safety contract for `getUncheckedMut`.
     return (0..this.last).getUncheckedMut(slice)
 }
 
-public fun range.RangeToInclusive<Int>.index(slice: String): String = (0..this.last).index(slice)
+public fun io.github.kotlinmania.rustlang.core.range.RangeToInclusive<Int>.index(slice: String): String = (0..this.last).index(slice)
 
-public fun range.RangeToInclusive<Int>.indexMut(slice: String): String = (0..this.last).indexMut(slice)
+public fun io.github.kotlinmania.rustlang.core.range.RangeToInclusive<Int>.indexMut(slice: String): String = (0..this.last).indexMut(slice)
 
 /**
  * Parse a value from a string

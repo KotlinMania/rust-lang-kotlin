@@ -145,7 +145,7 @@ JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x86_X86Xsave
     }
 }
 
-JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_x86_X86XsaveJniBridge_corearchX86XsaveXgetbv(JNIEnv* km_env, jclass km_clazz, jint v) {
+JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_x86_X86XsaveJniBridge_corearchX86XsaveExternXgetbv(JNIEnv* km_env, jclass km_clazz, jint v) {
     (void)km_env;
     (void)km_clazz;
     typedef int64_t (*km_fn_t)(uint32_t);

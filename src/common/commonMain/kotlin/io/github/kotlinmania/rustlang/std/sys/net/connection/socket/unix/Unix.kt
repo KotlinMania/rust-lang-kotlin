@@ -77,7 +77,6 @@ import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.fd.asFd
 import io.github.kotlinmania.rustlang.std.os.fd.asRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.intoRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sys.AsInner
@@ -181,7 +180,7 @@ public open class Socket(
     public open fun accept(storage: MutPtr, len: MutPtr): Result<Socket, Error> {
         return run {
             val fd = when (val tryResult = cvtR({ accept4(this.asRawFd(), storage, len, SOCK_CLOEXEC) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Socket, Error>(tryResult.errValue()) }
-            Result.Ok<Socket, Error>(Socket(FileDesc.fromRawFd(fd)))
+            Result.Ok<Socket, Error>(Socket(FileDesc.FromRawFd(fd)))
         }
     }
 
@@ -384,7 +383,7 @@ public open class Socket(
             // flag to atomically create the socket and set it as
             // CLOEXEC. On Linux this was added in 2.6.27.
             val fd = when (val tryResult = cvt(socket(family, ty or SOCK_CLOEXEC, 0))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Socket, Error>(tryResult.errValue()) }
-            val socket = Socket(FileDesc.fromRawFd(fd))
+            val socket = Socket(FileDesc.FromRawFd(fd))
             return Result.Ok<Socket, Error>(socket)
         }
 
@@ -394,13 +393,13 @@ public open class Socket(
                 val fds by localStorageL118C12
                 // Like above, set cloexec atomically
                 when (val tryResult = cvt(socketpair(fam, ty or SOCK_CLOEXEC, 0, localStorageL118C12.elementMutPtr(0)))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Socket, Socket>, Error>(tryResult.errValue()) }
-                Result.Ok<Pair<Socket, Socket>, Error>(Pair(Socket(FileDesc.fromRawFd(fds[0])), Socket(FileDesc.fromRawFd(fds[1]))))
+                Result.Ok<Pair<Socket, Socket>, Error>(Pair(Socket(FileDesc.FromRawFd(fds[0])), Socket(FileDesc.FromRawFd(fds[1]))))
             }
         }
 
         public fun fromInner(fileDesc: FileDesc): Socket = Socket(fileDesc)
 
-        public fun fromRawFd(rawFd: RawFd): Socket = Socket(FromRawFd.fromRawFd(rawFd))
+        public fun fromRawFd(rawFd: RawFd): Socket = Socket(FromRawFd.FromRawFd(rawFd))
     }
 }
 

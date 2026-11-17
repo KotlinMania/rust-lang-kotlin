@@ -71,7 +71,7 @@ int32_t corearchRiscvsharedZkSm4ks(int32_t rs1, int32_t rs2, int32_t bs) {
     return -1;
 }
 
-int32_t corearchRiscvsharedZkSm3p0(int32_t rs1) {
+int32_t corearchRiscvsharedZkExternSm3p0(int32_t rs1) {
     typedef int32_t (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -99,7 +99,7 @@ int32_t corearchRiscvsharedZkSm3p0(int32_t rs1) {
     return -1;
 }
 
-int32_t corearchRiscvsharedZkSm3p1(int32_t rs1) {
+int32_t corearchRiscvsharedZkExternSm3p1(int32_t rs1) {
     typedef int32_t (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -127,7 +127,7 @@ int32_t corearchRiscvsharedZkSm3p1(int32_t rs1) {
     return -1;
 }
 
-int32_t corearchRiscvsharedZkSha256sig0(int32_t rs1) {
+int32_t corearchRiscvsharedZkExternSha256sig0(int32_t rs1) {
     typedef int32_t (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -155,7 +155,7 @@ int32_t corearchRiscvsharedZkSha256sig0(int32_t rs1) {
     return -1;
 }
 
-int32_t corearchRiscvsharedZkSha256sig1(int32_t rs1) {
+int32_t corearchRiscvsharedZkExternSha256sig1(int32_t rs1) {
     typedef int32_t (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -183,7 +183,7 @@ int32_t corearchRiscvsharedZkSha256sig1(int32_t rs1) {
     return -1;
 }
 
-int32_t corearchRiscvsharedZkSha256sum0(int32_t rs1) {
+int32_t corearchRiscvsharedZkExternSha256sum0(int32_t rs1) {
     typedef int32_t (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -211,7 +211,7 @@ int32_t corearchRiscvsharedZkSha256sum0(int32_t rs1) {
     return -1;
 }
 
-int32_t corearchRiscvsharedZkSha256sum1(int32_t rs1) {
+int32_t corearchRiscvsharedZkExternSha256sum1(int32_t rs1) {
     typedef int32_t (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

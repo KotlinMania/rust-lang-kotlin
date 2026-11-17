@@ -10,40 +10,20 @@ import io.github.kotlinmania.rustlang.coresimd.Simd
 
 public fun <Mask, T> Simd<T>.add(rhs: Simd<T>, n: Int): Simd<T> = this.add(rhs, n)
 
-public fun <Mask, T> Simd<T>.addSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.add(rhs, n)
-
 public fun <Mask, T> Simd<T>.mul(rhs: Simd<T>, n: Int): Simd<T> = this.mul(rhs, n)
-
-public fun <Mask, T> Simd<T>.mulSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.mul(rhs, n)
 
 public fun <Mask, T> Simd<T>.sub(rhs: Simd<T>, n: Int): Simd<T> = this.sub(rhs, n)
 
-public fun <Mask, T> Simd<T>.subSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.sub(rhs, n)
-
 public fun <Mask, T> Simd<T>.div(rhs: Simd<T>, n: Int): Simd<T> = this.div(rhs, n)
-
-public fun <Mask, T> Simd<T>.divSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.div(rhs, n)
 
 public fun <Mask, T> Simd<T>.rem(rhs: Simd<T>, n: Int): Simd<T> = this.rem(rhs, n)
 
-public fun <Mask, T> Simd<T>.remSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.rem(rhs, n)
-
 public fun <Mask, T> Simd<T>.bitand(rhs: Simd<T>, n: Int): Simd<T> = this.bitand(rhs, n)
-
-public fun <Mask, T> Simd<T>.bitandSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.bitand(rhs, n)
 
 public fun <Mask, T> Simd<T>.bitor(rhs: Simd<T>, n: Int): Simd<T> = this.bitor(rhs, n)
 
-public fun <Mask, T> Simd<T>.bitorSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.bitor(rhs, n)
-
 public fun <Mask, T> Simd<T>.bitxor(rhs: Simd<T>, n: Int): Simd<T> = this.bitxor(rhs, n)
-
-public fun <Mask, T> Simd<T>.bitxorSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.bitxor(rhs, n)
 
 public fun <Mask, T> Simd<T>.shl(rhs: Simd<T>, n: Int): Simd<T> = this.shl(rhs, n)
 
-public fun <Mask, T> Simd<T>.shlSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.shl(rhs, n)
-
 public fun <Mask, T> Simd<T>.shr(rhs: Simd<T>, n: Int): Simd<T> = this.shr(rhs, n)
-
-public fun <Mask, T> Simd<T>.shrSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.shr(rhs, n)

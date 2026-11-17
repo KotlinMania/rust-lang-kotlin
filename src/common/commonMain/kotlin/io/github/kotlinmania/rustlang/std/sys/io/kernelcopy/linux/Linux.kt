@@ -34,6 +34,7 @@ import io.github.kotlinmania.rustlang.std.io.stdio.StdinLock
 import io.github.kotlinmania.rustlang.std.io.stdio.StdoutLock
 import io.github.kotlinmania.rustlang.std.net.tcp.TcpStream
 import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.fd.asRawFd
 import io.github.kotlinmania.rustlang.std.os.unix.net.UnixStream
@@ -221,9 +222,9 @@ public open class Copier<R : Read, W : Write>(
         // before direct operations on file descriptors ensure that all source and sink buffers are empty
         var flush =
             closure@{
-                val bytes = when (val tryResult = reader.drainTo(writer, ULong.MAX_VALUE)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return@closure RustResult.Err(tryResult.errValue()) }
+                val bytes = when (val tryResult = reader.drainTo(writer, ULong.MAX_VALUE)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return@closure RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
                 // BufWriter buffered bytes have already been accounted for in earlier write() calls
-                when (val tryResult = writer.flush()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return@closure RustResult.Err(tryResult.errValue()) }
+                when (val tryResult = writer.flush()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return@closure RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
                 RustResult.Ok(bytes)
             }
         var written = 0uL
@@ -232,7 +233,7 @@ public open class Copier<R : Read, W : Write>(
             val readfd = (Pair(rCfg, wCfg).first as CopyParams).field1
             val (outputMeta, _) = Pair(rCfg, wCfg).second as CopyParams
             val writefd = (Pair(rCfg, wCfg).second as CopyParams).field1
-            written += when (val tryResult = flush()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
+            written += when (val tryResult = flush()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<CopyState, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             val maxWrite = reader.minLimit()
             if (inputMeta.copyFileRangeCandidate(FdHandle.Input) && outputMeta.copyFileRangeCandidate(FdHandle.Output)) {
                 val result = copyRegularFiles(readfd, writefd, maxWrite)
@@ -370,7 +371,7 @@ public fun <W : Write> StdinLock.drainTo(writer: W, outerLimit: ULong): Result<U
     val buf = bufReader.buffer()
     val buf1 = buf[0 until minOf(buf.len(), outerLimit.tryInto().unwrapOr(Int.MAX_VALUE))]
     val bytesDrained = buf1.len()
-    when (val tryResult = writer.writeAll(buf1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
+    when (val tryResult = writer.writeAll(buf1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     bufReader.consume(bytesDrained)
     return RustResult.Ok(bytesDrained.toULong())
 }
@@ -384,7 +385,7 @@ public fun StderrLock.properties(): CopyParams = CopyParams(fdToMeta(this), this
 public fun <T : CopyRead, W : Write> Take<T>.drainTo(writer: W, outerLimit: ULong): Result<ULong> {
     val localLimit = this.limit()
     val combinedLimit = minOf(outerLimit, localLimit)
-    val bytesDrained = when (val tryResult = this.getMut().drainTo(writer, combinedLimit)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
+    val bytesDrained = when (val tryResult = this.getMut().drainTo(writer, combinedLimit)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     // update limit since read() was bypassed
     this.setLimit(localLimit - bytesDrained)
     return RustResult.Ok(bytesDrained)
@@ -403,11 +404,11 @@ public fun <T : CopyRead, W : Write> BufReader<T>.drainTo(writer: W, outerLimit:
     val buf = this.buffer()
     val buf1 = buf[0 until minOf(buf.len(), outerLimit.tryInto().unwrapOr(Int.MAX_VALUE))]
     val bytes = buf1.len()
-    when (val tryResult = writer.writeAll(buf1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
+    when (val tryResult = writer.writeAll(buf1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     this.consume(bytes)
     val remaining = outerLimit - bytes.toULong()
     // in case of nested bufreaders we also need to drain the ones closer to the source
-    val innerBytes = when (val tryResult = this.getMut().drainTo(writer, remaining)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
+    val innerBytes = when (val tryResult = this.getMut().drainTo(writer, remaining)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     return RustResult.Ok(bytes.toULong() + innerBytes)
 }
 
@@ -425,7 +426,7 @@ public fun CachedFileMetadata.properties(): CopyParams = CopyParams(FdMeta.Metad
 
 public fun <T : AsRawFd> fdToMeta(fd: T): FdMeta {
     val fd1 = fd.asRawFd()
-    val file: File = File.fromRawFd(fd1)
+    val file: File = File.FromRawFd(fd1)
     return run {
         val matchVal = file.metadata()
         when (matchVal) { is RustResult.Ok<*, *> -> {

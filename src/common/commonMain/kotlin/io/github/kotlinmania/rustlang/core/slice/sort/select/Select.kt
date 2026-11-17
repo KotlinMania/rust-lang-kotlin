@@ -150,7 +150,7 @@ public fun <T> medianOfMedians(v: MutableList<T>, isLess: (T, T) -> Boolean, k: 
         check(k1 < v1.size)
     }
     if (false) {
-        check((((UnresolvedTypeLayout<T>()).sizeBytes == 0L)).inv())
+        check(!((UnresolvedTypeLayout<T>()).sizeBytes == 0L))
     }
     // We now know that `k<v.len() <= Long.MAX`
     while (true) {

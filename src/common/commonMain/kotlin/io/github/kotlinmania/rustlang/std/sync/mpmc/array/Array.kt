@@ -16,6 +16,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.std.panicking.Hook
 import io.github.kotlinmania.rustlang.std.sync.mpmc.SendTimeoutError
 import io.github.kotlinmania.rustlang.std.sync.mpmc.context.Context
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Operation
@@ -377,7 +378,7 @@ public open class Channel<T> internal constructor(
             }
             Context.with({ cx ->
                 // Prepare for blocking until a receiver wakes us up.
-                val oper = Operation.hook(token)
+                val oper = Operation.Hook(token)
                 this.senders.register(oper, cx)
                 // Has the channel become ready just now?
                 if (!this.isFull() || this.isDisconnected()) {
@@ -428,7 +429,7 @@ public open class Channel<T> internal constructor(
             }
             Context.with({ cx ->
                 // Prepare for blocking until a sender wakes us up.
-                val oper = Operation.hook(token)
+                val oper = Operation.Hook(token)
                 this.receivers.register(oper, cx)
                 // Has the channel become ready just now?
                 if (!this.isEmpty() || this.isDisconnected()) {

@@ -54,7 +54,6 @@ import io.github.kotlinmania.rustlang.std.os.windows.io.IntoRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.asHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.asRawHandle
-import io.github.kotlinmania.rustlang.std.os.windows.io.fromRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.intoRawHandle
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
@@ -64,7 +63,6 @@ import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.args.windows.fromWideToUserPath
 import io.github.kotlinmania.rustlang.std.sys.asInner
-import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.dir.Dir
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.removedirall.removeDirAllIterative
 import io.github.kotlinmania.rustlang.std.sys.intoInner
@@ -655,7 +653,7 @@ public open class File internal constructor(
                 } else {
                     ConstPtr(0L)
                 }, creation, opts.getFlagsAndAttributes(), MutPtr(0L))
-            val handle1 = HandleOrInvalid.fromRawHandle(handle)
+            val handle1 = HandleOrInvalid.FromRawHandle(handle)
             return when (val matchVal = OwnedHandle.tryFrom(handle1)) {
                 is Result.Ok<*, *> -> {
                     val handle2 = matchVal.okValue()
@@ -683,7 +681,7 @@ public open class File internal constructor(
                             setFileInformationByHandle(handle2.asRawHandle(), eof)
                         }).ioResult()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<File, Error>(tryResult.errValue()) }
                     }
-                    Result.Ok<File, Error>(File(handle = Handle.fromInner(handle2)))
+                    Result.Ok<File, Error>(File(handle = Handle.FromInner(handle2)))
                 }
                 else -> {
                     Result.Err<File, Error>(Error.lastOsError())
@@ -693,7 +691,7 @@ public open class File internal constructor(
 
         public fun fromInner(handle: io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle): File = File(handle = handle)
 
-        public fun fromRawHandle(rawHandle: RawHandle): File = File(handle = FromInner.fromInner(FromRawHandle.fromRawHandle(rawHandle)))
+        public fun fromRawHandle(rawHandle: RawHandle): File = File(handle = FromInner.FromInner(FromRawHandle.FromRawHandle(rawHandle)))
     }
 }
 
@@ -756,15 +754,15 @@ public open class FileType(
 ) {
     public open fun clone(): FileType = FileType(isDirectory, isSymlink)
 
-    public open fun isDir(): Boolean = (this.isSymlink.inv() && this.isDirectory).toUByte()
+    public open fun isDir(): Boolean = (!this.isSymlink && this.isDirectory).toUByte()
 
-    public open fun isFile(): Boolean = (this.isSymlink.inv() && this.isDirectory.inv()).toUByte()
+    public open fun isFile(): Boolean = (!this.isSymlink && !this.isDirectory).toUByte()
 
     public open fun isSymlink(): Boolean = this.isSymlink
 
     public open fun isSymlinkDir(): Boolean = (this.isSymlink && this.isDirectory).toUByte()
 
-    public open fun isSymlinkFile(): Boolean = (this.isSymlink && this.isDirectory.inv()).toUByte()
+    public open fun isSymlinkFile(): Boolean = (this.isSymlink && !this.isDirectory).toUByte()
 
     public companion object {
         public fun typeLayout(): TypeLayout<FileType> =
@@ -1023,7 +1021,7 @@ public open class OpenOptions(
                 matchVal1.second == false && matchVal1.third == false && (this.truncate || this.create || this.createNew) -> {
                     Result.Err<UInt, Error>(Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
                 }
-                matchVal1.third == true && this.truncate && this.createNew.inv() -> Result.Err<UInt, Error>(Error.new(ErrorKind.InvalidInput, "append and truncate cannot both be enabled"))
+                matchVal1.third == true && this.truncate && !this.createNew -> Result.Err<UInt, Error>(Error.new(ErrorKind.InvalidInput, "append and truncate cannot both be enabled"))
                 matchVal1.first == true && matchVal1.second == false && matchVal1.third == false -> Result.Ok<UInt, Error>(GENERIC_READ)
                 matchVal1.first == false && matchVal1.second == true && matchVal1.third == false -> Result.Ok<UInt, Error>(GENERIC_WRITE)
                 matchVal1.first == true && matchVal1.second == true && matchVal1.third == false -> Result.Ok<UInt, Error>(GENERIC_READ or GENERIC_WRITE)

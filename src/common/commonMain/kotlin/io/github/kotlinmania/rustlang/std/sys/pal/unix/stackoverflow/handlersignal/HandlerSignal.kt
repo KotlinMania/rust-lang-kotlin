@@ -238,7 +238,7 @@ public fun makeHandler(mainThread: Boolean): Handler {
     if (false || !NEED_ALTSTACK.load(Ordering.Acquire)) {
         return ConstPtr(0L)
     }
-    if (mainThread.inv()) {
+    if (!mainThread) {
         when (val matchVal = currentGuard()) {
             null -> {}
             else -> {

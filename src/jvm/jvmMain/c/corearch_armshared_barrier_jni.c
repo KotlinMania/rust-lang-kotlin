@@ -55,7 +55,7 @@ struct JNINativeInterface_ {
 #endif
 #endif
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_armshared_barrier_ArmsharedBarrierJniBridge_corearchArmsharedBarrierDmb(JNIEnv* km_env, jclass km_clazz, jint arg0) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_armshared_barrier_ArmsharedBarrierJniBridge_corearchArmsharedBarrierExternDmb(JNIEnv* km_env, jclass km_clazz, jint arg0) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(int32_t);
@@ -85,7 +85,7 @@ JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_armshared_ba
     }
 }
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_armshared_barrier_ArmsharedBarrierJniBridge_corearchArmsharedBarrierDsb(JNIEnv* km_env, jclass km_clazz, jint arg0) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_armshared_barrier_ArmsharedBarrierJniBridge_corearchArmsharedBarrierExternDsb(JNIEnv* km_env, jclass km_clazz, jint arg0) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(int32_t);
@@ -115,7 +115,7 @@ JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_armshared_ba
     }
 }
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_armshared_barrier_ArmsharedBarrierJniBridge_corearchArmsharedBarrierIsb(JNIEnv* km_env, jclass km_clazz, jint arg0) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_armshared_barrier_ArmsharedBarrierJniBridge_corearchArmsharedBarrierExternIsb(JNIEnv* km_env, jclass km_clazz, jint arg0) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(int32_t);

@@ -178,7 +178,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchsha
     return (jint)km_res;
 }
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedIocsrrdB(JNIEnv* km_env, jclass km_clazz, jint a) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedExternIocsrrdB(JNIEnv* km_env, jclass km_clazz, jint a) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(int32_t);
@@ -211,7 +211,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchsha
     return (jint)km_res;
 }
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedIocsrrdH(JNIEnv* km_env, jclass km_clazz, jint a) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedExternIocsrrdH(JNIEnv* km_env, jclass km_clazz, jint a) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(int32_t);
@@ -244,7 +244,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchsha
     return (jint)km_res;
 }
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedIocsrrdW(JNIEnv* km_env, jclass km_clazz, jint a) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedExternIocsrrdW(JNIEnv* km_env, jclass km_clazz, jint a) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(int32_t);
@@ -277,7 +277,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchsha
     return (jint)km_res;
 }
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedIocsrwrB(JNIEnv* km_env, jclass km_clazz, jint a, jint b) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedExternIocsrwrB(JNIEnv* km_env, jclass km_clazz, jint a, jint b) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(int32_t, int32_t);
@@ -307,7 +307,7 @@ JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchsha
     }
 }
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedIocsrwrH(JNIEnv* km_env, jclass km_clazz, jint a, jint b) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedExternIocsrwrH(JNIEnv* km_env, jclass km_clazz, jint a, jint b) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(int32_t, int32_t);
@@ -337,7 +337,7 @@ JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchsha
     }
 }
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedIocsrwrW(JNIEnv* km_env, jclass km_clazz, jint a, jint b) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedExternIocsrwrW(JNIEnv* km_env, jclass km_clazz, jint a, jint b) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(int32_t, int32_t);
@@ -397,7 +397,7 @@ JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchsha
     }
 }
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedCpucfg(JNIEnv* km_env, jclass km_clazz, jint a) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedExternCpucfg(JNIEnv* km_env, jclass km_clazz, jint a) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(int32_t);
@@ -460,7 +460,7 @@ JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchsha
     }
 }
 
-JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedFrecipeS(JNIEnv* km_env, jclass km_clazz, jfloat a) {
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedExternFrecipeS(JNIEnv* km_env, jclass km_clazz, jfloat a) {
     (void)km_env;
     (void)km_clazz;
     typedef float (*km_fn_t)(float);
@@ -493,7 +493,7 @@ JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchs
     return (jfloat)km_res;
 }
 
-JNIEXPORT jdouble JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedFrecipeD(JNIEnv* km_env, jclass km_clazz, jdouble a) {
+JNIEXPORT jdouble JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedExternFrecipeD(JNIEnv* km_env, jclass km_clazz, jdouble a) {
     (void)km_env;
     (void)km_clazz;
     typedef double (*km_fn_t)(double);
@@ -526,7 +526,7 @@ JNIEXPORT jdouble JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarch
     return (jdouble)km_res;
 }
 
-JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedFrsqrteS(JNIEnv* km_env, jclass km_clazz, jfloat a) {
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedExternFrsqrteS(JNIEnv* km_env, jclass km_clazz, jfloat a) {
     (void)km_env;
     (void)km_clazz;
     typedef float (*km_fn_t)(float);
@@ -559,7 +559,7 @@ JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchs
     return (jfloat)km_res;
 }
 
-JNIEXPORT jdouble JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedFrsqrteD(JNIEnv* km_env, jclass km_clazz, jdouble a) {
+JNIEXPORT jdouble JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarchshared_LoongarchsharedJniBridge_corearchLoongarchsharedExternFrsqrteD(JNIEnv* km_env, jclass km_clazz, jdouble a) {
     (void)km_env;
     (void)km_clazz;
     typedef double (*km_fn_t)(double);

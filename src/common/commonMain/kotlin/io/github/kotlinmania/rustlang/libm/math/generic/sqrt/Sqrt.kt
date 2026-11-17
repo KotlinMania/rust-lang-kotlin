@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.env.Round
 import io.github.kotlinmania.rustlang.libm.math.support.env.Status
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.IntTy
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.CastFrom
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.HInt
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
@@ -65,7 +66,7 @@ public fun <Int, SignedInt, ISet1, ISet2, D, OtherSign, Unsigned, F> sqrtRound(x
             val specialCase = (ix - (expLsb.toULong())) >= F.EXP_MASK - expLsb
             Pair(Exp.NoShift(Unit), specialCase)
         } else {
-            val top = UInt.castFrom(ix shr F.SIG_BITS.toInt())
+            val top = UInt.CastFrom(ix shr F.SIG_BITS.toInt())
             val specialCase1 = top.wrappingSub(1) >= F.EXP_SAT - 1
             Pair(Exp.Shifted(top), specialCase1)
         }
@@ -136,10 +137,10 @@ public fun <Int, SignedInt, ISet1, ISet2, D, OtherSign, Unsigned, F> sqrtRound(x
             }
         }
     // Extract the top 6 bits of the significand with the lowest bit of the exponent.
-    val i = castFrom(ix shr (F.SIG_BITS - 6).toInt()) and 0x7F
+    val i = CastFrom(ix shr (F.SIG_BITS - 6).toInt()) and 0x7F
     // Start with an initial guess for `r = 1 / sqrt(m)` from the table, and shift `m` as an
     // initial value for `s = sqrt(m)`. See the module documentation for details.
-    val r1U0: ISet1 = F.ISet1.castFrom(RSQRT_TAB[i]) shl (F.ISet1.BITS - 16).toInt()
+    val r1U0: ISet1 = F.ISet1.CastFrom(RSQRT_TAB[i]) shl (F.ISet1.BITS - 16).toInt()
     val s1U2: ISet1 = ((mU22) shr (F.BITS - F.ISet1.BITS).toInt()).cast()
     // Perform iterations, if any, at quarter width (used for `f128`).
     val (r1U01, s1U2) = goldschmidt<ISet1>(r1U0, s1U2, F.SET1_ROUNDS, false)
@@ -181,7 +182,7 @@ public fun <Int, SignedInt, ISet1, ISet2, D, OtherSign, Unsigned, F> sqrtRound(x
     when (exp) {
         is Exp.Shifted<*> -> {
             val (e1) = exp
-            m = m or (IntTy.castFrom(e1) shl F.SIG_BITS.toInt())
+            m = m or (IntTy.CastFrom(e1) shl F.SIG_BITS.toInt())
         }
         is Exp.NoShift<*> -> {
             val (e2) = exp

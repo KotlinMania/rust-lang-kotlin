@@ -51,7 +51,7 @@ static uint64_t km_napi_arg_u64(const Napi::Value& v) {
     return 0;
 }
 
-static Napi::Value corearchX8664FxsrFxsave64_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchX8664FxsrExternFxsave64_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     void* p = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
     typedef void (*km_fn_t)(void*);
@@ -87,7 +87,7 @@ static Napi::Value corearchX8664FxsrFxsave64_napi(const Napi::CallbackInfo& km_i
     return km_env.Undefined();
 }
 
-static Napi::Value corearchX8664FxsrFxrstor64_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchX8664FxsrExternFxrstor64_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     void* p = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
     typedef void (*km_fn_t)(void*);
@@ -124,8 +124,8 @@ static Napi::Value corearchX8664FxsrFxrstor64_napi(const Napi::CallbackInfo& km_
 }
 
 static void register_x8664_fxsr_napi(Napi::Env env, Napi::Object exports) {
-    exports.Set("corearchX8664FxsrFxsave64", Napi::Function::New(env, corearchX8664FxsrFxsave64_napi));
-    exports.Set("corearchX8664FxsrFxrstor64", Napi::Function::New(env, corearchX8664FxsrFxrstor64_napi));
+    exports.Set("corearchX8664FxsrExternFxsave64", Napi::Function::New(env, corearchX8664FxsrExternFxsave64_napi));
+    exports.Set("corearchX8664FxsrExternFxrstor64", Napi::Function::New(env, corearchX8664FxsrExternFxrstor64_napi));
 }
 
 static KmNapiRegistrarNode registrar_node = { &register_x8664_fxsr_napi, nullptr };

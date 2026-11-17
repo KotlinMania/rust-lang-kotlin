@@ -1,6 +1,7 @@
 // port-lint: source net/socket_addr.rs
 package io.github.kotlinmania.rustlang.core.net.socketaddr
 
+import io.github.kotlinmania.rustlang.core.iter.adapters.mapwindows.Buffer
 import io.github.kotlinmania.rustlang.core.net.displaybuffer.DisplayBuffer
 import io.github.kotlinmania.rustlang.core.net.ipaddr.IpAddr
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
@@ -432,7 +433,7 @@ public open class SocketAddrV4(
             f.writeFmt("${this.ip()}:${this.port()}")
         } else {
             val LONGEST_IPV4_SOCKET_ADDR: String = "255.255.255.255:65535"
-            val buf = DisplayBuffer.buffer(LONGEST_IPV4_SOCKET_ADDR.len())
+            val buf = DisplayBuffer.Buffer(LONGEST_IPV4_SOCKET_ADDR.len())
             val buf1 = DisplayBuffer.new(buf)
             buf1.writeFmt("${this.ip()}:${this.port()}").unwrap()
             run { f.append(buf1.asStr()); Result.Ok<Unit, Unit>(Unit) }
@@ -692,7 +693,7 @@ public open class SocketAddrV6(
             }
         } else {
             val LONGEST_IPV6_SOCKET_ADDR: String = "[ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff%4294967295]:65535"
-            val buf = DisplayBuffer.buffer(LONGEST_IPV6_SOCKET_ADDR.len())
+            val buf = DisplayBuffer.Buffer(LONGEST_IPV6_SOCKET_ADDR.len())
             val buf1 = DisplayBuffer.new(buf)
             when (val matchVal1 = this.scopeId()) {
                 0u -> buf1.writeFmt("[${this.ip()}]:${this.port()}")

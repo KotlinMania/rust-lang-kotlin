@@ -25,10 +25,13 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.cmp.clamp
+import io.github.kotlinmania.rustlang.core.convert.TryInto
 import io.github.kotlinmania.rustlang.core.convert.num.BoundedCastFromInt
 import io.github.kotlinmania.rustlang.core.convert.num.CheckedCastFromInt
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.disjointBitor
+import io.github.kotlinmania.rustlang.core.intrinsics.fallback.CarryingMulAdd
+import io.github.kotlinmania.rustlang.core.intrinsics.fallback.carryingMulAdd
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI128
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI16
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI32
@@ -335,7 +338,7 @@ public fun Byte.trailingOnes(): UInt = (this.toUByte()).trailingOnes()
  * check(n.isolateHighestOne() == 0x40)
  * ```
  */
-public fun Byte.isolateHighestOne(): Byte = (this.toInt() and (((1.toByte()) shl (8u - 1u).toInt()).wrappingShr(this.leadingZeros())).toInt()).toByte()
+public fun Byte.isolateHighestOne(): Byte = (this.toInt() and ((((1.toByte()).toInt() shl ((8u - 1u).toInt())).toByte()).wrappingShr(this.leadingZeros())).toInt()).toByte()
 
 /**
  * Returns `self` with only the least significant bit set, or `0` if
@@ -2271,7 +2274,7 @@ public fun Byte.overflowingMul(rhs: Byte): Pair<Byte, Boolean> {
  * }
  * ```
  */
-public fun Byte.carryingMul(rhs: Byte, carry: Byte): Pair<UByte, Byte> = Byte.carryingMulAdd(this, rhs, carry, 0)
+public fun Byte.carryingMul(rhs: Byte, carry: Byte): Pair<UByte, Byte> = Byte.CarryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`
@@ -2659,7 +2662,7 @@ public fun Byte.remEuclid(rhs: Byte): Byte {
 public fun Byte.divFloor(rhs: Byte): Byte {
     val d = this / rhs
     val r = this % rhs
-    val correction = ((this.toInt() xor rhs.toInt()).toByte()) shr (8u - 1).toInt()
+    val correction = (((this.toInt() xor rhs.toInt()).toByte()).toInt() shr ((8u - 1).toInt())).toByte()
     return if (r != 0.toByte()) {
         d + correction
     } else {
@@ -2691,7 +2694,7 @@ public fun Byte.divFloor(rhs: Byte): Byte {
 public fun Byte.divCeil(rhs: Byte): Byte {
     val d = this / rhs
     val r = this % rhs
-    val correction = 1 + (((this.toInt() xor rhs.toInt()).toByte()) shr (8u - 1).toInt())
+    val correction = 1 + ((((this.toInt() xor rhs.toInt()).toByte()).toInt() shr ((8u - 1).toInt())).toByte())
     return if (r != 0.toByte()) {
         d + correction
     } else {
@@ -3153,7 +3156,7 @@ public fun Byte.Companion.maxValue(): Byte = Byte.MAX_VALUE
  * ```
  */
 public fun Byte.clampMagnitude(limit: UByte): Byte =
-    when (val matchVal = limit.tryInto()) {
+    when (val matchVal = TryInto.TryInto(limit)) {
         is Result.Ok<*, *> -> {
             val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
@@ -3497,7 +3500,7 @@ public fun Short.trailingOnes(): UInt = (this.toUShort()).trailingOnes()
  * check(n.isolateHighestOne() == 0x40)
  * ```
  */
-public fun Short.isolateHighestOne(): Short = (this.toInt() and (((1.toShort()) shl (16u - 1u).toInt()).wrappingShr(this.leadingZeros())).toInt()).toShort()
+public fun Short.isolateHighestOne(): Short = (this.toInt() and ((((1.toShort()).toInt() shl ((16u - 1u).toInt())).toShort()).wrappingShr(this.leadingZeros())).toInt()).toShort()
 
 /**
  * Returns `self` with only the least significant bit set, or `0` if
@@ -5433,7 +5436,7 @@ public fun Short.overflowingMul(rhs: Short): Pair<Short, Boolean> {
  * }
  * ```
  */
-public fun Short.carryingMul(rhs: Short, carry: Short): Pair<UShort, Short> = Short.carryingMulAdd(this, rhs, carry, 0)
+public fun Short.carryingMul(rhs: Short, carry: Short): Pair<UShort, Short> = Short.CarryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`
@@ -5821,7 +5824,7 @@ public fun Short.remEuclid(rhs: Short): Short {
 public fun Short.divFloor(rhs: Short): Short {
     val d = this / rhs
     val r = this % rhs
-    val correction = ((this.toInt() xor rhs.toInt()).toShort()) shr (16u - 1).toInt()
+    val correction = (((this.toInt() xor rhs.toInt()).toShort()).toInt() shr ((16u - 1).toInt())).toShort()
     return if (r != 0.toShort()) {
         d + correction
     } else {
@@ -5853,7 +5856,7 @@ public fun Short.divFloor(rhs: Short): Short {
 public fun Short.divCeil(rhs: Short): Short {
     val d = this / rhs
     val r = this % rhs
-    val correction = 1 + (((this.toInt() xor rhs.toInt()).toShort()) shr (16u - 1).toInt())
+    val correction = 1 + ((((this.toInt() xor rhs.toInt()).toShort()).toInt() shr ((16u - 1).toInt())).toShort())
     return if (r != 0.toShort()) {
         d + correction
     } else {
@@ -6285,7 +6288,7 @@ public fun Short.Companion.maxValue(): Short = Short.MAX_VALUE
  * ```
  */
 public fun Short.clampMagnitude(limit: UShort): Short =
-    when (val matchVal = limit.tryInto()) {
+    when (val matchVal = TryInto.TryInto(limit)) {
         is Result.Ok<*, *> -> {
             val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
@@ -8565,7 +8568,7 @@ public fun Int.overflowingMul(rhs: Int): Pair<Int, Boolean> {
  * }
  * ```
  */
-public fun Int.carryingMul(rhs: Int, carry: Int): Pair<UInt, Int> = Int.carryingMulAdd(this, rhs, carry, 0)
+public fun Int.carryingMul(rhs: Int, carry: Int): Pair<UInt, Int> = Int.CarryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`
@@ -9417,7 +9420,7 @@ public fun Int.Companion.maxValue(): Int = Int.MAX_VALUE
  * ```
  */
 public fun Int.clampMagnitude(limit: UInt): Int =
-    when (val matchVal = limit.tryInto()) {
+    when (val matchVal = TryInto.TryInto(limit)) {
         is Result.Ok<*, *> -> {
             val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
@@ -11697,7 +11700,7 @@ public fun Long.overflowingMul(rhs: Long): Pair<Long, Boolean> {
  * }
  * ```
  */
-public fun Long.carryingMul(rhs: Long, carry: Long): Pair<ULong, Long> = Long.carryingMulAdd(this, rhs, carry, 0)
+public fun Long.carryingMul(rhs: Long, carry: Long): Pair<ULong, Long> = Long.CarryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`
@@ -12549,7 +12552,7 @@ public fun Long.Companion.maxValue(): Long = Long.MAX_VALUE
  * ```
  */
 public fun Long.clampMagnitude(limit: ULong): Long =
-    when (val matchVal = limit.tryInto()) {
+    when (val matchVal = TryInto.TryInto(limit)) {
         is Result.Ok<*, *> -> {
             val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
@@ -14837,7 +14840,7 @@ public fun I128.overflowingMul(rhs: I128): Pair<I128, Boolean> {
  * }
  * ```
  */
-public fun I128.carryingMul(rhs: I128, carry: I128): Pair<U128, I128> = I128.carryingMulAdd(this, rhs, carry, 0)
+public fun I128.carryingMul(rhs: I128, carry: I128): Pair<U128, I128> = I128.CarryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`
@@ -15689,7 +15692,7 @@ public fun I128.Companion.maxValue(): I128 = I128.MAX_VALUE
  * ```
  */
 public fun I128.clampMagnitude(limit: U128): I128 =
-    when (val matchVal = limit.tryInto()) {
+    when (val matchVal = TryInto.TryInto(limit)) {
         is Result.Ok<*, *> -> {
             val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
@@ -16091,7 +16094,7 @@ public fun Int.overflowingSubUnsigned(rhs: Int): Pair<Int, Boolean> {
  * ```
  */
 public fun Int.clampMagnitude(limit: Int): Int =
-    when (val matchVal = limit.tryInto()) {
+    when (val matchVal = TryInto.TryInto(limit)) {
         is Result.Ok<*, *> -> {
             val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
@@ -16187,8 +16190,8 @@ public fun UByte.bit(index: UInt): Boolean = (this and (1u shl index.toInt())) !
  * ```
  */
 public fun UByte.setBit(index: UInt, value: Boolean): UByte {
-    this = this and (1u shl index.toInt()).inv()
-    this = this or (((value.toUByte()).toUInt() shl (index.toInt())).toUByte())
+    (this and (1u shl index.toInt()).inv()).let {}
+    (this or (((value.toUByte()).toUInt() shl (index.toInt())).toUByte())).let {}
     return this
 }
 
@@ -18475,7 +18478,7 @@ public fun UByte.overflowingMul(rhs: UByte): Pair<UByte, Boolean> {
  * }
  * ```
  */
-public fun UByte.carryingMul(rhs: UByte, carry: UByte): Pair<UByte, UByte> = UByte.carryingMulAdd(this, rhs, carry, 0)
+public fun UByte.carryingMul(rhs: UByte, carry: UByte): Pair<UByte, UByte> = UByte.CarryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`.
@@ -19998,8 +20001,8 @@ public fun UShort.bit(index: UInt): Boolean = (this and (1u shl index.toInt())) 
  * ```
  */
 public fun UShort.setBit(index: UInt, value: Boolean): UShort {
-    this = this and (1u shl index.toInt()).inv()
-    this = this or (((value.toUShort()).toUInt() shl (index.toInt())).toUShort())
+    (this and (1u shl index.toInt()).inv()).let {}
+    (this or (((value.toUShort()).toUInt() shl (index.toInt())).toUShort())).let {}
     return this
 }
 
@@ -22286,7 +22289,7 @@ public fun UShort.overflowingMul(rhs: UShort): Pair<UShort, Boolean> {
  * }
  * ```
  */
-public fun UShort.carryingMul(rhs: UShort, carry: UShort): Pair<UShort, UShort> = UShort.carryingMulAdd(this, rhs, carry, 0)
+public fun UShort.carryingMul(rhs: UShort, carry: UShort): Pair<UShort, UShort> = UShort.CarryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`.
@@ -23217,8 +23220,8 @@ public fun UInt.bit(index: UInt): Boolean = (this and (1u shl index.toInt())) !=
  * ```
  */
 public fun UInt.setBit(index: UInt, value: Boolean): UInt {
-    this = this and (1u shl index.toInt()).inv()
-    this = this or ((value.toUInt()) shl index.toInt())
+    (this and (1u shl index.toInt()).inv()).let {}
+    (this or ((value.toUInt()) shl index.toInt())).let {}
     return this
 }
 
@@ -25505,7 +25508,7 @@ public fun UInt.overflowingMul(rhs: UInt): Pair<UInt, Boolean> {
  * }
  * ```
  */
-public fun UInt.carryingMul(rhs: UInt, carry: UInt): Pair<UInt, UInt> = UInt.carryingMulAdd(this, rhs, carry, 0)
+public fun UInt.carryingMul(rhs: UInt, carry: UInt): Pair<UInt, UInt> = UInt.CarryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`.
@@ -26411,8 +26414,8 @@ public fun ULong.bit(index: UInt): Boolean = (this and (1uL shl index.toInt())) 
  * ```
  */
 public fun ULong.setBit(index: UInt, value: Boolean): ULong {
-    this = this and (1uL shl index.toInt()).inv()
-    this = this or ((value.toULong()) shl index.toInt())
+    (this and (1uL shl index.toInt()).inv()).let {}
+    (this or ((value.toULong()) shl index.toInt())).let {}
     return this
 }
 
@@ -28699,7 +28702,7 @@ public fun ULong.overflowingMul(rhs: ULong): Pair<ULong, Boolean> {
  * }
  * ```
  */
-public fun ULong.carryingMul(rhs: ULong, carry: ULong): Pair<ULong, ULong> = ULong.carryingMulAdd(this, rhs, carry, 0)
+public fun ULong.carryingMul(rhs: ULong, carry: ULong): Pair<ULong, ULong> = ULong.CarryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`.
@@ -29605,8 +29608,8 @@ public fun U128.bit(index: UInt): Boolean = (this and (U128(0x0uL, 0x1uL) shl in
  * ```
  */
 public fun U128.setBit(index: UInt, value: Boolean): U128 {
-    this = this and (U128(0x0uL, 0x1uL) shl index.toInt()).inv()
-    this = this or ((U128.fromLong(value.toLong())) shl index.toInt())
+    (this and (U128(0x0uL, 0x1uL) shl index.toInt()).inv()).let {}
+    (this or ((U128.fromLong(value.toLong())) shl index.toInt())).let {}
     return this
 }
 
@@ -31893,7 +31896,7 @@ public fun U128.overflowingMul(rhs: U128): Pair<U128, Boolean> {
  * }
  * ```
  */
-public fun U128.carryingMul(rhs: U128, carry: U128): Pair<U128, U128> = U128.carryingMulAdd(this, rhs, carry, 0)
+public fun U128.carryingMul(rhs: U128, carry: U128): Pair<U128, U128> = U128.CarryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`.

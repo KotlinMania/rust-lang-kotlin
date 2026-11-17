@@ -31,8 +31,8 @@ import io.github.kotlinmania.rustlang.core.result.Result as RustResult
  * are specialized with.
  */
 public fun <R, W> genericCopy(reader: R, writer: W): Result<ULong> where R : Read<R>, W : Write {
-    val readPriority = reader.bufferPriority()
-    val writePriority = writer.bufferPriority()
+    val readPriority = BufferedReaderSpec.BufferPriority(reader)
+    val writePriority = BufferedWriterSpec.BufferPriority(writer)
     if (readPriority >= DEFAULT_BUF_SIZE && readPriority >= writePriority) {
         return reader.copyTo(writer)
     }
@@ -77,7 +77,7 @@ public fun List<UByte>.bufferPriority(): BufferPriority = IN_MEMORY
 public fun List<UByte>.copyTo(to: Write): Result<ULong> {
     var selfMut = this
     val len = selfMut.size
-    when (val tryResult = to.writeAll(selfMut)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
+    when (val tryResult = to.writeAll(selfMut)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     selfMut = ((selfMut).subList(len, (selfMut).size))
     return RustResult.Ok(len.toULong())
 }
@@ -88,7 +88,7 @@ public fun <A : Allocator> VecDeque<UByte, A>.copyTo(to: Write): Result<ULong> {
     val len = this.len()
     val (front, back) = this.asSlices()
     val bufs = listOf(IoSlice.new(front), IoSlice.new(back))
-    when (val tryResult = to.writeAllVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
+    when (val tryResult = to.writeAllVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     this.clear()
     return RustResult.Ok(len.toULong())
 }
@@ -125,7 +125,7 @@ public fun <I> BufReader<I>.copyTo(to: Write): Result<ULong> {
         // buffers to the underlying writer. That code path is @cold
         // but we're still avoiding redundant memcopies when doing
         // a copy between buffered inputs and outputs.
-        when (val tryResult = to.writeAll(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
+        when (val tryResult = to.writeAll(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         len += buf.len().toULong()
         this.discardBuffer()
     }
@@ -195,7 +195,7 @@ public fun <I : Write, R : Read<R>> BufWriter<I>.copyFrom(reader: R): Result<ULo
         } else {
             // SAFETY: `flushBuf` will not de-initialize any elements of
             // the spare capacity so we can remember `init` across this.
-            when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
+            when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         }
     }
 }
@@ -230,7 +230,7 @@ public fun <R : Read<R>, W : Write> stackBufferCopy(reader: R, writer: W): Resul
             break
         }
         len += buf1.filled().len().toULong()
-        when (val tryResult = writer.writeAll(buf1.filled())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
+        when (val tryResult = writer.writeAll(buf1.filled())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         buf1.clear()
     }
     return RustResult.Ok(len)

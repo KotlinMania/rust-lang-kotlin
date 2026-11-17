@@ -238,7 +238,7 @@ public fun findEhAction(lsda: ConstPtr, context: EHContext): Result<EHAction, Un
             ConstPtr((reader.ptr).rawAddress + ((callSiteTableLength.toInt()).toLong() * (PrimitiveLayouts.U8).strideBytes))
         }
     val ip = context.ip
-    return if (USING_SJLJ_EXCEPTIONS.inv()) {
+    return if (!USING_SJLJ_EXCEPTIONS) {
         // read the callsite table
         while (((reader.ptr).rawAddress.toULong() < (actionTable).rawAddress.toULong())) {
             run {

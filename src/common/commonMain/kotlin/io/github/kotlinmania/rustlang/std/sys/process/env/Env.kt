@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.process.env
 
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.env.VarsOs
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.path.Iter
@@ -53,8 +54,8 @@ public open class CommandEnv(
     // Capture the current environment with these changes applied
     public open fun capture(): MutableMap<EnvKey, OsString> {
         val result = mutableMapOf()
-        if (this.clear.inv()) {
-            for ((k, v) in env.varsOs()) {
+        if (!this.clear) {
+            for ((k, v) in env.VarsOs()) {
                 result.put(k.into(), v)
             }
         }
@@ -69,7 +70,7 @@ public open class CommandEnv(
         return result
     }
 
-    public open fun isUnchanged(): Boolean = (this.clear.inv() && this.vars.isEmpty()).toUByte()
+    public open fun isUnchanged(): Boolean = (!this.clear && this.vars.isEmpty()).toUByte()
 
     public open fun captureIfChanged(): MutableMap<EnvKey, OsString>? =
         if (this.isUnchanged()) {
@@ -105,7 +106,7 @@ public open class CommandEnv(
     public open fun haveChangedPath(): Boolean = (this.sawPath || this.clear).toUByte()
 
     public open fun maybeSawPath(key: EnvKey) {
-        if (this.sawPath.inv() && key == "PATH") {
+        if (!this.sawPath && key == "PATH") {
             this.sawPath = true
         }
     }

@@ -129,6 +129,7 @@ import io.github.kotlinmania.rustlang.std.process.Child
 import io.github.kotlinmania.rustlang.std.process.StdioPipes
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sync.lazylock.LazyLock
+import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.env.unix.envReadLock
 import io.github.kotlinmania.rustlang.std.sys.env.unix.environ
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
@@ -458,7 +459,7 @@ public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<N
         when (val tryResult = cvt(setsid())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.errValue()) }
     }
     // emscripten has no signal support.
-    if (onBrokenPipeUsed().inv()) {
+    if (!onBrokenPipeUsed()) {
         run {
             val action: Sigaction  = Sigaction()
             action.saSigaction = SIG_DFL
@@ -703,7 +704,7 @@ public open class Process(
          */
         public fun new(pid: PidT, pidfd: PidT): Process {
             // Safety: If `pidfd` is nonnegative, we assume it's valid and otherwise unowned.
-            val pidfd1 = (pidfd >= 0).then({ PidFd.fromInner(FileDesc.fromRawFd(pidfd)) })
+            val pidfd1 = (pidfd >= 0).then({ PidFd.FromInner(FileDesc.fromRawFd(pidfd)) })
             return Process(pid = pid, status = null, pidfd = pidfd1)
         }
     }

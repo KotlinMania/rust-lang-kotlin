@@ -13,19 +13,19 @@ void corearchLoongarchsharedDbar(int32_t a);
 void corearchLoongarchsharedIbar(int32_t a);
 void corearchLoongarchsharedMovgr2fcsr(int32_t a, int32_t b);
 int32_t corearchLoongarchsharedMovfcsr2gr(int32_t a);
-int32_t corearchLoongarchsharedIocsrrdB(int32_t a);
-int32_t corearchLoongarchsharedIocsrrdH(int32_t a);
-int32_t corearchLoongarchsharedIocsrrdW(int32_t a);
-void corearchLoongarchsharedIocsrwrB(int32_t a, int32_t b);
-void corearchLoongarchsharedIocsrwrH(int32_t a, int32_t b);
-void corearchLoongarchsharedIocsrwrW(int32_t a, int32_t b);
+int32_t corearchLoongarchsharedExternIocsrrdB(int32_t a);
+int32_t corearchLoongarchsharedExternIocsrrdH(int32_t a);
+int32_t corearchLoongarchsharedExternIocsrrdW(int32_t a);
+void corearchLoongarchsharedExternIocsrwrB(int32_t a, int32_t b);
+void corearchLoongarchsharedExternIocsrwrH(int32_t a, int32_t b);
+void corearchLoongarchsharedExternIocsrwrW(int32_t a, int32_t b);
 void corearchLoongarchsharedBreakTarget(int32_t a);
-int32_t corearchLoongarchsharedCpucfg(int32_t a);
+int32_t corearchLoongarchsharedExternCpucfg(int32_t a);
 void corearchLoongarchsharedSyscall(int32_t a);
-float corearchLoongarchsharedFrecipeS(float a);
-double corearchLoongarchsharedFrecipeD(double a);
-float corearchLoongarchsharedFrsqrteS(float a);
-double corearchLoongarchsharedFrsqrteD(double a);
+float corearchLoongarchsharedExternFrecipeS(float a);
+double corearchLoongarchsharedExternFrecipeD(double a);
+float corearchLoongarchsharedExternFrsqrteS(float a);
+double corearchLoongarchsharedExternFrsqrteD(double a);
 
 #ifdef __cplusplus
 }

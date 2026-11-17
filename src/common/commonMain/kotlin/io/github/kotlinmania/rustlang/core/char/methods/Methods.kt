@@ -1,6 +1,7 @@
 // port-lint: source char/methods.rs
 package io.github.kotlinmania.rustlang.core.char.methods
 
+import io.github.kotlinmania.rustlang.core.asserting.Printable
 import io.github.kotlinmania.rustlang.core.char.CharCase
 import io.github.kotlinmania.rustlang.core.char.EscapeDebug
 import io.github.kotlinmania.rustlang.core.char.EscapeDefault
@@ -476,11 +477,11 @@ public fun Char.escapeDebugExt(args: EscapeDebugExtArgs): EscapeDebug =
         // plus U+FF9E HALFWIDTH KATAKANA VOICED SOUND MARK
         // and U+FF9F HALFWIDTH KATAKANA SEMI-VOICED SOUND MARK
         // which should not be escaped despite being grapheme extenders.
-        this in ' '..'~' || this == '\uff9e' || this == '\uff9f' -> EscapeDebug.printable(this)
+        this in ' '..'~' || this == '\uff9e' || this == '\uff9f' -> EscapeDebug.Printable(this)
         this.isControl() || this.isPrivateUse() || this.isWhitespace() || this.isGraphemeExtender() || this.isDefaultIgnorable() || this.isFormatControl() || !this.isAssigned() -> {
             EscapeDebug.unicode(this)
         }
-        else -> EscapeDebug.printable(this)
+        else -> EscapeDebug.Printable(this)
     }
 
 /**
@@ -574,7 +575,7 @@ public fun Char.escapeDefault(): EscapeDefault =
         '\r' -> EscapeDefault.backslash(Char.SmallR)
         '\n' -> EscapeDefault.backslash(Char.SmallN)
         '\\', '\'', '"' -> { EscapeDefault.backslash(this.asAscii()!!) }
-        in ' '..'~' -> EscapeDefault.printable(this.asAscii()!!)
+        in ' '..'~' -> EscapeDefault.Printable(this.asAscii()!!)
         else -> EscapeDefault.unicode(this)
     }
 

@@ -2442,7 +2442,7 @@ public open class Vec<T, A : Allocator> internal constructor(
             this.truncate(len - lenRemainder)
         }
         val capRemainder = cap % n
-        if ((((typeLayoutT).sizeBytes == 0L)).inv() && capRemainder != 0) {
+        if (!((typeLayoutT).sizeBytes == 0L) && capRemainder != 0) {
             this.buf.shrinkToFit(cap - capRemainder)
         }
         val (ptr, _, _, alloc) = this.intoRawPartsWithAllocator()

@@ -42,7 +42,7 @@ public fun Int.carryingMulAdd(a: Int, b: Int, c: Int): Pair<Int, Int> {
 
 public fun Byte.carryingMulAdd(a: Byte, b: Byte, c: Byte): Pair<UByte, Byte> {
     val wide = (this.toShort()) * (a.toShort()) + (b.toShort()) + (c.toShort())
-    return Pair(wide, (wide shr 8u.toInt()))
+    return Pair(wide, ((wide.toInt() shr (8u.toInt())).toShort()))
 }
 
 public fun Short.carryingMulAdd(a: Short, b: Short, c: Short): Pair<UShort, Short> {

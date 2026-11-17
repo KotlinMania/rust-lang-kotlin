@@ -9,9 +9,9 @@
 extern "C" {
 #endif
 
-void corearchArmsharedBarrierDmb(int32_t arg0);
-void corearchArmsharedBarrierDsb(int32_t arg0);
-void corearchArmsharedBarrierIsb(int32_t arg0);
+void corearchArmsharedBarrierExternDmb(int32_t arg0);
+void corearchArmsharedBarrierExternDsb(int32_t arg0);
+void corearchArmsharedBarrierExternIsb(int32_t arg0);
 
 #ifdef __cplusplus
 }

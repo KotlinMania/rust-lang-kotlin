@@ -349,7 +349,7 @@ public fun <R> catchUnwind(f: () -> R): Result<R, RustAny> = Result.Ok<R, RustAn
 /**
  * Determines whether the current thread is unwinding because of panic.
  */
-public fun panicking(): Boolean = countIsZero().inv()
+public fun panicking(): Boolean = !countIsZero()
 
 /**
  * Entry point of panics from the core crate (`panicImpl` lang item).
@@ -552,7 +552,7 @@ public fun panicWithHook(payload: PanicPayload, location: Location, canUnwind: B
     // it is fine if there is a panic while executing destructors, as long as it
     // it contained within a `catchUnwind`.
     finishedPanicHook()
-    if (canUnwind.inv()) {
+    if (!canUnwind) {
         when (val matchVal1 = panicOutput()) {
             null -> {}
             else -> {

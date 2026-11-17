@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int64x1T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int64x2T
 import io.github.kotlinmania.rustlang.corearch.armshared.neon.P64
 import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly64x1T
 import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly64x2T
@@ -58,7 +59,7 @@ public fun vld1qLaneF64(ptr: ConstPtr, src: Float64x2T, lane: Int): Float64x2T {
  * destination bit was 1, otherwise from the second source SIMD&FP register.
  */
 public fun vbslF64(a: Uint64x1T, b: Float64x1T, c: Float64x1T): Float64x1T {
-    val not = int64x1T.splat(-1)
+    val not = Int64x1T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float64x1T, Uint64x1T>(b, Float64x1T.typeLayout(), UnresolvedTypeLayout<Uint64x1T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -66,7 +67,7 @@ public fun vbslF64(a: Uint64x1T, b: Float64x1T, c: Float64x1T): Float64x1T {
  * Bitwise Select.
  */
 public fun vbslP64(a: Poly64x1T, b: Poly64x1T, c: Poly64x1T): Poly64x1T {
-    val not = int64x1T.splat(-1)
+    val not = Int64x1T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 }
 }
 
@@ -74,7 +75,7 @@ public fun vbslP64(a: Poly64x1T, b: Poly64x1T, c: Poly64x1T): Poly64x1T {
  * Bitwise Select. (128-bit)
  */
 public fun vbslqF64(a: Uint64x2T, b: Float64x2T, c: Float64x2T): Float64x2T {
-    val not = int64x2T.splat(-1)
+    val not = Int64x2T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float64x2T, Uint64x2T>(b, Float64x2T.typeLayout(), UnresolvedTypeLayout<Uint64x2T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -82,7 +83,7 @@ public fun vbslqF64(a: Uint64x2T, b: Float64x2T, c: Float64x2T): Float64x2T {
  * Bitwise Select. (128-bit)
  */
 public fun vbslqP64(a: Poly64x2T, b: Poly64x2T, c: Poly64x2T): Poly64x2T {
-    val not = int64x2T.splat(-1)
+    val not = Int64x2T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 }
 }
 

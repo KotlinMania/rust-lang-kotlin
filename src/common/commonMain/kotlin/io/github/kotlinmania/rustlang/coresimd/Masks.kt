@@ -465,7 +465,7 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
     }
 
     public open fun bitandAssign(rhs: Boolean) {
-        this = this and Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
+        (this and Mask.splat(rhs, n, fieldLayout = this.fieldLayout)).let {}
     }
 
     public open fun bitorAssign(rhs: Mask<T, Mask, Unsigned>) {
@@ -474,7 +474,7 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
     }
 
     public open fun bitorAssign(rhs: Boolean) {
-        this = this or Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
+        (this or Mask.splat(rhs, n, fieldLayout = this.fieldLayout)).let {}
     }
 
     public open fun bitxorAssign(rhs: Mask<T, Mask, Unsigned>) {
@@ -483,7 +483,7 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
     }
 
     public open fun bitxorAssign(rhs: Boolean) {
-        this = this xor Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
+        (this xor Mask.splat(rhs, n, fieldLayout = this.fieldLayout)).let {}
     }
 
     public companion object {

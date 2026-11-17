@@ -516,7 +516,7 @@ public fun testMmMaskzCvtpbhPs() {
 }
 
 public fun testMmCvtsbhSs() {
-    val r = mmCvtsbhSs(bf16.fromBits(BF16_ONE))
+    val r = mmCvtsbhSs(Bf16.fromBits(BF16_ONE))
     check(r == 1.0f.toFloat())
 }
 

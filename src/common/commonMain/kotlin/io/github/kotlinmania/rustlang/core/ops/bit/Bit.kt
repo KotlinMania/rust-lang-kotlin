@@ -164,47 +164,25 @@ public interface BitAnd<Rhs, out Output> {
 
 public fun Boolean.bitand(rhs: Boolean): Boolean = this and rhs
 
-public fun Boolean.bitandBoolean(other: Boolean): Output = this.bitand(other)
-
 public fun Int.bitand(rhs: Int): Int = this and rhs
-
-public fun Int.bitandInt(other: Int): Output = this.bitand(other)
 
 public fun UByte.bitand(rhs: UByte): UByte = this and rhs
 
-public fun UByte.bitandUByte(other: UByte): Output = this.bitand(other)
-
 public fun UShort.bitand(rhs: UShort): UShort = this and rhs
-
-public fun UShort.bitandUShort(other: UShort): Output = this.bitand(other)
 
 public fun UInt.bitand(rhs: UInt): UInt = this and rhs
 
-public fun UInt.bitandUInt(other: UInt): Output = this.bitand(other)
-
 public fun ULong.bitand(rhs: ULong): ULong = this and rhs
-
-public fun ULong.bitandULong(other: ULong): Output = this.bitand(other)
 
 public fun U128.bitand(rhs: U128): U128 = this and rhs
 
-public fun U128.bitandU128(other: U128): Output = this.bitand(other)
-
 public fun Byte.bitand(rhs: Byte): Byte = (this.toInt() and rhs.toInt()).toByte()
-
-public fun Byte.bitandByte(other: Byte): Output = this.bitand(other)
 
 public fun Short.bitand(rhs: Short): Short = (this.toInt() and rhs.toInt()).toShort()
 
-public fun Short.bitandShort(other: Short): Output = this.bitand(other)
-
 public fun Long.bitand(rhs: Long): Long = this and rhs
 
-public fun Long.bitandLong(other: Long): Output = this.bitand(other)
-
 public fun I128.bitand(rhs: I128): I128 = this and rhs
-
-public fun I128.bitandI128(other: I128): Output = this.bitand(other)
 
 /**
  * The bitwise OR operator `|`.
@@ -287,47 +265,25 @@ public interface BitOr<Rhs, out Output> {
 
 public fun Boolean.bitor(rhs: Boolean): Boolean = this or rhs
 
-public fun Boolean.bitorBoolean(other: Boolean): Output = this.bitor(other)
-
 public fun Int.bitor(rhs: Int): Int = this or rhs
-
-public fun Int.bitorInt(other: Int): Output = this.bitor(other)
 
 public fun UByte.bitor(rhs: UByte): UByte = this or rhs
 
-public fun UByte.bitorUByte(other: UByte): Output = this.bitor(other)
-
 public fun UShort.bitor(rhs: UShort): UShort = this or rhs
-
-public fun UShort.bitorUShort(other: UShort): Output = this.bitor(other)
 
 public fun UInt.bitor(rhs: UInt): UInt = this or rhs
 
-public fun UInt.bitorUInt(other: UInt): Output = this.bitor(other)
-
 public fun ULong.bitor(rhs: ULong): ULong = this or rhs
-
-public fun ULong.bitorULong(other: ULong): Output = this.bitor(other)
 
 public fun U128.bitor(rhs: U128): U128 = this or rhs
 
-public fun U128.bitorU128(other: U128): Output = this.bitor(other)
-
 public fun Byte.bitor(rhs: Byte): Byte = (this.toInt() or rhs.toInt()).toByte()
-
-public fun Byte.bitorByte(other: Byte): Output = this.bitor(other)
 
 public fun Short.bitor(rhs: Short): Short = (this.toInt() or rhs.toInt()).toShort()
 
-public fun Short.bitorShort(other: Short): Output = this.bitor(other)
-
 public fun Long.bitor(rhs: Long): Long = this or rhs
 
-public fun Long.bitorLong(other: Long): Output = this.bitor(other)
-
 public fun I128.bitor(rhs: I128): I128 = this or rhs
-
-public fun I128.bitorI128(other: I128): Output = this.bitor(other)
 
 /**
  * The bitwise XOR operator `^`.
@@ -410,47 +366,25 @@ public interface BitXor<Rhs, out Output> {
 
 public fun Boolean.bitxor(other: Boolean): Boolean = this xor other
 
-public fun Boolean.bitxorBoolean(other: Boolean): Output = this.bitxor(other)
-
 public fun Int.bitxor(other: Int): Int = this xor other
-
-public fun Int.bitxorInt(other: Int): Output = this.bitxor(other)
 
 public fun UByte.bitxor(other: UByte): UByte = this xor other
 
-public fun UByte.bitxorUByte(other: UByte): Output = this.bitxor(other)
-
 public fun UShort.bitxor(other: UShort): UShort = this xor other
-
-public fun UShort.bitxorUShort(other: UShort): Output = this.bitxor(other)
 
 public fun UInt.bitxor(other: UInt): UInt = this xor other
 
-public fun UInt.bitxorUInt(other: UInt): Output = this.bitxor(other)
-
 public fun ULong.bitxor(other: ULong): ULong = this xor other
-
-public fun ULong.bitxorULong(other: ULong): Output = this.bitxor(other)
 
 public fun U128.bitxor(other: U128): U128 = this xor other
 
-public fun U128.bitxorU128(other: U128): Output = this.bitxor(other)
-
 public fun Byte.bitxor(other: Byte): Byte = (this.toInt() xor other.toInt()).toByte()
-
-public fun Byte.bitxorByte(other: Byte): Output = this.bitxor(other)
 
 public fun Short.bitxor(other: Short): Short = (this.toInt() xor other.toInt()).toShort()
 
-public fun Short.bitxorShort(other: Short): Output = this.bitxor(other)
-
 public fun Long.bitxor(other: Long): Long = this xor other
 
-public fun Long.bitxorLong(other: Long): Output = this.bitxor(other)
-
 public fun I128.bitxor(other: I128): I128 = this xor other
-
-public fun I128.bitxorI128(other: I128): Output = this.bitxor(other)
 
 /**
  * The left shift operator `<<`. Note that because this trait is implemented
@@ -478,7 +412,7 @@ public fun I128.bitxorI128(other: I128): Output = this.bitxor(other)
  *                 value = v
  *             }
  *
- *         public open fun shl(destructuredArg0: Scalar): Scalar {
+ *         public open infix fun shl(destructuredArg0: Scalar): Scalar {
  *             val rhs = destructuredArg0.value
  *             val lhs = this.value
  *             return Scalar(lhs shl rhs)
@@ -497,7 +431,7 @@ public fun I128.bitxorI128(other: I128): Output = this.bitxor(other)
  *
  * public fun doctestEntry() {
  *     open class SpinVector<T>(public var vec: List<T>) : Shl<Int, SpinVector<T>> {
- *         public open fun shl(rhs: Int): SpinVector<T> {
+ *         public open infix fun shl(rhs: Int): SpinVector<T> {
  *             // Rotate the vector by `rhs` places.
  *             val (a, b) = this.vec.splitAt(rhs)
  *             var spunVector = mutableListOf<T>()
@@ -521,408 +455,246 @@ public interface Shl<Rhs, out Output> {
      * check(((1u.toUByte()).toUInt() shl 1).toUByte() == 2u.toUByte())
      * ```
      */
-    public fun shl(rhs: Rhs): Output
+    public infix fun shl(rhs: Rhs): Output
 }
 
-public fun UByte.shl(other: UByte): UByte = (this.toUInt() shl (other.toInt())).toUByte()
+public infix fun UByte.shl(other: UByte): UByte = (this.toUInt() shl (other.toInt())).toUByte()
 
-public fun UByte.shlUByte(other: UByte): Output = Shl.Shl(this, other)
+public infix fun UByte.shl(other: UShort): UByte = (this.toUInt() shl (other.toInt())).toUByte()
 
-public fun UByte.shl(other: UShort): UByte = (this.toUInt() shl (other.toInt())).toUByte()
+public infix fun UByte.shl(other: UInt): UByte = (this.toUInt() shl (other.toInt())).toUByte()
 
-public fun UByte.shlUShort(other: UShort): Output = Shl.Shl(this, other)
+public infix fun UByte.shl(other: ULong): UByte = (this.toUInt() shl (other.toInt())).toUByte()
 
-public fun UByte.shl(other: UInt): UByte = (this.toUInt() shl (other.toInt())).toUByte()
+public infix fun UByte.shl(other: U128): UByte = (this.toUInt() shl (other.toInt())).toUByte()
 
-public fun UByte.shlUInt(other: UInt): Output = Shl.Shl(this, other)
+public infix fun UByte.shl(other: Int): UByte = (this.toUInt() shl other).toUByte()
 
-public fun UByte.shl(other: ULong): UByte = (this.toUInt() shl (other.toInt())).toUByte()
+public infix fun UByte.shl(other: Byte): UByte = (this.toUInt() shl (other.toInt())).toUByte()
 
-public fun UByte.shlULong(other: ULong): Output = Shl.Shl(this, other)
+public infix fun UByte.shl(other: Short): UByte = (this.toUInt() shl (other.toInt())).toUByte()
 
-public fun UByte.shl(other: U128): UByte = (this.toUInt() shl (other.toInt())).toUByte()
+public fun UByte.shlInt(other: Int): UByte = (this.toUInt() shl other).toUByte()
 
-public fun UByte.shlU128(other: U128): Output = Shl.Shl(this, other)
+public infix fun UByte.shl(other: Long): UByte = (this.toUInt() shl (other.toInt())).toUByte()
 
-public fun UByte.shl(other: Int): UByte = (this.toUInt() shl other).toUByte()
+public infix fun UByte.shl(other: I128): UByte = (this.toUInt() shl (other.toInt())).toUByte()
 
-public fun UByte.shlInt(other: Int): Output = Shl.Shl(this, other)
+public infix fun UShort.shl(other: UByte): UShort = (this.toUInt() shl (other.toInt())).toUShort()
 
-public fun UByte.shl(other: Byte): UByte = (this.toUInt() shl (other.toInt())).toUByte()
+public infix fun UShort.shl(other: UShort): UShort = (this.toUInt() shl (other.toInt())).toUShort()
 
-public fun UByte.shlByte(other: Byte): Output = Shl.Shl(this, other)
+public infix fun UShort.shl(other: UInt): UShort = (this.toUInt() shl (other.toInt())).toUShort()
 
-public fun UByte.shl(other: Short): UByte = (this.toUInt() shl (other.toInt())).toUByte()
+public infix fun UShort.shl(other: ULong): UShort = (this.toUInt() shl (other.toInt())).toUShort()
 
-public fun UByte.shlShort(other: Short): Output = Shl.Shl(this, other)
+public infix fun UShort.shl(other: U128): UShort = (this.toUInt() shl (other.toInt())).toUShort()
 
-public fun UByte.shl(other: Long): UByte = (this.toUInt() shl (other.toInt())).toUByte()
+public infix fun UShort.shl(other: Int): UShort = (this.toUInt() shl other).toUShort()
 
-public fun UByte.shlLong(other: Long): Output = Shl.Shl(this, other)
+public infix fun UShort.shl(other: Byte): UShort = (this.toUInt() shl (other.toInt())).toUShort()
 
-public fun UByte.shl(other: I128): UByte = (this.toUInt() shl (other.toInt())).toUByte()
+public infix fun UShort.shl(other: Short): UShort = (this.toUInt() shl (other.toInt())).toUShort()
 
-public fun UByte.shlI128(other: I128): Output = Shl.Shl(this, other)
+public fun UShort.shlInt(other: Int): UShort = (this.toUInt() shl other).toUShort()
 
-public fun UShort.shl(other: UByte): UShort = (this.toUInt() shl (other.toInt())).toUShort()
+public infix fun UShort.shl(other: Long): UShort = (this.toUInt() shl (other.toInt())).toUShort()
 
-public fun UShort.shlUByte(other: UByte): Output = Shl.Shl(this, other)
+public infix fun UShort.shl(other: I128): UShort = (this.toUInt() shl (other.toInt())).toUShort()
 
-public fun UShort.shl(other: UShort): UShort = (this.toUInt() shl (other.toInt())).toUShort()
+public infix fun UInt.shl(other: UByte): UInt = this shl other.toInt()
 
-public fun UShort.shlUShort(other: UShort): Output = Shl.Shl(this, other)
+public infix fun UInt.shl(other: UShort): UInt = this shl other.toInt()
 
-public fun UShort.shl(other: UInt): UShort = (this.toUInt() shl (other.toInt())).toUShort()
+public infix fun UInt.shl(other: UInt): UInt = this shl other.toInt()
 
-public fun UShort.shlUInt(other: UInt): Output = Shl.Shl(this, other)
+public infix fun UInt.shl(other: ULong): UInt = this shl other.toInt()
 
-public fun UShort.shl(other: ULong): UShort = (this.toUInt() shl (other.toInt())).toUShort()
-
-public fun UShort.shlULong(other: ULong): Output = Shl.Shl(this, other)
-
-public fun UShort.shl(other: U128): UShort = (this.toUInt() shl (other.toInt())).toUShort()
-
-public fun UShort.shlU128(other: U128): Output = Shl.Shl(this, other)
-
-public fun UShort.shl(other: Int): UShort = (this.toUInt() shl other).toUShort()
-
-public fun UShort.shlInt(other: Int): Output = Shl.Shl(this, other)
-
-public fun UShort.shl(other: Byte): UShort = (this.toUInt() shl (other.toInt())).toUShort()
-
-public fun UShort.shlByte(other: Byte): Output = Shl.Shl(this, other)
-
-public fun UShort.shl(other: Short): UShort = (this.toUInt() shl (other.toInt())).toUShort()
-
-public fun UShort.shlShort(other: Short): Output = Shl.Shl(this, other)
-
-public fun UShort.shl(other: Long): UShort = (this.toUInt() shl (other.toInt())).toUShort()
-
-public fun UShort.shlLong(other: Long): Output = Shl.Shl(this, other)
-
-public fun UShort.shl(other: I128): UShort = (this.toUInt() shl (other.toInt())).toUShort()
-
-public fun UShort.shlI128(other: I128): Output = Shl.Shl(this, other)
-
-public fun UInt.shl(other: UByte): UInt = this shl other.toInt()
-
-public fun UInt.shlUByte(other: UByte): Output = Shl.Shl(this, other)
-
-public fun UInt.shl(other: UShort): UInt = this shl other.toInt()
-
-public fun UInt.shlUShort(other: UShort): Output = Shl.Shl(this, other)
-
-public fun UInt.shl(other: UInt): UInt = this shl other.toInt()
-
-public fun UInt.shlUInt(other: UInt): Output = Shl.Shl(this, other)
-
-public fun UInt.shl(other: ULong): UInt = this shl other.toInt()
-
-public fun UInt.shlULong(other: ULong): Output = Shl.Shl(this, other)
-
-public fun UInt.shl(other: U128): UInt = this shl other.toInt()
-
-public fun UInt.shlU128(other: U128): Output = Shl.Shl(this, other)
+public infix fun UInt.shl(other: U128): UInt = this shl other.toInt()
 
 public fun UInt.shl(other: Int): UInt = this shl other
 
-public fun UInt.shlInt(other: Int): Output = Shl.Shl(this, other)
+public infix fun UInt.shl(other: Byte): UInt = this shl other.toInt()
 
-public fun UInt.shl(other: Byte): UInt = this shl other.toInt()
+public infix fun UInt.shl(other: Short): UInt = this shl other.toInt()
 
-public fun UInt.shlByte(other: Byte): Output = Shl.Shl(this, other)
+public fun UInt.shlInt(other: Int): UInt = this shl other
 
-public fun UInt.shl(other: Short): UInt = this shl other.toInt()
+public infix fun UInt.shl(other: Long): UInt = this shl other.toInt()
 
-public fun UInt.shlShort(other: Short): Output = Shl.Shl(this, other)
+public infix fun UInt.shl(other: I128): UInt = this shl other.toInt()
 
-public fun UInt.shl(other: Long): UInt = this shl other.toInt()
+public infix fun ULong.shl(other: UByte): ULong = this shl other.toInt()
 
-public fun UInt.shlLong(other: Long): Output = Shl.Shl(this, other)
+public infix fun ULong.shl(other: UShort): ULong = this shl other.toInt()
 
-public fun UInt.shl(other: I128): UInt = this shl other.toInt()
+public infix fun ULong.shl(other: UInt): ULong = this shl other.toInt()
 
-public fun UInt.shlI128(other: I128): Output = Shl.Shl(this, other)
+public infix fun ULong.shl(other: ULong): ULong = this shl other.toInt()
 
-public fun ULong.shl(other: UByte): ULong = this shl other.toInt()
-
-public fun ULong.shlUByte(other: UByte): Output = Shl.Shl(this, other)
-
-public fun ULong.shl(other: UShort): ULong = this shl other.toInt()
-
-public fun ULong.shlUShort(other: UShort): Output = Shl.Shl(this, other)
-
-public fun ULong.shl(other: UInt): ULong = this shl other.toInt()
-
-public fun ULong.shlUInt(other: UInt): Output = Shl.Shl(this, other)
-
-public fun ULong.shl(other: ULong): ULong = this shl other.toInt()
-
-public fun ULong.shlULong(other: ULong): Output = Shl.Shl(this, other)
-
-public fun ULong.shl(other: U128): ULong = this shl other.toInt()
-
-public fun ULong.shlU128(other: U128): Output = Shl.Shl(this, other)
+public infix fun ULong.shl(other: U128): ULong = this shl other.toInt()
 
 public fun ULong.shl(other: Int): ULong = this shl other
 
-public fun ULong.shlInt(other: Int): Output = Shl.Shl(this, other)
+public infix fun ULong.shl(other: Byte): ULong = this shl other.toInt()
 
-public fun ULong.shl(other: Byte): ULong = this shl other.toInt()
+public infix fun ULong.shl(other: Short): ULong = this shl other.toInt()
 
-public fun ULong.shlByte(other: Byte): Output = Shl.Shl(this, other)
+public fun ULong.shlInt(other: Int): ULong = this shl other
 
-public fun ULong.shl(other: Short): ULong = this shl other.toInt()
+public infix fun ULong.shl(other: Long): ULong = this shl other.toInt()
 
-public fun ULong.shlShort(other: Short): Output = Shl.Shl(this, other)
+public infix fun ULong.shl(other: I128): ULong = this shl other.toInt()
 
-public fun ULong.shl(other: Long): ULong = this shl other.toInt()
+public infix fun U128.shl(other: UByte): U128 = this shl other.toInt()
 
-public fun ULong.shlLong(other: Long): Output = Shl.Shl(this, other)
+public infix fun U128.shl(other: UShort): U128 = this shl other.toInt()
 
-public fun ULong.shl(other: I128): ULong = this shl other.toInt()
+public infix fun U128.shl(other: UInt): U128 = this shl other.toInt()
 
-public fun ULong.shlI128(other: I128): Output = Shl.Shl(this, other)
+public infix fun U128.shl(other: ULong): U128 = this shl other.toInt()
 
-public fun U128.shl(other: UByte): U128 = this shl other.toInt()
+public infix fun U128.shl(other: U128): U128 = this shl other.toInt()
 
-public fun U128.shlUByte(other: UByte): Output = Shl.Shl(this, other)
+public infix fun U128.shl(other: Int): U128 = this shl other
 
-public fun U128.shl(other: UShort): U128 = this shl other.toInt()
+public infix fun U128.shl(other: Byte): U128 = this shl other.toInt()
 
-public fun U128.shlUShort(other: UShort): Output = Shl.Shl(this, other)
+public infix fun U128.shl(other: Short): U128 = this shl other.toInt()
 
-public fun U128.shl(other: UInt): U128 = this shl other.toInt()
+public fun U128.shlInt(other: Int): U128 = this shl other
 
-public fun U128.shlUInt(other: UInt): Output = Shl.Shl(this, other)
+public infix fun U128.shl(other: Long): U128 = this shl other.toInt()
 
-public fun U128.shl(other: ULong): U128 = this shl other.toInt()
+public infix fun U128.shl(other: I128): U128 = this shl other.toInt()
 
-public fun U128.shlULong(other: ULong): Output = Shl.Shl(this, other)
+public infix fun Int.shl(other: UByte): Int = this shl other.toInt()
 
-public fun U128.shl(other: U128): U128 = this shl other.toInt()
+public infix fun Int.shl(other: UShort): Int = this shl other.toInt()
 
-public fun U128.shlU128(other: U128): Output = Shl.Shl(this, other)
+public infix fun Int.shl(other: UInt): Int = this shl other.toInt()
 
-public fun U128.shl(other: Int): U128 = this shl other
+public infix fun Int.shl(other: ULong): Int = this shl other.toInt()
 
-public fun U128.shlInt(other: Int): Output = Shl.Shl(this, other)
-
-public fun U128.shl(other: Byte): U128 = this shl other.toInt()
-
-public fun U128.shlByte(other: Byte): Output = Shl.Shl(this, other)
-
-public fun U128.shl(other: Short): U128 = this shl other.toInt()
-
-public fun U128.shlShort(other: Short): Output = Shl.Shl(this, other)
-
-public fun U128.shl(other: Long): U128 = this shl other.toInt()
-
-public fun U128.shlLong(other: Long): Output = Shl.Shl(this, other)
-
-public fun U128.shl(other: I128): U128 = this shl other.toInt()
-
-public fun U128.shlI128(other: I128): Output = Shl.Shl(this, other)
-
-public fun Int.shl(other: UByte): Int = this shl other.toInt()
-
-public fun Int.shlUByte(other: UByte): Output = Shl.Shl(this, other)
-
-public fun Int.shl(other: UShort): Int = this shl other.toInt()
-
-public fun Int.shlUShort(other: UShort): Output = Shl.Shl(this, other)
-
-public fun Int.shl(other: UInt): Int = this shl other.toInt()
-
-public fun Int.shlUInt(other: UInt): Output = Shl.Shl(this, other)
-
-public fun Int.shl(other: ULong): Int = this shl other.toInt()
-
-public fun Int.shlULong(other: ULong): Output = Shl.Shl(this, other)
-
-public fun Int.shl(other: U128): Int = this shl other.toInt()
-
-public fun Int.shlU128(other: U128): Output = Shl.Shl(this, other)
+public infix fun Int.shl(other: U128): Int = this shl other.toInt()
 
 public fun Int.shl(other: Int): Int = this shl other
 
-public fun Int.shlInt(other: Int): Output = Shl.Shl(this, other)
+public infix fun Int.shl(other: Byte): Int = this shl other.toInt()
 
-public fun Int.shl(other: Byte): Int = this shl other.toInt()
+public infix fun Int.shl(other: Short): Int = this shl other.toInt()
 
-public fun Int.shlByte(other: Byte): Output = Shl.Shl(this, other)
+public fun Int.shlInt(other: Int): Int = this shl other
 
-public fun Int.shl(other: Short): Int = this shl other.toInt()
+public infix fun Int.shl(other: Long): Int = this shl other.toInt()
 
-public fun Int.shlShort(other: Short): Output = Shl.Shl(this, other)
+public infix fun Int.shl(other: I128): Int = this shl other.toInt()
 
-public fun Int.shl(other: Long): Int = this shl other.toInt()
+public infix fun Byte.shl(other: UByte): Byte = (this.toInt() shl (other.toInt())).toByte()
 
-public fun Int.shlLong(other: Long): Output = Shl.Shl(this, other)
+public infix fun Byte.shl(other: UShort): Byte = (this.toInt() shl (other.toInt())).toByte()
 
-public fun Int.shl(other: I128): Int = this shl other.toInt()
+public infix fun Byte.shl(other: UInt): Byte = (this.toInt() shl (other.toInt())).toByte()
 
-public fun Int.shlI128(other: I128): Output = Shl.Shl(this, other)
+public infix fun Byte.shl(other: ULong): Byte = (this.toInt() shl (other.toInt())).toByte()
 
-public fun Byte.shl(other: UByte): Byte = (this shl other.toInt()).toByte()
+public infix fun Byte.shl(other: U128): Byte = (this.toInt() shl (other.toInt())).toByte()
 
-public fun Byte.shlUByte(other: UByte): Output = Shl.Shl(this, other)
+public infix fun Byte.shl(other: Int): Byte = (this.toInt() shl other).toByte()
 
-public fun Byte.shl(other: UShort): Byte = (this shl other.toInt()).toByte()
+public infix fun Byte.shl(other: Byte): Byte = (this.toInt() shl (other.toInt())).toByte()
 
-public fun Byte.shlUShort(other: UShort): Output = Shl.Shl(this, other)
+public infix fun Byte.shl(other: Short): Byte = (this.toInt() shl (other.toInt())).toByte()
 
-public fun Byte.shl(other: UInt): Byte = (this shl other.toInt()).toByte()
+public fun Byte.shlInt(other: Int): Byte = (this.toInt() shl other).toByte()
 
-public fun Byte.shlUInt(other: UInt): Output = Shl.Shl(this, other)
+public infix fun Byte.shl(other: Long): Byte = (this.toInt() shl (other.toInt())).toByte()
 
-public fun Byte.shl(other: ULong): Byte = (this shl other.toInt()).toByte()
+public infix fun Byte.shl(other: I128): Byte = (this.toInt() shl (other.toInt())).toByte()
 
-public fun Byte.shlULong(other: ULong): Output = Shl.Shl(this, other)
+public infix fun Short.shl(other: UByte): Short = (this.toInt() shl (other.toInt())).toShort()
 
-public fun Byte.shl(other: U128): Byte = (this shl other.toInt()).toByte()
+public infix fun Short.shl(other: UShort): Short = (this.toInt() shl (other.toInt())).toShort()
 
-public fun Byte.shlU128(other: U128): Output = Shl.Shl(this, other)
+public infix fun Short.shl(other: UInt): Short = (this.toInt() shl (other.toInt())).toShort()
 
-public fun Byte.shl(other: Int): Byte = (this shl other).toByte()
+public infix fun Short.shl(other: ULong): Short = (this.toInt() shl (other.toInt())).toShort()
 
-public fun Byte.shlInt(other: Int): Output = Shl.Shl(this, other)
+public infix fun Short.shl(other: U128): Short = (this.toInt() shl (other.toInt())).toShort()
 
-public fun Byte.shl(other: Byte): Byte = (this shl other.toInt()).toByte()
+public infix fun Short.shl(other: Int): Short = (this.toInt() shl other).toShort()
 
-public fun Byte.shlByte(other: Byte): Output = Shl.Shl(this, other)
+public infix fun Short.shl(other: Byte): Short = (this.toInt() shl (other.toInt())).toShort()
 
-public fun Byte.shl(other: Short): Byte = (this shl other.toInt()).toByte()
+public infix fun Short.shl(other: Short): Short = (this.toInt() shl (other.toInt())).toShort()
 
-public fun Byte.shlShort(other: Short): Output = Shl.Shl(this, other)
+public fun Short.shlInt(other: Int): Short = (this.toInt() shl other).toShort()
 
-public fun Byte.shl(other: Long): Byte = (this shl other.toInt()).toByte()
+public infix fun Short.shl(other: Long): Short = (this.toInt() shl (other.toInt())).toShort()
 
-public fun Byte.shlLong(other: Long): Output = Shl.Shl(this, other)
+public infix fun Short.shl(other: I128): Short = (this.toInt() shl (other.toInt())).toShort()
 
-public fun Byte.shl(other: I128): Byte = (this shl other.toInt()).toByte()
+public fun Int.shlUByte(other: UByte): Int = this shl other.toInt()
 
-public fun Byte.shlI128(other: I128): Output = Shl.Shl(this, other)
+public fun Int.shlUShort(other: UShort): Int = this shl other.toInt()
 
-public fun Short.shl(other: UByte): Short = (this shl other.toInt()).toShort()
+public fun Int.shlUInt(other: UInt): Int = this shl other.toInt()
 
-public fun Short.shlUByte(other: UByte): Output = Shl.Shl(this, other)
+public fun Int.shlULong(other: ULong): Int = this shl other.toInt()
 
-public fun Short.shl(other: UShort): Short = (this shl other.toInt()).toShort()
+public fun Int.shlU128(other: U128): Int = this shl other.toInt()
 
-public fun Short.shlUShort(other: UShort): Output = Shl.Shl(this, other)
+public fun Int.shlByte(other: Byte): Int = this shl other.toInt()
 
-public fun Short.shl(other: UInt): Short = (this shl other.toInt()).toShort()
+public fun Int.shlShort(other: Short): Int = this shl other.toInt()
 
-public fun Short.shlUInt(other: UInt): Output = Shl.Shl(this, other)
+public fun Int.shlLong(other: Long): Int = this shl other.toInt()
 
-public fun Short.shl(other: ULong): Short = (this shl other.toInt()).toShort()
+public fun Int.shlI128(other: I128): Int = this shl other.toInt()
 
-public fun Short.shlULong(other: ULong): Output = Shl.Shl(this, other)
+public infix fun Long.shl(other: UByte): Long = this shl other.toInt()
 
-public fun Short.shl(other: U128): Short = (this shl other.toInt()).toShort()
+public infix fun Long.shl(other: UShort): Long = this shl other.toInt()
 
-public fun Short.shlU128(other: U128): Output = Shl.Shl(this, other)
+public infix fun Long.shl(other: UInt): Long = this shl other.toInt()
 
-public fun Short.shl(other: Int): Short = (this shl other).toShort()
+public infix fun Long.shl(other: ULong): Long = this shl other.toInt()
 
-public fun Short.shlInt(other: Int): Output = Shl.Shl(this, other)
-
-public fun Short.shl(other: Byte): Short = (this shl other.toInt()).toShort()
-
-public fun Short.shlByte(other: Byte): Output = Shl.Shl(this, other)
-
-public fun Short.shl(other: Short): Short = (this shl other.toInt()).toShort()
-
-public fun Short.shlShort(other: Short): Output = Shl.Shl(this, other)
-
-public fun Short.shl(other: Long): Short = (this shl other.toInt()).toShort()
-
-public fun Short.shlLong(other: Long): Output = Shl.Shl(this, other)
-
-public fun Short.shl(other: I128): Short = (this shl other.toInt()).toShort()
-
-public fun Short.shlI128(other: I128): Output = Shl.Shl(this, other)
-
-public fun Long.shl(other: UByte): Long = this shl other.toInt()
-
-public fun Long.shlUByte(other: UByte): Output = Shl.Shl(this, other)
-
-public fun Long.shl(other: UShort): Long = this shl other.toInt()
-
-public fun Long.shlUShort(other: UShort): Output = Shl.Shl(this, other)
-
-public fun Long.shl(other: UInt): Long = this shl other.toInt()
-
-public fun Long.shlUInt(other: UInt): Output = Shl.Shl(this, other)
-
-public fun Long.shl(other: ULong): Long = this shl other.toInt()
-
-public fun Long.shlULong(other: ULong): Output = Shl.Shl(this, other)
-
-public fun Long.shl(other: U128): Long = this shl other.toInt()
-
-public fun Long.shlU128(other: U128): Output = Shl.Shl(this, other)
+public infix fun Long.shl(other: U128): Long = this shl other.toInt()
 
 public fun Long.shl(other: Int): Long = this shl other
 
-public fun Long.shlInt(other: Int): Output = Shl.Shl(this, other)
+public infix fun Long.shl(other: Byte): Long = this shl other.toInt()
 
-public fun Long.shl(other: Byte): Long = this shl other.toInt()
+public infix fun Long.shl(other: Short): Long = this shl other.toInt()
 
-public fun Long.shlByte(other: Byte): Output = Shl.Shl(this, other)
+public fun Long.shlInt(other: Int): Long = this shl other
 
-public fun Long.shl(other: Short): Long = this shl other.toInt()
+public infix fun Long.shl(other: Long): Long = this shl other.toInt()
 
-public fun Long.shlShort(other: Short): Output = Shl.Shl(this, other)
+public infix fun Long.shl(other: I128): Long = this shl other.toInt()
 
-public fun Long.shl(other: Long): Long = this shl other.toInt()
+public infix fun I128.shl(other: UByte): I128 = this shl other.toInt()
 
-public fun Long.shlLong(other: Long): Output = Shl.Shl(this, other)
+public infix fun I128.shl(other: UShort): I128 = this shl other.toInt()
 
-public fun Long.shl(other: I128): Long = this shl other.toInt()
+public infix fun I128.shl(other: UInt): I128 = this shl other.toInt()
 
-public fun Long.shlI128(other: I128): Output = Shl.Shl(this, other)
+public infix fun I128.shl(other: ULong): I128 = this shl other.toInt()
 
-public fun I128.shl(other: UByte): I128 = this shl other.toInt()
+public infix fun I128.shl(other: U128): I128 = this shl other.toInt()
 
-public fun I128.shlUByte(other: UByte): Output = Shl.Shl(this, other)
+public infix fun I128.shl(other: Int): I128 = this shl other
 
-public fun I128.shl(other: UShort): I128 = this shl other.toInt()
+public infix fun I128.shl(other: Byte): I128 = this shl other.toInt()
 
-public fun I128.shlUShort(other: UShort): Output = Shl.Shl(this, other)
+public infix fun I128.shl(other: Short): I128 = this shl other.toInt()
 
-public fun I128.shl(other: UInt): I128 = this shl other.toInt()
+public fun I128.shlInt(other: Int): I128 = this shl other
 
-public fun I128.shlUInt(other: UInt): Output = Shl.Shl(this, other)
+public infix fun I128.shl(other: Long): I128 = this shl other.toInt()
 
-public fun I128.shl(other: ULong): I128 = this shl other.toInt()
-
-public fun I128.shlULong(other: ULong): Output = Shl.Shl(this, other)
-
-public fun I128.shl(other: U128): I128 = this shl other.toInt()
-
-public fun I128.shlU128(other: U128): Output = Shl.Shl(this, other)
-
-public fun I128.shl(other: Int): I128 = this shl other
-
-public fun I128.shlInt(other: Int): Output = Shl.Shl(this, other)
-
-public fun I128.shl(other: Byte): I128 = this shl other.toInt()
-
-public fun I128.shlByte(other: Byte): Output = Shl.Shl(this, other)
-
-public fun I128.shl(other: Short): I128 = this shl other.toInt()
-
-public fun I128.shlShort(other: Short): Output = Shl.Shl(this, other)
-
-public fun I128.shl(other: Long): I128 = this shl other.toInt()
-
-public fun I128.shlLong(other: Long): Output = Shl.Shl(this, other)
-
-public fun I128.shl(other: I128): I128 = this shl other.toInt()
-
-public fun I128.shlI128(other: I128): Output = Shl.Shl(this, other)
+public infix fun I128.shl(other: I128): I128 = this shl other.toInt()
 
 /**
  * The right shift operator `>>`. Note that because this trait is implemented
@@ -950,7 +722,7 @@ public fun I128.shlI128(other: I128): Output = Shl.Shl(this, other)
  *                 value = v
  *             }
  *
- *         public open fun shr(destructuredArg0: Scalar): Scalar {
+ *         public open infix fun shr(destructuredArg0: Scalar): Scalar {
  *             val rhs = destructuredArg0.value
  *             val lhs = this.value
  *             return Scalar(lhs shr rhs)
@@ -969,7 +741,7 @@ public fun I128.shlI128(other: I128): Output = Shl.Shl(this, other)
  *
  * public fun doctestEntry() {
  *     open class SpinVector<T>(public var vec: List<T>) : Shr<Int, SpinVector<T>> {
- *         public open fun shr(rhs: Int): SpinVector<T> {
+ *         public open infix fun shr(rhs: Int): SpinVector<T> {
  *             // Rotate the vector by `rhs` places.
  *             val (a, b) = this.vec.splitAt(this.vec.size - rhs)
  *             var spunVector = mutableListOf<T>()
@@ -993,408 +765,246 @@ public interface Shr<Rhs, out Output> {
      * check(((2u.toUByte()).toUInt() shr 1).toUByte() == 1u.toUByte())
      * ```
      */
-    public fun shr(rhs: Rhs): Output
+    public infix fun shr(rhs: Rhs): Output
 }
 
-public fun UByte.shr(other: UByte): UByte = (this.toUInt() shr (other.toInt())).toUByte()
+public infix fun UByte.shr(other: UByte): UByte = (this.toUInt() shr (other.toInt())).toUByte()
 
-public fun UByte.shrUByte(other: UByte): Output = Shr.Shr(this, other)
+public infix fun UByte.shr(other: UShort): UByte = (this.toUInt() shr (other.toInt())).toUByte()
 
-public fun UByte.shr(other: UShort): UByte = (this.toUInt() shr (other.toInt())).toUByte()
+public infix fun UByte.shr(other: UInt): UByte = (this.toUInt() shr (other.toInt())).toUByte()
 
-public fun UByte.shrUShort(other: UShort): Output = Shr.Shr(this, other)
+public infix fun UByte.shr(other: ULong): UByte = (this.toUInt() shr (other.toInt())).toUByte()
 
-public fun UByte.shr(other: UInt): UByte = (this.toUInt() shr (other.toInt())).toUByte()
+public infix fun UByte.shr(other: U128): UByte = (this.toUInt() shr (other.toInt())).toUByte()
 
-public fun UByte.shrUInt(other: UInt): Output = Shr.Shr(this, other)
+public infix fun UByte.shr(other: Int): UByte = (this.toUInt() shr other).toUByte()
 
-public fun UByte.shr(other: ULong): UByte = (this.toUInt() shr (other.toInt())).toUByte()
+public infix fun UByte.shr(other: Byte): UByte = (this.toUInt() shr (other.toInt())).toUByte()
 
-public fun UByte.shrULong(other: ULong): Output = Shr.Shr(this, other)
+public infix fun UByte.shr(other: Short): UByte = (this.toUInt() shr (other.toInt())).toUByte()
 
-public fun UByte.shr(other: U128): UByte = (this.toUInt() shr (other.toInt())).toUByte()
+public fun UByte.shrInt(other: Int): UByte = (this.toUInt() shr other).toUByte()
 
-public fun UByte.shrU128(other: U128): Output = Shr.Shr(this, other)
+public infix fun UByte.shr(other: Long): UByte = (this.toUInt() shr (other.toInt())).toUByte()
 
-public fun UByte.shr(other: Int): UByte = (this.toUInt() shr other).toUByte()
+public infix fun UByte.shr(other: I128): UByte = (this.toUInt() shr (other.toInt())).toUByte()
 
-public fun UByte.shrInt(other: Int): Output = Shr.Shr(this, other)
+public infix fun UShort.shr(other: UByte): UShort = (this.toUInt() shr (other.toInt())).toUShort()
 
-public fun UByte.shr(other: Byte): UByte = (this.toUInt() shr (other.toInt())).toUByte()
+public infix fun UShort.shr(other: UShort): UShort = (this.toUInt() shr (other.toInt())).toUShort()
 
-public fun UByte.shrByte(other: Byte): Output = Shr.Shr(this, other)
+public infix fun UShort.shr(other: UInt): UShort = (this.toUInt() shr (other.toInt())).toUShort()
 
-public fun UByte.shr(other: Short): UByte = (this.toUInt() shr (other.toInt())).toUByte()
+public infix fun UShort.shr(other: ULong): UShort = (this.toUInt() shr (other.toInt())).toUShort()
 
-public fun UByte.shrShort(other: Short): Output = Shr.Shr(this, other)
+public infix fun UShort.shr(other: U128): UShort = (this.toUInt() shr (other.toInt())).toUShort()
 
-public fun UByte.shr(other: Long): UByte = (this.toUInt() shr (other.toInt())).toUByte()
+public infix fun UShort.shr(other: Int): UShort = (this.toUInt() shr other).toUShort()
 
-public fun UByte.shrLong(other: Long): Output = Shr.Shr(this, other)
+public infix fun UShort.shr(other: Byte): UShort = (this.toUInt() shr (other.toInt())).toUShort()
 
-public fun UByte.shr(other: I128): UByte = (this.toUInt() shr (other.toInt())).toUByte()
+public infix fun UShort.shr(other: Short): UShort = (this.toUInt() shr (other.toInt())).toUShort()
 
-public fun UByte.shrI128(other: I128): Output = Shr.Shr(this, other)
+public fun UShort.shrInt(other: Int): UShort = (this.toUInt() shr other).toUShort()
 
-public fun UShort.shr(other: UByte): UShort = (this.toUInt() shr (other.toInt())).toUShort()
+public infix fun UShort.shr(other: Long): UShort = (this.toUInt() shr (other.toInt())).toUShort()
 
-public fun UShort.shrUByte(other: UByte): Output = Shr.Shr(this, other)
+public infix fun UShort.shr(other: I128): UShort = (this.toUInt() shr (other.toInt())).toUShort()
 
-public fun UShort.shr(other: UShort): UShort = (this.toUInt() shr (other.toInt())).toUShort()
+public infix fun UInt.shr(other: UByte): UInt = this shr other.toInt()
 
-public fun UShort.shrUShort(other: UShort): Output = Shr.Shr(this, other)
+public infix fun UInt.shr(other: UShort): UInt = this shr other.toInt()
 
-public fun UShort.shr(other: UInt): UShort = (this.toUInt() shr (other.toInt())).toUShort()
+public infix fun UInt.shr(other: UInt): UInt = this shr other.toInt()
 
-public fun UShort.shrUInt(other: UInt): Output = Shr.Shr(this, other)
+public infix fun UInt.shr(other: ULong): UInt = this shr other.toInt()
 
-public fun UShort.shr(other: ULong): UShort = (this.toUInt() shr (other.toInt())).toUShort()
-
-public fun UShort.shrULong(other: ULong): Output = Shr.Shr(this, other)
-
-public fun UShort.shr(other: U128): UShort = (this.toUInt() shr (other.toInt())).toUShort()
-
-public fun UShort.shrU128(other: U128): Output = Shr.Shr(this, other)
-
-public fun UShort.shr(other: Int): UShort = (this.toUInt() shr other).toUShort()
-
-public fun UShort.shrInt(other: Int): Output = Shr.Shr(this, other)
-
-public fun UShort.shr(other: Byte): UShort = (this.toUInt() shr (other.toInt())).toUShort()
-
-public fun UShort.shrByte(other: Byte): Output = Shr.Shr(this, other)
-
-public fun UShort.shr(other: Short): UShort = (this.toUInt() shr (other.toInt())).toUShort()
-
-public fun UShort.shrShort(other: Short): Output = Shr.Shr(this, other)
-
-public fun UShort.shr(other: Long): UShort = (this.toUInt() shr (other.toInt())).toUShort()
-
-public fun UShort.shrLong(other: Long): Output = Shr.Shr(this, other)
-
-public fun UShort.shr(other: I128): UShort = (this.toUInt() shr (other.toInt())).toUShort()
-
-public fun UShort.shrI128(other: I128): Output = Shr.Shr(this, other)
-
-public fun UInt.shr(other: UByte): UInt = this shr other.toInt()
-
-public fun UInt.shrUByte(other: UByte): Output = Shr.Shr(this, other)
-
-public fun UInt.shr(other: UShort): UInt = this shr other.toInt()
-
-public fun UInt.shrUShort(other: UShort): Output = Shr.Shr(this, other)
-
-public fun UInt.shr(other: UInt): UInt = this shr other.toInt()
-
-public fun UInt.shrUInt(other: UInt): Output = Shr.Shr(this, other)
-
-public fun UInt.shr(other: ULong): UInt = this shr other.toInt()
-
-public fun UInt.shrULong(other: ULong): Output = Shr.Shr(this, other)
-
-public fun UInt.shr(other: U128): UInt = this shr other.toInt()
-
-public fun UInt.shrU128(other: U128): Output = Shr.Shr(this, other)
+public infix fun UInt.shr(other: U128): UInt = this shr other.toInt()
 
 public fun UInt.shr(other: Int): UInt = this shr other
 
-public fun UInt.shrInt(other: Int): Output = Shr.Shr(this, other)
+public infix fun UInt.shr(other: Byte): UInt = this shr other.toInt()
 
-public fun UInt.shr(other: Byte): UInt = this shr other.toInt()
+public infix fun UInt.shr(other: Short): UInt = this shr other.toInt()
 
-public fun UInt.shrByte(other: Byte): Output = Shr.Shr(this, other)
+public fun UInt.shrInt(other: Int): UInt = this shr other
 
-public fun UInt.shr(other: Short): UInt = this shr other.toInt()
+public infix fun UInt.shr(other: Long): UInt = this shr other.toInt()
 
-public fun UInt.shrShort(other: Short): Output = Shr.Shr(this, other)
+public infix fun UInt.shr(other: I128): UInt = this shr other.toInt()
 
-public fun UInt.shr(other: Long): UInt = this shr other.toInt()
+public infix fun ULong.shr(other: UByte): ULong = this shr other.toInt()
 
-public fun UInt.shrLong(other: Long): Output = Shr.Shr(this, other)
+public infix fun ULong.shr(other: UShort): ULong = this shr other.toInt()
 
-public fun UInt.shr(other: I128): UInt = this shr other.toInt()
+public infix fun ULong.shr(other: UInt): ULong = this shr other.toInt()
 
-public fun UInt.shrI128(other: I128): Output = Shr.Shr(this, other)
+public infix fun ULong.shr(other: ULong): ULong = this shr other.toInt()
 
-public fun ULong.shr(other: UByte): ULong = this shr other.toInt()
-
-public fun ULong.shrUByte(other: UByte): Output = Shr.Shr(this, other)
-
-public fun ULong.shr(other: UShort): ULong = this shr other.toInt()
-
-public fun ULong.shrUShort(other: UShort): Output = Shr.Shr(this, other)
-
-public fun ULong.shr(other: UInt): ULong = this shr other.toInt()
-
-public fun ULong.shrUInt(other: UInt): Output = Shr.Shr(this, other)
-
-public fun ULong.shr(other: ULong): ULong = this shr other.toInt()
-
-public fun ULong.shrULong(other: ULong): Output = Shr.Shr(this, other)
-
-public fun ULong.shr(other: U128): ULong = this shr other.toInt()
-
-public fun ULong.shrU128(other: U128): Output = Shr.Shr(this, other)
+public infix fun ULong.shr(other: U128): ULong = this shr other.toInt()
 
 public fun ULong.shr(other: Int): ULong = this shr other
 
-public fun ULong.shrInt(other: Int): Output = Shr.Shr(this, other)
+public infix fun ULong.shr(other: Byte): ULong = this shr other.toInt()
 
-public fun ULong.shr(other: Byte): ULong = this shr other.toInt()
+public infix fun ULong.shr(other: Short): ULong = this shr other.toInt()
 
-public fun ULong.shrByte(other: Byte): Output = Shr.Shr(this, other)
+public fun ULong.shrInt(other: Int): ULong = this shr other
 
-public fun ULong.shr(other: Short): ULong = this shr other.toInt()
+public infix fun ULong.shr(other: Long): ULong = this shr other.toInt()
 
-public fun ULong.shrShort(other: Short): Output = Shr.Shr(this, other)
+public infix fun ULong.shr(other: I128): ULong = this shr other.toInt()
 
-public fun ULong.shr(other: Long): ULong = this shr other.toInt()
+public infix fun U128.shr(other: UByte): U128 = this shr other.toInt()
 
-public fun ULong.shrLong(other: Long): Output = Shr.Shr(this, other)
+public infix fun U128.shr(other: UShort): U128 = this shr other.toInt()
 
-public fun ULong.shr(other: I128): ULong = this shr other.toInt()
+public infix fun U128.shr(other: UInt): U128 = this shr other.toInt()
 
-public fun ULong.shrI128(other: I128): Output = Shr.Shr(this, other)
+public infix fun U128.shr(other: ULong): U128 = this shr other.toInt()
 
-public fun U128.shr(other: UByte): U128 = this shr other.toInt()
+public infix fun U128.shr(other: U128): U128 = this shr other.toInt()
 
-public fun U128.shrUByte(other: UByte): Output = Shr.Shr(this, other)
+public infix fun U128.shr(other: Int): U128 = this shr other
 
-public fun U128.shr(other: UShort): U128 = this shr other.toInt()
+public infix fun U128.shr(other: Byte): U128 = this shr other.toInt()
 
-public fun U128.shrUShort(other: UShort): Output = Shr.Shr(this, other)
+public infix fun U128.shr(other: Short): U128 = this shr other.toInt()
 
-public fun U128.shr(other: UInt): U128 = this shr other.toInt()
+public fun U128.shrInt(other: Int): U128 = this shr other
 
-public fun U128.shrUInt(other: UInt): Output = Shr.Shr(this, other)
+public infix fun U128.shr(other: Long): U128 = this shr other.toInt()
 
-public fun U128.shr(other: ULong): U128 = this shr other.toInt()
+public infix fun U128.shr(other: I128): U128 = this shr other.toInt()
 
-public fun U128.shrULong(other: ULong): Output = Shr.Shr(this, other)
+public infix fun Int.shr(other: UByte): Int = this shr other.toInt()
 
-public fun U128.shr(other: U128): U128 = this shr other.toInt()
+public infix fun Int.shr(other: UShort): Int = this shr other.toInt()
 
-public fun U128.shrU128(other: U128): Output = Shr.Shr(this, other)
+public infix fun Int.shr(other: UInt): Int = this shr other.toInt()
 
-public fun U128.shr(other: Int): U128 = this shr other
+public infix fun Int.shr(other: ULong): Int = this shr other.toInt()
 
-public fun U128.shrInt(other: Int): Output = Shr.Shr(this, other)
-
-public fun U128.shr(other: Byte): U128 = this shr other.toInt()
-
-public fun U128.shrByte(other: Byte): Output = Shr.Shr(this, other)
-
-public fun U128.shr(other: Short): U128 = this shr other.toInt()
-
-public fun U128.shrShort(other: Short): Output = Shr.Shr(this, other)
-
-public fun U128.shr(other: Long): U128 = this shr other.toInt()
-
-public fun U128.shrLong(other: Long): Output = Shr.Shr(this, other)
-
-public fun U128.shr(other: I128): U128 = this shr other.toInt()
-
-public fun U128.shrI128(other: I128): Output = Shr.Shr(this, other)
-
-public fun Int.shr(other: UByte): Int = this shr other.toInt()
-
-public fun Int.shrUByte(other: UByte): Output = Shr.Shr(this, other)
-
-public fun Int.shr(other: UShort): Int = this shr other.toInt()
-
-public fun Int.shrUShort(other: UShort): Output = Shr.Shr(this, other)
-
-public fun Int.shr(other: UInt): Int = this shr other.toInt()
-
-public fun Int.shrUInt(other: UInt): Output = Shr.Shr(this, other)
-
-public fun Int.shr(other: ULong): Int = this shr other.toInt()
-
-public fun Int.shrULong(other: ULong): Output = Shr.Shr(this, other)
-
-public fun Int.shr(other: U128): Int = this shr other.toInt()
-
-public fun Int.shrU128(other: U128): Output = Shr.Shr(this, other)
+public infix fun Int.shr(other: U128): Int = this shr other.toInt()
 
 public fun Int.shr(other: Int): Int = this shr other
 
-public fun Int.shrInt(other: Int): Output = Shr.Shr(this, other)
+public infix fun Int.shr(other: Byte): Int = this shr other.toInt()
 
-public fun Int.shr(other: Byte): Int = this shr other.toInt()
+public infix fun Int.shr(other: Short): Int = this shr other.toInt()
 
-public fun Int.shrByte(other: Byte): Output = Shr.Shr(this, other)
+public fun Int.shrInt(other: Int): Int = this shr other
 
-public fun Int.shr(other: Short): Int = this shr other.toInt()
+public infix fun Int.shr(other: Long): Int = this shr other.toInt()
 
-public fun Int.shrShort(other: Short): Output = Shr.Shr(this, other)
+public infix fun Int.shr(other: I128): Int = this shr other.toInt()
 
-public fun Int.shr(other: Long): Int = this shr other.toInt()
+public infix fun Byte.shr(other: UByte): Byte = (this.toInt() shr (other.toInt())).toByte()
 
-public fun Int.shrLong(other: Long): Output = Shr.Shr(this, other)
+public infix fun Byte.shr(other: UShort): Byte = (this.toInt() shr (other.toInt())).toByte()
 
-public fun Int.shr(other: I128): Int = this shr other.toInt()
+public infix fun Byte.shr(other: UInt): Byte = (this.toInt() shr (other.toInt())).toByte()
 
-public fun Int.shrI128(other: I128): Output = Shr.Shr(this, other)
+public infix fun Byte.shr(other: ULong): Byte = (this.toInt() shr (other.toInt())).toByte()
 
-public fun Byte.shr(other: UByte): Byte = (this shr other.toInt()).toByte()
+public infix fun Byte.shr(other: U128): Byte = (this.toInt() shr (other.toInt())).toByte()
 
-public fun Byte.shrUByte(other: UByte): Output = Shr.Shr(this, other)
+public infix fun Byte.shr(other: Int): Byte = (this.toInt() shr other).toByte()
 
-public fun Byte.shr(other: UShort): Byte = (this shr other.toInt()).toByte()
+public infix fun Byte.shr(other: Byte): Byte = (this.toInt() shr (other.toInt())).toByte()
 
-public fun Byte.shrUShort(other: UShort): Output = Shr.Shr(this, other)
+public infix fun Byte.shr(other: Short): Byte = (this.toInt() shr (other.toInt())).toByte()
 
-public fun Byte.shr(other: UInt): Byte = (this shr other.toInt()).toByte()
+public fun Byte.shrInt(other: Int): Byte = (this.toInt() shr other).toByte()
 
-public fun Byte.shrUInt(other: UInt): Output = Shr.Shr(this, other)
+public infix fun Byte.shr(other: Long): Byte = (this.toInt() shr (other.toInt())).toByte()
 
-public fun Byte.shr(other: ULong): Byte = (this shr other.toInt()).toByte()
+public infix fun Byte.shr(other: I128): Byte = (this.toInt() shr (other.toInt())).toByte()
 
-public fun Byte.shrULong(other: ULong): Output = Shr.Shr(this, other)
+public infix fun Short.shr(other: UByte): Short = (this.toInt() shr (other.toInt())).toShort()
 
-public fun Byte.shr(other: U128): Byte = (this shr other.toInt()).toByte()
+public infix fun Short.shr(other: UShort): Short = (this.toInt() shr (other.toInt())).toShort()
 
-public fun Byte.shrU128(other: U128): Output = Shr.Shr(this, other)
+public infix fun Short.shr(other: UInt): Short = (this.toInt() shr (other.toInt())).toShort()
 
-public fun Byte.shr(other: Int): Byte = (this shr other).toByte()
+public infix fun Short.shr(other: ULong): Short = (this.toInt() shr (other.toInt())).toShort()
 
-public fun Byte.shrInt(other: Int): Output = Shr.Shr(this, other)
+public infix fun Short.shr(other: U128): Short = (this.toInt() shr (other.toInt())).toShort()
 
-public fun Byte.shr(other: Byte): Byte = (this shr other.toInt()).toByte()
+public infix fun Short.shr(other: Int): Short = (this.toInt() shr other).toShort()
 
-public fun Byte.shrByte(other: Byte): Output = Shr.Shr(this, other)
+public infix fun Short.shr(other: Byte): Short = (this.toInt() shr (other.toInt())).toShort()
 
-public fun Byte.shr(other: Short): Byte = (this shr other.toInt()).toByte()
+public infix fun Short.shr(other: Short): Short = (this.toInt() shr (other.toInt())).toShort()
 
-public fun Byte.shrShort(other: Short): Output = Shr.Shr(this, other)
+public fun Short.shrInt(other: Int): Short = (this.toInt() shr other).toShort()
 
-public fun Byte.shr(other: Long): Byte = (this shr other.toInt()).toByte()
+public infix fun Short.shr(other: Long): Short = (this.toInt() shr (other.toInt())).toShort()
 
-public fun Byte.shrLong(other: Long): Output = Shr.Shr(this, other)
+public infix fun Short.shr(other: I128): Short = (this.toInt() shr (other.toInt())).toShort()
 
-public fun Byte.shr(other: I128): Byte = (this shr other.toInt()).toByte()
+public fun Int.shrUByte(other: UByte): Int = this shr other.toInt()
 
-public fun Byte.shrI128(other: I128): Output = Shr.Shr(this, other)
+public fun Int.shrUShort(other: UShort): Int = this shr other.toInt()
 
-public fun Short.shr(other: UByte): Short = (this shr other.toInt()).toShort()
+public fun Int.shrUInt(other: UInt): Int = this shr other.toInt()
 
-public fun Short.shrUByte(other: UByte): Output = Shr.Shr(this, other)
+public fun Int.shrULong(other: ULong): Int = this shr other.toInt()
 
-public fun Short.shr(other: UShort): Short = (this shr other.toInt()).toShort()
+public fun Int.shrU128(other: U128): Int = this shr other.toInt()
 
-public fun Short.shrUShort(other: UShort): Output = Shr.Shr(this, other)
+public fun Int.shrByte(other: Byte): Int = this shr other.toInt()
 
-public fun Short.shr(other: UInt): Short = (this shr other.toInt()).toShort()
+public fun Int.shrShort(other: Short): Int = this shr other.toInt()
 
-public fun Short.shrUInt(other: UInt): Output = Shr.Shr(this, other)
+public fun Int.shrLong(other: Long): Int = this shr other.toInt()
 
-public fun Short.shr(other: ULong): Short = (this shr other.toInt()).toShort()
+public fun Int.shrI128(other: I128): Int = this shr other.toInt()
 
-public fun Short.shrULong(other: ULong): Output = Shr.Shr(this, other)
+public infix fun Long.shr(other: UByte): Long = this shr other.toInt()
 
-public fun Short.shr(other: U128): Short = (this shr other.toInt()).toShort()
+public infix fun Long.shr(other: UShort): Long = this shr other.toInt()
 
-public fun Short.shrU128(other: U128): Output = Shr.Shr(this, other)
+public infix fun Long.shr(other: UInt): Long = this shr other.toInt()
 
-public fun Short.shr(other: Int): Short = (this shr other).toShort()
+public infix fun Long.shr(other: ULong): Long = this shr other.toInt()
 
-public fun Short.shrInt(other: Int): Output = Shr.Shr(this, other)
-
-public fun Short.shr(other: Byte): Short = (this shr other.toInt()).toShort()
-
-public fun Short.shrByte(other: Byte): Output = Shr.Shr(this, other)
-
-public fun Short.shr(other: Short): Short = (this shr other.toInt()).toShort()
-
-public fun Short.shrShort(other: Short): Output = Shr.Shr(this, other)
-
-public fun Short.shr(other: Long): Short = (this shr other.toInt()).toShort()
-
-public fun Short.shrLong(other: Long): Output = Shr.Shr(this, other)
-
-public fun Short.shr(other: I128): Short = (this shr other.toInt()).toShort()
-
-public fun Short.shrI128(other: I128): Output = Shr.Shr(this, other)
-
-public fun Long.shr(other: UByte): Long = this shr other.toInt()
-
-public fun Long.shrUByte(other: UByte): Output = Shr.Shr(this, other)
-
-public fun Long.shr(other: UShort): Long = this shr other.toInt()
-
-public fun Long.shrUShort(other: UShort): Output = Shr.Shr(this, other)
-
-public fun Long.shr(other: UInt): Long = this shr other.toInt()
-
-public fun Long.shrUInt(other: UInt): Output = Shr.Shr(this, other)
-
-public fun Long.shr(other: ULong): Long = this shr other.toInt()
-
-public fun Long.shrULong(other: ULong): Output = Shr.Shr(this, other)
-
-public fun Long.shr(other: U128): Long = this shr other.toInt()
-
-public fun Long.shrU128(other: U128): Output = Shr.Shr(this, other)
+public infix fun Long.shr(other: U128): Long = this shr other.toInt()
 
 public fun Long.shr(other: Int): Long = this shr other
 
-public fun Long.shrInt(other: Int): Output = Shr.Shr(this, other)
+public infix fun Long.shr(other: Byte): Long = this shr other.toInt()
 
-public fun Long.shr(other: Byte): Long = this shr other.toInt()
+public infix fun Long.shr(other: Short): Long = this shr other.toInt()
 
-public fun Long.shrByte(other: Byte): Output = Shr.Shr(this, other)
+public fun Long.shrInt(other: Int): Long = this shr other
 
-public fun Long.shr(other: Short): Long = this shr other.toInt()
+public infix fun Long.shr(other: Long): Long = this shr other.toInt()
 
-public fun Long.shrShort(other: Short): Output = Shr.Shr(this, other)
+public infix fun Long.shr(other: I128): Long = this shr other.toInt()
 
-public fun Long.shr(other: Long): Long = this shr other.toInt()
+public infix fun I128.shr(other: UByte): I128 = this shr other.toInt()
 
-public fun Long.shrLong(other: Long): Output = Shr.Shr(this, other)
+public infix fun I128.shr(other: UShort): I128 = this shr other.toInt()
 
-public fun Long.shr(other: I128): Long = this shr other.toInt()
+public infix fun I128.shr(other: UInt): I128 = this shr other.toInt()
 
-public fun Long.shrI128(other: I128): Output = Shr.Shr(this, other)
+public infix fun I128.shr(other: ULong): I128 = this shr other.toInt()
 
-public fun I128.shr(other: UByte): I128 = this shr other.toInt()
+public infix fun I128.shr(other: U128): I128 = this shr other.toInt()
 
-public fun I128.shrUByte(other: UByte): Output = Shr.Shr(this, other)
+public infix fun I128.shr(other: Int): I128 = this shr other
 
-public fun I128.shr(other: UShort): I128 = this shr other.toInt()
+public infix fun I128.shr(other: Byte): I128 = this shr other.toInt()
 
-public fun I128.shrUShort(other: UShort): Output = Shr.Shr(this, other)
+public infix fun I128.shr(other: Short): I128 = this shr other.toInt()
 
-public fun I128.shr(other: UInt): I128 = this shr other.toInt()
+public fun I128.shrInt(other: Int): I128 = this shr other
 
-public fun I128.shrUInt(other: UInt): Output = Shr.Shr(this, other)
+public infix fun I128.shr(other: Long): I128 = this shr other.toInt()
 
-public fun I128.shr(other: ULong): I128 = this shr other.toInt()
-
-public fun I128.shrULong(other: ULong): Output = Shr.Shr(this, other)
-
-public fun I128.shr(other: U128): I128 = this shr other.toInt()
-
-public fun I128.shrU128(other: U128): Output = Shr.Shr(this, other)
-
-public fun I128.shr(other: Int): I128 = this shr other
-
-public fun I128.shrInt(other: Int): Output = Shr.Shr(this, other)
-
-public fun I128.shr(other: Byte): I128 = this shr other.toInt()
-
-public fun I128.shrByte(other: Byte): Output = Shr.Shr(this, other)
-
-public fun I128.shr(other: Short): I128 = this shr other.toInt()
-
-public fun I128.shrShort(other: Short): Output = Shr.Shr(this, other)
-
-public fun I128.shr(other: Long): I128 = this shr other.toInt()
-
-public fun I128.shrLong(other: Long): Output = Shr.Shr(this, other)
-
-public fun I128.shr(other: I128): I128 = this shr other.toInt()
-
-public fun I128.shrI128(other: I128): Output = Shr.Shr(this, other)
+public infix fun I128.shr(other: I128): I128 = this shr other.toInt()
 
 /**
  * The bitwise AND assignment operator `=`.
@@ -1485,91 +1095,47 @@ public interface BitAndAssign<Rhs> {
 }
 
 public fun Boolean.bitandAssign(other: Boolean) {
-    this = this and other
-}
-
-public fun Boolean.bitandAssignBoolean(other: Boolean) {
-    this.bitandAssign(other)
+    (this and other).let {}
 }
 
 public fun Int.bitandAssign(other: Int) {
-    this = this and other
-}
-
-public fun Int.bitandAssignInt(other: Int) {
-    this.bitandAssign(other)
+    (this and other).let {}
 }
 
 public fun UByte.bitandAssign(other: UByte) {
-    this = this and other
-}
-
-public fun UByte.bitandAssignUByte(other: UByte) {
-    this.bitandAssign(other)
+    (this and other).let {}
 }
 
 public fun UShort.bitandAssign(other: UShort) {
-    this = this and other
-}
-
-public fun UShort.bitandAssignUShort(other: UShort) {
-    this.bitandAssign(other)
+    (this and other).let {}
 }
 
 public fun UInt.bitandAssign(other: UInt) {
-    this = this and other
-}
-
-public fun UInt.bitandAssignUInt(other: UInt) {
-    this.bitandAssign(other)
+    (this and other).let {}
 }
 
 public fun ULong.bitandAssign(other: ULong) {
-    this = this and other
-}
-
-public fun ULong.bitandAssignULong(other: ULong) {
-    this.bitandAssign(other)
+    (this and other).let {}
 }
 
 public fun U128.bitandAssign(other: U128) {
-    this = this and other
-}
-
-public fun U128.bitandAssignU128(other: U128) {
-    this.bitandAssign(other)
+    (this and other).let {}
 }
 
 public fun Byte.bitandAssign(other: Byte) {
-    this = this and other
-}
-
-public fun Byte.bitandAssignByte(other: Byte) {
-    this.bitandAssign(other)
+    (this and other).let {}
 }
 
 public fun Short.bitandAssign(other: Short) {
-    this = this and other
-}
-
-public fun Short.bitandAssignShort(other: Short) {
-    this.bitandAssign(other)
+    (this and other).let {}
 }
 
 public fun Long.bitandAssign(other: Long) {
-    this = this and other
-}
-
-public fun Long.bitandAssignLong(other: Long) {
-    this.bitandAssign(other)
+    (this and other).let {}
 }
 
 public fun I128.bitandAssign(other: I128) {
-    this = this and other
-}
-
-public fun I128.bitandAssignI128(other: I128) {
-    this.bitandAssign(other)
+    (this and other).let {}
 }
 
 /**
@@ -1616,91 +1182,47 @@ public interface BitOrAssign<Rhs> {
 }
 
 public fun Boolean.bitorAssign(other: Boolean) {
-    this = this or other
-}
-
-public fun Boolean.bitorAssignBoolean(other: Boolean) {
-    this.bitorAssign(other)
+    (this or other).let {}
 }
 
 public fun Int.bitorAssign(other: Int) {
-    this = this or other
-}
-
-public fun Int.bitorAssignInt(other: Int) {
-    this.bitorAssign(other)
+    (this or other).let {}
 }
 
 public fun UByte.bitorAssign(other: UByte) {
-    this = this or other
-}
-
-public fun UByte.bitorAssignUByte(other: UByte) {
-    this.bitorAssign(other)
+    (this or other).let {}
 }
 
 public fun UShort.bitorAssign(other: UShort) {
-    this = this or other
-}
-
-public fun UShort.bitorAssignUShort(other: UShort) {
-    this.bitorAssign(other)
+    (this or other).let {}
 }
 
 public fun UInt.bitorAssign(other: UInt) {
-    this = this or other
-}
-
-public fun UInt.bitorAssignUInt(other: UInt) {
-    this.bitorAssign(other)
+    (this or other).let {}
 }
 
 public fun ULong.bitorAssign(other: ULong) {
-    this = this or other
-}
-
-public fun ULong.bitorAssignULong(other: ULong) {
-    this.bitorAssign(other)
+    (this or other).let {}
 }
 
 public fun U128.bitorAssign(other: U128) {
-    this = this or other
-}
-
-public fun U128.bitorAssignU128(other: U128) {
-    this.bitorAssign(other)
+    (this or other).let {}
 }
 
 public fun Byte.bitorAssign(other: Byte) {
-    this = this or other
-}
-
-public fun Byte.bitorAssignByte(other: Byte) {
-    this.bitorAssign(other)
+    (this or other).let {}
 }
 
 public fun Short.bitorAssign(other: Short) {
-    this = this or other
-}
-
-public fun Short.bitorAssignShort(other: Short) {
-    this.bitorAssign(other)
+    (this or other).let {}
 }
 
 public fun Long.bitorAssign(other: Long) {
-    this = this or other
-}
-
-public fun Long.bitorAssignLong(other: Long) {
-    this.bitorAssign(other)
+    (this or other).let {}
 }
 
 public fun I128.bitorAssign(other: I128) {
-    this = this or other
-}
-
-public fun I128.bitorAssignI128(other: I128) {
-    this.bitorAssign(other)
+    (this or other).let {}
 }
 
 /**
@@ -1747,91 +1269,47 @@ public interface BitXorAssign<Rhs> {
 }
 
 public fun Boolean.bitxorAssign(other: Boolean) {
-    this = this xor other
-}
-
-public fun Boolean.bitxorAssignBoolean(other: Boolean) {
-    this.bitxorAssign(other)
+    (this xor other).let {}
 }
 
 public fun Int.bitxorAssign(other: Int) {
-    this = this xor other
-}
-
-public fun Int.bitxorAssignInt(other: Int) {
-    this.bitxorAssign(other)
+    (this xor other).let {}
 }
 
 public fun UByte.bitxorAssign(other: UByte) {
-    this = this xor other
-}
-
-public fun UByte.bitxorAssignUByte(other: UByte) {
-    this.bitxorAssign(other)
+    (this xor other).let {}
 }
 
 public fun UShort.bitxorAssign(other: UShort) {
-    this = this xor other
-}
-
-public fun UShort.bitxorAssignUShort(other: UShort) {
-    this.bitxorAssign(other)
+    (this xor other).let {}
 }
 
 public fun UInt.bitxorAssign(other: UInt) {
-    this = this xor other
-}
-
-public fun UInt.bitxorAssignUInt(other: UInt) {
-    this.bitxorAssign(other)
+    (this xor other).let {}
 }
 
 public fun ULong.bitxorAssign(other: ULong) {
-    this = this xor other
-}
-
-public fun ULong.bitxorAssignULong(other: ULong) {
-    this.bitxorAssign(other)
+    (this xor other).let {}
 }
 
 public fun U128.bitxorAssign(other: U128) {
-    this = this xor other
-}
-
-public fun U128.bitxorAssignU128(other: U128) {
-    this.bitxorAssign(other)
+    (this xor other).let {}
 }
 
 public fun Byte.bitxorAssign(other: Byte) {
-    this = this xor other
-}
-
-public fun Byte.bitxorAssignByte(other: Byte) {
-    this.bitxorAssign(other)
+    (this xor other).let {}
 }
 
 public fun Short.bitxorAssign(other: Short) {
-    this = this xor other
-}
-
-public fun Short.bitxorAssignShort(other: Short) {
-    this.bitxorAssign(other)
+    (this xor other).let {}
 }
 
 public fun Long.bitxorAssign(other: Long) {
-    this = this xor other
-}
-
-public fun Long.bitxorAssignLong(other: Long) {
-    this.bitxorAssign(other)
+    (this xor other).let {}
 }
 
 public fun I128.bitxorAssign(other: I128) {
-    this = this xor other
-}
-
-public fun I128.bitxorAssignI128(other: I128) {
-    this.bitxorAssign(other)
+    (this xor other).let {}
 }
 
 /**
@@ -1868,10 +1346,10 @@ public interface ShlAssign<Rhs> {
      *
      * ```kotlin
      * var x: UByte = 5u
-     * x = x shl 1
+     * x = ((x).toUInt() shl 1).toUByte()
      * check(x == 10u.toUByte())
      * var x1: UByte = 1u
-     * x1 = x1 shl 1
+     * x1 = ((x1).toUInt() shl 1).toUByte()
      * check(x1 == 2u.toUByte())
      * ```
      */
@@ -1879,803 +1357,479 @@ public interface ShlAssign<Rhs> {
 }
 
 public fun UByte.shlAssign(other: UByte) {
-    this = this shl other.toInt()
-}
-
-public fun UByte.shlAssignUByte(other: UByte) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other.toInt()).toUByte()).let {}
 }
 
 public fun UByte.shlAssign(other: UShort) {
-    this = this shl other.toInt()
-}
-
-public fun UByte.shlAssignUShort(other: UShort) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other.toInt()).toUByte()).let {}
 }
 
 public fun UByte.shlAssign(other: UInt) {
-    this = this shl other.toInt()
-}
-
-public fun UByte.shlAssignUInt(other: UInt) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other.toInt()).toUByte()).let {}
 }
 
 public fun UByte.shlAssign(other: ULong) {
-    this = this shl other.toInt()
-}
-
-public fun UByte.shlAssignULong(other: ULong) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other.toInt()).toUByte()).let {}
 }
 
 public fun UByte.shlAssign(other: U128) {
-    this = this shl other.toInt()
-}
-
-public fun UByte.shlAssignU128(other: U128) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other.toInt()).toUByte()).let {}
 }
 
 public fun UByte.shlAssign(other: Int) {
-    this = this shl other
-}
-
-public fun UByte.shlAssignInt(other: Int) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other).toUByte()).let {}
 }
 
 public fun UByte.shlAssign(other: Byte) {
-    this = this shl other.toInt()
-}
-
-public fun UByte.shlAssignByte(other: Byte) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other.toInt()).toUByte()).let {}
 }
 
 public fun UByte.shlAssign(other: Short) {
-    this = this shl other.toInt()
+    (((this).toUInt() shl other.toInt()).toUByte()).let {}
 }
 
-public fun UByte.shlAssignShort(other: Short) {
-    ShlAssign.ShlAssign(this, other)
+public fun UByte.shlAssignInt(other: Int) {
+    (((this).toUInt() shl other).toUByte()).let {}
 }
 
 public fun UByte.shlAssign(other: Long) {
-    this = this shl other.toInt()
-}
-
-public fun UByte.shlAssignLong(other: Long) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other.toInt()).toUByte()).let {}
 }
 
 public fun UByte.shlAssign(other: I128) {
-    this = this shl other.toInt()
-}
-
-public fun UByte.shlAssignI128(other: I128) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other.toInt()).toUByte()).let {}
 }
 
 public fun UShort.shlAssign(other: UByte) {
-    this = this shl other.toInt()
-}
-
-public fun UShort.shlAssignUByte(other: UByte) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other.toInt()).toUShort()).let {}
 }
 
 public fun UShort.shlAssign(other: UShort) {
-    this = this shl other.toInt()
-}
-
-public fun UShort.shlAssignUShort(other: UShort) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other.toInt()).toUShort()).let {}
 }
 
 public fun UShort.shlAssign(other: UInt) {
-    this = this shl other.toInt()
-}
-
-public fun UShort.shlAssignUInt(other: UInt) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other.toInt()).toUShort()).let {}
 }
 
 public fun UShort.shlAssign(other: ULong) {
-    this = this shl other.toInt()
-}
-
-public fun UShort.shlAssignULong(other: ULong) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other.toInt()).toUShort()).let {}
 }
 
 public fun UShort.shlAssign(other: U128) {
-    this = this shl other.toInt()
-}
-
-public fun UShort.shlAssignU128(other: U128) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other.toInt()).toUShort()).let {}
 }
 
 public fun UShort.shlAssign(other: Int) {
-    this = this shl other
-}
-
-public fun UShort.shlAssignInt(other: Int) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other).toUShort()).let {}
 }
 
 public fun UShort.shlAssign(other: Byte) {
-    this = this shl other.toInt()
-}
-
-public fun UShort.shlAssignByte(other: Byte) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other.toInt()).toUShort()).let {}
 }
 
 public fun UShort.shlAssign(other: Short) {
-    this = this shl other.toInt()
+    (((this).toUInt() shl other.toInt()).toUShort()).let {}
 }
 
-public fun UShort.shlAssignShort(other: Short) {
-    ShlAssign.ShlAssign(this, other)
+public fun UShort.shlAssignInt(other: Int) {
+    (((this).toUInt() shl other).toUShort()).let {}
 }
 
 public fun UShort.shlAssign(other: Long) {
-    this = this shl other.toInt()
-}
-
-public fun UShort.shlAssignLong(other: Long) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other.toInt()).toUShort()).let {}
 }
 
 public fun UShort.shlAssign(other: I128) {
-    this = this shl other.toInt()
-}
-
-public fun UShort.shlAssignI128(other: I128) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toUInt() shl other.toInt()).toUShort()).let {}
 }
 
 public fun UInt.shlAssign(other: UByte) {
-    this = this shl other.toInt()
-}
-
-public fun UInt.shlAssignUByte(other: UByte) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun UInt.shlAssign(other: UShort) {
-    this = this shl other.toInt()
-}
-
-public fun UInt.shlAssignUShort(other: UShort) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun UInt.shlAssign(other: UInt) {
-    this = this shl other.toInt()
-}
-
-public fun UInt.shlAssignUInt(other: UInt) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun UInt.shlAssign(other: ULong) {
-    this = this shl other.toInt()
-}
-
-public fun UInt.shlAssignULong(other: ULong) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun UInt.shlAssign(other: U128) {
-    this = this shl other.toInt()
-}
-
-public fun UInt.shlAssignU128(other: U128) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun UInt.shlAssign(other: Int) {
-    this = this shl other
-}
-
-public fun UInt.shlAssignInt(other: Int) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other).let {}
 }
 
 public fun UInt.shlAssign(other: Byte) {
-    this = this shl other.toInt()
-}
-
-public fun UInt.shlAssignByte(other: Byte) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun UInt.shlAssign(other: Short) {
-    this = this shl other.toInt()
+    (this shl other.toInt()).let {}
 }
 
-public fun UInt.shlAssignShort(other: Short) {
-    ShlAssign.ShlAssign(this, other)
+public fun UInt.shlAssignInt(other: Int) {
+    (this shl other).let {}
 }
 
 public fun UInt.shlAssign(other: Long) {
-    this = this shl other.toInt()
-}
-
-public fun UInt.shlAssignLong(other: Long) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun UInt.shlAssign(other: I128) {
-    this = this shl other.toInt()
-}
-
-public fun UInt.shlAssignI128(other: I128) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun ULong.shlAssign(other: UByte) {
-    this = this shl other.toInt()
-}
-
-public fun ULong.shlAssignUByte(other: UByte) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun ULong.shlAssign(other: UShort) {
-    this = this shl other.toInt()
-}
-
-public fun ULong.shlAssignUShort(other: UShort) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun ULong.shlAssign(other: UInt) {
-    this = this shl other.toInt()
-}
-
-public fun ULong.shlAssignUInt(other: UInt) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun ULong.shlAssign(other: ULong) {
-    this = this shl other.toInt()
-}
-
-public fun ULong.shlAssignULong(other: ULong) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun ULong.shlAssign(other: U128) {
-    this = this shl other.toInt()
-}
-
-public fun ULong.shlAssignU128(other: U128) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun ULong.shlAssign(other: Int) {
-    this = this shl other
-}
-
-public fun ULong.shlAssignInt(other: Int) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other).let {}
 }
 
 public fun ULong.shlAssign(other: Byte) {
-    this = this shl other.toInt()
-}
-
-public fun ULong.shlAssignByte(other: Byte) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun ULong.shlAssign(other: Short) {
-    this = this shl other.toInt()
+    (this shl other.toInt()).let {}
 }
 
-public fun ULong.shlAssignShort(other: Short) {
-    ShlAssign.ShlAssign(this, other)
+public fun ULong.shlAssignInt(other: Int) {
+    (this shl other).let {}
 }
 
 public fun ULong.shlAssign(other: Long) {
-    this = this shl other.toInt()
-}
-
-public fun ULong.shlAssignLong(other: Long) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun ULong.shlAssign(other: I128) {
-    this = this shl other.toInt()
-}
-
-public fun ULong.shlAssignI128(other: I128) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun U128.shlAssign(other: UByte) {
-    this = this shl other.toInt()
-}
-
-public fun U128.shlAssignUByte(other: UByte) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun U128.shlAssign(other: UShort) {
-    this = this shl other.toInt()
-}
-
-public fun U128.shlAssignUShort(other: UShort) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun U128.shlAssign(other: UInt) {
-    this = this shl other.toInt()
-}
-
-public fun U128.shlAssignUInt(other: UInt) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun U128.shlAssign(other: ULong) {
-    this = this shl other.toInt()
-}
-
-public fun U128.shlAssignULong(other: ULong) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun U128.shlAssign(other: U128) {
-    this = this shl other.toInt()
-}
-
-public fun U128.shlAssignU128(other: U128) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun U128.shlAssign(other: Int) {
-    this = this shl other
-}
-
-public fun U128.shlAssignInt(other: Int) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other).let {}
 }
 
 public fun U128.shlAssign(other: Byte) {
-    this = this shl other.toInt()
-}
-
-public fun U128.shlAssignByte(other: Byte) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun U128.shlAssign(other: Short) {
-    this = this shl other.toInt()
+    (this shl other.toInt()).let {}
 }
 
-public fun U128.shlAssignShort(other: Short) {
-    ShlAssign.ShlAssign(this, other)
+public fun U128.shlAssignInt(other: Int) {
+    (this shl other).let {}
 }
 
 public fun U128.shlAssign(other: Long) {
-    this = this shl other.toInt()
-}
-
-public fun U128.shlAssignLong(other: Long) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun U128.shlAssign(other: I128) {
-    this = this shl other.toInt()
-}
-
-public fun U128.shlAssignI128(other: I128) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun Int.shlAssign(other: UByte) {
-    this = this shl other.toInt()
-}
-
-public fun Int.shlAssignUByte(other: UByte) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun Int.shlAssign(other: UShort) {
-    this = this shl other.toInt()
-}
-
-public fun Int.shlAssignUShort(other: UShort) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun Int.shlAssign(other: UInt) {
-    this = this shl other.toInt()
-}
-
-public fun Int.shlAssignUInt(other: UInt) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun Int.shlAssign(other: ULong) {
-    this = this shl other.toInt()
-}
-
-public fun Int.shlAssignULong(other: ULong) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun Int.shlAssign(other: U128) {
-    this = this shl other.toInt()
-}
-
-public fun Int.shlAssignU128(other: U128) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun Int.shlAssign(other: Int) {
-    this = this shl other
-}
-
-public fun Int.shlAssignInt(other: Int) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other).let {}
 }
 
 public fun Int.shlAssign(other: Byte) {
-    this = this shl other.toInt()
-}
-
-public fun Int.shlAssignByte(other: Byte) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun Int.shlAssign(other: Short) {
-    this = this shl other.toInt()
+    (this shl other.toInt()).let {}
 }
 
-public fun Int.shlAssignShort(other: Short) {
-    ShlAssign.ShlAssign(this, other)
+public fun Int.shlAssignInt(other: Int) {
+    (this shl other).let {}
 }
 
 public fun Int.shlAssign(other: Long) {
-    this = this shl other.toInt()
-}
-
-public fun Int.shlAssignLong(other: Long) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun Int.shlAssign(other: I128) {
-    this = this shl other.toInt()
-}
-
-public fun Int.shlAssignI128(other: I128) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun Byte.shlAssign(other: UByte) {
-    this = this shl other.toInt()
-}
-
-public fun Byte.shlAssignUByte(other: UByte) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other.toInt()).toByte()).let {}
 }
 
 public fun Byte.shlAssign(other: UShort) {
-    this = this shl other.toInt()
-}
-
-public fun Byte.shlAssignUShort(other: UShort) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other.toInt()).toByte()).let {}
 }
 
 public fun Byte.shlAssign(other: UInt) {
-    this = this shl other.toInt()
-}
-
-public fun Byte.shlAssignUInt(other: UInt) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other.toInt()).toByte()).let {}
 }
 
 public fun Byte.shlAssign(other: ULong) {
-    this = this shl other.toInt()
-}
-
-public fun Byte.shlAssignULong(other: ULong) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other.toInt()).toByte()).let {}
 }
 
 public fun Byte.shlAssign(other: U128) {
-    this = this shl other.toInt()
-}
-
-public fun Byte.shlAssignU128(other: U128) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other.toInt()).toByte()).let {}
 }
 
 public fun Byte.shlAssign(other: Int) {
-    this = this shl other
-}
-
-public fun Byte.shlAssignInt(other: Int) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other).toByte()).let {}
 }
 
 public fun Byte.shlAssign(other: Byte) {
-    this = this shl other.toInt()
-}
-
-public fun Byte.shlAssignByte(other: Byte) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other.toInt()).toByte()).let {}
 }
 
 public fun Byte.shlAssign(other: Short) {
-    this = this shl other.toInt()
+    (((this).toInt() shl other.toInt()).toByte()).let {}
 }
 
-public fun Byte.shlAssignShort(other: Short) {
-    ShlAssign.ShlAssign(this, other)
+public fun Byte.shlAssignInt(other: Int) {
+    (((this).toInt() shl other).toByte()).let {}
 }
 
 public fun Byte.shlAssign(other: Long) {
-    this = this shl other.toInt()
-}
-
-public fun Byte.shlAssignLong(other: Long) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other.toInt()).toByte()).let {}
 }
 
 public fun Byte.shlAssign(other: I128) {
-    this = this shl other.toInt()
-}
-
-public fun Byte.shlAssignI128(other: I128) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other.toInt()).toByte()).let {}
 }
 
 public fun Short.shlAssign(other: UByte) {
-    this = this shl other.toInt()
-}
-
-public fun Short.shlAssignUByte(other: UByte) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other.toInt()).toShort()).let {}
 }
 
 public fun Short.shlAssign(other: UShort) {
-    this = this shl other.toInt()
-}
-
-public fun Short.shlAssignUShort(other: UShort) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other.toInt()).toShort()).let {}
 }
 
 public fun Short.shlAssign(other: UInt) {
-    this = this shl other.toInt()
-}
-
-public fun Short.shlAssignUInt(other: UInt) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other.toInt()).toShort()).let {}
 }
 
 public fun Short.shlAssign(other: ULong) {
-    this = this shl other.toInt()
-}
-
-public fun Short.shlAssignULong(other: ULong) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other.toInt()).toShort()).let {}
 }
 
 public fun Short.shlAssign(other: U128) {
-    this = this shl other.toInt()
-}
-
-public fun Short.shlAssignU128(other: U128) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other.toInt()).toShort()).let {}
 }
 
 public fun Short.shlAssign(other: Int) {
-    this = this shl other
-}
-
-public fun Short.shlAssignInt(other: Int) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other).toShort()).let {}
 }
 
 public fun Short.shlAssign(other: Byte) {
-    this = this shl other.toInt()
-}
-
-public fun Short.shlAssignByte(other: Byte) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other.toInt()).toShort()).let {}
 }
 
 public fun Short.shlAssign(other: Short) {
-    this = this shl other.toInt()
+    (((this).toInt() shl other.toInt()).toShort()).let {}
 }
 
-public fun Short.shlAssignShort(other: Short) {
-    ShlAssign.ShlAssign(this, other)
+public fun Short.shlAssignInt(other: Int) {
+    (((this).toInt() shl other).toShort()).let {}
 }
 
 public fun Short.shlAssign(other: Long) {
-    this = this shl other.toInt()
-}
-
-public fun Short.shlAssignLong(other: Long) {
-    ShlAssign.ShlAssign(this, other)
+    (((this).toInt() shl other.toInt()).toShort()).let {}
 }
 
 public fun Short.shlAssign(other: I128) {
-    this = this shl other.toInt()
+    (((this).toInt() shl other.toInt()).toShort()).let {}
 }
 
-public fun Short.shlAssignI128(other: I128) {
-    ShlAssign.ShlAssign(this, other)
+public fun Int.shlAssignUByte(other: UByte) {
+    (this shl other.toInt()).let {}
+}
+
+public fun Int.shlAssignUShort(other: UShort) {
+    (this shl other.toInt()).let {}
+}
+
+public fun Int.shlAssignUInt(other: UInt) {
+    (this shl other.toInt()).let {}
+}
+
+public fun Int.shlAssignULong(other: ULong) {
+    (this shl other.toInt()).let {}
+}
+
+public fun Int.shlAssignU128(other: U128) {
+    (this shl other.toInt()).let {}
+}
+
+public fun Int.shlAssignByte(other: Byte) {
+    (this shl other.toInt()).let {}
+}
+
+public fun Int.shlAssignShort(other: Short) {
+    (this shl other.toInt()).let {}
+}
+
+public fun Int.shlAssignLong(other: Long) {
+    (this shl other.toInt()).let {}
+}
+
+public fun Int.shlAssignI128(other: I128) {
+    (this shl other.toInt()).let {}
 }
 
 public fun Long.shlAssign(other: UByte) {
-    this = this shl other.toInt()
-}
-
-public fun Long.shlAssignUByte(other: UByte) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun Long.shlAssign(other: UShort) {
-    this = this shl other.toInt()
-}
-
-public fun Long.shlAssignUShort(other: UShort) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun Long.shlAssign(other: UInt) {
-    this = this shl other.toInt()
-}
-
-public fun Long.shlAssignUInt(other: UInt) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun Long.shlAssign(other: ULong) {
-    this = this shl other.toInt()
-}
-
-public fun Long.shlAssignULong(other: ULong) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun Long.shlAssign(other: U128) {
-    this = this shl other.toInt()
-}
-
-public fun Long.shlAssignU128(other: U128) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun Long.shlAssign(other: Int) {
-    this = this shl other
-}
-
-public fun Long.shlAssignInt(other: Int) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other).let {}
 }
 
 public fun Long.shlAssign(other: Byte) {
-    this = this shl other.toInt()
-}
-
-public fun Long.shlAssignByte(other: Byte) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun Long.shlAssign(other: Short) {
-    this = this shl other.toInt()
+    (this shl other.toInt()).let {}
 }
 
-public fun Long.shlAssignShort(other: Short) {
-    ShlAssign.ShlAssign(this, other)
+public fun Long.shlAssignInt(other: Int) {
+    (this shl other).let {}
 }
 
 public fun Long.shlAssign(other: Long) {
-    this = this shl other.toInt()
-}
-
-public fun Long.shlAssignLong(other: Long) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun Long.shlAssign(other: I128) {
-    this = this shl other.toInt()
-}
-
-public fun Long.shlAssignI128(other: I128) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun I128.shlAssign(other: UByte) {
-    this = this shl other.toInt()
-}
-
-public fun I128.shlAssignUByte(other: UByte) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun I128.shlAssign(other: UShort) {
-    this = this shl other.toInt()
-}
-
-public fun I128.shlAssignUShort(other: UShort) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun I128.shlAssign(other: UInt) {
-    this = this shl other.toInt()
-}
-
-public fun I128.shlAssignUInt(other: UInt) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun I128.shlAssign(other: ULong) {
-    this = this shl other.toInt()
-}
-
-public fun I128.shlAssignULong(other: ULong) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun I128.shlAssign(other: U128) {
-    this = this shl other.toInt()
-}
-
-public fun I128.shlAssignU128(other: U128) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun I128.shlAssign(other: Int) {
-    this = this shl other
-}
-
-public fun I128.shlAssignInt(other: Int) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other).let {}
 }
 
 public fun I128.shlAssign(other: Byte) {
-    this = this shl other.toInt()
-}
-
-public fun I128.shlAssignByte(other: Byte) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun I128.shlAssign(other: Short) {
-    this = this shl other.toInt()
+    (this shl other.toInt()).let {}
 }
 
-public fun I128.shlAssignShort(other: Short) {
-    ShlAssign.ShlAssign(this, other)
+public fun I128.shlAssignInt(other: Int) {
+    (this shl other).let {}
 }
 
 public fun I128.shlAssign(other: Long) {
-    this = this shl other.toInt()
-}
-
-public fun I128.shlAssignLong(other: Long) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 public fun I128.shlAssign(other: I128) {
-    this = this shl other.toInt()
-}
-
-public fun I128.shlAssignI128(other: I128) {
-    ShlAssign.ShlAssign(this, other)
+    (this shl other.toInt()).let {}
 }
 
 /**
@@ -2712,10 +1866,10 @@ public interface ShrAssign<Rhs> {
      *
      * ```kotlin
      * var x: UByte = 5u
-     * x = x shr 1
+     * x = ((x).toUInt() shr 1).toUByte()
      * check(x == 2u.toUByte())
      * var x1: UByte = 2u
-     * x1 = x1 shr 1
+     * x1 = ((x1).toUInt() shr 1).toUByte()
      * check(x1 == 1u.toUByte())
      * ```
      */
@@ -2723,801 +1877,477 @@ public interface ShrAssign<Rhs> {
 }
 
 public fun UByte.shrAssign(other: UByte) {
-    this = this shr other.toInt()
-}
-
-public fun UByte.shrAssignUByte(other: UByte) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other.toInt()).toUByte()).let {}
 }
 
 public fun UByte.shrAssign(other: UShort) {
-    this = this shr other.toInt()
-}
-
-public fun UByte.shrAssignUShort(other: UShort) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other.toInt()).toUByte()).let {}
 }
 
 public fun UByte.shrAssign(other: UInt) {
-    this = this shr other.toInt()
-}
-
-public fun UByte.shrAssignUInt(other: UInt) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other.toInt()).toUByte()).let {}
 }
 
 public fun UByte.shrAssign(other: ULong) {
-    this = this shr other.toInt()
-}
-
-public fun UByte.shrAssignULong(other: ULong) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other.toInt()).toUByte()).let {}
 }
 
 public fun UByte.shrAssign(other: U128) {
-    this = this shr other.toInt()
-}
-
-public fun UByte.shrAssignU128(other: U128) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other.toInt()).toUByte()).let {}
 }
 
 public fun UByte.shrAssign(other: Int) {
-    this = this shr other
-}
-
-public fun UByte.shrAssignInt(other: Int) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other).toUByte()).let {}
 }
 
 public fun UByte.shrAssign(other: Byte) {
-    this = this shr other.toInt()
-}
-
-public fun UByte.shrAssignByte(other: Byte) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other.toInt()).toUByte()).let {}
 }
 
 public fun UByte.shrAssign(other: Short) {
-    this = this shr other.toInt()
+    (((this).toUInt() shr other.toInt()).toUByte()).let {}
 }
 
-public fun UByte.shrAssignShort(other: Short) {
-    ShrAssign.ShrAssign(this, other)
+public fun UByte.shrAssignInt(other: Int) {
+    (((this).toUInt() shr other).toUByte()).let {}
 }
 
 public fun UByte.shrAssign(other: Long) {
-    this = this shr other.toInt()
-}
-
-public fun UByte.shrAssignLong(other: Long) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other.toInt()).toUByte()).let {}
 }
 
 public fun UByte.shrAssign(other: I128) {
-    this = this shr other.toInt()
-}
-
-public fun UByte.shrAssignI128(other: I128) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other.toInt()).toUByte()).let {}
 }
 
 public fun UShort.shrAssign(other: UByte) {
-    this = this shr other.toInt()
-}
-
-public fun UShort.shrAssignUByte(other: UByte) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other.toInt()).toUShort()).let {}
 }
 
 public fun UShort.shrAssign(other: UShort) {
-    this = this shr other.toInt()
-}
-
-public fun UShort.shrAssignUShort(other: UShort) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other.toInt()).toUShort()).let {}
 }
 
 public fun UShort.shrAssign(other: UInt) {
-    this = this shr other.toInt()
-}
-
-public fun UShort.shrAssignUInt(other: UInt) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other.toInt()).toUShort()).let {}
 }
 
 public fun UShort.shrAssign(other: ULong) {
-    this = this shr other.toInt()
-}
-
-public fun UShort.shrAssignULong(other: ULong) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other.toInt()).toUShort()).let {}
 }
 
 public fun UShort.shrAssign(other: U128) {
-    this = this shr other.toInt()
-}
-
-public fun UShort.shrAssignU128(other: U128) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other.toInt()).toUShort()).let {}
 }
 
 public fun UShort.shrAssign(other: Int) {
-    this = this shr other
-}
-
-public fun UShort.shrAssignInt(other: Int) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other).toUShort()).let {}
 }
 
 public fun UShort.shrAssign(other: Byte) {
-    this = this shr other.toInt()
-}
-
-public fun UShort.shrAssignByte(other: Byte) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other.toInt()).toUShort()).let {}
 }
 
 public fun UShort.shrAssign(other: Short) {
-    this = this shr other.toInt()
+    (((this).toUInt() shr other.toInt()).toUShort()).let {}
 }
 
-public fun UShort.shrAssignShort(other: Short) {
-    ShrAssign.ShrAssign(this, other)
+public fun UShort.shrAssignInt(other: Int) {
+    (((this).toUInt() shr other).toUShort()).let {}
 }
 
 public fun UShort.shrAssign(other: Long) {
-    this = this shr other.toInt()
-}
-
-public fun UShort.shrAssignLong(other: Long) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other.toInt()).toUShort()).let {}
 }
 
 public fun UShort.shrAssign(other: I128) {
-    this = this shr other.toInt()
-}
-
-public fun UShort.shrAssignI128(other: I128) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toUInt() shr other.toInt()).toUShort()).let {}
 }
 
 public fun UInt.shrAssign(other: UByte) {
-    this = this shr other.toInt()
-}
-
-public fun UInt.shrAssignUByte(other: UByte) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun UInt.shrAssign(other: UShort) {
-    this = this shr other.toInt()
-}
-
-public fun UInt.shrAssignUShort(other: UShort) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun UInt.shrAssign(other: UInt) {
-    this = this shr other.toInt()
-}
-
-public fun UInt.shrAssignUInt(other: UInt) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun UInt.shrAssign(other: ULong) {
-    this = this shr other.toInt()
-}
-
-public fun UInt.shrAssignULong(other: ULong) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun UInt.shrAssign(other: U128) {
-    this = this shr other.toInt()
-}
-
-public fun UInt.shrAssignU128(other: U128) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun UInt.shrAssign(other: Int) {
-    this = this shr other
-}
-
-public fun UInt.shrAssignInt(other: Int) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other).let {}
 }
 
 public fun UInt.shrAssign(other: Byte) {
-    this = this shr other.toInt()
-}
-
-public fun UInt.shrAssignByte(other: Byte) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun UInt.shrAssign(other: Short) {
-    this = this shr other.toInt()
+    (this shr other.toInt()).let {}
 }
 
-public fun UInt.shrAssignShort(other: Short) {
-    ShrAssign.ShrAssign(this, other)
+public fun UInt.shrAssignInt(other: Int) {
+    (this shr other).let {}
 }
 
 public fun UInt.shrAssign(other: Long) {
-    this = this shr other.toInt()
-}
-
-public fun UInt.shrAssignLong(other: Long) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun UInt.shrAssign(other: I128) {
-    this = this shr other.toInt()
-}
-
-public fun UInt.shrAssignI128(other: I128) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun ULong.shrAssign(other: UByte) {
-    this = this shr other.toInt()
-}
-
-public fun ULong.shrAssignUByte(other: UByte) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun ULong.shrAssign(other: UShort) {
-    this = this shr other.toInt()
-}
-
-public fun ULong.shrAssignUShort(other: UShort) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun ULong.shrAssign(other: UInt) {
-    this = this shr other.toInt()
-}
-
-public fun ULong.shrAssignUInt(other: UInt) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun ULong.shrAssign(other: ULong) {
-    this = this shr other.toInt()
-}
-
-public fun ULong.shrAssignULong(other: ULong) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun ULong.shrAssign(other: U128) {
-    this = this shr other.toInt()
-}
-
-public fun ULong.shrAssignU128(other: U128) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun ULong.shrAssign(other: Int) {
-    this = this shr other
-}
-
-public fun ULong.shrAssignInt(other: Int) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other).let {}
 }
 
 public fun ULong.shrAssign(other: Byte) {
-    this = this shr other.toInt()
-}
-
-public fun ULong.shrAssignByte(other: Byte) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun ULong.shrAssign(other: Short) {
-    this = this shr other.toInt()
+    (this shr other.toInt()).let {}
 }
 
-public fun ULong.shrAssignShort(other: Short) {
-    ShrAssign.ShrAssign(this, other)
+public fun ULong.shrAssignInt(other: Int) {
+    (this shr other).let {}
 }
 
 public fun ULong.shrAssign(other: Long) {
-    this = this shr other.toInt()
-}
-
-public fun ULong.shrAssignLong(other: Long) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun ULong.shrAssign(other: I128) {
-    this = this shr other.toInt()
-}
-
-public fun ULong.shrAssignI128(other: I128) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun U128.shrAssign(other: UByte) {
-    this = this shr other.toInt()
-}
-
-public fun U128.shrAssignUByte(other: UByte) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun U128.shrAssign(other: UShort) {
-    this = this shr other.toInt()
-}
-
-public fun U128.shrAssignUShort(other: UShort) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun U128.shrAssign(other: UInt) {
-    this = this shr other.toInt()
-}
-
-public fun U128.shrAssignUInt(other: UInt) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun U128.shrAssign(other: ULong) {
-    this = this shr other.toInt()
-}
-
-public fun U128.shrAssignULong(other: ULong) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun U128.shrAssign(other: U128) {
-    this = this shr other.toInt()
-}
-
-public fun U128.shrAssignU128(other: U128) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun U128.shrAssign(other: Int) {
-    this = this shr other
-}
-
-public fun U128.shrAssignInt(other: Int) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other).let {}
 }
 
 public fun U128.shrAssign(other: Byte) {
-    this = this shr other.toInt()
-}
-
-public fun U128.shrAssignByte(other: Byte) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun U128.shrAssign(other: Short) {
-    this = this shr other.toInt()
+    (this shr other.toInt()).let {}
 }
 
-public fun U128.shrAssignShort(other: Short) {
-    ShrAssign.ShrAssign(this, other)
+public fun U128.shrAssignInt(other: Int) {
+    (this shr other).let {}
 }
 
 public fun U128.shrAssign(other: Long) {
-    this = this shr other.toInt()
-}
-
-public fun U128.shrAssignLong(other: Long) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun U128.shrAssign(other: I128) {
-    this = this shr other.toInt()
-}
-
-public fun U128.shrAssignI128(other: I128) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun Int.shrAssign(other: UByte) {
-    this = this shr other.toInt()
-}
-
-public fun Int.shrAssignUByte(other: UByte) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun Int.shrAssign(other: UShort) {
-    this = this shr other.toInt()
-}
-
-public fun Int.shrAssignUShort(other: UShort) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun Int.shrAssign(other: UInt) {
-    this = this shr other.toInt()
-}
-
-public fun Int.shrAssignUInt(other: UInt) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun Int.shrAssign(other: ULong) {
-    this = this shr other.toInt()
-}
-
-public fun Int.shrAssignULong(other: ULong) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun Int.shrAssign(other: U128) {
-    this = this shr other.toInt()
-}
-
-public fun Int.shrAssignU128(other: U128) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun Int.shrAssign(other: Int) {
-    this = this shr other
-}
-
-public fun Int.shrAssignInt(other: Int) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other).let {}
 }
 
 public fun Int.shrAssign(other: Byte) {
-    this = this shr other.toInt()
-}
-
-public fun Int.shrAssignByte(other: Byte) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun Int.shrAssign(other: Short) {
-    this = this shr other.toInt()
+    (this shr other.toInt()).let {}
 }
 
-public fun Int.shrAssignShort(other: Short) {
-    ShrAssign.ShrAssign(this, other)
+public fun Int.shrAssignInt(other: Int) {
+    (this shr other).let {}
 }
 
 public fun Int.shrAssign(other: Long) {
-    this = this shr other.toInt()
-}
-
-public fun Int.shrAssignLong(other: Long) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun Int.shrAssign(other: I128) {
-    this = this shr other.toInt()
-}
-
-public fun Int.shrAssignI128(other: I128) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun Byte.shrAssign(other: UByte) {
-    this = this shr other.toInt()
-}
-
-public fun Byte.shrAssignUByte(other: UByte) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other.toInt()).toByte()).let {}
 }
 
 public fun Byte.shrAssign(other: UShort) {
-    this = this shr other.toInt()
-}
-
-public fun Byte.shrAssignUShort(other: UShort) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other.toInt()).toByte()).let {}
 }
 
 public fun Byte.shrAssign(other: UInt) {
-    this = this shr other.toInt()
-}
-
-public fun Byte.shrAssignUInt(other: UInt) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other.toInt()).toByte()).let {}
 }
 
 public fun Byte.shrAssign(other: ULong) {
-    this = this shr other.toInt()
-}
-
-public fun Byte.shrAssignULong(other: ULong) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other.toInt()).toByte()).let {}
 }
 
 public fun Byte.shrAssign(other: U128) {
-    this = this shr other.toInt()
-}
-
-public fun Byte.shrAssignU128(other: U128) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other.toInt()).toByte()).let {}
 }
 
 public fun Byte.shrAssign(other: Int) {
-    this = this shr other
-}
-
-public fun Byte.shrAssignInt(other: Int) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other).toByte()).let {}
 }
 
 public fun Byte.shrAssign(other: Byte) {
-    this = this shr other.toInt()
-}
-
-public fun Byte.shrAssignByte(other: Byte) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other.toInt()).toByte()).let {}
 }
 
 public fun Byte.shrAssign(other: Short) {
-    this = this shr other.toInt()
+    (((this).toInt() shr other.toInt()).toByte()).let {}
 }
 
-public fun Byte.shrAssignShort(other: Short) {
-    ShrAssign.ShrAssign(this, other)
+public fun Byte.shrAssignInt(other: Int) {
+    (((this).toInt() shr other).toByte()).let {}
 }
 
 public fun Byte.shrAssign(other: Long) {
-    this = this shr other.toInt()
-}
-
-public fun Byte.shrAssignLong(other: Long) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other.toInt()).toByte()).let {}
 }
 
 public fun Byte.shrAssign(other: I128) {
-    this = this shr other.toInt()
-}
-
-public fun Byte.shrAssignI128(other: I128) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other.toInt()).toByte()).let {}
 }
 
 public fun Short.shrAssign(other: UByte) {
-    this = this shr other.toInt()
-}
-
-public fun Short.shrAssignUByte(other: UByte) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other.toInt()).toShort()).let {}
 }
 
 public fun Short.shrAssign(other: UShort) {
-    this = this shr other.toInt()
-}
-
-public fun Short.shrAssignUShort(other: UShort) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other.toInt()).toShort()).let {}
 }
 
 public fun Short.shrAssign(other: UInt) {
-    this = this shr other.toInt()
-}
-
-public fun Short.shrAssignUInt(other: UInt) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other.toInt()).toShort()).let {}
 }
 
 public fun Short.shrAssign(other: ULong) {
-    this = this shr other.toInt()
-}
-
-public fun Short.shrAssignULong(other: ULong) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other.toInt()).toShort()).let {}
 }
 
 public fun Short.shrAssign(other: U128) {
-    this = this shr other.toInt()
-}
-
-public fun Short.shrAssignU128(other: U128) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other.toInt()).toShort()).let {}
 }
 
 public fun Short.shrAssign(other: Int) {
-    this = this shr other
-}
-
-public fun Short.shrAssignInt(other: Int) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other).toShort()).let {}
 }
 
 public fun Short.shrAssign(other: Byte) {
-    this = this shr other.toInt()
-}
-
-public fun Short.shrAssignByte(other: Byte) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other.toInt()).toShort()).let {}
 }
 
 public fun Short.shrAssign(other: Short) {
-    this = this shr other.toInt()
+    (((this).toInt() shr other.toInt()).toShort()).let {}
 }
 
-public fun Short.shrAssignShort(other: Short) {
-    ShrAssign.ShrAssign(this, other)
+public fun Short.shrAssignInt(other: Int) {
+    (((this).toInt() shr other).toShort()).let {}
 }
 
 public fun Short.shrAssign(other: Long) {
-    this = this shr other.toInt()
-}
-
-public fun Short.shrAssignLong(other: Long) {
-    ShrAssign.ShrAssign(this, other)
+    (((this).toInt() shr other.toInt()).toShort()).let {}
 }
 
 public fun Short.shrAssign(other: I128) {
-    this = this shr other.toInt()
+    (((this).toInt() shr other.toInt()).toShort()).let {}
 }
 
-public fun Short.shrAssignI128(other: I128) {
-    ShrAssign.ShrAssign(this, other)
+public fun Int.shrAssignUByte(other: UByte) {
+    (this shr other.toInt()).let {}
+}
+
+public fun Int.shrAssignUShort(other: UShort) {
+    (this shr other.toInt()).let {}
+}
+
+public fun Int.shrAssignUInt(other: UInt) {
+    (this shr other.toInt()).let {}
+}
+
+public fun Int.shrAssignULong(other: ULong) {
+    (this shr other.toInt()).let {}
+}
+
+public fun Int.shrAssignU128(other: U128) {
+    (this shr other.toInt()).let {}
+}
+
+public fun Int.shrAssignByte(other: Byte) {
+    (this shr other.toInt()).let {}
+}
+
+public fun Int.shrAssignShort(other: Short) {
+    (this shr other.toInt()).let {}
+}
+
+public fun Int.shrAssignLong(other: Long) {
+    (this shr other.toInt()).let {}
+}
+
+public fun Int.shrAssignI128(other: I128) {
+    (this shr other.toInt()).let {}
 }
 
 public fun Long.shrAssign(other: UByte) {
-    this = this shr other.toInt()
-}
-
-public fun Long.shrAssignUByte(other: UByte) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun Long.shrAssign(other: UShort) {
-    this = this shr other.toInt()
-}
-
-public fun Long.shrAssignUShort(other: UShort) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun Long.shrAssign(other: UInt) {
-    this = this shr other.toInt()
-}
-
-public fun Long.shrAssignUInt(other: UInt) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun Long.shrAssign(other: ULong) {
-    this = this shr other.toInt()
-}
-
-public fun Long.shrAssignULong(other: ULong) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun Long.shrAssign(other: U128) {
-    this = this shr other.toInt()
-}
-
-public fun Long.shrAssignU128(other: U128) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun Long.shrAssign(other: Int) {
-    this = this shr other
-}
-
-public fun Long.shrAssignInt(other: Int) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other).let {}
 }
 
 public fun Long.shrAssign(other: Byte) {
-    this = this shr other.toInt()
-}
-
-public fun Long.shrAssignByte(other: Byte) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun Long.shrAssign(other: Short) {
-    this = this shr other.toInt()
+    (this shr other.toInt()).let {}
 }
 
-public fun Long.shrAssignShort(other: Short) {
-    ShrAssign.ShrAssign(this, other)
+public fun Long.shrAssignInt(other: Int) {
+    (this shr other).let {}
 }
 
 public fun Long.shrAssign(other: Long) {
-    this = this shr other.toInt()
-}
-
-public fun Long.shrAssignLong(other: Long) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun Long.shrAssign(other: I128) {
-    this = this shr other.toInt()
-}
-
-public fun Long.shrAssignI128(other: I128) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun I128.shrAssign(other: UByte) {
-    this = this shr other.toInt()
-}
-
-public fun I128.shrAssignUByte(other: UByte) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun I128.shrAssign(other: UShort) {
-    this = this shr other.toInt()
-}
-
-public fun I128.shrAssignUShort(other: UShort) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun I128.shrAssign(other: UInt) {
-    this = this shr other.toInt()
-}
-
-public fun I128.shrAssignUInt(other: UInt) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun I128.shrAssign(other: ULong) {
-    this = this shr other.toInt()
-}
-
-public fun I128.shrAssignULong(other: ULong) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun I128.shrAssign(other: U128) {
-    this = this shr other.toInt()
-}
-
-public fun I128.shrAssignU128(other: U128) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun I128.shrAssign(other: Int) {
-    this = this shr other
-}
-
-public fun I128.shrAssignInt(other: Int) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other).let {}
 }
 
 public fun I128.shrAssign(other: Byte) {
-    this = this shr other.toInt()
-}
-
-public fun I128.shrAssignByte(other: Byte) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun I128.shrAssign(other: Short) {
-    this = this shr other.toInt()
+    (this shr other.toInt()).let {}
 }
 
-public fun I128.shrAssignShort(other: Short) {
-    ShrAssign.ShrAssign(this, other)
+public fun I128.shrAssignInt(other: Int) {
+    (this shr other).let {}
 }
 
 public fun I128.shrAssign(other: Long) {
-    this = this shr other.toInt()
-}
-
-public fun I128.shrAssignLong(other: Long) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }
 
 public fun I128.shrAssign(other: I128) {
-    this = this shr other.toInt()
-}
-
-public fun I128.shrAssignI128(other: I128) {
-    ShrAssign.ShrAssign(this, other)
+    (this shr other.toInt()).let {}
 }

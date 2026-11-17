@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromBytes
+import io.github.kotlinmania.rustlang.std.path.MAIN_SEPARATOR
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
@@ -216,7 +217,7 @@ public fun outputFilename(fmt: StringBuilder, bows: BytesOrWideString, printFmt:
                         null -> {}
                         else -> {
                             val s = matchVal1
-                            return run { fmt.append(".${path.MAIN_SEPARATOR}$s"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
+                            return run { fmt.append(".$MAIN_SEPARATOR$s"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
                         }
                     }
                 }

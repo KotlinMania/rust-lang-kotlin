@@ -12,7 +12,7 @@ public expect fun xrstor(p: ConstPtr, hi: UInt, lo: UInt)
 
 public expect fun xsetbv(v: UInt, hi: UInt, lo: UInt)
 
-public expect fun xgetbv(v: UInt): Long
+public expect fun externXgetbv(v: UInt): Long
 
 public expect fun xsaveopt(p: MutPtr, hi: UInt, lo: UInt)
 
@@ -77,7 +77,7 @@ public fun xsetbv(a: UInt, value: ULong) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_xgetbv)
  */
-public fun xgetbv(xcrNo: UInt): ULong = xgetbv(xcrNo).toULong()
+public fun xgetbv(xcrNo: UInt): ULong = externXgetbv(xcrNo).toULong()
 
 /**
  * Performs a full or partial save of the enabled processor states to memory at

@@ -99,7 +99,7 @@ void corearchX86XsaveXsetbv(uint32_t v, uint32_t hi, uint32_t lo) {
     errno = ENOSYS;
 }
 
-int64_t corearchX86XsaveXgetbv(uint32_t v) {
+int64_t corearchX86XsaveExternXgetbv(uint32_t v) {
     typedef int64_t (*km_fn_t)(uint32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

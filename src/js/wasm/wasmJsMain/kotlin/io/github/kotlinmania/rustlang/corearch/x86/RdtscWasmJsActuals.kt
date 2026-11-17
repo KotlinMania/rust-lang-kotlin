@@ -7,11 +7,11 @@ private external fun initX86RdtscNapiAddon(): Boolean
 
 private val x86RdtscNapiAvailable: Boolean = initX86RdtscNapiAddon()
 
-@JsFun("() => globalThis.__km_napi_kmcore.corearchX86RdtscRdtsc()")
-private external fun wasmCorearchX86RdtscRdtsc(): String
+@JsFun("() => globalThis.__km_napi_kmcore.corearchX86RdtscExternRdtsc()")
+private external fun wasmCorearchX86RdtscExternRdtsc(): String
 
-public actual fun rdtsc(): ULong =
-    if (x86RdtscNapiAvailable) wasmCorearchX86RdtscRdtsc().toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externRdtsc(): ULong =
+    if (x86RdtscNapiAvailable) wasmCorearchX86RdtscExternRdtsc().toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun rdtscp(): Pair<ULong, UInt> =
     throw UnsupportedOperationException("Native FFI addon is not available")

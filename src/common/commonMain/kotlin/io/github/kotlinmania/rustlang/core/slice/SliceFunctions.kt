@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.hint.selectUnpredictable
 import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
@@ -21,6 +22,8 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.core.mem.kmPartialCompareValues
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
@@ -2863,7 +2866,7 @@ public fun <T> List<T>.binarySearchBy(f: (T) -> Ordering): Result<Int, Int> {
  * })
  * ```
  */
-public fun <T, B> List<T>.binarySearchByKey(b: B, f: (T) -> B): Result<Int, Int> = this.binarySearchBy({ k -> f(k).cmp(b) })
+public fun <T, B> List<T>.binarySearchByKey(b: B, f: (T) -> B): Result<Int, Int> = this.binarySearchBy({ k -> kmCompareValues(f(k), b).let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } } })
 
 /**
  * Sorts the slice in ascending order **without** preserving the initial order of equal elements.
@@ -3017,7 +3020,7 @@ public fun <T> List<T>.sortUnstableBy(compare: (T, T) -> Ordering) {
  * [total order]: https://en.wikipedia.org/wiki/TotalOrder
  */
 public fun <T, K> List<T>.sortUnstableByKey(f: (T) -> K) {
-    sort(this, { a, b -> f(a).lt(f(b)) })
+    sort(this, { a, b -> (kmPartialCompareValues(f(a), f(b))?.let { cmpSign -> cmpSign < 0 } == true) })
 }
 
 /**
@@ -3205,7 +3208,7 @@ public fun <T, R> List<T>.partialSortUnstableBy(range: R, compare: (T, T) -> Ord
  * [sortUnstableByKey]: slice.sortUnstableByKey
  */
 public fun <T, K, R> List<T>.partialSortUnstableByKey(range: R, f: (T) -> K) where R : RangeBounds<Int<R>> {
-    partialSort(this, range, { a, b -> f(a).lt(f(b)) })
+    partialSort(this, range, { a, b -> (kmPartialCompareValues(f(a), f(b))?.let { cmpSign -> cmpSign < 0 } == true) })
 }
 
 /**
@@ -3371,7 +3374,7 @@ public fun <T> List<T>.selectNthUnstableBy(index: Int, compare: (T, T) -> Orderi
  * [ipnsort]: https://github.com/Voultapher/sort-research-rs/tree/main/ipnsort
  * [total order]: https://en.wikipedia.org/wiki/TotalOrder
  */
-public fun <T, K> List<T>.selectNthUnstableByKey(index: Int, f: (T) -> K): Triple<MutableList<T>, T, MutableList<T>> = partitionAtIndex(this, index, { a: T, b: T -> f(a).lt(f(b)) })
+public fun <T, K> List<T>.selectNthUnstableByKey(index: Int, f: (T) -> K): Triple<MutableList<T>, T, MutableList<T>> = partitionAtIndex(this, index, { a: T, b: T -> (kmPartialCompareValues(f(a), f(b))?.let { cmpSign -> cmpSign < 0 } == true) })
 
 /**
  * Moves all consecutive repeated elements to the end of the slice according to the
@@ -3675,7 +3678,7 @@ public fun <T> List<T>.rotateRight(k: Int) {
  *     check(a1 == "world peace".encodeToByteArray())
  *     // The name comes from this operation's similarity to bitshifts
  *     var a2: UByte = 0x96u
- *     a2 = a2 shl 3
+ *     a2 = ((a2).toUInt() shl 3).toUByte()
  *     check(a2 == 0xB0u.toUByte())
  *     var a3: List<Any> = listOf(1, 0, 0, 1, 0, 1, 1, 0)
  *     a3.shiftLeft(List(3) { 0 })
@@ -3781,7 +3784,7 @@ public fun <T> List<T>.shiftLeft(inserted: List<T>, n: Int): List<T> {
  *     check(a == listOf(0, 5, 6, 7, 8))
  *     // The name comes from this operation's similarity to bitshifts
  *     var a1: UByte = 0x96u
- *     a1 = a1 shr 3
+ *     a1 = ((a1).toUInt() shr 3).toUByte()
  *     check(a1 == 0x12u.toUByte())
  *     var a2: List<Any> = listOf(1, 0, 0, 1, 0, 1, 1, 0)
  *     a2.shiftRight(List(3) { 0 })
@@ -5217,11 +5220,11 @@ public fun IntRange.isOverlapping(other: IntRange): Boolean = (this.start < othe
 // SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
 
 // SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
-public fun range.Range<Int>.isInBounds(len: Int): Boolean = Range.from(this).isInBounds(len)
+public fun range.Range<Int>.isInBounds(len: Int): Boolean = Range.From(this).isInBounds(len)
 
-public fun range.Range<Int>.isOverlapping(other: range.Range<Int>): Boolean = Range.from(this).isOverlapping(Range.from(other))
+public fun range.Range<Int>.isOverlapping(other: range.Range<Int>): Boolean = Range.From(this).isOverlapping(Range.From(other))
 
 // SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
-public fun range.RangeInclusive<Int>.isInBounds(len: Int): Boolean = RangeInclusive.from(this).isInBounds(len)
+public fun range.RangeInclusive<Int>.isInBounds(len: Int): Boolean = RangeInclusive.From(this).isInBounds(len)
 
-public fun range.RangeInclusive<Int>.isOverlapping(other: range.RangeInclusive<Int>): Boolean = RangeInclusive.from(this).isOverlapping(RangeInclusive.from(other))
+public fun range.RangeInclusive<Int>.isOverlapping(other: range.RangeInclusive<Int>): Boolean = RangeInclusive.From(this).isOverlapping(RangeInclusive.From(other))

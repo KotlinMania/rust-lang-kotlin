@@ -46,7 +46,6 @@ import io.github.kotlinmania.rustlang.std.os.windows.io.OwnedSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.asRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.asSocket
-import io.github.kotlinmania.rustlang.std.os.windows.io.fromRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.intoRawSocket
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
@@ -595,11 +594,11 @@ public open class Socket(
         public fun fromRaw(raw: io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Socket): Socket {
             check(sizeOf<io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Socket>(typeLayoutT = UnresolvedTypeLayout<io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Socket>()) == sizeOf<RawSocket>(typeLayoutT = UnresolvedTypeLayout<RawSocket>()))
             check(alignOf<io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Socket>(typeLayoutT = UnresolvedTypeLayout<io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Socket>()) == alignOf<RawSocket>(typeLayoutT = UnresolvedTypeLayout<RawSocket>()))
-            return Socket.fromRawSocket(((raw as Any?) as RawSocket))
+            return Socket.FromRawSocket(((raw as Any?) as RawSocket))
         }
 
         public fun fromInner(sock: OwnedSocket): Socket = Socket(sock)
 
-        public fun fromRawSocket(rawSocket: RawSocket): Socket = Socket(FromRawSocket.fromRawSocket(rawSocket))
+        public fun fromRawSocket(rawSocket: RawSocket): Socket = Socket(FromRawSocket.FromRawSocket(rawSocket))
     }
 }

@@ -12,6 +12,8 @@ import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.core.mem.kmPartialCompareValues
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -2020,7 +2022,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 matchVal.first is Some<*> && matchVal.second is Some<*> -> {
                     val (l) = matchVal.first as Some<T>
                     val (r) = matchVal.second as Some<T>
-                    l.partialCmp(r)
+                    kmPartialCompareValues(l, r)?.let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } }
                 }
                 matchVal.first is Some<*> && matchVal.second == null -> Some(cmp.Ordering.Greater)
                 matchVal.first == null && matchVal.second is Some<*> -> Some(cmp.Ordering.Less)
@@ -2035,7 +2037,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 matchVal.first is Some<*> && matchVal.second is Some<*> -> {
                     val (l) = matchVal.first as Some<T>
                     val (r) = matchVal.second as Some<T>
-                    l.cmp(r)
+                    kmCompareValues(l, r).let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } }
                 }
                 matchVal.first is Some<*> && matchVal.second == null -> cmp.Ordering.Greater
                 matchVal.first == null && matchVal.second is Some<*> -> cmp.Ordering.Less

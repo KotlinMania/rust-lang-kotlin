@@ -8,11 +8,11 @@ private object X86RdtscJniBridge {
     }
 
     @JvmStatic
-    external fun corearchX86RdtscRdtsc(): Long
+    external fun corearchX86RdtscExternRdtsc(): Long
 }
 
-public actual fun rdtsc(): ULong =
-    X86RdtscJniBridge.corearchX86RdtscRdtsc().toULong()
+public actual fun externRdtsc(): ULong =
+    X86RdtscJniBridge.corearchX86RdtscExternRdtsc().toULong()
 
 public actual fun rdtscp(): Pair<ULong, UInt> =
     Pair<ULong, UInt>(0uL, 0u)

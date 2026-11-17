@@ -615,10 +615,10 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
  * check(s == "Hello, world!")
  * ```
  */
-public fun format(args: Arguments): string.String {
-    fun formatInner(args1: Arguments): string.String {
+public fun format(args: Arguments): io.github.kotlinmania.rustlang.alloc.string.String {
+    fun formatInner(args1: Arguments): io.github.kotlinmania.rustlang.alloc.string.String {
         val capacity = args1.estimatedCapacity()
-        val output = string.String.withCapacity(capacity)
+        val output = io.github.kotlinmania.rustlang.alloc.string.String.withCapacity(capacity)
         output.writeFmt(args1).expect("a formatting trait implementation returned an error when the underlying stream did not")
         return output
     }

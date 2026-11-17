@@ -14,6 +14,7 @@ import io.github.kotlinmania.rustlang.core.mem.asMutPtr
 import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.corearch.simd.F32x4
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
 
 // Streaming SIMD Extensions (SSE)
@@ -186,34 +187,34 @@ public fun testMmMaxPs() {
 }
 
 public fun testMmAndPs() {
-    val a = f32x4.fromBits(Simd<UInt>(List(4) { 0x3u })).asM128()
-    val b = f32x4.fromBits(Simd<UInt>(List(4) { 0x5u })).asM128()
+    val a = F32x4.fromBits(Simd<UInt>(List(4) { 0x3u })).asM128()
+    val b = F32x4.fromBits(Simd<UInt>(List(4) { 0x5u })).asM128()
     val r = mmAndPs(blackBox(a), blackBox(b))
-    val e = f32x4.fromBits(Simd<UInt>(List(4) { 0x1u })).asM128()
+    val e = F32x4.fromBits(Simd<UInt>(List(4) { 0x1u })).asM128()
     assertEqM128(r, e)
 }
 
 public fun testMmAndnotPs() {
-    val a = f32x4.fromBits(Simd<UInt>(List(4) { 0x3u })).asM128()
-    val b = f32x4.fromBits(Simd<UInt>(List(4) { 0x5u })).asM128()
+    val a = F32x4.fromBits(Simd<UInt>(List(4) { 0x3u })).asM128()
+    val b = F32x4.fromBits(Simd<UInt>(List(4) { 0x5u })).asM128()
     val r = mmAndnotPs(blackBox(a), blackBox(b))
-    val e = f32x4.fromBits(Simd<UInt>(List(4) { 0x4u })).asM128()
+    val e = F32x4.fromBits(Simd<UInt>(List(4) { 0x4u })).asM128()
     assertEqM128(r, e)
 }
 
 public fun testMmOrPs() {
-    val a = f32x4.fromBits(Simd<UInt>(List(4) { 0x3u })).asM128()
-    val b = f32x4.fromBits(Simd<UInt>(List(4) { 0x5u })).asM128()
+    val a = F32x4.fromBits(Simd<UInt>(List(4) { 0x3u })).asM128()
+    val b = F32x4.fromBits(Simd<UInt>(List(4) { 0x5u })).asM128()
     val r = mmOrPs(blackBox(a), blackBox(b))
-    val e = f32x4.fromBits(Simd<UInt>(List(4) { 0x7u })).asM128()
+    val e = F32x4.fromBits(Simd<UInt>(List(4) { 0x7u })).asM128()
     assertEqM128(r, e)
 }
 
 public fun testMmXorPs() {
-    val a = f32x4.fromBits(Simd<UInt>(List(4) { 0x3u })).asM128()
-    val b = f32x4.fromBits(Simd<UInt>(List(4) { 0x5u })).asM128()
+    val a = F32x4.fromBits(Simd<UInt>(List(4) { 0x3u })).asM128()
+    val b = F32x4.fromBits(Simd<UInt>(List(4) { 0x5u })).asM128()
     val r = mmXorPs(blackBox(a), blackBox(b))
-    val e = f32x4.fromBits(Simd<UInt>(List(4) { 0x6u })).asM128()
+    val e = F32x4.fromBits(Simd<UInt>(List(4) { 0x6u })).asM128()
     assertEqM128(r, e)
 }
 

@@ -104,4 +104,4 @@ public fun <S, T : Encode<S>> Range<T>.encode(w: Buffer, s: S) {
     this.end.encode(w, s)
 }
 
-public fun <S, T : Decode<S, T>> decodeRangeT(r: List<UByte>, s: S): Range<T> = Range(start = Decode.decode(r, s), end = Decode.decode(r, s))
+public fun <S, T : Decode<S, T>> decodeRangeT(r: List<UByte>, s: S): Range<T> = Range(start = Decode.Decode(r, s), end = Decode.Decode(r, s))

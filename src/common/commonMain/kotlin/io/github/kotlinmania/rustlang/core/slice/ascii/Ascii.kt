@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.char.methods.isAsciiWhitespace
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
+import io.github.kotlinmania.rustlang.core.io.util.Empty
 import io.github.kotlinmania.rustlang.core.iter.adapters.filter.Filter
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -29,6 +30,7 @@ import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.iter.FlatMap
 import io.github.kotlinmania.rustlang.core.slice.iter.Iter
 import io.github.kotlinmania.rustlang.core.slice.iter.Split
 import io.github.kotlinmania.rustlang.core.str.BytesIsNotEmpty
@@ -514,9 +516,9 @@ public open class EscapeByte : Fn<UByte, Any>, FnMut<UByte, Any>, FnOnce<UByte, 
  * documentation for more information.
  */
 public open class EscapeAscii internal constructor(
-    innerCtorArg: iter.FlatMap<Iter<UByte>, EscapeDefault, EscapeByte>,
+    innerCtorArg: FlatMap<Iter<UByte>, EscapeDefault, EscapeByte>,
 ) : Iterable<UByte> {
-    public var inner: iter.FlatMap<Iter<UByte>, EscapeDefault, EscapeByte> = innerCtorArg
+    public var inner: FlatMap<Iter<UByte>, EscapeDefault, EscapeByte> = innerCtorArg
         internal set
 
     override fun iterator(): Iterator<UByte> = object : AbstractIterator<UByte>() {
@@ -546,9 +548,9 @@ public open class EscapeAscii internal constructor(
         fun needsEscape(b: UByte): Boolean = b > 0x7Eu.toUByte() || b < 0x20u.toUByte() || b == 92u || b == 39u || b == 34u
         // disassemble iterator, including front/back parts of flatmap in case it has been partially consumed
         val (front, slice, back) = this.clone().inner.intoParts()
-        val front1 = front.unwrapOr(EscapeDefault.empty())
+        val front1 = front.unwrapOr(EscapeDefault.Empty())
         var bytes = slice.unwrapOrDefault().asSlice()
-        val back1 = back.unwrapOr(EscapeDefault.empty())
+        val back1 = back.unwrapOr(EscapeDefault.Empty())
         // usually empty, so the formatter won't have to do any work
         for (byte in front1) {
             f.append(byte.toInt().toChar())
@@ -584,7 +586,7 @@ public open class EscapeAscii internal constructor(
 
     public companion object {
         public operator fun invoke(
-            inner: iter.FlatMap<Iter<UByte>, EscapeDefault, EscapeByte>,
+            inner: FlatMap<Iter<UByte>, EscapeDefault, EscapeByte>,
         ): EscapeAscii = EscapeAscii(
             innerCtorArg = inner,
         )

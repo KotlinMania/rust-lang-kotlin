@@ -95,7 +95,7 @@ public open class ConsoleTestDiscoveryState(
                     null -> null
                     else -> {
                         val path = matchVal
-                        when (val tryResult = File.create(path)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ConsoleTestDiscoveryState, Error>(tryResult.errValue()) }
+                        when (val tryResult = File.create(path)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ConsoleTestDiscoveryState, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
                     }
                 }
             return RustResult.Ok(ConsoleTestDiscoveryState(logOut = logOut, tests = 0, benchmarks = 0, ignored = 0))
@@ -154,9 +154,9 @@ public open class ConsoleTestState(
                 }
                 TestResult.TrTimedFail -> "failed (time limit exceeded)".toOwned()
             }).toString() + " " + (name).toString()
-        })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+        })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         if (execTime != null) {
-            when (val tryResult = this.writeLog({ " <$execTime>" })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+            when (val tryResult = this.writeLog({ " <$execTime>" })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         }
         return this.writeLog({ "\n" })
     }
@@ -170,7 +170,7 @@ public open class ConsoleTestState(
                     null -> null
                     else -> {
                         val path = matchVal
-                        when (val tryResult = File.create(path)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ConsoleTestState, Error>(tryResult.errValue()) }
+                        when (val tryResult = File.create(path)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ConsoleTestState, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
                     }
                 }
             return RustResult.Ok(ConsoleTestState(logOut = logOut, total = 0, passed = 0, failed = 0, ignored = 0, filteredOut = 0, measured = 0, execTime = null, metrics = MetricMap.new(), failures = mutableListOf(), notFailures = mutableListOf(), ignores = mutableListOf(), timeFailures = mutableListOf(), options = opts.options))
@@ -196,8 +196,8 @@ public fun listTestsConsole(opts: TestOpts, tests: TestList): Result<Unit> {
             OutputFormat.Terse -> TerseFormatter.new(output, false, 0, false)
             OutputFormat.Json -> JsonFormatter.new(output)
         }
-    val st = when (val tryResult = ConsoleTestDiscoveryState.new(opts)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
-    when (val tryResult = out.writeDiscoveryStart()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+    val st = when (val tryResult = ConsoleTestDiscoveryState.new(opts)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+    when (val tryResult = out.writeDiscoveryStart()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     for (test in filterTests(opts, tests)) {
         val desc = test.desc
         val testfn = test.testfn
@@ -234,8 +234,8 @@ public fun listTestsConsole(opts: TestOpts, tests: TestList): Result<Unit> {
             } else {
                 0
             }
-        when (val tryResult = out.writeTestDiscovered(desc, fntype)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
-        when (val tryResult = st.writeLog({ "$fntype ${desc.name}\n" })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+        when (val tryResult = out.writeTestDiscovered(desc, fntype)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+        when (val tryResult = st.writeLog({ "$fntype ${desc.name}\n" })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     }
     return out.writeDiscoveryFinish(st)
 }
@@ -283,7 +283,7 @@ public fun onTestEvent(event: TestEvent, st: ConsoleTestState, out: OutputFormat
         is TestEvent.TeFiltered -> {
             val (filteredTests, shuffleSeed) = matchVal
             st.total = filteredTests
-            when (val tryResult = out.writeRunStart(filteredTests, shuffleSeed)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+            when (val tryResult = out.writeRunStart(filteredTests, shuffleSeed)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         }
         is TestEvent.TeFilteredOut -> {
             val (filteredOut) = matchVal
@@ -291,11 +291,11 @@ public fun onTestEvent(event: TestEvent, st: ConsoleTestState, out: OutputFormat
         }
         is TestEvent.TeWait -> {
             val (test) = matchVal
-            when (val tryResult = out.writeTestStart(test)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+            when (val tryResult = out.writeTestStart(test)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         }
         is TestEvent.TeTimeout -> {
             val (test1) = matchVal
-            when (val tryResult = out.writeTimeout(test1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+            when (val tryResult = out.writeTimeout(test1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         }
         is TestEvent.TeResult -> {
             val (completedTest) = matchVal
@@ -303,8 +303,8 @@ public fun onTestEvent(event: TestEvent, st: ConsoleTestState, out: OutputFormat
             val result = completedTest.result
             val execTime = completedTest.execTime
             val stdout = completedTest.stdout
-            when (val tryResult = st.writeLogResult(test2, result, execTime.asRef())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
-            when (val tryResult = out.writeResult(test2, result, execTime.asRef(), stdout, st)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+            when (val tryResult = st.writeLogResult(test2, result, execTime.asRef())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+            when (val tryResult = out.writeResult(test2, result, execTime.asRef(), stdout, st)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             handleTestResult(st, completedTest)
         }
     }
@@ -342,13 +342,13 @@ public fun runTestsConsole(opts: TestOpts, tests: TestList): Result<Boolean> {
     // full list can be very long and we want to avoid ever iterating that list in Miri.
     val maxNameLen = filteredTests.iter().maxByKey({ t -> lenIfPadded(t) }).map({ t -> t.desc.name.asSlice().len() }).unwrapOr(0)
     val out = getFormatter(opts, maxNameLen)
-    val st = when (val tryResult = ConsoleTestState.new(opts)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+    val st = when (val tryResult = ConsoleTestState.new(opts)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     // Prevent the usage of `Instant` in some cases:
     // - It's currently not supported for wasm targets without Emscripten nor WASI.
     // - It's currently not supported for zkvm targets.
     val isInstantUnsupported = (false && false) || false
     val startTime = (!isInstantUnsupported).then(Instant::now)
-    when (val tryResult = runTests(opts, filteredTests, allTestLen, { x -> onTestEvent(x, st, out) })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+    when (val tryResult = runTests(opts, filteredTests, allTestLen, { x -> onTestEvent(x, st, out) })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     st.execTime = startTime.map({ t -> TestSuiteExecTime(t.elapsed()) })
     check(opts.failFast || st.currentTestCount() == st.total)
     return out.writeRunFinish(st)

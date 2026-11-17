@@ -447,5 +447,5 @@ public fun mmMaskzCvtnepsPbh(k: Mmask8, a: M128): M128bh = mmMaskCvtnepsPbh(m128
 public fun mmCvtnessSbh(a: Float): Bf16 =
     run {
         val value: UShort = run { val simdArg0 = mmCvtnepsPbh(mmSetSs(a)); val simdArg1 = 0u; 0u }
-        bf16.fromBits(value)
+        Bf16.fromBits(value)
     }

@@ -17,6 +17,7 @@ import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.drop.Drop
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
@@ -187,7 +188,7 @@ public open class Skip<I>(
         return run {
             if (Skip.MAY_HAVE_SIDE_EFFECT && idx == 0) {
                 for (skippedIdx in 0 until this.n) {
-                    (tryGetUnchecked(this.iter, skippedIdx)).let { }
+                    Drop(tryGetUnchecked(this.iter, skippedIdx))
                 }
             }
             tryGetUnchecked(this.iter, idx + this.n)

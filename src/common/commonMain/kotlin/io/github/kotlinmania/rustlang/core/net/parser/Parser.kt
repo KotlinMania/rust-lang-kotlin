@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.core.net.parser
 
+import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.net.ipaddr.IpAddr
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
@@ -93,7 +94,7 @@ public open class Parser(
     public open fun readChar(): Char? =
         this.state.splitFirst().map({ (b, tail) ->
             this.state = tail
-            Char.from(b)
+            Char.From(b)
         })
 
     /**

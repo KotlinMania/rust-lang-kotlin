@@ -26,14 +26,14 @@ public val BF16_SEVEN: UShort = 0x40E0u
 public val BF16_EIGHT: UShort = 0x4100u
 
 public fun testMmBcstnebf16Ps() {
-    val a = bf16.fromBits(BF16_ONE)
+    val a = Bf16.fromBits(BF16_ONE)
     val r = mmBcstnebf16Ps(addrOf(a))
     val e = mmSetPs(1.0f, 1.0f, 1.0f, 1.0f)
     assertEqM128(r, e)
 }
 
 public fun testMm256Bcstnebf16Ps() {
-    val a = bf16.fromBits(BF16_ONE)
+    val a = Bf16.fromBits(BF16_ONE)
     val r = mm256Bcstnebf16Ps(addrOf(a))
     val e = mm256SetPs(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f)
     assertEqM256(r, e)

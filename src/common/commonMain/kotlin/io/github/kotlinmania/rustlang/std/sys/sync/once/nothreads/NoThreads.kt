@@ -37,7 +37,7 @@ public open class Once internal constructor(
     public open fun call(ignorePoisoning: Boolean, f: (io.github.kotlinmania.rustlang.std.sync.once.OnceState) -> Unit) {
         val state = this.state.get()
         when {
-            state == State.Poisoned && ignorePoisoning.inv() -> {
+            state == State.Poisoned && !ignorePoisoning -> {
                 // Panic to propagate the poison.
                 error("Once instance has previously been poisoned")
             }

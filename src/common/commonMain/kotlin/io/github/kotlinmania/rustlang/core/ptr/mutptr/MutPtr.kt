@@ -5,7 +5,10 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.fmt.Write
+import io.github.kotlinmania.rustlang.core.fmt.write
 import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
+import io.github.kotlinmania.rustlang.core.marker.Copy
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -56,7 +59,6 @@ import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingByteOffset
 import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingByteSub
 import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingOffset
 import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingSub
-import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut
@@ -67,7 +69,6 @@ import io.github.kotlinmania.rustlang.core.ptr.readVolatile
 import io.github.kotlinmania.rustlang.core.ptr.replace
 import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawPartsMut
 import io.github.kotlinmania.rustlang.core.ptr.swap
-import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.writeVolatile
@@ -1263,7 +1264,7 @@ public fun <T> MutPtr.readUnaligned(typeLayoutT: TypeLayout<T> = UnresolvedTypeL
  */
 public fun <T> MutPtr.copyTo(dest: MutPtr, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must uphold the safety contract for `copy`.
-    copy((this).asConstPtr(), dest, count)
+    Copy((this).asConstPtr(), dest, count)
 }
 
 /**
@@ -1293,7 +1294,7 @@ public fun <T> MutPtr.copyToNonoverlapping(dest: MutPtr, count: Int, typeLayoutT
  */
 public fun <T> MutPtr.copyFrom(src: ConstPtr, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must uphold the safety contract for `copy`.
-    copy(src, this, count, typeLayoutT = typeLayoutT)
+    Copy(src, this, count, typeLayoutT = typeLayoutT)
 }
 
 /**
@@ -1333,7 +1334,7 @@ public fun MutPtr.dropInPlace() {
  */
 public fun <T> MutPtr.write(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must uphold the safety contract for `write`.
-    write(this, value)
+    Write(this, value)
 }
 
 /**

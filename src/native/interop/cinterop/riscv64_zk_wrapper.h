@@ -9,15 +9,15 @@
 extern "C" {
 #endif
 
-int64_t corearchRiscv64ZkAes64es(int64_t rs1, int64_t rs2);
-int64_t corearchRiscv64ZkAes64esm(int64_t rs1, int64_t rs2);
-int64_t corearchRiscv64ZkAes64ds(int64_t rs1, int64_t rs2);
-int64_t corearchRiscv64ZkAes64dsm(int64_t rs1, int64_t rs2);
-int64_t corearchRiscv64ZkAes64im(int64_t rs1);
-int64_t corearchRiscv64ZkSha512sig0(int64_t rs1);
-int64_t corearchRiscv64ZkSha512sig1(int64_t rs1);
-int64_t corearchRiscv64ZkSha512sum0(int64_t rs1);
-int64_t corearchRiscv64ZkSha512sum1(int64_t rs1);
+int64_t corearchRiscv64ZkExternAes64es(int64_t rs1, int64_t rs2);
+int64_t corearchRiscv64ZkExternAes64esm(int64_t rs1, int64_t rs2);
+int64_t corearchRiscv64ZkExternAes64ds(int64_t rs1, int64_t rs2);
+int64_t corearchRiscv64ZkExternAes64dsm(int64_t rs1, int64_t rs2);
+int64_t corearchRiscv64ZkExternAes64im(int64_t rs1);
+int64_t corearchRiscv64ZkExternSha512sig0(int64_t rs1);
+int64_t corearchRiscv64ZkExternSha512sig1(int64_t rs1);
+int64_t corearchRiscv64ZkExternSha512sum0(int64_t rs1);
+int64_t corearchRiscv64ZkExternSha512sum1(int64_t rs1);
 
 #ifdef __cplusplus
 }

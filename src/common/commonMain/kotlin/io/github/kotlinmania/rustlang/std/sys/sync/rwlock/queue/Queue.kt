@@ -439,7 +439,7 @@ public open class RwLock internal constructor(
     public open fun tryRead(): Boolean = this.state.tryUpdate(Acquire, Relaxed, ::readLock).isOk()
 
     public open fun read() {
-        if (this.tryRead().inv()) {
+        if (!this.tryRead()) {
             this.lockContended(false)
         }
     }
@@ -453,7 +453,7 @@ public open class RwLock internal constructor(
     }
 
     public open fun write() {
-        if (this.tryWrite().inv()) {
+        if (!this.tryWrite()) {
             this.lockContended(true)
         }
     }

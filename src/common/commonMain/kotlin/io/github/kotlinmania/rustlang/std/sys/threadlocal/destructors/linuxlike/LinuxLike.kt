@@ -59,7 +59,7 @@ public fun register(t: MutPtr, dtor: RegisterDtorCallback) {
     val CXA_THREAD_ATEXIT_IMPL: FnCallback1? = null
     if (CXA_THREAD_ATEXIT_IMPL != null && DSO_HANDLE != null && !dso.isNull()) {
         run {
-            f(transmuteWithLayouts<RegisterDtorCallback, FnCallback>(dtor, UnresolvedTypeLayout<RegisterDtorCallback>(), UnresolvedTypeLayout<FnCallback>()), t, mutPtrFromRustCast(dso))
+            F(transmuteWithLayouts<RegisterDtorCallback, FnCallback>(dtor, UnresolvedTypeLayout<RegisterDtorCallback>(), UnresolvedTypeLayout<FnCallback>()), t, mutPtrFromRustCast(dso))
         }
     } else {
         run {

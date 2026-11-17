@@ -169,7 +169,7 @@ public fun <T : Write> JsonFormatter<T>.writeRunFinish(state: ConsoleTestState):
             }
         }
     val newline = "\n"
-    when (val tryResult = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"$event\", \"passed\": $passed, \"failed\": $failed, \"ignored\": $ignored, \"measured\": $measured, \"filtered_out\": $filteredOut$execTimeJson }$newline")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+    when (val tryResult = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"$event\", \"passed\": $passed, \"failed\": $failed, \"ignored\": $ignored, \"measured\": $measured, \"filtered_out\": $filteredOut$execTimeJson }$newline")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     return RustResult.Ok(state.failed == 0)
 }
 

@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.convert.AsRef
+import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.iter.adapters.fuse.nth
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
@@ -2520,7 +2521,7 @@ public fun <T> ChunkBy<T, P>.count(): Int {
     var (previous, rest) = this.slice.splitFirst() ?: return 0
     var count = 1
     for (current in rest) {
-        count += Int.from(!(this.predicate)(previous, current))
+        count += Int.From(!(this.predicate)(previous, current))
         previous = current
     }
     return count

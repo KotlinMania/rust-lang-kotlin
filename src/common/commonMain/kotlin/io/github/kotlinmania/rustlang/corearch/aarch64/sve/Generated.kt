@@ -4674,25 +4674,25 @@ public fun svcntU64Z(pg: SvboolT, op: Svuint64T): Svuint64T = svcntU64M(svdupNU6
  * Count the number of 8-bit elements in a vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcntb)
  */
-public fun svcntb(): ULong = svcntbPat(svpattern.SV_ALL)
+public fun svcntb(): ULong = svcntbPat(Svpattern.SV_ALL)
 
 /**
  * Count the number of 16-bit elements in a vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnth)
  */
-public fun svcnth(): ULong = svcnthPat(svpattern.SV_ALL)
+public fun svcnth(): ULong = svcnthPat(Svpattern.SV_ALL)
 
 /**
  * Count the number of 32-bit elements in a vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcntw)
  */
-public fun svcntw(): ULong = svcntwPat(svpattern.SV_ALL)
+public fun svcntw(): ULong = svcntwPat(Svpattern.SV_ALL)
 
 /**
  * Count the number of 64-bit elements in a vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcntd)
  */
-public fun svcntd(): ULong = svcntdPat(svpattern.SV_ALL)
+public fun svcntd(): ULong = svcntdPat(Svpattern.SV_ALL)
 
 /**
  * Count the number of 8-bit elements in a vector
@@ -20407,25 +20407,25 @@ public fun svptestLast(pg: SvboolT, op: SvboolT): Boolean {
  * Set predicate elements to true
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svptrueB8)
  */
-public fun svptrueB8(): SvboolT = svptruePatB8(svpattern.SV_ALL)
+public fun svptrueB8(): SvboolT = svptruePatB8(Svpattern.SV_ALL)
 
 /**
  * Set predicate elements to true
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svptrueB16)
  */
-public fun svptrueB16(): SvboolT = svptruePatB16(svpattern.SV_ALL)
+public fun svptrueB16(): SvboolT = svptruePatB16(Svpattern.SV_ALL)
 
 /**
  * Set predicate elements to true
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svptrueB32)
  */
-public fun svptrueB32(): SvboolT = svptruePatB32(svpattern.SV_ALL)
+public fun svptrueB32(): SvboolT = svptruePatB32(Svpattern.SV_ALL)
 
 /**
  * Set predicate elements to true
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svptrueB64)
  */
-public fun svptrueB64(): SvboolT = svptruePatB64(svpattern.SV_ALL)
+public fun svptrueB64(): SvboolT = svptruePatB64(Svpattern.SV_ALL)
 
 /**
  * Set predicate elements to true
@@ -20587,97 +20587,97 @@ public fun svqaddNU64(op1: Svuint64T, op2: ULong): Svuint64T = svqaddU64(op1, sv
  * Saturating decrement by number of byte elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecb[_n_s32])
  */
-public fun svqdecbNS32(op: Int, immFactor: Int): Int = svqdecbPatNS32(op, svpattern.SV_ALL, immFactor)
+public fun svqdecbNS32(op: Int, immFactor: Int): Int = svqdecbPatNS32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of halfword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdech[_n_s32])
  */
-public fun svqdechNS32(op: Int, immFactor: Int): Int = svqdechPatNS32(op, svpattern.SV_ALL, immFactor)
+public fun svqdechNS32(op: Int, immFactor: Int): Int = svqdechPatNS32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of word elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecw[_n_s32])
  */
-public fun svqdecwNS32(op: Int, immFactor: Int): Int = svqdecwPatNS32(op, svpattern.SV_ALL, immFactor)
+public fun svqdecwNS32(op: Int, immFactor: Int): Int = svqdecwPatNS32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of doubleword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecd[_n_s32])
  */
-public fun svqdecdNS32(op: Int, immFactor: Int): Int = svqdecdPatNS32(op, svpattern.SV_ALL, immFactor)
+public fun svqdecdNS32(op: Int, immFactor: Int): Int = svqdecdPatNS32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of byte elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecb[_n_s64])
  */
-public fun svqdecbNS64(op: Long, immFactor: Int): Long = svqdecbPatNS64(op, svpattern.SV_ALL, immFactor)
+public fun svqdecbNS64(op: Long, immFactor: Int): Long = svqdecbPatNS64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of halfword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdech[_n_s64])
  */
-public fun svqdechNS64(op: Long, immFactor: Int): Long = svqdechPatNS64(op, svpattern.SV_ALL, immFactor)
+public fun svqdechNS64(op: Long, immFactor: Int): Long = svqdechPatNS64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of word elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecw[_n_s64])
  */
-public fun svqdecwNS64(op: Long, immFactor: Int): Long = svqdecwPatNS64(op, svpattern.SV_ALL, immFactor)
+public fun svqdecwNS64(op: Long, immFactor: Int): Long = svqdecwPatNS64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of doubleword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecd[_n_s64])
  */
-public fun svqdecdNS64(op: Long, immFactor: Int): Long = svqdecdPatNS64(op, svpattern.SV_ALL, immFactor)
+public fun svqdecdNS64(op: Long, immFactor: Int): Long = svqdecdPatNS64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of byte elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecb[_n_u32])
  */
-public fun svqdecbNU32(op: UInt, immFactor: Int): UInt = svqdecbPatNU32(op, svpattern.SV_ALL, immFactor)
+public fun svqdecbNU32(op: UInt, immFactor: Int): UInt = svqdecbPatNU32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of halfword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdech[_n_u32])
  */
-public fun svqdechNU32(op: UInt, immFactor: Int): UInt = svqdechPatNU32(op, svpattern.SV_ALL, immFactor)
+public fun svqdechNU32(op: UInt, immFactor: Int): UInt = svqdechPatNU32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of word elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecw[_n_u32])
  */
-public fun svqdecwNU32(op: UInt, immFactor: Int): UInt = svqdecwPatNU32(op, svpattern.SV_ALL, immFactor)
+public fun svqdecwNU32(op: UInt, immFactor: Int): UInt = svqdecwPatNU32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of doubleword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecd[_n_u32])
  */
-public fun svqdecdNU32(op: UInt, immFactor: Int): UInt = svqdecdPatNU32(op, svpattern.SV_ALL, immFactor)
+public fun svqdecdNU32(op: UInt, immFactor: Int): UInt = svqdecdPatNU32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of byte elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecb[_n_u64])
  */
-public fun svqdecbNU64(op: ULong, immFactor: Int): ULong = svqdecbPatNU64(op, svpattern.SV_ALL, immFactor)
+public fun svqdecbNU64(op: ULong, immFactor: Int): ULong = svqdecbPatNU64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of halfword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdech[_n_u64])
  */
-public fun svqdechNU64(op: ULong, immFactor: Int): ULong = svqdechPatNU64(op, svpattern.SV_ALL, immFactor)
+public fun svqdechNU64(op: ULong, immFactor: Int): ULong = svqdechPatNU64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of word elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecw[_n_u64])
  */
-public fun svqdecwNU64(op: ULong, immFactor: Int): ULong = svqdecwPatNU64(op, svpattern.SV_ALL, immFactor)
+public fun svqdecwNU64(op: ULong, immFactor: Int): ULong = svqdecwPatNU64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of doubleword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecd[_n_u64])
  */
-public fun svqdecdNU64(op: ULong, immFactor: Int): ULong = svqdecdPatNU64(op, svpattern.SV_ALL, immFactor)
+public fun svqdecdNU64(op: ULong, immFactor: Int): ULong = svqdecdPatNU64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of byte elements
@@ -20947,37 +20947,37 @@ public fun svqdecdPatU64(op: Svuint64T, pattern: Svpattern, immFactor: Int): Svu
  * Saturating decrement by number of halfword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdech[_s16])
  */
-public fun svqdechS16(op: Svint16T, immFactor: Int): Svint16T = svqdechPatS16(op, svpattern.SV_ALL, immFactor)
+public fun svqdechS16(op: Svint16T, immFactor: Int): Svint16T = svqdechPatS16(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of word elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecw[_s32])
  */
-public fun svqdecwS32(op: Svint32T, immFactor: Int): Svint32T = svqdecwPatS32(op, svpattern.SV_ALL, immFactor)
+public fun svqdecwS32(op: Svint32T, immFactor: Int): Svint32T = svqdecwPatS32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of doubleword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecd[_s64])
  */
-public fun svqdecdS64(op: Svint64T, immFactor: Int): Svint64T = svqdecdPatS64(op, svpattern.SV_ALL, immFactor)
+public fun svqdecdS64(op: Svint64T, immFactor: Int): Svint64T = svqdecdPatS64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of halfword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdech[_u16])
  */
-public fun svqdechU16(op: Svuint16T, immFactor: Int): Svuint16T = svqdechPatU16(op, svpattern.SV_ALL, immFactor)
+public fun svqdechU16(op: Svuint16T, immFactor: Int): Svuint16T = svqdechPatU16(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of word elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecw[_u32])
  */
-public fun svqdecwU32(op: Svuint32T, immFactor: Int): Svuint32T = svqdecwPatU32(op, svpattern.SV_ALL, immFactor)
+public fun svqdecwU32(op: Svuint32T, immFactor: Int): Svuint32T = svqdecwPatU32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by number of doubleword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecd[_u64])
  */
-public fun svqdecdU64(op: Svuint64T, immFactor: Int): Svuint64T = svqdecdPatU64(op, svpattern.SV_ALL, immFactor)
+public fun svqdecdU64(op: Svuint64T, immFactor: Int): Svuint64T = svqdecdPatU64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating decrement by active element count
@@ -21181,97 +21181,97 @@ public fun svqdecpU64(op: Svuint64T, pg: SvboolT): Svuint64T {
  * Saturating increment by number of byte elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincb[_n_s32])
  */
-public fun svqincbNS32(op: Int, immFactor: Int): Int = svqincbPatNS32(op, svpattern.SV_ALL, immFactor)
+public fun svqincbNS32(op: Int, immFactor: Int): Int = svqincbPatNS32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of halfword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqinch[_n_s32])
  */
-public fun svqinchNS32(op: Int, immFactor: Int): Int = svqinchPatNS32(op, svpattern.SV_ALL, immFactor)
+public fun svqinchNS32(op: Int, immFactor: Int): Int = svqinchPatNS32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of word elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincw[_n_s32])
  */
-public fun svqincwNS32(op: Int, immFactor: Int): Int = svqincwPatNS32(op, svpattern.SV_ALL, immFactor)
+public fun svqincwNS32(op: Int, immFactor: Int): Int = svqincwPatNS32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of doubleword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincd[_n_s32])
  */
-public fun svqincdNS32(op: Int, immFactor: Int): Int = svqincdPatNS32(op, svpattern.SV_ALL, immFactor)
+public fun svqincdNS32(op: Int, immFactor: Int): Int = svqincdPatNS32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of byte elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincb[_n_s64])
  */
-public fun svqincbNS64(op: Long, immFactor: Int): Long = svqincbPatNS64(op, svpattern.SV_ALL, immFactor)
+public fun svqincbNS64(op: Long, immFactor: Int): Long = svqincbPatNS64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of halfword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqinch[_n_s64])
  */
-public fun svqinchNS64(op: Long, immFactor: Int): Long = svqinchPatNS64(op, svpattern.SV_ALL, immFactor)
+public fun svqinchNS64(op: Long, immFactor: Int): Long = svqinchPatNS64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of word elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincw[_n_s64])
  */
-public fun svqincwNS64(op: Long, immFactor: Int): Long = svqincwPatNS64(op, svpattern.SV_ALL, immFactor)
+public fun svqincwNS64(op: Long, immFactor: Int): Long = svqincwPatNS64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of doubleword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincd[_n_s64])
  */
-public fun svqincdNS64(op: Long, immFactor: Int): Long = svqincdPatNS64(op, svpattern.SV_ALL, immFactor)
+public fun svqincdNS64(op: Long, immFactor: Int): Long = svqincdPatNS64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of byte elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincb[_n_u32])
  */
-public fun svqincbNU32(op: UInt, immFactor: Int): UInt = svqincbPatNU32(op, svpattern.SV_ALL, immFactor)
+public fun svqincbNU32(op: UInt, immFactor: Int): UInt = svqincbPatNU32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of halfword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqinch[_n_u32])
  */
-public fun svqinchNU32(op: UInt, immFactor: Int): UInt = svqinchPatNU32(op, svpattern.SV_ALL, immFactor)
+public fun svqinchNU32(op: UInt, immFactor: Int): UInt = svqinchPatNU32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of word elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincw[_n_u32])
  */
-public fun svqincwNU32(op: UInt, immFactor: Int): UInt = svqincwPatNU32(op, svpattern.SV_ALL, immFactor)
+public fun svqincwNU32(op: UInt, immFactor: Int): UInt = svqincwPatNU32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of doubleword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincd[_n_u32])
  */
-public fun svqincdNU32(op: UInt, immFactor: Int): UInt = svqincdPatNU32(op, svpattern.SV_ALL, immFactor)
+public fun svqincdNU32(op: UInt, immFactor: Int): UInt = svqincdPatNU32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of byte elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincb[_n_u64])
  */
-public fun svqincbNU64(op: ULong, immFactor: Int): ULong = svqincbPatNU64(op, svpattern.SV_ALL, immFactor)
+public fun svqincbNU64(op: ULong, immFactor: Int): ULong = svqincbPatNU64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of halfword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqinch[_n_u64])
  */
-public fun svqinchNU64(op: ULong, immFactor: Int): ULong = svqinchPatNU64(op, svpattern.SV_ALL, immFactor)
+public fun svqinchNU64(op: ULong, immFactor: Int): ULong = svqinchPatNU64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of word elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincw[_n_u64])
  */
-public fun svqincwNU64(op: ULong, immFactor: Int): ULong = svqincwPatNU64(op, svpattern.SV_ALL, immFactor)
+public fun svqincwNU64(op: ULong, immFactor: Int): ULong = svqincwPatNU64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of doubleword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincd[_n_u64])
  */
-public fun svqincdNU64(op: ULong, immFactor: Int): ULong = svqincdPatNU64(op, svpattern.SV_ALL, immFactor)
+public fun svqincdNU64(op: ULong, immFactor: Int): ULong = svqincdPatNU64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of byte elements
@@ -21541,37 +21541,37 @@ public fun svqincdPatU64(op: Svuint64T, pattern: Svpattern, immFactor: Int): Svu
  * Saturating increment by number of halfword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqinch[_s16])
  */
-public fun svqinchS16(op: Svint16T, immFactor: Int): Svint16T = svqinchPatS16(op, svpattern.SV_ALL, immFactor)
+public fun svqinchS16(op: Svint16T, immFactor: Int): Svint16T = svqinchPatS16(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of word elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincw[_s32])
  */
-public fun svqincwS32(op: Svint32T, immFactor: Int): Svint32T = svqincwPatS32(op, svpattern.SV_ALL, immFactor)
+public fun svqincwS32(op: Svint32T, immFactor: Int): Svint32T = svqincwPatS32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of doubleword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincd[_s64])
  */
-public fun svqincdS64(op: Svint64T, immFactor: Int): Svint64T = svqincdPatS64(op, svpattern.SV_ALL, immFactor)
+public fun svqincdS64(op: Svint64T, immFactor: Int): Svint64T = svqincdPatS64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of halfword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqinch[_u16])
  */
-public fun svqinchU16(op: Svuint16T, immFactor: Int): Svuint16T = svqinchPatU16(op, svpattern.SV_ALL, immFactor)
+public fun svqinchU16(op: Svuint16T, immFactor: Int): Svuint16T = svqinchPatU16(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of word elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincw[_u32])
  */
-public fun svqincwU32(op: Svuint32T, immFactor: Int): Svuint32T = svqincwPatU32(op, svpattern.SV_ALL, immFactor)
+public fun svqincwU32(op: Svuint32T, immFactor: Int): Svuint32T = svqincwPatU32(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by number of doubleword elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincd[_u64])
  */
-public fun svqincdU64(op: Svuint64T, immFactor: Int): Svuint64T = svqincdPatU64(op, svpattern.SV_ALL, immFactor)
+public fun svqincdU64(op: Svuint64T, immFactor: Int): Svuint64T = svqincdPatU64(op, Svpattern.SV_ALL, immFactor)
 
 /**
  * Saturating increment by active element count

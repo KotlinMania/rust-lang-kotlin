@@ -5,17 +5,17 @@ public expect fun sm4ed(rs1: Int, rs2: Int, bs: Int): Int
 
 public expect fun sm4ks(rs1: Int, rs2: Int, bs: Int): Int
 
-public expect fun sm3p0(rs1: Int): Int
+public expect fun externSm3p0(rs1: Int): Int
 
-public expect fun sm3p1(rs1: Int): Int
+public expect fun externSm3p1(rs1: Int): Int
 
-public expect fun sha256sig0(rs1: Int): Int
+public expect fun externSha256sig0(rs1: Int): Int
 
-public expect fun sha256sig1(rs1: Int): Int
+public expect fun externSha256sig1(rs1: Int): Int
 
-public expect fun sha256sum0(rs1: Int): Int
+public expect fun externSha256sum0(rs1: Int): Int
 
-public expect fun sha256sum1(rs1: Int): Int
+public expect fun externSha256sum1(rs1: Int): Int
 
 public expect fun xperm864(rs1: Long, rs2: Long): Long
 
@@ -70,7 +70,7 @@ public fun xperm4(rs1: Int, rs2: Int): Int = xperm464(rs1.toLong(), rs2.toLong()
  *
  * Section: 3.27
  */
-public fun sha256sig0(rs1: UInt): UInt = sha256sig0(rs1.toInt()).toUInt()
+public fun sha256sig0(rs1: UInt): UInt = externSha256sig0(rs1.toInt()).toUInt()
 
 /**
  * Implements the Sigma1 transformation function as used in the SHA2-256 hash function \[49\]
@@ -89,7 +89,7 @@ public fun sha256sig0(rs1: UInt): UInt = sha256sig0(rs1.toInt()).toUInt()
  *
  * Section: 3.28
  */
-public fun sha256sig1(rs1: UInt): UInt = sha256sig1(rs1.toInt()).toUInt()
+public fun sha256sig1(rs1: UInt): UInt = externSha256sig1(rs1.toInt()).toUInt()
 
 /**
  * Implements the Sum0 transformation function as used in the SHA2-256 hash function \[49\]
@@ -108,7 +108,7 @@ public fun sha256sig1(rs1: UInt): UInt = sha256sig1(rs1.toInt()).toUInt()
  *
  * Section: 3.29
  */
-public fun sha256sum0(rs1: UInt): UInt = sha256sum0(rs1.toInt()).toUInt()
+public fun sha256sum0(rs1: UInt): UInt = externSha256sum0(rs1.toInt()).toUInt()
 
 /**
  * Implements the Sum1 transformation function as used in the SHA2-256 hash function \[49\]
@@ -127,7 +127,7 @@ public fun sha256sum0(rs1: UInt): UInt = sha256sum0(rs1.toInt()).toUInt()
  *
  * Section: 3.30
  */
-public fun sha256sum1(rs1: UInt): UInt = sha256sum1(rs1.toInt()).toUInt()
+public fun sha256sum1(rs1: UInt): UInt = externSha256sum1(rs1.toInt()).toUInt()
 
 /**
  * Accelerates the block encrypt/decrypt operation of the SM4 block cipher \[5, 31\].
@@ -300,7 +300,7 @@ public fun sm4ks(rs1: UInt, rs2: UInt, bs: UByte): UInt {
  * compression function `CF` uses the intermediate value `TT2` to calculate
  * the variable `E` in one iteration for subsequent processes.
  */
-public fun sm3p0(rs1: UInt): UInt = sm3p0(rs1.toInt()).toUInt()
+public fun sm3p0(rs1: UInt): UInt = externSm3p0(rs1.toInt()).toUInt()
 
 /**
  * Implements the P1 transformation function as used in the SM3 hash function [4, 30].
@@ -337,4 +337,4 @@ public fun sm3p0(rs1: UInt): UInt = sm3p0(rs1.toInt()).toUInt()
  * ENDFOR
  * ```
  */
-public fun sm3p1(rs1: UInt): UInt = sm3p1(rs1.toInt()).toUInt()
+public fun sm3p1(rs1: UInt): UInt = externSm3p1(rs1.toInt()).toUInt()
