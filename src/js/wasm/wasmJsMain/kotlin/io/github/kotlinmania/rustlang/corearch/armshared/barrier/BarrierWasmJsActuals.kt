@@ -7,34 +7,34 @@ private external fun initArmsharedBarrierNapiAddon(): Boolean
 
 private val armsharedBarrierNapiAvailable: Boolean = initArmsharedBarrierNapiAddon()
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchArmsharedBarrierDmb(p0)")
-private external fun wasmCorearchArmsharedBarrierDmb(p0: Int)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchArmsharedBarrierExternDmb(p0)")
+private external fun wasmCorearchArmsharedBarrierExternDmb(p0: Int)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchArmsharedBarrierDsb(p0)")
-private external fun wasmCorearchArmsharedBarrierDsb(p0: Int)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchArmsharedBarrierExternDsb(p0)")
+private external fun wasmCorearchArmsharedBarrierExternDsb(p0: Int)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchArmsharedBarrierIsb(p0)")
-private external fun wasmCorearchArmsharedBarrierIsb(p0: Int)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchArmsharedBarrierExternIsb(p0)")
+private external fun wasmCorearchArmsharedBarrierExternIsb(p0: Int)
 
-public actual fun dmb(arg0: Int) {
+public actual fun externDmb(arg0: Int) {
     if (armsharedBarrierNapiAvailable) {
-        wasmCorearchArmsharedBarrierDmb(arg0)
+        wasmCorearchArmsharedBarrierExternDmb(arg0)
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun dsb(arg0: Int) {
+public actual fun externDsb(arg0: Int) {
     if (armsharedBarrierNapiAvailable) {
-        wasmCorearchArmsharedBarrierDsb(arg0)
+        wasmCorearchArmsharedBarrierExternDsb(arg0)
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun isb(arg0: Int) {
+public actual fun externIsb(arg0: Int) {
     if (armsharedBarrierNapiAvailable) {
-        wasmCorearchArmsharedBarrierIsb(arg0)
+        wasmCorearchArmsharedBarrierExternIsb(arg0)
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }

@@ -6395,13 +6395,13 @@ public fun vfmsdLaneqF64(a: Double, b: Double, c: Float64x2T, lane: Int): Double
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetHighF64)
  */
-public fun vgetHighF64(a: Float64x2T): Float64x1T = float64x1T(listOf(run { val simdArg0 = a; val simdArg1 = 1; Float64x1T() }))
+public fun vgetHighF64(a: Float64x2T): Float64x1T = Float64x1T(listOf(run { val simdArg0 = a; val simdArg1 = 1; Float64x1T() }))
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetLowF64)
  */
-public fun vgetLowF64(a: Float64x2T): Float64x1T = float64x1T(listOf(run { val simdArg0 = a; val simdArg1 = 0; Float64x1T() }))
+public fun vgetLowF64(a: Float64x2T): Float64x1T = Float64x1T(listOf(run { val simdArg0 = a; val simdArg1 = 0; Float64x1T() }))
 
 /**
  * Duplicate vector element to vector or scalar
@@ -16371,7 +16371,7 @@ public fun vtbl2P8(a: Poly8x8x2T, b: Uint8x8T): Poly8x8T = vqtbl1P8(vcombineP8(a
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbl3S8)
  */
 public fun vtbl3S8(a: Int8x8x3T, b: Int8x8T): Int8x8T {
-    val x = int8x16x2T(vcombineS8(a.first, a.second), vcombineS8(a.third, Int8x8T()))
+    val x = Int8x16x2T(vcombineS8(a.first, a.second), vcombineS8(a.third, Int8x8T()))
     return vqtbl2S8(x, vreinterpretU8S8(b))
 }
 
@@ -16380,7 +16380,7 @@ public fun vtbl3S8(a: Int8x8x3T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbl3U8)
  */
 public fun vtbl3U8(a: Uint8x8x3T, b: Uint8x8T): Uint8x8T {
-    val x = uint8x16x2T(vcombineU8(a.first, a.second), vcombineU8(a.third, Uint8x8T()))
+    val x = Uint8x16x2T(vcombineU8(a.first, a.second), vcombineU8(a.third, Uint8x8T()))
     return vqtbl2U8(x, b)
 }
 
@@ -16389,7 +16389,7 @@ public fun vtbl3U8(a: Uint8x8x3T, b: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbl3P8)
  */
 public fun vtbl3P8(a: Poly8x8x3T, b: Uint8x8T): Poly8x8T {
-    val x = poly8x16x2T(vcombineP8(a.first, a.second), vcombineP8(a.third, Poly8x8T()))
+    val x = Poly8x16x2T(vcombineP8(a.first, a.second), vcombineP8(a.third, Poly8x8T()))
     return vqtbl2P8(x, b)
 }
 
@@ -16398,7 +16398,7 @@ public fun vtbl3P8(a: Poly8x8x3T, b: Uint8x8T): Poly8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbl4S8)
  */
 public fun vtbl4S8(a: Int8x8x4T, b: Int8x8T): Int8x8T {
-    val x = int8x16x2T(vcombineS8(a.first, a.second), vcombineS8(a.third, a.field3))
+    val x = Int8x16x2T(vcombineS8(a.first, a.second), vcombineS8(a.third, a.field3))
     return vqtbl2S8(x, vreinterpretU8S8(b))
 }
 
@@ -16407,7 +16407,7 @@ public fun vtbl4S8(a: Int8x8x4T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbl4U8)
  */
 public fun vtbl4U8(a: Uint8x8x4T, b: Uint8x8T): Uint8x8T {
-    val x = uint8x16x2T(vcombineU8(a.first, a.second), vcombineU8(a.third, a.field3))
+    val x = Uint8x16x2T(vcombineU8(a.first, a.second), vcombineU8(a.third, a.field3))
     return vqtbl2U8(x, b)
 }
 
@@ -16416,7 +16416,7 @@ public fun vtbl4U8(a: Uint8x8x4T, b: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbl4P8)
  */
 public fun vtbl4P8(a: Poly8x8x4T, b: Uint8x8T): Poly8x8T {
-    val x = poly8x16x2T(vcombineP8(a.first, a.second), vcombineP8(a.third, a.field3))
+    val x = Poly8x16x2T(vcombineP8(a.first, a.second), vcombineP8(a.third, a.field3))
     return vqtbl2P8(x, b)
 }
 
@@ -16461,7 +16461,7 @@ public fun vtbx2P8(a: Poly8x8T, b: Poly8x8x2T, c: Uint8x8T): Poly8x8T = run { va
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbx3S8)
  */
 public fun vtbx3S8(a: Int8x8T, b: Int8x8x3T, c: Int8x8T): Int8x8T {
-    val x = int8x16x2T(vcombineS8(b.first, b.second), vcombineS8(b.third, Int8x8T()))
+    val x = Int8x16x2T(vcombineS8(b.first, b.second), vcombineS8(b.third, Int8x8T()))
     return run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<Byte>(List(8) { 24.toByte() })); Int8x8T() }; val simdArg1 = vqtbx2S8(a, x, vreinterpretU8S8(c)); val simdArg2 = a; simdArg1 }
 }
 
@@ -16470,7 +16470,7 @@ public fun vtbx3S8(a: Int8x8T, b: Int8x8x3T, c: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbx3U8)
  */
 public fun vtbx3U8(a: Uint8x8T, b: Uint8x8x3T, c: Uint8x8T): Uint8x8T {
-    val x = uint8x16x2T(vcombineU8(b.first, b.second), vcombineU8(b.third, Uint8x8T()))
+    val x = Uint8x16x2T(vcombineU8(b.first, b.second), vcombineU8(b.third, Uint8x8T()))
     return run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<UByte>(List(8) { 24u.toUByte() })); Int8x8T() }; val simdArg1 = vqtbx2U8(a, x, c); val simdArg2 = a; simdArg1 }
 }
 
@@ -16479,7 +16479,7 @@ public fun vtbx3U8(a: Uint8x8T, b: Uint8x8x3T, c: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbx3P8)
  */
 public fun vtbx3P8(a: Poly8x8T, b: Poly8x8x3T, c: Uint8x8T): Poly8x8T {
-    val x = poly8x16x2T(vcombineP8(b.first, b.second), vcombineP8(b.third, Poly8x8T()))
+    val x = Poly8x16x2T(vcombineP8(b.first, b.second), vcombineP8(b.third, Poly8x8T()))
     return run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<UByte>(List(8) { 24u.toUByte() })); Int8x8T() }; val simdArg1 = vqtbx2P8(a, x, c); val simdArg2 = a; simdArg1 }
 }
 
@@ -16488,7 +16488,7 @@ public fun vtbx3P8(a: Poly8x8T, b: Poly8x8x3T, c: Uint8x8T): Poly8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbx4S8)
  */
 public fun vtbx4S8(a: Int8x8T, b: Int8x8x4T, c: Int8x8T): Int8x8T {
-    val x = int8x16x2T(vcombineS8(b.first, b.second), vcombineS8(b.third, b.field3))
+    val x = Int8x16x2T(vcombineS8(b.first, b.second), vcombineS8(b.third, b.field3))
     return run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<Byte>(List(8) { 32.toByte() })); Int8x8T() }; val simdArg1 = vqtbx2S8(a, x, vreinterpretU8S8(c)); val simdArg2 = a; simdArg1 }
 }
 
@@ -16497,7 +16497,7 @@ public fun vtbx4S8(a: Int8x8T, b: Int8x8x4T, c: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbx4U8)
  */
 public fun vtbx4U8(a: Uint8x8T, b: Uint8x8x4T, c: Uint8x8T): Uint8x8T {
-    val x = uint8x16x2T(vcombineU8(b.first, b.second), vcombineU8(b.third, b.field3))
+    val x = Uint8x16x2T(vcombineU8(b.first, b.second), vcombineU8(b.third, b.field3))
     return run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<UByte>(List(8) { 32u.toUByte() })); Int8x8T() }; val simdArg1 = vqtbx2U8(a, x, c); val simdArg2 = a; simdArg1 }
 }
 
@@ -16506,7 +16506,7 @@ public fun vtbx4U8(a: Uint8x8T, b: Uint8x8x4T, c: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbx4P8)
  */
 public fun vtbx4P8(a: Poly8x8T, b: Poly8x8x4T, c: Uint8x8T): Poly8x8T {
-    val x = poly8x16x2T(vcombineP8(b.first, b.second), vcombineP8(b.third, b.field3))
+    val x = Poly8x16x2T(vcombineP8(b.first, b.second), vcombineP8(b.third, b.field3))
     return run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<UByte>(List(8) { 32u.toUByte() })); Int8x8T() }; val simdArg1 = vqtbx2P8(a, x, c); val simdArg2 = a; simdArg1 }
 }
 

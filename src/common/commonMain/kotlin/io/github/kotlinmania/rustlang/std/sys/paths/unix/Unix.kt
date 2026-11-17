@@ -60,7 +60,7 @@ public fun getcwd(): Result<PathBuf, Error> {
     }
 }
 
-public fun chdir(p: path.Path): Result<Unit, Error> {
+public fun chdir(p: Path): Result<Unit, Error> {
     val result = when (val tryResult = runPathWithCstr(p, { p1 -> Result.Ok(io.github.kotlinmania.rustlang.libc.chdir(p1.asPtr())) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
     return if (result == 0) {
         Result.Ok<Unit, Error>(Unit)

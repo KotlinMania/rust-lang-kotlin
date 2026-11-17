@@ -327,7 +327,7 @@ public open class Condvar(
             run {
                 val lock = guardLock(guard)
                 val success = this.inner.waitTimeout(lock, dur)
-                Pair(guardPoison(guard).get(), WaitTimeoutResult(success.inv()))
+                Pair(guardPoison(guard).get(), WaitTimeoutResult(!success))
             }
         return if (poisoned) {
             Result.Err(PoisonError.new(Pair(guard, result)))
@@ -389,7 +389,7 @@ public open class Condvar(
         var guard1 = guard
         val start = Instant.now()
         while (true) {
-            if (condition(guard1).inv()) {
+            if (!condition(guard1)) {
                 return Result.Ok(Pair(guard1, WaitTimeoutResult(false)))
             }
             val timeout1 =

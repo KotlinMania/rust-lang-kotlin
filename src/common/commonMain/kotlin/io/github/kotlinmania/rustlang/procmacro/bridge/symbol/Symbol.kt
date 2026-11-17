@@ -14,7 +14,6 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.arena.Arena
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
 import io.github.kotlinmania.rustlang.procmacro.bridge.client.Methods
 import io.github.kotlinmania.rustlang.procmacro.bridge.fxhash.FxHashMap
-import io.github.kotlinmania.rustlang.procmacro.bridge.mark
 import io.github.kotlinmania.rustlang.procmacro.bridge.server.HandleStore
 import io.github.kotlinmania.rustlang.procmacro.bridge.server.MarkedSymbol
 import io.github.kotlinmania.rustlang.procmacro.bridge.server.Server
@@ -131,7 +130,7 @@ public fun <S> Symbol.encode(w: Buffer, s: S) {
     this.with({ sym -> sym.encode(w, s) })
 }
 
-public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> decodeMarkedSymbolS(r: List<UByte>, s: HandleStore<S>, internSymbolSFn: (String) -> Symbol): MarkedSymbol<S> = Mark.mark(internSymbolSFn(String.decode(r, s)))
+public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> decodeMarkedSymbolS(r: List<UByte>, s: HandleStore<S>, internSymbolSFn: (String) -> Symbol): MarkedSymbol<S> = Mark.Mark(internSymbolSFn(String.decode(r, s)))
 
 public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> MarkedSymbol<S>.encode(w: Buffer, s: HandleStore<S>, withSymbolStringSFn: (Symbol, (String) -> Unit) -> Unit) {
     withSymbolStringSFn(this.unmark(), { sym -> sym.encode(w, s) })

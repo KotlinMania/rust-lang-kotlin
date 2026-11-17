@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 import io.github.kotlinmania.rustlang.std.sys.env.unix.env
 import io.github.kotlinmania.rustlang.std.sys.envconsts.os.DLL_EXTENSION
 import io.github.kotlinmania.rustlang.std.sys.envconsts.os.DLL_PREFIX
@@ -217,7 +218,7 @@ public fun vars(): Vars = Vars(inner = varsOs())
  * }
  * ```
  */
-public fun varsOs(): VarsOs = VarsOs(inner = envimp.env())
+public fun varsOs(): VarsOs = VarsOs(inner = envimp.Env())
 
 /**
  * Fetches the environment variable `key` from the current process.

@@ -3,6 +3,8 @@ package io.github.kotlinmania.rustlang.core.char.convert
 
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.char.TryFromCharError
+import io.github.kotlinmania.rustlang.core.convert.From
+import io.github.kotlinmania.rustlang.core.convert.TryFrom
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -110,7 +112,7 @@ public fun fromU128(c: Char): U128 {
 public fun tryFromUByte(c: Char): Result<UByte, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
-        val matchVal = UByte.tryFrom(UInt.from(c))
+        val matchVal = UByte.TryFrom(UInt.From(c))
         when (matchVal) { is Result.Ok<*, *> -> {
             val b = matchVal.okValue()
             Result.Ok<UByte, TryFromCharError>(b)
@@ -143,7 +145,7 @@ public fun tryFromUByte(c: Char): Result<UByte, TryFromCharError> {
 public fun tryFromUShort(c: Char): Result<UShort, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
-        val matchVal = UShort.tryFrom(UInt.from(c))
+        val matchVal = UShort.TryFrom(UInt.From(c))
         when (matchVal) { is Result.Ok<*, *> -> {
             val x = matchVal.okValue()
             Result.Ok<UShort, TryFromCharError>(x)
@@ -187,7 +189,7 @@ public fun tryFromUShort(c: Char): Result<UShort, TryFromCharError> {
 public fun tryFromInt(c: Char): Result<Int, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
-        val matchVal = Int.tryFrom(UInt.from(c))
+        val matchVal = Int.TryFrom(UInt.From(c))
         when (matchVal) { is Result.Ok<*, *> -> {
             val x = matchVal.okValue()
             Result.Ok<Int, TryFromCharError>(x)

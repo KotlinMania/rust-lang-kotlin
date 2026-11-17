@@ -10,23 +10,23 @@ private external fun initX8664FxsrNapiAddon(): Boolean
 
 private val x8664FxsrNapiAvailable: Boolean = initX8664FxsrNapiAddon()
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchX8664FxsrFxsave64(p0)")
-private external fun wasmCorearchX8664FxsrFxsave64(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchX8664FxsrExternFxsave64(p0)")
+private external fun wasmCorearchX8664FxsrExternFxsave64(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchX8664FxsrFxrstor64(p0)")
-private external fun wasmCorearchX8664FxsrFxrstor64(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchX8664FxsrExternFxrstor64(p0)")
+private external fun wasmCorearchX8664FxsrExternFxrstor64(p0: String)
 
-public actual fun fxsave64(p: MutPtr) {
+public actual fun externFxsave64(p: MutPtr) {
     if (x8664FxsrNapiAvailable) {
-        wasmCorearchX8664FxsrFxsave64(p.rawAddress.toString())
+        wasmCorearchX8664FxsrExternFxsave64(p.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun fxrstor64(p: ConstPtr) {
+public actual fun externFxrstor64(p: ConstPtr) {
     if (x8664FxsrNapiAvailable) {
-        wasmCorearchX8664FxsrFxrstor64(p.rawAddress.toString())
+        wasmCorearchX8664FxsrExternFxrstor64(p.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }

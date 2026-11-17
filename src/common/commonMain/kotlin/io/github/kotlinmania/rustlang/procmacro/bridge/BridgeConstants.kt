@@ -1,6 +1,7 @@
 package io.github.kotlinmania.rustlang.procmacro.bridge
 
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
+import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.Decode
 import io.github.kotlinmania.rustlang.procmacro.bridge.server.emitDiagnostic
 import io.github.kotlinmania.rustlang.procmacro.bridge.server.literalFromStr
 import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanByteRange
@@ -228,7 +229,7 @@ public fun <S> ApiTags.encode(w: Buffer, s: S) {
 }
 
 public fun <S> decodeApiTags(r: List<UByte>, s: S): ApiTags =
-    when (val matchVal = UByte.decode(r, s)) {
+    when (val matchVal = UByte.Decode(r, s)) {
         else -> {
             val trackEnvVar = matchVal
             ApiTags::trackEnvVar

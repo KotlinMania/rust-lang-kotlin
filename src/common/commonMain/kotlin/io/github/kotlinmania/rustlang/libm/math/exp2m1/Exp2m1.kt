@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.libm.math.exp2m1
 
 import io.github.kotlinmania.rustlang.libm.math.kcos.C2
 import io.github.kotlinmania.rustlang.libm.math.ldexp.ldexp
+import io.github.kotlinmania.rustlang.libm.math.support.CastFrom
 import io.github.kotlinmania.rustlang.libm.math.support.Int
 import io.github.kotlinmania.rustlang.libm.math.support.coldPath
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
@@ -663,7 +664,7 @@ public fun crExp2m1(x: Double): Double {
         val i = x.floor()
         if (x == i && (-53.0..53.0).contains(i)) {
             if (i >= 0.0) {
-                return ((1uL shl Long.castFrom(i).toInt()) - 1uL).cast()
+                return ((1uL shl Long.CastFrom(i).toInt()) - 1uL).cast()
             } else {
                 return -1.0 + ldexp(1.0, i.cast())
             }
@@ -2405,10 +2406,10 @@ public fun exp1(xh: Double, xl: Double): Pair<Double, Double> {
     val (yh, yl) = fastTwoSum(xh - kh, xl)
     val yl1 = yl - kl
     // Note: k is an integer, this is just a conversion.
-    val k1 = Long.castFrom(k)
+    val k1 = Long.CastFrom(k)
     val m = (k1 shr 12) + 0x3ff
-    val i2 = Int.castFrom((k1 shr 6) and 0x3f)
-    val i1 = Int.castFrom(k1 and 0x3f)
+    val i2 = Int.CastFrom((k1 shr 6) and 0x3f)
+    val i1 = Int.CastFrom(k1 and 0x3f)
     val (t1h, t1l) = T1[i2]
     val (t2h, t2l) = T2[i1]
     val (hi, lo) = dMul(t2h, t2l, t1h, t1l)
@@ -2449,10 +2450,10 @@ public fun exp2(x: Double): Pair<Double, Double> {
     // to use the accurate path of exp()
     val (yh1, yl) = sMul(yh, LN2H, LN2L)
     // Note: k is an integer, this is just a conversion.
-    val k1 = Long.castFrom(k)
+    val k1 = Long.CastFrom(k)
     val m = (k1 shr 12) + 0x3ff
-    val i2 = Int.castFrom((k1 shr 6) and 0x3f)
-    val i1 = Int.castFrom(k1 and 0x3f)
+    val i2 = Int.CastFrom((k1 shr 6) and 0x3f)
+    val i1 = Int.CastFrom(k1 and 0x3f)
     val (t1h, t1l) = T1[i2]
     val (t2h, t2l) = T2[i1]
     val (hi, lo) = dMul(t2h, t2l, t1h, t1l)

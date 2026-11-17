@@ -1,6 +1,7 @@
 // port-lint: source iter/traits/collect.rs
 package io.github.kotlinmania.rustlang.core.iter.traits.collect
 
+import io.github.kotlinmania.rustlang.core.default.Default
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.drop
 
@@ -415,7 +416,7 @@ public fun <A, B, ExA, ExB> Pair<ExA, ExB>.extendOneUnchecked(item: Pair<A, B>) 
 }
 
 public fun <IntoIter, A, B, ExA, ExB, Iter : IntoIterator<Pair<A, B>, IntoIter>> fromIteratorFromIterExAExB(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB): Pair<ExA, ExB> where ExA : Extend<A>, ExB : Extend<B> {
-    val res: Pair<ExA, ExB>  = Pair.default()
+    val res = Pair.Default()
     res.extend(iter)
     return res
 }
@@ -445,7 +446,7 @@ public fun <A, B, C, ExA, ExB, ExC> Triple<ExA, ExB, ExC>.extendOneUnchecked(ite
 }
 
 public fun <IntoIter, A, B, C, ExA, ExB, ExC, Iter : IntoIterator<Triple<A, B, C>, IntoIter>> fromIteratorFromIterExAExBExC(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC): Triple<ExA, ExB, ExC> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C> {
-    val res: Triple<ExA, ExB, ExC>  = Triple.default()
+    val res = Triple.Default()
     res.extend(iter)
     return res
 }
@@ -455,30 +456,30 @@ public fun <IntoIter, A, B, C, D, ExA, ExB, ExC, ExD, Iter : IntoIterator<List<A
 }
 
 public fun <A, B, C, D, ExA, ExB, ExC, ExD> List<Any?>.extendOne(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D> {
-    this[0].extendOne(item[0])
-    this[1].extendOne(item[1])
-    this[2].extendOne(item[2])
-    this[3].extendOne(item[3])
+    (this[0] as ExA).extendOne((item[0] as A))
+    (this[1] as ExB).extendOne((item[1] as B))
+    (this[2] as ExC).extendOne((item[2] as C))
+    (this[3] as ExD).extendOne((item[3] as D))
 }
 
 public fun <A, B, C, D, ExA, ExB, ExC, ExD> List<Any?>.extendReserve(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D> {
-    this[0].extendReserve(additional)
-    this[1].extendReserve(additional)
-    this[2].extendReserve(additional)
-    this[3].extendReserve(additional)
+    (this[0] as ExA).extendReserve(additional)
+    (this[1] as ExB).extendReserve(additional)
+    (this[2] as ExC).extendReserve(additional)
+    (this[3] as ExD).extendReserve(additional)
 }
 
 public fun <A, B, C, D, ExA, ExB, ExC, ExD> List<Any?>.extendOneUnchecked(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D> {
     run {
-        this[0].extendOneUnchecked(item[0])
-        this[1].extendOneUnchecked(item[1])
-        this[2].extendOneUnchecked(item[2])
-        this[3].extendOneUnchecked(item[3])
+        (this[0] as ExA).extendOneUnchecked((item[0] as A))
+        (this[1] as ExB).extendOneUnchecked((item[1] as B))
+        (this[2] as ExC).extendOneUnchecked((item[2] as C))
+        (this[3] as ExD).extendOneUnchecked((item[3] as D))
     }
 }
 
 public fun <IntoIter, A, B, C, D, ExA, ExB, ExC, ExD, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExD(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D> {
-    val res: List<Any?>  = List.default()
+    val res = List.Default()
     res.extend(iter)
     return res
 }
@@ -488,33 +489,33 @@ public fun <IntoIter, A, B, C, D, E, ExA, ExB, ExC, ExD, ExE, Iter : IntoIterato
 }
 
 public fun <A, B, C, D, E, ExA, ExB, ExC, ExD, ExE> List<Any?>.extendOneABCDE(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E> {
-    this[0].extendOne(item[0])
-    this[1].extendOne(item[1])
-    this[2].extendOne(item[2])
-    this[3].extendOne(item[3])
-    this[4].extendOne(item[4])
+    (this[0] as ExA).extendOne((item[0] as A))
+    (this[1] as ExB).extendOne((item[1] as B))
+    (this[2] as ExC).extendOne((item[2] as C))
+    (this[3] as ExD).extendOne((item[3] as D))
+    (this[4] as ExE).extendOne((item[4] as E))
 }
 
 public fun <A, B, C, D, E, ExA, ExB, ExC, ExD, ExE> List<Any?>.extendReserveABCDE(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E> {
-    this[0].extendReserve(additional)
-    this[1].extendReserve(additional)
-    this[2].extendReserve(additional)
-    this[3].extendReserve(additional)
-    this[4].extendReserve(additional)
+    (this[0] as ExA).extendReserve(additional)
+    (this[1] as ExB).extendReserve(additional)
+    (this[2] as ExC).extendReserve(additional)
+    (this[3] as ExD).extendReserve(additional)
+    (this[4] as ExE).extendReserve(additional)
 }
 
 public fun <A, B, C, D, E, ExA, ExB, ExC, ExD, ExE> List<Any?>.extendOneUncheckedABCDE(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E> {
     run {
-        this[0].extendOneUnchecked(item[0])
-        this[1].extendOneUnchecked(item[1])
-        this[2].extendOneUnchecked(item[2])
-        this[3].extendOneUnchecked(item[3])
-        this[4].extendOneUnchecked(item[4])
+        (this[0] as ExA).extendOneUnchecked((item[0] as A))
+        (this[1] as ExB).extendOneUnchecked((item[1] as B))
+        (this[2] as ExC).extendOneUnchecked((item[2] as C))
+        (this[3] as ExD).extendOneUnchecked((item[3] as D))
+        (this[4] as ExE).extendOneUnchecked((item[4] as E))
     }
 }
 
 public fun <IntoIter, A, B, C, D, E, ExA, ExB, ExC, ExD, ExE, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExDExE(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E> {
-    val res: List<Any?>  = List.default()
+    val res = List.Default()
     res.extend(iter)
     return res
 }
@@ -524,36 +525,36 @@ public fun <IntoIter, A, B, C, D, E, F, ExA, ExB, ExC, ExD, ExE, ExF, Iter : Int
 }
 
 public fun <A, B, C, D, E, F, ExA, ExB, ExC, ExD, ExE, ExF> List<Any?>.extendOneABCDEF(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F> {
-    this[0].extendOne(item[0])
-    this[1].extendOne(item[1])
-    this[2].extendOne(item[2])
-    this[3].extendOne(item[3])
-    this[4].extendOne(item[4])
-    this[5].extendOne(item[5])
+    (this[0] as ExA).extendOne((item[0] as A))
+    (this[1] as ExB).extendOne((item[1] as B))
+    (this[2] as ExC).extendOne((item[2] as C))
+    (this[3] as ExD).extendOne((item[3] as D))
+    (this[4] as ExE).extendOne((item[4] as E))
+    (this[5] as ExF).extendOne((item[5] as F))
 }
 
 public fun <A, B, C, D, E, F, ExA, ExB, ExC, ExD, ExE, ExF> List<Any?>.extendReserveABCDEF(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F> {
-    this[0].extendReserve(additional)
-    this[1].extendReserve(additional)
-    this[2].extendReserve(additional)
-    this[3].extendReserve(additional)
-    this[4].extendReserve(additional)
-    this[5].extendReserve(additional)
+    (this[0] as ExA).extendReserve(additional)
+    (this[1] as ExB).extendReserve(additional)
+    (this[2] as ExC).extendReserve(additional)
+    (this[3] as ExD).extendReserve(additional)
+    (this[4] as ExE).extendReserve(additional)
+    (this[5] as ExF).extendReserve(additional)
 }
 
 public fun <A, B, C, D, E, F, ExA, ExB, ExC, ExD, ExE, ExF> List<Any?>.extendOneUncheckedABCDEF(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F> {
     run {
-        this[0].extendOneUnchecked(item[0])
-        this[1].extendOneUnchecked(item[1])
-        this[2].extendOneUnchecked(item[2])
-        this[3].extendOneUnchecked(item[3])
-        this[4].extendOneUnchecked(item[4])
-        this[5].extendOneUnchecked(item[5])
+        (this[0] as ExA).extendOneUnchecked((item[0] as A))
+        (this[1] as ExB).extendOneUnchecked((item[1] as B))
+        (this[2] as ExC).extendOneUnchecked((item[2] as C))
+        (this[3] as ExD).extendOneUnchecked((item[3] as D))
+        (this[4] as ExE).extendOneUnchecked((item[4] as E))
+        (this[5] as ExF).extendOneUnchecked((item[5] as F))
     }
 }
 
 public fun <IntoIter, A, B, C, D, E, F, ExA, ExB, ExC, ExD, ExE, ExF, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExDExEExF(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F> {
-    val res: List<Any?>  = List.default()
+    val res = List.Default()
     res.extend(iter)
     return res
 }
@@ -563,39 +564,39 @@ public fun <IntoIter, A, B, C, D, E, F, G, ExA, ExB, ExC, ExD, ExE, ExF, ExG, It
 }
 
 public fun <A, B, C, D, E, F, G, ExA, ExB, ExC, ExD, ExE, ExF, ExG> List<Any?>.extendOneABCDEFG(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G> {
-    this[0].extendOne(item[0])
-    this[1].extendOne(item[1])
-    this[2].extendOne(item[2])
-    this[3].extendOne(item[3])
-    this[4].extendOne(item[4])
-    this[5].extendOne(item[5])
-    this[6].extendOne(item[6])
+    (this[0] as ExA).extendOne((item[0] as A))
+    (this[1] as ExB).extendOne((item[1] as B))
+    (this[2] as ExC).extendOne((item[2] as C))
+    (this[3] as ExD).extendOne((item[3] as D))
+    (this[4] as ExE).extendOne((item[4] as E))
+    (this[5] as ExF).extendOne((item[5] as F))
+    (this[6] as ExG).extendOne((item[6] as G))
 }
 
 public fun <A, B, C, D, E, F, G, ExA, ExB, ExC, ExD, ExE, ExF, ExG> List<Any?>.extendReserveABCDEFG(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G> {
-    this[0].extendReserve(additional)
-    this[1].extendReserve(additional)
-    this[2].extendReserve(additional)
-    this[3].extendReserve(additional)
-    this[4].extendReserve(additional)
-    this[5].extendReserve(additional)
-    this[6].extendReserve(additional)
+    (this[0] as ExA).extendReserve(additional)
+    (this[1] as ExB).extendReserve(additional)
+    (this[2] as ExC).extendReserve(additional)
+    (this[3] as ExD).extendReserve(additional)
+    (this[4] as ExE).extendReserve(additional)
+    (this[5] as ExF).extendReserve(additional)
+    (this[6] as ExG).extendReserve(additional)
 }
 
 public fun <A, B, C, D, E, F, G, ExA, ExB, ExC, ExD, ExE, ExF, ExG> List<Any?>.extendOneUncheckedABCDEFG(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G> {
     run {
-        this[0].extendOneUnchecked(item[0])
-        this[1].extendOneUnchecked(item[1])
-        this[2].extendOneUnchecked(item[2])
-        this[3].extendOneUnchecked(item[3])
-        this[4].extendOneUnchecked(item[4])
-        this[5].extendOneUnchecked(item[5])
-        this[6].extendOneUnchecked(item[6])
+        (this[0] as ExA).extendOneUnchecked((item[0] as A))
+        (this[1] as ExB).extendOneUnchecked((item[1] as B))
+        (this[2] as ExC).extendOneUnchecked((item[2] as C))
+        (this[3] as ExD).extendOneUnchecked((item[3] as D))
+        (this[4] as ExE).extendOneUnchecked((item[4] as E))
+        (this[5] as ExF).extendOneUnchecked((item[5] as F))
+        (this[6] as ExG).extendOneUnchecked((item[6] as G))
     }
 }
 
 public fun <IntoIter, A, B, C, D, E, F, G, ExA, ExB, ExC, ExD, ExE, ExF, ExG, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExDExEExFExG(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G> {
-    val res: List<Any?>  = List.default()
+    val res = List.Default()
     res.extend(iter)
     return res
 }
@@ -605,42 +606,42 @@ public fun <IntoIter, A, B, C, D, E, F, G, H, ExA, ExB, ExC, ExD, ExE, ExF, ExG,
 }
 
 public fun <A, B, C, D, E, F, G, H, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH> List<Any?>.extendOneABCDEFGH(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H> {
-    this[0].extendOne(item[0])
-    this[1].extendOne(item[1])
-    this[2].extendOne(item[2])
-    this[3].extendOne(item[3])
-    this[4].extendOne(item[4])
-    this[5].extendOne(item[5])
-    this[6].extendOne(item[6])
-    this[7].extendOne(item[7])
+    (this[0] as ExA).extendOne((item[0] as A))
+    (this[1] as ExB).extendOne((item[1] as B))
+    (this[2] as ExC).extendOne((item[2] as C))
+    (this[3] as ExD).extendOne((item[3] as D))
+    (this[4] as ExE).extendOne((item[4] as E))
+    (this[5] as ExF).extendOne((item[5] as F))
+    (this[6] as ExG).extendOne((item[6] as G))
+    (this[7] as ExH).extendOne((item[7] as H))
 }
 
 public fun <A, B, C, D, E, F, G, H, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH> List<Any?>.extendReserveABCDEFGH(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H> {
-    this[0].extendReserve(additional)
-    this[1].extendReserve(additional)
-    this[2].extendReserve(additional)
-    this[3].extendReserve(additional)
-    this[4].extendReserve(additional)
-    this[5].extendReserve(additional)
-    this[6].extendReserve(additional)
-    this[7].extendReserve(additional)
+    (this[0] as ExA).extendReserve(additional)
+    (this[1] as ExB).extendReserve(additional)
+    (this[2] as ExC).extendReserve(additional)
+    (this[3] as ExD).extendReserve(additional)
+    (this[4] as ExE).extendReserve(additional)
+    (this[5] as ExF).extendReserve(additional)
+    (this[6] as ExG).extendReserve(additional)
+    (this[7] as ExH).extendReserve(additional)
 }
 
 public fun <A, B, C, D, E, F, G, H, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH> List<Any?>.extendOneUncheckedABCDEFGH(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H> {
     run {
-        this[0].extendOneUnchecked(item[0])
-        this[1].extendOneUnchecked(item[1])
-        this[2].extendOneUnchecked(item[2])
-        this[3].extendOneUnchecked(item[3])
-        this[4].extendOneUnchecked(item[4])
-        this[5].extendOneUnchecked(item[5])
-        this[6].extendOneUnchecked(item[6])
-        this[7].extendOneUnchecked(item[7])
+        (this[0] as ExA).extendOneUnchecked((item[0] as A))
+        (this[1] as ExB).extendOneUnchecked((item[1] as B))
+        (this[2] as ExC).extendOneUnchecked((item[2] as C))
+        (this[3] as ExD).extendOneUnchecked((item[3] as D))
+        (this[4] as ExE).extendOneUnchecked((item[4] as E))
+        (this[5] as ExF).extendOneUnchecked((item[5] as F))
+        (this[6] as ExG).extendOneUnchecked((item[6] as G))
+        (this[7] as ExH).extendOneUnchecked((item[7] as H))
     }
 }
 
 public fun <IntoIter, A, B, C, D, E, F, G, H, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExDExEExFExGExH(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG, defaultExHFn: () -> ExH): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H> {
-    val res: List<Any?>  = List.default()
+    val res = List.Default()
     res.extend(iter)
     return res
 }
@@ -650,45 +651,45 @@ public fun <IntoIter, A, B, C, D, E, F, G, H, I, ExA, ExB, ExC, ExD, ExE, ExF, E
 }
 
 public fun <A, B, C, D, E, F, G, H, I, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI> List<Any?>.extendOneABCDEFGHI(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I> {
-    this[0].extendOne(item[0])
-    this[1].extendOne(item[1])
-    this[2].extendOne(item[2])
-    this[3].extendOne(item[3])
-    this[4].extendOne(item[4])
-    this[5].extendOne(item[5])
-    this[6].extendOne(item[6])
-    this[7].extendOne(item[7])
-    this[8].extendOne(item[8])
+    (this[0] as ExA).extendOne((item[0] as A))
+    (this[1] as ExB).extendOne((item[1] as B))
+    (this[2] as ExC).extendOne((item[2] as C))
+    (this[3] as ExD).extendOne((item[3] as D))
+    (this[4] as ExE).extendOne((item[4] as E))
+    (this[5] as ExF).extendOne((item[5] as F))
+    (this[6] as ExG).extendOne((item[6] as G))
+    (this[7] as ExH).extendOne((item[7] as H))
+    (this[8] as ExI).extendOne((item[8] as I))
 }
 
 public fun <A, B, C, D, E, F, G, H, I, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI> List<Any?>.extendReserveABCDEFGHI(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I> {
-    this[0].extendReserve(additional)
-    this[1].extendReserve(additional)
-    this[2].extendReserve(additional)
-    this[3].extendReserve(additional)
-    this[4].extendReserve(additional)
-    this[5].extendReserve(additional)
-    this[6].extendReserve(additional)
-    this[7].extendReserve(additional)
-    this[8].extendReserve(additional)
+    (this[0] as ExA).extendReserve(additional)
+    (this[1] as ExB).extendReserve(additional)
+    (this[2] as ExC).extendReserve(additional)
+    (this[3] as ExD).extendReserve(additional)
+    (this[4] as ExE).extendReserve(additional)
+    (this[5] as ExF).extendReserve(additional)
+    (this[6] as ExG).extendReserve(additional)
+    (this[7] as ExH).extendReserve(additional)
+    (this[8] as ExI).extendReserve(additional)
 }
 
 public fun <A, B, C, D, E, F, G, H, I, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI> List<Any?>.extendOneUncheckedABCDEFGHI(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I> {
     run {
-        this[0].extendOneUnchecked(item[0])
-        this[1].extendOneUnchecked(item[1])
-        this[2].extendOneUnchecked(item[2])
-        this[3].extendOneUnchecked(item[3])
-        this[4].extendOneUnchecked(item[4])
-        this[5].extendOneUnchecked(item[5])
-        this[6].extendOneUnchecked(item[6])
-        this[7].extendOneUnchecked(item[7])
-        this[8].extendOneUnchecked(item[8])
+        (this[0] as ExA).extendOneUnchecked((item[0] as A))
+        (this[1] as ExB).extendOneUnchecked((item[1] as B))
+        (this[2] as ExC).extendOneUnchecked((item[2] as C))
+        (this[3] as ExD).extendOneUnchecked((item[3] as D))
+        (this[4] as ExE).extendOneUnchecked((item[4] as E))
+        (this[5] as ExF).extendOneUnchecked((item[5] as F))
+        (this[6] as ExG).extendOneUnchecked((item[6] as G))
+        (this[7] as ExH).extendOneUnchecked((item[7] as H))
+        (this[8] as ExI).extendOneUnchecked((item[8] as I))
     }
 }
 
 public fun <IntoIter, A, B, C, D, E, F, G, H, I, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExDExEExFExGExHExI(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG, defaultExHFn: () -> ExH, defaultExIFn: () -> ExI): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I> {
-    val res: List<Any?>  = List.default()
+    val res = List.Default()
     res.extend(iter)
     return res
 }
@@ -698,48 +699,48 @@ public fun <IntoIter, A, B, C, D, E, F, G, H, I, J, ExA, ExB, ExC, ExD, ExE, ExF
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ> List<Any?>.extendOneABCDEFGHIJ(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J> {
-    this[0].extendOne(item[0])
-    this[1].extendOne(item[1])
-    this[2].extendOne(item[2])
-    this[3].extendOne(item[3])
-    this[4].extendOne(item[4])
-    this[5].extendOne(item[5])
-    this[6].extendOne(item[6])
-    this[7].extendOne(item[7])
-    this[8].extendOne(item[8])
-    this[9].extendOne(item[9])
+    (this[0] as ExA).extendOne((item[0] as A))
+    (this[1] as ExB).extendOne((item[1] as B))
+    (this[2] as ExC).extendOne((item[2] as C))
+    (this[3] as ExD).extendOne((item[3] as D))
+    (this[4] as ExE).extendOne((item[4] as E))
+    (this[5] as ExF).extendOne((item[5] as F))
+    (this[6] as ExG).extendOne((item[6] as G))
+    (this[7] as ExH).extendOne((item[7] as H))
+    (this[8] as ExI).extendOne((item[8] as I))
+    (this[9] as ExJ).extendOne((item[9] as J))
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ> List<Any?>.extendReserveABCDEFGHIJ(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J> {
-    this[0].extendReserve(additional)
-    this[1].extendReserve(additional)
-    this[2].extendReserve(additional)
-    this[3].extendReserve(additional)
-    this[4].extendReserve(additional)
-    this[5].extendReserve(additional)
-    this[6].extendReserve(additional)
-    this[7].extendReserve(additional)
-    this[8].extendReserve(additional)
-    this[9].extendReserve(additional)
+    (this[0] as ExA).extendReserve(additional)
+    (this[1] as ExB).extendReserve(additional)
+    (this[2] as ExC).extendReserve(additional)
+    (this[3] as ExD).extendReserve(additional)
+    (this[4] as ExE).extendReserve(additional)
+    (this[5] as ExF).extendReserve(additional)
+    (this[6] as ExG).extendReserve(additional)
+    (this[7] as ExH).extendReserve(additional)
+    (this[8] as ExI).extendReserve(additional)
+    (this[9] as ExJ).extendReserve(additional)
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ> List<Any?>.extendOneUncheckedABCDEFGHIJ(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J> {
     run {
-        this[0].extendOneUnchecked(item[0])
-        this[1].extendOneUnchecked(item[1])
-        this[2].extendOneUnchecked(item[2])
-        this[3].extendOneUnchecked(item[3])
-        this[4].extendOneUnchecked(item[4])
-        this[5].extendOneUnchecked(item[5])
-        this[6].extendOneUnchecked(item[6])
-        this[7].extendOneUnchecked(item[7])
-        this[8].extendOneUnchecked(item[8])
-        this[9].extendOneUnchecked(item[9])
+        (this[0] as ExA).extendOneUnchecked((item[0] as A))
+        (this[1] as ExB).extendOneUnchecked((item[1] as B))
+        (this[2] as ExC).extendOneUnchecked((item[2] as C))
+        (this[3] as ExD).extendOneUnchecked((item[3] as D))
+        (this[4] as ExE).extendOneUnchecked((item[4] as E))
+        (this[5] as ExF).extendOneUnchecked((item[5] as F))
+        (this[6] as ExG).extendOneUnchecked((item[6] as G))
+        (this[7] as ExH).extendOneUnchecked((item[7] as H))
+        (this[8] as ExI).extendOneUnchecked((item[8] as I))
+        (this[9] as ExJ).extendOneUnchecked((item[9] as J))
     }
 }
 
 public fun <IntoIter, A, B, C, D, E, F, G, H, I, J, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExDExEExFExGExHExIExJ(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG, defaultExHFn: () -> ExH, defaultExIFn: () -> ExI, defaultExJFn: () -> ExJ): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J> {
-    val res: List<Any?>  = List.default()
+    val res = List.Default()
     res.extend(iter)
     return res
 }
@@ -749,51 +750,51 @@ public fun <IntoIter, A, B, C, D, E, F, G, H, I, J, K, ExA, ExB, ExC, ExD, ExE, 
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, K, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK> List<Any?>.extendOneABCDEFGHIJK(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K> {
-    this[0].extendOne(item[0])
-    this[1].extendOne(item[1])
-    this[2].extendOne(item[2])
-    this[3].extendOne(item[3])
-    this[4].extendOne(item[4])
-    this[5].extendOne(item[5])
-    this[6].extendOne(item[6])
-    this[7].extendOne(item[7])
-    this[8].extendOne(item[8])
-    this[9].extendOne(item[9])
-    this[10].extendOne(item[10])
+    (this[0] as ExA).extendOne((item[0] as A))
+    (this[1] as ExB).extendOne((item[1] as B))
+    (this[2] as ExC).extendOne((item[2] as C))
+    (this[3] as ExD).extendOne((item[3] as D))
+    (this[4] as ExE).extendOne((item[4] as E))
+    (this[5] as ExF).extendOne((item[5] as F))
+    (this[6] as ExG).extendOne((item[6] as G))
+    (this[7] as ExH).extendOne((item[7] as H))
+    (this[8] as ExI).extendOne((item[8] as I))
+    (this[9] as ExJ).extendOne((item[9] as J))
+    (this[10] as ExK).extendOne((item[10] as K))
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, K, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK> List<Any?>.extendReserveABCDEFGHIJK(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K> {
-    this[0].extendReserve(additional)
-    this[1].extendReserve(additional)
-    this[2].extendReserve(additional)
-    this[3].extendReserve(additional)
-    this[4].extendReserve(additional)
-    this[5].extendReserve(additional)
-    this[6].extendReserve(additional)
-    this[7].extendReserve(additional)
-    this[8].extendReserve(additional)
-    this[9].extendReserve(additional)
-    this[10].extendReserve(additional)
+    (this[0] as ExA).extendReserve(additional)
+    (this[1] as ExB).extendReserve(additional)
+    (this[2] as ExC).extendReserve(additional)
+    (this[3] as ExD).extendReserve(additional)
+    (this[4] as ExE).extendReserve(additional)
+    (this[5] as ExF).extendReserve(additional)
+    (this[6] as ExG).extendReserve(additional)
+    (this[7] as ExH).extendReserve(additional)
+    (this[8] as ExI).extendReserve(additional)
+    (this[9] as ExJ).extendReserve(additional)
+    (this[10] as ExK).extendReserve(additional)
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, K, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK> List<Any?>.extendOneUncheckedABCDEFGHIJK(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K> {
     run {
-        this[0].extendOneUnchecked(item[0])
-        this[1].extendOneUnchecked(item[1])
-        this[2].extendOneUnchecked(item[2])
-        this[3].extendOneUnchecked(item[3])
-        this[4].extendOneUnchecked(item[4])
-        this[5].extendOneUnchecked(item[5])
-        this[6].extendOneUnchecked(item[6])
-        this[7].extendOneUnchecked(item[7])
-        this[8].extendOneUnchecked(item[8])
-        this[9].extendOneUnchecked(item[9])
-        this[10].extendOneUnchecked(item[10])
+        (this[0] as ExA).extendOneUnchecked((item[0] as A))
+        (this[1] as ExB).extendOneUnchecked((item[1] as B))
+        (this[2] as ExC).extendOneUnchecked((item[2] as C))
+        (this[3] as ExD).extendOneUnchecked((item[3] as D))
+        (this[4] as ExE).extendOneUnchecked((item[4] as E))
+        (this[5] as ExF).extendOneUnchecked((item[5] as F))
+        (this[6] as ExG).extendOneUnchecked((item[6] as G))
+        (this[7] as ExH).extendOneUnchecked((item[7] as H))
+        (this[8] as ExI).extendOneUnchecked((item[8] as I))
+        (this[9] as ExJ).extendOneUnchecked((item[9] as J))
+        (this[10] as ExK).extendOneUnchecked((item[10] as K))
     }
 }
 
 public fun <IntoIter, A, B, C, D, E, F, G, H, I, J, K, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExDExEExFExGExHExIExJExK(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG, defaultExHFn: () -> ExH, defaultExIFn: () -> ExI, defaultExJFn: () -> ExJ, defaultExKFn: () -> ExK): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K> {
-    val res: List<Any?>  = List.default()
+    val res = List.Default()
     res.extend(iter)
     return res
 }
@@ -803,54 +804,54 @@ public fun <IntoIter, A, B, C, D, E, F, G, H, I, J, K, L, ExA, ExB, ExC, ExD, Ex
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, K, L, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK, ExL> List<Any?>.extendOneABCDEFGHIJKL(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K>, ExL : Extend<L> {
-    this[0].extendOne(item[0])
-    this[1].extendOne(item[1])
-    this[2].extendOne(item[2])
-    this[3].extendOne(item[3])
-    this[4].extendOne(item[4])
-    this[5].extendOne(item[5])
-    this[6].extendOne(item[6])
-    this[7].extendOne(item[7])
-    this[8].extendOne(item[8])
-    this[9].extendOne(item[9])
-    this[10].extendOne(item[10])
-    this[11].extendOne(item[11])
+    (this[0] as ExA).extendOne((item[0] as A))
+    (this[1] as ExB).extendOne((item[1] as B))
+    (this[2] as ExC).extendOne((item[2] as C))
+    (this[3] as ExD).extendOne((item[3] as D))
+    (this[4] as ExE).extendOne((item[4] as E))
+    (this[5] as ExF).extendOne((item[5] as F))
+    (this[6] as ExG).extendOne((item[6] as G))
+    (this[7] as ExH).extendOne((item[7] as H))
+    (this[8] as ExI).extendOne((item[8] as I))
+    (this[9] as ExJ).extendOne((item[9] as J))
+    (this[10] as ExK).extendOne((item[10] as K))
+    (this[11] as ExL).extendOne((item[11] as L))
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, K, L, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK, ExL> List<Any?>.extendReserveABCDEFGHIJKL(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K>, ExL : Extend<L> {
-    this[0].extendReserve(additional)
-    this[1].extendReserve(additional)
-    this[2].extendReserve(additional)
-    this[3].extendReserve(additional)
-    this[4].extendReserve(additional)
-    this[5].extendReserve(additional)
-    this[6].extendReserve(additional)
-    this[7].extendReserve(additional)
-    this[8].extendReserve(additional)
-    this[9].extendReserve(additional)
-    this[10].extendReserve(additional)
-    this[11].extendReserve(additional)
+    (this[0] as ExA).extendReserve(additional)
+    (this[1] as ExB).extendReserve(additional)
+    (this[2] as ExC).extendReserve(additional)
+    (this[3] as ExD).extendReserve(additional)
+    (this[4] as ExE).extendReserve(additional)
+    (this[5] as ExF).extendReserve(additional)
+    (this[6] as ExG).extendReserve(additional)
+    (this[7] as ExH).extendReserve(additional)
+    (this[8] as ExI).extendReserve(additional)
+    (this[9] as ExJ).extendReserve(additional)
+    (this[10] as ExK).extendReserve(additional)
+    (this[11] as ExL).extendReserve(additional)
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, K, L, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK, ExL> List<Any?>.extendOneUncheckedABCDEFGHIJKL(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K>, ExL : Extend<L> {
     run {
-        this[0].extendOneUnchecked(item[0])
-        this[1].extendOneUnchecked(item[1])
-        this[2].extendOneUnchecked(item[2])
-        this[3].extendOneUnchecked(item[3])
-        this[4].extendOneUnchecked(item[4])
-        this[5].extendOneUnchecked(item[5])
-        this[6].extendOneUnchecked(item[6])
-        this[7].extendOneUnchecked(item[7])
-        this[8].extendOneUnchecked(item[8])
-        this[9].extendOneUnchecked(item[9])
-        this[10].extendOneUnchecked(item[10])
-        this[11].extendOneUnchecked(item[11])
+        (this[0] as ExA).extendOneUnchecked((item[0] as A))
+        (this[1] as ExB).extendOneUnchecked((item[1] as B))
+        (this[2] as ExC).extendOneUnchecked((item[2] as C))
+        (this[3] as ExD).extendOneUnchecked((item[3] as D))
+        (this[4] as ExE).extendOneUnchecked((item[4] as E))
+        (this[5] as ExF).extendOneUnchecked((item[5] as F))
+        (this[6] as ExG).extendOneUnchecked((item[6] as G))
+        (this[7] as ExH).extendOneUnchecked((item[7] as H))
+        (this[8] as ExI).extendOneUnchecked((item[8] as I))
+        (this[9] as ExJ).extendOneUnchecked((item[9] as J))
+        (this[10] as ExK).extendOneUnchecked((item[10] as K))
+        (this[11] as ExL).extendOneUnchecked((item[11] as L))
     }
 }
 
 public fun <IntoIter, A, B, C, D, E, F, G, H, I, J, K, L, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK, ExL, Iter : IntoIterator<List<Any?>, IntoIter>> fromIteratorFromIterExAExBExCExDExEExFExGExHExIExJExKExL(iter: Iter, defaultExAFn: () -> ExA, defaultExBFn: () -> ExB, defaultExCFn: () -> ExC, defaultExDFn: () -> ExD, defaultExEFn: () -> ExE, defaultExFFn: () -> ExF, defaultExGFn: () -> ExG, defaultExHFn: () -> ExH, defaultExIFn: () -> ExI, defaultExJFn: () -> ExJ, defaultExKFn: () -> ExK, defaultExLFn: () -> ExL): List<Any?> where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K>, ExL : Extend<L> {
-    val res: List<Any?>  = List.default()
+    val res = List.Default()
     res.extend(iter)
     return res
 }

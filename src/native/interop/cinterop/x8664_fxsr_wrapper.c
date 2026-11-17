@@ -15,7 +15,7 @@
 #endif
 #endif
 
-void corearchX8664FxsrFxsave64(void* p) {
+void corearchX8664FxsrExternFxsave64(void* p) {
     typedef void (*km_fn_t)(void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -48,7 +48,7 @@ void corearchX8664FxsrFxsave64(void* p) {
     errno = ENOSYS;
 }
 
-void corearchX8664FxsrFxrstor64(void* p) {
+void corearchX8664FxsrExternFxrstor64(void* p) {
     typedef void (*km_fn_t)(void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

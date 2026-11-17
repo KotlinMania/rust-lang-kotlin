@@ -27,8 +27,8 @@ import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.HandleOrInvalid
 import io.github.kotlinmania.rustlang.std.os.windows.io.OwnedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
-import io.github.kotlinmania.rustlang.std.os.windows.io.fromRawHandle
 import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.File
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.FileAttr
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.OpenOptions
@@ -128,7 +128,7 @@ public open class Dir internal constructor(
             }
         createOpt = createOpt or FILE_OPEN_REPARSE_POINT
         val handle = when (val tryResult = this.openFileNative(path, opts, createOpt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
-        return File.fromInner(handle).delete().ioResult()
+        return File.FromInner(handle).delete().ioResult()
     }
 
     public open fun renameNative(from: List<UShort>, toDir: Dir, to: List<UShort>): Result<Unit, Error> {
@@ -167,7 +167,7 @@ public open class Dir internal constructor(
     public open fun selfMetadata(): Result<FileAttr, Error> {
         // Reuse the implementation for files, which should work for all handles.
         val handle = this.handle.asRawHandle()
-        val f = File(handle = Handle.fromRawHandle(handle))
+        val f = File(handle = Handle.FromRawHandle(handle))
         return f.fileAttr()
     }
 
@@ -246,10 +246,10 @@ public open class Dir internal constructor(
             val localStorageL119C8 = AddressableLocal(SecurityAttributes(nLength = sizeOf<SecurityAttributes>(typeLayoutT = UnresolvedTypeLayout<SecurityAttributes>()).toUInt(), lpSecurityDescriptor = MutPtr(0L), bInheritHandle = opts.inheritHandle.toInt()), UnresolvedTypeLayout<SecurityAttributes>())
             val handle = createFileW(path.asPtr(), when (val tryResult = opts.getAccessMode()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.errValue()) }, opts.shareMode, localStorageL119C8.asConstPtr(), creation, opts.getFlagsAndAttributes() or FILE_FLAG_BACKUP_SEMANTICS, MutPtr(0L))
             return run {
-                val matchVal = OwnedHandle.tryFrom(HandleOrInvalid.fromRawHandle(handle))
+                val matchVal = OwnedHandle.tryFrom(HandleOrInvalid.FromRawHandle(handle))
                 when (matchVal) { is Result.Ok<*, *> -> {
                     val handle1 = matchVal.okValue()
-                    Result.Ok<Dir, Error>(Dir(handle = Handle.fromInner(handle1)))
+                    Result.Ok<Dir, Error>(Dir(handle = Handle.FromInner(handle1)))
                 }; is Result.Err<*, *> -> {
                     Result.Err<Dir, Error>(Error.lastOsError())
                 } }
@@ -279,7 +279,7 @@ public fun ntCreateFile(opts: OpenOptions, objectAttributes: ObjectAttributes, c
     val status = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.ntCreateFile(handle, access, objectAttributes, ioStatus, ConstPtr(0L), FILE_ATTRIBUTE_NORMAL, opts.shareMode, when (val tryResult = opts.getDisposition()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Handle, Error>(tryResult.errValue()) }, options, ConstPtr(0L), 0u)
     return if (ntSuccess(status)) {
         // SAFETY: ntSuccess guarantees that handle is no longer null
-        Result.Ok<Handle, Error>(Handle.fromRawHandle(handle))
+        Result.Ok<Handle, Error>(Handle.FromRawHandle(handle))
     } else {
         Result.Err<Handle, Error>(WinError.new(rtlNtStatusToDosError(status))).ioResult()
     }
@@ -289,10 +289,10 @@ public fun io.github.kotlinmania.rustlang.std.fs.Dir.asRawHandle(): RawHandle = 
 
 public fun io.github.kotlinmania.rustlang.std.fs.Dir.intoRawHandle(): RawHandle = this.intoInner().handle.intoRawHandle()
 
-public fun fromRawHandleDir(handle: RawHandle): io.github.kotlinmania.rustlang.std.fs.Dir = io.github.kotlinmania.rustlang.std.fs.Dir.fromInner(Dir(handle = FromRawHandle.fromRawHandle(handle)))
+public fun fromRawHandleDir(handle: RawHandle): io.github.kotlinmania.rustlang.std.fs.Dir = io.github.kotlinmania.rustlang.std.fs.Dir.FromInner(Dir(handle = FromRawHandle.FromRawHandle(handle)))
 
 public fun io.github.kotlinmania.rustlang.std.fs.Dir.asHandle(): BorrowedHandle = this.asInner().handle.asHandle()
 
 public fun fromOwnedHandle(value: io.github.kotlinmania.rustlang.std.fs.Dir): OwnedHandle = value.intoInner().handle.intoInner()
 
-public fun fromDir(value: OwnedHandle): io.github.kotlinmania.rustlang.std.fs.Dir = io.github.kotlinmania.rustlang.std.fs.Dir.fromInner(Dir(handle = Handle.fromInner(value)))
+public fun fromDir(value: OwnedHandle): io.github.kotlinmania.rustlang.std.fs.Dir = io.github.kotlinmania.rustlang.std.fs.Dir.FromInner(Dir(handle = Handle.FromInner(value)))

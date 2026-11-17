@@ -1134,8 +1134,8 @@ public fun F16.totalCmp(other: F16): Ordering {
     // the integer, so we "fill" the mask with sign bits, and then
     // convert to unsigned to push one more zero bit.
     // On positive values, the mask is all zeros, so it's a no-op.
-    left = left xor (((((left shr 15).toUShort()).toUInt() shr 1).toUShort()).toShort())
-    right = right xor (((((right shr 15).toUShort()).toUInt() shr 1).toUShort()).toShort())
+    left = left xor ((((((left.toInt() shr 15).toShort()).toUShort()).toUInt() shr 1).toUShort()).toShort())
+    right = right xor ((((((right.toInt() shr 15).toShort()).toUShort()).toUInt() shr 1).toUShort()).toShort())
     return left.cmp(right)
 }
 

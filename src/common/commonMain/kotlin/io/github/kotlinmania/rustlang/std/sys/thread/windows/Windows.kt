@@ -10,7 +10,9 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.HandleOrNull
+import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.STACK_SIZE_PARAM_IS_A_RESERVATION
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setThreadDescription
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.INFINITE
@@ -76,12 +78,12 @@ public open class Thread internal constructor(
             val ret1 =
                 run {
                     val ret = createThread(MutPtr(0L), stack, ::threadStart, mutPtrFromRustCast(data), STACK_SIZE_PARAM_IS_A_RESERVATION, MutPtr(0L))
-                    HandleOrNull.fromRawHandle(ret)
+                    HandleOrNull.FromRawHandle(ret)
                 }
             return when (val matchVal = ret1.tryInto()) {
                 is Result.Ok<*, *> -> {
                     val handle = matchVal.okValue()
-                    Result.Ok<Thread, Error>(Thread(handle = Handle.fromInner(handle)))
+                    Result.Ok<Thread, Error>(Thread(handle = Handle.FromInner(handle)))
                 }
                 else -> {
                     // The thread failed to start and as a result data was not consumed. Therefore, it is

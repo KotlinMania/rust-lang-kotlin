@@ -7,13 +7,13 @@ import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-public expect fun lsxVsrarB(a: V16i8, b: V16i8): V16i8
+public expect fun externLsxVsrarB(a: V16i8, b: V16i8): V16i8
 
-public expect fun lsxVsrarH(a: V8i16, b: V8i16): V8i16
+public expect fun externLsxVsrarH(a: V8i16, b: V8i16): V8i16
 
-public expect fun lsxVsrarW(a: V4i32, b: V4i32): V4i32
+public expect fun externLsxVsrarW(a: V4i32, b: V4i32): V4i32
 
-public expect fun lsxVsrarD(a: V2i64, b: V2i64): V2i64
+public expect fun externLsxVsrarD(a: V2i64, b: V2i64): V2i64
 
 public expect fun lsxVsrariB(a: V16i8, b: UInt): V16i8
 
@@ -23,13 +23,13 @@ public expect fun lsxVsrariW(a: V4i32, b: UInt): V4i32
 
 public expect fun lsxVsrariD(a: V2i64, b: UInt): V2i64
 
-public expect fun lsxVsrlrB(a: V16i8, b: V16i8): V16i8
+public expect fun externLsxVsrlrB(a: V16i8, b: V16i8): V16i8
 
-public expect fun lsxVsrlrH(a: V8i16, b: V8i16): V8i16
+public expect fun externLsxVsrlrH(a: V8i16, b: V8i16): V8i16
 
-public expect fun lsxVsrlrW(a: V4i32, b: V4i32): V4i32
+public expect fun externLsxVsrlrW(a: V4i32, b: V4i32): V4i32
 
-public expect fun lsxVsrlrD(a: V2i64, b: V2i64): V2i64
+public expect fun externLsxVsrlrD(a: V2i64, b: V2i64): V2i64
 
 public expect fun lsxVsrlriB(a: V16i8, b: UInt): V16i8
 
@@ -87,75 +87,75 @@ public expect fun lsxVsatWu(a: V4u32, b: UInt): V4u32
 
 public expect fun lsxVsatDu(a: V2u64, b: UInt): V2u64
 
-public expect fun lsxVdivB(a: V16i8, b: V16i8): V16i8
+public expect fun externLsxVdivB(a: V16i8, b: V16i8): V16i8
 
-public expect fun lsxVdivH(a: V8i16, b: V8i16): V8i16
+public expect fun externLsxVdivH(a: V8i16, b: V8i16): V8i16
 
-public expect fun lsxVdivW(a: V4i32, b: V4i32): V4i32
+public expect fun externLsxVdivW(a: V4i32, b: V4i32): V4i32
 
-public expect fun lsxVdivD(a: V2i64, b: V2i64): V2i64
+public expect fun externLsxVdivD(a: V2i64, b: V2i64): V2i64
 
-public expect fun lsxVdivBu(a: V16u8, b: V16u8): V16u8
+public expect fun externLsxVdivBu(a: V16u8, b: V16u8): V16u8
 
-public expect fun lsxVdivHu(a: V8u16, b: V8u16): V8u16
+public expect fun externLsxVdivHu(a: V8u16, b: V8u16): V8u16
 
-public expect fun lsxVdivWu(a: V4u32, b: V4u32): V4u32
+public expect fun externLsxVdivWu(a: V4u32, b: V4u32): V4u32
 
-public expect fun lsxVdivDu(a: V2u64, b: V2u64): V2u64
+public expect fun externLsxVdivDu(a: V2u64, b: V2u64): V2u64
 
-public expect fun lsxVhaddwHB(a: V16i8, b: V16i8): V8i16
+public expect fun externLsxVhaddwHB(a: V16i8, b: V16i8): V8i16
 
-public expect fun lsxVhaddwWH(a: V8i16, b: V8i16): V4i32
+public expect fun externLsxVhaddwWH(a: V8i16, b: V8i16): V4i32
 
-public expect fun lsxVhaddwDW(a: V4i32, b: V4i32): V2i64
+public expect fun externLsxVhaddwDW(a: V4i32, b: V4i32): V2i64
 
-public expect fun lsxVhaddwHuBu(a: V16u8, b: V16u8): V8u16
+public expect fun externLsxVhaddwHuBu(a: V16u8, b: V16u8): V8u16
 
-public expect fun lsxVhaddwWuHu(a: V8u16, b: V8u16): V4u32
+public expect fun externLsxVhaddwWuHu(a: V8u16, b: V8u16): V4u32
 
-public expect fun lsxVhaddwDuWu(a: V4u32, b: V4u32): V2u64
+public expect fun externLsxVhaddwDuWu(a: V4u32, b: V4u32): V2u64
 
-public expect fun lsxVhsubwHB(a: V16i8, b: V16i8): V8i16
+public expect fun externLsxVhsubwHB(a: V16i8, b: V16i8): V8i16
 
-public expect fun lsxVhsubwWH(a: V8i16, b: V8i16): V4i32
+public expect fun externLsxVhsubwWH(a: V8i16, b: V8i16): V4i32
 
-public expect fun lsxVhsubwDW(a: V4i32, b: V4i32): V2i64
+public expect fun externLsxVhsubwDW(a: V4i32, b: V4i32): V2i64
 
-public expect fun lsxVhsubwHuBu(a: V16u8, b: V16u8): V8i16
+public expect fun externLsxVhsubwHuBu(a: V16u8, b: V16u8): V8i16
 
-public expect fun lsxVhsubwWuHu(a: V8u16, b: V8u16): V4i32
+public expect fun externLsxVhsubwWuHu(a: V8u16, b: V8u16): V4i32
 
-public expect fun lsxVhsubwDuWu(a: V4u32, b: V4u32): V2i64
+public expect fun externLsxVhsubwDuWu(a: V4u32, b: V4u32): V2i64
 
-public expect fun lsxVmodB(a: V16i8, b: V16i8): V16i8
+public expect fun externLsxVmodB(a: V16i8, b: V16i8): V16i8
 
-public expect fun lsxVmodH(a: V8i16, b: V8i16): V8i16
+public expect fun externLsxVmodH(a: V8i16, b: V8i16): V8i16
 
-public expect fun lsxVmodW(a: V4i32, b: V4i32): V4i32
+public expect fun externLsxVmodW(a: V4i32, b: V4i32): V4i32
 
-public expect fun lsxVmodD(a: V2i64, b: V2i64): V2i64
+public expect fun externLsxVmodD(a: V2i64, b: V2i64): V2i64
 
-public expect fun lsxVmodBu(a: V16u8, b: V16u8): V16u8
+public expect fun externLsxVmodBu(a: V16u8, b: V16u8): V16u8
 
-public expect fun lsxVmodHu(a: V8u16, b: V8u16): V8u16
+public expect fun externLsxVmodHu(a: V8u16, b: V8u16): V8u16
 
-public expect fun lsxVmodWu(a: V4u32, b: V4u32): V4u32
+public expect fun externLsxVmodWu(a: V4u32, b: V4u32): V4u32
 
-public expect fun lsxVmodDu(a: V2u64, b: V2u64): V2u64
+public expect fun externLsxVmodDu(a: V2u64, b: V2u64): V2u64
 
-public expect fun lsxVreplveB(a: V16i8, b: Int): V16i8
+public expect fun externLsxVreplveB(a: V16i8, b: Int): V16i8
 
-public expect fun lsxVreplveH(a: V8i16, b: Int): V8i16
+public expect fun externLsxVreplveH(a: V8i16, b: Int): V8i16
 
-public expect fun lsxVreplveW(a: V4i32, b: Int): V4i32
+public expect fun externLsxVreplveW(a: V4i32, b: Int): V4i32
 
-public expect fun lsxVreplveD(a: V2i64, b: Int): V2i64
+public expect fun externLsxVreplveD(a: V2i64, b: Int): V2i64
 
-public expect fun lsxVshufH(a: V8i16, b: V8i16, c: V8i16): V8i16
+public expect fun externLsxVshufH(a: V8i16, b: V8i16, c: V8i16): V8i16
 
-public expect fun lsxVshufW(a: V4i32, b: V4i32, c: V4i32): V4i32
+public expect fun externLsxVshufW(a: V4i32, b: V4i32, c: V4i32): V4i32
 
-public expect fun lsxVshufD(a: V2i64, b: V2i64, c: V2i64): V2i64
+public expect fun externLsxVshufD(a: V2i64, b: V2i64, c: V2i64): V2i64
 
 public expect fun lsxVandiB(a: V16u8, b: UInt): V16u8
 
@@ -165,89 +165,89 @@ public expect fun lsxVnoriB(a: V16u8, b: UInt): V16u8
 
 public expect fun lsxVxoriB(a: V16u8, b: UInt): V16u8
 
-public expect fun lsxVbitselV(a: V16u8, b: V16u8, c: V16u8): V16u8
+public expect fun externLsxVbitselV(a: V16u8, b: V16u8, c: V16u8): V16u8
 
 public expect fun lsxVbitseliB(a: V16u8, b: V16u8, c: UInt): V16u8
 
-public expect fun lsxVcloB(a: V16i8): V16i8
+public expect fun externLsxVcloB(a: V16i8): V16i8
 
-public expect fun lsxVcloH(a: V8i16): V8i16
+public expect fun externLsxVcloH(a: V8i16): V8i16
 
-public expect fun lsxVcloW(a: V4i32): V4i32
+public expect fun externLsxVcloW(a: V4i32): V4i32
 
-public expect fun lsxVcloD(a: V2i64): V2i64
+public expect fun externLsxVcloD(a: V2i64): V2i64
 
-public expect fun lsxVfcvtHS(a: V4f32, b: V4f32): V8i16
+public expect fun externLsxVfcvtHS(a: V4f32, b: V4f32): V8i16
 
-public expect fun lsxVfcvtSD(a: V2f64, b: V2f64): V4f32
+public expect fun externLsxVfcvtSD(a: V2f64, b: V2f64): V4f32
 
-public expect fun lsxVfminS(a: V4f32, b: V4f32): V4f32
+public expect fun externLsxVfminS(a: V4f32, b: V4f32): V4f32
 
-public expect fun lsxVfminD(a: V2f64, b: V2f64): V2f64
+public expect fun externLsxVfminD(a: V2f64, b: V2f64): V2f64
 
-public expect fun lsxVfminaS(a: V4f32, b: V4f32): V4f32
+public expect fun externLsxVfminaS(a: V4f32, b: V4f32): V4f32
 
-public expect fun lsxVfminaD(a: V2f64, b: V2f64): V2f64
+public expect fun externLsxVfminaD(a: V2f64, b: V2f64): V2f64
 
-public expect fun lsxVfmaxS(a: V4f32, b: V4f32): V4f32
+public expect fun externLsxVfmaxS(a: V4f32, b: V4f32): V4f32
 
-public expect fun lsxVfmaxD(a: V2f64, b: V2f64): V2f64
+public expect fun externLsxVfmaxD(a: V2f64, b: V2f64): V2f64
 
-public expect fun lsxVfmaxaS(a: V4f32, b: V4f32): V4f32
+public expect fun externLsxVfmaxaS(a: V4f32, b: V4f32): V4f32
 
-public expect fun lsxVfmaxaD(a: V2f64, b: V2f64): V2f64
+public expect fun externLsxVfmaxaD(a: V2f64, b: V2f64): V2f64
 
-public expect fun lsxVfclassS(a: V4f32): V4i32
+public expect fun externLsxVfclassS(a: V4f32): V4i32
 
-public expect fun lsxVfclassD(a: V2f64): V2i64
+public expect fun externLsxVfclassD(a: V2f64): V2i64
 
-public expect fun lsxVfrecipeS(a: V4f32): V4f32
+public expect fun externLsxVfrecipeS(a: V4f32): V4f32
 
-public expect fun lsxVfrecipeD(a: V2f64): V2f64
+public expect fun externLsxVfrecipeD(a: V2f64): V2f64
 
-public expect fun lsxVfrsqrteS(a: V4f32): V4f32
+public expect fun externLsxVfrsqrteS(a: V4f32): V4f32
 
-public expect fun lsxVfrsqrteD(a: V2f64): V2f64
+public expect fun externLsxVfrsqrteD(a: V2f64): V2f64
 
-public expect fun lsxVfrintS(a: V4f32): V4f32
+public expect fun externLsxVfrintS(a: V4f32): V4f32
 
-public expect fun lsxVfrintD(a: V2f64): V2f64
+public expect fun externLsxVfrintD(a: V2f64): V2f64
 
-public expect fun lsxVflogbS(a: V4f32): V4f32
+public expect fun externLsxVflogbS(a: V4f32): V4f32
 
-public expect fun lsxVflogbD(a: V2f64): V2f64
+public expect fun externLsxVflogbD(a: V2f64): V2f64
 
-public expect fun lsxVfcvthSH(a: V8i16): V4f32
+public expect fun externLsxVfcvthSH(a: V8i16): V4f32
 
-public expect fun lsxVfcvthDS(a: V4f32): V2f64
+public expect fun externLsxVfcvthDS(a: V4f32): V2f64
 
-public expect fun lsxVfcvtlSH(a: V8i16): V4f32
+public expect fun externLsxVfcvtlSH(a: V8i16): V4f32
 
-public expect fun lsxVfcvtlDS(a: V4f32): V2f64
+public expect fun externLsxVfcvtlDS(a: V4f32): V2f64
 
-public expect fun lsxVftintWS(a: V4f32): V4i32
+public expect fun externLsxVftintWS(a: V4f32): V4i32
 
-public expect fun lsxVftintLD(a: V2f64): V2i64
+public expect fun externLsxVftintLD(a: V2f64): V2i64
 
-public expect fun lsxVftintWuS(a: V4f32): V4u32
+public expect fun externLsxVftintWuS(a: V4f32): V4u32
 
-public expect fun lsxVftintLuD(a: V2f64): V2u64
+public expect fun externLsxVftintLuD(a: V2f64): V2u64
 
-public expect fun lsxVftintrzWS(a: V4f32): V4i32
+public expect fun externLsxVftintrzWS(a: V4f32): V4i32
 
-public expect fun lsxVftintrzLD(a: V2f64): V2i64
+public expect fun externLsxVftintrzLD(a: V2f64): V2i64
 
-public expect fun lsxVftintrzWuS(a: V4f32): V4u32
+public expect fun externLsxVftintrzWuS(a: V4f32): V4u32
 
-public expect fun lsxVftintrzLuD(a: V2f64): V2u64
+public expect fun externLsxVftintrzLuD(a: V2f64): V2u64
 
-public expect fun lsxVffintSW(a: V4i32): V4f32
+public expect fun externLsxVffintSW(a: V4i32): V4f32
 
-public expect fun lsxVffintDL(a: V2i64): V2f64
+public expect fun externLsxVffintDL(a: V2i64): V2f64
 
-public expect fun lsxVffintSWu(a: V4u32): V4f32
+public expect fun externLsxVffintSWu(a: V4u32): V4f32
 
-public expect fun lsxVffintDLu(a: V2u64): V2f64
+public expect fun externLsxVffintDLu(a: V2u64): V2f64
 
 public expect fun lsxVsllwilHB(a: V16i8, b: UInt): V8i16
 
@@ -261,73 +261,73 @@ public expect fun lsxVsllwilWuHu(a: V8u16, b: UInt): V4u32
 
 public expect fun lsxVsllwilDuWu(a: V4u32, b: UInt): V2u64
 
-public expect fun lsxVsranBH(a: V8i16, b: V8i16): V16i8
+public expect fun externLsxVsranBH(a: V8i16, b: V8i16): V16i8
 
-public expect fun lsxVsranHW(a: V4i32, b: V4i32): V8i16
+public expect fun externLsxVsranHW(a: V4i32, b: V4i32): V8i16
 
-public expect fun lsxVsranWD(a: V2i64, b: V2i64): V4i32
+public expect fun externLsxVsranWD(a: V2i64, b: V2i64): V4i32
 
-public expect fun lsxVssranBH(a: V8i16, b: V8i16): V16i8
+public expect fun externLsxVssranBH(a: V8i16, b: V8i16): V16i8
 
-public expect fun lsxVssranHW(a: V4i32, b: V4i32): V8i16
+public expect fun externLsxVssranHW(a: V4i32, b: V4i32): V8i16
 
-public expect fun lsxVssranWD(a: V2i64, b: V2i64): V4i32
+public expect fun externLsxVssranWD(a: V2i64, b: V2i64): V4i32
 
-public expect fun lsxVssranBuH(a: V8u16, b: V8u16): V16u8
+public expect fun externLsxVssranBuH(a: V8u16, b: V8u16): V16u8
 
-public expect fun lsxVssranHuW(a: V4u32, b: V4u32): V8u16
+public expect fun externLsxVssranHuW(a: V4u32, b: V4u32): V8u16
 
-public expect fun lsxVssranWuD(a: V2u64, b: V2u64): V4u32
+public expect fun externLsxVssranWuD(a: V2u64, b: V2u64): V4u32
 
-public expect fun lsxVsrarnBH(a: V8i16, b: V8i16): V16i8
+public expect fun externLsxVsrarnBH(a: V8i16, b: V8i16): V16i8
 
-public expect fun lsxVsrarnHW(a: V4i32, b: V4i32): V8i16
+public expect fun externLsxVsrarnHW(a: V4i32, b: V4i32): V8i16
 
-public expect fun lsxVsrarnWD(a: V2i64, b: V2i64): V4i32
+public expect fun externLsxVsrarnWD(a: V2i64, b: V2i64): V4i32
 
-public expect fun lsxVssrarnBH(a: V8i16, b: V8i16): V16i8
+public expect fun externLsxVssrarnBH(a: V8i16, b: V8i16): V16i8
 
-public expect fun lsxVssrarnHW(a: V4i32, b: V4i32): V8i16
+public expect fun externLsxVssrarnHW(a: V4i32, b: V4i32): V8i16
 
-public expect fun lsxVssrarnWD(a: V2i64, b: V2i64): V4i32
+public expect fun externLsxVssrarnWD(a: V2i64, b: V2i64): V4i32
 
-public expect fun lsxVssrarnBuH(a: V8u16, b: V8u16): V16u8
+public expect fun externLsxVssrarnBuH(a: V8u16, b: V8u16): V16u8
 
-public expect fun lsxVssrarnHuW(a: V4u32, b: V4u32): V8u16
+public expect fun externLsxVssrarnHuW(a: V4u32, b: V4u32): V8u16
 
-public expect fun lsxVssrarnWuD(a: V2u64, b: V2u64): V4u32
+public expect fun externLsxVssrarnWuD(a: V2u64, b: V2u64): V4u32
 
-public expect fun lsxVsrlnBH(a: V8i16, b: V8i16): V16i8
+public expect fun externLsxVsrlnBH(a: V8i16, b: V8i16): V16i8
 
-public expect fun lsxVsrlnHW(a: V4i32, b: V4i32): V8i16
+public expect fun externLsxVsrlnHW(a: V4i32, b: V4i32): V8i16
 
-public expect fun lsxVsrlnWD(a: V2i64, b: V2i64): V4i32
+public expect fun externLsxVsrlnWD(a: V2i64, b: V2i64): V4i32
 
-public expect fun lsxVssrlnBuH(a: V8u16, b: V8u16): V16u8
+public expect fun externLsxVssrlnBuH(a: V8u16, b: V8u16): V16u8
 
-public expect fun lsxVssrlnHuW(a: V4u32, b: V4u32): V8u16
+public expect fun externLsxVssrlnHuW(a: V4u32, b: V4u32): V8u16
 
-public expect fun lsxVssrlnWuD(a: V2u64, b: V2u64): V4u32
+public expect fun externLsxVssrlnWuD(a: V2u64, b: V2u64): V4u32
 
-public expect fun lsxVsrlrnBH(a: V8i16, b: V8i16): V16i8
+public expect fun externLsxVsrlrnBH(a: V8i16, b: V8i16): V16i8
 
-public expect fun lsxVsrlrnHW(a: V4i32, b: V4i32): V8i16
+public expect fun externLsxVsrlrnHW(a: V4i32, b: V4i32): V8i16
 
-public expect fun lsxVsrlrnWD(a: V2i64, b: V2i64): V4i32
+public expect fun externLsxVsrlrnWD(a: V2i64, b: V2i64): V4i32
 
-public expect fun lsxVssrlrnBuH(a: V8u16, b: V8u16): V16u8
+public expect fun externLsxVssrlrnBuH(a: V8u16, b: V8u16): V16u8
 
-public expect fun lsxVssrlrnHuW(a: V4u32, b: V4u32): V8u16
+public expect fun externLsxVssrlrnHuW(a: V4u32, b: V4u32): V8u16
 
-public expect fun lsxVssrlrnWuD(a: V2u64, b: V2u64): V4u32
+public expect fun externLsxVssrlrnWuD(a: V2u64, b: V2u64): V4u32
 
 public expect fun lsxVfrstpiB(a: V16i8, b: V16i8, c: UInt): V16i8
 
 public expect fun lsxVfrstpiH(a: V8i16, b: V8i16, c: UInt): V8i16
 
-public expect fun lsxVfrstpB(a: V16i8, b: V16i8, c: V16i8): V16i8
+public expect fun externLsxVfrstpB(a: V16i8, b: V16i8, c: V16i8): V16i8
 
-public expect fun lsxVfrstpH(a: V8i16, b: V8i16, c: V8i16): V8i16
+public expect fun externLsxVfrstpH(a: V8i16, b: V8i16, c: V8i16): V8i16
 
 public expect fun lsxVextrinsB(a: V16i8, b: V16i8, c: UInt): V16i8
 
@@ -337,73 +337,73 @@ public expect fun lsxVextrinsW(a: V4i32, b: V4i32, c: UInt): V4i32
 
 public expect fun lsxVextrinsD(a: V2i64, b: V2i64, c: UInt): V2i64
 
-public expect fun lsxVmskltzB(a: V16i8): V16i8
+public expect fun externLsxVmskltzB(a: V16i8): V16i8
 
-public expect fun lsxVmskltzH(a: V8i16): V8i16
+public expect fun externLsxVmskltzH(a: V8i16): V8i16
 
-public expect fun lsxVmskltzW(a: V4i32): V4i32
+public expect fun externLsxVmskltzW(a: V4i32): V4i32
 
-public expect fun lsxVmskltzD(a: V2i64): V2i64
+public expect fun externLsxVmskltzD(a: V2i64): V2i64
 
-public expect fun lsxVsigncovB(a: V16i8, b: V16i8): V16i8
+public expect fun externLsxVsigncovB(a: V16i8, b: V16i8): V16i8
 
-public expect fun lsxVsigncovH(a: V8i16, b: V8i16): V8i16
+public expect fun externLsxVsigncovH(a: V8i16, b: V8i16): V8i16
 
-public expect fun lsxVsigncovW(a: V4i32, b: V4i32): V4i32
+public expect fun externLsxVsigncovW(a: V4i32, b: V4i32): V4i32
 
-public expect fun lsxVsigncovD(a: V2i64, b: V2i64): V2i64
+public expect fun externLsxVsigncovD(a: V2i64, b: V2i64): V2i64
 
-public expect fun lsxVftintrneWS(a: V4f32): V4i32
+public expect fun externLsxVftintrneWS(a: V4f32): V4i32
 
-public expect fun lsxVftintrneLD(a: V2f64): V2i64
+public expect fun externLsxVftintrneLD(a: V2f64): V2i64
 
-public expect fun lsxVftintrpWS(a: V4f32): V4i32
+public expect fun externLsxVftintrpWS(a: V4f32): V4i32
 
-public expect fun lsxVftintrpLD(a: V2f64): V2i64
+public expect fun externLsxVftintrpLD(a: V2f64): V2i64
 
-public expect fun lsxVftintrmWS(a: V4f32): V4i32
+public expect fun externLsxVftintrmWS(a: V4f32): V4i32
 
-public expect fun lsxVftintrmLD(a: V2f64): V2i64
+public expect fun externLsxVftintrmLD(a: V2f64): V2i64
 
-public expect fun lsxVftintWD(a: V2f64, b: V2f64): V4i32
+public expect fun externLsxVftintWD(a: V2f64, b: V2f64): V4i32
 
-public expect fun lsxVffintSL(a: V2i64, b: V2i64): V4f32
+public expect fun externLsxVffintSL(a: V2i64, b: V2i64): V4f32
 
-public expect fun lsxVftintrzWD(a: V2f64, b: V2f64): V4i32
+public expect fun externLsxVftintrzWD(a: V2f64, b: V2f64): V4i32
 
-public expect fun lsxVftintrpWD(a: V2f64, b: V2f64): V4i32
+public expect fun externLsxVftintrpWD(a: V2f64, b: V2f64): V4i32
 
-public expect fun lsxVftintrmWD(a: V2f64, b: V2f64): V4i32
+public expect fun externLsxVftintrmWD(a: V2f64, b: V2f64): V4i32
 
-public expect fun lsxVftintrneWD(a: V2f64, b: V2f64): V4i32
+public expect fun externLsxVftintrneWD(a: V2f64, b: V2f64): V4i32
 
-public expect fun lsxVftintlLS(a: V4f32): V2i64
+public expect fun externLsxVftintlLS(a: V4f32): V2i64
 
-public expect fun lsxVftinthLS(a: V4f32): V2i64
+public expect fun externLsxVftinthLS(a: V4f32): V2i64
 
-public expect fun lsxVffinthDW(a: V4i32): V2f64
+public expect fun externLsxVffinthDW(a: V4i32): V2f64
 
-public expect fun lsxVffintlDW(a: V4i32): V2f64
+public expect fun externLsxVffintlDW(a: V4i32): V2f64
 
-public expect fun lsxVftintrzlLS(a: V4f32): V2i64
+public expect fun externLsxVftintrzlLS(a: V4f32): V2i64
 
-public expect fun lsxVftintrzhLS(a: V4f32): V2i64
+public expect fun externLsxVftintrzhLS(a: V4f32): V2i64
 
-public expect fun lsxVftintrplLS(a: V4f32): V2i64
+public expect fun externLsxVftintrplLS(a: V4f32): V2i64
 
-public expect fun lsxVftintrphLS(a: V4f32): V2i64
+public expect fun externLsxVftintrphLS(a: V4f32): V2i64
 
-public expect fun lsxVftintrmlLS(a: V4f32): V2i64
+public expect fun externLsxVftintrmlLS(a: V4f32): V2i64
 
-public expect fun lsxVftintrmhLS(a: V4f32): V2i64
+public expect fun externLsxVftintrmhLS(a: V4f32): V2i64
 
-public expect fun lsxVftintrnelLS(a: V4f32): V2i64
+public expect fun externLsxVftintrnelLS(a: V4f32): V2i64
 
-public expect fun lsxVftintrnehLS(a: V4f32): V2i64
+public expect fun externLsxVftintrnehLS(a: V4f32): V2i64
 
-public expect fun lsxVfrintrneS(a: V4f32): V4f32
+public expect fun externLsxVfrintrneS(a: V4f32): V4f32
 
-public expect fun lsxVfrintrneD(a: V2f64): V2f64
+public expect fun externLsxVfrintrneD(a: V2f64): V2f64
 
 public expect fun lsxVstelmB(a: V16i8, b: MutPtr, c: Int, d: UInt)
 
@@ -413,193 +413,193 @@ public expect fun lsxVstelmW(a: V4i32, b: MutPtr, c: Int, d: UInt)
 
 public expect fun lsxVstelmD(a: V2i64, b: MutPtr, c: Int, d: UInt)
 
-public expect fun lsxVaddwevDW(a: V4i32, b: V4i32): V2i64
+public expect fun externLsxVaddwevDW(a: V4i32, b: V4i32): V2i64
 
-public expect fun lsxVaddwevWH(a: V8i16, b: V8i16): V4i32
+public expect fun externLsxVaddwevWH(a: V8i16, b: V8i16): V4i32
 
-public expect fun lsxVaddwevHB(a: V16i8, b: V16i8): V8i16
+public expect fun externLsxVaddwevHB(a: V16i8, b: V16i8): V8i16
 
-public expect fun lsxVaddwodDW(a: V4i32, b: V4i32): V2i64
+public expect fun externLsxVaddwodDW(a: V4i32, b: V4i32): V2i64
 
-public expect fun lsxVaddwodWH(a: V8i16, b: V8i16): V4i32
+public expect fun externLsxVaddwodWH(a: V8i16, b: V8i16): V4i32
 
-public expect fun lsxVaddwodHB(a: V16i8, b: V16i8): V8i16
+public expect fun externLsxVaddwodHB(a: V16i8, b: V16i8): V8i16
 
-public expect fun lsxVaddwevDWu(a: V4u32, b: V4u32): V2i64
+public expect fun externLsxVaddwevDWu(a: V4u32, b: V4u32): V2i64
 
-public expect fun lsxVaddwevWHu(a: V8u16, b: V8u16): V4i32
+public expect fun externLsxVaddwevWHu(a: V8u16, b: V8u16): V4i32
 
-public expect fun lsxVaddwevHBu(a: V16u8, b: V16u8): V8i16
+public expect fun externLsxVaddwevHBu(a: V16u8, b: V16u8): V8i16
 
-public expect fun lsxVaddwodDWu(a: V4u32, b: V4u32): V2i64
+public expect fun externLsxVaddwodDWu(a: V4u32, b: V4u32): V2i64
 
-public expect fun lsxVaddwodWHu(a: V8u16, b: V8u16): V4i32
+public expect fun externLsxVaddwodWHu(a: V8u16, b: V8u16): V4i32
 
-public expect fun lsxVaddwodHBu(a: V16u8, b: V16u8): V8i16
+public expect fun externLsxVaddwodHBu(a: V16u8, b: V16u8): V8i16
 
-public expect fun lsxVaddwevDWuW(a: V4u32, b: V4i32): V2i64
+public expect fun externLsxVaddwevDWuW(a: V4u32, b: V4i32): V2i64
 
-public expect fun lsxVaddwevWHuH(a: V8u16, b: V8i16): V4i32
+public expect fun externLsxVaddwevWHuH(a: V8u16, b: V8i16): V4i32
 
-public expect fun lsxVaddwevHBuB(a: V16u8, b: V16i8): V8i16
+public expect fun externLsxVaddwevHBuB(a: V16u8, b: V16i8): V8i16
 
-public expect fun lsxVaddwodDWuW(a: V4u32, b: V4i32): V2i64
+public expect fun externLsxVaddwodDWuW(a: V4u32, b: V4i32): V2i64
 
-public expect fun lsxVaddwodWHuH(a: V8u16, b: V8i16): V4i32
+public expect fun externLsxVaddwodWHuH(a: V8u16, b: V8i16): V4i32
 
-public expect fun lsxVaddwodHBuB(a: V16u8, b: V16i8): V8i16
+public expect fun externLsxVaddwodHBuB(a: V16u8, b: V16i8): V8i16
 
-public expect fun lsxVsubwevDW(a: V4i32, b: V4i32): V2i64
+public expect fun externLsxVsubwevDW(a: V4i32, b: V4i32): V2i64
 
-public expect fun lsxVsubwevWH(a: V8i16, b: V8i16): V4i32
+public expect fun externLsxVsubwevWH(a: V8i16, b: V8i16): V4i32
 
-public expect fun lsxVsubwevHB(a: V16i8, b: V16i8): V8i16
+public expect fun externLsxVsubwevHB(a: V16i8, b: V16i8): V8i16
 
-public expect fun lsxVsubwodDW(a: V4i32, b: V4i32): V2i64
+public expect fun externLsxVsubwodDW(a: V4i32, b: V4i32): V2i64
 
-public expect fun lsxVsubwodWH(a: V8i16, b: V8i16): V4i32
+public expect fun externLsxVsubwodWH(a: V8i16, b: V8i16): V4i32
 
-public expect fun lsxVsubwodHB(a: V16i8, b: V16i8): V8i16
+public expect fun externLsxVsubwodHB(a: V16i8, b: V16i8): V8i16
 
-public expect fun lsxVsubwevDWu(a: V4u32, b: V4u32): V2i64
+public expect fun externLsxVsubwevDWu(a: V4u32, b: V4u32): V2i64
 
-public expect fun lsxVsubwevWHu(a: V8u16, b: V8u16): V4i32
+public expect fun externLsxVsubwevWHu(a: V8u16, b: V8u16): V4i32
 
-public expect fun lsxVsubwevHBu(a: V16u8, b: V16u8): V8i16
+public expect fun externLsxVsubwevHBu(a: V16u8, b: V16u8): V8i16
 
-public expect fun lsxVsubwodDWu(a: V4u32, b: V4u32): V2i64
+public expect fun externLsxVsubwodDWu(a: V4u32, b: V4u32): V2i64
 
-public expect fun lsxVsubwodWHu(a: V8u16, b: V8u16): V4i32
+public expect fun externLsxVsubwodWHu(a: V8u16, b: V8u16): V4i32
 
-public expect fun lsxVsubwodHBu(a: V16u8, b: V16u8): V8i16
+public expect fun externLsxVsubwodHBu(a: V16u8, b: V16u8): V8i16
 
-public expect fun lsxVaddwevQD(a: V2i64, b: V2i64): V2i64
+public expect fun externLsxVaddwevQD(a: V2i64, b: V2i64): V2i64
 
-public expect fun lsxVaddwodQD(a: V2i64, b: V2i64): V2i64
+public expect fun externLsxVaddwodQD(a: V2i64, b: V2i64): V2i64
 
-public expect fun lsxVaddwevQDu(a: V2u64, b: V2u64): V2i64
+public expect fun externLsxVaddwevQDu(a: V2u64, b: V2u64): V2i64
 
-public expect fun lsxVaddwodQDu(a: V2u64, b: V2u64): V2i64
+public expect fun externLsxVaddwodQDu(a: V2u64, b: V2u64): V2i64
 
-public expect fun lsxVsubwevQD(a: V2i64, b: V2i64): V2i64
+public expect fun externLsxVsubwevQD(a: V2i64, b: V2i64): V2i64
 
-public expect fun lsxVsubwodQD(a: V2i64, b: V2i64): V2i64
+public expect fun externLsxVsubwodQD(a: V2i64, b: V2i64): V2i64
 
-public expect fun lsxVsubwevQDu(a: V2u64, b: V2u64): V2i64
+public expect fun externLsxVsubwevQDu(a: V2u64, b: V2u64): V2i64
 
-public expect fun lsxVsubwodQDu(a: V2u64, b: V2u64): V2i64
+public expect fun externLsxVsubwodQDu(a: V2u64, b: V2u64): V2i64
 
-public expect fun lsxVaddwevQDuD(a: V2u64, b: V2i64): V2i64
+public expect fun externLsxVaddwevQDuD(a: V2u64, b: V2i64): V2i64
 
-public expect fun lsxVaddwodQDuD(a: V2u64, b: V2i64): V2i64
+public expect fun externLsxVaddwodQDuD(a: V2u64, b: V2i64): V2i64
 
-public expect fun lsxVmulwevDW(a: V4i32, b: V4i32): V2i64
+public expect fun externLsxVmulwevDW(a: V4i32, b: V4i32): V2i64
 
-public expect fun lsxVmulwevWH(a: V8i16, b: V8i16): V4i32
+public expect fun externLsxVmulwevWH(a: V8i16, b: V8i16): V4i32
 
-public expect fun lsxVmulwevHB(a: V16i8, b: V16i8): V8i16
+public expect fun externLsxVmulwevHB(a: V16i8, b: V16i8): V8i16
 
-public expect fun lsxVmulwodDW(a: V4i32, b: V4i32): V2i64
+public expect fun externLsxVmulwodDW(a: V4i32, b: V4i32): V2i64
 
-public expect fun lsxVmulwodWH(a: V8i16, b: V8i16): V4i32
+public expect fun externLsxVmulwodWH(a: V8i16, b: V8i16): V4i32
 
-public expect fun lsxVmulwodHB(a: V16i8, b: V16i8): V8i16
+public expect fun externLsxVmulwodHB(a: V16i8, b: V16i8): V8i16
 
-public expect fun lsxVmulwevDWu(a: V4u32, b: V4u32): V2i64
+public expect fun externLsxVmulwevDWu(a: V4u32, b: V4u32): V2i64
 
-public expect fun lsxVmulwevWHu(a: V8u16, b: V8u16): V4i32
+public expect fun externLsxVmulwevWHu(a: V8u16, b: V8u16): V4i32
 
-public expect fun lsxVmulwevHBu(a: V16u8, b: V16u8): V8i16
+public expect fun externLsxVmulwevHBu(a: V16u8, b: V16u8): V8i16
 
-public expect fun lsxVmulwodDWu(a: V4u32, b: V4u32): V2i64
+public expect fun externLsxVmulwodDWu(a: V4u32, b: V4u32): V2i64
 
-public expect fun lsxVmulwodWHu(a: V8u16, b: V8u16): V4i32
+public expect fun externLsxVmulwodWHu(a: V8u16, b: V8u16): V4i32
 
-public expect fun lsxVmulwodHBu(a: V16u8, b: V16u8): V8i16
+public expect fun externLsxVmulwodHBu(a: V16u8, b: V16u8): V8i16
 
-public expect fun lsxVmulwevDWuW(a: V4u32, b: V4i32): V2i64
+public expect fun externLsxVmulwevDWuW(a: V4u32, b: V4i32): V2i64
 
-public expect fun lsxVmulwevWHuH(a: V8u16, b: V8i16): V4i32
+public expect fun externLsxVmulwevWHuH(a: V8u16, b: V8i16): V4i32
 
-public expect fun lsxVmulwevHBuB(a: V16u8, b: V16i8): V8i16
+public expect fun externLsxVmulwevHBuB(a: V16u8, b: V16i8): V8i16
 
-public expect fun lsxVmulwodDWuW(a: V4u32, b: V4i32): V2i64
+public expect fun externLsxVmulwodDWuW(a: V4u32, b: V4i32): V2i64
 
-public expect fun lsxVmulwodWHuH(a: V8u16, b: V8i16): V4i32
+public expect fun externLsxVmulwodWHuH(a: V8u16, b: V8i16): V4i32
 
-public expect fun lsxVmulwodHBuB(a: V16u8, b: V16i8): V8i16
+public expect fun externLsxVmulwodHBuB(a: V16u8, b: V16i8): V8i16
 
-public expect fun lsxVmulwevQD(a: V2i64, b: V2i64): V2i64
+public expect fun externLsxVmulwevQD(a: V2i64, b: V2i64): V2i64
 
-public expect fun lsxVmulwodQD(a: V2i64, b: V2i64): V2i64
+public expect fun externLsxVmulwodQD(a: V2i64, b: V2i64): V2i64
 
-public expect fun lsxVmulwevQDu(a: V2u64, b: V2u64): V2i64
+public expect fun externLsxVmulwevQDu(a: V2u64, b: V2u64): V2i64
 
-public expect fun lsxVmulwodQDu(a: V2u64, b: V2u64): V2i64
+public expect fun externLsxVmulwodQDu(a: V2u64, b: V2u64): V2i64
 
-public expect fun lsxVmulwevQDuD(a: V2u64, b: V2i64): V2i64
+public expect fun externLsxVmulwevQDuD(a: V2u64, b: V2i64): V2i64
 
-public expect fun lsxVmulwodQDuD(a: V2u64, b: V2i64): V2i64
+public expect fun externLsxVmulwodQDuD(a: V2u64, b: V2i64): V2i64
 
-public expect fun lsxVhaddwQD(a: V2i64, b: V2i64): V2i64
+public expect fun externLsxVhaddwQD(a: V2i64, b: V2i64): V2i64
 
-public expect fun lsxVhaddwQuDu(a: V2u64, b: V2u64): V2u64
+public expect fun externLsxVhaddwQuDu(a: V2u64, b: V2u64): V2u64
 
-public expect fun lsxVhsubwQD(a: V2i64, b: V2i64): V2i64
+public expect fun externLsxVhsubwQD(a: V2i64, b: V2i64): V2i64
 
-public expect fun lsxVhsubwQuDu(a: V2u64, b: V2u64): V2u64
+public expect fun externLsxVhsubwQuDu(a: V2u64, b: V2u64): V2u64
 
-public expect fun lsxVmaddwevDW(a: V2i64, b: V4i32, c: V4i32): V2i64
+public expect fun externLsxVmaddwevDW(a: V2i64, b: V4i32, c: V4i32): V2i64
 
-public expect fun lsxVmaddwevWH(a: V4i32, b: V8i16, c: V8i16): V4i32
+public expect fun externLsxVmaddwevWH(a: V4i32, b: V8i16, c: V8i16): V4i32
 
-public expect fun lsxVmaddwevHB(a: V8i16, b: V16i8, c: V16i8): V8i16
+public expect fun externLsxVmaddwevHB(a: V8i16, b: V16i8, c: V16i8): V8i16
 
-public expect fun lsxVmaddwevDWu(a: V2u64, b: V4u32, c: V4u32): V2u64
+public expect fun externLsxVmaddwevDWu(a: V2u64, b: V4u32, c: V4u32): V2u64
 
-public expect fun lsxVmaddwevWHu(a: V4u32, b: V8u16, c: V8u16): V4u32
+public expect fun externLsxVmaddwevWHu(a: V4u32, b: V8u16, c: V8u16): V4u32
 
-public expect fun lsxVmaddwevHBu(a: V8u16, b: V16u8, c: V16u8): V8u16
+public expect fun externLsxVmaddwevHBu(a: V8u16, b: V16u8, c: V16u8): V8u16
 
-public expect fun lsxVmaddwodDW(a: V2i64, b: V4i32, c: V4i32): V2i64
+public expect fun externLsxVmaddwodDW(a: V2i64, b: V4i32, c: V4i32): V2i64
 
-public expect fun lsxVmaddwodWH(a: V4i32, b: V8i16, c: V8i16): V4i32
+public expect fun externLsxVmaddwodWH(a: V4i32, b: V8i16, c: V8i16): V4i32
 
-public expect fun lsxVmaddwodHB(a: V8i16, b: V16i8, c: V16i8): V8i16
+public expect fun externLsxVmaddwodHB(a: V8i16, b: V16i8, c: V16i8): V8i16
 
-public expect fun lsxVmaddwodDWu(a: V2u64, b: V4u32, c: V4u32): V2u64
+public expect fun externLsxVmaddwodDWu(a: V2u64, b: V4u32, c: V4u32): V2u64
 
-public expect fun lsxVmaddwodWHu(a: V4u32, b: V8u16, c: V8u16): V4u32
+public expect fun externLsxVmaddwodWHu(a: V4u32, b: V8u16, c: V8u16): V4u32
 
-public expect fun lsxVmaddwodHBu(a: V8u16, b: V16u8, c: V16u8): V8u16
+public expect fun externLsxVmaddwodHBu(a: V8u16, b: V16u8, c: V16u8): V8u16
 
-public expect fun lsxVmaddwevDWuW(a: V2i64, b: V4u32, c: V4i32): V2i64
+public expect fun externLsxVmaddwevDWuW(a: V2i64, b: V4u32, c: V4i32): V2i64
 
-public expect fun lsxVmaddwevWHuH(a: V4i32, b: V8u16, c: V8i16): V4i32
+public expect fun externLsxVmaddwevWHuH(a: V4i32, b: V8u16, c: V8i16): V4i32
 
-public expect fun lsxVmaddwevHBuB(a: V8i16, b: V16u8, c: V16i8): V8i16
+public expect fun externLsxVmaddwevHBuB(a: V8i16, b: V16u8, c: V16i8): V8i16
 
-public expect fun lsxVmaddwodDWuW(a: V2i64, b: V4u32, c: V4i32): V2i64
+public expect fun externLsxVmaddwodDWuW(a: V2i64, b: V4u32, c: V4i32): V2i64
 
-public expect fun lsxVmaddwodWHuH(a: V4i32, b: V8u16, c: V8i16): V4i32
+public expect fun externLsxVmaddwodWHuH(a: V4i32, b: V8u16, c: V8i16): V4i32
 
-public expect fun lsxVmaddwodHBuB(a: V8i16, b: V16u8, c: V16i8): V8i16
+public expect fun externLsxVmaddwodHBuB(a: V8i16, b: V16u8, c: V16i8): V8i16
 
-public expect fun lsxVmaddwevQD(a: V2i64, b: V2i64, c: V2i64): V2i64
+public expect fun externLsxVmaddwevQD(a: V2i64, b: V2i64, c: V2i64): V2i64
 
-public expect fun lsxVmaddwodQD(a: V2i64, b: V2i64, c: V2i64): V2i64
+public expect fun externLsxVmaddwodQD(a: V2i64, b: V2i64, c: V2i64): V2i64
 
-public expect fun lsxVmaddwevQDu(a: V2u64, b: V2u64, c: V2u64): V2u64
+public expect fun externLsxVmaddwevQDu(a: V2u64, b: V2u64, c: V2u64): V2u64
 
-public expect fun lsxVmaddwodQDu(a: V2u64, b: V2u64, c: V2u64): V2u64
+public expect fun externLsxVmaddwodQDu(a: V2u64, b: V2u64, c: V2u64): V2u64
 
-public expect fun lsxVmaddwevQDuD(a: V2i64, b: V2u64, c: V2i64): V2i64
+public expect fun externLsxVmaddwevQDuD(a: V2i64, b: V2u64, c: V2i64): V2i64
 
-public expect fun lsxVmaddwodQDuD(a: V2i64, b: V2u64, c: V2i64): V2i64
+public expect fun externLsxVmaddwodQDuD(a: V2i64, b: V2u64, c: V2i64): V2i64
 
-public expect fun lsxVaddQ(a: V2i64, b: V2i64): V2i64
+public expect fun externLsxVaddQ(a: V2i64, b: V2i64): V2i64
 
-public expect fun lsxVsubQ(a: V2i64, b: V2i64): V2i64
+public expect fun externLsxVsubQ(a: V2i64, b: V2i64): V2i64
 
 public expect fun lsxVldreplB(a: ConstPtr, b: Int): V16i8
 
@@ -609,27 +609,27 @@ public expect fun lsxVldreplW(a: ConstPtr, b: Int): V4i32
 
 public expect fun lsxVldreplD(a: ConstPtr, b: Int): V2i64
 
-public expect fun lsxVmskgezB(a: V16i8): V16i8
+public expect fun externLsxVmskgezB(a: V16i8): V16i8
 
-public expect fun lsxVmsknzB(a: V16i8): V16i8
+public expect fun externLsxVmsknzB(a: V16i8): V16i8
 
-public expect fun lsxVexthHB(a: V16i8): V8i16
+public expect fun externLsxVexthHB(a: V16i8): V8i16
 
-public expect fun lsxVexthWH(a: V8i16): V4i32
+public expect fun externLsxVexthWH(a: V8i16): V4i32
 
-public expect fun lsxVexthDW(a: V4i32): V2i64
+public expect fun externLsxVexthDW(a: V4i32): V2i64
 
-public expect fun lsxVexthQD(a: V2i64): V2i64
+public expect fun externLsxVexthQD(a: V2i64): V2i64
 
-public expect fun lsxVexthHuBu(a: V16u8): V8u16
+public expect fun externLsxVexthHuBu(a: V16u8): V8u16
 
-public expect fun lsxVexthWuHu(a: V8u16): V4u32
+public expect fun externLsxVexthWuHu(a: V8u16): V4u32
 
-public expect fun lsxVexthDuWu(a: V4u32): V2u64
+public expect fun externLsxVexthDuWu(a: V4u32): V2u64
 
-public expect fun lsxVexthQuDu(a: V2u64): V2u64
+public expect fun externLsxVexthQuDu(a: V2u64): V2u64
 
-public expect fun lsxVextlQD(a: V2i64): V2i64
+public expect fun externLsxVextlQD(a: V2i64): V2i64
 
 public expect fun lsxVsrlniBH(a: V16i8, b: V16i8, c: UInt): V16i8
 
@@ -729,137 +729,137 @@ public expect fun lsxVssrarniDuQ(a: V2u64, b: V2i64, c: UInt): V2u64
 
 public expect fun lsxVpermiW(a: V4i32, b: V4i32, c: UInt): V4i32
 
-public expect fun lsxVssrlrnBH(a: V8i16, b: V8i16): V16i8
+public expect fun externLsxVssrlrnBH(a: V8i16, b: V8i16): V16i8
 
-public expect fun lsxVssrlrnHW(a: V4i32, b: V4i32): V8i16
+public expect fun externLsxVssrlrnHW(a: V4i32, b: V4i32): V8i16
 
-public expect fun lsxVssrlrnWD(a: V2i64, b: V2i64): V4i32
+public expect fun externLsxVssrlrnWD(a: V2i64, b: V2i64): V4i32
 
-public expect fun lsxVssrlnBH(a: V8i16, b: V8i16): V16i8
+public expect fun externLsxVssrlnBH(a: V8i16, b: V8i16): V16i8
 
-public expect fun lsxVssrlnHW(a: V4i32, b: V4i32): V8i16
+public expect fun externLsxVssrlnHW(a: V4i32, b: V4i32): V8i16
 
-public expect fun lsxVssrlnWD(a: V2i64, b: V2i64): V4i32
+public expect fun externLsxVssrlnWD(a: V2i64, b: V2i64): V4i32
 
-public expect fun lsxVshufB(a: V16i8, b: V16i8, c: V16i8): V16i8
+public expect fun externLsxVshufB(a: V16i8, b: V16i8, c: V16i8): V16i8
 
-public expect fun lsxVextlQuDu(a: V2u64): V2u64
+public expect fun externLsxVextlQuDu(a: V2u64): V2u64
 
-public expect fun lsxBnzB(a: V16u8): Int
+public expect fun externLsxBnzB(a: V16u8): Int
 
-public expect fun lsxBnzD(a: V2u64): Int
+public expect fun externLsxBnzD(a: V2u64): Int
 
-public expect fun lsxBnzH(a: V8u16): Int
+public expect fun externLsxBnzH(a: V8u16): Int
 
-public expect fun lsxBnzV(a: V16u8): Int
+public expect fun externLsxBnzV(a: V16u8): Int
 
-public expect fun lsxBnzW(a: V4u32): Int
+public expect fun externLsxBnzW(a: V4u32): Int
 
-public expect fun lsxBzB(a: V16u8): Int
+public expect fun externLsxBzB(a: V16u8): Int
 
-public expect fun lsxBzD(a: V2u64): Int
+public expect fun externLsxBzD(a: V2u64): Int
 
-public expect fun lsxBzH(a: V8u16): Int
+public expect fun externLsxBzH(a: V8u16): Int
 
-public expect fun lsxBzV(a: V16u8): Int
+public expect fun externLsxBzV(a: V16u8): Int
 
-public expect fun lsxBzW(a: V4u32): Int
+public expect fun externLsxBzW(a: V4u32): Int
 
-public expect fun lsxVfcmpCafD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpCafD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpCafS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpCafS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpCeqD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpCeqD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpCeqS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpCeqS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpCleD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpCleD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpCleS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpCleS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpCltD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpCltD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpCltS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpCltS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpCneD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpCneD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpCneS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpCneS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpCorD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpCorD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpCorS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpCorS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpCueqD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpCueqD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpCueqS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpCueqS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpCuleD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpCuleD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpCuleS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpCuleS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpCultD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpCultD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpCultS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpCultS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpCunD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpCunD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpCuneD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpCuneD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpCuneS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpCuneS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpCunS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpCunS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpSafD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpSafD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpSafS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpSafS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpSeqD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpSeqD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpSeqS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpSeqS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpSleD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpSleD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpSleS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpSleS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpSltD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpSltD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpSltS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpSltS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpSneD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpSneD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpSneS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpSneS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpSorD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpSorD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpSorS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpSorS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpSueqD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpSueqD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpSueqS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpSueqS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpSuleD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpSuleD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpSuleS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpSuleS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpSultD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpSultD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpSultS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpSultS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpSunD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpSunD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpSuneD(a: V2f64, b: V2f64): V2i64
+public expect fun externLsxVfcmpSuneD(a: V2f64, b: V2f64): V2i64
 
-public expect fun lsxVfcmpSuneS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpSuneS(a: V4f32, b: V4f32): V4i32
 
-public expect fun lsxVfcmpSunS(a: V4f32, b: V4f32): V4i32
+public expect fun externLsxVfcmpSunS(a: V4f32, b: V4f32): V4i32
 
-public fun lsxVsrarB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVsrarB(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrarB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVsrarB(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsrarH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVsrarH(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrarH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVsrarH(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsrarW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVsrarW(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrarW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVsrarW(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsrarD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVsrarD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrarD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVsrarD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
 public fun lsxVsrariB(a: M128i, imm3: UInt): M128i {
     run {
@@ -889,13 +889,13 @@ public fun lsxVsrariD(a: M128i, imm6: UInt): M128i {
     return transmuteWithLayouts<V2i64, M128i>(lsxVsrariD(a, imm6), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 }
 
-public fun lsxVsrlrB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVsrlrB(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrlrB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVsrlrB(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsrlrH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVsrlrH(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrlrH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVsrlrH(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsrlrW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVsrlrW(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrlrW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVsrlrW(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsrlrD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVsrlrD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrlrD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVsrlrD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
 public fun lsxVsrlriB(a: M128i, imm3: UInt): M128i {
     run {
@@ -1093,75 +1093,75 @@ public fun lsxVsatDu(a: M128i, imm6: UInt): M128i {
     return transmuteWithLayouts<V2u64, M128i>(lsxVsatDu(a, imm6), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
 }
 
-public fun lsxVdivB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVdivB(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVdivB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVdivB(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVdivH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVdivH(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVdivH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVdivH(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVdivW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVdivW(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVdivW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVdivW(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVdivD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVdivD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVdivD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVdivD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVdivBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16u8, M128i>(lsxVdivBu(a, b), UnresolvedTypeLayout<V16u8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVdivBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16u8, M128i>(externLsxVdivBu(a, b), UnresolvedTypeLayout<V16u8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVdivHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(lsxVdivHu(a, b), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVdivHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(externLsxVdivHu(a, b), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVdivWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(lsxVdivWu(a, b), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVdivWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(externLsxVdivWu(a, b), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVdivDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(lsxVdivDu(a, b), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVdivDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(externLsxVdivDu(a, b), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVhaddwHB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVhaddwHB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVhaddwHB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVhaddwHB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVhaddwWH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVhaddwWH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVhaddwWH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVhaddwWH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVhaddwDW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVhaddwDW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVhaddwDW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVhaddwDW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVhaddwHuBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(lsxVhaddwHuBu(a, b), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVhaddwHuBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(externLsxVhaddwHuBu(a, b), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVhaddwWuHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(lsxVhaddwWuHu(a, b), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVhaddwWuHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(externLsxVhaddwWuHu(a, b), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVhaddwDuWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(lsxVhaddwDuWu(a, b), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVhaddwDuWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(externLsxVhaddwDuWu(a, b), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVhsubwHB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVhsubwHB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVhsubwHB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVhsubwHB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVhsubwWH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVhsubwWH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVhsubwWH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVhsubwWH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVhsubwDW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVhsubwDW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVhsubwDW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVhsubwDW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVhsubwHuBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVhsubwHuBu(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVhsubwHuBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVhsubwHuBu(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVhsubwWuHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVhsubwWuHu(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVhsubwWuHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVhsubwWuHu(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVhsubwDuWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVhsubwDuWu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVhsubwDuWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVhsubwDuWu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmodB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVmodB(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmodB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVmodB(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmodH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVmodH(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmodH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVmodH(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmodW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVmodW(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmodW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVmodW(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmodD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmodD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmodD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmodD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmodBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16u8, M128i>(lsxVmodBu(a, b), UnresolvedTypeLayout<V16u8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmodBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16u8, M128i>(externLsxVmodBu(a, b), UnresolvedTypeLayout<V16u8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmodHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(lsxVmodHu(a, b), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmodHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(externLsxVmodHu(a, b), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmodWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(lsxVmodWu(a, b), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmodWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(externLsxVmodWu(a, b), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmodDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(lsxVmodDu(a, b), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmodDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(externLsxVmodDu(a, b), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVreplveB(a: M128i, b: Int): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVreplveB(a, transmuteWithLayouts<Int, M128i>(b, PrimitiveLayouts.I32, UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVreplveB(a: M128i, b: Int): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVreplveB(a, transmuteWithLayouts<Int, M128i>(b, PrimitiveLayouts.I32, UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVreplveH(a: M128i, b: Int): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVreplveH(a, transmuteWithLayouts<Int, M128i>(b, PrimitiveLayouts.I32, UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVreplveH(a: M128i, b: Int): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVreplveH(a, transmuteWithLayouts<Int, M128i>(b, PrimitiveLayouts.I32, UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVreplveW(a: M128i, b: Int): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVreplveW(a, transmuteWithLayouts<Int, M128i>(b, PrimitiveLayouts.I32, UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVreplveW(a: M128i, b: Int): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVreplveW(a, transmuteWithLayouts<Int, M128i>(b, PrimitiveLayouts.I32, UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVreplveD(a: M128i, b: Int): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVreplveD(a, transmuteWithLayouts<Int, M128i>(b, PrimitiveLayouts.I32, UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVreplveD(a: M128i, b: Int): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVreplveD(a, transmuteWithLayouts<Int, M128i>(b, PrimitiveLayouts.I32, UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVshufH(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVshufH(a, b, c), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVshufH(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVshufH(a, b, c), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVshufW(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVshufW(a, b, c), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVshufW(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVshufW(a, b, c), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVshufD(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVshufD(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVshufD(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVshufD(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
 public fun lsxVandiB(a: M128i, imm8: UInt): M128i {
     run {
@@ -1191,7 +1191,7 @@ public fun lsxVxoriB(a: M128i, imm8: UInt): M128i {
     return transmuteWithLayouts<V16u8, M128i>(lsxVxoriB(a, imm8), UnresolvedTypeLayout<V16u8>(), UnresolvedTypeLayout<M128i>())
 }
 
-public fun lsxVbitselV(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V16u8, M128i>(lsxVbitselV(a, b, c), UnresolvedTypeLayout<V16u8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVbitselV(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V16u8, M128i>(externLsxVbitselV(a, b, c), UnresolvedTypeLayout<V16u8>(), UnresolvedTypeLayout<M128i>())
 
 public fun lsxVbitseliB(a: M128i, b: M128i, imm8: UInt): M128i {
     run {
@@ -1200,85 +1200,85 @@ public fun lsxVbitseliB(a: M128i, b: M128i, imm8: UInt): M128i {
     return transmuteWithLayouts<V16u8, M128i>(lsxVbitseliB(a, b, imm8), UnresolvedTypeLayout<V16u8>(), UnresolvedTypeLayout<M128i>())
 }
 
-public fun lsxVcloB(a: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVcloB(a), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVcloB(a: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVcloB(a), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVcloH(a: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVcloH(a), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVcloH(a: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVcloH(a), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVcloW(a: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVcloW(a), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVcloW(a: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVcloW(a), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVcloD(a: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVcloD(a), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVcloD(a: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVcloD(a), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcvtHS(a: M128, b: M128): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVfcvtHS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcvtHS(a: M128, b: M128): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVfcvtHS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcvtSD(a: M128d, b: M128d): M128 = transmuteWithLayouts<V4f32, M128>(lsxVfcvtSD(transmuteWithLayouts<M128d, M128>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128>()), transmuteWithLayouts<M128d, M128>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128>())), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
+public fun lsxVfcvtSD(a: M128d, b: M128d): M128 = transmuteWithLayouts<V4f32, M128>(externLsxVfcvtSD(transmuteWithLayouts<M128d, M128>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128>()), transmuteWithLayouts<M128d, M128>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128>())), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lsxVfminS(a: M128, b: M128): M128 = transmuteWithLayouts<V4f32, M128>(lsxVfminS(a, b), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
+public fun lsxVfminS(a: M128, b: M128): M128 = transmuteWithLayouts<V4f32, M128>(externLsxVfminS(a, b), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lsxVfminD(a: M128d, b: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(lsxVfminD(a, b), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
+public fun lsxVfminD(a: M128d, b: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(externLsxVfminD(a, b), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
-public fun lsxVfminaS(a: M128, b: M128): M128 = transmuteWithLayouts<V4f32, M128>(lsxVfminaS(a, b), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
+public fun lsxVfminaS(a: M128, b: M128): M128 = transmuteWithLayouts<V4f32, M128>(externLsxVfminaS(a, b), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lsxVfminaD(a: M128d, b: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(lsxVfminaD(a, b), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
+public fun lsxVfminaD(a: M128d, b: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(externLsxVfminaD(a, b), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
-public fun lsxVfmaxS(a: M128, b: M128): M128 = transmuteWithLayouts<V4f32, M128>(lsxVfmaxS(a, b), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
+public fun lsxVfmaxS(a: M128, b: M128): M128 = transmuteWithLayouts<V4f32, M128>(externLsxVfmaxS(a, b), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lsxVfmaxD(a: M128d, b: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(lsxVfmaxD(a, b), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
+public fun lsxVfmaxD(a: M128d, b: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(externLsxVfmaxD(a, b), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
-public fun lsxVfmaxaS(a: M128, b: M128): M128 = transmuteWithLayouts<V4f32, M128>(lsxVfmaxaS(a, b), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
+public fun lsxVfmaxaS(a: M128, b: M128): M128 = transmuteWithLayouts<V4f32, M128>(externLsxVfmaxaS(a, b), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lsxVfmaxaD(a: M128d, b: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(lsxVfmaxaD(a, b), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
+public fun lsxVfmaxaD(a: M128d, b: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(externLsxVfmaxaD(a, b), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
-public fun lsxVfclassS(a: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfclassS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfclassS(a: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfclassS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfclassD(a: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfclassD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfclassD(a: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfclassD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfrecipeS(a: M128): M128 = transmuteWithLayouts<V4f32, M128>(lsxVfrecipeS(a), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
+public fun lsxVfrecipeS(a: M128): M128 = transmuteWithLayouts<V4f32, M128>(externLsxVfrecipeS(a), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lsxVfrecipeD(a: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(lsxVfrecipeD(a), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
+public fun lsxVfrecipeD(a: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(externLsxVfrecipeD(a), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
-public fun lsxVfrsqrteS(a: M128): M128 = transmuteWithLayouts<V4f32, M128>(lsxVfrsqrteS(a), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
+public fun lsxVfrsqrteS(a: M128): M128 = transmuteWithLayouts<V4f32, M128>(externLsxVfrsqrteS(a), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lsxVfrsqrteD(a: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(lsxVfrsqrteD(a), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
+public fun lsxVfrsqrteD(a: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(externLsxVfrsqrteD(a), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
-public fun lsxVfrintS(a: M128): M128 = transmuteWithLayouts<V4f32, M128>(lsxVfrintS(a), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
+public fun lsxVfrintS(a: M128): M128 = transmuteWithLayouts<V4f32, M128>(externLsxVfrintS(a), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lsxVfrintD(a: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(lsxVfrintD(a), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
+public fun lsxVfrintD(a: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(externLsxVfrintD(a), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
-public fun lsxVflogbS(a: M128): M128 = transmuteWithLayouts<V4f32, M128>(lsxVflogbS(a), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
+public fun lsxVflogbS(a: M128): M128 = transmuteWithLayouts<V4f32, M128>(externLsxVflogbS(a), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lsxVflogbD(a: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(lsxVflogbD(a), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
+public fun lsxVflogbD(a: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(externLsxVflogbD(a), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
-public fun lsxVfcvthSH(a: M128i): M128 = transmuteWithLayouts<V4f32, M128>(lsxVfcvthSH(transmuteWithLayouts<M128i, M128>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
+public fun lsxVfcvthSH(a: M128i): M128 = transmuteWithLayouts<V4f32, M128>(externLsxVfcvthSH(transmuteWithLayouts<M128i, M128>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lsxVfcvthDS(a: M128): M128d = transmuteWithLayouts<V2f64, M128d>(lsxVfcvthDS(transmuteWithLayouts<M128, M128d>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128d>())), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
+public fun lsxVfcvthDS(a: M128): M128d = transmuteWithLayouts<V2f64, M128d>(externLsxVfcvthDS(transmuteWithLayouts<M128, M128d>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128d>())), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
-public fun lsxVfcvtlSH(a: M128i): M128 = transmuteWithLayouts<V4f32, M128>(lsxVfcvtlSH(transmuteWithLayouts<M128i, M128>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
+public fun lsxVfcvtlSH(a: M128i): M128 = transmuteWithLayouts<V4f32, M128>(externLsxVfcvtlSH(transmuteWithLayouts<M128i, M128>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lsxVfcvtlDS(a: M128): M128d = transmuteWithLayouts<V2f64, M128d>(lsxVfcvtlDS(transmuteWithLayouts<M128, M128d>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128d>())), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
+public fun lsxVfcvtlDS(a: M128): M128d = transmuteWithLayouts<V2f64, M128d>(externLsxVfcvtlDS(transmuteWithLayouts<M128, M128d>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128d>())), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
-public fun lsxVftintWS(a: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVftintWS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintWS(a: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVftintWS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintLD(a: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVftintLD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintLD(a: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVftintLD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintWuS(a: M128): M128i = transmuteWithLayouts<V4u32, M128i>(lsxVftintWuS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintWuS(a: M128): M128i = transmuteWithLayouts<V4u32, M128i>(externLsxVftintWuS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintLuD(a: M128d): M128i = transmuteWithLayouts<V2u64, M128i>(lsxVftintLuD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintLuD(a: M128d): M128i = transmuteWithLayouts<V2u64, M128i>(externLsxVftintLuD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrzWS(a: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVftintrzWS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrzWS(a: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVftintrzWS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrzLD(a: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVftintrzLD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrzLD(a: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVftintrzLD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrzWuS(a: M128): M128i = transmuteWithLayouts<V4u32, M128i>(lsxVftintrzWuS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrzWuS(a: M128): M128i = transmuteWithLayouts<V4u32, M128i>(externLsxVftintrzWuS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrzLuD(a: M128d): M128i = transmuteWithLayouts<V2u64, M128i>(lsxVftintrzLuD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrzLuD(a: M128d): M128i = transmuteWithLayouts<V2u64, M128i>(externLsxVftintrzLuD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVffintSW(a: M128i): M128 = transmuteWithLayouts<V4f32, M128>(lsxVffintSW(transmuteWithLayouts<M128i, M128>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
+public fun lsxVffintSW(a: M128i): M128 = transmuteWithLayouts<V4f32, M128>(externLsxVffintSW(transmuteWithLayouts<M128i, M128>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lsxVffintDL(a: M128i): M128d = transmuteWithLayouts<V2f64, M128d>(lsxVffintDL(transmuteWithLayouts<M128i, M128d>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128d>())), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
+public fun lsxVffintDL(a: M128i): M128d = transmuteWithLayouts<V2f64, M128d>(externLsxVffintDL(transmuteWithLayouts<M128i, M128d>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128d>())), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
-public fun lsxVffintSWu(a: M128i): M128 = transmuteWithLayouts<V4f32, M128>(lsxVffintSWu(transmuteWithLayouts<M128i, M128>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
+public fun lsxVffintSWu(a: M128i): M128 = transmuteWithLayouts<V4f32, M128>(externLsxVffintSWu(transmuteWithLayouts<M128i, M128>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lsxVffintDLu(a: M128i): M128d = transmuteWithLayouts<V2f64, M128d>(lsxVffintDLu(transmuteWithLayouts<M128i, M128d>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128d>())), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
+public fun lsxVffintDLu(a: M128i): M128d = transmuteWithLayouts<V2f64, M128d>(externLsxVffintDLu(transmuteWithLayouts<M128i, M128d>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128d>())), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
 public fun lsxVsllwilHB(a: M128i, imm3: UInt): M128i {
     run {
@@ -1322,65 +1322,65 @@ public fun lsxVsllwilDuWu(a: M128i, imm5: UInt): M128i {
     return transmuteWithLayouts<V2u64, M128i>(lsxVsllwilDuWu(a, imm5), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
 }
 
-public fun lsxVsranBH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVsranBH(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsranBH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVsranBH(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsranHW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVsranHW(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsranHW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVsranHW(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsranWD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVsranWD(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsranWD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVsranWD(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssranBH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVssranBH(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssranBH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVssranBH(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssranHW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVssranHW(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssranHW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVssranHW(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssranWD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVssranWD(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssranWD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVssranWD(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssranBuH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16u8, M128i>(lsxVssranBuH(a, b), UnresolvedTypeLayout<V16u8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssranBuH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16u8, M128i>(externLsxVssranBuH(a, b), UnresolvedTypeLayout<V16u8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssranHuW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(lsxVssranHuW(a, b), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssranHuW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(externLsxVssranHuW(a, b), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssranWuD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(lsxVssranWuD(a, b), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssranWuD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(externLsxVssranWuD(a, b), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsrarnBH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVsrarnBH(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrarnBH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVsrarnBH(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsrarnHW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVsrarnHW(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrarnHW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVsrarnHW(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsrarnWD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVsrarnWD(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrarnWD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVsrarnWD(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrarnBH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVssrarnBH(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrarnBH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVssrarnBH(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrarnHW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVssrarnHW(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrarnHW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVssrarnHW(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrarnWD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVssrarnWD(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrarnWD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVssrarnWD(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrarnBuH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16u8, M128i>(lsxVssrarnBuH(a, b), UnresolvedTypeLayout<V16u8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrarnBuH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16u8, M128i>(externLsxVssrarnBuH(a, b), UnresolvedTypeLayout<V16u8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrarnHuW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(lsxVssrarnHuW(a, b), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrarnHuW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(externLsxVssrarnHuW(a, b), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrarnWuD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(lsxVssrarnWuD(a, b), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrarnWuD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(externLsxVssrarnWuD(a, b), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsrlnBH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVsrlnBH(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrlnBH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVsrlnBH(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsrlnHW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVsrlnHW(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrlnHW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVsrlnHW(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsrlnWD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVsrlnWD(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrlnWD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVsrlnWD(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrlnBuH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16u8, M128i>(lsxVssrlnBuH(a, b), UnresolvedTypeLayout<V16u8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrlnBuH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16u8, M128i>(externLsxVssrlnBuH(a, b), UnresolvedTypeLayout<V16u8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrlnHuW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(lsxVssrlnHuW(a, b), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrlnHuW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(externLsxVssrlnHuW(a, b), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrlnWuD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(lsxVssrlnWuD(a, b), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrlnWuD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(externLsxVssrlnWuD(a, b), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsrlrnBH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVsrlrnBH(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrlrnBH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVsrlrnBH(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsrlrnHW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVsrlrnHW(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrlrnHW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVsrlrnHW(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsrlrnWD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVsrlrnWD(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsrlrnWD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVsrlrnWD(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrlrnBuH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16u8, M128i>(lsxVssrlrnBuH(a, b), UnresolvedTypeLayout<V16u8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrlrnBuH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16u8, M128i>(externLsxVssrlrnBuH(a, b), UnresolvedTypeLayout<V16u8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrlrnHuW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(lsxVssrlrnHuW(a, b), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrlrnHuW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(externLsxVssrlrnHuW(a, b), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrlrnWuD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(lsxVssrlrnWuD(a, b), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrlrnWuD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(externLsxVssrlrnWuD(a, b), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
 
 public fun lsxVfrstpiB(a: M128i, b: M128i, imm5: UInt): M128i {
     run {
@@ -1396,9 +1396,9 @@ public fun lsxVfrstpiH(a: M128i, b: M128i, imm5: UInt): M128i {
     return transmuteWithLayouts<V8i16, M128i>(lsxVfrstpiH(a, b, imm5), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 }
 
-public fun lsxVfrstpB(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVfrstpB(a, b, c), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfrstpB(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVfrstpB(a, b, c), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfrstpH(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVfrstpH(a, b, c), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfrstpH(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVfrstpH(a, b, c), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
 public fun lsxVextrinsB(a: M128i, b: M128i, imm8: UInt): M128i {
     run {
@@ -1428,73 +1428,73 @@ public fun lsxVextrinsD(a: M128i, b: M128i, imm8: UInt): M128i {
     return transmuteWithLayouts<V2i64, M128i>(lsxVextrinsD(a, b, imm8), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 }
 
-public fun lsxVmskltzB(a: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVmskltzB(a), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmskltzB(a: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVmskltzB(a), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmskltzH(a: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVmskltzH(a), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmskltzH(a: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVmskltzH(a), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmskltzW(a: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVmskltzW(a), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmskltzW(a: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVmskltzW(a), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmskltzD(a: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmskltzD(a), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmskltzD(a: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmskltzD(a), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsigncovB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVsigncovB(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsigncovB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVsigncovB(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsigncovH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVsigncovH(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsigncovH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVsigncovH(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsigncovW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVsigncovW(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsigncovW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVsigncovW(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsigncovD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVsigncovD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsigncovD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVsigncovD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrneWS(a: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVftintrneWS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrneWS(a: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVftintrneWS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrneLD(a: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVftintrneLD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrneLD(a: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVftintrneLD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrpWS(a: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVftintrpWS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrpWS(a: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVftintrpWS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrpLD(a: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVftintrpLD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrpLD(a: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVftintrpLD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrmWS(a: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVftintrmWS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrmWS(a: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVftintrmWS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrmLD(a: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVftintrmLD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrmLD(a: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVftintrmLD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintWD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVftintWD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintWD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVftintWD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVffintSL(a: M128i, b: M128i): M128 = transmuteWithLayouts<V4f32, M128>(lsxVffintSL(transmuteWithLayouts<M128i, M128>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>()), transmuteWithLayouts<M128i, M128>(b, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
+public fun lsxVffintSL(a: M128i, b: M128i): M128 = transmuteWithLayouts<V4f32, M128>(externLsxVffintSL(transmuteWithLayouts<M128i, M128>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>()), transmuteWithLayouts<M128i, M128>(b, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lsxVftintrzWD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVftintrzWD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrzWD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVftintrzWD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrpWD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVftintrpWD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrpWD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVftintrpWD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrmWD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVftintrmWD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrmWD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVftintrmWD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrneWD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVftintrneWD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrneWD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVftintrneWD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintlLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVftintlLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintlLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVftintlLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftinthLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVftinthLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftinthLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVftinthLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVffinthDW(a: M128i): M128d = transmuteWithLayouts<V2f64, M128d>(lsxVffinthDW(transmuteWithLayouts<M128i, M128d>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128d>())), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
+public fun lsxVffinthDW(a: M128i): M128d = transmuteWithLayouts<V2f64, M128d>(externLsxVffinthDW(transmuteWithLayouts<M128i, M128d>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128d>())), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
-public fun lsxVffintlDW(a: M128i): M128d = transmuteWithLayouts<V2f64, M128d>(lsxVffintlDW(transmuteWithLayouts<M128i, M128d>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128d>())), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
+public fun lsxVffintlDW(a: M128i): M128d = transmuteWithLayouts<V2f64, M128d>(externLsxVffintlDW(transmuteWithLayouts<M128i, M128d>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128d>())), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
-public fun lsxVftintrzlLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVftintrzlLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrzlLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVftintrzlLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrzhLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVftintrzhLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrzhLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVftintrzhLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrplLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVftintrplLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrplLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVftintrplLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrphLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVftintrphLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrphLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVftintrphLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrmlLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVftintrmlLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrmlLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVftintrmlLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrmhLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVftintrmhLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrmhLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVftintrmhLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrnelLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVftintrnelLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrnelLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVftintrnelLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVftintrnehLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVftintrnehLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVftintrnehLS(a: M128): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVftintrnehLS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfrintrneS(a: M128): M128 = transmuteWithLayouts<V4f32, M128>(lsxVfrintrneS(a), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
+public fun lsxVfrintrneS(a: M128): M128 = transmuteWithLayouts<V4f32, M128>(externLsxVfrintrneS(a), UnresolvedTypeLayout<V4f32>(), UnresolvedTypeLayout<M128>())
 
-public fun lsxVfrintrneD(a: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(lsxVfrintrneD(a), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
+public fun lsxVfrintrneD(a: M128d): M128d = transmuteWithLayouts<V2f64, M128d>(externLsxVfrintrneD(a), UnresolvedTypeLayout<V2f64>(), UnresolvedTypeLayout<M128d>())
 
 public fun lsxVstelmB(a: M128i, memAddr: MutPtr, immS8: Int, imm4: UInt) {
     run {
@@ -1536,193 +1536,193 @@ public fun lsxVstelmD(a: M128i, memAddr: MutPtr, immS8: Int, imm1: UInt) {
     lsxVstelmD(transmuteWithLayouts<M128i, Unit>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<Unit>()), memAddr, immS8, imm1)
 }
 
-public fun lsxVaddwevDW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVaddwevDW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwevDW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVaddwevDW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwevWH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVaddwevWH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwevWH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVaddwevWH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwevHB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVaddwevHB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwevHB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVaddwevHB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwodDW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVaddwodDW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwodDW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVaddwodDW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwodWH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVaddwodWH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwodWH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVaddwodWH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwodHB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVaddwodHB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwodHB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVaddwodHB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwevDWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVaddwevDWu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwevDWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVaddwevDWu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwevWHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVaddwevWHu(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwevWHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVaddwevWHu(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwevHBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVaddwevHBu(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwevHBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVaddwevHBu(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwodDWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVaddwodDWu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwodDWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVaddwodDWu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwodWHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVaddwodWHu(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwodWHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVaddwodWHu(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwodHBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVaddwodHBu(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwodHBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVaddwodHBu(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwevDWuW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVaddwevDWuW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwevDWuW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVaddwevDWuW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwevWHuH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVaddwevWHuH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwevWHuH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVaddwevWHuH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwevHBuB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVaddwevHBuB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwevHBuB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVaddwevHBuB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwodDWuW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVaddwodDWuW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwodDWuW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVaddwodDWuW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwodWHuH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVaddwodWHuH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwodWHuH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVaddwodWHuH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwodHBuB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVaddwodHBuB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwodHBuB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVaddwodHBuB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubwevDW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVsubwevDW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubwevDW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVsubwevDW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubwevWH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVsubwevWH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubwevWH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVsubwevWH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubwevHB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVsubwevHB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubwevHB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVsubwevHB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubwodDW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVsubwodDW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubwodDW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVsubwodDW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubwodWH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVsubwodWH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubwodWH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVsubwodWH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubwodHB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVsubwodHB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubwodHB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVsubwodHB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubwevDWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVsubwevDWu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubwevDWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVsubwevDWu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubwevWHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVsubwevWHu(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubwevWHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVsubwevWHu(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubwevHBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVsubwevHBu(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubwevHBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVsubwevHBu(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubwodDWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVsubwodDWu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubwodDWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVsubwodDWu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubwodWHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVsubwodWHu(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubwodWHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVsubwodWHu(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubwodHBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVsubwodHBu(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubwodHBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVsubwodHBu(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwevQD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVaddwevQD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwevQD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVaddwevQD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwodQD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVaddwodQD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwodQD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVaddwodQD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwevQDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVaddwevQDu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwevQDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVaddwevQDu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwodQDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVaddwodQDu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwodQDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVaddwodQDu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubwevQD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVsubwevQD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubwevQD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVsubwevQD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubwodQD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVsubwodQD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubwodQD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVsubwodQD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubwevQDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVsubwevQDu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubwevQDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVsubwevQDu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubwodQDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVsubwodQDu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubwodQDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVsubwodQDu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwevQDuD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVaddwevQDuD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwevQDuD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVaddwevQDuD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddwodQDuD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVaddwodQDuD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddwodQDuD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVaddwodQDuD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwevDW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmulwevDW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwevDW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmulwevDW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwevWH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVmulwevWH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwevWH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVmulwevWH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwevHB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVmulwevHB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwevHB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVmulwevHB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwodDW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmulwodDW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwodDW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmulwodDW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwodWH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVmulwodWH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwodWH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVmulwodWH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwodHB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVmulwodHB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwodHB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVmulwodHB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwevDWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmulwevDWu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwevDWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmulwevDWu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwevWHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVmulwevWHu(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwevWHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVmulwevWHu(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwevHBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVmulwevHBu(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwevHBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVmulwevHBu(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwodDWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmulwodDWu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwodDWu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmulwodDWu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwodWHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVmulwodWHu(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwodWHu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVmulwodWHu(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwodHBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVmulwodHBu(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwodHBu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVmulwodHBu(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwevDWuW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmulwevDWuW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwevDWuW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmulwevDWuW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwevWHuH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVmulwevWHuH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwevWHuH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVmulwevWHuH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwevHBuB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVmulwevHBuB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwevHBuB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVmulwevHBuB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwodDWuW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmulwodDWuW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwodDWuW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmulwodDWuW(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwodWHuH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVmulwodWHuH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwodWHuH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVmulwodWHuH(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwodHBuB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVmulwodHBuB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwodHBuB(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVmulwodHBuB(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwevQD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmulwevQD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwevQD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmulwevQD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwodQD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmulwodQD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwodQD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmulwodQD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwevQDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmulwevQDu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwevQDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmulwevQDu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwodQDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmulwodQDu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwodQDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmulwodQDu(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwevQDuD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmulwevQDuD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwevQDuD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmulwevQDuD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmulwodQDuD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmulwodQDuD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmulwodQDuD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmulwodQDuD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVhaddwQD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVhaddwQD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVhaddwQD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVhaddwQD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVhaddwQuDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(lsxVhaddwQuDu(a, b), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVhaddwQuDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(externLsxVhaddwQuDu(a, b), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVhsubwQD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVhsubwQD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVhsubwQD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVhsubwQD(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVhsubwQuDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(lsxVhsubwQuDu(a, b), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVhsubwQuDu(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(externLsxVhsubwQuDu(a, b), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwevDW(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmaddwevDW(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwevDW(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmaddwevDW(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwevWH(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVmaddwevWH(a, b, c), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwevWH(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVmaddwevWH(a, b, c), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwevHB(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVmaddwevHB(a, b, c), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwevHB(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVmaddwevHB(a, b, c), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwevDWu(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(lsxVmaddwevDWu(a, b, c), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwevDWu(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(externLsxVmaddwevDWu(a, b, c), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwevWHu(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(lsxVmaddwevWHu(a, b, c), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwevWHu(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(externLsxVmaddwevWHu(a, b, c), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwevHBu(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(lsxVmaddwevHBu(a, b, c), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwevHBu(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(externLsxVmaddwevHBu(a, b, c), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwodDW(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmaddwodDW(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwodDW(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmaddwodDW(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwodWH(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVmaddwodWH(a, b, c), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwodWH(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVmaddwodWH(a, b, c), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwodHB(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVmaddwodHB(a, b, c), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwodHB(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVmaddwodHB(a, b, c), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwodDWu(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(lsxVmaddwodDWu(a, b, c), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwodDWu(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(externLsxVmaddwodDWu(a, b, c), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwodWHu(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(lsxVmaddwodWHu(a, b, c), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwodWHu(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(externLsxVmaddwodWHu(a, b, c), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwodHBu(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(lsxVmaddwodHBu(a, b, c), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwodHBu(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(externLsxVmaddwodHBu(a, b, c), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwevDWuW(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmaddwevDWuW(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwevDWuW(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmaddwevDWuW(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwevWHuH(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVmaddwevWHuH(a, b, c), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwevWHuH(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVmaddwevWHuH(a, b, c), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwevHBuB(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVmaddwevHBuB(a, b, c), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwevHBuB(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVmaddwevHBuB(a, b, c), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwodDWuW(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmaddwodDWuW(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwodDWuW(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmaddwodDWuW(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwodWHuH(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVmaddwodWHuH(a, b, c), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwodWHuH(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVmaddwodWHuH(a, b, c), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwodHBuB(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVmaddwodHBuB(a, b, c), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwodHBuB(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVmaddwodHBuB(a, b, c), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwevQD(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmaddwevQD(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwevQD(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmaddwevQD(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwodQD(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmaddwodQD(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwodQD(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmaddwodQD(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwevQDu(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(lsxVmaddwevQDu(a, b, c), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwevQDu(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(externLsxVmaddwevQDu(a, b, c), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwodQDu(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(lsxVmaddwodQDu(a, b, c), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwodQDu(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(externLsxVmaddwodQDu(a, b, c), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwevQDuD(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmaddwevQDuD(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwevQDuD(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmaddwevQDuD(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmaddwodQDuD(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVmaddwodQDuD(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmaddwodQDuD(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVmaddwodQDuD(a, b, c), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVaddQ(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVaddQ(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVaddQ(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVaddQ(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVsubQ(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVsubQ(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVsubQ(a: M128i, b: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVsubQ(a, b), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
 public fun lsxVldreplB(memAddr: ConstPtr, immS12: Int): M128i {
     run {
@@ -1752,27 +1752,27 @@ public fun lsxVldreplD(memAddr: ConstPtr, immS9: Int): M128i {
     return transmuteWithLayouts<V2i64, M128i>(lsxVldreplD(memAddr, immS9), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 }
 
-public fun lsxVmskgezB(a: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVmskgezB(a), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmskgezB(a: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVmskgezB(a), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVmsknzB(a: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVmsknzB(a), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVmsknzB(a: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVmsknzB(a), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVexthHB(a: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVexthHB(a), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVexthHB(a: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVexthHB(a), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVexthWH(a: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVexthWH(a), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVexthWH(a: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVexthWH(a), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVexthDW(a: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVexthDW(a), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVexthDW(a: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVexthDW(a), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVexthQD(a: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVexthQD(a), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVexthQD(a: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVexthQD(a), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVexthHuBu(a: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(lsxVexthHuBu(a), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVexthHuBu(a: M128i): M128i = transmuteWithLayouts<V8u16, M128i>(externLsxVexthHuBu(a), UnresolvedTypeLayout<V8u16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVexthWuHu(a: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(lsxVexthWuHu(a), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVexthWuHu(a: M128i): M128i = transmuteWithLayouts<V4u32, M128i>(externLsxVexthWuHu(a), UnresolvedTypeLayout<V4u32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVexthDuWu(a: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(lsxVexthDuWu(a), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVexthDuWu(a: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(externLsxVexthDuWu(a), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVexthQuDu(a: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(lsxVexthQuDu(a), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVexthQuDu(a: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(externLsxVexthQuDu(a), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVextlQD(a: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVextlQD(a), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVextlQD(a: M128i): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVextlQD(a), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
 public fun lsxVsrlniBH(a: M128i, b: M128i, imm4: UInt): M128i {
     run {
@@ -2117,126 +2117,126 @@ public fun lsxVpermiW(a: M128i, b: M128i, imm8: UInt): M128i {
     return transmuteWithLayouts<V4i32, M128i>(lsxVpermiW(a, b, imm8), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 }
 
-public fun lsxVssrlrnBH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVssrlrnBH(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrlrnBH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVssrlrnBH(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrlrnHW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVssrlrnHW(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrlrnHW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVssrlrnHW(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrlrnWD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVssrlrnWD(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrlrnWD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVssrlrnWD(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrlnBH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVssrlnBH(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrlnBH(a: M128i, b: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVssrlnBH(a, b), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrlnHW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(lsxVssrlnHW(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrlnHW(a: M128i, b: M128i): M128i = transmuteWithLayouts<V8i16, M128i>(externLsxVssrlnHW(a, b), UnresolvedTypeLayout<V8i16>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVssrlnWD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVssrlnWD(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVssrlnWD(a: M128i, b: M128i): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVssrlnWD(a, b), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVshufB(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(lsxVshufB(a, b, c), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVshufB(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<V16i8, M128i>(externLsxVshufB(a, b, c), UnresolvedTypeLayout<V16i8>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVextlQuDu(a: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(lsxVextlQuDu(a), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVextlQuDu(a: M128i): M128i = transmuteWithLayouts<V2u64, M128i>(externLsxVextlQuDu(a), UnresolvedTypeLayout<V2u64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxBnzB(a: M128i): Int = lsxBnzB(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
+public fun lsxBnzB(a: M128i): Int = externLsxBnzB(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
 
-public fun lsxBnzD(a: M128i): Int = lsxBnzD(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
+public fun lsxBnzD(a: M128i): Int = externLsxBnzD(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
 
-public fun lsxBnzH(a: M128i): Int = lsxBnzH(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
+public fun lsxBnzH(a: M128i): Int = externLsxBnzH(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
 
-public fun lsxBnzV(a: M128i): Int = lsxBnzV(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
+public fun lsxBnzV(a: M128i): Int = externLsxBnzV(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
 
-public fun lsxBnzW(a: M128i): Int = lsxBnzW(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
+public fun lsxBnzW(a: M128i): Int = externLsxBnzW(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
 
-public fun lsxBzB(a: M128i): Int = lsxBzB(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
+public fun lsxBzB(a: M128i): Int = externLsxBzB(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
 
-public fun lsxBzD(a: M128i): Int = lsxBzD(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
+public fun lsxBzD(a: M128i): Int = externLsxBzD(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
 
-public fun lsxBzH(a: M128i): Int = lsxBzH(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
+public fun lsxBzH(a: M128i): Int = externLsxBzH(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
 
-public fun lsxBzV(a: M128i): Int = lsxBzV(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
+public fun lsxBzV(a: M128i): Int = externLsxBzV(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
 
-public fun lsxBzW(a: M128i): Int = lsxBzW(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
+public fun lsxBzW(a: M128i): Int = externLsxBzW(transmuteWithLayouts<M128i, Int>(a, UnresolvedTypeLayout<M128i>(), PrimitiveLayouts.I32))
 
-public fun lsxVfcmpCafD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpCafD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCafD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpCafD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCafS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpCafS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCafS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpCafS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCeqD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpCeqD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCeqD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpCeqD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCeqS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpCeqS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCeqS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpCeqS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCleD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpCleD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCleD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpCleD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCleS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpCleS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCleS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpCleS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCltD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpCltD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCltD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpCltD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCltS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpCltS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCltS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpCltS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCneD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpCneD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCneD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpCneD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCneS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpCneS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCneS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpCneS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCorD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpCorD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCorD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpCorD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCorS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpCorS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCorS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpCorS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCueqD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpCueqD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCueqD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpCueqD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCueqS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpCueqS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCueqS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpCueqS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCuleD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpCuleD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCuleD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpCuleD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCuleS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpCuleS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCuleS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpCuleS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCultD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpCultD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCultD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpCultD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCultS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpCultS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCultS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpCultS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCunD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpCunD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCunD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpCunD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCuneD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpCuneD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCuneD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpCuneD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCuneS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpCuneS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCuneS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpCuneS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpCunS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpCunS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpCunS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpCunS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSafD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpSafD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSafD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpSafD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSafS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpSafS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSafS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpSafS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSeqD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpSeqD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSeqD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpSeqD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSeqS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpSeqS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSeqS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpSeqS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSleD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpSleD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSleD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpSleD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSleS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpSleS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSleS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpSleS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSltD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpSltD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSltD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpSltD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSltS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpSltS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSltS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpSltS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSneD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpSneD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSneD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpSneD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSneS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpSneS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSneS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpSneS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSorD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpSorD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSorD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpSorD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSorS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpSorS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSorS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpSorS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSueqD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpSueqD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSueqD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpSueqD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSueqS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpSueqS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSueqS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpSueqS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSuleD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpSuleD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSuleD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpSuleD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSuleS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpSuleS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSuleS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpSuleS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSultD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpSultD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSultD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpSultD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSultS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpSultS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSultS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpSultS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSunD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpSunD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSunD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpSunD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSuneD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(lsxVfcmpSuneD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSuneD(a: M128d, b: M128d): M128i = transmuteWithLayouts<V2i64, M128i>(externLsxVfcmpSuneD(transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V2i64>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSuneS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpSuneS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSuneS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpSuneS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
 
-public fun lsxVfcmpSunS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(lsxVfcmpSunS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())
+public fun lsxVfcmpSunS(a: M128, b: M128): M128i = transmuteWithLayouts<V4i32, M128i>(externLsxVfcmpSunS(transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>()), transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())), UnresolvedTypeLayout<V4i32>(), UnresolvedTypeLayout<M128i>())

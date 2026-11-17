@@ -55,7 +55,6 @@ import io.github.kotlinmania.rustlang.core.str.iter.SplitWhitespace
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
-import io.github.kotlinmania.rustlang.core.str.traits.fromStr
 
 public fun sliceErrorFail(s: String, begin: Int, end: Int): Nothing = constEvalSelect(Triple(s, begin, end), ::sliceErrorFailCt, ::sliceErrorFailRt)
 
@@ -2394,7 +2393,7 @@ public fun <Searcher, P : Pattern<Searcher>> String.trimRightMatches(pat: P): St
  * check(nope.isErr())
  * ```
  */
-public fun <Err, F : FromStr<F, Err>> String.parse(): Result<F, Err> = FromStr.fromStr(this)
+public fun <Err, F : FromStr<F, Err>> String.parse(): Result<F, Err> = FromStr.FromStr(this)
 
 /**
  * Checks if all characters in this string are within the ASCII range.

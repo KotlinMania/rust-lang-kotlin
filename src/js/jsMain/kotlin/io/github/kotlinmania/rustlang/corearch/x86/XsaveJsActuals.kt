@@ -32,8 +32,8 @@ public actual fun xsetbv(v: UInt, hi: UInt, lo: UInt) {
     }
 }
 
-public actual fun xgetbv(v: UInt): Long =
-    if (x86XsaveNapiAddon != null) (x86XsaveNapiAddon.corearchX86XsaveXgetbv(v.toInt()) as String).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externXgetbv(v: UInt): Long =
+    if (x86XsaveNapiAddon != null) (x86XsaveNapiAddon.corearchX86XsaveExternXgetbv(v.toInt()) as String).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun xsaveopt(p: MutPtr, hi: UInt, lo: UInt) {
     if (x86XsaveNapiAddon != null) {

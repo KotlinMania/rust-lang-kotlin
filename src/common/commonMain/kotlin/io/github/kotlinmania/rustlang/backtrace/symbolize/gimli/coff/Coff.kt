@@ -70,7 +70,7 @@ public open class Object(
             // is special (apparently).
             var symbols = mutableListOf<Pair<Int, ImageSymbol>>()
             for ((_, sym) in symtab.iter()) {
-                if (sym.derivedType() != Object.pe.IMAGE_SYM_DTYPE_FUNCTION) {
+                if (sym.derivedType() != Object.Pe.IMAGE_SYM_DTYPE_FUNCTION) {
                     continue
                 }
                 val sectionIndex = sym.section() ?: continue

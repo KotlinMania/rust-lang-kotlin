@@ -143,7 +143,7 @@ public fun stdioHandle(raw: RawHandle): RawHandle {
 public fun fromRawHandleFile(handle: RawHandle): File =
     run {
         val handle1 = MutPtr(handle.rawAddress)
-        File.fromInner(io.github.kotlinmania.rustlang.std.sys.fs.windows.File.fromInner(FromInner.fromInner(OwnedHandle.FromRawHandle(handle1))))
+        File.fromInner(io.github.kotlinmania.rustlang.std.sys.fs.windows.File.fromInner(FromInner.FromInner(OwnedHandle.FromRawHandle(handle1))))
     }
 
 public fun File.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoRawHandle())
@@ -246,12 +246,12 @@ public fun UdpSocket.intoRawSocket(): RawSocket = this.intoInner().intoSocket().
 
 public fun PipeReader.asRawHandle(): RawHandle = this.value.asRawHandle()
 
-public fun fromRawHandlePipeReader(rawHandle: RawHandle): PipeReader = PipeReader.fromInner(FromRawHandle.FromRawHandle(rawHandle))
+public fun fromRawHandlePipeReader(rawHandle: RawHandle): PipeReader = PipeReader.FromInner(FromRawHandle.FromRawHandle(rawHandle))
 
 public fun PipeReader.intoRawHandle(): RawHandle = this.value.intoRawHandle()
 
 public fun PipeWriter.asRawHandle(): RawHandle = this.value.asRawHandle()
 
-public fun fromRawHandlePipeWriter(rawHandle: RawHandle): PipeWriter = PipeWriter.fromInner(FromRawHandle.FromRawHandle(rawHandle))
+public fun fromRawHandlePipeWriter(rawHandle: RawHandle): PipeWriter = PipeWriter.FromInner(FromRawHandle.FromRawHandle(rawHandle))
 
 public fun PipeWriter.intoRawHandle(): RawHandle = this.value.intoRawHandle()

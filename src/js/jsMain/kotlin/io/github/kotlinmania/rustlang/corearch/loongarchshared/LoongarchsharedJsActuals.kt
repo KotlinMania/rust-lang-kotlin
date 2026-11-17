@@ -32,34 +32,34 @@ public actual fun movgr2fcsr(a: Int, b: Int) {
 public actual fun movfcsr2gr(a: Int): Int =
     if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedMovfcsr2gr(a) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun iocsrrdB(a: Int): Int =
-    if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedIocsrrdB(a) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externIocsrrdB(a: Int): Int =
+    if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedExternIocsrrdB(a) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun iocsrrdH(a: Int): Int =
-    if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedIocsrrdH(a) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externIocsrrdH(a: Int): Int =
+    if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedExternIocsrrdH(a) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun iocsrrdW(a: Int): Int =
-    if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedIocsrrdW(a) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externIocsrrdW(a: Int): Int =
+    if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedExternIocsrrdW(a) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun iocsrwrB(a: Int, b: Int) {
+public actual fun externIocsrwrB(a: Int, b: Int) {
     if (loongarchsharedNapiAddon != null) {
-        loongarchsharedNapiAddon.corearchLoongarchsharedIocsrwrB(a, b)
+        loongarchsharedNapiAddon.corearchLoongarchsharedExternIocsrwrB(a, b)
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun iocsrwrH(a: Int, b: Int) {
+public actual fun externIocsrwrH(a: Int, b: Int) {
     if (loongarchsharedNapiAddon != null) {
-        loongarchsharedNapiAddon.corearchLoongarchsharedIocsrwrH(a, b)
+        loongarchsharedNapiAddon.corearchLoongarchsharedExternIocsrwrH(a, b)
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun iocsrwrW(a: Int, b: Int) {
+public actual fun externIocsrwrW(a: Int, b: Int) {
     if (loongarchsharedNapiAddon != null) {
-        loongarchsharedNapiAddon.corearchLoongarchsharedIocsrwrW(a, b)
+        loongarchsharedNapiAddon.corearchLoongarchsharedExternIocsrwrW(a, b)
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
@@ -73,8 +73,8 @@ public actual fun breakTarget(a: Int) {
     }
 }
 
-public actual fun cpucfg(a: Int): Int =
-    if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedCpucfg(a) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externCpucfg(a: Int): Int =
+    if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedExternCpucfg(a) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun syscall(a: Int) {
     if (loongarchsharedNapiAddon != null) {
@@ -84,14 +84,14 @@ public actual fun syscall(a: Int) {
     }
 }
 
-public actual fun frecipeS(a: Float): Float =
-    if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedFrecipeS(a.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externFrecipeS(a: Float): Float =
+    if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedExternFrecipeS(a.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun frecipeD(a: Double): Double =
-    if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedFrecipeD(a) as Double) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externFrecipeD(a: Double): Double =
+    if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedExternFrecipeD(a) as Double) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun frsqrteS(a: Float): Float =
-    if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedFrsqrteS(a.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externFrsqrteS(a: Float): Float =
+    if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedExternFrsqrteS(a.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun frsqrteD(a: Double): Double =
-    if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedFrsqrteD(a) as Double) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externFrsqrteD(a: Double): Double =
+    if (loongarchsharedNapiAddon != null) (loongarchsharedNapiAddon.corearchLoongarchsharedExternFrsqrteD(a) as Double) else throw UnsupportedOperationException("Native FFI addon is not available")

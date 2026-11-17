@@ -48,6 +48,7 @@ import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromBytes
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.intoVec
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.process.StdioPipes
+import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
@@ -307,7 +308,7 @@ public open class Command internal constructor(
         if (f.alternate()) {
             val debugCommand = DebugStruct(f, "Command")
             debugCommand.field("program", this.program).field("args", this.args)
-            if (this.env.isUnchanged().inv()) {
+            if (!this.env.isUnchanged()) {
                 debugCommand.field("env", this.env)
             }
             if (this.cwd != null) {
@@ -484,7 +485,7 @@ public sealed class Stdio {
             }
             is Stdio.StaticFd -> {
                 val (fd1) = this as Stdio.StaticFd
-                val fd2 = FileDesc.fromInner(when (val tryResult = fd1.tryCloneToOwned()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<ChildStdio, ChildPipe?>, Error>(tryResult.errValue()) })
+                val fd2 = FileDesc.FromInner(when (val tryResult = fd1.tryCloneToOwned()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<ChildStdio, ChildPipe?>, Error>(tryResult.errValue()) })
                 Result.Ok<Pair<ChildStdio, ChildPipe?>, Error>(Pair(ChildStdio.Owned(fd2), null))
             }
             Stdio.MakePipe -> {
@@ -500,7 +501,7 @@ public sealed class Stdio {
             Stdio.Null -> {
                 val opts = OpenOptions.new()
                 opts.read(readable)
-                opts.write(readable.inv())
+                opts.write(!readable)
                 val fd3 = when (val tryResult = File.openC(DEV_NULL, opts)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<ChildStdio, ChildPipe?>, Error>(tryResult.errValue()) }
                 Result.Ok<Pair<ChildStdio, ChildPipe?>, Error>(Pair(ChildStdio.Owned(fd3.intoInner()), null))
             }

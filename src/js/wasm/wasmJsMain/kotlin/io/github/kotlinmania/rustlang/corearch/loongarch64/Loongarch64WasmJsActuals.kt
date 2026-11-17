@@ -7,29 +7,29 @@ private external fun initLoongarch64NapiAddon(): Boolean
 
 private val loongarch64NapiAvailable: Boolean = initLoongarch64NapiAddon()
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64CrcWBW(p0, p1)")
-private external fun wasmCorearchLoongarch64CrcWBW(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64ExternCrcWBW(p0, p1)")
+private external fun wasmCorearchLoongarch64ExternCrcWBW(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64CrcWHW(p0, p1)")
-private external fun wasmCorearchLoongarch64CrcWHW(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64ExternCrcWHW(p0, p1)")
+private external fun wasmCorearchLoongarch64ExternCrcWHW(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64CrcWWW(p0, p1)")
-private external fun wasmCorearchLoongarch64CrcWWW(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64ExternCrcWWW(p0, p1)")
+private external fun wasmCorearchLoongarch64ExternCrcWWW(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64CrcWDW(p0, p1)")
-private external fun wasmCorearchLoongarch64CrcWDW(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64ExternCrcWDW(p0, p1)")
+private external fun wasmCorearchLoongarch64ExternCrcWDW(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64CrccWBW(p0, p1)")
-private external fun wasmCorearchLoongarch64CrccWBW(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64ExternCrccWBW(p0, p1)")
+private external fun wasmCorearchLoongarch64ExternCrccWBW(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64CrccWHW(p0, p1)")
-private external fun wasmCorearchLoongarch64CrccWHW(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64ExternCrccWHW(p0, p1)")
+private external fun wasmCorearchLoongarch64ExternCrccWHW(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64CrccWWW(p0, p1)")
-private external fun wasmCorearchLoongarch64CrccWWW(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64ExternCrccWWW(p0, p1)")
+private external fun wasmCorearchLoongarch64ExternCrccWWW(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64CrccWDW(p0, p1)")
-private external fun wasmCorearchLoongarch64CrccWDW(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64ExternCrccWDW(p0, p1)")
+private external fun wasmCorearchLoongarch64ExternCrccWDW(p0: String, p1: Int): Int
 
 @JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchLoongarch64Cacop(p0, p1, p2)")
 private external fun wasmCorearchLoongarch64Cacop(p0: String, p1: String, p2: String)
@@ -43,17 +43,17 @@ private external fun wasmCorearchLoongarch64Csrwr(p0: String, p1: Int): String
 @JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchLoongarch64Csrxchg(p0, p1, p2)")
 private external fun wasmCorearchLoongarch64Csrxchg(p0: String, p1: String, p2: Int): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarch64IocsrrdD(p0)")
-private external fun wasmCorearchLoongarch64IocsrrdD(p0: Int): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarch64ExternIocsrrdD(p0)")
+private external fun wasmCorearchLoongarch64ExternIocsrrdD(p0: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64IocsrwrD(p0, p1)")
-private external fun wasmCorearchLoongarch64IocsrwrD(p0: String, p1: Int)
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64ExternIocsrwrD(p0, p1)")
+private external fun wasmCorearchLoongarch64ExternIocsrwrD(p0: String, p1: Int)
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64Asrtle(p0, p1)")
-private external fun wasmCorearchLoongarch64Asrtle(p0: String, p1: String)
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64ExternAsrtle(p0, p1)")
+private external fun wasmCorearchLoongarch64ExternAsrtle(p0: String, p1: String)
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64Asrtgt(p0, p1)")
-private external fun wasmCorearchLoongarch64Asrtgt(p0: String, p1: String)
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64ExternAsrtgt(p0, p1)")
+private external fun wasmCorearchLoongarch64ExternAsrtgt(p0: String, p1: String)
 
 @JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64Lddir(p0, p1)")
 private external fun wasmCorearchLoongarch64Lddir(p0: String, p1: String): String
@@ -61,29 +61,29 @@ private external fun wasmCorearchLoongarch64Lddir(p0: String, p1: String): Strin
 @JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64Ldpte(p0, p1)")
 private external fun wasmCorearchLoongarch64Ldpte(p0: String, p1: String)
 
-public actual fun crcWBW(a: Int, b: Int): Int =
-    if (loongarch64NapiAvailable) wasmCorearchLoongarch64CrcWBW(a, b) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externCrcWBW(a: Int, b: Int): Int =
+    if (loongarch64NapiAvailable) wasmCorearchLoongarch64ExternCrcWBW(a, b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun crcWHW(a: Int, b: Int): Int =
-    if (loongarch64NapiAvailable) wasmCorearchLoongarch64CrcWHW(a, b) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externCrcWHW(a: Int, b: Int): Int =
+    if (loongarch64NapiAvailable) wasmCorearchLoongarch64ExternCrcWHW(a, b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun crcWWW(a: Int, b: Int): Int =
-    if (loongarch64NapiAvailable) wasmCorearchLoongarch64CrcWWW(a, b) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externCrcWWW(a: Int, b: Int): Int =
+    if (loongarch64NapiAvailable) wasmCorearchLoongarch64ExternCrcWWW(a, b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun crcWDW(a: Long, b: Int): Int =
-    if (loongarch64NapiAvailable) wasmCorearchLoongarch64CrcWDW(a.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externCrcWDW(a: Long, b: Int): Int =
+    if (loongarch64NapiAvailable) wasmCorearchLoongarch64ExternCrcWDW(a.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun crccWBW(a: Int, b: Int): Int =
-    if (loongarch64NapiAvailable) wasmCorearchLoongarch64CrccWBW(a, b) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externCrccWBW(a: Int, b: Int): Int =
+    if (loongarch64NapiAvailable) wasmCorearchLoongarch64ExternCrccWBW(a, b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun crccWHW(a: Int, b: Int): Int =
-    if (loongarch64NapiAvailable) wasmCorearchLoongarch64CrccWHW(a, b) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externCrccWHW(a: Int, b: Int): Int =
+    if (loongarch64NapiAvailable) wasmCorearchLoongarch64ExternCrccWHW(a, b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun crccWWW(a: Int, b: Int): Int =
-    if (loongarch64NapiAvailable) wasmCorearchLoongarch64CrccWWW(a, b) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externCrccWWW(a: Int, b: Int): Int =
+    if (loongarch64NapiAvailable) wasmCorearchLoongarch64ExternCrccWWW(a, b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun crccWDW(a: Long, b: Int): Int =
-    if (loongarch64NapiAvailable) wasmCorearchLoongarch64CrccWDW(a.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externCrccWDW(a: Long, b: Int): Int =
+    if (loongarch64NapiAvailable) wasmCorearchLoongarch64ExternCrccWDW(a.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun cacop(a: Long, b: Long, c: Long) {
     if (loongarch64NapiAvailable) {
@@ -102,28 +102,28 @@ public actual fun csrwr(a: Long, b: Int): Long =
 public actual fun csrxchg(a: Long, b: Long, c: Int): Long =
     if (loongarch64NapiAvailable) wasmCorearchLoongarch64Csrxchg(a.toString(), b.toString(), c).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun iocsrrdD(a: Int): Long =
-    if (loongarch64NapiAvailable) wasmCorearchLoongarch64IocsrrdD(a).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externIocsrrdD(a: Int): Long =
+    if (loongarch64NapiAvailable) wasmCorearchLoongarch64ExternIocsrrdD(a).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun iocsrwrD(a: Long, b: Int) {
+public actual fun externIocsrwrD(a: Long, b: Int) {
     if (loongarch64NapiAvailable) {
-        wasmCorearchLoongarch64IocsrwrD(a.toString(), b)
+        wasmCorearchLoongarch64ExternIocsrwrD(a.toString(), b)
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun asrtle(a: Long, b: Long) {
+public actual fun externAsrtle(a: Long, b: Long) {
     if (loongarch64NapiAvailable) {
-        wasmCorearchLoongarch64Asrtle(a.toString(), b.toString())
+        wasmCorearchLoongarch64ExternAsrtle(a.toString(), b.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun asrtgt(a: Long, b: Long) {
+public actual fun externAsrtgt(a: Long, b: Long) {
     if (loongarch64NapiAvailable) {
-        wasmCorearchLoongarch64Asrtgt(a.toString(), b.toString())
+        wasmCorearchLoongarch64ExternAsrtgt(a.toString(), b.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }

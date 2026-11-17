@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveXgetbv
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveExternXgetbv
 import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveXrstor
 import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveXrstors
 import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveXsave
@@ -28,8 +28,8 @@ public actual fun xsetbv(v: UInt, hi: UInt, lo: UInt) {
     corearchX86XsaveXsetbv(v, hi, lo)
 }
 
-public actual fun xgetbv(v: UInt): Long =
-    corearchX86XsaveXgetbv(v)
+public actual fun externXgetbv(v: UInt): Long =
+    corearchX86XsaveExternXgetbv(v)
 
 public actual fun xsaveopt(p: MutPtr, hi: UInt, lo: UInt) {
     corearchX86XsaveXsaveopt(p.rawAddress.toCPointer<ByteVar>(), hi, lo)

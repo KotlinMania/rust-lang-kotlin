@@ -15,6 +15,7 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -284,7 +285,7 @@ public fun <BorrowType, K, V, Type, Q> NodeRef<BorrowType, K, V, Type>.findKeyIn
     check(startIndex <= keys.len())
     // ignore-tidy-undocumented-unchecked
     for ((offset, k) in keys.getUnchecked(startIndex until Int.MAX_VALUE).iter().mapIndexed { index, item -> Pair(index, item) }) {
-        when (key.cmp(k.borrow())) {
+        when (kmCompareValues(key, k.borrow()).let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } }) {
             Ordering.Greater -> {}
             Ordering.Equal -> { return IndexResult.kv(startIndex + offset) }
             Ordering.Less -> { return IndexResult.Edge(startIndex + offset) }

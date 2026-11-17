@@ -1,6 +1,7 @@
 // port-lint: source math/exp2m1f.rs
 package io.github.kotlinmania.rustlang.libm.math.exp2m1f
 
+import io.github.kotlinmania.rustlang.libm.math.support.CastFrom
 import io.github.kotlinmania.rustlang.libm.math.support.Float
 import io.github.kotlinmania.rustlang.libm.math.support.Int
 import io.github.kotlinmania.rustlang.libm.math.support.coldPath
@@ -349,7 +350,7 @@ public fun crExp2m1f(x: kotlin.Float): kotlin.Float {
         val j = i and 0xfL
         var e = i - j
         e = e shr 4
-        var s = TB[Int.castFrom(j)]
+        var s = TB[Int.CastFrom(j)]
         val su = Double.fromBits(((e + 0x3ffL).unsigned() shl 52).toLong())
         s *= su
         var c0 = C[0] + h * C[1]

@@ -1,6 +1,7 @@
 // port-lint: source escape.rs
 package io.github.kotlinmania.rustlang.core.escape
 
+import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
@@ -230,7 +231,7 @@ public fun <Escaping> EscapeIterInner.Companion.empty(n: Int): EscapeIterInner<E
     return EscapeIterInner.new(MaybeEscapedCharacter(escapeSeq = List(n) { io.github.kotlinmania.rustlang.core.ascii.Char.Null }), 0 until 0, n)
 }
 
-public fun <Escaping> EscapeIterInner<Escaping>.len(n: Int): Int = Int.from(this.alive.end - this.alive.start)
+public fun <Escaping> EscapeIterInner<Escaping>.len(n: Int): Int = Int.From(this.alive.end - this.alive.start)
 
 public fun <Escaping> EscapeIterInner<Escaping>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.alive.advanceBy(n)
 
@@ -264,7 +265,7 @@ public fun <Escaping> EscapeIterInner<Escaping>.toStrUnchecked(n: Int): String {
     // SAFETY: The caller guarantees `self.data` contains printable ASCII
     // characters in its `escapeSeq` variant, and `self.alive` is
     // a valid range for `self.data.escapeSeq`.
-    return this.data.escapeSeq.getUnchecked(Int.from(this.alive.start) until Int.from(this.alive.end)).asStr()
+    return this.data.escapeSeq.getUnchecked(Int.From(this.alive.start) until Int.From(this.alive.end)).asStr()
 }
 
 public fun EscapeIterInner<AlwaysEscaped>.next(n: Int): UByte? {
@@ -273,7 +274,7 @@ public fun EscapeIterInner<AlwaysEscaped>.next(n: Int): UByte? {
     // contains printable ASCII characters in its `escapeSeq`
     // variant, and `i` is guaranteed to be a valid index for
     // `self.data.escapeSeq`.
-    return this.data.escapeSeq.getUnchecked(Int.from(i)).toU8()
+    return this.data.escapeSeq.getUnchecked(Int.From(i)).toU8()
 }
 
 public fun EscapeIterInner<AlwaysEscaped>.nextBack(n: Int): UByte? {
@@ -282,7 +283,7 @@ public fun EscapeIterInner<AlwaysEscaped>.nextBack(n: Int): UByte? {
     // contains printable ASCII characters in its `escapeSeq`
     // variant, and `i` is guaranteed to be a valid index for
     // `self.data.escapeSeq`.
-    return this.data.escapeSeq.getUnchecked(Int.from(i)).toU8()
+    return this.data.escapeSeq.getUnchecked(Int.From(i)).toU8()
 }
 
 // This is the only way to create any `EscapeIterInner` containing a `char` in

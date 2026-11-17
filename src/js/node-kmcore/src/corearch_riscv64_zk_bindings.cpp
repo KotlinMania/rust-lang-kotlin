@@ -51,7 +51,7 @@ static uint64_t km_napi_arg_u64(const Napi::Value& v) {
     return 0;
 }
 
-static Napi::Value corearchRiscv64ZkAes64es_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscv64ZkExternAes64es_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int64_t rs1 = km_info.Length() > 0 ? km_napi_arg_i64(km_info[0]) : 0;
     int64_t rs2 = km_info.Length() > 1 ? km_napi_arg_i64(km_info[1]) : 0;
@@ -85,7 +85,7 @@ static Napi::Value corearchRiscv64ZkAes64es_napi(const Napi::CallbackInfo& km_in
     return Napi::String::New(km_env, std::to_string(static_cast<int64_t>(km_res)));
 }
 
-static Napi::Value corearchRiscv64ZkAes64esm_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscv64ZkExternAes64esm_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int64_t rs1 = km_info.Length() > 0 ? km_napi_arg_i64(km_info[0]) : 0;
     int64_t rs2 = km_info.Length() > 1 ? km_napi_arg_i64(km_info[1]) : 0;
@@ -119,7 +119,7 @@ static Napi::Value corearchRiscv64ZkAes64esm_napi(const Napi::CallbackInfo& km_i
     return Napi::String::New(km_env, std::to_string(static_cast<int64_t>(km_res)));
 }
 
-static Napi::Value corearchRiscv64ZkAes64ds_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscv64ZkExternAes64ds_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int64_t rs1 = km_info.Length() > 0 ? km_napi_arg_i64(km_info[0]) : 0;
     int64_t rs2 = km_info.Length() > 1 ? km_napi_arg_i64(km_info[1]) : 0;
@@ -153,7 +153,7 @@ static Napi::Value corearchRiscv64ZkAes64ds_napi(const Napi::CallbackInfo& km_in
     return Napi::String::New(km_env, std::to_string(static_cast<int64_t>(km_res)));
 }
 
-static Napi::Value corearchRiscv64ZkAes64dsm_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscv64ZkExternAes64dsm_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int64_t rs1 = km_info.Length() > 0 ? km_napi_arg_i64(km_info[0]) : 0;
     int64_t rs2 = km_info.Length() > 1 ? km_napi_arg_i64(km_info[1]) : 0;
@@ -187,7 +187,7 @@ static Napi::Value corearchRiscv64ZkAes64dsm_napi(const Napi::CallbackInfo& km_i
     return Napi::String::New(km_env, std::to_string(static_cast<int64_t>(km_res)));
 }
 
-static Napi::Value corearchRiscv64ZkAes64im_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscv64ZkExternAes64im_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int64_t rs1 = km_info.Length() > 0 ? km_napi_arg_i64(km_info[0]) : 0;
     typedef int64_t (*km_fn_t)(int64_t);
@@ -220,7 +220,7 @@ static Napi::Value corearchRiscv64ZkAes64im_napi(const Napi::CallbackInfo& km_in
     return Napi::String::New(km_env, std::to_string(static_cast<int64_t>(km_res)));
 }
 
-static Napi::Value corearchRiscv64ZkSha512sig0_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscv64ZkExternSha512sig0_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int64_t rs1 = km_info.Length() > 0 ? km_napi_arg_i64(km_info[0]) : 0;
     typedef int64_t (*km_fn_t)(int64_t);
@@ -253,7 +253,7 @@ static Napi::Value corearchRiscv64ZkSha512sig0_napi(const Napi::CallbackInfo& km
     return Napi::String::New(km_env, std::to_string(static_cast<int64_t>(km_res)));
 }
 
-static Napi::Value corearchRiscv64ZkSha512sig1_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscv64ZkExternSha512sig1_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int64_t rs1 = km_info.Length() > 0 ? km_napi_arg_i64(km_info[0]) : 0;
     typedef int64_t (*km_fn_t)(int64_t);
@@ -286,7 +286,7 @@ static Napi::Value corearchRiscv64ZkSha512sig1_napi(const Napi::CallbackInfo& km
     return Napi::String::New(km_env, std::to_string(static_cast<int64_t>(km_res)));
 }
 
-static Napi::Value corearchRiscv64ZkSha512sum0_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscv64ZkExternSha512sum0_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int64_t rs1 = km_info.Length() > 0 ? km_napi_arg_i64(km_info[0]) : 0;
     typedef int64_t (*km_fn_t)(int64_t);
@@ -319,7 +319,7 @@ static Napi::Value corearchRiscv64ZkSha512sum0_napi(const Napi::CallbackInfo& km
     return Napi::String::New(km_env, std::to_string(static_cast<int64_t>(km_res)));
 }
 
-static Napi::Value corearchRiscv64ZkSha512sum1_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscv64ZkExternSha512sum1_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int64_t rs1 = km_info.Length() > 0 ? km_napi_arg_i64(km_info[0]) : 0;
     typedef int64_t (*km_fn_t)(int64_t);
@@ -353,15 +353,15 @@ static Napi::Value corearchRiscv64ZkSha512sum1_napi(const Napi::CallbackInfo& km
 }
 
 static void register_riscv64_zk_napi(Napi::Env env, Napi::Object exports) {
-    exports.Set("corearchRiscv64ZkAes64es", Napi::Function::New(env, corearchRiscv64ZkAes64es_napi));
-    exports.Set("corearchRiscv64ZkAes64esm", Napi::Function::New(env, corearchRiscv64ZkAes64esm_napi));
-    exports.Set("corearchRiscv64ZkAes64ds", Napi::Function::New(env, corearchRiscv64ZkAes64ds_napi));
-    exports.Set("corearchRiscv64ZkAes64dsm", Napi::Function::New(env, corearchRiscv64ZkAes64dsm_napi));
-    exports.Set("corearchRiscv64ZkAes64im", Napi::Function::New(env, corearchRiscv64ZkAes64im_napi));
-    exports.Set("corearchRiscv64ZkSha512sig0", Napi::Function::New(env, corearchRiscv64ZkSha512sig0_napi));
-    exports.Set("corearchRiscv64ZkSha512sig1", Napi::Function::New(env, corearchRiscv64ZkSha512sig1_napi));
-    exports.Set("corearchRiscv64ZkSha512sum0", Napi::Function::New(env, corearchRiscv64ZkSha512sum0_napi));
-    exports.Set("corearchRiscv64ZkSha512sum1", Napi::Function::New(env, corearchRiscv64ZkSha512sum1_napi));
+    exports.Set("corearchRiscv64ZkExternAes64es", Napi::Function::New(env, corearchRiscv64ZkExternAes64es_napi));
+    exports.Set("corearchRiscv64ZkExternAes64esm", Napi::Function::New(env, corearchRiscv64ZkExternAes64esm_napi));
+    exports.Set("corearchRiscv64ZkExternAes64ds", Napi::Function::New(env, corearchRiscv64ZkExternAes64ds_napi));
+    exports.Set("corearchRiscv64ZkExternAes64dsm", Napi::Function::New(env, corearchRiscv64ZkExternAes64dsm_napi));
+    exports.Set("corearchRiscv64ZkExternAes64im", Napi::Function::New(env, corearchRiscv64ZkExternAes64im_napi));
+    exports.Set("corearchRiscv64ZkExternSha512sig0", Napi::Function::New(env, corearchRiscv64ZkExternSha512sig0_napi));
+    exports.Set("corearchRiscv64ZkExternSha512sig1", Napi::Function::New(env, corearchRiscv64ZkExternSha512sig1_napi));
+    exports.Set("corearchRiscv64ZkExternSha512sum0", Napi::Function::New(env, corearchRiscv64ZkExternSha512sum0_napi));
+    exports.Set("corearchRiscv64ZkExternSha512sum1", Napi::Function::New(env, corearchRiscv64ZkExternSha512sum1_napi));
 }
 
 static KmNapiRegistrarNode registrar_node = { &register_riscv64_zk_napi, nullptr };

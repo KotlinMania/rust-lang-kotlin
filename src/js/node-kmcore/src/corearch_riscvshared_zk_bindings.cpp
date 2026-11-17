@@ -121,7 +121,7 @@ static Napi::Value corearchRiscvsharedZkSm4ks_napi(const Napi::CallbackInfo& km_
     return Napi::Number::New(km_env, static_cast<int32_t>(km_res));
 }
 
-static Napi::Value corearchRiscvsharedZkSm3p0_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscvsharedZkExternSm3p0_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t rs1 = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     typedef int32_t (*km_fn_t)(int32_t);
@@ -154,7 +154,7 @@ static Napi::Value corearchRiscvsharedZkSm3p0_napi(const Napi::CallbackInfo& km_
     return Napi::Number::New(km_env, static_cast<int32_t>(km_res));
 }
 
-static Napi::Value corearchRiscvsharedZkSm3p1_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscvsharedZkExternSm3p1_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t rs1 = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     typedef int32_t (*km_fn_t)(int32_t);
@@ -187,7 +187,7 @@ static Napi::Value corearchRiscvsharedZkSm3p1_napi(const Napi::CallbackInfo& km_
     return Napi::Number::New(km_env, static_cast<int32_t>(km_res));
 }
 
-static Napi::Value corearchRiscvsharedZkSha256sig0_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscvsharedZkExternSha256sig0_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t rs1 = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     typedef int32_t (*km_fn_t)(int32_t);
@@ -220,7 +220,7 @@ static Napi::Value corearchRiscvsharedZkSha256sig0_napi(const Napi::CallbackInfo
     return Napi::Number::New(km_env, static_cast<int32_t>(km_res));
 }
 
-static Napi::Value corearchRiscvsharedZkSha256sig1_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscvsharedZkExternSha256sig1_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t rs1 = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     typedef int32_t (*km_fn_t)(int32_t);
@@ -253,7 +253,7 @@ static Napi::Value corearchRiscvsharedZkSha256sig1_napi(const Napi::CallbackInfo
     return Napi::Number::New(km_env, static_cast<int32_t>(km_res));
 }
 
-static Napi::Value corearchRiscvsharedZkSha256sum0_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscvsharedZkExternSha256sum0_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t rs1 = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     typedef int32_t (*km_fn_t)(int32_t);
@@ -286,7 +286,7 @@ static Napi::Value corearchRiscvsharedZkSha256sum0_napi(const Napi::CallbackInfo
     return Napi::Number::New(km_env, static_cast<int32_t>(km_res));
 }
 
-static Napi::Value corearchRiscvsharedZkSha256sum1_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscvsharedZkExternSha256sum1_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t rs1 = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     typedef int32_t (*km_fn_t)(int32_t);
@@ -400,12 +400,12 @@ static Napi::Value corearchRiscvsharedZkXperm464_napi(const Napi::CallbackInfo& 
 static void register_riscvshared_zk_napi(Napi::Env env, Napi::Object exports) {
     exports.Set("corearchRiscvsharedZkSm4ed", Napi::Function::New(env, corearchRiscvsharedZkSm4ed_napi));
     exports.Set("corearchRiscvsharedZkSm4ks", Napi::Function::New(env, corearchRiscvsharedZkSm4ks_napi));
-    exports.Set("corearchRiscvsharedZkSm3p0", Napi::Function::New(env, corearchRiscvsharedZkSm3p0_napi));
-    exports.Set("corearchRiscvsharedZkSm3p1", Napi::Function::New(env, corearchRiscvsharedZkSm3p1_napi));
-    exports.Set("corearchRiscvsharedZkSha256sig0", Napi::Function::New(env, corearchRiscvsharedZkSha256sig0_napi));
-    exports.Set("corearchRiscvsharedZkSha256sig1", Napi::Function::New(env, corearchRiscvsharedZkSha256sig1_napi));
-    exports.Set("corearchRiscvsharedZkSha256sum0", Napi::Function::New(env, corearchRiscvsharedZkSha256sum0_napi));
-    exports.Set("corearchRiscvsharedZkSha256sum1", Napi::Function::New(env, corearchRiscvsharedZkSha256sum1_napi));
+    exports.Set("corearchRiscvsharedZkExternSm3p0", Napi::Function::New(env, corearchRiscvsharedZkExternSm3p0_napi));
+    exports.Set("corearchRiscvsharedZkExternSm3p1", Napi::Function::New(env, corearchRiscvsharedZkExternSm3p1_napi));
+    exports.Set("corearchRiscvsharedZkExternSha256sig0", Napi::Function::New(env, corearchRiscvsharedZkExternSha256sig0_napi));
+    exports.Set("corearchRiscvsharedZkExternSha256sig1", Napi::Function::New(env, corearchRiscvsharedZkExternSha256sig1_napi));
+    exports.Set("corearchRiscvsharedZkExternSha256sum0", Napi::Function::New(env, corearchRiscvsharedZkExternSha256sum0_napi));
+    exports.Set("corearchRiscvsharedZkExternSha256sum1", Napi::Function::New(env, corearchRiscvsharedZkExternSha256sum1_napi));
     exports.Set("corearchRiscvsharedZkXperm864", Napi::Function::New(env, corearchRiscvsharedZkXperm864_napi));
     exports.Set("corearchRiscvsharedZkXperm464", Napi::Function::New(env, corearchRiscvsharedZkXperm464_napi));
 }

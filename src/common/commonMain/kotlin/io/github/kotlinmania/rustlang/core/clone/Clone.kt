@@ -454,7 +454,7 @@ public open class AssertParamIsCopy<T>(
  *         public fun value(): Int
  *     }
  *     fun Int.modify() {
- *         this *= 10
+ *         (this * 10).let {}
  *     }
  *
  *     fun Int.value(): Int {

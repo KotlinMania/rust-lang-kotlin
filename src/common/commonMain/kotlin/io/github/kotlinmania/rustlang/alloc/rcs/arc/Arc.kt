@@ -3472,11 +3472,11 @@ public fun <T, A : AllocatorNightly> fromArcTSliceA(v: List<T>): Arc<List<T>, A>
  */
 public fun <Owned, B> fromArcB(cow: B): Arc<B, Global> where B : ToOwned<Owned> =
     when (cow) {
-        is Cow.Borrowed<*> -> {
+        is Cow.Borrowed<*, *> -> {
             val (s) = cow
             Arc.from(s)
         }
-        is Cow.Owned<*> -> {
+        is Cow.Owned<*, *> -> {
             val (s1) = cow
             Arc.from(s1)
         }

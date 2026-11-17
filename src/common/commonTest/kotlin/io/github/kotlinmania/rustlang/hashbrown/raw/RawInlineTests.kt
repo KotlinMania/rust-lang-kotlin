@@ -14,6 +14,7 @@ import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicI8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.hashbrown.Iter
 import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Global
 import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.Group
@@ -180,7 +181,7 @@ public class RawTestMapInlineTests {
         }
         val dropped: AtomicI8 = AtomicI8.new(2)
         val table = RawTable.newIn(MyAlloc(inner = MyAllocInner(dropCount = dropped.clone())))
-        for ((idx, panicInClone) in iter.repeatN(DISARMED, 7).mapIndexed { index, item -> Pair(index, item) }) {
+        for ((idx, panicInClone) in Iter.repeatN(DISARMED, 7).mapIndexed { index, item -> Pair(index, item) }) {
             val idx1 = idx.toULong()
             table.insert(idx1, Pair(idx1, CheckedCloneDrop(panicInClone = panicInClone, dropped = false, needDrop = mutableListOf(idx1))), { (k, _) -> k })
         }

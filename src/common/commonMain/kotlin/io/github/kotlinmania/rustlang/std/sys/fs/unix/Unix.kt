@@ -148,7 +148,6 @@ import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.fd.asFd
 import io.github.kotlinmania.rustlang.std.os.fd.asRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.intoRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.asBytes
@@ -162,7 +161,6 @@ import io.github.kotlinmania.rustlang.std.sys.AsInnerMut
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.fs.common.Dir
 import io.github.kotlinmania.rustlang.std.sys.fs.common.NOT_FILE_ERROR
 import io.github.kotlinmania.rustlang.std.sys.helpers.ignoreNotfound
@@ -410,12 +408,12 @@ public open class File(
             // However, since this is a variadic function, C integer promotion rules mean that on
             // the ABI level, this still gets passed as `cInt` (aka `UInt` on Unix platforms).
             val fd = when (val tryResult = cvtR({ open64(path.asPtr(), flags, opts.mode.toInt()) })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<File, Error>(tryResult.errValue()) }
-            return RustResult.Ok<File, Error>(File(FileDesc.fromRawFd(fd)))
+            return RustResult.Ok<File, Error>(File(FileDesc.FromRawFd(fd)))
         }
 
         public fun fromInner(fileDesc: FileDesc): File = File(fileDesc)
 
-        public fun fromRawFd(rawFd: RawFd): File = File(FromRawFd.fromRawFd(rawFd))
+        public fun fromRawFd(rawFd: RawFd): File = File(FromRawFd.FromRawFd(rawFd))
     }
 }
 
@@ -492,7 +490,7 @@ public fun tryStatx(fd: CInt, path: ConstPtr, flags: Int, mask: UInt): RustResul
     }
     val localStorageL172C8 = AddressableLocal(Statx(), UnresolvedTypeLayout<Statx>())
     val buf by localStorageL172C8
-    when (val matchVal = cvt(statx(fd, path, flags, mask, RustMutableReference(localStorageL172C8.asMutPtr(), localStorageL172C8.layout)))) {
+    when (val matchVal = cvt(Statx(fd, path, flags, mask, RustMutableReference(localStorageL172C8.asMutPtr(), localStorageL172C8.layout)))) {
         is RustResult.Err<*, *> -> {
             val err = matchVal.errValue()
             if (STATX_SAVED_STATE.load(Ordering.Relaxed) == StatxState.Present.value.toUByte()) {
@@ -509,7 +507,7 @@ public fun tryStatx(fd: CInt, path: ConstPtr, flags: Int, mask: UInt): RustResul
             // See: https://github.com/rust-lang/rust/issues/65662
             //
             // Note what about transient conditions like `ENOMEM`?
-            val err2 = cvt(statx(0, ConstPtr(0L), 0, STATX_BASIC_STATS or STATX_BTIME, MutPtr(0L))).err().andThen({ e -> e.rawOsError() })
+            val err2 = cvt(Statx(0, ConstPtr(0L), 0, STATX_BASIC_STATS or STATX_BTIME, MutPtr(0L))).err().andThen({ e -> e.rawOsError() })
             if (err2 == EFAULT) {
                 STATX_SAVED_STATE.store(StatxState.Present.value.toUByte(), Ordering.Relaxed)
                 return RustResult.Err(err)
@@ -747,7 +745,7 @@ public open class DirEntry(
         val fd = when (val tryResult = cvt(dirfd(this.dir.dirp.value))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<FileAttr, Error>(tryResult.errValue()) }
         // Make this FD into a directory handle. We don't actually drop it,
         // so having an `OwnedFd` is fine.
-        val dirHandle = Dir(OwnedFd.fromRawFd(fd))
+        val dirHandle = Dir(OwnedFd.FromRawFd(fd))
         return dirHandle.metadataC(this.name, true)
     }
 
@@ -884,7 +882,7 @@ public open class OpenOptions(
                     }
                 }
                 else -> {
-                    if (this.truncate && this.createNew.inv()) {
+                    if (this.truncate && !this.createNew) {
                         return RustResult.Err<CInt, Error>(Error.new(ErrorKind.InvalidInput, "append and truncate cannot both be enabled"))
                     }
                 }
@@ -1429,7 +1427,7 @@ public fun setPermNofollow(p: CStr, perm: FilePermissions): RustResult<Unit, Err
         // and that successfully converted the `Path` to a `CString`,
         // it should be safe to convert the `CStr` back to a `Path`.
         val osStr = OsStr.fromEncodedBytesUnchecked(p1.toBytes())
-        return when (val tryResult = options.open(Path.new(osStr))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }.setPermissions(Permissions.fromInner(perm1))
+        return when (val tryResult = options.open(Path.new(osStr))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }.setPermissions(Permissions.FromInner(perm1))
     }
     // This res value is modified for platforms that support the `fchmodat` syscall.
     var res: RustResult<Unit, Error> = RustResult.Err<Unit, Error>(ErrorKind.Unsupported.into())
@@ -1625,7 +1623,7 @@ public fun mkfifo(path: Path, mode: UInt): RustResult<Unit, Error> =
 
 public fun openatNofollowDironly(parentFd: RawFd?, p: CStr): RustResult<OwnedFd, Error> {
     val fd = when (val tryResult = cvtR({ openat((parentFd ?: AT_FDCWD), p.asPtr(), O_CLOEXEC or O_RDONLY or O_NOFOLLOW or O_DIRECTORY) })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<OwnedFd, Error>(tryResult.errValue()) }
-    return RustResult.Ok<OwnedFd, Error>(OwnedFd.fromRawFd(fd))
+    return RustResult.Ok<OwnedFd, Error>(OwnedFd.FromRawFd(fd))
 }
 
 public fun fdreaddir(dirFd: OwnedFd): RustResult<Pair<ReadDir, RawFd>, Error> {
@@ -1726,7 +1724,7 @@ public fun removeDirAllRecursive(parentFd: RawFd?, path: CStr): RustResult<Unit,
                     when (val tryResult = removeDirAllRecursive(fd1, child1.name)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
                 }
             }
-        if (result1.isErr() && isEnoent(result1).inv()) {
+        if (result1.isErr() && !isEnoent(result1)) {
             return result1
         }
     }

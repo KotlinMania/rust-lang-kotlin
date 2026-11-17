@@ -24,6 +24,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
+import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawHandle
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
@@ -381,7 +382,7 @@ public fun childPipe(oursReadable: Boolean, theirHandleInheritable: Boolean): Re
                     FILE_SHARE_READ
                 }, FILE_CREATE, 0u, FILE_PIPE_BYTE_STREAM_TYPE, FILE_PIPE_BYTE_STREAM_MODE, FILE_PIPE_QUEUE_OPERATION, 1u, PIPE_BUFFER_CAPACITY, PIPE_BUFFER_CAPACITY, timeout)
             if (ntSuccess(status1)) {
-                Handle.fromRawHandle(ours)
+                Handle.FromRawHandle(ours)
             } else {
                 return Result.Err<Pipes, Error>(Error.fromRawOsError(rtlNtStatusToDosError(status1).toInt()))
             }
@@ -403,7 +404,7 @@ public fun childPipe(oursReadable: Boolean, theirHandleInheritable: Boolean): Re
                         GENERIC_READ
                     }, objectAttributes, ioStatus, 0u, FILE_NON_DIRECTORY_FILE or FILE_SYNCHRONOUS_IO_NONALERT)
             if (ntSuccess(status2)) {
-                Handle.fromRawHandle(theirs)
+                Handle.FromRawHandle(theirs)
             } else {
                 return Result.Err<Pipes, Error>(Error.fromRawOsError(rtlNtStatusToDosError(status2).toInt()))
             }

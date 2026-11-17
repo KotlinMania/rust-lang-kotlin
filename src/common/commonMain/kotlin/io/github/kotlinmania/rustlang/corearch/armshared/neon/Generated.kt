@@ -680,7 +680,7 @@ public fun vaddhF16(a: F16, b: F16): F16 = a + b
  */
 public fun vaddhnHighS16(r: Int8x8T, a: Int16x8T, b: Int16x8T): Int8x16T =
     run {
-        val x = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = int16x8T.splat(8); simdArg0 }; Int8x16T() }
+        val x = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = Int16x8T.splat(8); simdArg0 }; Int8x16T() }
         vcombineS8(r, x)
     }
 
@@ -690,7 +690,7 @@ public fun vaddhnHighS16(r: Int8x8T, a: Int16x8T, b: Int16x8T): Int8x16T =
  */
 public fun vaddhnHighS32(r: Int16x4T, a: Int32x4T, b: Int32x4T): Int16x8T =
     run {
-        val x = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = int32x4T.splat(16); simdArg0 }; Int16x8T() }
+        val x = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = Int32x4T.splat(16); simdArg0 }; Int16x8T() }
         vcombineS16(r, x)
     }
 
@@ -700,7 +700,7 @@ public fun vaddhnHighS32(r: Int16x4T, a: Int32x4T, b: Int32x4T): Int16x8T =
  */
 public fun vaddhnHighS64(r: Int32x2T, a: Int64x2T, b: Int64x2T): Int32x4T =
     run {
-        val x = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = int64x2T.splat(32); simdArg0 }; Int32x4T() }
+        val x = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = Int64x2T.splat(32); simdArg0 }; Int32x4T() }
         vcombineS32(r, x)
     }
 
@@ -710,7 +710,7 @@ public fun vaddhnHighS64(r: Int32x2T, a: Int64x2T, b: Int64x2T): Int32x4T =
  */
 public fun vaddhnHighU16(r: Uint8x8T, a: Uint16x8T, b: Uint16x8T): Uint8x16T =
     run {
-        val x = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = uint16x8T.splat(8); simdArg0 }; Uint8x16T() }
+        val x = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = Uint16x8T.splat(8); simdArg0 }; Uint8x16T() }
         vcombineU8(r, x)
     }
 
@@ -720,7 +720,7 @@ public fun vaddhnHighU16(r: Uint8x8T, a: Uint16x8T, b: Uint16x8T): Uint8x16T =
  */
 public fun vaddhnHighU32(r: Uint16x4T, a: Uint32x4T, b: Uint32x4T): Uint16x8T =
     run {
-        val x = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = uint32x4T.splat(16); simdArg0 }; Uint16x8T() }
+        val x = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = Uint32x4T.splat(16); simdArg0 }; Uint16x8T() }
         vcombineU16(r, x)
     }
 
@@ -730,7 +730,7 @@ public fun vaddhnHighU32(r: Uint16x4T, a: Uint32x4T, b: Uint32x4T): Uint16x8T =
  */
 public fun vaddhnHighU64(r: Uint32x2T, a: Uint64x2T, b: Uint64x2T): Uint32x4T =
     run {
-        val x = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = uint64x2T.splat(32); simdArg0 }; Uint32x4T() }
+        val x = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = Uint64x2T.splat(32); simdArg0 }; Uint32x4T() }
         vcombineU32(r, x)
     }
 
@@ -738,37 +738,37 @@ public fun vaddhnHighU64(r: Uint32x2T, a: Uint64x2T, b: Uint64x2T): Uint32x4T =
  * Add returning High Narrow.
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vaddhnS16)
  */
-public fun vaddhnS16(a: Int16x8T, b: Int16x8T): Int8x8T = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = int16x8T.splat(8); simdArg0 }; Int8x8T() }
+public fun vaddhnS16(a: Int16x8T, b: Int16x8T): Int8x8T = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = Int16x8T.splat(8); simdArg0 }; Int8x8T() }
 
 /**
  * Add returning High Narrow.
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vaddhnS32)
  */
-public fun vaddhnS32(a: Int32x4T, b: Int32x4T): Int16x4T = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = int32x4T.splat(16); simdArg0 }; Int16x4T() }
+public fun vaddhnS32(a: Int32x4T, b: Int32x4T): Int16x4T = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = Int32x4T.splat(16); simdArg0 }; Int16x4T() }
 
 /**
  * Add returning High Narrow.
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vaddhnS64)
  */
-public fun vaddhnS64(a: Int64x2T, b: Int64x2T): Int32x2T = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = int64x2T.splat(32); simdArg0 }; Int32x2T() }
+public fun vaddhnS64(a: Int64x2T, b: Int64x2T): Int32x2T = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = Int64x2T.splat(32); simdArg0 }; Int32x2T() }
 
 /**
  * Add returning High Narrow.
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vaddhnU16)
  */
-public fun vaddhnU16(a: Uint16x8T, b: Uint16x8T): Uint8x8T = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = uint16x8T.splat(8); simdArg0 }; Uint8x8T() }
+public fun vaddhnU16(a: Uint16x8T, b: Uint16x8T): Uint8x8T = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = Uint16x8T.splat(8); simdArg0 }; Uint8x8T() }
 
 /**
  * Add returning High Narrow.
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vaddhnU32)
  */
-public fun vaddhnU32(a: Uint32x4T, b: Uint32x4T): Uint16x4T = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = uint32x4T.splat(16); simdArg0 }; Uint16x4T() }
+public fun vaddhnU32(a: Uint32x4T, b: Uint32x4T): Uint16x4T = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = Uint32x4T.splat(16); simdArg0 }; Uint16x4T() }
 
 /**
  * Add returning High Narrow.
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vaddhnU64)
  */
-public fun vaddhnU64(a: Uint64x2T, b: Uint64x2T): Uint32x2T = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = uint64x2T.splat(32); simdArg0 }; Uint32x2T() }
+public fun vaddhnU64(a: Uint64x2T, b: Uint64x2T): Uint32x2T = run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = Uint64x2T.splat(32); simdArg0 }; Uint32x2T() }
 
 /**
  * Signed Add Long (vector, high half).
@@ -1195,7 +1195,7 @@ public fun vandqU64(a: Uint64x2T, b: Uint64x2T): Uint64x2T = run { val simdArg0 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbicS16)
  */
 public fun vbicS16(a: Int16x4T, b: Int16x4T): Int16x4T {
-    val c = int16x4T.splat(-1)
+    val c = Int16x4T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = c; simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -1204,7 +1204,7 @@ public fun vbicS16(a: Int16x4T, b: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbicS32)
  */
 public fun vbicS32(a: Int32x2T, b: Int32x2T): Int32x2T {
-    val c = int32x2T.splat(-1)
+    val c = Int32x2T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = c; simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -1213,7 +1213,7 @@ public fun vbicS32(a: Int32x2T, b: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbicS64)
  */
 public fun vbicS64(a: Int64x1T, b: Int64x1T): Int64x1T {
-    val c = int64x1T.splat(-1)
+    val c = Int64x1T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = c; simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -1222,7 +1222,7 @@ public fun vbicS64(a: Int64x1T, b: Int64x1T): Int64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbicS8)
  */
 public fun vbicS8(a: Int8x8T, b: Int8x8T): Int8x8T {
-    val c = int8x8T.splat(-1)
+    val c = Int8x8T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = c; simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -1231,7 +1231,7 @@ public fun vbicS8(a: Int8x8T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbicqS16)
  */
 public fun vbicqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
-    val c = int16x8T.splat(-1)
+    val c = Int16x8T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = c; simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -1240,7 +1240,7 @@ public fun vbicqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbicqS32)
  */
 public fun vbicqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
-    val c = int32x4T.splat(-1)
+    val c = Int32x4T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = c; simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -1249,7 +1249,7 @@ public fun vbicqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbicqS64)
  */
 public fun vbicqS64(a: Int64x2T, b: Int64x2T): Int64x2T {
-    val c = int64x2T.splat(-1)
+    val c = Int64x2T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = c; simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -1258,7 +1258,7 @@ public fun vbicqS64(a: Int64x2T, b: Int64x2T): Int64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbicqS8)
  */
 public fun vbicqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
-    val c = int8x16T.splat(-1)
+    val c = Int8x16T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = c; simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -1267,7 +1267,7 @@ public fun vbicqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbicU16)
  */
 public fun vbicU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
-    val c = int16x4T.splat(-1)
+    val c = Int16x4T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -1276,7 +1276,7 @@ public fun vbicU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbicU32)
  */
 public fun vbicU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
-    val c = int32x2T.splat(-1)
+    val c = Int32x2T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -1285,7 +1285,7 @@ public fun vbicU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbicU64)
  */
 public fun vbicU64(a: Uint64x1T, b: Uint64x1T): Uint64x1T {
-    val c = int64x1T.splat(-1)
+    val c = Int64x1T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -1294,7 +1294,7 @@ public fun vbicU64(a: Uint64x1T, b: Uint64x1T): Uint64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbicU8)
  */
 public fun vbicU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
-    val c = int8x8T.splat(-1)
+    val c = Int8x8T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -1303,7 +1303,7 @@ public fun vbicU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbicqU16)
  */
 public fun vbicqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T {
-    val c = int16x8T.splat(-1)
+    val c = Int16x8T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -1312,7 +1312,7 @@ public fun vbicqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbicqU32)
  */
 public fun vbicqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T {
-    val c = int32x4T.splat(-1)
+    val c = Int32x4T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -1321,7 +1321,7 @@ public fun vbicqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbicqU64)
  */
 public fun vbicqU64(a: Uint64x2T, b: Uint64x2T): Uint64x2T {
-    val c = int64x2T.splat(-1)
+    val c = Int64x2T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -1330,7 +1330,7 @@ public fun vbicqU64(a: Uint64x2T, b: Uint64x2T): Uint64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbicqU8)
  */
 public fun vbicqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T {
-    val c = int8x16T.splat(-1)
+    val c = Int8x16T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -1339,7 +1339,7 @@ public fun vbicqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslF16)
  */
 public fun vbslF16(a: Uint16x4T, b: Float16x4T, c: Float16x4T): Float16x4T {
-    val not = int16x4T.splat(-1)
+    val not = Int16x4T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float16x4T, Uint16x4T>(b, UnresolvedTypeLayout<Float16x4T>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1348,7 +1348,7 @@ public fun vbslF16(a: Uint16x4T, b: Float16x4T, c: Float16x4T): Float16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslqF16)
  */
 public fun vbslqF16(a: Uint16x8T, b: Float16x8T, c: Float16x8T): Float16x8T {
-    val not = int16x8T.splat(-1)
+    val not = Int16x8T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float16x8T, Uint16x8T>(b, UnresolvedTypeLayout<Float16x8T>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1357,7 +1357,7 @@ public fun vbslqF16(a: Uint16x8T, b: Float16x8T, c: Float16x8T): Float16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslF32)
  */
 public fun vbslF32(a: Uint32x2T, b: Float32x2T, c: Float32x2T): Float32x2T {
-    val not = int32x2T.splat(-1)
+    val not = Int32x2T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float32x2T, Uint32x2T>(b, UnresolvedTypeLayout<Float32x2T>(), UnresolvedTypeLayout<Uint32x2T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1366,7 +1366,7 @@ public fun vbslF32(a: Uint32x2T, b: Float32x2T, c: Float32x2T): Float32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslP16)
  */
 public fun vbslP16(a: Uint16x4T, b: Poly16x4T, c: Poly16x4T): Poly16x4T {
-    val not = int16x4T.splat(-1)
+    val not = Int16x4T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Poly16x4T, Uint16x4T>(b, UnresolvedTypeLayout<Poly16x4T>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1375,7 +1375,7 @@ public fun vbslP16(a: Uint16x4T, b: Poly16x4T, c: Poly16x4T): Poly16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslP8)
  */
 public fun vbslP8(a: Uint8x8T, b: Poly8x8T, c: Poly8x8T): Poly8x8T {
-    val not = int8x8T.splat(-1)
+    val not = Int8x8T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Poly8x8T, Uint8x8T>(b, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Uint8x8T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1384,7 +1384,7 @@ public fun vbslP8(a: Uint8x8T, b: Poly8x8T, c: Poly8x8T): Poly8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslS16)
  */
 public fun vbslS16(a: Uint16x4T, b: Int16x4T, c: Int16x4T): Int16x4T {
-    val not = int16x4T.splat(-1)
+    val not = Int16x4T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int16x4T, Uint16x4T>(b, UnresolvedTypeLayout<Int16x4T>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1393,7 +1393,7 @@ public fun vbslS16(a: Uint16x4T, b: Int16x4T, c: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslS32)
  */
 public fun vbslS32(a: Uint32x2T, b: Int32x2T, c: Int32x2T): Int32x2T {
-    val not = int32x2T.splat(-1)
+    val not = Int32x2T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int32x2T, Uint32x2T>(b, UnresolvedTypeLayout<Int32x2T>(), UnresolvedTypeLayout<Uint32x2T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1402,7 +1402,7 @@ public fun vbslS32(a: Uint32x2T, b: Int32x2T, c: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslS64)
  */
 public fun vbslS64(a: Uint64x1T, b: Int64x1T, c: Int64x1T): Int64x1T {
-    val not = int64x1T.splat(-1)
+    val not = Int64x1T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int64x1T, Uint64x1T>(b, UnresolvedTypeLayout<Int64x1T>(), UnresolvedTypeLayout<Uint64x1T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1411,7 +1411,7 @@ public fun vbslS64(a: Uint64x1T, b: Int64x1T, c: Int64x1T): Int64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslS8)
  */
 public fun vbslS8(a: Uint8x8T, b: Int8x8T, c: Int8x8T): Int8x8T {
-    val not = int8x8T.splat(-1)
+    val not = Int8x8T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int8x8T, Uint8x8T>(b, UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1420,7 +1420,7 @@ public fun vbslS8(a: Uint8x8T, b: Int8x8T, c: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslqF32)
  */
 public fun vbslqF32(a: Uint32x4T, b: Float32x4T, c: Float32x4T): Float32x4T {
-    val not = int32x4T.splat(-1)
+    val not = Int32x4T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float32x4T, Uint32x4T>(b, UnresolvedTypeLayout<Float32x4T>(), UnresolvedTypeLayout<Uint32x4T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1429,7 +1429,7 @@ public fun vbslqF32(a: Uint32x4T, b: Float32x4T, c: Float32x4T): Float32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslqP16)
  */
 public fun vbslqP16(a: Uint16x8T, b: Poly16x8T, c: Poly16x8T): Poly16x8T {
-    val not = int16x8T.splat(-1)
+    val not = Int16x8T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Poly16x8T, Uint16x8T>(b, UnresolvedTypeLayout<Poly16x8T>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1438,7 +1438,7 @@ public fun vbslqP16(a: Uint16x8T, b: Poly16x8T, c: Poly16x8T): Poly16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslqP8)
  */
 public fun vbslqP8(a: Uint8x16T, b: Poly8x16T, c: Poly8x16T): Poly8x16T {
-    val not = int8x16T.splat(-1)
+    val not = Int8x16T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Poly8x16T, Uint8x16T>(b, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Uint8x16T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1447,7 +1447,7 @@ public fun vbslqP8(a: Uint8x16T, b: Poly8x16T, c: Poly8x16T): Poly8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslqS16)
  */
 public fun vbslqS16(a: Uint16x8T, b: Int16x8T, c: Int16x8T): Int16x8T {
-    val not = int16x8T.splat(-1)
+    val not = Int16x8T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int16x8T, Uint16x8T>(b, UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1456,7 +1456,7 @@ public fun vbslqS16(a: Uint16x8T, b: Int16x8T, c: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslqS32)
  */
 public fun vbslqS32(a: Uint32x4T, b: Int32x4T, c: Int32x4T): Int32x4T {
-    val not = int32x4T.splat(-1)
+    val not = Int32x4T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int32x4T, Uint32x4T>(b, UnresolvedTypeLayout<Int32x4T>(), UnresolvedTypeLayout<Uint32x4T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1465,7 +1465,7 @@ public fun vbslqS32(a: Uint32x4T, b: Int32x4T, c: Int32x4T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslqS64)
  */
 public fun vbslqS64(a: Uint64x2T, b: Int64x2T, c: Int64x2T): Int64x2T {
-    val not = int64x2T.splat(-1)
+    val not = Int64x2T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int64x2T, Uint64x2T>(b, UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Uint64x2T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1474,7 +1474,7 @@ public fun vbslqS64(a: Uint64x2T, b: Int64x2T, c: Int64x2T): Int64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslqS8)
  */
 public fun vbslqS8(a: Uint8x16T, b: Int8x16T, c: Int8x16T): Int8x16T {
-    val not = int8x16T.splat(-1)
+    val not = Int8x16T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int8x16T, Uint8x16T>(b, UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1483,7 +1483,7 @@ public fun vbslqS8(a: Uint8x16T, b: Int8x16T, c: Int8x16T): Int8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslU16)
  */
 public fun vbslU16(a: Uint16x4T, b: Uint16x4T, c: Uint16x4T): Uint16x4T {
-    val not = int16x4T.splat(-1)
+    val not = Int16x4T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1492,7 +1492,7 @@ public fun vbslU16(a: Uint16x4T, b: Uint16x4T, c: Uint16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslU32)
  */
 public fun vbslU32(a: Uint32x2T, b: Uint32x2T, c: Uint32x2T): Uint32x2T {
-    val not = int32x2T.splat(-1)
+    val not = Int32x2T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1501,7 +1501,7 @@ public fun vbslU32(a: Uint32x2T, b: Uint32x2T, c: Uint32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslU64)
  */
 public fun vbslU64(a: Uint64x1T, b: Uint64x1T, c: Uint64x1T): Uint64x1T {
-    val not = int64x1T.splat(-1)
+    val not = Int64x1T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1510,7 +1510,7 @@ public fun vbslU64(a: Uint64x1T, b: Uint64x1T, c: Uint64x1T): Uint64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslU8)
  */
 public fun vbslU8(a: Uint8x8T, b: Uint8x8T, c: Uint8x8T): Uint8x8T {
-    val not = int8x8T.splat(-1)
+    val not = Int8x8T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1519,7 +1519,7 @@ public fun vbslU8(a: Uint8x8T, b: Uint8x8T, c: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslqU16)
  */
 public fun vbslqU16(a: Uint16x8T, b: Uint16x8T, c: Uint16x8T): Uint16x8T {
-    val not = int16x8T.splat(-1)
+    val not = Int16x8T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1528,7 +1528,7 @@ public fun vbslqU16(a: Uint16x8T, b: Uint16x8T, c: Uint16x8T): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslqU32)
  */
 public fun vbslqU32(a: Uint32x4T, b: Uint32x4T, c: Uint32x4T): Uint32x4T {
-    val not = int32x4T.splat(-1)
+    val not = Int32x4T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1537,7 +1537,7 @@ public fun vbslqU32(a: Uint32x4T, b: Uint32x4T, c: Uint32x4T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslqU64)
  */
 public fun vbslqU64(a: Uint64x2T, b: Uint64x2T, c: Uint64x2T): Uint64x2T {
-    val not = int64x2T.splat(-1)
+    val not = Int64x2T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -1546,7 +1546,7 @@ public fun vbslqU64(a: Uint64x2T, b: Uint64x2T, c: Uint64x2T): Uint64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vbslqU8)
  */
 public fun vbslqU8(a: Uint8x16T, b: Uint8x16T, c: Uint8x16T): Uint8x16T {
-    val not = int8x16T.splat(-1)
+    val not = Int8x16T.splat(-1)
     return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
 }
 
@@ -3528,157 +3528,157 @@ public fun vdupLaneqU64(a: Uint64x2T, n: Int): Uint64x1T {
  * Create a new vector with all lanes set to a value
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupNF16)
  */
-public fun vdupNF16(a: F16): Float16x4T = float16x4T.splat(a)
+public fun vdupNF16(a: F16): Float16x4T = Float16x4T.splat(a)
 
 /**
  * Create a new vector with all lanes set to a value
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupqNF16)
  */
-public fun vdupqNF16(a: F16): Float16x8T = float16x8T.splat(a)
+public fun vdupqNF16(a: F16): Float16x8T = Float16x8T.splat(a)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupNF32)
  */
-public fun vdupNF32(value: Float): Float32x2T = float32x2T.splat(value)
+public fun vdupNF32(value: Float): Float32x2T = Float32x2T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupNP16)
  */
-public fun vdupNP16(value: P16): Poly16x4T = poly16x4T.splat(value)
+public fun vdupNP16(value: P16): Poly16x4T = Poly16x4T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupNP8)
  */
-public fun vdupNP8(value: P8): Poly8x8T = poly8x8T.splat(value)
+public fun vdupNP8(value: P8): Poly8x8T = Poly8x8T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupNS16)
  */
-public fun vdupNS16(value: Short): Int16x4T = int16x4T.splat(value)
+public fun vdupNS16(value: Short): Int16x4T = Int16x4T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupNS32)
  */
-public fun vdupNS32(value: Int): Int32x2T = int32x2T.splat(value)
+public fun vdupNS32(value: Int): Int32x2T = Int32x2T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupNS64)
  */
-public fun vdupNS64(value: Long): Int64x1T = int64x1T.splat(value)
+public fun vdupNS64(value: Long): Int64x1T = Int64x1T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupNS8)
  */
-public fun vdupNS8(value: Byte): Int8x8T = int8x8T.splat(value)
+public fun vdupNS8(value: Byte): Int8x8T = Int8x8T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupNU16)
  */
-public fun vdupNU16(value: UShort): Uint16x4T = uint16x4T.splat(value)
+public fun vdupNU16(value: UShort): Uint16x4T = Uint16x4T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupNU32)
  */
-public fun vdupNU32(value: UInt): Uint32x2T = uint32x2T.splat(value)
+public fun vdupNU32(value: UInt): Uint32x2T = Uint32x2T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupNU64)
  */
-public fun vdupNU64(value: ULong): Uint64x1T = uint64x1T.splat(value)
+public fun vdupNU64(value: ULong): Uint64x1T = Uint64x1T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupNU8)
  */
-public fun vdupNU8(value: UByte): Uint8x8T = uint8x8T.splat(value)
+public fun vdupNU8(value: UByte): Uint8x8T = Uint8x8T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupqNF32)
  */
-public fun vdupqNF32(value: Float): Float32x4T = float32x4T.splat(value)
+public fun vdupqNF32(value: Float): Float32x4T = Float32x4T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupqNP16)
  */
-public fun vdupqNP16(value: P16): Poly16x8T = poly16x8T.splat(value)
+public fun vdupqNP16(value: P16): Poly16x8T = Poly16x8T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupqNP8)
  */
-public fun vdupqNP8(value: P8): Poly8x16T = poly8x16T.splat(value)
+public fun vdupqNP8(value: P8): Poly8x16T = Poly8x16T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupqNS16)
  */
-public fun vdupqNS16(value: Short): Int16x8T = int16x8T.splat(value)
+public fun vdupqNS16(value: Short): Int16x8T = Int16x8T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupqNS32)
  */
-public fun vdupqNS32(value: Int): Int32x4T = int32x4T.splat(value)
+public fun vdupqNS32(value: Int): Int32x4T = Int32x4T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupqNS64)
  */
-public fun vdupqNS64(value: Long): Int64x2T = int64x2T.splat(value)
+public fun vdupqNS64(value: Long): Int64x2T = Int64x2T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupqNS8)
  */
-public fun vdupqNS8(value: Byte): Int8x16T = int8x16T.splat(value)
+public fun vdupqNS8(value: Byte): Int8x16T = Int8x16T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupqNU16)
  */
-public fun vdupqNU16(value: UShort): Uint16x8T = uint16x8T.splat(value)
+public fun vdupqNU16(value: UShort): Uint16x8T = Uint16x8T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupqNU32)
  */
-public fun vdupqNU32(value: UInt): Uint32x4T = uint32x4T.splat(value)
+public fun vdupqNU32(value: UInt): Uint32x4T = Uint32x4T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupqNU64)
  */
-public fun vdupqNU64(value: ULong): Uint64x2T = uint64x2T.splat(value)
+public fun vdupqNU64(value: ULong): Uint64x2T = Uint64x2T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupqNU8)
  */
-public fun vdupqNU8(value: UByte): Uint8x16T = uint8x16T.splat(value)
+public fun vdupqNU8(value: UByte): Uint8x16T = Uint8x16T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupNF32Vfp4)
  */
-public fun vdupNF32Vfp4(value: Float): Float32x2T = float32x2T.splat(value)
+public fun vdupNF32Vfp4(value: Float): Float32x2T = Float32x2T.splat(value)
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdupqNF32Vfp4)
  */
-public fun vdupqNF32Vfp4(value: Float): Float32x4T = float32x4T.splat(value)
+public fun vdupqNF32Vfp4(value: Float): Float32x4T = Float32x4T.splat(value)
 
 /**
  * Set all vector lanes to the same value
@@ -4252,13 +4252,13 @@ public fun vgetHighP64(a: Poly64x2T): Poly64x1T = transmute(Simd<ULong>(listOf((
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetHighS64)
  */
-public fun vgetHighS64(a: Int64x2T): Int64x1T = int64x1T(listOf(run { val simdArg0 = a; val simdArg1 = 1; Int64x1T() }))
+public fun vgetHighS64(a: Int64x2T): Int64x1T = Int64x1T(listOf(run { val simdArg0 = a; val simdArg1 = 1; Int64x1T() }))
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetHighU64)
  */
-public fun vgetHighU64(a: Uint64x2T): Uint64x1T = uint64x1T(listOf(run { val simdArg0 = a; val simdArg1 = 1; Uint64x1T() }))
+public fun vgetHighU64(a: Uint64x2T): Uint64x1T = Uint64x1T(listOf(run { val simdArg0 = a; val simdArg1 = 1; Uint64x1T() }))
 
 /**
  * Duplicate vector element to scalar
@@ -4610,13 +4610,13 @@ public fun vgetLowP64(a: Poly64x2T): Poly64x1T = transmute(Simd<ULong>(listOf((r
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetLowS64)
  */
-public fun vgetLowS64(a: Int64x2T): Int64x1T = int64x1T(listOf(run { val simdArg0 = a; val simdArg1 = 0; Int64x1T() }))
+public fun vgetLowS64(a: Int64x2T): Int64x1T = Int64x1T(listOf(run { val simdArg0 = a; val simdArg1 = 0; Int64x1T() }))
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetLowU64)
  */
-public fun vgetLowU64(a: Uint64x2T): Uint64x1T = uint64x1T(listOf(run { val simdArg0 = a; val simdArg1 = 0; Uint64x1T() }))
+public fun vgetLowU64(a: Uint64x2T): Uint64x1T = Uint64x1T(listOf(run { val simdArg0 = a; val simdArg1 = 0; Uint64x1T() }))
 
 /**
  * Halving add
@@ -10357,7 +10357,7 @@ public fun vmullU32(a: Uint32x2T, b: Uint32x2T): Uint64x2T = run { val simdArg0 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmvnP8)
  */
 public fun vmvnP8(a: Poly8x8T): Poly8x8T {
-    val b = poly8x8T.splat(255)
+    val b = Poly8x8T.splat(255)
     return run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 }
 
@@ -10366,7 +10366,7 @@ public fun vmvnP8(a: Poly8x8T): Poly8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmvnS16)
  */
 public fun vmvnS16(a: Int16x4T): Int16x4T {
-    val b = int16x4T.splat(-1)
+    val b = Int16x4T.splat(-1)
     return run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 }
 
@@ -10375,7 +10375,7 @@ public fun vmvnS16(a: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmvnS32)
  */
 public fun vmvnS32(a: Int32x2T): Int32x2T {
-    val b = int32x2T.splat(-1)
+    val b = Int32x2T.splat(-1)
     return run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 }
 
@@ -10384,7 +10384,7 @@ public fun vmvnS32(a: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmvnS8)
  */
 public fun vmvnS8(a: Int8x8T): Int8x8T {
-    val b = int8x8T.splat(-1)
+    val b = Int8x8T.splat(-1)
     return run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 }
 
@@ -10393,7 +10393,7 @@ public fun vmvnS8(a: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmvnU16)
  */
 public fun vmvnU16(a: Uint16x4T): Uint16x4T {
-    val b = uint16x4T.splat(65535)
+    val b = Uint16x4T.splat(65535)
     return run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 }
 
@@ -10402,7 +10402,7 @@ public fun vmvnU16(a: Uint16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmvnU32)
  */
 public fun vmvnU32(a: Uint32x2T): Uint32x2T {
-    val b = uint32x2T.splat(4294967295)
+    val b = Uint32x2T.splat(4294967295)
     return run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 }
 
@@ -10411,7 +10411,7 @@ public fun vmvnU32(a: Uint32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmvnU8)
  */
 public fun vmvnU8(a: Uint8x8T): Uint8x8T {
-    val b = uint8x8T.splat(255)
+    val b = Uint8x8T.splat(255)
     return run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 }
 
@@ -10420,7 +10420,7 @@ public fun vmvnU8(a: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmvnqP8)
  */
 public fun vmvnqP8(a: Poly8x16T): Poly8x16T {
-    val b = poly8x16T.splat(255)
+    val b = Poly8x16T.splat(255)
     return run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 }
 
@@ -10429,7 +10429,7 @@ public fun vmvnqP8(a: Poly8x16T): Poly8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmvnqS16)
  */
 public fun vmvnqS16(a: Int16x8T): Int16x8T {
-    val b = int16x8T.splat(-1)
+    val b = Int16x8T.splat(-1)
     return run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 }
 
@@ -10438,7 +10438,7 @@ public fun vmvnqS16(a: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmvnqS32)
  */
 public fun vmvnqS32(a: Int32x4T): Int32x4T {
-    val b = int32x4T.splat(-1)
+    val b = Int32x4T.splat(-1)
     return run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 }
 
@@ -10447,7 +10447,7 @@ public fun vmvnqS32(a: Int32x4T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmvnqS8)
  */
 public fun vmvnqS8(a: Int8x16T): Int8x16T {
-    val b = int8x16T.splat(-1)
+    val b = Int8x16T.splat(-1)
     return run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 }
 
@@ -10456,7 +10456,7 @@ public fun vmvnqS8(a: Int8x16T): Int8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmvnqU16)
  */
 public fun vmvnqU16(a: Uint16x8T): Uint16x8T {
-    val b = uint16x8T.splat(65535)
+    val b = Uint16x8T.splat(65535)
     return run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 }
 
@@ -10465,7 +10465,7 @@ public fun vmvnqU16(a: Uint16x8T): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmvnqU32)
  */
 public fun vmvnqU32(a: Uint32x4T): Uint32x4T {
-    val b = uint32x4T.splat(4294967295)
+    val b = Uint32x4T.splat(4294967295)
     return run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 }
 
@@ -10474,7 +10474,7 @@ public fun vmvnqU32(a: Uint32x4T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmvnqU8)
  */
 public fun vmvnqU8(a: Uint8x16T): Uint8x16T {
-    val b = uint8x16T.splat(255)
+    val b = Uint8x16T.splat(255)
     return run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 }
 
@@ -10543,7 +10543,7 @@ public fun vnegqS32(a: Int32x4T): Int32x4T = run { val simdArg0 = a; simdArg0 }
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vornS16)
  */
 public fun vornS16(a: Int16x4T, b: Int16x4T): Int16x4T {
-    val c = int16x4T.splat(-1)
+    val c = Int16x4T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = c; simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -10552,7 +10552,7 @@ public fun vornS16(a: Int16x4T, b: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vornS32)
  */
 public fun vornS32(a: Int32x2T, b: Int32x2T): Int32x2T {
-    val c = int32x2T.splat(-1)
+    val c = Int32x2T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = c; simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -10561,7 +10561,7 @@ public fun vornS32(a: Int32x2T, b: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vornS64)
  */
 public fun vornS64(a: Int64x1T, b: Int64x1T): Int64x1T {
-    val c = int64x1T.splat(-1)
+    val c = Int64x1T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = c; simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -10570,7 +10570,7 @@ public fun vornS64(a: Int64x1T, b: Int64x1T): Int64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vornS8)
  */
 public fun vornS8(a: Int8x8T, b: Int8x8T): Int8x8T {
-    val c = int8x8T.splat(-1)
+    val c = Int8x8T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = c; simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -10579,7 +10579,7 @@ public fun vornS8(a: Int8x8T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vornqS16)
  */
 public fun vornqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
-    val c = int16x8T.splat(-1)
+    val c = Int16x8T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = c; simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -10588,7 +10588,7 @@ public fun vornqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vornqS32)
  */
 public fun vornqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
-    val c = int32x4T.splat(-1)
+    val c = Int32x4T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = c; simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -10597,7 +10597,7 @@ public fun vornqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vornqS64)
  */
 public fun vornqS64(a: Int64x2T, b: Int64x2T): Int64x2T {
-    val c = int64x2T.splat(-1)
+    val c = Int64x2T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = c; simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -10606,7 +10606,7 @@ public fun vornqS64(a: Int64x2T, b: Int64x2T): Int64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vornqS8)
  */
 public fun vornqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
-    val c = int8x16T.splat(-1)
+    val c = Int8x16T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = c; simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -10615,7 +10615,7 @@ public fun vornqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vornU16)
  */
 public fun vornU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
-    val c = int16x4T.splat(-1)
+    val c = Int16x4T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -10624,7 +10624,7 @@ public fun vornU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vornU32)
  */
 public fun vornU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
-    val c = int32x2T.splat(-1)
+    val c = Int32x2T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -10633,7 +10633,7 @@ public fun vornU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vornU64)
  */
 public fun vornU64(a: Uint64x1T, b: Uint64x1T): Uint64x1T {
-    val c = int64x1T.splat(-1)
+    val c = Int64x1T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -10642,7 +10642,7 @@ public fun vornU64(a: Uint64x1T, b: Uint64x1T): Uint64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vornU8)
  */
 public fun vornU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
-    val c = int8x8T.splat(-1)
+    val c = Int8x8T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -10651,7 +10651,7 @@ public fun vornU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vornqU16)
  */
 public fun vornqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T {
-    val c = int16x8T.splat(-1)
+    val c = Int16x8T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -10660,7 +10660,7 @@ public fun vornqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vornqU32)
  */
 public fun vornqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T {
-    val c = int32x4T.splat(-1)
+    val c = Int32x4T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -10669,7 +10669,7 @@ public fun vornqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vornqU64)
  */
 public fun vornqU64(a: Uint64x2T, b: Uint64x2T): Uint64x2T {
-    val c = int64x2T.splat(-1)
+    val c = Int64x2T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -10678,7 +10678,7 @@ public fun vornqU64(a: Uint64x2T, b: Uint64x2T): Uint64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vornqU8)
  */
 public fun vornqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T {
-    val c = int8x16T.splat(-1)
+    val c = Int8x16T.splat(-1)
     return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
@@ -12503,7 +12503,7 @@ public fun vqshluNS8(a: Int8x8T, n: Int): Uint8x8T {
     run {
         check(0 <= n && n < (1 shl 3)) { "N doesn't fit in 3 bits (unsigned)" }
     }
-    return vqshluNS8(a, int8x8T(ByteArray(8) { n.toByte() }))
+    return vqshluNS8(a, Int8x8T(ByteArray(8) { n.toByte() }))
 }
 
 /**
@@ -12515,7 +12515,7 @@ public fun vqshluqNS8(a: Int8x16T, n: Int): Uint8x16T {
     run {
         check(0 <= n && n < (1 shl 3)) { "N doesn't fit in 3 bits (unsigned)" }
     }
-    return vqshluqNS8(a, int8x16T(ByteArray(16) { n.toByte() }))
+    return vqshluqNS8(a, Int8x16T(ByteArray(16) { n.toByte() }))
 }
 
 /**
@@ -12527,7 +12527,7 @@ public fun vqshluNS16(a: Int16x4T, n: Int): Uint16x4T {
     run {
         check(0 <= n && n < (1 shl 4)) { "N doesn't fit in 4 bits (unsigned)" }
     }
-    return vqshluNS16(a, int16x4T(ShortArray(4) { n.toShort() }))
+    return vqshluNS16(a, Int16x4T(ShortArray(4) { n.toShort() }))
 }
 
 /**
@@ -12539,7 +12539,7 @@ public fun vqshluqNS16(a: Int16x8T, n: Int): Uint16x8T {
     run {
         check(0 <= n && n < (1 shl 4)) { "N doesn't fit in 4 bits (unsigned)" }
     }
-    return vqshluqNS16(a, int16x8T(ShortArray(8) { n.toShort() }))
+    return vqshluqNS16(a, Int16x8T(ShortArray(8) { n.toShort() }))
 }
 
 /**
@@ -12551,7 +12551,7 @@ public fun vqshluNS32(a: Int32x2T, n: Int): Uint32x2T {
     run {
         check(0 <= n && n < (1 shl 5)) { "N doesn't fit in 5 bits (unsigned)" }
     }
-    return vqshluNS32(a, int32x2T(IntArray(2) { n }))
+    return vqshluNS32(a, Int32x2T(IntArray(2) { n }))
 }
 
 /**
@@ -12563,7 +12563,7 @@ public fun vqshluqNS32(a: Int32x4T, n: Int): Uint32x4T {
     run {
         check(0 <= n && n < (1 shl 5)) { "N doesn't fit in 5 bits (unsigned)" }
     }
-    return vqshluqNS32(a, int32x4T(IntArray(4) { n }))
+    return vqshluqNS32(a, Int32x4T(IntArray(4) { n }))
 }
 
 /**
@@ -12575,7 +12575,7 @@ public fun vqshluNS64(a: Int64x1T, n: Int): Uint64x1T {
     run {
         check(0 <= n && n < (1 shl 6)) { "N doesn't fit in 6 bits (unsigned)" }
     }
-    return vqshluNS64(a, int64x1T(longArrayOf(n.toLong())))
+    return vqshluNS64(a, Int64x1T(longArrayOf(n.toLong())))
 }
 
 /**
@@ -12587,7 +12587,7 @@ public fun vqshluqNS64(a: Int64x2T, n: Int): Uint64x2T {
     run {
         check(0 <= n && n < (1 shl 6)) { "N doesn't fit in 6 bits (unsigned)" }
     }
-    return vqshluqNS64(a, int64x2T(LongArray(2) { n.toLong() }))
+    return vqshluqNS64(a, Int64x2T(LongArray(2) { n.toLong() }))
 }
 
 /**

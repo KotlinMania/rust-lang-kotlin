@@ -6,6 +6,8 @@ import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.convert.AsMut
+import io.github.kotlinmania.rustlang.core.convert.AsRef
 import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
 import io.github.kotlinmania.rustlang.core.marker.Freeze
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -1730,14 +1732,14 @@ public fun <T> MaybeUninit<List<T>>.asRef(n: Int): List<MaybeUninit<T>> {
     return ConstPtr((this).rawAddress)
 }
 
-public fun <T> MaybeUninit<List<T>>.asRefMaybeUninitTSlice(n: Int): List<MaybeUninit<T>> = this.asRef()
+public fun <T> MaybeUninit<List<T>>.asRefMaybeUninitTSlice(n: Int): List<MaybeUninit<T>> = AsRef.AsRef(this)
 
 public fun <T> MaybeUninit<List<T>>.asMut(n: Int): List<MaybeUninit<T>> {
     // SAFETY: T and MaybeUninit<T> have the same layout
     return MutPtr((this).rawAddress)
 }
 
-public fun <T> MaybeUninit<List<T>>.asMutMaybeUninitTSlice(n: Int): MutableList<MaybeUninit<T>> = this.asMut()
+public fun <T> MaybeUninit<List<T>>.asMutMaybeUninitTSlice(n: Int): MutableList<MaybeUninit<T>> = AsMut.AsMut(this)
 
 public fun <T> fromMaybeUninitTArrayn(arr: MaybeUninit<List<T>>, n: Int): List<MaybeUninit<T>> = arr.transpose(n)
 

@@ -24,7 +24,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_rdtsc)
  */
-public fun rdtsc(): ULong = rdtsc()
+public fun rdtsc(): ULong = externRdtsc()
 
 /**
  * Reads the current value of the processor’s time-stamp counter and
@@ -51,6 +51,6 @@ public fun rdtscp(aux: MutPtr): ULong {
     return tsc
 }
 
-public expect fun rdtsc(): ULong
+public expect fun externRdtsc(): ULong
 
 public expect fun rdtscp(): Pair<ULong, UInt>

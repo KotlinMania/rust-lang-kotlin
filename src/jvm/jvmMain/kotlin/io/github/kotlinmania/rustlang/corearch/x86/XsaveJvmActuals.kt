@@ -68,7 +68,7 @@ private object X86XsaveJniBridge {
     external fun corearchX86XsaveXsetbv(v: Int, hi: Int, lo: Int)
 
     @JvmStatic
-    external fun corearchX86XsaveXgetbv(v: Int): Long
+    external fun corearchX86XsaveExternXgetbv(v: Int): Long
 
     @JvmStatic
     external fun corearchX86XsaveXsaveopt(p: Long, hi: Int, lo: Int)
@@ -95,8 +95,8 @@ public actual fun xsetbv(v: UInt, hi: UInt, lo: UInt) {
     X86XsaveJniBridge.corearchX86XsaveXsetbv(v.toInt(), hi.toInt(), lo.toInt())
 }
 
-public actual fun xgetbv(v: UInt): Long =
-    X86XsaveJniBridge.corearchX86XsaveXgetbv(v.toInt())
+public actual fun externXgetbv(v: UInt): Long =
+    X86XsaveJniBridge.corearchX86XsaveExternXgetbv(v.toInt())
 
 public actual fun xsaveopt(p: MutPtr, hi: UInt, lo: UInt) {
     X86XsaveJniBridge.corearchX86XsaveXsaveopt(p.rawAddress, hi.toInt(), lo.toInt())

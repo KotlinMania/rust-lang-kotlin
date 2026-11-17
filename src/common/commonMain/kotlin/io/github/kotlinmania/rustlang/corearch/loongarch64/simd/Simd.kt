@@ -169,7 +169,7 @@ public fun <Elem, T : SimdExt<T, Elem>> simdExtLdi(i: Int): T {
         } else {
             when ((i shr 8) and 0xf) {
                 in 0..3 -> { transmute(Simd<Int>(List(2) { imm8 shl (8 * ((i shr 8) and 3)) })) }
-                in 4..5 -> transmute(Simd<Short>(List(4) { ((imm8.toShort()) shl (8 * ((i shr 8) and 1))).toShort() }))
+                in 4..5 -> transmute(Simd<Short>(List(4) { ((imm8.toShort()).toInt() shl (8 * ((i shr 8) and 1))).toShort() }))
                 6 -> transmute(Simd<Int>(List(2) { (imm8 shl 8) or 0xff }))
                 7 -> transmute(Simd<Int>(List(2) { (imm8 shl 16) or 0xffff }))
                 8 -> transmute(Simd<Byte>(List(8) { imm8.toByte() }))

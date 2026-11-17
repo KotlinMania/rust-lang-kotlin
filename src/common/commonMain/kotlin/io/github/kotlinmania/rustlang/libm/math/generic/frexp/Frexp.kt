@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.libm.math.generic.frexp
 
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.CastFrom
 
 public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> frexp(x: F, normalizeFFn: (Int) -> Pair<Int, Int>, fromBitsFFn: (Int) -> F): Pair<F, Int> {
     var ix = x.toBits()
@@ -20,6 +21,6 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> frexp(x: F, normalizeF
     }
     val e = ee - (F.EXP_BIAS.toInt() - 1)
     ix = ix and (F.SIGN_MASK or F.SIG_MASK)
-    ix = ix or (F.Int.castFrom(F.EXP_BIAS - 1) shl F.SIG_BITS.toInt())
+    ix = ix or (F.Int.CastFrom(F.EXP_BIAS - 1) shl F.SIG_BITS.toInt())
     return Pair(fromBitsFFn(ix), e)
 }

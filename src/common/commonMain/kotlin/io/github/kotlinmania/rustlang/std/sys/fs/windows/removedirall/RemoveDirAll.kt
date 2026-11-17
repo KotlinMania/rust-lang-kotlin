@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align4
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawHandle
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.DirBuff
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.File
 import io.github.kotlinmania.rustlang.std.sys.pal.api.unicodeStr
@@ -73,7 +74,7 @@ public fun ntOpenFile(access: UInt, objectAttribute: ObjectAttributes, share: UI
         val ioStatus = IoStatusBlock.PENDING
         val status = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.ntOpenFile(handle, access, objectAttribute, ioStatus, share, options)
         if (ntSuccess(status)) {
-            Result.Ok<File, WinError>(File.fromRawHandle(handle))
+            Result.Ok<File, WinError>(File.FromRawHandle(handle))
         } else {
             // Convert an NTSTATUS to the more familiar Win32 error code (aka "DosError")
             val winError =

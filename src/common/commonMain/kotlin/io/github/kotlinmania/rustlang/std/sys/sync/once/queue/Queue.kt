@@ -94,12 +94,12 @@ public open class Once internal constructor(
             val state = toState(current)
             when {
                 state == COMPLETE -> { return }
-                state == POISONED && ignorePoisoning.inv() -> {
+                state == POISONED && !ignorePoisoning -> {
                     // Panic to propagate the poison.
                     error("Once instance has previously been poisoned")
                 }
                 else -> {
-                    current = wait(this.stateAndQueue, current, ignorePoisoning.inv())
+                    current = wait(this.stateAndQueue, current, !ignorePoisoning)
                 }
             }
         }
@@ -122,7 +122,7 @@ public open class Once internal constructor(
             val state = toState(current)
             when {
                 state == COMPLETE -> { break }
-                state == POISONED && ignorePoisoning.inv() -> {
+                state == POISONED && !ignorePoisoning -> {
                     // Panic to propagate the poison.
                     error("Once instance has previously been poisoned")
                 }

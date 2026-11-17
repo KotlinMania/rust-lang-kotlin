@@ -292,7 +292,7 @@ public fun freeFlsKeyAtExit() {
     // However, this hook will also be called during normal process exit, while other Rust threads are still running,
     // so we must be careful to avoid races with `enable`.
     val shouldFreeKey = EnableGuard.startExit()
-    if (shouldFreeKey.inv()) {
+    if (!shouldFreeKey) {
         return
     }
     val currentKey = KEY.swap(FLS_OUT_OF_INDEXES, Ordering.AcqRel)

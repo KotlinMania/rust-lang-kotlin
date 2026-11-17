@@ -121,7 +121,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_
     return (jint)km_res;
 }
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_RiscvsharedZkJniBridge_corearchRiscvsharedZkSm3p0(JNIEnv* km_env, jclass km_clazz, jint rs1) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_RiscvsharedZkJniBridge_corearchRiscvsharedZkExternSm3p0(JNIEnv* km_env, jclass km_clazz, jint rs1) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(int32_t);
@@ -154,7 +154,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_
     return (jint)km_res;
 }
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_RiscvsharedZkJniBridge_corearchRiscvsharedZkSm3p1(JNIEnv* km_env, jclass km_clazz, jint rs1) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_RiscvsharedZkJniBridge_corearchRiscvsharedZkExternSm3p1(JNIEnv* km_env, jclass km_clazz, jint rs1) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(int32_t);
@@ -187,7 +187,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_
     return (jint)km_res;
 }
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_RiscvsharedZkJniBridge_corearchRiscvsharedZkSha256sig0(JNIEnv* km_env, jclass km_clazz, jint rs1) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_RiscvsharedZkJniBridge_corearchRiscvsharedZkExternSha256sig0(JNIEnv* km_env, jclass km_clazz, jint rs1) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(int32_t);
@@ -220,7 +220,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_
     return (jint)km_res;
 }
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_RiscvsharedZkJniBridge_corearchRiscvsharedZkSha256sig1(JNIEnv* km_env, jclass km_clazz, jint rs1) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_RiscvsharedZkJniBridge_corearchRiscvsharedZkExternSha256sig1(JNIEnv* km_env, jclass km_clazz, jint rs1) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(int32_t);
@@ -253,7 +253,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_
     return (jint)km_res;
 }
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_RiscvsharedZkJniBridge_corearchRiscvsharedZkSha256sum0(JNIEnv* km_env, jclass km_clazz, jint rs1) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_RiscvsharedZkJniBridge_corearchRiscvsharedZkExternSha256sum0(JNIEnv* km_env, jclass km_clazz, jint rs1) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(int32_t);
@@ -286,7 +286,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_
     return (jint)km_res;
 }
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_RiscvsharedZkJniBridge_corearchRiscvsharedZkSha256sum1(JNIEnv* km_env, jclass km_clazz, jint rs1) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_RiscvsharedZkJniBridge_corearchRiscvsharedZkExternSha256sum1(JNIEnv* km_env, jclass km_clazz, jint rs1) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(int32_t);

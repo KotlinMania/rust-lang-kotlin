@@ -55,7 +55,7 @@ struct JNINativeInterface_ {
 #endif
 #endif
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664FxsrJniBridge_corearchX8664FxsrFxsave64(JNIEnv* km_env, jclass km_clazz, jlong p) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664FxsrJniBridge_corearchX8664FxsrExternFxsave64(JNIEnv* km_env, jclass km_clazz, jlong p) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(void*);
@@ -90,7 +90,7 @@ JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664F
     }
 }
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664FxsrJniBridge_corearchX8664FxsrFxrstor64(JNIEnv* km_env, jclass km_clazz, jlong p) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664FxsrJniBridge_corearchX8664FxsrExternFxrstor64(JNIEnv* km_env, jclass km_clazz, jlong p) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(void*);

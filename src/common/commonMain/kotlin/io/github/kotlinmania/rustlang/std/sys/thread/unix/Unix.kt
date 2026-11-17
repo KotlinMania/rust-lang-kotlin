@@ -515,7 +515,7 @@ public fun findMountpoint(groupPath: Path): Pair<String, Path>? {
             continue
         }
         val subPath1 = (Path.new(subPath).takeIf { it.startsWith("/") }?.removePrefix("/").ok() ?: return null)
-        if (groupPath.startsWith(subPath1).inv()) {
+        if (!groupPath.startsWith(subPath1)) {
             // this is a bind-mount and the bound subdirectory
             // does not contain the cgroup this process belongs to
             continue

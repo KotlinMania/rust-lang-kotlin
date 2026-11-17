@@ -1,23 +1,23 @@
 // port-lint: source riscv64/zk.rs
 package io.github.kotlinmania.rustlang.corearch.riscv64
 
-public expect fun aes64es(rs1: Long, rs2: Long): Long
+public expect fun externAes64es(rs1: Long, rs2: Long): Long
 
-public expect fun aes64esm(rs1: Long, rs2: Long): Long
+public expect fun externAes64esm(rs1: Long, rs2: Long): Long
 
-public expect fun aes64ds(rs1: Long, rs2: Long): Long
+public expect fun externAes64ds(rs1: Long, rs2: Long): Long
 
-public expect fun aes64dsm(rs1: Long, rs2: Long): Long
+public expect fun externAes64dsm(rs1: Long, rs2: Long): Long
 
-public expect fun aes64im(rs1: Long): Long
+public expect fun externAes64im(rs1: Long): Long
 
-public expect fun sha512sig0(rs1: Long): Long
+public expect fun externSha512sig0(rs1: Long): Long
 
-public expect fun sha512sig1(rs1: Long): Long
+public expect fun externSha512sig1(rs1: Long): Long
 
-public expect fun sha512sum0(rs1: Long): Long
+public expect fun externSha512sum0(rs1: Long): Long
 
-public expect fun sha512sum1(rs1: Long): Long
+public expect fun externSha512sum1(rs1: Long): Long
 
 /**
  * AES final round encryption instruction for RV64.
@@ -33,7 +33,7 @@ public expect fun sha512sum1(rs1: Long): Long
  *
  * Section: 3.7
  */
-public fun aes64es(rs1: ULong, rs2: ULong): ULong = aes64es(rs1.toLong(), rs2.toLong()).toULong()
+public fun aes64es(rs1: ULong, rs2: ULong): ULong = externAes64es(rs1.toLong(), rs2.toLong()).toULong()
 
 /**
  * AES middle round encryption instruction for RV64.
@@ -49,7 +49,7 @@ public fun aes64es(rs1: ULong, rs2: ULong): ULong = aes64es(rs1.toLong(), rs2.to
  *
  * Section: 3.8
  */
-public fun aes64esm(rs1: ULong, rs2: ULong): ULong = aes64esm(rs1.toLong(), rs2.toLong()).toULong()
+public fun aes64esm(rs1: ULong, rs2: ULong): ULong = externAes64esm(rs1.toLong(), rs2.toLong()).toULong()
 
 /**
  * AES final round decryption instruction for RV64.
@@ -65,7 +65,7 @@ public fun aes64esm(rs1: ULong, rs2: ULong): ULong = aes64esm(rs1.toLong(), rs2.
  *
  * Section: 3.5
  */
-public fun aes64ds(rs1: ULong, rs2: ULong): ULong = aes64ds(rs1.toLong(), rs2.toLong()).toULong()
+public fun aes64ds(rs1: ULong, rs2: ULong): ULong = externAes64ds(rs1.toLong(), rs2.toLong()).toULong()
 
 /**
  * AES middle round decryption instruction for RV64.
@@ -81,7 +81,7 @@ public fun aes64ds(rs1: ULong, rs2: ULong): ULong = aes64ds(rs1.toLong(), rs2.to
  *
  * Section: 3.6
  */
-public fun aes64dsm(rs1: ULong, rs2: ULong): ULong = aes64dsm(rs1.toLong(), rs2.toLong()).toULong()
+public fun aes64dsm(rs1: ULong, rs2: ULong): ULong = externAes64dsm(rs1.toLong(), rs2.toLong()).toULong()
 
 /**
  * This instruction implements part of the KeySchedule operation for the AES Block cipher
@@ -148,7 +148,7 @@ public fun aes64ks2(rs1: ULong, rs2: ULong): ULong =
  *
  * Section: 3.9
  */
-public fun aes64im(rs1: ULong): ULong = aes64im(rs1.toLong()).toULong()
+public fun aes64im(rs1: ULong): ULong = externAes64im(rs1.toLong()).toULong()
 
 /**
  * Implements the Sigma0 transformation function as used in the SHA2-512 hash function \[49\]
@@ -164,7 +164,7 @@ public fun aes64im(rs1: ULong): ULong = aes64im(rs1.toLong()).toULong()
  *
  * Section: 3.37
  */
-public fun sha512sig0(rs1: ULong): ULong = sha512sig0(rs1.toLong()).toULong()
+public fun sha512sig0(rs1: ULong): ULong = externSha512sig0(rs1.toLong()).toULong()
 
 /**
  * Implements the Sigma1 transformation function as used in the SHA2-512 hash function \[49\]
@@ -180,7 +180,7 @@ public fun sha512sig0(rs1: ULong): ULong = sha512sig0(rs1.toLong()).toULong()
  *
  * Section: 3.38
  */
-public fun sha512sig1(rs1: ULong): ULong = sha512sig1(rs1.toLong()).toULong()
+public fun sha512sig1(rs1: ULong): ULong = externSha512sig1(rs1.toLong()).toULong()
 
 /**
  * Implements the Sum0 transformation function as used in the SHA2-512 hash function \[49\]
@@ -196,7 +196,7 @@ public fun sha512sig1(rs1: ULong): ULong = sha512sig1(rs1.toLong()).toULong()
  *
  * Section: 3.39
  */
-public fun sha512sum0(rs1: ULong): ULong = sha512sum0(rs1.toLong()).toULong()
+public fun sha512sum0(rs1: ULong): ULong = externSha512sum0(rs1.toLong()).toULong()
 
 /**
  * Implements the Sum1 transformation function as used in the SHA2-512 hash function \[49\]
@@ -212,4 +212,4 @@ public fun sha512sum0(rs1: ULong): ULong = sha512sum0(rs1.toLong()).toULong()
  *
  * Section: 3.40
  */
-public fun sha512sum1(rs1: ULong): ULong = sha512sum1(rs1.toLong()).toULong()
+public fun sha512sum1(rs1: ULong): ULong = externSha512sum1(rs1.toLong()).toULong()

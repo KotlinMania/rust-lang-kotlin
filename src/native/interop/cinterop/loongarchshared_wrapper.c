@@ -127,7 +127,7 @@ int32_t corearchLoongarchsharedMovfcsr2gr(int32_t a) {
     return -1;
 }
 
-int32_t corearchLoongarchsharedIocsrrdB(int32_t a) {
+int32_t corearchLoongarchsharedExternIocsrrdB(int32_t a) {
     typedef int32_t (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -155,7 +155,7 @@ int32_t corearchLoongarchsharedIocsrrdB(int32_t a) {
     return -1;
 }
 
-int32_t corearchLoongarchsharedIocsrrdH(int32_t a) {
+int32_t corearchLoongarchsharedExternIocsrrdH(int32_t a) {
     typedef int32_t (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -183,7 +183,7 @@ int32_t corearchLoongarchsharedIocsrrdH(int32_t a) {
     return -1;
 }
 
-int32_t corearchLoongarchsharedIocsrrdW(int32_t a) {
+int32_t corearchLoongarchsharedExternIocsrrdW(int32_t a) {
     typedef int32_t (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -211,7 +211,7 @@ int32_t corearchLoongarchsharedIocsrrdW(int32_t a) {
     return -1;
 }
 
-void corearchLoongarchsharedIocsrwrB(int32_t a, int32_t b) {
+void corearchLoongarchsharedExternIocsrwrB(int32_t a, int32_t b) {
     typedef void (*km_fn_t)(int32_t, int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -239,7 +239,7 @@ void corearchLoongarchsharedIocsrwrB(int32_t a, int32_t b) {
     errno = ENOSYS;
 }
 
-void corearchLoongarchsharedIocsrwrH(int32_t a, int32_t b) {
+void corearchLoongarchsharedExternIocsrwrH(int32_t a, int32_t b) {
     typedef void (*km_fn_t)(int32_t, int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -267,7 +267,7 @@ void corearchLoongarchsharedIocsrwrH(int32_t a, int32_t b) {
     errno = ENOSYS;
 }
 
-void corearchLoongarchsharedIocsrwrW(int32_t a, int32_t b) {
+void corearchLoongarchsharedExternIocsrwrW(int32_t a, int32_t b) {
     typedef void (*km_fn_t)(int32_t, int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -323,7 +323,7 @@ void corearchLoongarchsharedBreakTarget(int32_t a) {
     errno = ENOSYS;
 }
 
-int32_t corearchLoongarchsharedCpucfg(int32_t a) {
+int32_t corearchLoongarchsharedExternCpucfg(int32_t a) {
     typedef int32_t (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -379,7 +379,7 @@ void corearchLoongarchsharedSyscall(int32_t a) {
     errno = ENOSYS;
 }
 
-float corearchLoongarchsharedFrecipeS(float a) {
+float corearchLoongarchsharedExternFrecipeS(float a) {
     typedef float (*km_fn_t)(float);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -407,7 +407,7 @@ float corearchLoongarchsharedFrecipeS(float a) {
     return 0.0f;
 }
 
-double corearchLoongarchsharedFrecipeD(double a) {
+double corearchLoongarchsharedExternFrecipeD(double a) {
     typedef double (*km_fn_t)(double);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -435,7 +435,7 @@ double corearchLoongarchsharedFrecipeD(double a) {
     return 0.0;
 }
 
-float corearchLoongarchsharedFrsqrteS(float a) {
+float corearchLoongarchsharedExternFrsqrteS(float a) {
     typedef float (*km_fn_t)(float);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -463,7 +463,7 @@ float corearchLoongarchsharedFrsqrteS(float a) {
     return 0.0f;
 }
 
-double corearchLoongarchsharedFrsqrteD(double a) {
+double corearchLoongarchsharedExternFrsqrteD(double a) {
     typedef double (*km_fn_t)(double);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

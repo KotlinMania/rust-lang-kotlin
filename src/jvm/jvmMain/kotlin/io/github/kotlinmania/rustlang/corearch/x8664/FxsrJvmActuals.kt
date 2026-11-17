@@ -59,16 +59,16 @@ private object X8664FxsrJniBridge {
     }
 
     @JvmStatic
-    external fun corearchX8664FxsrFxsave64(p: Long)
+    external fun corearchX8664FxsrExternFxsave64(p: Long)
 
     @JvmStatic
-    external fun corearchX8664FxsrFxrstor64(p: Long)
+    external fun corearchX8664FxsrExternFxrstor64(p: Long)
 }
 
-public actual fun fxsave64(p: MutPtr) {
-    X8664FxsrJniBridge.corearchX8664FxsrFxsave64(p.rawAddress)
+public actual fun externFxsave64(p: MutPtr) {
+    X8664FxsrJniBridge.corearchX8664FxsrExternFxsave64(p.rawAddress)
 }
 
-public actual fun fxrstor64(p: ConstPtr) {
-    X8664FxsrJniBridge.corearchX8664FxsrFxrstor64(p.rawAddress)
+public actual fun externFxrstor64(p: ConstPtr) {
+    X8664FxsrJniBridge.corearchX8664FxsrExternFxrstor64(p.rawAddress)
 }

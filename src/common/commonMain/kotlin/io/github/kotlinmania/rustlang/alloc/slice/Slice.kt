@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.kmPartialCompareValues
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.checkedMul
@@ -200,7 +201,7 @@ public fun <T> List<T>.sortBy(compare: (T, T) -> Ordering) {
  * [total order]: https://en.wikipedia.org/wiki/TotalOrder
  */
 public fun <T, K> List<T>.sortByKey(f: (T) -> K) {
-    stableSort(this, { a, b -> f(a).lt(f(b)) })
+    stableSort(this, { a, b -> (kmPartialCompareValues(f(a), f(b))?.let { cmpSign -> cmpSign < 0 } == true) })
 }
 
 /**

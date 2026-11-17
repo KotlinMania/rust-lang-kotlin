@@ -51,7 +51,7 @@ static uint64_t km_napi_arg_u64(const Napi::Value& v) {
     return 0;
 }
 
-static Napi::Value corearchX86RdtscRdtsc_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchX86RdtscExternRdtsc_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     typedef uint64_t (*km_fn_t)(void);
     static km_fn_t km_fn_ptr = nullptr;
@@ -84,7 +84,7 @@ static Napi::Value corearchX86RdtscRdtsc_napi(const Napi::CallbackInfo& km_info)
 }
 
 static void register_x86_rdtsc_napi(Napi::Env env, Napi::Object exports) {
-    exports.Set("corearchX86RdtscRdtsc", Napi::Function::New(env, corearchX86RdtscRdtsc_napi));
+    exports.Set("corearchX86RdtscExternRdtsc", Napi::Function::New(env, corearchX86RdtscExternRdtsc_napi));
 }
 
 static KmNapiRegistrarNode registrar_node = { &register_x86_rdtsc_napi, nullptr };

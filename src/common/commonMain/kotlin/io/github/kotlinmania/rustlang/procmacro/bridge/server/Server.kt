@@ -174,7 +174,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
         val handleStore = this.handleStore
         val server = this.server
         val reader = buf
-        when (ApiTags.decode(reader, Unit)) {
+        when (ApiTags.Decode(reader, Unit)) {
             ApiTags.trackEnvVar -> {
                 var callMethod =
                     {
@@ -213,7 +213,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val s = String.decode(reader, handleStore).unmark()
                         val r2 = server.literalFromStr(s)
-                        val r3: Result<Literal<MarkedSpan<S>, MarkedSymbol<S>>, String> = Mark.mark(r2)
+                        val r3: Result<Literal<MarkedSpan<S>, MarkedSymbol<S>>, String> = Mark.Mark(r2)
                         r3
                     }
                 val r2 =
@@ -262,7 +262,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val stream = MarkedTokenStream.decode(reader, handleStore).unmark()
                         val r5 = server.tsClone(stream)
-                        val r6: MarkedTokenStream<S> = Mark.mark(r5)
+                        val r6: MarkedTokenStream<S> = Mark.Mark(r5)
                         r6
                     }
                 val r5 =
@@ -279,7 +279,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val stream = MarkedTokenStream.decode(reader, handleStore).unmark()
                         val r6 = server.tsIsEmpty(stream)
-                        val r7: Boolean = Mark.mark(r6)
+                        val r7: Boolean = Mark.Mark(r6)
                         r7
                     }
                 val r6 =
@@ -296,7 +296,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val stream = MarkedTokenStream.decode(reader, handleStore).unmark()
                         val r7 = server.tsExpandExpr(stream)
-                        val r8: Result<MarkedTokenStream<S>, Unit> = Mark.mark(r7)
+                        val r8: Result<MarkedTokenStream<S>, Unit> = Mark.Mark(r7)
                         r8
                     }
                 val r7 =
@@ -313,7 +313,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val src = String.decode(reader, handleStore).unmark()
                         val r8 = server.tsFromStr(src)
-                        val r9: Result<MarkedTokenStream<S>, String> = Mark.mark(r8)
+                        val r9: Result<MarkedTokenStream<S>, String> = Mark.Mark(r8)
                         r9
                     }
                 val r8 =
@@ -330,7 +330,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val stream = MarkedTokenStream.decode(reader, handleStore).unmark()
                         val r9 = server.tsToString(stream)
-                        val r10: String = Mark.mark(r9)
+                        val r10: String = Mark.Mark(r9)
                         r10
                     }
                 val r9 =
@@ -347,7 +347,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val tree = TokenTree.decode(reader, handleStore).unmark()
                         val r10 = server.tsFromTokenTree(tree)
-                        val r11: MarkedTokenStream<S> = Mark.mark(r10)
+                        val r11: MarkedTokenStream<S> = Mark.Mark(r10)
                         r11
                     }
                 val r10 =
@@ -365,7 +365,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         val base = MarkedTokenStream.decode(reader, handleStore).unmark()
                         val trees = List.decode(reader, handleStore).unmark()
                         val r11 = server.tsConcatTrees(base, trees)
-                        val r12: MarkedTokenStream<S> = Mark.mark(r11)
+                        val r12: MarkedTokenStream<S> = Mark.Mark(r11)
                         r12
                     }
                 val r11 =
@@ -383,7 +383,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         val base = MarkedTokenStream.decode(reader, handleStore).unmark()
                         val streams = List.decode(reader, handleStore).unmark()
                         val r12 = server.tsConcatStreams(base, streams)
-                        val r13: MarkedTokenStream<S> = Mark.mark(r12)
+                        val r13: MarkedTokenStream<S> = Mark.Mark(r12)
                         r13
                     }
                 val r12 =
@@ -400,7 +400,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val stream = MarkedTokenStream.decode(reader, handleStore).unmark()
                         val r13 = server.tsIntoTrees(stream)
-                        val r14: List<TokenTree<MarkedTokenStream<S>, MarkedSpan<S>, MarkedSymbol<S>>> = Mark.mark(r13)
+                        val r14: List<TokenTree<MarkedTokenStream<S>, MarkedSpan<S>, MarkedSymbol<S>>> = Mark.Mark(r13)
                         r14
                     }
                 val r13 =
@@ -417,7 +417,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
                         val r14 = server.spanDebug(span)
-                        val r15: String = Mark.mark(r14)
+                        val r15: String = Mark.Mark(r14)
                         r15
                     }
                 val r14 =
@@ -434,7 +434,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
                         val r15 = server.spanParent(span)
-                        val r16: MarkedSpan<S>? = Mark.mark(r15)
+                        val r16: MarkedSpan<S>? = Mark.Mark(r15)
                         r16
                     }
                 val r15 =
@@ -451,7 +451,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
                         val r16 = server.spanSource(span)
-                        val r17: MarkedSpan<S> = Mark.mark(r16)
+                        val r17: MarkedSpan<S> = Mark.Mark(r16)
                         r17
                     }
                 val r16 =
@@ -468,7 +468,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
                         val r17 = server.spanByteRange(span)
-                        val r18: IntRange = Mark.mark(r17)
+                        val r18: IntRange = Mark.Mark(r17)
                         r18
                     }
                 val r17 =
@@ -485,7 +485,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
                         val r18 = server.spanStart(span)
-                        val r19: MarkedSpan<S> = Mark.mark(r18)
+                        val r19: MarkedSpan<S> = Mark.Mark(r18)
                         r19
                     }
                 val r18 =
@@ -502,7 +502,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
                         val r19 = server.spanEnd(span)
-                        val r20: MarkedSpan<S> = Mark.mark(r19)
+                        val r20: MarkedSpan<S> = Mark.Mark(r19)
                         r20
                     }
                 val r19 =
@@ -519,7 +519,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
                         val r20 = server.spanLine(span)
-                        val r21: Int = Mark.mark(r20)
+                        val r21: Int = Mark.Mark(r20)
                         r21
                     }
                 val r20 =
@@ -536,7 +536,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
                         val r21 = server.spanColumn(span)
-                        val r22: Int = Mark.mark(r21)
+                        val r22: Int = Mark.Mark(r21)
                         r22
                     }
                 val r21 =
@@ -553,7 +553,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
                         val r22 = server.spanFile(span)
-                        val r23: String = Mark.mark(r22)
+                        val r23: String = Mark.Mark(r22)
                         r23
                     }
                 val r22 =
@@ -570,7 +570,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
                         val r23 = server.spanLocalFile(span)
-                        val r24: String? = Mark.mark(r23)
+                        val r24: String? = Mark.Mark(r23)
                         r24
                     }
                 val r23 =
@@ -588,7 +588,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
                         val other = MarkedSpan.decode(reader, handleStore).unmark()
                         val r24 = server.spanJoin(span, other)
-                        val r25: MarkedSpan<S>? = Mark.mark(r24)
+                        val r25: MarkedSpan<S>? = Mark.Mark(r24)
                         r25
                     }
                 val r24 =
@@ -607,7 +607,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         val start = Bound.decode(reader, handleStore).unmark()
                         val end = Bound.decode(reader, handleStore).unmark()
                         val r25 = server.spanSubspan(span, start, end)
-                        val r26: MarkedSpan<S>? = Mark.mark(r25)
+                        val r26: MarkedSpan<S>? = Mark.Mark(r25)
                         r26
                     }
                 val r25 =
@@ -625,7 +625,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
                         val at = MarkedSpan.decode(reader, handleStore).unmark()
                         val r26 = server.spanResolvedAt(span, at)
-                        val r27: MarkedSpan<S> = Mark.mark(r26)
+                        val r27: MarkedSpan<S> = Mark.Mark(r26)
                         r27
                     }
                 val r26 =
@@ -642,7 +642,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
                         val r27 = server.spanSourceText(span)
-                        val r28: String? = Mark.mark(r27)
+                        val r28: String? = Mark.Mark(r27)
                         r28
                     }
                 val r27 =
@@ -659,7 +659,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
                         val r28 = server.spanSaveSpan(span)
-                        val r29: Int = Mark.mark(r28)
+                        val r29: Int = Mark.Mark(r28)
                         r29
                     }
                 val r28 =
@@ -676,7 +676,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val id = Int.decode(reader, handleStore).unmark()
                         val r29 = server.spanRecoverProcMacroSpan(id)
-                        val r30: MarkedSpan<S> = Mark.mark(r29)
+                        val r30: MarkedSpan<S> = Mark.Mark(r29)
                         r30
                     }
                 val r29 =
@@ -693,7 +693,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                     {
                         val string = String.decode(reader, handleStore).unmark()
                         val r30 = server.symbolNormalizeAndValidateIdent(string)
-                        val r31: Result<MarkedSymbol<S>, Unit> = Mark.mark(r30)
+                        val r31: Result<MarkedSymbol<S>, Unit> = Mark.Mark(r30)
                         r31
                     }
                 val r30 =
@@ -867,7 +867,7 @@ public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>, I 
     var buf = Buffer.new()
     Pair(ExpnGlobals.mark(globals), input).encode(buf, dispatcher.handleStore)
     buf = strategy.runBridgeAndClient(dispatcher, buf, runClient, forceShowPanics)
-    return Result.decode(buf, dispatcher.handleStore)
+    return Result.Decode(buf, dispatcher.handleStore)
 }
 
 public fun <TokenStream, Span, Symbol, S> Client.run1(strategy: ExecutionStrategy, server: S, input: TokenStream, forceShowPanics: Boolean): Result<TokenStream, PanicMessage> where S : Server<TokenStream, Span, Symbol> {

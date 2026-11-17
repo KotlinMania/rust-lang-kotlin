@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.core.array.iter
 
 import io.github.kotlinmania.rustlang.core.array.iter.iterinner.PolymorphicIter
+import io.github.kotlinmania.rustlang.core.iter.sources.empty.Empty
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
@@ -10,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.needsDrop
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.drop.Drop
 import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.read
@@ -93,7 +95,7 @@ public open class IntoIter<T>(
     public open fun drop() {
         if (needsDrop<T>()) {
             // SAFETY: This is the only place where we drop this field.
-            ManuallyDrop.drop(this.inner)
+            ManuallyDrop.Drop(this.inner)
         }
     }
 
@@ -236,11 +238,11 @@ public open class IntoIter<T>(
          * ```
          */
         public fun <T> empty(n: Int): IntoIter<T> {
-            val inner = PolymorphicIter.empty(n)
+            val inner = PolymorphicIter.Empty()
             return IntoIter(inner = inner)
         }
 
-        public fun <T> default(n: Int): IntoIter<T> = IntoIter.empty(n)
+        public fun <T> default(n: Int): IntoIter<T> = IntoIter.Empty()
     }
 }
 

@@ -386,7 +386,7 @@ public open class BufWriter<W : Write>(
     // or their write patterns are somewhat pathological.
     public open fun writeCold(buf: List<UByte>): Result<Int> {
         if (buf.size > this.spareCapacity()) {
-            when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+            when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         }
         // Why not len > capacity? To avoid a needless trip through the buffer when the input
         // exactly fills it. We'd just need to flush it to the underlying writer anyway.
@@ -422,7 +422,7 @@ public open class BufWriter<W : Write>(
         // round trips through the buffer in the event of a series of partial
         // writes in some circumstances.
         if (buf.size > this.spareCapacity()) {
-            when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+            when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         }
         // Why not len > capacity? To avoid a needless trip through the buffer when the input
         // exactly fills it. We'd just need to flush it to the underlying writer anyway.
@@ -507,7 +507,7 @@ public open class BufWriter<W : Write>(
                 if (saturatedTotalLen > this.spareCapacity() && !this.buf.isEmpty()) {
                     // Flush if the total length of the input exceeds our buffer's spare capacity.
                     // If we would have overflowed, this condition also holds, and we need to flush.
-                    when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+                    when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
                 }
                 if (saturatedTotalLen >= this.buf.capacity()) {
                     // Forward to our inner writer if the total length of the input is greater than or
@@ -539,7 +539,7 @@ public open class BufWriter<W : Write>(
                         // This is the first non-empty slice to write, so if it does
                         // not fit in the buffer, we still get to flush and proceed.
                         if (buf1.len() > this.spareCapacity()) {
-                            when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+                            when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
                         }
                         if (buf1.len() >= this.buf.capacity()) {
                             // The slice is at least as large as the buffering capacity,
@@ -581,7 +581,7 @@ public open class BufWriter<W : Write>(
     public open fun isWriteVectored(): Boolean = true
 
     public open fun flush(): Result<Unit> {
-        when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+        when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         return this.getMut().flush()
     }
 
@@ -593,7 +593,7 @@ public open class BufWriter<W : Write>(
      * Seeking always writes out the internal buffer before seeking.
      */
     public open fun seek(pos: SeekFrom): Result<ULong> {
-        when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, Error>(tryResult.errValue()) }
+        when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         return this.getMut().seek(pos)
     }
 
@@ -627,8 +627,8 @@ public open class BufWriter<W : Write>(
             val buf =
                 when (val tryResult = Vec.tryWithCapacity(DEFAULT_BUF_SIZE).mapErr({
                     constError(ErrorKind.OutOfMemory, "failed to allocate write buffer")
-                })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<BufWriter<W>, Error>(tryResult.errValue()) }
-            val inner = when (val tryResult = f()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<BufWriter<W>, Error>(tryResult.errValue()) }
+                })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<BufWriter<W>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+            val inner = when (val tryResult = f()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<BufWriter<W>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             return RustResult.Ok(BufWriter(inner = inner, buf = buf, panicked = false))
         }
 

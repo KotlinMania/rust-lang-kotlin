@@ -178,7 +178,7 @@ static Napi::Value corearchLoongarchsharedMovfcsr2gr_napi(const Napi::CallbackIn
     return Napi::Number::New(km_env, static_cast<int32_t>(km_res));
 }
 
-static Napi::Value corearchLoongarchsharedIocsrrdB_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchLoongarchsharedExternIocsrrdB_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t a = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     typedef int32_t (*km_fn_t)(int32_t);
@@ -211,7 +211,7 @@ static Napi::Value corearchLoongarchsharedIocsrrdB_napi(const Napi::CallbackInfo
     return Napi::Number::New(km_env, static_cast<int32_t>(km_res));
 }
 
-static Napi::Value corearchLoongarchsharedIocsrrdH_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchLoongarchsharedExternIocsrrdH_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t a = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     typedef int32_t (*km_fn_t)(int32_t);
@@ -244,7 +244,7 @@ static Napi::Value corearchLoongarchsharedIocsrrdH_napi(const Napi::CallbackInfo
     return Napi::Number::New(km_env, static_cast<int32_t>(km_res));
 }
 
-static Napi::Value corearchLoongarchsharedIocsrrdW_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchLoongarchsharedExternIocsrrdW_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t a = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     typedef int32_t (*km_fn_t)(int32_t);
@@ -277,7 +277,7 @@ static Napi::Value corearchLoongarchsharedIocsrrdW_napi(const Napi::CallbackInfo
     return Napi::Number::New(km_env, static_cast<int32_t>(km_res));
 }
 
-static Napi::Value corearchLoongarchsharedIocsrwrB_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchLoongarchsharedExternIocsrwrB_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t a = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     int32_t b = static_cast<int32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -309,7 +309,7 @@ static Napi::Value corearchLoongarchsharedIocsrwrB_napi(const Napi::CallbackInfo
     return km_env.Undefined();
 }
 
-static Napi::Value corearchLoongarchsharedIocsrwrH_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchLoongarchsharedExternIocsrwrH_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t a = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     int32_t b = static_cast<int32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -341,7 +341,7 @@ static Napi::Value corearchLoongarchsharedIocsrwrH_napi(const Napi::CallbackInfo
     return km_env.Undefined();
 }
 
-static Napi::Value corearchLoongarchsharedIocsrwrW_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchLoongarchsharedExternIocsrwrW_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t a = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     int32_t b = static_cast<int32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -404,7 +404,7 @@ static Napi::Value corearchLoongarchsharedBreakTarget_napi(const Napi::CallbackI
     return km_env.Undefined();
 }
 
-static Napi::Value corearchLoongarchsharedCpucfg_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchLoongarchsharedExternCpucfg_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t a = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     typedef int32_t (*km_fn_t)(int32_t);
@@ -468,7 +468,7 @@ static Napi::Value corearchLoongarchsharedSyscall_napi(const Napi::CallbackInfo&
     return km_env.Undefined();
 }
 
-static Napi::Value corearchLoongarchsharedFrecipeS_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchLoongarchsharedExternFrecipeS_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     float a = km_info.Length() > 0 ? km_info[0].ToNumber().FloatValue() : 0.0f;
     typedef float (*km_fn_t)(float);
@@ -501,7 +501,7 @@ static Napi::Value corearchLoongarchsharedFrecipeS_napi(const Napi::CallbackInfo
     return Napi::Number::New(km_env, static_cast<double>(km_res));
 }
 
-static Napi::Value corearchLoongarchsharedFrecipeD_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchLoongarchsharedExternFrecipeD_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     double a = km_info.Length() > 0 ? km_info[0].ToNumber().DoubleValue() : 0.0;
     typedef double (*km_fn_t)(double);
@@ -534,7 +534,7 @@ static Napi::Value corearchLoongarchsharedFrecipeD_napi(const Napi::CallbackInfo
     return Napi::Number::New(km_env, static_cast<double>(km_res));
 }
 
-static Napi::Value corearchLoongarchsharedFrsqrteS_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchLoongarchsharedExternFrsqrteS_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     float a = km_info.Length() > 0 ? km_info[0].ToNumber().FloatValue() : 0.0f;
     typedef float (*km_fn_t)(float);
@@ -567,7 +567,7 @@ static Napi::Value corearchLoongarchsharedFrsqrteS_napi(const Napi::CallbackInfo
     return Napi::Number::New(km_env, static_cast<double>(km_res));
 }
 
-static Napi::Value corearchLoongarchsharedFrsqrteD_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchLoongarchsharedExternFrsqrteD_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     double a = km_info.Length() > 0 ? km_info[0].ToNumber().DoubleValue() : 0.0;
     typedef double (*km_fn_t)(double);
@@ -605,19 +605,19 @@ static void register_loongarchshared_napi(Napi::Env env, Napi::Object exports) {
     exports.Set("corearchLoongarchsharedIbar", Napi::Function::New(env, corearchLoongarchsharedIbar_napi));
     exports.Set("corearchLoongarchsharedMovgr2fcsr", Napi::Function::New(env, corearchLoongarchsharedMovgr2fcsr_napi));
     exports.Set("corearchLoongarchsharedMovfcsr2gr", Napi::Function::New(env, corearchLoongarchsharedMovfcsr2gr_napi));
-    exports.Set("corearchLoongarchsharedIocsrrdB", Napi::Function::New(env, corearchLoongarchsharedIocsrrdB_napi));
-    exports.Set("corearchLoongarchsharedIocsrrdH", Napi::Function::New(env, corearchLoongarchsharedIocsrrdH_napi));
-    exports.Set("corearchLoongarchsharedIocsrrdW", Napi::Function::New(env, corearchLoongarchsharedIocsrrdW_napi));
-    exports.Set("corearchLoongarchsharedIocsrwrB", Napi::Function::New(env, corearchLoongarchsharedIocsrwrB_napi));
-    exports.Set("corearchLoongarchsharedIocsrwrH", Napi::Function::New(env, corearchLoongarchsharedIocsrwrH_napi));
-    exports.Set("corearchLoongarchsharedIocsrwrW", Napi::Function::New(env, corearchLoongarchsharedIocsrwrW_napi));
+    exports.Set("corearchLoongarchsharedExternIocsrrdB", Napi::Function::New(env, corearchLoongarchsharedExternIocsrrdB_napi));
+    exports.Set("corearchLoongarchsharedExternIocsrrdH", Napi::Function::New(env, corearchLoongarchsharedExternIocsrrdH_napi));
+    exports.Set("corearchLoongarchsharedExternIocsrrdW", Napi::Function::New(env, corearchLoongarchsharedExternIocsrrdW_napi));
+    exports.Set("corearchLoongarchsharedExternIocsrwrB", Napi::Function::New(env, corearchLoongarchsharedExternIocsrwrB_napi));
+    exports.Set("corearchLoongarchsharedExternIocsrwrH", Napi::Function::New(env, corearchLoongarchsharedExternIocsrwrH_napi));
+    exports.Set("corearchLoongarchsharedExternIocsrwrW", Napi::Function::New(env, corearchLoongarchsharedExternIocsrwrW_napi));
     exports.Set("corearchLoongarchsharedBreakTarget", Napi::Function::New(env, corearchLoongarchsharedBreakTarget_napi));
-    exports.Set("corearchLoongarchsharedCpucfg", Napi::Function::New(env, corearchLoongarchsharedCpucfg_napi));
+    exports.Set("corearchLoongarchsharedExternCpucfg", Napi::Function::New(env, corearchLoongarchsharedExternCpucfg_napi));
     exports.Set("corearchLoongarchsharedSyscall", Napi::Function::New(env, corearchLoongarchsharedSyscall_napi));
-    exports.Set("corearchLoongarchsharedFrecipeS", Napi::Function::New(env, corearchLoongarchsharedFrecipeS_napi));
-    exports.Set("corearchLoongarchsharedFrecipeD", Napi::Function::New(env, corearchLoongarchsharedFrecipeD_napi));
-    exports.Set("corearchLoongarchsharedFrsqrteS", Napi::Function::New(env, corearchLoongarchsharedFrsqrteS_napi));
-    exports.Set("corearchLoongarchsharedFrsqrteD", Napi::Function::New(env, corearchLoongarchsharedFrsqrteD_napi));
+    exports.Set("corearchLoongarchsharedExternFrecipeS", Napi::Function::New(env, corearchLoongarchsharedExternFrecipeS_napi));
+    exports.Set("corearchLoongarchsharedExternFrecipeD", Napi::Function::New(env, corearchLoongarchsharedExternFrecipeD_napi));
+    exports.Set("corearchLoongarchsharedExternFrsqrteS", Napi::Function::New(env, corearchLoongarchsharedExternFrsqrteS_napi));
+    exports.Set("corearchLoongarchsharedExternFrsqrteD", Napi::Function::New(env, corearchLoongarchsharedExternFrsqrteD_napi));
 }
 
 static KmNapiRegistrarNode registrar_node = { &register_loongarchshared_napi, nullptr };

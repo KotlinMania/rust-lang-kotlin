@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.num.nichetypes
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.hash.Hash
 import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -44,7 +45,7 @@ public open class Nanoseconds internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -113,7 +114,7 @@ public open class NonZeroU8Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -173,7 +174,7 @@ public open class NonZeroU16Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -233,7 +234,7 @@ public open class NonZeroU32Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -293,7 +294,7 @@ public open class NonZeroU64Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -353,7 +354,7 @@ public open class NonZeroU128Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -413,7 +414,7 @@ public open class NonZeroI8Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -473,7 +474,7 @@ public open class NonZeroI16Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -533,7 +534,7 @@ public open class NonZeroI32Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -593,7 +594,7 @@ public open class NonZeroI64Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -653,7 +654,7 @@ public open class NonZeroI128Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -713,7 +714,7 @@ public open class UsizeNoHighBit internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -773,7 +774,7 @@ public open class UsizeNoHighBitMinusOne internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -833,7 +834,7 @@ public open class NonZeroUsizeInner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -893,7 +894,7 @@ public open class NonZeroIsizeInner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -953,7 +954,7 @@ public open class U32NotAllOnes internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -1013,7 +1014,7 @@ public open class I32NotAllOnes internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -1073,7 +1074,7 @@ public open class U64NotAllOnes internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -1133,7 +1134,7 @@ public open class I64NotAllOnes internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -1193,7 +1194,7 @@ public open class NonZeroCharInner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 
@@ -1257,7 +1258,7 @@ public open class CodePointInner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        this.asInner().hash(state)
+        Hash.Hash(this.asInner(), state)
         return state
     }
 

@@ -142,7 +142,7 @@ public fun getrandom(bytes: MutableList<UByte>, insecure: Boolean) {
     }
     // When we want cryptographic strength, we need to wait for the CPRNG-pool
     // to become initialized. Do this by polling `/ dev / random` until it is ready.
-    if (insecure.inv()) {
+    if (!insecure) {
         if (!URANDOM_READY.load(Acquire)) {
             val random = File.open("/dev/random").expect("failed to open /dev/random")
             val fd = Pollfd(fd = random.asRawFd(), events = POLLIN, revents = 0)

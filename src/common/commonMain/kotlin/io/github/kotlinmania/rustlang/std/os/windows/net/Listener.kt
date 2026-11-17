@@ -14,7 +14,6 @@ import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.IntoRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.asRawSocket
-import io.github.kotlinmania.rustlang.std.os.windows.io.fromRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.intoRawSocket
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.Socket
@@ -340,7 +339,7 @@ public open class UnixListener(
             return Result.Ok<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(UnixListener(inner))
         }
 
-        public fun fromRawSocket(sock: RawSocket): UnixListener = UnixListener(Socket.fromRawSocket(sock))
+        public fun fromRawSocket(sock: RawSocket): UnixListener = UnixListener(Socket.FromRawSocket(sock))
     }
 }
 

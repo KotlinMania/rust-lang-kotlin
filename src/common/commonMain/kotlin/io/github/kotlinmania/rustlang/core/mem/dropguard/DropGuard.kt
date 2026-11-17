@@ -1,7 +1,9 @@
 // port-lint: source mem/drop_guard.rs
 package io.github.kotlinmania.rustlang.core.mem.dropguard
 
+import io.github.kotlinmania.rustlang.core.io.util.Take
 import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
+import io.github.kotlinmania.rustlang.core.ops.drop.Drop
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -36,9 +38,9 @@ public open class DropGuard<T, F, Output>(
 
     public open fun drop() {
         // SAFETY: `DropGuard` is in the process of being dropped.
-        val inner = ManuallyDrop.take(this.inner)
+        val inner = ManuallyDrop.Take(this.inner)
         // SAFETY: `DropGuard` is in the process of being dropped.
-        val f = ManuallyDrop.take(this.f)
+        val f = ManuallyDrop.Take(this.f)
         f(inner)
     }
 
@@ -84,13 +86,13 @@ public open class DropGuard<T, F, Output>(
             // Next we manually read the stored value from the guard.
             //
             // SAFETY: this is safe because we've taken ownership of the guard.
-            val value = ManuallyDrop.take(guard1.inner)
+            val value = ManuallyDrop.Take(guard1.inner)
             // Finally we drop the stored closure. We do this *after* having read
             // the value, so that even if the closure's `drop` function panics,
             // unwinding still tries to drop the value.
             //
             // SAFETY: this is safe because we've taken ownership of the guard.
-            ManuallyDrop.drop(guard1.f)
+            ManuallyDrop.Drop(guard1.f)
             return value
         }
     }

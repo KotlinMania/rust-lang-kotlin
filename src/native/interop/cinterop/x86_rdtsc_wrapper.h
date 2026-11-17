@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-uint64_t corearchX86RdtscRdtsc(void);
+uint64_t corearchX86RdtscExternRdtsc(void);
 
 #ifdef __cplusplus
 }

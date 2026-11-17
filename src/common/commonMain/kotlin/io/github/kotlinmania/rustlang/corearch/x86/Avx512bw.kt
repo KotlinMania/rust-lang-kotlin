@@ -7504,7 +7504,7 @@ public fun mmMaskzDbsadEpu8(k: Mmask8, a: M128i, b: M128i, imm8: Int): M128i =
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_movepi16_mask&expand=3873)
  */
 public fun mm512Movepi16Mask(a: M512i): Mmask32 {
-    val filter = mm512Set1Epi16((1 shl 15).toShort())
+    val filter = mm512Set1Epi16((1.toInt() shl 15).toShort())
     val a1 = mm512AndSi512(a, filter)
     return mm512CmpeqEpi16Mask(a1, filter)
 }
@@ -7515,7 +7515,7 @@ public fun mm512Movepi16Mask(a: M512i): Mmask32 {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_movepi16_mask&expand=3872)
  */
 public fun mm256Movepi16Mask(a: M256i): Mmask16 {
-    val filter = mm256Set1Epi16((1 shl 15).toShort())
+    val filter = mm256Set1Epi16((1.toInt() shl 15).toShort())
     val a1 = mm256AndSi256(a, filter)
     return mm256CmpeqEpi16Mask(a1, filter)
 }
@@ -7526,7 +7526,7 @@ public fun mm256Movepi16Mask(a: M256i): Mmask16 {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_movepi16_mask&expand=3871)
  */
 public fun mmMovepi16Mask(a: M128i): Mmask8 {
-    val filter = mmSet1Epi16((1 shl 15).toShort())
+    val filter = mmSet1Epi16((1.toInt() shl 15).toShort())
     val a1 = mmAndSi128(a, filter)
     return mmCmpeqEpi16Mask(a1, filter)
 }
@@ -7537,7 +7537,7 @@ public fun mmMovepi16Mask(a: M128i): Mmask8 {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_movepi8_mask&expand=3883)
  */
 public fun mm512Movepi8Mask(a: M512i): Mmask64 {
-    val filter = mm512Set1Epi8((1 shl 7).toByte())
+    val filter = mm512Set1Epi8((1.toInt() shl 7).toByte())
     val a1 = mm512AndSi512(a, filter)
     return mm512CmpeqEpi8Mask(a1, filter)
 }
@@ -7551,7 +7551,7 @@ public fun mm512Movepi8Mask(a: M512i): Mmask64 {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_movepi8_mask&expand=3882)
  */
 public fun mm256Movepi8Mask(a: M256i): Mmask32 {
-    val filter = mm256Set1Epi8((1 shl 7).toByte())
+    val filter = mm256Set1Epi8((1.toInt() shl 7).toByte())
     val a1 = mm256AndSi256(a, filter)
     return mm256CmpeqEpi8Mask(a1, filter)
 }
@@ -7565,7 +7565,7 @@ public fun mm256Movepi8Mask(a: M256i): Mmask32 {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_movepi8_mask&expand=3881)
  */
 public fun mmMovepi8Mask(a: M128i): Mmask16 {
-    val filter = mmSet1Epi8((1 shl 7).toByte())
+    val filter = mmSet1Epi8((1.toInt() shl 7).toByte())
     val a1 = mmAndSi128(a, filter)
     return mmCmpeqEpi8Mask(a1, filter)
 }
@@ -7577,7 +7577,7 @@ public fun mmMovepi8Mask(a: M128i): Mmask16 {
  */
 public fun mm512MovmEpi16(k: Mmask32): M512i =
     run {
-        val one = mm512Set1Epi16(((((((((((((((((((((((((((((((1 shl 15).toInt() or (1 shl 14).toInt()).toShort()).toInt() or (1 shl 13).toInt()).toShort()).toInt() or (1 shl 12).toInt()).toShort()).toInt() or (1 shl 11).toInt()).toShort()).toInt() or (1 shl 10).toInt()).toShort()).toInt() or (1 shl 9).toInt()).toShort()).toInt() or (1 shl 8).toInt()).toShort()).toInt() or (1 shl 7).toInt()).toShort()).toInt() or (1 shl 6).toInt()).toShort()).toInt() or (1 shl 5).toInt()).toShort()).toInt() or (1 shl 4).toInt()).toShort()).toInt() or (1 shl 3).toInt()).toShort()).toInt() or (1 shl 2).toInt()).toShort()).toInt() or (1 shl 1).toInt()).toShort()).toInt() or (1 shl 0).toInt()).toShort()).asI16x32()
+        val one = mm512Set1Epi16((((((((((((((((((((((((((((((((1.toInt() shl 15).toShort()).toInt() or ((1.toInt() shl 14).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 13).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 12).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 11).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 10).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 9).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 8).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 7).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 6).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 5).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 4).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 3).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 2).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 1).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 0).toShort()).toInt()).toShort()).asI16x32()
         transmute(run { val simdArg0 = k; val simdArg1 = one; val simdArg2 = Simd<Short>(List(32) { 0.toShort() }); simdArg1 })
     }
 
@@ -7588,7 +7588,7 @@ public fun mm512MovmEpi16(k: Mmask32): M512i =
  */
 public fun mm256MovmEpi16(k: Mmask16): M256i =
     run {
-        val one = mm256Set1Epi16(((((((((((((((((((((((((((((((1 shl 15).toInt() or (1 shl 14).toInt()).toShort()).toInt() or (1 shl 13).toInt()).toShort()).toInt() or (1 shl 12).toInt()).toShort()).toInt() or (1 shl 11).toInt()).toShort()).toInt() or (1 shl 10).toInt()).toShort()).toInt() or (1 shl 9).toInt()).toShort()).toInt() or (1 shl 8).toInt()).toShort()).toInt() or (1 shl 7).toInt()).toShort()).toInt() or (1 shl 6).toInt()).toShort()).toInt() or (1 shl 5).toInt()).toShort()).toInt() or (1 shl 4).toInt()).toShort()).toInt() or (1 shl 3).toInt()).toShort()).toInt() or (1 shl 2).toInt()).toShort()).toInt() or (1 shl 1).toInt()).toShort()).toInt() or (1 shl 0).toInt()).toShort()).asI16x16()
+        val one = mm256Set1Epi16((((((((((((((((((((((((((((((((1.toInt() shl 15).toShort()).toInt() or ((1.toInt() shl 14).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 13).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 12).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 11).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 10).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 9).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 8).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 7).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 6).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 5).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 4).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 3).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 2).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 1).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 0).toShort()).toInt()).toShort()).asI16x16()
         transmute(run { val simdArg0 = k; val simdArg1 = one; val simdArg2 = Simd<Short>(List(16) { 0.toShort() }); simdArg1 })
     }
 
@@ -7599,7 +7599,7 @@ public fun mm256MovmEpi16(k: Mmask16): M256i =
  */
 public fun mmMovmEpi16(k: Mmask8): M128i =
     run {
-        val one = mmSet1Epi16(((((((((((((((((((((((((((((((1 shl 15).toInt() or (1 shl 14).toInt()).toShort()).toInt() or (1 shl 13).toInt()).toShort()).toInt() or (1 shl 12).toInt()).toShort()).toInt() or (1 shl 11).toInt()).toShort()).toInt() or (1 shl 10).toInt()).toShort()).toInt() or (1 shl 9).toInt()).toShort()).toInt() or (1 shl 8).toInt()).toShort()).toInt() or (1 shl 7).toInt()).toShort()).toInt() or (1 shl 6).toInt()).toShort()).toInt() or (1 shl 5).toInt()).toShort()).toInt() or (1 shl 4).toInt()).toShort()).toInt() or (1 shl 3).toInt()).toShort()).toInt() or (1 shl 2).toInt()).toShort()).toInt() or (1 shl 1).toInt()).toShort()).toInt() or (1 shl 0).toInt()).toShort()).asI16x8()
+        val one = mmSet1Epi16((((((((((((((((((((((((((((((((1.toInt() shl 15).toShort()).toInt() or ((1.toInt() shl 14).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 13).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 12).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 11).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 10).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 9).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 8).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 7).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 6).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 5).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 4).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 3).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 2).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 1).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 0).toShort()).toInt()).toShort()).asI16x8()
         transmute(run { val simdArg0 = k; val simdArg1 = one; val simdArg2 = Simd<Short>(List(8) { 0.toShort() }); simdArg1 })
     }
 
@@ -7610,7 +7610,7 @@ public fun mmMovmEpi16(k: Mmask8): M128i =
  */
 public fun mm512MovmEpi8(k: Mmask64): M512i =
     run {
-        val one = mm512Set1Epi8(((((((((((((((1 shl 7).toInt() or (1 shl 6).toInt()).toByte()).toInt() or (1 shl 5).toInt()).toByte()).toInt() or (1 shl 4).toInt()).toByte()).toInt() or (1 shl 3).toInt()).toByte()).toInt() or (1 shl 2).toInt()).toByte()).toInt() or (1 shl 1).toInt()).toByte()).toInt() or (1 shl 0).toInt()).toByte()).asI8x64()
+        val one = mm512Set1Epi8((((((((((((((((1.toInt() shl 7).toByte()).toInt() or ((1.toInt() shl 6).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 5).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 4).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 3).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 2).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 1).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 0).toByte()).toInt()).toByte()).asI8x64()
         transmute(run { val simdArg0 = k; val simdArg1 = one; val simdArg2 = Simd<Byte>(List(64) { 0.toByte() }); simdArg1 })
     }
 
@@ -7621,7 +7621,7 @@ public fun mm512MovmEpi8(k: Mmask64): M512i =
  */
 public fun mm256MovmEpi8(k: Mmask32): M256i =
     run {
-        val one = mm256Set1Epi8(((((((((((((((1 shl 7).toInt() or (1 shl 6).toInt()).toByte()).toInt() or (1 shl 5).toInt()).toByte()).toInt() or (1 shl 4).toInt()).toByte()).toInt() or (1 shl 3).toInt()).toByte()).toInt() or (1 shl 2).toInt()).toByte()).toInt() or (1 shl 1).toInt()).toByte()).toInt() or (1 shl 0).toInt()).toByte()).asI8x32()
+        val one = mm256Set1Epi8((((((((((((((((1.toInt() shl 7).toByte()).toInt() or ((1.toInt() shl 6).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 5).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 4).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 3).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 2).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 1).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 0).toByte()).toInt()).toByte()).asI8x32()
         transmute(run { val simdArg0 = k; val simdArg1 = one; val simdArg2 = Simd<Byte>(List(32) { 0.toByte() }); simdArg1 })
     }
 
@@ -7632,7 +7632,7 @@ public fun mm256MovmEpi8(k: Mmask32): M256i =
  */
 public fun mmMovmEpi8(k: Mmask16): M128i =
     run {
-        val one = mmSet1Epi8(((((((((((((((1 shl 7).toInt() or (1 shl 6).toInt()).toByte()).toInt() or (1 shl 5).toInt()).toByte()).toInt() or (1 shl 4).toInt()).toByte()).toInt() or (1 shl 3).toInt()).toByte()).toInt() or (1 shl 2).toInt()).toByte()).toInt() or (1 shl 1).toInt()).toByte()).toInt() or (1 shl 0).toInt()).toByte()).asI8x16()
+        val one = mmSet1Epi8((((((((((((((((1.toInt() shl 7).toByte()).toInt() or ((1.toInt() shl 6).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 5).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 4).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 3).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 2).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 1).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 0).toByte()).toInt()).toByte()).asI8x16()
         transmute(run { val simdArg0 = k; val simdArg1 = one; val simdArg2 = Simd<Byte>(List(16) { 0.toByte() }); simdArg1 })
     }
 

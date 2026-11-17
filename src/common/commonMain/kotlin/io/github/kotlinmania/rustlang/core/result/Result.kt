@@ -1,6 +1,7 @@
 // port-lint: source result.rs
 package io.github.kotlinmania.rustlang.core.result
 
+import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
@@ -1911,11 +1912,11 @@ public fun <T, E, F> fromResidualResultTF(residual: Result<Nothing, E>): Result<
     when (residual) {
         is Result.Err<*, *> -> {
             val e = residual.errValue()
-            Err(From.from(e))
+            Err(From.From(e))
         }
     }
 
 public fun <T, E, F> fromResidualResultTF(destructuredArg0: Yeet<E>): Result<T, F> {
     val e = destructuredArg0.value
-    return Err(From.from(e))
+    return Err(From.From(e))
 }

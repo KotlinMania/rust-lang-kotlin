@@ -66,7 +66,7 @@ public open class U256(
         return U256(lo = lo, hi = hi)
     }
 
-    public open fun shl(rhs: UInt): U256 {
+    public open infix fun shl(rhs: UInt): U256 {
         check(rhs < U256.BITS) { "attempt to shift left with overflow" }
         val halfBits = U256.BITS / 2
         val lowMask = halfBits - 1
@@ -84,7 +84,7 @@ public open class U256(
         return this
     }
 
-    public open fun shr(rhs: UInt): U256 {
+    public open infix fun shr(rhs: UInt): U256 {
         check(rhs < U256.BITS) { "attempt to shift right with overflow" }
         val halfBits = U256.BITS / 2
         val lowMask = halfBits - 1
@@ -197,7 +197,7 @@ public open class I256(
         return I256(lo = lo, hi = hi)
     }
 
-    public open fun shl(rhs: UInt): I256 {
+    public open infix fun shl(rhs: UInt): I256 {
         check(rhs < I256.BITS) { "attempt to shift left with overflow" }
         val halfBits = I256.BITS / 2
         val lowMask = halfBits - 1
@@ -215,7 +215,7 @@ public open class I256(
         return this
     }
 
-    public open fun shr(rhs: UInt): I256 {
+    public open infix fun shr(rhs: UInt): I256 {
         check(rhs < I256.BITS) { "attempt to shift right with overflow" }
         val halfBits = I256.BITS / 2
         val lowMask = halfBits - 1

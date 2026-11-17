@@ -296,7 +296,7 @@ public fun <Int, T> toShortestExpStr(formatShortest: (Decoded, MutableList<Maybe
             Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
         }
         FullDecoded.Zero -> {
-            parts[0] = if (decBounds.first <= 0 && 0 < decBounds.second) {
+            parts[0] = if (decBounds.first <= 0.toShort() && 0.toShort() < decBounds.second) {
                 MaybeUninit.new(Part.Copy("0".encodeToByteArray()), UnresolvedTypeLayout<Part>())
             } else {
                 MaybeUninit.new(Part.Copy(if (upper) {

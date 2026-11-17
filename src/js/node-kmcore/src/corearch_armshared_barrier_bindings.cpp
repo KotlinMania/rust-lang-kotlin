@@ -51,7 +51,7 @@ static uint64_t km_napi_arg_u64(const Napi::Value& v) {
     return 0;
 }
 
-static Napi::Value corearchArmsharedBarrierDmb_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchArmsharedBarrierExternDmb_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t arg0 = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     typedef void (*km_fn_t)(int32_t);
@@ -82,7 +82,7 @@ static Napi::Value corearchArmsharedBarrierDmb_napi(const Napi::CallbackInfo& km
     return km_env.Undefined();
 }
 
-static Napi::Value corearchArmsharedBarrierDsb_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchArmsharedBarrierExternDsb_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t arg0 = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     typedef void (*km_fn_t)(int32_t);
@@ -113,7 +113,7 @@ static Napi::Value corearchArmsharedBarrierDsb_napi(const Napi::CallbackInfo& km
     return km_env.Undefined();
 }
 
-static Napi::Value corearchArmsharedBarrierIsb_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchArmsharedBarrierExternIsb_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t arg0 = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     typedef void (*km_fn_t)(int32_t);
@@ -145,9 +145,9 @@ static Napi::Value corearchArmsharedBarrierIsb_napi(const Napi::CallbackInfo& km
 }
 
 static void register_armshared_barrier_napi(Napi::Env env, Napi::Object exports) {
-    exports.Set("corearchArmsharedBarrierDmb", Napi::Function::New(env, corearchArmsharedBarrierDmb_napi));
-    exports.Set("corearchArmsharedBarrierDsb", Napi::Function::New(env, corearchArmsharedBarrierDsb_napi));
-    exports.Set("corearchArmsharedBarrierIsb", Napi::Function::New(env, corearchArmsharedBarrierIsb_napi));
+    exports.Set("corearchArmsharedBarrierExternDmb", Napi::Function::New(env, corearchArmsharedBarrierExternDmb_napi));
+    exports.Set("corearchArmsharedBarrierExternDsb", Napi::Function::New(env, corearchArmsharedBarrierExternDsb_napi));
+    exports.Set("corearchArmsharedBarrierExternIsb", Napi::Function::New(env, corearchArmsharedBarrierExternIsb_napi));
 }
 
 static KmNapiRegistrarNode registrar_node = { &register_armshared_barrier_napi, nullptr };

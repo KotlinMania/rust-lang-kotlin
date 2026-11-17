@@ -100,7 +100,7 @@ public fun Repeat.readToString(arg0: String): Result<Int> = RustResult.Err(Error
 public fun Repeat.readVectored(bufs: MutableList<IoSliceMut>): Result<Int> {
     var nwritten = 0
     for (buf in bufs) {
-        nwritten += when (val tryResult = this.read(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+        nwritten += when (val tryResult = this.read(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     }
     return RustResult.Ok(nwritten)
 }
@@ -110,7 +110,7 @@ public fun Repeat.isReadVectored(): Boolean = true
 public fun <T : Read<T>, U : Read<U>> Chain<T, U>.read(buf: MutableList<UByte>): Result<Int> {
     if (!this.doneFirst) {
         run {
-            val matchVal = when (val tryResult = this.first.read(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+            val matchVal = when (val tryResult = this.first.read(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             when {
                 matchVal == 0 && !buf.isEmpty() -> this.doneFirst = true
                 else -> {
@@ -126,7 +126,7 @@ public fun <T : Read<T>, U : Read<U>> Chain<T, U>.read(buf: MutableList<UByte>):
 public fun <T : Read<T>, U : Read<U>> Chain<T, U>.readVectored(bufs: MutableList<IoSliceMut>): Result<Int> {
     if (!this.doneFirst) {
         run {
-            val matchVal = when (val tryResult = this.first.readVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+            val matchVal = when (val tryResult = this.first.readVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             when {
                 matchVal == 0 && bufs.any({ b -> !b.isEmpty() }) -> this.doneFirst = true
                 else -> {
@@ -144,10 +144,10 @@ public fun <T : Read<T>, U : Read<U>> Chain<T, U>.isReadVectored(): Boolean = th
 public fun <T : Read<T>, U : Read<U>> Chain<T, U>.readToEnd(buf: List<UByte>): Result<Int> {
     var read = 0
     if (!this.doneFirst) {
-        read += when (val tryResult = this.first.readToEnd(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+        read += when (val tryResult = this.first.readToEnd(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         this.doneFirst = true
     }
-    read += when (val tryResult = this.second.readToEnd(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+    read += when (val tryResult = this.second.readToEnd(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     return RustResult.Ok(read)
 }
 
@@ -159,7 +159,7 @@ public fun <T : Read<T>, U : Read<U>> Chain<T, U>.readBuf(buf: BorrowedCursor<UB
     }
     if (!this.doneFirst) {
         val oldLen = buf.written()
-        when (val tryResult = this.first.readBuf(buf.reborrow())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+        when (val tryResult = this.first.readBuf(buf.reborrow())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         if (buf.written() != oldLen) {
             return RustResult.Ok(Unit)
         } else {
@@ -172,7 +172,7 @@ public fun <T : Read<T>, U : Read<U>> Chain<T, U>.readBuf(buf: BorrowedCursor<UB
 public fun <T : BufRead<T>, U : BufRead<U>> Chain<T, U>.fillBuf(): Result<List<UByte>> {
     if (!this.doneFirst) {
         run {
-            val matchVal = when (val tryResult = this.first.fillBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, Error>(tryResult.errValue()) }
+            val matchVal = when (val tryResult = this.first.fillBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             when {
                 matchVal.isEmpty() -> {
                     val buf = matchVal
@@ -199,7 +199,7 @@ public fun <T : BufRead<T>, U : BufRead<U>> Chain<T, U>.consume(amt: Int) {
 public fun <T : BufRead<T>, U : BufRead<U>> Chain<T, U>.readUntil(byte: UByte, buf: List<UByte>): Result<Int> {
     var read = 0
     if (!this.doneFirst) {
-        val n = when (val tryResult = this.first.readUntil(byte, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+        val n = when (val tryResult = this.first.readUntil(byte, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         read += n
         run {
             val matchVal = buf.last()
@@ -212,7 +212,7 @@ public fun <T : BufRead<T>, U : BufRead<U>> Chain<T, U>.readUntil(byte: UByte, b
             }
         }
     }
-    read += when (val tryResult = this.second.readUntil(byte, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+    read += when (val tryResult = this.second.readUntil(byte, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     return RustResult.Ok(read)
 }
 
@@ -222,7 +222,7 @@ public fun <T : Read<T>> Take<T>.read(buf: MutableList<UByte>): Result<Int> {
         return RustResult.Ok(0)
     }
     val max = minOf(buf.size.toULong(), this.limit).toInt()
-    val n = when (val tryResult = this.inner.read(buf.subList(0, max))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+    val n = when (val tryResult = this.inner.read(buf.subList(0, max))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     check(n.toULong() <= this.limit) { "number of read bytes exceeds limit" }
     this.limit -= n.toULong()
     return RustResult.Ok(n)
@@ -277,7 +277,7 @@ public fun <T : BufRead<T>> Take<T>.fillBuf(): Result<List<UByte>> {
     if (this.limit == 0) {
         return RustResult.Ok(listOf())
     }
-    val buf = when (val tryResult = this.inner.fillBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, Error>(tryResult.errValue()) }
+    val buf = when (val tryResult = this.inner.fillBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     val cap = minOf(buf.len().toULong(), this.limit).toInt()
     return RustResult.Ok(buf[0 until cap])
 }

@@ -27,6 +27,7 @@ import io.github.kotlinmania.rustlang.std.os.net.linuxext.addr.SocketAddrExt
 import io.github.kotlinmania.rustlang.std.os.raw.CChar
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Slice
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 public val SUN_PATH_OFFSET: Int = 0
@@ -161,7 +162,7 @@ public open class SocketAddr(
             // linux adds a trailing NUL and counts it in the length, freebsd, netbsd
             // and qnx do not, and a caller may bind(2) without one either. unix(7)
             // gives the portable rule: strnlen(sunPath, len - offsetof(sunPath))
-            val end = (slice.memchr(0, path[0 until len]) ?: len)
+            val end = (Slice.memchr(0, path[0 until len]) ?: len)
             AddressKind.Pathname(OsStr.fromBytes(path[0 until end]).asRef())
         }
     }
@@ -209,7 +210,7 @@ public open class SocketAddr(
                 // and not the len of the content. Figure out the length for ourselves.
                 // https://marc.info/?l=openbsd-bugs&m=170105481926736&w=2
                 val sunPath: List<UByte> = transmuteWithLayouts<List<CChar>, List<UByte>>(addr.sunPath, UnresolvedTypeLayout<List<CChar>>(), UnresolvedTypeLayout<List<UByte>>())
-                len1 = (slice.memchr(0, sunPath)?.let({ newLen -> (newLen + SUN_PATH_OFFSET) }) ?: len1)
+                len1 = (Slice.memchr(0, sunPath)?.let({ newLen -> (newLen + SUN_PATH_OFFSET) }) ?: len1)
             }
             len1 = len1.min(sizeOf<SockaddrUn>(typeLayoutT = UnresolvedTypeLayout<SockaddrUn>()).toInt())
             if (len1 == 0) {

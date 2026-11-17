@@ -42,6 +42,7 @@ import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
 import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
+import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.process.ProcThreadAttributeList
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
@@ -101,6 +102,7 @@ import io.github.kotlinmania.rustlang.std.sys.path.windows.hasTrailingSlash
 import io.github.kotlinmania.rustlang.std.sys.path.windows.isAbsoluteExact
 import io.github.kotlinmania.rustlang.std.sys.path.windows.isFileName
 import io.github.kotlinmania.rustlang.std.sys.path.windows.isVerbatim
+import io.github.kotlinmania.rustlang.std.sys.paths.windows.SplitPaths
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnv
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnvs
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandResolvedEnvs
@@ -406,7 +408,7 @@ public open class Command(
             siPtr = (localStorageL364C8.asMutPtr())
         }
         when (val tryResult = cvt(createProcessW(program1.asPtr(), cmdStr1.asMutPtr(), MutPtr(0L), MutPtr(0L), inheritHandles, flags, envp, dirp, siPtr, pi))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) }
-        return Result.Ok<Pair<Process, StdioPipes>, Error>(Pair(Process(handle = Handle.fromRawHandle(pi.hProcess), mainThreadHandle = Handle.fromRawHandle(pi.hThread)), pipes))
+        return Result.Ok<Pair<Process, StdioPipes>, Error>(Pair(Process(handle = Handle.FromRawHandle(pi.hProcess), mainThreadHandle = Handle.FromRawHandle(pi.hThread)), pipes))
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
@@ -496,14 +498,14 @@ public sealed class Stdio {
                 when (matchVal) { is Result.Ok<*, *> -> {
                     val io = matchVal.okValue()
                     run {
-                        val io1 = Handle.fromRawHandle(io)
+                        val io1 = Handle.FromRawHandle(io)
                         val ret = io1.duplicate(0, true, DUPLICATE_SAME_ACCESS)
                         io1.intoRawHandle()
                         // Don't close the handle
                         ret
                     }
                 }; is Result.Err<*, *> -> {
-                    Result.Ok(Handle.fromRawHandle(MutPtr(0L)))
+                    Result.Ok(Handle.FromRawHandle(MutPtr(0L)))
                 } }
             } }
         return when (this) {
@@ -595,7 +597,7 @@ public fun resolveExe(exePath: OsStr, parentPaths: () -> OsString?, childPaths: 
             false
         }
     // If `exePath` is an absolute path or a sub-path then don't search `PATH` for it.
-    if (isFileName(exePath).inv()) {
+    if (!isFileName(exePath)) {
         if (hasExeSuffix) {
             // The application name is a path to a `.exe` file.
             // Let `CreateProcessW` figure out if it exists or not.
@@ -647,7 +649,7 @@ public fun searchPaths(parentPaths: () -> OsString?, childPaths: OsStr?, exists:
     // This is for consistency with Rust's historic behavior.
     if (childPaths != null) {
         val paths = childPaths
-        for (path in env.splitPaths(paths).filter({ p -> !p.asOsStr().isEmpty() })) {
+        for (path in env.SplitPaths(paths).filter({ p -> !p.asOsStr().isEmpty() })) {
             when (val matchVal = exists(path)) {
                 null -> {}
                 else -> {
@@ -697,7 +699,7 @@ public fun searchPaths(parentPaths: () -> OsString?, childPaths: OsStr?, exists:
         null -> {}
         else -> {
             val parentPaths1 = matchVal5
-            for (path5 in env.splitPaths(parentPaths1).filter({ p -> !p.asOsStr().isEmpty() })) {
+            for (path5 in env.SplitPaths(parentPaths1).filter({ p -> !p.asOsStr().isEmpty() })) {
                 when (val matchVal6 = exists(path5)) {
                     null -> {}
                     else -> {

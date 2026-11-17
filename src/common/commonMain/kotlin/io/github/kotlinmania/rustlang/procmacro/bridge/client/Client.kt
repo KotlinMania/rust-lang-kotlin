@@ -62,7 +62,7 @@ public fun TokenStream.encode(w: Buffer, s: Unit) {
     this.value.encode(w, s)
 }
 
-public fun decodeTokenStream(r: List<UByte>, s: Unit): TokenStream = TokenStream(Decode.decode(r, s))
+public fun decodeTokenStream(r: List<UByte>, s: Unit): TokenStream = TokenStream(Decode.Decode(r, s))
 
 public open class Span(
     public var handle: Handle,
@@ -94,7 +94,7 @@ public fun Methods.Companion.trackEnvVar(variable: String, value: String?) {
         variable.encode(buf, Unit)
         value.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -107,7 +107,7 @@ public fun Methods.Companion.trackPath(path: String) {
         ApiTags::trackPath.encode(buf, Unit)
         path.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -120,7 +120,7 @@ public fun Methods.Companion.literalFromStr(s: String): Result<Literal<Span, Sym
         ApiTags::literalFromStr.encode(buf, Unit)
         s.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -132,7 +132,7 @@ public fun Methods.Companion.emitDiagnostic(diagnostic: Diagnostic<Span>) {
         ApiTags::emitDiagnostic.encode(buf, Unit)
         diagnostic.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -145,7 +145,7 @@ public fun Methods.Companion.tsDrop(stream: TokenStream) {
         ApiTags::tsDrop.encode(buf, Unit)
         stream.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -158,7 +158,7 @@ public fun Methods.Companion.tsClone(stream: TokenStream): TokenStream =
         ApiTags::tsClone.encode(buf, Unit)
         stream.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -170,7 +170,7 @@ public fun Methods.Companion.tsIsEmpty(stream: TokenStream): Boolean =
         ApiTags::tsIsEmpty.encode(buf, Unit)
         stream.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -182,7 +182,7 @@ public fun Methods.Companion.tsExpandExpr(stream: TokenStream): Result<TokenStre
         ApiTags::tsExpandExpr.encode(buf, Unit)
         stream.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -194,7 +194,7 @@ public fun Methods.Companion.tsFromStr(src: String): Result<TokenStream, String>
         ApiTags::tsFromStr.encode(buf, Unit)
         src.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -206,7 +206,7 @@ public fun Methods.Companion.tsToString(stream: TokenStream): String =
         ApiTags::tsToString.encode(buf, Unit)
         stream.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -218,7 +218,7 @@ public fun Methods.Companion.tsFromTokenTree(tree: TokenTree<TokenStream, Span, 
         ApiTags::tsFromTokenTree.encode(buf, Unit)
         tree.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -231,7 +231,7 @@ public fun Methods.Companion.tsConcatTrees(base: TokenStream?, trees: List<Token
         base.encode(buf, Unit)
         trees.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -244,7 +244,7 @@ public fun Methods.Companion.tsConcatStreams(base: TokenStream?, streams: List<T
         base.encode(buf, Unit)
         streams.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -256,7 +256,7 @@ public fun Methods.Companion.tsIntoTrees(stream: TokenStream): List<TokenTree<To
         ApiTags::tsIntoTrees.encode(buf, Unit)
         stream.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -268,7 +268,7 @@ public fun Methods.Companion.spanDebug(span: Span): String =
         ApiTags::spanDebug.encode(buf, Unit)
         span.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -280,7 +280,7 @@ public fun Methods.Companion.spanParent(span: Span): Span? =
         ApiTags::spanParent.encode(buf, Unit)
         span.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -292,7 +292,7 @@ public fun Methods.Companion.spanSource(span: Span): Span =
         ApiTags::spanSource.encode(buf, Unit)
         span.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -304,7 +304,7 @@ public fun Methods.Companion.spanByteRange(span: Span): IntRange =
         ApiTags::spanByteRange.encode(buf, Unit)
         span.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -316,7 +316,7 @@ public fun Methods.Companion.spanStart(span: Span): Span =
         ApiTags::spanStart.encode(buf, Unit)
         span.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -328,7 +328,7 @@ public fun Methods.Companion.spanEnd(span: Span): Span =
         ApiTags::spanEnd.encode(buf, Unit)
         span.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -340,7 +340,7 @@ public fun Methods.Companion.spanLine(span: Span): Int =
         ApiTags::spanLine.encode(buf, Unit)
         span.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -352,7 +352,7 @@ public fun Methods.Companion.spanColumn(span: Span): Int =
         ApiTags::spanColumn.encode(buf, Unit)
         span.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -364,7 +364,7 @@ public fun Methods.Companion.spanFile(span: Span): String =
         ApiTags::spanFile.encode(buf, Unit)
         span.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -376,7 +376,7 @@ public fun Methods.Companion.spanLocalFile(span: Span): String? =
         ApiTags::spanLocalFile.encode(buf, Unit)
         span.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -389,7 +389,7 @@ public fun Methods.Companion.spanJoin(span: Span, other: Span): Span? =
         span.encode(buf, Unit)
         other.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -403,7 +403,7 @@ public fun Methods.Companion.spanSubspan(span: Span, start: Bound<Int>, end: Bou
         start.encode(buf, Unit)
         end.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -416,7 +416,7 @@ public fun Methods.Companion.spanResolvedAt(span: Span, at: Span): Span =
         span.encode(buf, Unit)
         at.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -428,7 +428,7 @@ public fun Methods.Companion.spanSourceText(span: Span): String? =
         ApiTags::spanSourceText.encode(buf, Unit)
         span.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -440,7 +440,7 @@ public fun Methods.Companion.spanSaveSpan(span: Span): Int =
         ApiTags::spanSaveSpan.encode(buf, Unit)
         span.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -452,7 +452,7 @@ public fun Methods.Companion.spanRecoverProcMacroSpan(id: Int): Span =
         ApiTags::spanRecoverProcMacroSpan.encode(buf, Unit)
         id.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
@@ -464,7 +464,7 @@ public fun Methods.Companion.symbolNormalizeAndValidateIdent(string: String): Re
         ApiTags::symbolNormalizeAndValidateIdent.encode(buf, Unit)
         string.encode(buf, Unit)
         buf = bridge.dispatch.call(buf)
-        val r = Result.decode(buf, Unit)
+        val r = Result.Decode(buf, Unit)
         bridge.cachedBuffer = buf
         r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })

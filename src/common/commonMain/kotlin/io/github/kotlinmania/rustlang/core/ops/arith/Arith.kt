@@ -73,59 +73,31 @@ public interface Add<Rhs, out Output> {
 
 public fun Int.add(other: Int): Int = this + other
 
-public fun Int.addInt(other: Int): Output = Add.Add(this, other)
-
 public fun UByte.add(other: UByte): UByte = (this + other).toUByte()
-
-public fun UByte.addUByte(other: UByte): Output = Add.Add(this, other)
 
 public fun UShort.add(other: UShort): UShort = (this + other).toUShort()
 
-public fun UShort.addUShort(other: UShort): Output = Add.Add(this, other)
-
 public fun UInt.add(other: UInt): UInt = this + other
-
-public fun UInt.addUInt(other: UInt): Output = Add.Add(this, other)
 
 public fun ULong.add(other: ULong): ULong = this + other
 
-public fun ULong.addULong(other: ULong): Output = Add.Add(this, other)
-
 public fun U128.add(other: U128): U128 = this + other
-
-public fun U128.addU128(other: U128): Output = Add.Add(this, other)
 
 public fun Byte.add(other: Byte): Byte = (this + other).toByte()
 
-public fun Byte.addByte(other: Byte): Output = Add.Add(this, other)
-
 public fun Short.add(other: Short): Short = (this + other).toShort()
-
-public fun Short.addShort(other: Short): Output = Add.Add(this, other)
 
 public fun Long.add(other: Long): Long = this + other
 
-public fun Long.addLong(other: Long): Output = Add.Add(this, other)
-
 public fun I128.add(other: I128): I128 = this + other
-
-public fun I128.addI128(other: I128): Output = Add.Add(this, other)
 
 public fun F16.add(other: F16): F16 = this + other
 
-public fun F16.addF16(other: F16): Output = Add.Add(this, other)
-
 public fun kotlin.Float.add(other: kotlin.Float): kotlin.Float = this + other
-
-public fun kotlin.Float.addFloat(other: kotlin.Float): Output = Add.Add(this, other)
 
 public fun Double.add(other: Double): Double = this + other
 
-public fun Double.addDouble(other: Double): Output = Add.Add(this, other)
-
 public fun F128.add(other: F128): F128 = this + other
-
-public fun F128.addF128(other: F128): Output = Add.Add(this, other)
 
 /**
  * The subtraction operator `-`.
@@ -192,59 +164,31 @@ public interface Sub<Rhs, out Output> {
 
 public fun Int.sub(other: Int): Int = this - other
 
-public fun Int.subInt(other: Int): Output = Sub.Sub(this, other)
-
 public fun UByte.sub(other: UByte): UByte = (this - other).toUByte()
-
-public fun UByte.subUByte(other: UByte): Output = Sub.Sub(this, other)
 
 public fun UShort.sub(other: UShort): UShort = (this - other).toUShort()
 
-public fun UShort.subUShort(other: UShort): Output = Sub.Sub(this, other)
-
 public fun UInt.sub(other: UInt): UInt = this - other
-
-public fun UInt.subUInt(other: UInt): Output = Sub.Sub(this, other)
 
 public fun ULong.sub(other: ULong): ULong = this - other
 
-public fun ULong.subULong(other: ULong): Output = Sub.Sub(this, other)
-
 public fun U128.sub(other: U128): U128 = this - other
-
-public fun U128.subU128(other: U128): Output = Sub.Sub(this, other)
 
 public fun Byte.sub(other: Byte): Byte = (this - other).toByte()
 
-public fun Byte.subByte(other: Byte): Output = Sub.Sub(this, other)
-
 public fun Short.sub(other: Short): Short = (this - other).toShort()
-
-public fun Short.subShort(other: Short): Output = Sub.Sub(this, other)
 
 public fun Long.sub(other: Long): Long = this - other
 
-public fun Long.subLong(other: Long): Output = Sub.Sub(this, other)
-
 public fun I128.sub(other: I128): I128 = this - other
-
-public fun I128.subI128(other: I128): Output = Sub.Sub(this, other)
 
 public fun F16.sub(other: F16): F16 = this - other
 
-public fun F16.subF16(other: F16): Output = Sub.Sub(this, other)
-
 public fun kotlin.Float.sub(other: kotlin.Float): kotlin.Float = this - other
-
-public fun kotlin.Float.subFloat(other: kotlin.Float): Output = Sub.Sub(this, other)
 
 public fun Double.sub(other: Double): Double = this - other
 
-public fun Double.subDouble(other: Double): Output = Sub.Sub(this, other)
-
 public fun F128.sub(other: F128): F128 = this - other
-
-public fun F128.subF128(other: F128): Output = Sub.Sub(this, other)
 
 /**
  * The multiplication operator `*`.
@@ -335,59 +279,31 @@ public interface Mul<Rhs, out Output> {
 
 public fun Int.mul(other: Int): Int = this * other
 
-public fun Int.mulInt(other: Int): Output = Mul.Mul(this, other)
-
 public fun UByte.mul(other: UByte): UByte = (this * other).toUByte()
-
-public fun UByte.mulUByte(other: UByte): Output = Mul.Mul(this, other)
 
 public fun UShort.mul(other: UShort): UShort = (this * other).toUShort()
 
-public fun UShort.mulUShort(other: UShort): Output = Mul.Mul(this, other)
-
 public fun UInt.mul(other: UInt): UInt = this * other
-
-public fun UInt.mulUInt(other: UInt): Output = Mul.Mul(this, other)
 
 public fun ULong.mul(other: ULong): ULong = this * other
 
-public fun ULong.mulULong(other: ULong): Output = Mul.Mul(this, other)
-
 public fun U128.mul(other: U128): U128 = this * other
-
-public fun U128.mulU128(other: U128): Output = Mul.Mul(this, other)
 
 public fun Byte.mul(other: Byte): Byte = (this * other).toByte()
 
-public fun Byte.mulByte(other: Byte): Output = Mul.Mul(this, other)
-
 public fun Short.mul(other: Short): Short = (this * other).toShort()
-
-public fun Short.mulShort(other: Short): Output = Mul.Mul(this, other)
 
 public fun Long.mul(other: Long): Long = this * other
 
-public fun Long.mulLong(other: Long): Output = Mul.Mul(this, other)
-
 public fun I128.mul(other: I128): I128 = this * other
-
-public fun I128.mulI128(other: I128): Output = Mul.Mul(this, other)
 
 public fun F16.mul(other: F16): F16 = this * other
 
-public fun F16.mulF16(other: F16): Output = Mul.Mul(this, other)
-
 public fun kotlin.Float.mul(other: kotlin.Float): kotlin.Float = this * other
-
-public fun kotlin.Float.mulFloat(other: kotlin.Float): Output = Mul.Mul(this, other)
 
 public fun Double.mul(other: Double): Double = this * other
 
-public fun Double.mulDouble(other: Double): Output = Mul.Mul(this, other)
-
 public fun F128.mul(other: F128): F128 = this * other
-
-public fun F128.mulF128(other: F128): Output = Mul.Mul(this, other)
 
 /**
  * The division operator `/`.
@@ -489,8 +405,6 @@ public interface Div<Rhs, out Output> {
  */
 public fun Int.div(other: Int): Int = this / other
 
-public fun Int.divInt(other: Int): Output = Div.Div(this, other)
-
 /**
  * This operation rounds towards zero, truncating any
  * fractional part of the exact result.
@@ -500,8 +414,6 @@ public fun Int.divInt(other: Int): Output = Div.Div(this, other)
  * This operation will panic if `other == 0`.
  */
 public fun UByte.div(other: UByte): UByte = (this / other).toUByte()
-
-public fun UByte.divUByte(other: UByte): Output = Div.Div(this, other)
 
 /**
  * This operation rounds towards zero, truncating any
@@ -513,8 +425,6 @@ public fun UByte.divUByte(other: UByte): Output = Div.Div(this, other)
  */
 public fun UShort.div(other: UShort): UShort = (this / other).toUShort()
 
-public fun UShort.divUShort(other: UShort): Output = Div.Div(this, other)
-
 /**
  * This operation rounds towards zero, truncating any
  * fractional part of the exact result.
@@ -524,8 +434,6 @@ public fun UShort.divUShort(other: UShort): Output = Div.Div(this, other)
  * This operation will panic if `other == 0`.
  */
 public fun UInt.div(other: UInt): UInt = this / other
-
-public fun UInt.divUInt(other: UInt): Output = Div.Div(this, other)
 
 /**
  * This operation rounds towards zero, truncating any
@@ -537,8 +445,6 @@ public fun UInt.divUInt(other: UInt): Output = Div.Div(this, other)
  */
 public fun ULong.div(other: ULong): ULong = this / other
 
-public fun ULong.divULong(other: ULong): Output = Div.Div(this, other)
-
 /**
  * This operation rounds towards zero, truncating any
  * fractional part of the exact result.
@@ -548,8 +454,6 @@ public fun ULong.divULong(other: ULong): Output = Div.Div(this, other)
  * This operation will panic if `other == 0`.
  */
 public fun U128.div(other: U128): U128 = this / other
-
-public fun U128.divU128(other: U128): Output = Div.Div(this, other)
 
 /**
  * This operation rounds towards zero, truncating any
@@ -570,8 +474,6 @@ public fun U128.divU128(other: U128): Output = Div.Div(this, other)
  */
 public fun Byte.div(other: Byte): Byte = (this / other).toByte()
 
-public fun Byte.divByte(other: Byte): Output = Div.Div(this, other)
-
 /**
  * This operation rounds towards zero, truncating any
  * fractional part of the exact result.
@@ -581,8 +483,6 @@ public fun Byte.divByte(other: Byte): Output = Div.Div(this, other)
  * This operation will panic if `other == 0` or the division results in overflow.
  */
 public fun Short.div(other: Short): Short = (this / other).toShort()
-
-public fun Short.divShort(other: Short): Output = Div.Div(this, other)
 
 /**
  * This operation rounds towards zero, truncating any
@@ -603,8 +503,6 @@ public fun Short.divShort(other: Short): Output = Div.Div(this, other)
  */
 public fun Long.div(other: Long): Long = this / other
 
-public fun Long.divLong(other: Long): Output = Div.Div(this, other)
-
 /**
  * This operation rounds towards zero, truncating any
  * fractional part of the exact result.
@@ -615,23 +513,13 @@ public fun Long.divLong(other: Long): Output = Div.Div(this, other)
  */
 public fun I128.div(other: I128): I128 = this / other
 
-public fun I128.divI128(other: I128): Output = Div.Div(this, other)
-
 public fun F16.div(other: F16): F16 = this / other
-
-public fun F16.divF16(other: F16): Output = Div.Div(this, other)
 
 public fun kotlin.Float.div(other: kotlin.Float): kotlin.Float = this / other
 
-public fun kotlin.Float.divFloat(other: kotlin.Float): Output = Div.Div(this, other)
-
 public fun Double.div(other: Double): Double = this / other
 
-public fun Double.divDouble(other: Double): Output = Div.Div(this, other)
-
 public fun F128.div(other: F128): F128 = this / other
-
-public fun F128.divF128(other: F128): Output = Div.Div(this, other)
 
 /**
  * The remainder operator `%`.
@@ -688,8 +576,6 @@ public interface Rem<Rhs, out Output> {
  */
 public fun Int.rem(other: Int): Int = this % other
 
-public fun Int.remInt(other: Int): Output = Rem.Rem(this, other)
-
 /**
  * This operation satisfies `n % d == n - (n / d) * d`. The
  * result has the same sign as the left operand.
@@ -699,8 +585,6 @@ public fun Int.remInt(other: Int): Output = Rem.Rem(this, other)
  * This operation will panic if `other == 0`.
  */
 public fun UByte.rem(other: UByte): UByte = (this % other).toUByte()
-
-public fun UByte.remUByte(other: UByte): Output = Rem.Rem(this, other)
 
 /**
  * This operation satisfies `n % d == n - (n / d) * d`. The
@@ -712,8 +596,6 @@ public fun UByte.remUByte(other: UByte): Output = Rem.Rem(this, other)
  */
 public fun UShort.rem(other: UShort): UShort = (this % other).toUShort()
 
-public fun UShort.remUShort(other: UShort): Output = Rem.Rem(this, other)
-
 /**
  * This operation satisfies `n % d == n - (n / d) * d`. The
  * result has the same sign as the left operand.
@@ -723,8 +605,6 @@ public fun UShort.remUShort(other: UShort): Output = Rem.Rem(this, other)
  * This operation will panic if `other == 0`.
  */
 public fun UInt.rem(other: UInt): UInt = this % other
-
-public fun UInt.remUInt(other: UInt): Output = Rem.Rem(this, other)
 
 /**
  * This operation satisfies `n % d == n - (n / d) * d`. The
@@ -736,8 +616,6 @@ public fun UInt.remUInt(other: UInt): Output = Rem.Rem(this, other)
  */
 public fun ULong.rem(other: ULong): ULong = this % other
 
-public fun ULong.remULong(other: ULong): Output = Rem.Rem(this, other)
-
 /**
  * This operation satisfies `n % d == n - (n / d) * d`. The
  * result has the same sign as the left operand.
@@ -747,8 +625,6 @@ public fun ULong.remULong(other: ULong): Output = Rem.Rem(this, other)
  * This operation will panic if `other == 0`.
  */
 public fun U128.rem(other: U128): U128 = this % other
-
-public fun U128.remU128(other: U128): Output = Rem.Rem(this, other)
 
 /**
  * This operation satisfies `n % d == n - (n / d) * d`. The
@@ -769,8 +645,6 @@ public fun U128.remU128(other: U128): Output = Rem.Rem(this, other)
  */
 public fun Byte.rem(other: Byte): Byte = (this % other).toByte()
 
-public fun Byte.remByte(other: Byte): Output = Rem.Rem(this, other)
-
 /**
  * This operation satisfies `n % d == n - (n / d) * d`. The
  * result has the same sign as the left operand.
@@ -780,8 +654,6 @@ public fun Byte.remByte(other: Byte): Output = Rem.Rem(this, other)
  * This operation will panic if `other == 0` or if `self / other` results in overflow.
  */
 public fun Short.rem(other: Short): Short = (this % other).toShort()
-
-public fun Short.remShort(other: Short): Output = Rem.Rem(this, other)
 
 /**
  * This operation satisfies `n % d == n - (n / d) * d`. The
@@ -802,8 +674,6 @@ public fun Short.remShort(other: Short): Output = Rem.Rem(this, other)
  */
 public fun Long.rem(other: Long): Long = this % other
 
-public fun Long.remLong(other: Long): Output = Rem.Rem(this, other)
-
 /**
  * This operation satisfies `n % d == n - (n / d) * d`. The
  * result has the same sign as the left operand.
@@ -813,8 +683,6 @@ public fun Long.remLong(other: Long): Output = Rem.Rem(this, other)
  * This operation will panic if `other == 0` or if `self / other` results in overflow.
  */
 public fun I128.rem(other: I128): I128 = this % other
-
-public fun I128.remI128(other: I128): Output = Rem.Rem(this, other)
 
 /**
  * The remainder from the division of two floats.
@@ -833,8 +701,6 @@ public fun I128.remI128(other: I128): Output = Rem.Rem(this, other)
  */
 public fun F16.rem(other: F16): F16 = this % other
 
-public fun F16.remF16(other: F16): Output = Rem.Rem(this, other)
-
 /**
  * The remainder from the division of two floats.
  *
@@ -851,8 +717,6 @@ public fun F16.remF16(other: F16): Output = Rem.Rem(this, other)
  * ```
  */
 public fun kotlin.Float.rem(other: kotlin.Float): kotlin.Float = this % other
-
-public fun kotlin.Float.remFloat(other: kotlin.Float): Output = Rem.Rem(this, other)
 
 /**
  * The remainder from the division of two floats.
@@ -871,8 +735,6 @@ public fun kotlin.Float.remFloat(other: kotlin.Float): Output = Rem.Rem(this, ot
  */
 public fun Double.rem(other: Double): Double = this % other
 
-public fun Double.remDouble(other: Double): Output = Rem.Rem(this, other)
-
 /**
  * The remainder from the division of two floats.
  *
@@ -889,8 +751,6 @@ public fun Double.remDouble(other: Double): Output = Rem.Rem(this, other)
  * ```
  */
 public fun F128.rem(other: F128): F128 = this % other
-
-public fun F128.remF128(other: F128): Output = Rem.Rem(this, other)
 
 /**
  * The unary negation operator `-`.
@@ -1002,115 +862,59 @@ public interface AddAssign<Rhs> {
 }
 
 public fun Int.addAssign(other: Int) {
-    this += other
-}
-
-public fun Int.addAssignInt(other: Int) {
-    AddAssign.AddAssign(this, other)
+    (this + other).let {}
 }
 
 public fun UByte.addAssign(other: UByte) {
-    this += other
-}
-
-public fun UByte.addAssignUByte(other: UByte) {
-    AddAssign.AddAssign(this, other)
+    (this + other).let {}
 }
 
 public fun UShort.addAssign(other: UShort) {
-    this += other
-}
-
-public fun UShort.addAssignUShort(other: UShort) {
-    AddAssign.AddAssign(this, other)
+    (this + other).let {}
 }
 
 public fun UInt.addAssign(other: UInt) {
-    this += other
-}
-
-public fun UInt.addAssignUInt(other: UInt) {
-    AddAssign.AddAssign(this, other)
+    (this + other).let {}
 }
 
 public fun ULong.addAssign(other: ULong) {
-    this += other
-}
-
-public fun ULong.addAssignULong(other: ULong) {
-    AddAssign.AddAssign(this, other)
+    (this + other).let {}
 }
 
 public fun U128.addAssign(other: U128) {
-    this += other
-}
-
-public fun U128.addAssignU128(other: U128) {
-    AddAssign.AddAssign(this, other)
+    (this + other).let {}
 }
 
 public fun Byte.addAssign(other: Byte) {
-    this += other
-}
-
-public fun Byte.addAssignByte(other: Byte) {
-    AddAssign.AddAssign(this, other)
+    (this + other).let {}
 }
 
 public fun Short.addAssign(other: Short) {
-    this += other
-}
-
-public fun Short.addAssignShort(other: Short) {
-    AddAssign.AddAssign(this, other)
+    (this + other).let {}
 }
 
 public fun Long.addAssign(other: Long) {
-    this += other
-}
-
-public fun Long.addAssignLong(other: Long) {
-    AddAssign.AddAssign(this, other)
+    (this + other).let {}
 }
 
 public fun I128.addAssign(other: I128) {
-    this += other
-}
-
-public fun I128.addAssignI128(other: I128) {
-    AddAssign.AddAssign(this, other)
+    (this + other).let {}
 }
 
 public fun F16.addAssign(other: F16) {
-    this += other
-}
-
-public fun F16.addAssignF16(other: F16) {
-    AddAssign.AddAssign(this, other)
+    (this + other).let {}
 }
 
 public fun kotlin.Float.addAssign(other: kotlin.Float) {
-    this += other
-}
-
-public fun kotlin.Float.addAssignFloat(other: kotlin.Float) {
-    AddAssign.AddAssign(this, other)
+    (this + other).let {}
 }
 
 public fun Double.addAssign(other: Double) {
-    this += other
-}
-
-public fun Double.addAssignDouble(other: Double) {
-    AddAssign.AddAssign(this, other)
+    (this + other).let {}
 }
 
 public fun F128.addAssign(other: F128) {
-    this += other
-}
-
-public fun F128.addAssignF128(other: F128) {
-    AddAssign.AddAssign(this, other)
+    (this + other).let {}
 }
 
 /**
@@ -1153,115 +957,59 @@ public interface SubAssign<Rhs> {
 }
 
 public fun Int.subAssign(other: Int) {
-    this -= other
-}
-
-public fun Int.subAssignInt(other: Int) {
-    SubAssign.SubAssign(this, other)
+    (this - other).let {}
 }
 
 public fun UByte.subAssign(other: UByte) {
-    this -= other
-}
-
-public fun UByte.subAssignUByte(other: UByte) {
-    SubAssign.SubAssign(this, other)
+    (this - other).let {}
 }
 
 public fun UShort.subAssign(other: UShort) {
-    this -= other
-}
-
-public fun UShort.subAssignUShort(other: UShort) {
-    SubAssign.SubAssign(this, other)
+    (this - other).let {}
 }
 
 public fun UInt.subAssign(other: UInt) {
-    this -= other
-}
-
-public fun UInt.subAssignUInt(other: UInt) {
-    SubAssign.SubAssign(this, other)
+    (this - other).let {}
 }
 
 public fun ULong.subAssign(other: ULong) {
-    this -= other
-}
-
-public fun ULong.subAssignULong(other: ULong) {
-    SubAssign.SubAssign(this, other)
+    (this - other).let {}
 }
 
 public fun U128.subAssign(other: U128) {
-    this -= other
-}
-
-public fun U128.subAssignU128(other: U128) {
-    SubAssign.SubAssign(this, other)
+    (this - other).let {}
 }
 
 public fun Byte.subAssign(other: Byte) {
-    this -= other
-}
-
-public fun Byte.subAssignByte(other: Byte) {
-    SubAssign.SubAssign(this, other)
+    (this - other).let {}
 }
 
 public fun Short.subAssign(other: Short) {
-    this -= other
-}
-
-public fun Short.subAssignShort(other: Short) {
-    SubAssign.SubAssign(this, other)
+    (this - other).let {}
 }
 
 public fun Long.subAssign(other: Long) {
-    this -= other
-}
-
-public fun Long.subAssignLong(other: Long) {
-    SubAssign.SubAssign(this, other)
+    (this - other).let {}
 }
 
 public fun I128.subAssign(other: I128) {
-    this -= other
-}
-
-public fun I128.subAssignI128(other: I128) {
-    SubAssign.SubAssign(this, other)
+    (this - other).let {}
 }
 
 public fun F16.subAssign(other: F16) {
-    this -= other
-}
-
-public fun F16.subAssignF16(other: F16) {
-    SubAssign.SubAssign(this, other)
+    (this - other).let {}
 }
 
 public fun kotlin.Float.subAssign(other: kotlin.Float) {
-    this -= other
-}
-
-public fun kotlin.Float.subAssignFloat(other: kotlin.Float) {
-    SubAssign.SubAssign(this, other)
+    (this - other).let {}
 }
 
 public fun Double.subAssign(other: Double) {
-    this -= other
-}
-
-public fun Double.subAssignDouble(other: Double) {
-    SubAssign.SubAssign(this, other)
+    (this - other).let {}
 }
 
 public fun F128.subAssign(other: F128) {
-    this -= other
-}
-
-public fun F128.subAssignF128(other: F128) {
-    SubAssign.SubAssign(this, other)
+    (this - other).let {}
 }
 
 /**
@@ -1298,115 +1046,59 @@ public interface MulAssign<Rhs> {
 }
 
 public fun Int.mulAssign(other: Int) {
-    this *= other
-}
-
-public fun Int.mulAssignInt(other: Int) {
-    MulAssign.MulAssign(this, other)
+    (this * other).let {}
 }
 
 public fun UByte.mulAssign(other: UByte) {
-    this *= other
-}
-
-public fun UByte.mulAssignUByte(other: UByte) {
-    MulAssign.MulAssign(this, other)
+    (this * other).let {}
 }
 
 public fun UShort.mulAssign(other: UShort) {
-    this *= other
-}
-
-public fun UShort.mulAssignUShort(other: UShort) {
-    MulAssign.MulAssign(this, other)
+    (this * other).let {}
 }
 
 public fun UInt.mulAssign(other: UInt) {
-    this *= other
-}
-
-public fun UInt.mulAssignUInt(other: UInt) {
-    MulAssign.MulAssign(this, other)
+    (this * other).let {}
 }
 
 public fun ULong.mulAssign(other: ULong) {
-    this *= other
-}
-
-public fun ULong.mulAssignULong(other: ULong) {
-    MulAssign.MulAssign(this, other)
+    (this * other).let {}
 }
 
 public fun U128.mulAssign(other: U128) {
-    this *= other
-}
-
-public fun U128.mulAssignU128(other: U128) {
-    MulAssign.MulAssign(this, other)
+    (this * other).let {}
 }
 
 public fun Byte.mulAssign(other: Byte) {
-    this *= other
-}
-
-public fun Byte.mulAssignByte(other: Byte) {
-    MulAssign.MulAssign(this, other)
+    (this * other).let {}
 }
 
 public fun Short.mulAssign(other: Short) {
-    this *= other
-}
-
-public fun Short.mulAssignShort(other: Short) {
-    MulAssign.MulAssign(this, other)
+    (this * other).let {}
 }
 
 public fun Long.mulAssign(other: Long) {
-    this *= other
-}
-
-public fun Long.mulAssignLong(other: Long) {
-    MulAssign.MulAssign(this, other)
+    (this * other).let {}
 }
 
 public fun I128.mulAssign(other: I128) {
-    this *= other
-}
-
-public fun I128.mulAssignI128(other: I128) {
-    MulAssign.MulAssign(this, other)
+    (this * other).let {}
 }
 
 public fun F16.mulAssign(other: F16) {
-    this *= other
-}
-
-public fun F16.mulAssignF16(other: F16) {
-    MulAssign.MulAssign(this, other)
+    (this * other).let {}
 }
 
 public fun kotlin.Float.mulAssign(other: kotlin.Float) {
-    this *= other
-}
-
-public fun kotlin.Float.mulAssignFloat(other: kotlin.Float) {
-    MulAssign.MulAssign(this, other)
+    (this * other).let {}
 }
 
 public fun Double.mulAssign(other: Double) {
-    this *= other
-}
-
-public fun Double.mulAssignDouble(other: Double) {
-    MulAssign.MulAssign(this, other)
+    (this * other).let {}
 }
 
 public fun F128.mulAssign(other: F128) {
-    this *= other
-}
-
-public fun F128.mulAssignF128(other: F128) {
-    MulAssign.MulAssign(this, other)
+    (this * other).let {}
 }
 
 /**
@@ -1443,115 +1135,59 @@ public interface DivAssign<Rhs> {
 }
 
 public fun Int.divAssign(other: Int) {
-    this /= other
-}
-
-public fun Int.divAssignInt(other: Int) {
-    DivAssign.DivAssign(this, other)
+    (this / other).let {}
 }
 
 public fun UByte.divAssign(other: UByte) {
-    this /= other
-}
-
-public fun UByte.divAssignUByte(other: UByte) {
-    DivAssign.DivAssign(this, other)
+    (this / other).let {}
 }
 
 public fun UShort.divAssign(other: UShort) {
-    this /= other
-}
-
-public fun UShort.divAssignUShort(other: UShort) {
-    DivAssign.DivAssign(this, other)
+    (this / other).let {}
 }
 
 public fun UInt.divAssign(other: UInt) {
-    this /= other
-}
-
-public fun UInt.divAssignUInt(other: UInt) {
-    DivAssign.DivAssign(this, other)
+    (this / other).let {}
 }
 
 public fun ULong.divAssign(other: ULong) {
-    this /= other
-}
-
-public fun ULong.divAssignULong(other: ULong) {
-    DivAssign.DivAssign(this, other)
+    (this / other).let {}
 }
 
 public fun U128.divAssign(other: U128) {
-    this /= other
-}
-
-public fun U128.divAssignU128(other: U128) {
-    DivAssign.DivAssign(this, other)
+    (this / other).let {}
 }
 
 public fun Byte.divAssign(other: Byte) {
-    this /= other
-}
-
-public fun Byte.divAssignByte(other: Byte) {
-    DivAssign.DivAssign(this, other)
+    (this / other).let {}
 }
 
 public fun Short.divAssign(other: Short) {
-    this /= other
-}
-
-public fun Short.divAssignShort(other: Short) {
-    DivAssign.DivAssign(this, other)
+    (this / other).let {}
 }
 
 public fun Long.divAssign(other: Long) {
-    this /= other
-}
-
-public fun Long.divAssignLong(other: Long) {
-    DivAssign.DivAssign(this, other)
+    (this / other).let {}
 }
 
 public fun I128.divAssign(other: I128) {
-    this /= other
-}
-
-public fun I128.divAssignI128(other: I128) {
-    DivAssign.DivAssign(this, other)
+    (this / other).let {}
 }
 
 public fun F16.divAssign(other: F16) {
-    this /= other
-}
-
-public fun F16.divAssignF16(other: F16) {
-    DivAssign.DivAssign(this, other)
+    (this / other).let {}
 }
 
 public fun kotlin.Float.divAssign(other: kotlin.Float) {
-    this /= other
-}
-
-public fun kotlin.Float.divAssignFloat(other: kotlin.Float) {
-    DivAssign.DivAssign(this, other)
+    (this / other).let {}
 }
 
 public fun Double.divAssign(other: Double) {
-    this /= other
-}
-
-public fun Double.divAssignDouble(other: Double) {
-    DivAssign.DivAssign(this, other)
+    (this / other).let {}
 }
 
 public fun F128.divAssign(other: F128) {
-    this /= other
-}
-
-public fun F128.divAssignF128(other: F128) {
-    DivAssign.DivAssign(this, other)
+    (this / other).let {}
 }
 
 /**
@@ -1590,113 +1226,57 @@ public interface RemAssign<Rhs> {
 }
 
 public fun Int.remAssign(other: Int) {
-    this %= other
-}
-
-public fun Int.remAssignInt(other: Int) {
-    RemAssign.RemAssign(this, other)
+    (this % other).let {}
 }
 
 public fun UByte.remAssign(other: UByte) {
-    this %= other
-}
-
-public fun UByte.remAssignUByte(other: UByte) {
-    RemAssign.RemAssign(this, other)
+    (this % other).let {}
 }
 
 public fun UShort.remAssign(other: UShort) {
-    this %= other
-}
-
-public fun UShort.remAssignUShort(other: UShort) {
-    RemAssign.RemAssign(this, other)
+    (this % other).let {}
 }
 
 public fun UInt.remAssign(other: UInt) {
-    this %= other
-}
-
-public fun UInt.remAssignUInt(other: UInt) {
-    RemAssign.RemAssign(this, other)
+    (this % other).let {}
 }
 
 public fun ULong.remAssign(other: ULong) {
-    this %= other
-}
-
-public fun ULong.remAssignULong(other: ULong) {
-    RemAssign.RemAssign(this, other)
+    (this % other).let {}
 }
 
 public fun U128.remAssign(other: U128) {
-    this %= other
-}
-
-public fun U128.remAssignU128(other: U128) {
-    RemAssign.RemAssign(this, other)
+    (this % other).let {}
 }
 
 public fun Byte.remAssign(other: Byte) {
-    this %= other
-}
-
-public fun Byte.remAssignByte(other: Byte) {
-    RemAssign.RemAssign(this, other)
+    (this % other).let {}
 }
 
 public fun Short.remAssign(other: Short) {
-    this %= other
-}
-
-public fun Short.remAssignShort(other: Short) {
-    RemAssign.RemAssign(this, other)
+    (this % other).let {}
 }
 
 public fun Long.remAssign(other: Long) {
-    this %= other
-}
-
-public fun Long.remAssignLong(other: Long) {
-    RemAssign.RemAssign(this, other)
+    (this % other).let {}
 }
 
 public fun I128.remAssign(other: I128) {
-    this %= other
-}
-
-public fun I128.remAssignI128(other: I128) {
-    RemAssign.RemAssign(this, other)
+    (this % other).let {}
 }
 
 public fun F16.remAssign(other: F16) {
-    this %= other
-}
-
-public fun F16.remAssignF16(other: F16) {
-    RemAssign.RemAssign(this, other)
+    (this % other).let {}
 }
 
 public fun kotlin.Float.remAssign(other: kotlin.Float) {
-    this %= other
-}
-
-public fun kotlin.Float.remAssignFloat(other: kotlin.Float) {
-    RemAssign.RemAssign(this, other)
+    (this % other).let {}
 }
 
 public fun Double.remAssign(other: Double) {
-    this %= other
-}
-
-public fun Double.remAssignDouble(other: Double) {
-    RemAssign.RemAssign(this, other)
+    (this % other).let {}
 }
 
 public fun F128.remAssign(other: F128) {
-    this %= other
-}
-
-public fun F128.remAssignF128(other: F128) {
-    RemAssign.RemAssign(this, other)
+    (this % other).let {}
 }

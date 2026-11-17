@@ -310,7 +310,7 @@ public sealed class Prefix {
             else -> false
         }
 
-    public open fun hasImplicitRoot(): Boolean = this.isDrive().inv()
+    public open fun hasImplicitRoot(): Boolean = !this.isDrive()
 }
 
 // ///////////////////////////////////////////////////////////////////////////
@@ -895,7 +895,7 @@ public open class Components(
     public open fun asRefOsStr(): OsStr = this.asPath().asOsStr()
 
     public open fun next(): Component? {
-        while (this.finished().inv()) {
+        while (!this.finished()) {
             run {
                 val matchVal = this.front
                 when {
@@ -945,7 +945,7 @@ public open class Components(
     }
 
     public open fun nextBack(): Component? {
-        while (this.finished().inv()) {
+        while (!this.finished()) {
             run {
                 val matchVal = this.back
                 when {
@@ -2121,7 +2121,7 @@ public open class Path internal constructor(
      *
      * [isAbsolute]: Path.isAbsolute
      */
-    public open fun isRelative(): Boolean = this.isAbsolute().inv()
+    public open fun isRelative(): Boolean = !this.isAbsolute()
 
     public open fun prefix(): Prefix? = this.components().prefix
 
@@ -2542,7 +2542,7 @@ public open class Path internal constructor(
      */
     public open fun trimTrailingSep(): Path {
         val comps = this.components()
-        return if (this.hasTrailingSep() && (this.hasRoot().inv() || this.parent() != null)) {
+        return if (this.hasTrailingSep() && (!this.hasRoot() || this.parent() != null)) {
             var bytes = this.inner.asEncodedBytes()
             while (bytes.splitLast() != null && comps.isSepByte(last)) {
                 bytes = init

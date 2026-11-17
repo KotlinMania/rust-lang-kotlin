@@ -14,6 +14,8 @@ import io.github.kotlinmania.rustlang.std.time.Instant
 import io.github.kotlinmania.rustlang.test.Sender
 import io.github.kotlinmania.rustlang.test.event.CompletedTest
 import io.github.kotlinmania.rustlang.test.options.BenchMode
+import io.github.kotlinmania.rustlang.test.stats.Summary
+import io.github.kotlinmania.rustlang.test.stats.winsorize
 import io.github.kotlinmania.rustlang.test.testresult.TestResult
 import io.github.kotlinmania.rustlang.test.types.TestDesc
 import io.github.kotlinmania.rustlang.test.types.TestId
@@ -37,7 +39,7 @@ public fun <T> blackBox(dummy: T): T = dummy
  */
 public open class Bencher(
     public var mode: BenchMode,
-    public var summary: stats.Summary?,
+    public var summary: Summary?,
     public var bytes: ULong,
 ) {
     public open fun clone(): Bencher = Bencher(mode, summary, bytes)
@@ -53,14 +55,14 @@ public open class Bencher(
         this.summary = iter(inner)
     }
 
-    public open fun bench(f: (Bencher) -> Result<Unit, String>): Result<stats.Summary?, String> {
+    public open fun bench(f: (Bencher) -> Result<Unit, String>): Result<Summary?, String> {
         val result = f(this)
         return result.map({ this.summary })
     }
 }
 
 public open class BenchSamples(
-    public var nsIterSumm: stats.Summary,
+    public var nsIterSumm: Summary,
     public var mbS: Int,
 ) {
     public open fun clone(): BenchSamples = BenchSamples(nsIterSumm, mbS)
@@ -114,7 +116,7 @@ public fun <T> nsIterInner(inner: () -> T, k: ULong): ULong {
     return start.elapsed().asNanos().toULong()
 }
 
-public fun <T> iter(inner: () -> T): stats.Summary {
+public fun <T> iter(inner: () -> T): Summary {
     // Initial bench run to get ballpark figure.
     val nsSingle = nsIterInner(inner, 1uL)
     // Try to estimate iter count for 1ms falling back to 1m
@@ -135,14 +137,14 @@ public fun <T> iter(inner: () -> T): stats.Summary {
         for (idx in samples.indices) {
             samples[idx] = nsIterInner(inner, n).toDouble() / n.toDouble()
         }
-        stats.winsorize(samples, 5.0)
-        val summ = stats.Summary.new(samples)
+        winsorize(samples, 5.0)
+        val summ = Summary.new(samples)
         for (idx1 in samples.indices) {
             val ns = nsIterInner(inner, 5uL * n)
             samples[idx1] = ns.toDouble() / (5 * n).toDouble()
         }
-        stats.winsorize(samples, 5.0)
-        val summ5 = stats.Summary.new(samples)
+        winsorize(samples, 5.0)
+        val summ5 = Summary.new(samples)
         val loopRun = loopStart.elapsed()
         // If we've run for 100ms and seem to have converged to a
         // stable median.
@@ -193,7 +195,7 @@ public fun benchmark(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest
                 // iter not called, so no data.
                 // Note: error in this case?
                 val samples: MutableList<Double> = MutableList(1) { 0.0 }
-                val bs2 = BenchSamples(nsIterSumm = stats.Summary.new(samples), mbS = 0)
+                val bs2 = BenchSamples(nsIterSumm = Summary.new(samples), mbS = 0)
                 TestResult.TrBench(bs2)
             }
             result is Result.Err<*, *> -> TestResult.TrFailed

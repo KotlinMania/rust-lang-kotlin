@@ -6,9 +6,9 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 // FXSR floating-point context fast save and restore.
 
-public expect fun fxsave64(p: MutPtr)
+public expect fun externFxsave64(p: MutPtr)
 
-public expect fun fxrstor64(p: ConstPtr)
+public expect fun externFxrstor64(p: ConstPtr)
 
 /**
  * Saves the `x87` FPU, `MMX` technology, `XMM`, and `MXCSR` registers to the
@@ -25,7 +25,7 @@ public expect fun fxrstor64(p: ConstPtr)
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_fxsave64)
  */
 public fun fxsave64(memAddr: MutPtr) {
-    fxsave64(memAddr)
+    externFxsave64(memAddr)
 }
 
 /**
@@ -47,5 +47,5 @@ public fun fxsave64(memAddr: MutPtr) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_fxrstor64)
  */
 public fun fxrstor64(memAddr: ConstPtr) {
-    fxrstor64(memAddr)
+    externFxrstor64(memAddr)
 }

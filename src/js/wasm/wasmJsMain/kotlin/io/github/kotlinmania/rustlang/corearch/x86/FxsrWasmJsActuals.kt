@@ -10,23 +10,23 @@ private external fun initX86FxsrNapiAddon(): Boolean
 
 private val x86FxsrNapiAvailable: Boolean = initX86FxsrNapiAddon()
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchX86FxsrFxsave(p0)")
-private external fun wasmCorearchX86FxsrFxsave(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchX86FxsrExternFxsave(p0)")
+private external fun wasmCorearchX86FxsrExternFxsave(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchX86FxsrFxrstor(p0)")
-private external fun wasmCorearchX86FxsrFxrstor(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchX86FxsrExternFxrstor(p0)")
+private external fun wasmCorearchX86FxsrExternFxrstor(p0: String)
 
-public actual fun fxsave(p: MutPtr) {
+public actual fun externFxsave(p: MutPtr) {
     if (x86FxsrNapiAvailable) {
-        wasmCorearchX86FxsrFxsave(p.rawAddress.toString())
+        wasmCorearchX86FxsrExternFxsave(p.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun fxrstor(p: ConstPtr) {
+public actual fun externFxrstor(p: ConstPtr) {
     if (x86FxsrNapiAvailable) {
-        wasmCorearchX86FxsrFxrstor(p.rawAddress.toString())
+        wasmCorearchX86FxsrExternFxrstor(p.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }

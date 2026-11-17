@@ -20,7 +20,7 @@ public fun hostname(): Result<OsString> {
     // always enough.
     val buffer = MutableList(256) { MaybeUninit.uninit(PrimitiveLayouts.U16) }
     // SAFETY: these parameters specify a valid, writable region of memory.
-    when (val tryResult = cvt(getHostNameW(buffer.asMutPtr().cast(), buffer.size))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
+    when (val tryResult = cvt(getHostNameW(buffer.asMutPtr().cast(), buffer.size))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<OsString, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     // Use `lstrlenW` here as it does not require the bytes after the nul
     // terminator to be initialized.
     // SAFETY: if `GetHostNameW` returns successfully, the name is nul-terminated.

@@ -28,7 +28,6 @@ import io.github.kotlinmania.rustlang.libc.wasi.ENOTTY
 import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
-import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.intoRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.process.id
@@ -162,11 +161,11 @@ public open class PidFd(
         public fun currentProcess(): Result<PidFd, Error> {
             val pid = id()
             val pidfd = when (val tryResult = cvt(syscall(SysPidfdOpen, pid.toLong(), 0L))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<PidFd, Error>(tryResult.errValue()) }
-            return Result.Ok<PidFd, Error>(PidFd.fromRawFd(pidfd.toInt()))
+            return Result.Ok<PidFd, Error>(PidFd.FromRawFd(pidfd.toInt()))
         }
 
         public fun fromInner(inner: FileDesc): PidFd = PidFd(inner)
 
-        public fun fromRawFd(fd: RawFd): PidFd = PidFd(FileDesc.fromRawFd(fd))
+        public fun fromRawFd(fd: RawFd): PidFd = PidFd(FileDesc.FromRawFd(fd))
     }
 }

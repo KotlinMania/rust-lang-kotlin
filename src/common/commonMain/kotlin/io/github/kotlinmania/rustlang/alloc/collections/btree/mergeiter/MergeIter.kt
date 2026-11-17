@@ -37,9 +37,9 @@ public class DebugTuple(
 public open class MergeIterInner<I, Item> internal constructor(
     public var a: I,
     public var b: I,
-    peekedCtorArg: Peeked<I>?,
+    peekedCtorArg: Peeked<I, Item>?,
 ) {
-    public var peeked: Peeked<I>? = peekedCtorArg
+    public var peeked: Peeked<I, Item>? = peekedCtorArg
         internal set
 
     public open fun clone(): MergeIterInner<I, Item> = MergeIterInner(a = this.a.clone(), b = this.b.clone(), peeked = this.peeked)
@@ -59,13 +59,13 @@ public open class MergeIterInner<I, Item> internal constructor(
         var aNext: Any?
         var bNext: Any?
         when (val matchVal = this.peeked.also { this.peeked = null }) {
-            is Peeked.A<*> -> {
-                val (next) = matchVal as Peeked.A<I>
+            is Peeked.A<*, *> -> {
+                val (next) = matchVal as Peeked.A<*, *>
                 aNext = next
                 bNext = this.b.next()
             }
-            is Peeked.B<*> -> {
-                val (next1) = matchVal as Peeked.B<I>
+            is Peeked.B<*, *> -> {
+                val (next1) = matchVal as Peeked.B<*, *>
                 bNext = next1
                 aNext = this.a.next()
             }
@@ -91,8 +91,8 @@ public open class MergeIterInner<I, Item> internal constructor(
      */
     public open fun lens(): Pair<Int, Int> =
         when (val matchVal = this.peeked) {
-            is Peeked.A<*> -> Pair(1 + this.a.len(), this.b.len())
-            is Peeked.B<*> -> Pair(this.a.len(), 1 + this.b.len())
+            is Peeked.A<*, *> -> Pair(1 + this.a.len(), this.b.len())
+            is Peeked.B<*, *> -> Pair(this.a.len(), 1 + this.b.len())
             else -> Pair(this.a.len(), this.b.len())
         }
 
@@ -100,7 +100,7 @@ public open class MergeIterInner<I, Item> internal constructor(
         public operator fun <I, Item> invoke(
             a: I,
             b: I,
-            peeked: Peeked<I>?,
+            peeked: Peeked<I, Item>?,
         ): MergeIterInner<I, Item> = MergeIterInner<I, Item>(
             a = a,
             b = b,

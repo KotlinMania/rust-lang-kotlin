@@ -33,11 +33,11 @@ public fun <I : Int> trailingZeros(x: I): Int {
     r += t
     var x3: UByte = x2.castLossy()
     t = ((if ((x3 and 0x0Fu.toUByte()) == 0u.toUByte()) 1u else 0u)) shl 2
-    x3 = x3 shr t.toInt()
+    x3 = ((x3).toUInt() shr t.toInt()).toUByte()
     // x = [0 - 0xF] + higher garbage bits
     r += t
     t = ((if ((x3 and 0x3u.toUByte()) == 0u.toUByte()) 1u else 0u)) shl 1
-    x3 = x3 shr t.toInt()
+    x3 = ((x3).toUInt() shr t.toInt()).toUByte()
     // x = [0 - 0x3] + higher garbage bits
     r += t
     x3 = x3 and 3u.toUByte()

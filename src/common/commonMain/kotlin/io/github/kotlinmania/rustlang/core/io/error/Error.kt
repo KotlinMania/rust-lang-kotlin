@@ -1,6 +1,7 @@
 // port-lint: source io/error.rs
 package io.github.kotlinmania.rustlang.core.io.error
 
+import io.github.kotlinmania.rustlang.core.fmt.builders.FromFn
 import io.github.kotlinmania.rustlang.core.fmt.fmt
 import io.github.kotlinmania.rustlang.core.hint.mustUse
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
@@ -392,7 +393,7 @@ unreachableUnchecked()
         when (val matchVal = this.repr.data()) {
             is ErrorData.Os<*> -> {
                 val (code) = matchVal
-                val detail = fmt.fromFn({ fmt1 -> formatOsError(code, fmt1) })
+                val detail = fmt.FromFn({ fmt1 -> formatOsError(code, fmt1) })
                 fmt.writeFmt("$detail (os error $code)")
             }
             is ErrorData.Custom<*> -> {
@@ -541,8 +542,8 @@ public fun Repr.fmt(fmt: StringBuilder): RustResult<Unit, Unit> =
         is ErrorData.Os<*> -> {
             val (code) = matchVal
             run {
-DebugStruct(fmt, "Os").field("code", code).field("kind", decodeErrorKind(code)).field("message", fmt.fromFn({ fmt1 ->
-                fmt1.writeFmt("\"${fmt.fromFn({ fmt2 -> formatOsError(code, fmt2) })}\"")
+DebugStruct(fmt, "Os").field("code", code).field("kind", decodeErrorKind(code)).field("message", fmt.FromFn({ fmt1 ->
+                fmt1.writeFmt("\"${fmt.FromFn({ fmt2 -> formatOsError(code, fmt2) })}\"")
             })).finish()
 RustResult.Ok<Unit, Unit>(Unit)
 }

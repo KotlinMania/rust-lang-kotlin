@@ -533,7 +533,7 @@ public fun unquote(bytes: List<UByte>, userHome: Path): PathBuf? {
     // expand leading $HOME
     if (rest1.startsWith("\$HOME/".encodeToByteArray())) {
         s.addAll(userHome.asOsStr().encodeToByteArray().map { it.toUByte() })
-        if (userHome.hasTrailingSep().inv()) {
+        if (!userHome.hasTrailingSep()) {
             s.add(47u)
         }
         rest1 = rest1[6 until rest1.size]

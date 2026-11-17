@@ -47,7 +47,7 @@ public open class WStrUnits internal constructor(
             val matchVal = this.peek()
             if (matchVal == null) break
             val w = matchVal
-            if (predicate(w).inv()) {
+            if (!predicate(w)) {
                 break
             }
             counter += 1

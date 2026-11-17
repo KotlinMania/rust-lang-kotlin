@@ -1591,9 +1591,9 @@ public open class IntoIterSorted<T, A : Allocator> internal constructor(
  * [drain]: BinaryHeap.drain
  */
 public open class Drain<T, A : Allocator> internal constructor(
-    iterCtorArg: vec.Drain<T, A>,
+    iterCtorArg: io.github.kotlinmania.rustlang.alloc.vec.drain.Drain<T, A>,
 ) : Iterable<T> {
-    public var iter: vec.Drain<T, A> = iterCtorArg
+    public var iter: io.github.kotlinmania.rustlang.alloc.vec.drain.Drain<T, A> = iterCtorArg
         internal set
 
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
@@ -1620,7 +1620,7 @@ public open class Drain<T, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <T, A : Allocator> invoke(
-            iter: vec.Drain<T, A>,
+            iter: io.github.kotlinmania.rustlang.alloc.vec.drain.Drain<T, A>,
         ): Drain<T, A> = Drain<T, A>(
             iterCtorArg = iter,
         )

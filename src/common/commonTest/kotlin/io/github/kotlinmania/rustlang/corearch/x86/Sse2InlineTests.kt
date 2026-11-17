@@ -19,6 +19,7 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.corearch.simd.F64x2
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
 
 // Streaming SIMD Extensions 2 (SSE2)
@@ -1053,34 +1054,34 @@ public fun testMmSubPd() {
 }
 
 public fun testMmAndPd() {
-    val a = f64x2.fromBits(Simd<ULong>(List(2) { 5uL })).asM128d()
-    val b = f64x2.fromBits(Simd<ULong>(List(2) { 3uL })).asM128d()
+    val a = F64x2.fromBits(Simd<ULong>(List(2) { 5uL })).asM128d()
+    val b = F64x2.fromBits(Simd<ULong>(List(2) { 3uL })).asM128d()
     val r = mmAndPd(a, b)
-    val e = f64x2.fromBits(Simd<ULong>(List(2) { 1uL })).asM128d()
+    val e = F64x2.fromBits(Simd<ULong>(List(2) { 1uL })).asM128d()
     assertEqM128d(r, e)
 }
 
 public fun testMmAndnotPd() {
-    val a = f64x2.fromBits(Simd<ULong>(List(2) { 5uL })).asM128d()
-    val b = f64x2.fromBits(Simd<ULong>(List(2) { 3uL })).asM128d()
+    val a = F64x2.fromBits(Simd<ULong>(List(2) { 5uL })).asM128d()
+    val b = F64x2.fromBits(Simd<ULong>(List(2) { 3uL })).asM128d()
     val r = mmAndnotPd(a, b)
-    val e = f64x2.fromBits(Simd<ULong>(List(2) { 2uL })).asM128d()
+    val e = F64x2.fromBits(Simd<ULong>(List(2) { 2uL })).asM128d()
     assertEqM128d(r, e)
 }
 
 public fun testMmOrPd() {
-    val a = f64x2.fromBits(Simd<ULong>(List(2) { 5uL })).asM128d()
-    val b = f64x2.fromBits(Simd<ULong>(List(2) { 3uL })).asM128d()
+    val a = F64x2.fromBits(Simd<ULong>(List(2) { 5uL })).asM128d()
+    val b = F64x2.fromBits(Simd<ULong>(List(2) { 3uL })).asM128d()
     val r = mmOrPd(a, b)
-    val e = f64x2.fromBits(Simd<ULong>(List(2) { 7uL })).asM128d()
+    val e = F64x2.fromBits(Simd<ULong>(List(2) { 7uL })).asM128d()
     assertEqM128d(r, e)
 }
 
 public fun testMmXorPd() {
-    val a = f64x2.fromBits(Simd<ULong>(List(2) { 5uL })).asM128d()
-    val b = f64x2.fromBits(Simd<ULong>(List(2) { 3uL })).asM128d()
+    val a = F64x2.fromBits(Simd<ULong>(List(2) { 5uL })).asM128d()
+    val b = F64x2.fromBits(Simd<ULong>(List(2) { 3uL })).asM128d()
     val r = mmXorPd(a, b)
-    val e = f64x2.fromBits(Simd<ULong>(List(2) { 6uL })).asM128d()
+    val e = F64x2.fromBits(Simd<ULong>(List(2) { 6uL })).asM128d()
     assertEqM128d(r, e)
 }
 

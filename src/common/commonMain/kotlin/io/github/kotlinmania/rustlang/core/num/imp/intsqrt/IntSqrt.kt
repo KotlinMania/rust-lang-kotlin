@@ -382,7 +382,7 @@ public fun u16(n: UShort): UShort {
     } else {
         val EVEN_MAKING_BITMASK: UInt = 1u.inv()
         val normalizationShift = n1.leadingZeros() and EVEN_MAKING_BITMASK
-        n1 = n1 shl normalizationShift.toInt()
+        n1 = ((n1).toUInt() shl normalizationShift.toInt()).toUShort()
         val s = u16Stages(n1)
         val denormalizationShift = normalizationShift shr 1
         (s.toUInt() shr (denormalizationShift.toInt())).toUShort()

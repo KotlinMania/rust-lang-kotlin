@@ -11,12 +11,12 @@ extern "C" {
 
 int32_t corearchRiscvsharedZkSm4ed(int32_t rs1, int32_t rs2, int32_t bs);
 int32_t corearchRiscvsharedZkSm4ks(int32_t rs1, int32_t rs2, int32_t bs);
-int32_t corearchRiscvsharedZkSm3p0(int32_t rs1);
-int32_t corearchRiscvsharedZkSm3p1(int32_t rs1);
-int32_t corearchRiscvsharedZkSha256sig0(int32_t rs1);
-int32_t corearchRiscvsharedZkSha256sig1(int32_t rs1);
-int32_t corearchRiscvsharedZkSha256sum0(int32_t rs1);
-int32_t corearchRiscvsharedZkSha256sum1(int32_t rs1);
+int32_t corearchRiscvsharedZkExternSm3p0(int32_t rs1);
+int32_t corearchRiscvsharedZkExternSm3p1(int32_t rs1);
+int32_t corearchRiscvsharedZkExternSha256sig0(int32_t rs1);
+int32_t corearchRiscvsharedZkExternSha256sig1(int32_t rs1);
+int32_t corearchRiscvsharedZkExternSha256sum0(int32_t rs1);
+int32_t corearchRiscvsharedZkExternSha256sum1(int32_t rs1);
 int64_t corearchRiscvsharedZkXperm864(int64_t rs1, int64_t rs2);
 int64_t corearchRiscvsharedZkXperm464(int64_t rs1, int64_t rs2);
 

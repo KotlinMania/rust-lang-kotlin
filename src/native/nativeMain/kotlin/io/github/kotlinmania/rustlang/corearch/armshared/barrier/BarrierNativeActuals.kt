@@ -2,19 +2,19 @@
 
 package io.github.kotlinmania.rustlang.corearch.armshared.barrier
 
-import io.github.kotlinmania.rustlang.corearch.armshared.barrier.cinterop.corearchArmsharedBarrierDmb
-import io.github.kotlinmania.rustlang.corearch.armshared.barrier.cinterop.corearchArmsharedBarrierDsb
-import io.github.kotlinmania.rustlang.corearch.armshared.barrier.cinterop.corearchArmsharedBarrierIsb
+import io.github.kotlinmania.rustlang.corearch.armshared.barrier.cinterop.corearchArmsharedBarrierExternDmb
+import io.github.kotlinmania.rustlang.corearch.armshared.barrier.cinterop.corearchArmsharedBarrierExternDsb
+import io.github.kotlinmania.rustlang.corearch.armshared.barrier.cinterop.corearchArmsharedBarrierExternIsb
 import kotlinx.cinterop.ExperimentalForeignApi
 
-public actual fun dmb(arg0: Int) {
-    corearchArmsharedBarrierDmb(arg0)
+public actual fun externDmb(arg0: Int) {
+    corearchArmsharedBarrierExternDmb(arg0)
 }
 
-public actual fun dsb(arg0: Int) {
-    corearchArmsharedBarrierDsb(arg0)
+public actual fun externDsb(arg0: Int) {
+    corearchArmsharedBarrierExternDsb(arg0)
 }
 
-public actual fun isb(arg0: Int) {
-    corearchArmsharedBarrierIsb(arg0)
+public actual fun externIsb(arg0: Int) {
+    corearchArmsharedBarrierExternIsb(arg0)
 }

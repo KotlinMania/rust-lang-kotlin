@@ -23,6 +23,8 @@ import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.OwnedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
+import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
 import io.github.kotlinmania.rustlang.std.sys.process.windows.Stdio
@@ -33,7 +35,7 @@ import io.github.kotlinmania.rustlang.std.sys.process.windows.childpipe.ChildPip
 public fun fromRawHandleStdio(handle: RawHandle): process.Stdio {
     val handle1 = Handle.Handle.fromRawHandle(MutPtr(handle.rawAddress, handle.rawMeta))
     val io = Stdio.Handle(handle1)
-    return process.Stdio.fromInner(io)
+    return process.Stdio.FromInner(io)
 }
 
 /**
@@ -43,7 +45,7 @@ public fun fromRawHandleStdio(handle: RawHandle): process.Stdio {
 public fun fromStdio(handle: OwnedHandle): process.Stdio {
     val handle1 = Handle.Handle.fromInner(handle)
     val io = Stdio.Handle(handle1)
-    return process.Stdio.fromInner(io)
+    return process.Stdio.FromInner(io)
 }
 
 public fun process.Child.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
@@ -78,7 +80,7 @@ public fun process.ChildStderr.intoRawHandle(): RawHandle = mutPtrFromRustCast(t
 public fun fromChildStdin(handle: OwnedHandle): process.ChildStdin {
     val handle1 = Handle.Handle.fromInner(handle)
     val pipe = ChildPipe.fromInner(handle1)
-    return process.ChildStdin.fromInner(pipe)
+    return process.ChildStdin.FromInner(pipe)
 }
 
 /**
@@ -90,7 +92,7 @@ public fun fromChildStdin(handle: OwnedHandle): process.ChildStdin {
 public fun fromChildStdout(handle: OwnedHandle): process.ChildStdout {
     val handle1 = Handle.Handle.fromInner(handle)
     val pipe = ChildPipe.fromInner(handle1)
-    return process.ChildStdout.fromInner(pipe)
+    return process.ChildStdout.FromInner(pipe)
 }
 
 /**
@@ -102,7 +104,7 @@ public fun fromChildStdout(handle: OwnedHandle): process.ChildStdout {
 public fun fromChildStderr(handle: OwnedHandle): process.ChildStderr {
     val handle1 = Handle.Handle.fromInner(handle)
     val pipe = ChildPipe.fromInner(handle1)
-    return process.ChildStderr.fromInner(pipe)
+    return process.ChildStderr.FromInner(pipe)
 }
 
 /**
@@ -120,7 +122,7 @@ public interface ExitStatusExt<T> {
     }
 }
 
-public fun exitStatusExtFromRawExitStatus(raw: UInt): process.ExitStatus = process.ExitStatus.fromInner(From.from(raw))
+public fun exitStatusExtFromRawExitStatus(raw: UInt): process.ExitStatus = process.ExitStatus.FromInner(From.from(raw))
 
 /**
  * Windows-specific extensions to the [process.Command] builder.
@@ -419,7 +421,7 @@ public interface ExitCodeExt<T> {
     }
 }
 
-public fun exitCodeExtFromRawExitCode(raw: UInt): process.ExitCode = process.ExitCode.fromInner(From.from(raw))
+public fun exitCodeExtFromRawExitCode(raw: UInt): process.ExitCode = process.ExitCode.FromInner(From.from(raw))
 
 /**
  * A wrapper around windows [`ProcThreadAttributeList`][1].

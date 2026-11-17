@@ -1485,7 +1485,7 @@ public fun genmask(mask: UShort): UByteArray {
             0u.toUShort() -> 0u
             else -> 0xFFu
         }
-        bits = bits shl 1
+        bits = ((bits).toUInt() shl 1).toUShort()
         i += 1
     }
     return elements

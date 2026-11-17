@@ -16,7 +16,6 @@ import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.fd.asFd
 import io.github.kotlinmania.rustlang.std.os.fd.asRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.intoRawFd
 import io.github.kotlinmania.rustlang.std.process.ExitStatus
 import io.github.kotlinmania.rustlang.std.sys.AsInner
@@ -24,7 +23,6 @@ import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.asInner
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.intoInner
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 import io.github.kotlinmania.rustlang.std.sys.process.unix.pidfd.PidFd as InnerPidFd
@@ -110,7 +108,7 @@ public open class PidFd internal constructor(
      * [Child.tryWait]: process.Child.tryWait
      */
     public open fun tryWait(): Result<ExitStatus?> {
-        return RustResult.Ok(when (val tryResult = this.inner.tryWait()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }.map(FromInner::fromInner))
+        return RustResult.Ok(when (val tryResult = this.inner.tryWait()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ExitStatus?, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }.map(FromInner::fromInner))
     }
 
     public override fun asInner(): InnerPidFd = this.inner
@@ -130,9 +128,9 @@ public open class PidFd internal constructor(
 
         public fun fromInner(inner: InnerPidFd, fieldLayout: TypeLayout<InnerPidFd> = UnresolvedTypeLayout()): PidFd = PidFd(inner = inner, fieldLayout = fieldLayout)
 
-        public fun fromRawFd(fd: RawFd, fieldLayout: TypeLayout<InnerPidFd> = UnresolvedTypeLayout()): PidFd = PidFd.fromInner(InnerPidFd.fromRawFd(fd), fieldLayout = fieldLayout)
+        public fun fromRawFd(fd: RawFd, fieldLayout: TypeLayout<InnerPidFd> = UnresolvedTypeLayout()): PidFd = PidFd.FromInner(InnerPidFd.FromRawFd(fd))
 
-        public fun from(fd: OwnedFd, fieldLayout: TypeLayout<InnerPidFd> = UnresolvedTypeLayout()): PidFd = PidFd.fromInner(InnerPidFd.fromInner(FileDesc.fromInner(fd)), fieldLayout = fieldLayout)
+        public fun from(fd: OwnedFd, fieldLayout: TypeLayout<InnerPidFd> = UnresolvedTypeLayout()): PidFd = PidFd.FromInner(InnerPidFd.FromInner(FileDesc.FromInner(fd)))
     }
 }
 

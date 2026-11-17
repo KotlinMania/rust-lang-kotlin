@@ -7,64 +7,64 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 private val mipsMsaNapiAddon: dynamic =
     js("(function() { if (typeof globalThis !== 'undefined' && typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore; if (typeof process === 'undefined' || !process.versions || !process.versions.node) return null; var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) return null; try { var pkg = req('@kotlinmania/kmcore-native-bindings'); if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = pkg; return pkg; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { var loaded = req(c); if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = loaded; return loaded; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = null; return null; })()")
 
-public actual fun msaAddAB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaAddAB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddAH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaAddAH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddAW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaAddAW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddAD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaAddAD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddsAB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaAddsAB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddsAH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaAddsAH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddsAW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaAddsAW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddsAD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaAddsAD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddsSB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaAddsSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddsSH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaAddsSH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddsSW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaAddsSW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddsSD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaAddsSD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddsUB(a: V16u8, b: V16u8): V16u8 =
+public actual fun externMsaAddsUB(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddsUH(a: V8u16, b: V8u16): V8u16 =
+public actual fun externMsaAddsUH(a: V8u16, b: V8u16): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddsUW(a: V4u32, b: V4u32): V4u32 =
+public actual fun externMsaAddsUW(a: V4u32, b: V4u32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddsUD(a: V2u64, b: V2u64): V2u64 =
+public actual fun externMsaAddsUD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddvB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaAddvB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddvH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaAddvH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddvW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaAddvW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAddvD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaAddvD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaAddviB(a: V16i8, b: Int): V16i8 =
@@ -79,94 +79,94 @@ public actual fun msaAddviW(a: V4i32, b: Int): V4i32 =
 public actual fun msaAddviD(a: V2i64, b: Int): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAndV(a: V16u8, b: V16u8): V16u8 =
+public actual fun externMsaAndV(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaAndiB(a: V16u8, b: Int): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAsubSB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaAsubSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAsubSH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaAsubSH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAsubSW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaAsubSW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAsubSD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaAsubSD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAsubUB(a: V16u8, b: V16u8): V16u8 =
+public actual fun externMsaAsubUB(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAsubUH(a: V8u16, b: V8u16): V8u16 =
+public actual fun externMsaAsubUH(a: V8u16, b: V8u16): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAsubUW(a: V4u32, b: V4u32): V4u32 =
+public actual fun externMsaAsubUW(a: V4u32, b: V4u32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAsubUD(a: V2u64, b: V2u64): V2u64 =
+public actual fun externMsaAsubUD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAveSB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaAveSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAveSH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaAveSH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAveSW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaAveSW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAveSD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaAveSD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAveUB(a: V16u8, b: V16u8): V16u8 =
+public actual fun externMsaAveUB(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAveUH(a: V8u16, b: V8u16): V8u16 =
+public actual fun externMsaAveUH(a: V8u16, b: V8u16): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAveUW(a: V4u32, b: V4u32): V4u32 =
+public actual fun externMsaAveUW(a: V4u32, b: V4u32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAveUD(a: V2u64, b: V2u64): V2u64 =
+public actual fun externMsaAveUD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAverSB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaAverSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAverSH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaAverSH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAverSW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaAverSW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAverSD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaAverSD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAverUB(a: V16u8, b: V16u8): V16u8 =
+public actual fun externMsaAverUB(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAverUH(a: V8u16, b: V8u16): V8u16 =
+public actual fun externMsaAverUH(a: V8u16, b: V8u16): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAverUW(a: V4u32, b: V4u32): V4u32 =
+public actual fun externMsaAverUW(a: V4u32, b: V4u32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaAverUD(a: V2u64, b: V2u64): V2u64 =
+public actual fun externMsaAverUD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBclrB(a: V16u8, b: V16u8): V16u8 =
+public actual fun externMsaBclrB(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBclrH(a: V8u16, b: V8u16): V8u16 =
+public actual fun externMsaBclrH(a: V8u16, b: V8u16): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBclrW(a: V4u32, b: V4u32): V4u32 =
+public actual fun externMsaBclrW(a: V4u32, b: V4u32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBclrD(a: V2u64, b: V2u64): V2u64 =
+public actual fun externMsaBclrD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaBclriB(a: V16u8, b: Int): V16u8 =
@@ -181,16 +181,16 @@ public actual fun msaBclriW(a: V4u32, b: Int): V4u32 =
 public actual fun msaBclriD(a: V2u64, b: Int): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBinslB(a: V16u8, b: V16u8, c: V16u8): V16u8 =
+public actual fun externMsaBinslB(a: V16u8, b: V16u8, c: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBinslH(a: V8u16, b: V8u16, c: V8u16): V8u16 =
+public actual fun externMsaBinslH(a: V8u16, b: V8u16, c: V8u16): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBinslW(a: V4u32, b: V4u32, c: V4u32): V4u32 =
+public actual fun externMsaBinslW(a: V4u32, b: V4u32, c: V4u32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBinslD(a: V2u64, b: V2u64, c: V2u64): V2u64 =
+public actual fun externMsaBinslD(a: V2u64, b: V2u64, c: V2u64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaBinsliB(a: V16u8, b: V16u8, c: Int): V16u8 =
@@ -205,16 +205,16 @@ public actual fun msaBinsliW(a: V4u32, b: V4u32, c: Int): V4u32 =
 public actual fun msaBinsliD(a: V2u64, b: V2u64, c: Int): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBinsrB(a: V16u8, b: V16u8, c: V16u8): V16u8 =
+public actual fun externMsaBinsrB(a: V16u8, b: V16u8, c: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBinsrH(a: V8u16, b: V8u16, c: V8u16): V8u16 =
+public actual fun externMsaBinsrH(a: V8u16, b: V8u16, c: V8u16): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBinsrW(a: V4u32, b: V4u32, c: V4u32): V4u32 =
+public actual fun externMsaBinsrW(a: V4u32, b: V4u32, c: V4u32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBinsrD(a: V2u64, b: V2u64, c: V2u64): V2u64 =
+public actual fun externMsaBinsrD(a: V2u64, b: V2u64, c: V2u64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaBinsriB(a: V16u8, b: V16u8, c: Int): V16u8 =
@@ -229,28 +229,28 @@ public actual fun msaBinsriW(a: V4u32, b: V4u32, c: Int): V4u32 =
 public actual fun msaBinsriD(a: V2u64, b: V2u64, c: Int): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBmnzV(a: V16u8, b: V16u8, c: V16u8): V16u8 =
+public actual fun externMsaBmnzV(a: V16u8, b: V16u8, c: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaBmnziB(a: V16u8, b: V16u8, c: Int): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBmzV(a: V16u8, b: V16u8, c: V16u8): V16u8 =
+public actual fun externMsaBmzV(a: V16u8, b: V16u8, c: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaBmziB(a: V16u8, b: V16u8, c: Int): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBnegB(a: V16u8, b: V16u8): V16u8 =
+public actual fun externMsaBnegB(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBnegH(a: V8u16, b: V8u16): V8u16 =
+public actual fun externMsaBnegH(a: V8u16, b: V8u16): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBnegW(a: V4u32, b: V4u32): V4u32 =
+public actual fun externMsaBnegW(a: V4u32, b: V4u32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBnegD(a: V2u64, b: V2u64): V2u64 =
+public actual fun externMsaBnegD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaBnegiB(a: V16u8, b: Int): V16u8 =
@@ -265,37 +265,37 @@ public actual fun msaBnegiW(a: V4u32, b: Int): V4u32 =
 public actual fun msaBnegiD(a: V2u64, b: Int): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBnzB(a: V16u8): Int =
+public actual fun externMsaBnzB(a: V16u8): Int =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBnzH(a: V8u16): Int =
+public actual fun externMsaBnzH(a: V8u16): Int =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBnzW(a: V4u32): Int =
+public actual fun externMsaBnzW(a: V4u32): Int =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBnzD(a: V2u64): Int =
+public actual fun externMsaBnzD(a: V2u64): Int =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBnzV(a: V16u8): Int =
+public actual fun externMsaBnzV(a: V16u8): Int =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBselV(a: V16u8, b: V16u8, c: V16u8): V16u8 =
+public actual fun externMsaBselV(a: V16u8, b: V16u8, c: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaBseliB(a: V16u8, b: V16u8, c: Int): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBsetB(a: V16u8, b: V16u8): V16u8 =
+public actual fun externMsaBsetB(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBsetH(a: V8u16, b: V8u16): V8u16 =
+public actual fun externMsaBsetH(a: V8u16, b: V8u16): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBsetW(a: V4u32, b: V4u32): V4u32 =
+public actual fun externMsaBsetW(a: V4u32, b: V4u32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBsetD(a: V2u64, b: V2u64): V2u64 =
+public actual fun externMsaBsetD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaBsetiB(a: V16u8, b: Int): V16u8 =
@@ -310,31 +310,31 @@ public actual fun msaBsetiW(a: V4u32, b: Int): V4u32 =
 public actual fun msaBsetiD(a: V2u64, b: Int): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBzB(a: V16u8): Int =
+public actual fun externMsaBzB(a: V16u8): Int =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBzH(a: V8u16): Int =
+public actual fun externMsaBzH(a: V8u16): Int =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBzW(a: V4u32): Int =
+public actual fun externMsaBzW(a: V4u32): Int =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBzD(a: V2u64): Int =
+public actual fun externMsaBzD(a: V2u64): Int =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaBzV(a: V16u8): Int =
+public actual fun externMsaBzV(a: V16u8): Int =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCeqB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaCeqB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCeqH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaCeqH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCeqW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaCeqW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCeqD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaCeqD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaCeqiB(a: V16i8, b: Int): V16i8 =
@@ -352,28 +352,28 @@ public actual fun msaCeqiD(a: V2i64, b: Int): V2i64 =
 public actual fun msaCfcmsa(a: Int): Int =
     if (mipsMsaNapiAddon != null) (mipsMsaNapiAddon.corearchMipsMsaMsaCfcmsa(a) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCleSB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaCleSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCleSH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaCleSH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCleSW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaCleSW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCleSD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaCleSD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCleUB(a: V16u8, b: V16u8): V16i8 =
+public actual fun externMsaCleUB(a: V16u8, b: V16u8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCleUH(a: V8u16, b: V8u16): V8i16 =
+public actual fun externMsaCleUH(a: V8u16, b: V8u16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCleUW(a: V4u32, b: V4u32): V4i32 =
+public actual fun externMsaCleUW(a: V4u32, b: V4u32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCleUD(a: V2u64, b: V2u64): V2i64 =
+public actual fun externMsaCleUD(a: V2u64, b: V2u64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaCleiSB(a: V16i8, b: Int): V16i8 =
@@ -400,28 +400,28 @@ public actual fun msaCleiUW(a: V4u32, b: Int): V4i32 =
 public actual fun msaCleiUD(a: V2u64, b: Int): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCltSB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaCltSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCltSH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaCltSH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCltSW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaCltSW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCltSD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaCltSD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCltUB(a: V16u8, b: V16u8): V16i8 =
+public actual fun externMsaCltUB(a: V16u8, b: V16u8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCltUH(a: V8u16, b: V8u16): V8i16 =
+public actual fun externMsaCltUH(a: V8u16, b: V8u16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCltUW(a: V4u32, b: V4u32): V4i32 =
+public actual fun externMsaCltUW(a: V4u32, b: V4u32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaCltUD(a: V2u64, b: V2u64): V2i64 =
+public actual fun externMsaCltUD(a: V2u64, b: V2u64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaCltiSB(a: V16i8, b: Int): V16i8 =
@@ -480,475 +480,475 @@ public actual fun msaCtcmsa(imm5: Int, a: Int) {
     }
 }
 
-public actual fun msaDivSB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaDivSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDivSH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaDivSH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDivSW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaDivSW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDivSD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaDivSD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDivUB(a: V16u8, b: V16u8): V16u8 =
+public actual fun externMsaDivUB(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDivUH(a: V8u16, b: V8u16): V8u16 =
+public actual fun externMsaDivUH(a: V8u16, b: V8u16): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDivUW(a: V4u32, b: V4u32): V4u32 =
+public actual fun externMsaDivUW(a: V4u32, b: V4u32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDivUD(a: V2u64, b: V2u64): V2u64 =
+public actual fun externMsaDivUD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDotpSH(a: V16i8, b: V16i8): V8i16 =
+public actual fun externMsaDotpSH(a: V16i8, b: V16i8): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDotpSW(a: V8i16, b: V8i16): V4i32 =
+public actual fun externMsaDotpSW(a: V8i16, b: V8i16): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDotpSD(a: V4i32, b: V4i32): V2i64 =
+public actual fun externMsaDotpSD(a: V4i32, b: V4i32): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDotpUH(a: V16u8, b: V16u8): V8u16 =
+public actual fun externMsaDotpUH(a: V16u8, b: V16u8): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDotpUW(a: V8u16, b: V8u16): V4u32 =
+public actual fun externMsaDotpUW(a: V8u16, b: V8u16): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDotpUD(a: V4u32, b: V4u32): V2u64 =
+public actual fun externMsaDotpUD(a: V4u32, b: V4u32): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDpaddSH(a: V8i16, b: V16i8, c: V16i8): V8i16 =
+public actual fun externMsaDpaddSH(a: V8i16, b: V16i8, c: V16i8): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDpaddSW(a: V4i32, b: V8i16, c: V8i16): V4i32 =
+public actual fun externMsaDpaddSW(a: V4i32, b: V8i16, c: V8i16): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDpaddSD(a: V2i64, b: V4i32, c: V4i32): V2i64 =
+public actual fun externMsaDpaddSD(a: V2i64, b: V4i32, c: V4i32): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDpaddUH(a: V8u16, b: V16u8, c: V16u8): V8u16 =
+public actual fun externMsaDpaddUH(a: V8u16, b: V16u8, c: V16u8): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDpaddUW(a: V4u32, b: V8u16, c: V8u16): V4u32 =
+public actual fun externMsaDpaddUW(a: V4u32, b: V8u16, c: V8u16): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDpaddUD(a: V2u64, b: V4u32, c: V4u32): V2u64 =
+public actual fun externMsaDpaddUD(a: V2u64, b: V4u32, c: V4u32): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDpsubSH(a: V8i16, b: V16i8, c: V16i8): V8i16 =
+public actual fun externMsaDpsubSH(a: V8i16, b: V16i8, c: V16i8): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDpsubSW(a: V4i32, b: V8i16, c: V8i16): V4i32 =
+public actual fun externMsaDpsubSW(a: V4i32, b: V8i16, c: V8i16): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDpsubSD(a: V2i64, b: V4i32, c: V4i32): V2i64 =
+public actual fun externMsaDpsubSD(a: V2i64, b: V4i32, c: V4i32): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDpsubUH(a: V8i16, b: V16u8, c: V16u8): V8i16 =
+public actual fun externMsaDpsubUH(a: V8i16, b: V16u8, c: V16u8): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDpsubUW(a: V4i32, b: V8u16, c: V8u16): V4i32 =
+public actual fun externMsaDpsubUW(a: V4i32, b: V8u16, c: V8u16): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaDpsubUD(a: V2i64, b: V4u32, c: V4u32): V2i64 =
+public actual fun externMsaDpsubUD(a: V2i64, b: V4u32, c: V4u32): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFaddW(a: V4f32, b: V4f32): V4f32 =
+public actual fun externMsaFaddW(a: V4f32, b: V4f32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFaddD(a: V2f64, b: V2f64): V2f64 =
+public actual fun externMsaFaddD(a: V2f64, b: V2f64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcafW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFcafW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcafD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFcafD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFceqW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFceqW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFceqD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFceqD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFclassW(a: V4f32): V4i32 =
+public actual fun externMsaFclassW(a: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFclassD(a: V2f64): V2i64 =
+public actual fun externMsaFclassD(a: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcleW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFcleW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcleD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFcleD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcltW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFcltW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcltD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFcltD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcneW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFcneW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcneD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFcneD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcorW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFcorW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcorD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFcorD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcueqW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFcueqW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcueqD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFcueqD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFculeW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFculeW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFculeD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFculeD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcultW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFcultW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcultD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFcultD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcunW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFcunW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcunD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFcunD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcuneW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFcuneW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFcuneD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFcuneD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFdivW(a: V4f32, b: V4f32): V4f32 =
+public actual fun externMsaFdivW(a: V4f32, b: V4f32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFdivD(a: V2f64, b: V2f64): V2f64 =
+public actual fun externMsaFdivD(a: V2f64, b: V2f64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFexdoW(a: V2f64, b: V2f64): V4f32 =
+public actual fun externMsaFexdoW(a: V2f64, b: V2f64): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFexp2W(a: V4f32, b: V4i32): V4f32 =
+public actual fun externMsaFexp2W(a: V4f32, b: V4i32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFexp2D(a: V2f64, b: V2i64): V2f64 =
+public actual fun externMsaFexp2D(a: V2f64, b: V2i64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFexuplD(a: V4f32): V2f64 =
+public actual fun externMsaFexuplD(a: V4f32): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFexuprD(a: V4f32): V2f64 =
+public actual fun externMsaFexuprD(a: V4f32): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFfintSW(a: V4i32): V4f32 =
+public actual fun externMsaFfintSW(a: V4i32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFfintSD(a: V2i64): V2f64 =
+public actual fun externMsaFfintSD(a: V2i64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFfintUW(a: V4u32): V4f32 =
+public actual fun externMsaFfintUW(a: V4u32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFfintUD(a: V2u64): V2f64 =
+public actual fun externMsaFfintUD(a: V2u64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFfqlW(a: V8i16): V4f32 =
+public actual fun externMsaFfqlW(a: V8i16): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFfqlD(a: V4i32): V2f64 =
+public actual fun externMsaFfqlD(a: V4i32): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFfqrW(a: V8i16): V4f32 =
+public actual fun externMsaFfqrW(a: V8i16): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFfqrD(a: V4i32): V2f64 =
+public actual fun externMsaFfqrD(a: V4i32): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFillB(a: Int): V16i8 =
+public actual fun externMsaFillB(a: Int): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFillH(a: Int): V8i16 =
+public actual fun externMsaFillH(a: Int): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFillW(a: Int): V4i32 =
+public actual fun externMsaFillW(a: Int): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFillD(a: Long): V2i64 =
+public actual fun externMsaFillD(a: Long): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFlog2W(a: V4f32): V4f32 =
+public actual fun externMsaFlog2W(a: V4f32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFlog2D(a: V2f64): V2f64 =
+public actual fun externMsaFlog2D(a: V2f64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFmaddW(a: V4f32, b: V4f32, c: V4f32): V4f32 =
+public actual fun externMsaFmaddW(a: V4f32, b: V4f32, c: V4f32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFmaddD(a: V2f64, b: V2f64, c: V2f64): V2f64 =
+public actual fun externMsaFmaddD(a: V2f64, b: V2f64, c: V2f64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFmaxW(a: V4f32, b: V4f32): V4f32 =
+public actual fun externMsaFmaxW(a: V4f32, b: V4f32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFmaxD(a: V2f64, b: V2f64): V2f64 =
+public actual fun externMsaFmaxD(a: V2f64, b: V2f64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFmaxAW(a: V4f32, b: V4f32): V4f32 =
+public actual fun externMsaFmaxAW(a: V4f32, b: V4f32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFmaxAD(a: V2f64, b: V2f64): V2f64 =
+public actual fun externMsaFmaxAD(a: V2f64, b: V2f64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFminW(a: V4f32, b: V4f32): V4f32 =
+public actual fun externMsaFminW(a: V4f32, b: V4f32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFminD(a: V2f64, b: V2f64): V2f64 =
+public actual fun externMsaFminD(a: V2f64, b: V2f64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFminAW(a: V4f32, b: V4f32): V4f32 =
+public actual fun externMsaFminAW(a: V4f32, b: V4f32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFminAD(a: V2f64, b: V2f64): V2f64 =
+public actual fun externMsaFminAD(a: V2f64, b: V2f64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFmsubW(a: V4f32, b: V4f32, c: V4f32): V4f32 =
+public actual fun externMsaFmsubW(a: V4f32, b: V4f32, c: V4f32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFmsubD(a: V2f64, b: V2f64, c: V2f64): V2f64 =
+public actual fun externMsaFmsubD(a: V2f64, b: V2f64, c: V2f64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFmulW(a: V4f32, b: V4f32): V4f32 =
+public actual fun externMsaFmulW(a: V4f32, b: V4f32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFmulD(a: V2f64, b: V2f64): V2f64 =
+public actual fun externMsaFmulD(a: V2f64, b: V2f64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFrintW(a: V4f32): V4f32 =
+public actual fun externMsaFrintW(a: V4f32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFrintD(a: V2f64): V2f64 =
+public actual fun externMsaFrintD(a: V2f64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFrcpW(a: V4f32): V4f32 =
+public actual fun externMsaFrcpW(a: V4f32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFrcpD(a: V2f64): V2f64 =
+public actual fun externMsaFrcpD(a: V2f64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFrsqrtW(a: V4f32): V4f32 =
+public actual fun externMsaFrsqrtW(a: V4f32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFrsqrtD(a: V2f64): V2f64 =
+public actual fun externMsaFrsqrtD(a: V2f64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsafW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFsafW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsafD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFsafD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFseqW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFseqW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFseqD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFseqD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsleW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFsleW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsleD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFsleD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsltW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFsltW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsltD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFsltD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsneW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFsneW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsneD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFsneD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsorW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFsorW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsorD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFsorD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsqrtW(a: V4f32): V4f32 =
+public actual fun externMsaFsqrtW(a: V4f32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsqrtD(a: V2f64): V2f64 =
+public actual fun externMsaFsqrtD(a: V2f64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsubW(a: V4f32, b: V4f32): V4f32 =
+public actual fun externMsaFsubW(a: V4f32, b: V4f32): V4f32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsubD(a: V2f64, b: V2f64): V2f64 =
+public actual fun externMsaFsubD(a: V2f64, b: V2f64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsueqW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFsueqW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsueqD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFsueqD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsuleW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFsuleW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsuleD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFsuleD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsultW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFsultW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsultD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFsultD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsunW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFsunW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsunD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFsunD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsuneW(a: V4f32, b: V4f32): V4i32 =
+public actual fun externMsaFsuneW(a: V4f32, b: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFsuneD(a: V2f64, b: V2f64): V2i64 =
+public actual fun externMsaFsuneD(a: V2f64, b: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFtintSW(a: V4f32): V4i32 =
+public actual fun externMsaFtintSW(a: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFtintSD(a: V2f64): V2i64 =
+public actual fun externMsaFtintSD(a: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFtintUW(a: V4f32): V4u32 =
+public actual fun externMsaFtintUW(a: V4f32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFtintUD(a: V2f64): V2u64 =
+public actual fun externMsaFtintUD(a: V2f64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFtqH(a: V4f32, b: V4f32): V8i16 =
+public actual fun externMsaFtqH(a: V4f32, b: V4f32): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFtqW(a: V2f64, b: V2f64): V4i32 =
+public actual fun externMsaFtqW(a: V2f64, b: V2f64): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFtruncSW(a: V4f32): V4i32 =
+public actual fun externMsaFtruncSW(a: V4f32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFtruncSD(a: V2f64): V2i64 =
+public actual fun externMsaFtruncSD(a: V2f64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFtruncUW(a: V4f32): V4u32 =
+public actual fun externMsaFtruncUW(a: V4f32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaFtruncUD(a: V2f64): V2u64 =
+public actual fun externMsaFtruncUD(a: V2f64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaHaddSH(a: V16i8, b: V16i8): V8i16 =
+public actual fun externMsaHaddSH(a: V16i8, b: V16i8): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaHaddSW(a: V8i16, b: V8i16): V4i32 =
+public actual fun externMsaHaddSW(a: V8i16, b: V8i16): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaHaddSD(a: V4i32, b: V4i32): V2i64 =
+public actual fun externMsaHaddSD(a: V4i32, b: V4i32): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaHaddUH(a: V16u8, b: V16u8): V8u16 =
+public actual fun externMsaHaddUH(a: V16u8, b: V16u8): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaHaddUW(a: V8u16, b: V8u16): V4u32 =
+public actual fun externMsaHaddUW(a: V8u16, b: V8u16): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaHaddUD(a: V4u32, b: V4u32): V2u64 =
+public actual fun externMsaHaddUD(a: V4u32, b: V4u32): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaHsubSH(a: V16i8, b: V16i8): V8i16 =
+public actual fun externMsaHsubSH(a: V16i8, b: V16i8): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaHsubSW(a: V8i16, b: V8i16): V4i32 =
+public actual fun externMsaHsubSW(a: V8i16, b: V8i16): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaHsubSD(a: V4i32, b: V4i32): V2i64 =
+public actual fun externMsaHsubSD(a: V4i32, b: V4i32): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaHsubUH(a: V16u8, b: V16u8): V8i16 =
+public actual fun externMsaHsubUH(a: V16u8, b: V16u8): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaHsubUW(a: V8u16, b: V8u16): V4i32 =
+public actual fun externMsaHsubUW(a: V8u16, b: V8u16): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaHsubUD(a: V4u32, b: V4u32): V2i64 =
+public actual fun externMsaHsubUD(a: V4u32, b: V4u32): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaIlvevB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaIlvevB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaIlvevH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaIlvevH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaIlvevW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaIlvevW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaIlvevD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaIlvevD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaIlvlB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaIlvlB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaIlvlH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaIlvlH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaIlvlW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaIlvlW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaIlvlD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaIlvlD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaIlvodB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaIlvodB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaIlvodH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaIlvodH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaIlvodW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaIlvodW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaIlvodD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaIlvodD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaIlvrB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaIlvrB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaIlvrH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaIlvrH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaIlvrW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaIlvrW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaIlvrD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaIlvrD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaInsertB(a: V16i8, b: Int, c: Int): V16i8 =
@@ -999,64 +999,64 @@ public actual fun msaLdiW(a: Int): V4i32 =
 public actual fun msaLdiD(a: Int): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaddQH(a: V8i16, b: V8i16, c: V8i16): V8i16 =
+public actual fun externMsaMaddQH(a: V8i16, b: V8i16, c: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaddQW(a: V4i32, b: V4i32, c: V4i32): V4i32 =
+public actual fun externMsaMaddQW(a: V4i32, b: V4i32, c: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaddrQH(a: V8i16, b: V8i16, c: V8i16): V8i16 =
+public actual fun externMsaMaddrQH(a: V8i16, b: V8i16, c: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaddrQW(a: V4i32, b: V4i32, c: V4i32): V4i32 =
+public actual fun externMsaMaddrQW(a: V4i32, b: V4i32, c: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaddvB(a: V16i8, b: V16i8, c: V16i8): V16i8 =
+public actual fun externMsaMaddvB(a: V16i8, b: V16i8, c: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaddvH(a: V8i16, b: V8i16, c: V8i16): V8i16 =
+public actual fun externMsaMaddvH(a: V8i16, b: V8i16, c: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaddvW(a: V4i32, b: V4i32, c: V4i32): V4i32 =
+public actual fun externMsaMaddvW(a: V4i32, b: V4i32, c: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaddvD(a: V2i64, b: V2i64, c: V2i64): V2i64 =
+public actual fun externMsaMaddvD(a: V2i64, b: V2i64, c: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaxAB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaMaxAB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaxAH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaMaxAH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaxAW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaMaxAW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaxAD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaMaxAD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaxSB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaMaxSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaxSH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaMaxSH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaxSW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaMaxSW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaxSD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaMaxSD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaxUB(a: V16u8, b: V16u8): V16u8 =
+public actual fun externMsaMaxUB(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaxUH(a: V8u16, b: V8u16): V8u16 =
+public actual fun externMsaMaxUH(a: V8u16, b: V8u16): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaxUW(a: V4u32, b: V4u32): V4u32 =
+public actual fun externMsaMaxUW(a: V4u32, b: V4u32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMaxUD(a: V2u64, b: V2u64): V2u64 =
+public actual fun externMsaMaxUD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaMaxiSB(a: V16i8, b: Int): V16i8 =
@@ -1083,40 +1083,40 @@ public actual fun msaMaxiUW(a: V4u32, b: Int): V4u32 =
 public actual fun msaMaxiUD(a: V2u64, b: Int): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMinAB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaMinAB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMinAH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaMinAH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMinAW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaMinAW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMinAD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaMinAD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMinSB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaMinSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMinSH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaMinSH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMinSW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaMinSW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMinSD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaMinSD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMinUB(a: V16u8, b: V16u8): V16u8 =
+public actual fun externMsaMinUB(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMinUH(a: V8u16, b: V8u16): V8u16 =
+public actual fun externMsaMinUH(a: V8u16, b: V8u16): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMinUW(a: V4u32, b: V4u32): V4u32 =
+public actual fun externMsaMinUW(a: V4u32, b: V4u32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMinUD(a: V2u64, b: V2u64): V2u64 =
+public actual fun externMsaMinUD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaMiniSB(a: V16i8, b: Int): V16i8 =
@@ -1143,151 +1143,151 @@ public actual fun msaMiniUW(a: V4u32, b: Int): V4u32 =
 public actual fun msaMiniUD(a: V2u64, b: Int): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaModSB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaModSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaModSH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaModSH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaModSW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaModSW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaModSD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaModSD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaModUB(a: V16u8, b: V16u8): V16u8 =
+public actual fun externMsaModUB(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaModUH(a: V8u16, b: V8u16): V8u16 =
+public actual fun externMsaModUH(a: V8u16, b: V8u16): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaModUW(a: V4u32, b: V4u32): V4u32 =
+public actual fun externMsaModUW(a: V4u32, b: V4u32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaModUD(a: V2u64, b: V2u64): V2u64 =
+public actual fun externMsaModUD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMoveV(a: V16i8): V16i8 =
+public actual fun externMsaMoveV(a: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMsubQH(a: V8i16, b: V8i16, c: V8i16): V8i16 =
+public actual fun externMsaMsubQH(a: V8i16, b: V8i16, c: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMsubQW(a: V4i32, b: V4i32, c: V4i32): V4i32 =
+public actual fun externMsaMsubQW(a: V4i32, b: V4i32, c: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMsubrQH(a: V8i16, b: V8i16, c: V8i16): V8i16 =
+public actual fun externMsaMsubrQH(a: V8i16, b: V8i16, c: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMsubrQW(a: V4i32, b: V4i32, c: V4i32): V4i32 =
+public actual fun externMsaMsubrQW(a: V4i32, b: V4i32, c: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMsubvB(a: V16i8, b: V16i8, c: V16i8): V16i8 =
+public actual fun externMsaMsubvB(a: V16i8, b: V16i8, c: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMsubvH(a: V8i16, b: V8i16, c: V8i16): V8i16 =
+public actual fun externMsaMsubvH(a: V8i16, b: V8i16, c: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMsubvW(a: V4i32, b: V4i32, c: V4i32): V4i32 =
+public actual fun externMsaMsubvW(a: V4i32, b: V4i32, c: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMsubvD(a: V2i64, b: V2i64, c: V2i64): V2i64 =
+public actual fun externMsaMsubvD(a: V2i64, b: V2i64, c: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMulQH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaMulQH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMulQW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaMulQW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMulrQH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaMulrQH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMulrQW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaMulrQW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMulvB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaMulvB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMulvH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaMulvH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMulvW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaMulvW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaMulvD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaMulvD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaNlocB(a: V16i8): V16i8 =
+public actual fun externMsaNlocB(a: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaNlocH(a: V8i16): V8i16 =
+public actual fun externMsaNlocH(a: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaNlocW(a: V4i32): V4i32 =
+public actual fun externMsaNlocW(a: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaNlocD(a: V2i64): V2i64 =
+public actual fun externMsaNlocD(a: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaNlzcB(a: V16i8): V16i8 =
+public actual fun externMsaNlzcB(a: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaNlzcH(a: V8i16): V8i16 =
+public actual fun externMsaNlzcH(a: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaNlzcW(a: V4i32): V4i32 =
+public actual fun externMsaNlzcW(a: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaNlzcD(a: V2i64): V2i64 =
+public actual fun externMsaNlzcD(a: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaNorV(a: V16u8, b: V16u8): V16u8 =
+public actual fun externMsaNorV(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaNoriB(a: V16u8, b: Int): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaOrV(a: V16u8, b: V16u8): V16u8 =
+public actual fun externMsaOrV(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaOriB(a: V16u8, b: Int): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaPckevB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaPckevB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaPckevH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaPckevH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaPckevW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaPckevW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaPckevD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaPckevD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaPckodB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaPckodB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaPckodH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaPckodH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaPckodW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaPckodW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaPckodD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaPckodD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaPcntB(a: V16i8): V16i8 =
+public actual fun externMsaPcntB(a: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaPcntH(a: V8i16): V8i16 =
+public actual fun externMsaPcntH(a: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaPcntW(a: V4i32): V4i32 =
+public actual fun externMsaPcntW(a: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaPcntD(a: V2i64): V2i64 =
+public actual fun externMsaPcntD(a: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaSatSB(a: V16i8, b: Int): V16i8 =
@@ -1323,16 +1323,16 @@ public actual fun msaShfH(a: V8i16, b: Int): V8i16 =
 public actual fun msaShfW(a: V4i32, b: Int): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSldB(a: V16i8, b: V16i8, c: Int): V16i8 =
+public actual fun externMsaSldB(a: V16i8, b: V16i8, c: Int): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSldH(a: V8i16, b: V8i16, c: Int): V8i16 =
+public actual fun externMsaSldH(a: V8i16, b: V8i16, c: Int): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSldW(a: V4i32, b: V4i32, c: Int): V4i32 =
+public actual fun externMsaSldW(a: V4i32, b: V4i32, c: Int): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSldD(a: V2i64, b: V2i64, c: Int): V2i64 =
+public actual fun externMsaSldD(a: V2i64, b: V2i64, c: Int): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaSldiB(a: V16i8, b: V16i8, c: Int): V16i8 =
@@ -1347,16 +1347,16 @@ public actual fun msaSldiW(a: V4i32, b: V4i32, c: Int): V4i32 =
 public actual fun msaSldiD(a: V2i64, b: V2i64, c: Int): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSllB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaSllB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSllH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaSllH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSllW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaSllW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSllD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaSllD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaSlliB(a: V16i8, b: Int): V16i8 =
@@ -1371,16 +1371,16 @@ public actual fun msaSlliW(a: V4i32, b: Int): V4i32 =
 public actual fun msaSlliD(a: V2i64, b: Int): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSplatB(a: V16i8, c: Int): V16i8 =
+public actual fun externMsaSplatB(a: V16i8, c: Int): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSplatH(a: V8i16, c: Int): V8i16 =
+public actual fun externMsaSplatH(a: V8i16, c: Int): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSplatW(a: V4i32, w: Int): V4i32 =
+public actual fun externMsaSplatW(a: V4i32, w: Int): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSplatD(a: V2i64, c: Int): V2i64 =
+public actual fun externMsaSplatD(a: V2i64, c: Int): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaSplatiB(a: V16i8, b: Int): V16i8 =
@@ -1395,16 +1395,16 @@ public actual fun msaSplatiW(a: V4i32, b: Int): V4i32 =
 public actual fun msaSplatiD(a: V2i64, b: Int): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSraB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaSraB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSraH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaSraH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSraW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaSraW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSraD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaSraD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaSraiB(a: V16i8, b: Int): V16i8 =
@@ -1419,16 +1419,16 @@ public actual fun msaSraiW(a: V4i32, b: Int): V4i32 =
 public actual fun msaSraiD(a: V2i64, b: Int): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSrarB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaSrarB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSrarH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaSrarH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSrarW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaSrarW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSrarD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaSrarD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaSrariB(a: V16i8, b: Int): V16i8 =
@@ -1443,16 +1443,16 @@ public actual fun msaSrariW(a: V4i32, b: Int): V4i32 =
 public actual fun msaSrariD(a: V2i64, b: Int): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSrlB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaSrlB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSrlH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaSrlH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSrlW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaSrlW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSrlD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaSrlD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaSrliB(a: V16i8, b: Int): V16i8 =
@@ -1467,16 +1467,16 @@ public actual fun msaSrliW(a: V4i32, b: Int): V4i32 =
 public actual fun msaSrliD(a: V2i64, b: Int): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSrlrB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaSrlrB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSrlrH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaSrlrH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSrlrW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaSrlrW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSrlrD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaSrlrD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaSrlriB(a: V16i8, b: Int): V16i8 =
@@ -1507,64 +1507,64 @@ public actual fun msaStD(a: V2i64, memAddr: MutPtr, immS13: Int) {
     throw UnsupportedOperationException("Native FFI addon is not available")
 }
 
-public actual fun msaSubsSB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaSubsSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubsSH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaSubsSH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubsSW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaSubsSW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubsSD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaSubsSD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubsUB(a: V16u8, b: V16u8): V16u8 =
+public actual fun externMsaSubsUB(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubsUH(a: V8u16, b: V8u16): V8u16 =
+public actual fun externMsaSubsUH(a: V8u16, b: V8u16): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubsUW(a: V4u32, b: V4u32): V4u32 =
+public actual fun externMsaSubsUW(a: V4u32, b: V4u32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubsUD(a: V2u64, b: V2u64): V2u64 =
+public actual fun externMsaSubsUD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubsusUB(a: V16u8, b: V16i8): V16u8 =
+public actual fun externMsaSubsusUB(a: V16u8, b: V16i8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubsusUH(a: V8u16, b: V8i16): V8u16 =
+public actual fun externMsaSubsusUH(a: V8u16, b: V8i16): V8u16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubsusUW(a: V4u32, b: V4i32): V4u32 =
+public actual fun externMsaSubsusUW(a: V4u32, b: V4i32): V4u32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubsusUD(a: V2u64, b: V2i64): V2u64 =
+public actual fun externMsaSubsusUD(a: V2u64, b: V2i64): V2u64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubsuuSB(a: V16u8, b: V16u8): V16i8 =
+public actual fun externMsaSubsuuSB(a: V16u8, b: V16u8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubsuuSH(a: V8u16, b: V8u16): V8i16 =
+public actual fun externMsaSubsuuSH(a: V8u16, b: V8u16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubsuuSW(a: V4u32, b: V4u32): V4i32 =
+public actual fun externMsaSubsuuSW(a: V4u32, b: V4u32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubsuuSD(a: V2u64, b: V2u64): V2i64 =
+public actual fun externMsaSubsuuSD(a: V2u64, b: V2u64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubvB(a: V16i8, b: V16i8): V16i8 =
+public actual fun externMsaSubvB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubvH(a: V8i16, b: V8i16): V8i16 =
+public actual fun externMsaSubvH(a: V8i16, b: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubvW(a: V4i32, b: V4i32): V4i32 =
+public actual fun externMsaSubvW(a: V4i32, b: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaSubvD(a: V2i64, b: V2i64): V2i64 =
+public actual fun externMsaSubvD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaSubviB(a: V16i8, b: Int): V16i8 =
@@ -1579,19 +1579,19 @@ public actual fun msaSubviW(a: V4i32, b: Int): V4i32 =
 public actual fun msaSubviD(a: V2i64, b: Int): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaVshfB(a: V16i8, b: V16i8, c: V16i8): V16i8 =
+public actual fun externMsaVshfB(a: V16i8, b: V16i8, c: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaVshfH(a: V8i16, b: V8i16, c: V8i16): V8i16 =
+public actual fun externMsaVshfH(a: V8i16, b: V8i16, c: V8i16): V8i16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaVshfW(a: V4i32, b: V4i32, c: V4i32): V4i32 =
+public actual fun externMsaVshfW(a: V4i32, b: V4i32, c: V4i32): V4i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaVshfD(a: V2i64, b: V2i64, c: V2i64): V2i64 =
+public actual fun externMsaVshfD(a: V2i64, b: V2i64, c: V2i64): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaXorV(a: V16u8, b: V16u8): V16u8 =
+public actual fun externMsaXorV(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msaXoriB(a: V16u8, b: Int): V16u8 =

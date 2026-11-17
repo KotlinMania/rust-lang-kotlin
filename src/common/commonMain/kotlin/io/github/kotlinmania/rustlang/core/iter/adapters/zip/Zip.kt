@@ -3,6 +3,8 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.zip
 
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.io.sizehint.SizeHint
+import io.github.kotlinmania.rustlang.core.io.sizehint.sizeHint
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -83,7 +85,7 @@ public open class Zip<A, B>(
 
     public override fun next(): Pair<Item, Item>? = this.next()
 
-    public override fun sizeHint(): Pair<Int, Int?> = this.sizeHint()
+    public override fun sizeHint(): Pair<Int, Int?> = ZipImpl.SizeHint(this)
 
     public override fun nth(n: Int): Pair<Item, Item>? = this.nth(n)
 
@@ -322,7 +324,7 @@ public fun <A, B> Zip<A, B>.getUnchecked(idx: Int): Item where A : TrustedRandom
 
 public fun <A, B, Acc> Zip<A, B>.fold(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce {
     var accum = init
-    val len = this.sizeHint().first
+    val len = ZipImpl.SizeHint(this).first
     for (i in 0 until len) {
         // SAFETY: since Self: TrustedRandomAccessNoCoerce we can trust the size-hint to
         // calculate the length and then use that to do unchecked iteration.
@@ -568,7 +570,7 @@ public fun <Item, A : TrustedLen<Item>, B : TrustedLen<Item>, Acc> Zip<A, B>.spe
     var accum = init
     while (true) {
         val (upper1, more) =
-            when (val matchVal = this.sizeHint().second) {
+            when (val matchVal = ZipImpl.SizeHint(this).second) {
                 null -> {
                     // Per TrustedLen contract a None upper bound means more than usize.Max items
                     Pair(Int.MAX_VALUE, true)

@@ -43,7 +43,6 @@ import io.github.kotlinmania.rustlang.libm.math.erf.erf
 import io.github.kotlinmania.rustlang.libm.math.erf.erfc
 import io.github.kotlinmania.rustlang.libm.math.erff.erfcf
 import io.github.kotlinmania.rustlang.libm.math.erff.erff
-import io.github.kotlinmania.rustlang.libm.math.exp.exp
 import io.github.kotlinmania.rustlang.libm.math.exp10.exp10
 import io.github.kotlinmania.rustlang.libm.math.exp10f.exp10f
 import io.github.kotlinmania.rustlang.libm.math.exp2.exp2
@@ -100,6 +99,7 @@ import io.github.kotlinmania.rustlang.libm.math.frexp.frexp
 import io.github.kotlinmania.rustlang.libm.math.frexp.frexpf
 import io.github.kotlinmania.rustlang.libm.math.frexp.frexpf128
 import io.github.kotlinmania.rustlang.libm.math.frexp.frexpf16
+import io.github.kotlinmania.rustlang.libm.math.generic.sqrt.Exp
 import io.github.kotlinmania.rustlang.libm.math.hypot.hypot
 import io.github.kotlinmania.rustlang.libm.math.hypotf.hypotf
 import io.github.kotlinmania.rustlang.libm.math.ilogb.ilogb
@@ -145,7 +145,6 @@ import io.github.kotlinmania.rustlang.libm.math.remainderf.remainderf
 import io.github.kotlinmania.rustlang.libm.math.remquo.remquo
 import io.github.kotlinmania.rustlang.libm.math.remquof.remquof
 import io.github.kotlinmania.rustlang.libm.math.rint.rintf128
-import io.github.kotlinmania.rustlang.libm.math.round.round
 import io.github.kotlinmania.rustlang.libm.math.round.roundf
 import io.github.kotlinmania.rustlang.libm.math.round.roundf128
 import io.github.kotlinmania.rustlang.libm.math.round.roundf16
@@ -164,6 +163,7 @@ import io.github.kotlinmania.rustlang.libm.math.sinf.sinf
 import io.github.kotlinmania.rustlang.libm.math.sinh.sinh
 import io.github.kotlinmania.rustlang.libm.math.sinhf.sinhf
 import io.github.kotlinmania.rustlang.libm.math.sqrt.sqrtf128
+import io.github.kotlinmania.rustlang.libm.math.support.env.Round
 import io.github.kotlinmania.rustlang.libm.math.tan.tan
 import io.github.kotlinmania.rustlang.libm.math.tanf.tanf
 import io.github.kotlinmania.rustlang.libm.math.tanh.tanh
@@ -349,7 +349,7 @@ public fun Libm.Companion.erf(x: Double): Double = erf(x)
 
 public fun Libm.Companion.erfc(x: Double): Double = erfc(x)
 
-public fun Libm.Companion.exp(x: Double): Double = exp(x)
+public fun Libm.Companion.exp(x: Double): Double = Exp(x)
 
 public fun Libm.Companion.exp10(x: Double): Double = exp10(x)
 
@@ -427,7 +427,7 @@ public fun Libm.Companion.remquo(x: Double, y: Double): Pair<Double, Int> = remq
 
 public fun Libm.Companion.rint(x: Double): Double = rint(x)
 
-public fun Libm.Companion.round(x: Double): Double = round(x)
+public fun Libm.Companion.round(x: Double): Double = Round(x)
 
 public fun Libm.Companion.roundeven(x: Double): Double = roundeven(x)
 

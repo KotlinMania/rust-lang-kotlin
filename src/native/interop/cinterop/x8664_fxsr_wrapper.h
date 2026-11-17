@@ -9,8 +9,8 @@
 extern "C" {
 #endif
 
-void corearchX8664FxsrFxsave64(void* p);
-void corearchX8664FxsrFxrstor64(void* p);
+void corearchX8664FxsrExternFxsave64(void* p);
+void corearchX8664FxsrExternFxrstor64(void* p);
 
 #ifdef __cplusplus
 }

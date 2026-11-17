@@ -7,7 +7,10 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.convert.From
+import io.github.kotlinmania.rustlang.core.default.Default
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.iter.adapters.mapwindows.Buffer
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -469,7 +472,7 @@ public sealed class IpAddr {
          * }
          * ```
          */
-        public fun from(octets: UByteArray): IpAddr = IpAddr.v4(Ipv4Addr.from(octets))
+        public fun from(octets: UByteArray): IpAddr = IpAddr.v4(Ipv4Addr.From(octets))
 
         /**
          * Creates an `IpAddr.V6` from a sixteen element byte array.
@@ -488,7 +491,7 @@ public sealed class IpAddr {
          * }
          * ```
          */
-        public fun fromUByteArray16(octets: UByteArray): IpAddr = IpAddr.v6(Ipv6Addr.from(octets))
+        public fun fromUByteArray16(octets: UByteArray): IpAddr = IpAddr.v6(Ipv6Addr.From(octets))
 
         /**
          * Creates an `IpAddr.V6` from an eight element 16-bit array.
@@ -507,7 +510,7 @@ public sealed class IpAddr {
          * }
          * ```
          */
-        public fun from(segments: UShortArray): IpAddr = IpAddr.v6(Ipv6Addr.from(segments))
+        public fun from(segments: UShortArray): IpAddr = IpAddr.v6(Ipv6Addr.From(segments))
     }
 }
 
@@ -1002,7 +1005,7 @@ public open class Ipv4Addr(
             fmt.writeFmt("${octets[0]}.${octets[1]}.${octets[2]}.${octets[3]}")
         } else {
             val LONGEST_IPV4_ADDR: String = "255.255.255.255"
-            val buf = DisplayBuffer.buffer(LONGEST_IPV4_ADDR.len())
+            val buf = DisplayBuffer.Buffer(LONGEST_IPV4_ADDR.len())
             val buf1 = DisplayBuffer.new(buf)
             buf1.writeFmt("${octets[0]}.${octets[1]}.${octets[2]}.${octets[3]}").unwrap()
             run { fmt.append(buf1.asStr()); Result.Ok<Unit, Unit>(Unit) }
@@ -1050,16 +1053,7 @@ public open class Ipv4Addr(
         }
     }
 
-    public open fun bitandAssignIpv4Addr(rhs: Ipv4Addr) {
-        this.bitandAssign(rhs)
-    }
-
     public override fun bitand(rhs: Ipv4Addr): Ipv4Addr {
-        this.bitandAssign(rhs)
-        return this
-    }
-
-    public open fun bitandIpv4Addr(rhs: Ipv4Addr): Ipv4Addr {
         this.bitandAssign(rhs)
         return this
     }
@@ -1072,16 +1066,7 @@ public open class Ipv4Addr(
         }
     }
 
-    public open fun bitorAssignIpv4Addr(rhs: Ipv4Addr) {
-        this.bitorAssign(rhs)
-    }
-
     public override fun bitor(rhs: Ipv4Addr): Ipv4Addr {
-        this.bitorAssign(rhs)
-        return this
-    }
-
-    public open fun bitorIpv4Addr(rhs: Ipv4Addr): Ipv4Addr {
         this.bitorAssign(rhs)
         return this
     }
@@ -1980,8 +1965,8 @@ public open class Ipv6Addr(
                     }
                     // Find the inner 0 span
                     val zeroes = run {
-                        var longest = Span.default()
-                        var current = Span.default()
+                        var longest = Span.Default()
+                        var current = Span.Default()
                         for ((i, segment) in segments.mapIndexed { index, item -> Pair(index, item) }) {
                             if (segment == 0) {
                                 if (current.len == 0) {
@@ -1992,7 +1977,7 @@ public open class Ipv6Addr(
                                     longest = current
                                 }
                             } else {
-                                current = Span.default()
+                                current = Span.Default()
                             }
                         }
                         longest
@@ -2012,7 +1997,7 @@ public open class Ipv6Addr(
             }
         } else {
             val LONGEST_IPV6_ADDR: String = "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"
-            val buf = DisplayBuffer.buffer(LONGEST_IPV6_ADDR.len())
+            val buf = DisplayBuffer.Buffer(LONGEST_IPV6_ADDR.len())
             val buf1 = DisplayBuffer.new(buf)
             buf1.writeFmt("${this}").unwrap()
             run { f.append(buf1.asStr()); Result.Ok<Unit, Unit>(Unit) }
@@ -2060,16 +2045,7 @@ public open class Ipv6Addr(
         }
     }
 
-    public open fun bitandAssignIpv6Addr(rhs: Ipv6Addr) {
-        this.bitandAssign(rhs)
-    }
-
     public override fun bitand(rhs: Ipv6Addr): Ipv6Addr {
-        this.bitandAssign(rhs)
-        return this
-    }
-
-    public open fun bitandIpv6Addr(rhs: Ipv6Addr): Ipv6Addr {
         this.bitandAssign(rhs)
         return this
     }
@@ -2082,16 +2058,7 @@ public open class Ipv6Addr(
         }
     }
 
-    public open fun bitorAssignIpv6Addr(rhs: Ipv6Addr) {
-        this.bitorAssign(rhs)
-    }
-
     public override fun bitor(rhs: Ipv6Addr): Ipv6Addr {
-        this.bitorAssign(rhs)
-        return this
-    }
-
-    public open fun bitorIpv6Addr(rhs: Ipv6Addr): Ipv6Addr {
         this.bitorAssign(rhs)
         return this
     }

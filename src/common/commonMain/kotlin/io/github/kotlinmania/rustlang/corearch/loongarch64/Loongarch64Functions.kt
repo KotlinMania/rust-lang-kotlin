@@ -8,21 +8,21 @@ public fun rdtimeD(): Pair<Long, Int> {
     return Pair(value, tid)
 }
 
-public expect fun crcWBW(a: Int, b: Int): Int
+public expect fun externCrcWBW(a: Int, b: Int): Int
 
-public expect fun crcWHW(a: Int, b: Int): Int
+public expect fun externCrcWHW(a: Int, b: Int): Int
 
-public expect fun crcWWW(a: Int, b: Int): Int
+public expect fun externCrcWWW(a: Int, b: Int): Int
 
-public expect fun crcWDW(a: Long, b: Int): Int
+public expect fun externCrcWDW(a: Long, b: Int): Int
 
-public expect fun crccWBW(a: Int, b: Int): Int
+public expect fun externCrccWBW(a: Int, b: Int): Int
 
-public expect fun crccWHW(a: Int, b: Int): Int
+public expect fun externCrccWHW(a: Int, b: Int): Int
 
-public expect fun crccWWW(a: Int, b: Int): Int
+public expect fun externCrccWWW(a: Int, b: Int): Int
 
-public expect fun crccWDW(a: Long, b: Int): Int
+public expect fun externCrccWDW(a: Long, b: Int): Int
 
 public expect fun cacop(a: Long, b: Long, c: Long)
 
@@ -32,13 +32,13 @@ public expect fun csrwr(a: Long, b: Int): Long
 
 public expect fun csrxchg(a: Long, b: Long, c: Int): Long
 
-public expect fun iocsrrdD(a: Int): Long
+public expect fun externIocsrrdD(a: Int): Long
 
-public expect fun iocsrwrD(a: Long, b: Int)
+public expect fun externIocsrwrD(a: Long, b: Int)
 
-public expect fun asrtle(a: Long, b: Long)
+public expect fun externAsrtle(a: Long, b: Long)
 
-public expect fun asrtgt(a: Long, b: Long)
+public expect fun externAsrtgt(a: Long, b: Long)
 
 public expect fun lddir(a: Long, b: Long): Long
 
@@ -47,42 +47,42 @@ public expect fun ldpte(a: Long, b: Long)
 /**
  * Calculate the CRC value using the IEEE 802.3 polynomial (0xEDB88320)
  */
-public fun crcWBW(a: Byte, b: Int): Int = crcWBW(a.toInt(), b)
+public fun crcWBW(a: Byte, b: Int): Int = externCrcWBW(a.toInt(), b)
 
 /**
  * Calculate the CRC value using the IEEE 802.3 polynomial (0xEDB88320)
  */
-public fun crcWHW(a: Short, b: Int): Int = crcWHW(a.toInt(), b)
+public fun crcWHW(a: Short, b: Int): Int = externCrcWHW(a.toInt(), b)
 
 /**
  * Calculate the CRC value using the IEEE 802.3 polynomial (0xEDB88320)
  */
-public fun crcWWW(a: Int, b: Int): Int = crcWWW(a, b)
+public fun crcWWW(a: Int, b: Int): Int = externCrcWWW(a, b)
 
 /**
  * Calculate the CRC value using the IEEE 802.3 polynomial (0xEDB88320)
  */
-public fun crcWDW(a: Long, b: Int): Int = crcWDW(a, b)
+public fun crcWDW(a: Long, b: Int): Int = externCrcWDW(a, b)
 
 /**
  * Calculate the CRC value using the Castagnoli polynomial (0x82F63B78)
  */
-public fun crccWBW(a: Byte, b: Int): Int = crccWBW(a.toInt(), b)
+public fun crccWBW(a: Byte, b: Int): Int = externCrccWBW(a.toInt(), b)
 
 /**
  * Calculate the CRC value using the Castagnoli polynomial (0x82F63B78)
  */
-public fun crccWHW(a: Short, b: Int): Int = crccWHW(a.toInt(), b)
+public fun crccWHW(a: Short, b: Int): Int = externCrccWHW(a.toInt(), b)
 
 /**
  * Calculate the CRC value using the Castagnoli polynomial (0x82F63B78)
  */
-public fun crccWWW(a: Int, b: Int): Int = crccWWW(a, b)
+public fun crccWWW(a: Int, b: Int): Int = externCrccWWW(a, b)
 
 /**
  * Calculate the CRC value using the Castagnoli polynomial (0x82F63B78)
  */
-public fun crccWDW(a: Long, b: Int): Int = crccWDW(a, b)
+public fun crccWDW(a: Long, b: Int): Int = externCrccWDW(a, b)
 
 /**
  * Generates the cache operation instruction
@@ -130,27 +130,27 @@ public fun csrxchg(a: Long, b: Long, imm14: Int): Long {
 /**
  * Reads the 64-bit IO-CSR
  */
-public fun iocsrrdD(a: Int): Long = iocsrrdD(a)
+public fun iocsrrdD(a: Int): Long = externIocsrrdD(a)
 
 /**
  * Writes the 64-bit IO-CSR
  */
 public fun iocsrwrD(a: Long, b: Int) {
-    iocsrwrD(a, b)
+    externIocsrwrD(a, b)
 }
 
 /**
  * Generates the less-than-or-equal assertion instruction
  */
 public fun asrtle(a: Long, b: Long) {
-    asrtle(a, b)
+    externAsrtle(a, b)
 }
 
 /**
  * Generates the greater-than assertion instruction
  */
 public fun asrtgt(a: Long, b: Long) {
-    asrtgt(a, b)
+    externAsrtgt(a, b)
 }
 
 /**

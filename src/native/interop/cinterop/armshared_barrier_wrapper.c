@@ -15,7 +15,7 @@
 #endif
 #endif
 
-void corearchArmsharedBarrierDmb(int32_t arg0) {
+void corearchArmsharedBarrierExternDmb(int32_t arg0) {
     typedef void (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -43,7 +43,7 @@ void corearchArmsharedBarrierDmb(int32_t arg0) {
     errno = ENOSYS;
 }
 
-void corearchArmsharedBarrierDsb(int32_t arg0) {
+void corearchArmsharedBarrierExternDsb(int32_t arg0) {
     typedef void (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -71,7 +71,7 @@ void corearchArmsharedBarrierDsb(int32_t arg0) {
     errno = ENOSYS;
 }
 
-void corearchArmsharedBarrierIsb(int32_t arg0) {
+void corearchArmsharedBarrierExternIsb(int32_t arg0) {
     typedef void (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

@@ -250,7 +250,7 @@ public open class Backtrace(
          * the `Backtrace.forceCapture` function.
          */
         public fun capture(): Backtrace {
-            if (Backtrace.enabled().inv()) {
+            if (!Backtrace.enabled()) {
                 return Backtrace(inner = Inner.Disabled)
             }
             return Backtrace.create((((Backtrace::capture as Any?) as FnCallback)).toInt())

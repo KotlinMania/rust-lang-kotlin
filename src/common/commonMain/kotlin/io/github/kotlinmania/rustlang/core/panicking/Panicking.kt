@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.panic.location.Location
 import io.github.kotlinmania.rustlang.core.panic.panicinfo.PanicInfo
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
+import io.github.kotlinmania.rustlang.core.str.traits.FromStr
 
 // Panic support for core
 //
@@ -105,7 +106,7 @@ public fun panic(expr: String): Nothing {
     // payload without any allocation or copying. Shorter-lived strings would become invalid as
     // stack frames get popped during unwinding, and couldn't be directly referenced from the
     // payload.
-    panicFmt(fmt.Arguments.fromStr(expr))
+    panicFmt(fmt.Arguments.FromStr(expr))
 }
 
 // Separated panic constants list for async drop feature
@@ -115,154 +116,154 @@ public fun panic(expr: String): Nothing {
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstAddOverflow(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("attempt to add with overflow"))
+    panicFmt(fmt.Arguments.FromStr("attempt to add with overflow"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstSubOverflow(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("attempt to subtract with overflow"))
+    panicFmt(fmt.Arguments.FromStr("attempt to subtract with overflow"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstMulOverflow(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("attempt to multiply with overflow"))
+    panicFmt(fmt.Arguments.FromStr("attempt to multiply with overflow"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstDivOverflow(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("attempt to divide with overflow"))
+    panicFmt(fmt.Arguments.FromStr("attempt to divide with overflow"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstRemOverflow(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("attempt to calculate the remainder with overflow"))
+    panicFmt(fmt.Arguments.FromStr("attempt to calculate the remainder with overflow"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstNegOverflow(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("attempt to negate with overflow"))
+    panicFmt(fmt.Arguments.FromStr("attempt to negate with overflow"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstShrOverflow(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("attempt to shift right with overflow"))
+    panicFmt(fmt.Arguments.FromStr("attempt to shift right with overflow"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstShlOverflow(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("attempt to shift left with overflow"))
+    panicFmt(fmt.Arguments.FromStr("attempt to shift left with overflow"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstDivByZero(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("attempt to divide by zero"))
+    panicFmt(fmt.Arguments.FromStr("attempt to divide by zero"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstRemByZero(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("attempt to calculate the remainder with a divisor of zero"))
+    panicFmt(fmt.Arguments.FromStr("attempt to calculate the remainder with a divisor of zero"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstCoroutineResumed(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("coroutine resumed after completion"))
+    panicFmt(fmt.Arguments.FromStr("coroutine resumed after completion"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstAsyncFnResumed(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("`async fn` resumed after completion"))
+    panicFmt(fmt.Arguments.FromStr("`async fn` resumed after completion"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstAsyncGenFnResumed(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("`async gen fn` resumed after completion"))
+    panicFmt(fmt.Arguments.FromStr("`async gen fn` resumed after completion"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstGenFnNone(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("`gen fn` should just keep returning `None` after completion"))
+    panicFmt(fmt.Arguments.FromStr("`gen fn` should just keep returning `None` after completion"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstCoroutineResumedPanic(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("coroutine resumed after panicking"))
+    panicFmt(fmt.Arguments.FromStr("coroutine resumed after panicking"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstAsyncFnResumedPanic(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("`async fn` resumed after panicking"))
+    panicFmt(fmt.Arguments.FromStr("`async fn` resumed after panicking"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstAsyncGenFnResumedPanic(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("`async gen fn` resumed after panicking"))
+    panicFmt(fmt.Arguments.FromStr("`async gen fn` resumed after panicking"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstGenFnNonePanic(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("`gen fn` should just keep returning `None` after panicking"))
+    panicFmt(fmt.Arguments.FromStr("`gen fn` should just keep returning `None` after panicking"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstCoroutineResumedDrop(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("coroutine resumed after async drop"))
+    panicFmt(fmt.Arguments.FromStr("coroutine resumed after async drop"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstAsyncFnResumedDrop(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("`async fn` resumed after async drop"))
+    panicFmt(fmt.Arguments.FromStr("`async fn` resumed after async drop"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstAsyncGenFnResumedDrop(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("`async gen fn` resumed after async drop"))
+    panicFmt(fmt.Arguments.FromStr("`async gen fn` resumed after async drop"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstGenFnNoneDrop(): Nothing {
-    panicFmt(fmt.Arguments.fromStr("`gen fn` resumed after async drop"))
+    panicFmt(fmt.Arguments.FromStr("`gen fn` resumed after async drop"))
 }
 
 // needed by codegen for non-unwinding panics
@@ -273,14 +274,14 @@ public fun panicConstGenFnNoneDrop(): Nothing {
  * If you want `@trackCaller` for nicer errors, call `panicNounwindFmt` directly.
  */
 public fun panicNounwind(expr: String): Nothing {
-    panicNounwindFmt(fmt.Arguments.fromStr(expr), false)
+    panicNounwindFmt(fmt.Arguments.FromStr(expr), false)
 }
 
 /**
  * Like `panicNounwind`, but also inhibits showing a backtrace.
  */
 public fun panicNounwindNobacktrace(expr: String): Nothing {
-    panicNounwindFmt(fmt.Arguments.fromStr(expr), true)
+    panicNounwindFmt(fmt.Arguments.FromStr(expr), true)
 }
 
 // needed for `non - fmt - panics` lint

@@ -6,7 +6,6 @@ import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Buf
 
 // Note: this file is currently reused in other `std.os.( platform ).ffi` modules to reduce duplication.
@@ -35,7 +34,7 @@ public interface OsStringExt<T> {
     }
 }
 
-public fun osStringExtFromVecOsString(vec: List<UByte>): OsString = FromInner.fromInner(Buf(inner = vec))
+public fun osStringExtFromVecOsString(vec: List<UByte>): OsString = FromInner.FromInner(Buf(inner = vec))
 
 public fun OsString.intoVec(): List<UByte> = this.intoInner().inner
 
