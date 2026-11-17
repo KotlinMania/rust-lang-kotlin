@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -814,7 +815,7 @@ public open class Request internal constructor(
             }
         }
 
-    public open fun fmt(f: Formatter): Result<Unit, Unit> = DebugStruct(f, "Request").finishNonExhaustive()
+    public open fun fmt(f: Formatter): Result<Unit, Unit> = run { DebugStruct(f, "Request").finishNonExhaustive(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public operator fun invoke(value: Tagged<Erased>, fieldLayout: TypeLayout<Tagged<Erased>> = UnresolvedTypeLayout()): Request = Request(value, fieldLayout)

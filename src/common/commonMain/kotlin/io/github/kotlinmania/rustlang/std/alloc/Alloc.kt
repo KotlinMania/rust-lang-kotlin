@@ -10,7 +10,9 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
@@ -184,7 +186,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                         } else {
                             imp.alloc(layout)
                         }
-                    val ptr = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                    val ptr = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }
                     Result.Ok<NonNull, AllocError>(ptr.castSlice(size))
                 }
             }
@@ -208,7 +210,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                         // `realloc` probably checks for `newSize >= oldLayout.size()` or something similar.
                         assertUnchecked(newSize >= oldLayout.size())
                         val rawPtr = imp.realloc(ptr.asPtr(), oldLayout, newSize)
-                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }
                         if (zeroed) {
                             rawPtr.add(oldSize).writeBytes(0, newSize - oldSize)
                         }
@@ -223,7 +225,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                 else -> {
                     val oldSize1 = matchVal
                     run {
-                        val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }
                         ptr.copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asPtr(), oldSize1, typeLayoutT = PrimitiveLayouts.U8)
                         Allocator.deallocate(this, ptr, oldLayout)
                         Result.Ok<NonNull, AllocError>(newPtr)
@@ -274,7 +276,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                         // `realloc` probably checks for `newSize <= oldLayout.size()` or something similar.
                         assertUnchecked(newSize <= oldLayout.size())
                         val rawPtr = imp.realloc(ptr.asPtr(), oldLayout, newSize)
-                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }
                         Result.Ok<NonNull, AllocError>(ptr1.castSlice(newSize))
                     }
                 }
@@ -286,7 +288,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                 else -> {
                     val newSize1 = matchVal
                     run {
-                        val newPtr = when (val tryResult = Allocator.allocate(this, newLayout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        val newPtr = when (val tryResult = Allocator.allocate(this, newLayout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }
                         ptr.copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), newSize1, typeLayoutT = PrimitiveLayouts.U8)
                         Allocator.deallocate(this, ptr, oldLayout)
                         Result.Ok<NonNull, AllocError>(newPtr)

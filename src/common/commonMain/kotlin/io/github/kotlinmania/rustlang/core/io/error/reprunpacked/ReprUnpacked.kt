@@ -30,19 +30,19 @@ public open class Repr internal constructor(
 
     public open fun data(): ErrorData<Custom> =
         when (val matchVal = this.value) {
-            is Inner.Os -> {
+            is Inner.Os<*> -> {
                 val (c) = matchVal
                 ErrorData.Os(c)
             }
-            is Inner.Simple -> {
+            is Inner.Simple<*> -> {
                 val (k) = matchVal
                 ErrorData.Simple(k)
             }
-            is Inner.SimpleMessage -> {
+            is Inner.SimpleMessage<*> -> {
                 val (m) = matchVal
                 ErrorData.SimpleMessage(m)
             }
-            is Inner.Custom -> {
+            is Inner.Custom<*> -> {
                 val (m1) = matchVal
                 ErrorData.Custom(m1.customRef())
             }
@@ -50,19 +50,19 @@ public open class Repr internal constructor(
 
     public open fun dataMut(): ErrorData<Custom> =
         when (val matchVal = this.value) {
-            is Inner.Os -> {
+            is Inner.Os<*> -> {
                 val (c) = matchVal
                 ErrorData.Os(c)
             }
-            is Inner.Simple -> {
+            is Inner.Simple<*> -> {
                 val (k) = matchVal
                 ErrorData.Simple(k)
             }
-            is Inner.SimpleMessage -> {
+            is Inner.SimpleMessage<*> -> {
                 val (m) = matchVal
                 ErrorData.SimpleMessage(m)
             }
-            is Inner.Custom -> {
+            is Inner.Custom<*> -> {
                 val (m1) = matchVal
                 ErrorData.Custom(m1.customMut())
             }
@@ -75,12 +75,12 @@ public open class Repr internal constructor(
             valueCtorArg = value,
         )
 
-        public fun newCustom(b: CustomOwner): Repr = Repr(Inner.Custom(b))
+        public fun newCustom(b: CustomOwner): Repr = Repr(ErrorData.Custom(b))
 
-        public fun newOs(code: RawOsError): Repr = Repr(Inner.Os(code))
+        public fun newOs(code: RawOsError): Repr = Repr(ErrorData.Os(code))
 
-        public fun newSimple(kind: ErrorKind): Repr = Repr(Inner.Simple(kind))
+        public fun newSimple(kind: ErrorKind): Repr = Repr(ErrorData.Simple(kind))
 
-        public fun newSimpleMessage(m: SimpleMessage): Repr = Repr(Inner.SimpleMessage(m))
+        public fun newSimpleMessage(m: SimpleMessage): Repr = Repr(ErrorData.SimpleMessage(m))
     }
 }

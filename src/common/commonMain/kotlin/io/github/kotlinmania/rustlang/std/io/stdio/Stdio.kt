@@ -5,9 +5,10 @@ import io.github.kotlinmania.rustlang.alloc.io.buffered.bufreader.BufReader
 import io.github.kotlinmania.rustlang.alloc.io.buffered.linewriter.LineWriter
 import io.github.kotlinmania.rustlang.alloc.io.util.Lines
 import io.github.kotlinmania.rustlang.alloc.io.util.SpecReadByte
-import io.github.kotlinmania.rustlang.core.cell.Cell
+import io.github.kotlinmania.rustlang.alloc.io.util.lines
 import io.github.kotlinmania.rustlang.core.cell.RefCell
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.write.Write
@@ -18,16 +19,14 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.std.fs.File
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
 import io.github.kotlinmania.rustlang.std.sync.oncelock.OnceLock
 import io.github.kotlinmania.rustlang.std.sync.reentrantlock.ReentrantLock
 import io.github.kotlinmania.rustlang.std.sync.reentrantlock.ReentrantLockGuard
-import io.github.kotlinmania.rustlang.std.sys.process.unix.common.Stdio
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.STDIN_BUF_SIZE
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.isEbadf
 import io.github.kotlinmania.rustlang.std.thread.AccessError
-import io.github.kotlinmania.rustlang.std.thread.LocalKey
-import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
 
 public fun interface FnCallback {
     public operator fun invoke(): T
@@ -61,11 +60,6 @@ public class DebugStruct(
 public typealias LocalStream = Mutex<List<UByte>>
 
 /**
- * Used by the test crate to capture the output of the print macros and panics.
- */
-public val OUTPUT_CAPTURE: LocalKey<Cell<LocalStream?>> = threadLocalInner(key, Cell, Option, LocalStream, Cell.new(null))
-
-/**
  * Flag to indicate OUTPUT_CAPTURE is used.
  *
  * If it is None and was never set on any thread, this flag is set to false,
@@ -88,9 +82,9 @@ public var OUTPUT_CAPTURE_USED: Atomic<Boolean, Align1<UByte>> = AtomicBool.new(
  * the `std.io.stdio.stdinRaw` function.
  */
 public open class StdinRaw(
-    public var value: Stdin,
+    public var value: io.github.kotlinmania.rustlang.std.sys.stdio.unix.Stdin,
 ) : Read {
-    public var field0: Stdin
+    public var field0: io.github.kotlinmania.rustlang.std.sys.stdio.unix.Stdin
         get() = value
         set(v) {
             value = v
@@ -108,14 +102,14 @@ public open class StdinRaw(
         if (buf.isEmpty()) {
             return Result.Ok<Unit, Error>(Unit)
         }
-        return handleEbadf(this.value.readExact(buf), { Result.Err(io.github.kotlinmania.rustlang.core.io.error.Error.READ_EXACT_EOF) })
+        return handleEbadf(this.value.readExact(buf), { Result.Err(Error.READ_EXACT_EOF) })
     }
 
     public open fun readBufExact(buf: BorrowedCursor<UByte>): Result<Unit, Error> {
         if (buf.capacity() == 0) {
             return Result.Ok<Unit, Error>(Unit)
         }
-        return handleEbadf(this.value.readBufExact(buf), { Result.Err(io.github.kotlinmania.rustlang.core.io.error.Error.READ_EXACT_EOF) })
+        return handleEbadf(this.value.readBufExact(buf), { Result.Err(Error.READ_EXACT_EOF) })
     }
 
     public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = handleEbadf(this.value.readToEnd(buf), { Result.Ok(0) })
@@ -130,9 +124,9 @@ public open class StdinRaw(
  * the `std.io.stdio.stdoutRaw` function.
  */
 public open class StdoutRaw(
-    public var value: Stdout,
+    public var value: io.github.kotlinmania.rustlang.std.sys.stdio.unix.Stdout,
 ) : Write {
-    public var field0: Stdout
+    public var field0: io.github.kotlinmania.rustlang.std.sys.stdio.unix.Stdout
         get() = value
         set(v) {
             value = v
@@ -163,9 +157,9 @@ public open class StdoutRaw(
  * the `std.io.stdio.stderrRaw` function.
  */
 public open class StderrRaw(
-    public var value: Stderr,
+    public var value: io.github.kotlinmania.rustlang.std.sys.stdio.unix.Stderr,
 ) : Write {
-    public var field0: Stderr
+    public var field0: io.github.kotlinmania.rustlang.std.sys.stdio.unix.Stderr
         get() = value
         set(v) {
             value = v
@@ -198,7 +192,7 @@ public open class StderrRaw(
  *
  * The returned handle has no external synchronization or buffering.
  */
-public fun stdinRaw(): StdinRaw = StdinRaw(Stdio.Stdin.new())
+public fun stdinRaw(): StdinRaw = StdinRaw(io.github.kotlinmania.rustlang.std.sys.stdio.unix.Stdin.new())
 
 /**
  * Constructs a new raw handle to the standard output stream of this process.
@@ -211,7 +205,7 @@ public fun stdinRaw(): StdinRaw = StdinRaw(Stdio.Stdin.new())
  * The returned handle has no external synchronization or buffering layered on
  * top.
  */
-public fun stdoutRaw(): StdoutRaw = StdoutRaw(Stdio.Stdout.new())
+public fun stdoutRaw(): StdoutRaw = StdoutRaw(io.github.kotlinmania.rustlang.std.sys.stdio.unix.Stdout.new())
 
 /**
  * Constructs a new raw handle to the standard error stream of this process.
@@ -222,11 +216,11 @@ public fun stdoutRaw(): StdoutRaw = StdoutRaw(Stdio.Stdout.new())
  * The returned handle has no external synchronization or buffering layered on
  * top.
  */
-public fun stderrRaw(): StderrRaw = StderrRaw(Stdio.Stderr.new())
+public fun stderrRaw(): StderrRaw = StderrRaw(io.github.kotlinmania.rustlang.std.sys.stdio.unix.Stderr.new())
 
 public fun <T> handleEbadf(r: Result<T, Error>, default: () -> Result<T, Error>): Result<T, Error> =
     when {
-        r is Result.Err && Stdio.isEbadf((r as Result.Err).error) -> {
+        r is Result.Err<*, *> && isEbadf(r.error) -> {
             val e = r.error
             default()
         }
@@ -369,7 +363,7 @@ public open class Stdin internal constructor(
      */
     public open fun lines(): Lines<StdinLock> = this.lock().lines()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "Stdin").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "Stdin").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun read(buf: MutableList<UByte>): Result<Int, Error> = this.lock().read(buf)
 
@@ -474,7 +468,7 @@ public open class StdinLock internal constructor(
 
     public open fun readLine(buf: String): Result<Int, Error> = this.inner.readLine(buf)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "StdinLock").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "StdinLock").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
@@ -537,7 +531,7 @@ public open class StdinLock internal constructor(
 public fun stdin(): Stdin {
     val INSTANCE: OnceLock<Mutex<BufReader<StdinRaw>>>  = OnceLock.new()
     return Stdin(inner = INSTANCE.getOrInit({
-        Mutex.new(BufReader.withCapacity(Stdio.STDIN_BUF_SIZE, stdinRaw()))
+        Mutex.new(BufReader.withCapacity(STDIN_BUF_SIZE, stdinRaw()))
     }))
 }
 
@@ -605,7 +599,7 @@ public open class Stdout internal constructor(
         return StdoutLock(inner = this.inner.lock())
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "Stdout").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "Stdout").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun write(buf: List<UByte>): Result<Int, Error> = (this).write(buf)
 
@@ -674,7 +668,7 @@ public open class StdoutLock internal constructor(
 
     public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = this.inner.borrowMut().writeAllVectored(bufs)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "StdoutLock").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "StdoutLock").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
@@ -834,7 +828,7 @@ public open class Stderr internal constructor(
         return StderrLock(inner = this.inner.lock())
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "Stderr").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "Stderr").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun write(buf: List<UByte>): Result<Int, Error> = (this).write(buf)
 
@@ -896,7 +890,7 @@ public open class StderrLock internal constructor(
 
     public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = this.inner.borrowMut().writeAllVectored(bufs)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "StderrLock").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "StderrLock").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
@@ -999,7 +993,7 @@ public fun <T> printTo(args: Arguments, globalS: () -> T, label: String) where T
         return
     }
     when (val matchVal = globalS().writeFmt(args)) {
-        is Result.Err -> {
+        is Result.Err<*, *> -> {
             val e = matchVal.error
             error("failed printing to $label: $e")
         }

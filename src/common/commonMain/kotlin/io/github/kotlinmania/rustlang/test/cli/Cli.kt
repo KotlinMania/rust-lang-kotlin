@@ -83,10 +83,10 @@ public fun parseOpts(args: List<String>): OptRes? {
     val matches =
         run {
             val matchVal = opts.parse(args1)
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val m = matchVal.value
                 m
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val f = matchVal.error
                 return Result.Err(f.toString())
             } }
@@ -199,10 +199,10 @@ public fun getShuffle(matches: Matches, allowUnstable: Boolean): OptPartRes<Bool
     if (!shuffle && allowUnstable) {
         shuffle = run {
             val matchVal = Env.variable("RUST_TEST_SHUFFLE")
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val value = matchVal.value
                 value != "0"
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 false
             } }
         }
@@ -224,10 +224,10 @@ public fun getShuffleSeed(matches: Matches, allowUnstable: Boolean): OptPartRes<
                 val nStr = matchVal
                 run {
                     val matchVal1 = (nStr.toULongOrNull()?.let { Result.Ok<ULong, String>(it) } ?: Result.Err<ULong, String>("failed to parse ULong"))
-                    when (matchVal1) { is Result.Ok -> {
+                    when (matchVal1) { is Result.Ok<*, *> -> {
                         val n = matchVal1.value
                         n
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         val e = matchVal1.error
                         return Result.Err("argument for --shuffle-seed must be a number (error: $e)")
                     } }
@@ -237,18 +237,18 @@ public fun getShuffleSeed(matches: Matches, allowUnstable: Boolean): OptPartRes<
     if (shuffleSeed == null && allowUnstable) {
         shuffleSeed = run {
             val matchVal2 = Env.variable("RUST_TEST_SHUFFLE_SEED")
-            when (matchVal2) { is Result.Ok -> {
+            when (matchVal2) { is Result.Ok<*, *> -> {
                 val value = matchVal2.value
                 run {
                     val matchVal3 = (value.toULongOrNull()?.let { Result.Ok<ULong, String>(it) } ?: Result.Err<ULong, String>("failed to parse ULong"))
-                    when (matchVal3) { is Result.Ok -> {
+                    when (matchVal3) { is Result.Ok<*, *> -> {
                         val n1 = matchVal3.value
                         n1
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         error("RUST_TEST_SHUFFLE_SEED is `$value`, should be a number.")
                     } }
                 }
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 null
             } }
         }
@@ -262,16 +262,16 @@ public fun getTestThreads(matches: Matches): OptPartRes<Int?> {
         lastTestThreads = run {
             val matchVal = (nStr.toIntOrNull()?.let { Result.Ok<Int, String>(it) } ?: Result.Err<Int, String>("failed to parse Int"))
             when {
-                matchVal is Result.Ok && matchVal.value == 0 -> {
+                matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
                     val valueVal = matchVal.value
                     return Result.Err("argument for --test-threads must not be 0".toString())
                 }
-                matchVal is Result.Ok -> {
+                matchVal is Result.Ok<*, *> -> {
                     val n = matchVal.value
                     n
                 }
                 else -> {
-                    val e = matchVal.error
+                    val e = (matchVal as Result.Err<*, *>).error
                     return Result.Err("argument for --test-threads must be a number > 0 (error: $e)")
                 }
             }
@@ -331,10 +331,10 @@ public fun getNocapture(matches: Matches): OptPartRes<Boolean> {
     if (!nocapture) {
         nocapture = run {
             val matchVal = Env.variable("RUST_TEST_NOCAPTURE")
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val value = matchVal.value
                 value != "0"
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 false
             } }
         }

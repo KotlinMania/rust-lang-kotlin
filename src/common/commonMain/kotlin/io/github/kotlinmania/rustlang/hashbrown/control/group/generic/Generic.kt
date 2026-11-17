@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.write
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.hashbrown.control.bitmask.BitMask
 import io.github.kotlinmania.rustlang.hashbrown.control.tag.Tag
 
@@ -36,7 +37,7 @@ public val BITMASK_MASK: BitMaskWord = run { val bytesTmp0 = UByteArray(8) { Tag
 /**
  * Helper function to replicate a tag across a `GroupWord`.
  */
-public fun repeat(tag: Tag): GroupWord = GroupWord.fromNeBytes(UByteArray((Group.WIDTH).toInt()) { tag.value })
+public fun repeat(tag: Tag): GroupWord = ULong.fromNeBytes(UByteArray((Group.WIDTH).toInt()) { tag.value })
 
 /**
  * Abstraction over a group of control tags which can be scanned in

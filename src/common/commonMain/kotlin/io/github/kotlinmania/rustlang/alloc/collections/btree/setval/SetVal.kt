@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.alloc.collections.btree.setval
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 /**
  * Zero-Sized Type (ZST) for internal `BTreeSet` values.

@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ops.coroutine.Coroutine
 import io.github.kotlinmania.rustlang.core.ops.coroutine.CoroutineState
 import io.github.kotlinmania.rustlang.core.pin.Pin
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -66,34 +67,16 @@ public fun <Yield, G : Coroutine<Unit, Yield, Unit>> fromCoroutine(coroutine: G)
  */
 public open class FromCoroutine<G>(
     public var value: G,
-) : Iterable<Yield> {
+) {
     public var field0: G
         get() = value
         set(v) {
             value = v
         }
 
-    override fun iterator(): Iterator<Yield> = object : AbstractIterator<Yield>() {
-        override fun computeNext() {
-            when (val v = this@FromCoroutine.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
     public open fun clone(): FromCoroutine<G> = FromCoroutine(value)
 
-    public open fun next(): Yield? =
-        when (val matchVal = Pin.new(this.value).resume()) {
-            is CoroutineState.Yielded -> {
-                val (n) = matchVal
-                n
-            }
-            is CoroutineState.Complete -> null
-        }
-
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "FromCoroutine").finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "FromCoroutine").finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun <G> typeLayout(typeLayoutG: TypeLayout<G>): TypeLayout<FromCoroutine<G>> =
@@ -117,3 +100,12 @@ public open class FromCoroutine<G>(
             }
     }
 }
+
+public fun <Yield, G : Coroutine<Unit, Yield, Unit>> FromCoroutine<G>.next(): Yield? =
+    when (val matchVal = Pin.new(this.value).resume(Unit)) {
+        is CoroutineState.Yielded<*, *> -> {
+            val (n) = matchVal
+            n
+        }
+        is CoroutineState.Complete<*, *> -> null
+    }

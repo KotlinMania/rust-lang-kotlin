@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.sync.threadparking.unsupported
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.time.Duration
 
 public open class Parker {

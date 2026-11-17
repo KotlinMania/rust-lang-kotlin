@@ -126,7 +126,7 @@ public open class SystemTime(
 
     public open fun cmp(other: SystemTime): Ordering = this.intervals().cmp(other.intervals())
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "SystemTime").field("intervals", this.intervals()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "SystemTime").field("intervals", this.intervals()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public override fun intoInner(): Filetime = this.t
 

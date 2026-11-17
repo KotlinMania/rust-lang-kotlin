@@ -19,70 +19,74 @@ public open class FieldRepresentingType<T>(
     // field)`is a subtype of`fieldOf(Struct<long>, field)`. This subtype relationship does not
     // have an immediately obvious meaning and we want to prevent people from relying on it.
     public var phantom: Unit,
-)
+) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
+        sealed class Member {
+            public data class Name(public var value: String) : Member()
+            public data class Index(public var value: UInt) : Member()
 
-public fun <T> FieldRepresentingType<T, Field>.fmt(f: StringBuilder, variant: UInt, field: UInt): Result<Unit, Unit> {
-    sealed class Member {
-        public data class Name(public var value: String) : Member()
-        public data class Index(public var value: UInt) : Member()
-
-        public open fun fmt(f1: StringBuilder): Result<Unit, Unit> =
-            when (this) {
-                is Name -> {
-                    val (name) = this
-                    run { f1.append((name).toString()); Result.Ok(Unit) }
+            public open fun fmt(f1: StringBuilder): Result<Unit, Unit> =
+                when (this) {
+                    is Name -> {
+                        val (name) = this as Name
+                        run { f1.append((name).toString()); Result.Ok<Unit, Unit>(Unit) }
+                    }
+                    is Index -> {
+                        val (idx) = this as Index
+                        run { f1.append((idx).toString()); Result.Ok<Unit, Unit>(Unit) }
+                    }
                 }
-                is Index -> {
-                    val (idx) = this
-                    run { f1.append((idx).toString()); Result.Ok(Unit) }
+        }
+        val (variant, field) =
+            run {
+                val typeId = of<T>()
+                when (Type.of<T>().kind) {
+                    TypeKind.Struct -> Pair(null, Member.Name(typeId.field(0, FIELD.toInt()).name()))
+                    TypeKind.Tuple -> Pair(null, Member.Index(FIELD))
+                    TypeKind.Enum -> {
+                        val variantName = typeId.variant(VARIANT.toInt()).name()
+                        val fieldName = typeId.field(VARIANT.toInt(), FIELD.toInt()).name()
+                        Pair(variantName, Member.Name(fieldName))
+                    }
+                    TypeKind.Union -> Pair(null, Member.Name(typeId.field(0, FIELD.toInt()).name()))
+                    else -> error("unreachable")
                 }
             }
-    }
-    val (variant, field) =
-        run {
-            val typeId = of<T>()
-            when (Type.of<T>().kind) {
-                TypeKind.Struct -> Pair(null, Member.Name(typeId.field(0, field.toInt()).name()))
-                TypeKind.Tuple -> Pair(null, Member.Index(field))
-                TypeKind.Enum -> {
-                    val variantName = typeId.variant(variant.toInt()).name()
-                    val fieldName = typeId.field(variant.toInt(), field.toInt()).name()
-                    Pair(variantName, Member.Name(fieldName))
-                }
-                TypeKind.Union -> Pair(null, Member.Name(typeId.field(0, field.toInt()).name()))
-                else -> error("unreachable")
+        val typeName = "FieldRepresentingType"
+        return when (variant) {
+            null -> f.writeFmt("field_of!($typeName, $field)")
+            else -> {
+                val variant1 = variant
+                f.writeFmt("field_of!($typeName, $variant.$field)")
             }
         }
-    val typeName = "FieldRepresentingType"
-    return when (variant) {
-        null -> f.writeFmt("field_of!($typeName, $field)")
-        else -> {
-            val variant1 = variant
-            f.writeFmt("field_of!($typeName, $variant.$field)")
-        }
+        // NOTE: if there are changes in the reflection work and the above no
+        // longer compiles, then the following debug impl could also work in
+        // the meantime:
+        // `rust
+        // let typeName = const ( typeName::<T>() );
+        // write(f, "fieldOf((typeName), (VARIANT).(FIELD))")
+        // `
     }
-    // NOTE: if there are changes in the reflection work and the above no
-    // longer compiles, then the following debug impl could also work in
-    // the meantime:
-    // `rust
-    // let typeName = const ( typeName::<T>() );
-    // write(f, "fieldOf((typeName), (VARIANT).(FIELD))")
-    // `
+
+    public open fun clone(): FieldRepresentingType<T> = FieldRepresentingType(this.phantom)
+
+    public override fun hashCode(): Int {
+        var state = 0
+        state = 31 * state + (this.phantom).hashCode()
+        return state
+    }
+
+    public open fun eq(other: FieldRepresentingType<T>): Boolean = this.phantom == other.phantom
+
+    public open fun partialCmp(other: FieldRepresentingType<T>): Ordering? = this.phantom.partialCmp(other.phantom)
+
+    public open fun cmp(other: FieldRepresentingType<T>): Ordering = this.phantom.cmp(other.phantom)
+
+    public companion object {
+        public fun <T> default(variant: UInt, field: UInt): FieldRepresentingType<T> = FieldRepresentingType(phantom = Unit)
+    }
 }
-
-public fun <T> FieldRepresentingType<T, Field>.clone(variant: UInt, field: UInt): FieldRepresentingType<T, Field> = FieldRepresentingType(this.phantom)
-
-public fun <T> defaultFieldRepresentingTypeTVariantField(variant: UInt, field: UInt): FieldRepresentingType<T, Field> = FieldRepresentingType(phantom = Unit)
-
-public fun <T, H> FieldRepresentingType<T, Field>.hash(state: H, variant: UInt, field: UInt) {
-    this.phantom.hash(state)
-}
-
-public fun <T> FieldRepresentingType<T, Field>.eq(other: FieldRepresentingType<T, Field>, variant: UInt, field: UInt): Boolean = this.phantom == other.phantom
-
-public fun <T> FieldRepresentingType<T, Field>.partialCmp(other: FieldRepresentingType<T, Field>, variant: UInt, field: UInt): Ordering? = this.phantom.partialCmp(other.phantom)
-
-public fun <T> FieldRepresentingType<T, Field>.cmp(other: FieldRepresentingType<T, Field>, variant: UInt, field: UInt): Ordering = this.phantom.cmp(other.phantom)
 
 // NOTE: the compiler provides the impl of `Field` for `FieldRepresentingType` when it can guarantee
 // the safety requirements of this trait. It also has to manually add the correct trait bounds on

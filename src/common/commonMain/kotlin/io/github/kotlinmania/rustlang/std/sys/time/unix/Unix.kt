@@ -16,6 +16,7 @@ import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_MONOTONIC
 import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_REALTIME
 import io.github.kotlinmania.rustlang.libc.wasi.ClockidT
 import io.github.kotlinmania.rustlang.std.sys.AsInner
+import io.github.kotlinmania.rustlang.std.sys.asInner
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.Timespec
 
 public class DebugStruct(
@@ -60,7 +61,7 @@ public open class SystemTime(
         return SystemTime(t = (this.t.checkedSubDuration(other) ?: return null))
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "SystemTime").field("tv_sec", this.t.tvSec).field("tv_nsec", this.t.tvNsec).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "SystemTime").field("tv_sec", this.t.tvSec).field("tv_nsec", this.t.tvNsec).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public val MAX: SystemTime = SystemTime(t = Timespec.MAX)
@@ -68,7 +69,7 @@ public open class SystemTime(
         public val MIN: SystemTime = SystemTime(t = Timespec.MIN)
 
         public fun new(tvSec: Long, tvNsec: Long): Result<SystemTime, Error> {
-            return Result.Ok<SystemTime, Error>(SystemTime(t = when (val tryResult = Timespec.new(tvSec, tvNsec)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<SystemTime, Error>(tryResult.error) }))
+            return Result.Ok<SystemTime, Error>(SystemTime(t = when (val tryResult = Timespec.new(tvSec, tvNsec)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<SystemTime, Error>(tryResult.error) }))
         }
 
         public fun now(): SystemTime = SystemTime(t = Timespec.now(CLOCK_REALTIME))
@@ -118,7 +119,7 @@ public open class Instant(
 
     public override fun asInner(): Timespec = this.t
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "Instant").field("tv_sec", this.t.tvSec).field("tv_nsec", this.t.tvNsec).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "Instant").field("tv_sec", this.t.tvSec).field("tv_nsec", this.t.tvNsec).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         // CLOCK_UPTIME_RAW   clock that increments monotonically, in the same man-

@@ -9,6 +9,8 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
@@ -121,7 +123,7 @@ public open class Once internal constructor(
                 state == POISONED || state == INCOMPLETE -> {
                     // Try to register this thread as the one RUNNING.
                     when (val matchVal = this.stateAndQueue.compareExchangeWeak(current, current.mask(QUEUE_MASK).wrappingByteAdd(RUNNING), Acquire, Acquire)) {
-                        is Result.Err -> {
+                        is Result.Err<*, *> -> {
                             val new = matchVal.error
                             current = new
                             continue
@@ -148,7 +150,7 @@ public open class Once internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Once").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Once").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(
@@ -338,7 +340,7 @@ public fun wait(stateAndQueue: Atomic<MutPtr, Align8<MutPtr>>, current: StateAnd
         // Try to slide in the node at the head of the linked list, making sure
         // that another thread didn't just replace the head of the linked list.
         when (val matchVal = stateAndQueue.compareExchangeWeak(current1, mutPtrFromRustCast(node.wrappingByteAdd(state)), Release, Acquire)) {
-            is Result.Err -> {
+            is Result.Err<*, *> -> {
                 val new = matchVal.error
                 current1 = new
                 continue

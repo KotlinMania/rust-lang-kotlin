@@ -140,10 +140,10 @@ public open class RepeatN<A>(
                     Pair(inner.count.get(), inner.element)
                 }
             }
-        return DebugStruct(f, "RepeatN").field("count", count).field("element", element).finish()
+        return run { DebugStruct(f, "RepeatN").field("count", count).field("element", element).finish(); Result.Ok<Unit, Unit>(Unit) }
     }
 
-    public override fun next(): A? {
+    public open fun next(): A? {
         val inner = (this.inner ?: return null)
         val count = inner.count.get()
         when (val matchVal = NonZero.new(count - 1)) {
@@ -159,12 +159,12 @@ public open class RepeatN<A>(
         return this.takeElement()
     }
 
-    public override fun sizeHint(): Pair<Int, Int?> {
+    public open fun sizeHint(): Pair<Int, Int?> {
         val len = this.len()
         return Pair(len, len)
     }
 
-    public override fun advanceBy(skip: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
+    public open fun advanceBy(skip: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val inner = this.inner ?: return ((NonZero.new<NonZeroUsizeInner, Int>(skip))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
         val len = inner!!.count.get()
         when (val matchVal = len.checkedSub(skip)?.let(NonZero::new)) {
@@ -179,9 +179,9 @@ public open class RepeatN<A>(
         return ((NonZero.new<NonZeroUsizeInner, Int>(skip - len))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
-    public override fun last(): A? = this.takeElement()
+    public open fun last(): A? = this.takeElement()
 
-    public override fun count(): Int = this.len()
+    public open fun count(): Int = this.len()
 
     public open fun len(): Int = (this.inner?.let({ inner -> inner.count.get() }) ?: 0)
 

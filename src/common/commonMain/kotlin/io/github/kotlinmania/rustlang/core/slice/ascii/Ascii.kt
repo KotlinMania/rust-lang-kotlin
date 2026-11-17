@@ -21,6 +21,7 @@ import io.github.kotlinmania.rustlang.core.ops.function.FnMut
 import io.github.kotlinmania.rustlang.core.ops.function.FnOnce
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -509,9 +510,9 @@ public open class EscapeByte : Fn<UByte, Any>, FnMut<UByte, Any>, FnOnce<UByte, 
  * documentation for more information.
  */
 public open class EscapeAscii internal constructor(
-    innerCtorArg: FlatMap<Iter<UByte>, EscapeDefault, EscapeByte>,
+    innerCtorArg: iter.FlatMap<Iter<UByte>, EscapeDefault, EscapeByte>,
 ) : Iterable<UByte> {
-    public var inner: FlatMap<Iter<UByte>, EscapeDefault, EscapeByte> = innerCtorArg
+    public var inner: iter.FlatMap<Iter<UByte>, EscapeDefault, EscapeByte> = innerCtorArg
         internal set
 
     override fun iterator(): Iterator<UByte> = object : AbstractIterator<UByte>() {
@@ -575,11 +576,11 @@ public open class EscapeAscii internal constructor(
         return Result.Ok<Unit, Unit>(Unit)
     }
 
-    public open fun fmtDebug(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "EscapeAscii").finishNonExhaustive()
+    public open fun fmtDebug(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "EscapeAscii").finishNonExhaustive(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public operator fun invoke(
-            inner: FlatMap<Iter<UByte>, EscapeDefault, EscapeByte>,
+            inner: iter.FlatMap<Iter<UByte>, EscapeDefault, EscapeByte>,
         ): EscapeAscii = EscapeAscii(
             innerCtorArg = inner,
         )

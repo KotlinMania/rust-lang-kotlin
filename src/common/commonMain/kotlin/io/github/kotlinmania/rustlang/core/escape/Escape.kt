@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.range.Range
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // Helper code for character escaping.
@@ -294,5 +295,5 @@ public fun EscapeIterInner<AlwaysEscaped>.fmt(f: StringBuilder, n: Int): Result<
     // SAFETY: The `AlwaysEscaped` marker guarantees that `self.data`
     // contains printable ASCII chars, and `self.alive` is
     // guaranteed to be a valid range for `self.data`.
-    return run { f.append(this.toStrUnchecked()); Result.Ok(Unit) }
+    return run { f.append(this.toStrUnchecked(n)); Result.Ok<Unit, Unit>(Unit) }
 }

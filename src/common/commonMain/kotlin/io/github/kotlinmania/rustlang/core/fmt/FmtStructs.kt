@@ -24,6 +24,7 @@ import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.str.asPtr
 import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.fmt.fmt as numfmt
@@ -499,23 +500,23 @@ public open class Formatter(
         val min = this.options.width
         return if (width >= Int.from(min)) {
             // We're over the minimum width, so then we can just write the bytes.
-            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
             this.buf.append(buf)
         } else if (this.signAwareZeroPad()) {
             // The sign and prefix goes before the padding if the fill character
             // is zero
             val oldOptions = this.options
             this.options.fill('0').align(Alignment.Right)
-            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
-            val postPadding = when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            val postPadding = when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
             this.buf.append(buf)
-            when (val tryResult = postPadding.write(this)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = postPadding.write(this)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
             this.options = oldOptions
             RustResult.Ok(Unit)
         } else {
             // Otherwise, the sign and prefix goes after the padding
-            val postPadding1 = when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
-            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            val postPadding1 = when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
             this.buf.append(buf)
             postPadding1.write(this)
         }
@@ -552,7 +553,7 @@ public open class Formatter(
     public open fun pad(s: String): Result {
         // Make sure there's a fast path up front.
         if (this.options.flags and (WIDTH_FLAG or PRECISION_FLAG) == 0u) {
-            return this.buf.append(s)
+            return run { this.buf.append(s); RustResult.Ok<Unit, Error>(Unit) }
         }
         // The `precision` field can be interpreted as a maximum width for the
         // string being formatted.
@@ -568,9 +569,9 @@ public open class Formatter(
                     val remaining1 =
                         run {
                             val matchVal1 = iter.advanceBy(Int.from(maxCharCount))
-                            when (matchVal1) { is RustResult.Ok -> {
+                            when (matchVal1) { is RustResult.Ok<*, *> -> {
                                 0
-                            }; is RustResult.Err -> {
+                            }; is RustResult.Err<*, *> -> {
                                 val remaining = matchVal1.error
                                 remaining.get()
                             } }
@@ -585,7 +586,7 @@ public open class Formatter(
         return if (charCount < Int.from(this.options.width)) {
             // If we're under the minimum width, then fill up the minimum width
             // with the specified string + some alignment.
-            val postPadding = when (val tryResult = this.padding(this.options.width - charCount.toUShort(), Alignment.Left)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            val postPadding = when (val tryResult = this.padding(this.options.width - charCount.toUShort(), Alignment.Left)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
             this.buf.append(s1)
             postPadding.write(this)
         } else {
@@ -659,17 +660,17 @@ public open class Formatter(
                     val len2 =
                         run {
                             val matchVal = UShort.tryFrom(len)
-                            when (matchVal) { is RustResult.Ok -> {
+                            when (matchVal) { is RustResult.Ok<*, *> -> {
                                 val len1 = matchVal.value
                                 len1
-                            }; is RustResult.Err -> {
+                            }; is RustResult.Err<*, *> -> {
                                 error("unreachable")
                             } }
                         }
-                    val postPadding = when (val tryResult = this.padding(width - len2, Alignment.Right)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                    val postPadding = when (val tryResult = this.padding(width - len2, Alignment.Right)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
                     // SAFETY: Per the precondition.
                     run {
-                        when (val tryResult = this.writeFormattedParts(formatted1)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                        when (val tryResult = this.writeFormattedParts(formatted1)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
                     }
                     postPadding.write(this)
                 }
@@ -717,14 +718,14 @@ public open class Formatter(
                     }
                     // SAFETY: Per the precondition.
                     run {
-                        when (val tryResult = writeBytes(this.buf, s[0 until len])) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                        when (val tryResult = writeBytes(this.buf, s[0 until len])) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
                     }
                 }
                 // SAFETY: Per the precondition.
                 is numfmt.Part.Copy -> {
                     val (buf) = part
                     run {
-                        when (val tryResult = writeBytes(this.buf, buf)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                        when (val tryResult = writeBytes(this.buf, buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
                     }
                 }
             }
@@ -1134,7 +1135,7 @@ public open class Formatter(
      *     public var addr: Ipv4Addr,
      * ) {
      *     public open fun fmt(fmt: StringBuilder): Result<Unit> {
-     *         return DebugStruct(fmt, "Foo").field("bar", this.bar).field("baz", this.baz).field("addr", "${this.addr}").finish()
+     *         return run { DebugStruct(fmt, "Foo").field("bar", this.bar).field("baz", this.baz).field("addr", "${this.addr}").finish(); Result.success(Unit) }
      *     }
      * }
      * check("Foo { bar: 10, baz: \"Hello World\", addr: 127.0.0.1 }" == (Foo(bar = 10, baz = "Hello World".toString(), addr = Ipv4Addr.new(127, 0, 0, 1))).toString())
@@ -1254,7 +1255,7 @@ public open class Formatter(
      *         public var field2: Unit,
      *     ) {
      *         public open fun fmt(fmt: StringBuilder): Result<Unit> {
-     *             return DebugTuple(fmt, "Foo").field(this.field0).field(this.field1).field("_").finish()
+     *             return run { DebugTuple(fmt, "Foo").field(this.field0).field(this.field1).field("_").finish(); Result.success(Unit) }
      *         }
      *     }
      *     check("Foo(10, \"Hello\", _)" == (Foo(10, "Hello".toString(), Unit)).toString())
@@ -1280,7 +1281,7 @@ public open class Formatter(
      *         }
      *
      *     public open fun fmt(fmt: StringBuilder): Result<Unit> {
-     *         return object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "[", "]")) } }.entries(this.value.iter()).finish()
+     *         return run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "[", "]")) } }.entries(this.value.iter()).finish(); Result.success(Unit) }
      *     }
      * }
      * check("${Foo(mutableListOf(10, 11))}" == "[10, 11]")
@@ -1305,7 +1306,7 @@ public open class Formatter(
      *         }
      *
      *     public open fun fmt(fmt: StringBuilder): Result<Unit> {
-     *         return object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "{", "}")) } }.entries(this.value.iter()).finish()
+     *         return run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "{", "}")) } }.entries(this.value.iter()).finish(); Result.success(Unit) }
      *     }
      * }
      * check("${Foo(mutableListOf(10, 11))}" == "{10, 11}")
@@ -1332,7 +1333,7 @@ public open class Formatter(
      * }
      * open class Table<K, V>(public var field0: List<Pair<K, V>>, public var field1: V) {
      *     public open fun fmt(fmt: StringBuilder): Result<Unit> {
-     *         return object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "{", "}")) } }.entries(this.field0.map({ Arm(it) })).entry(Arm(Pair("_", this.field1))).finish()
+     *         return run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "{", "}")) } }.entries(this.field0.map({ Arm(it) })).entry(Arm(Pair("_", this.field1))).finish(); Result.success(Unit) }
      *     }
      * }
      * ```
@@ -1356,7 +1357,7 @@ public open class Formatter(
      *         }
      *
      *     public open fun fmt(fmt: StringBuilder): Result<Unit> {
-     *         return object { val entries = mutableListOf<String>(); fun entry(k: Any?, v: Any?) = apply { entries.add("$k: $v") }; fun finish() { fmt.append(entries.joinToString(", ", "{", "}")) } }.entries(this.value.map({ (k, v) -> Pair(k, v) })).finish()
+     *         return run { object { val entries = mutableListOf<String>(); fun entry(k: Any?, v: Any?) = apply { entries.add("$k: $v") }; fun finish() { fmt.append(entries.joinToString(", ", "{", "}")) } }.entries(this.value.map({ (k, v) -> Pair(k, v) })).finish(); Result.success(Unit) }
      *     }
      * }
      * check((Foo(mutableListOf(Pair("A".toString(), 10), Pair("B".toString(), 11)))).toString() == "{\"A\": 10, \"B\": 11}")

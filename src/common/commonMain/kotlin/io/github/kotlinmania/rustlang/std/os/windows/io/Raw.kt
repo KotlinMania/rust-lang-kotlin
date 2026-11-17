@@ -18,6 +18,7 @@ import io.github.kotlinmania.rustlang.std.net.udp.UdpSocket
 import io.github.kotlinmania.rustlang.std.os.windows.raw.Handle
 import io.github.kotlinmania.rustlang.std.os.windows.raw.Socket
 import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 
 // Windows-specific extensions to general I/O primitives.
 

@@ -2,16 +2,13 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.cloned
 
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 public typealias Source<I> = I.Source
 
@@ -26,7 +23,7 @@ public typealias Source<I> = I.Source
  */
 public open class Cloned<I>(
     public var it: I,
-) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen, SourceIter<Source>, InPlaceIterable, Iterable<T> {
+) : Iterable<T> {
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Cloned.next()) {
@@ -38,15 +35,15 @@ public open class Cloned<I>(
 
     public open fun clone(): Cloned<I> = Cloned(it)
 
-    public override fun next(): T? = this.it.next()
+    public open fun next(): T? = this.it.next()
 
-    public override fun sizeHint(): Pair<Int, Int?> = this.it.sizeHint()
+    public open fun sizeHint(): Pair<Int, Int?> = this.it.sizeHint()
 
-    public override fun <Residual, B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> = this.it.tryFold(init, cloneTryFold(f))
+    public open fun <Residual, B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> = this.it.tryFold(init, cloneTryFold(f))
 
-    public override fun <Acc> fold(init: Acc, f: (Acc, T) -> Acc, cloneTFn: (T) -> T = { it }): Acc = this.it.map(cloneTFn).fold(init, f)
+    public open fun <Acc> fold(init: Acc, f: (Acc, T) -> Acc, cloneTFn: (T) -> T = { it }): Acc = this.it.map(cloneTFn).fold(init, f)
 
-    public override fun iteratorGetUnchecked(idx: Int): T {
+    public open fun iteratorGetUnchecked(idx: Int): T {
         // SAFETY: the caller must uphold the contract for
         // `Iterator.__iterator_get_unchecked`.
         return tryGetUnchecked(this.it, idx).clone()
@@ -61,11 +58,6 @@ public open class Cloned<I>(
     public open fun len(): Int = this.it.len()
 
     public open fun isEmpty(): Boolean = this.it.isEmpty()
-
-    public override fun asInner(): Source {
-        // SAFETY: unchecked function forwarding to unchecked function with the same requirements
-        return this.it.asInner()
-    }
 
     public companion object {
         public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<Cloned<I>> =
@@ -90,8 +82,6 @@ public open class Cloned<I>(
 
         public fun <I> new(it: I): Cloned<I> = Cloned(it = it)
 
-        public val MAY_HAVE_SIDE_EFFECT: Boolean = true
-
         /**
          * Creates a `Cloned` iterator from the default value of `I`
          * ```kotlin
@@ -100,11 +90,18 @@ public open class Cloned<I>(
          * ```
          */
         public fun <I> default(defaultIFn: () -> I): Cloned<I> = Cloned.new(defaultIFn())
-
-        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
-
-        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }
 
 public fun <T, Acc, R> cloneTryFold(f: (Acc, T) -> R): (Acc, T) -> R = { acc, elt -> f(acc, elt.clone()) }
+
+public val MAY_HAVE_SIDE_EFFECT: Boolean = true
+
+public fun <Source, I> Cloned<I>.asInner(): Source where I : SourceIter<Source> {
+    // SAFETY: unchecked function forwarding to unchecked function with the same requirements
+    return this.it.asInner()
+}
+
+public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
+
+public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY

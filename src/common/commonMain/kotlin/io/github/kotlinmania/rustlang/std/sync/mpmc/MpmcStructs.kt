@@ -92,15 +92,15 @@ public open class Sender<T>(
      */
     public open fun trySend(msg: T): Result<Unit, TrySendError<T>> =
         when (val matchVal = this.flavor) {
-            is SenderFlavor.Array -> {
+            is SenderFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.trySend(msg)
             }
-            is SenderFlavor.List -> {
+            is SenderFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.trySend(msg)
             }
-            is SenderFlavor.Zero -> {
+            is SenderFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.trySend(msg)
             }
@@ -149,24 +149,24 @@ public open class Sender<T>(
      */
     public open fun send(msg: T): Result<Unit, SendError<T>> =
         when (val matchVal = this.flavor) {
-            is SenderFlavor.Array -> {
+            is SenderFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.send(msg, null)
             }
-            is SenderFlavor.List -> {
+            is SenderFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.send(msg, null)
             }
-            is SenderFlavor.Zero -> {
+            is SenderFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.send(msg, null)
             }
         }.mapErr({ err -> when (err) {
-            is SendTimeoutError.Disconnected -> {
+            is SendTimeoutError.Disconnected<*> -> {
                 val (msg1) = err
                 SendError(msg1)
             }
-            is SendTimeoutError.Timeout -> error("unreachable")
+            is SendTimeoutError.Timeout<*> -> error("unreachable")
         } })
 
     /**
@@ -227,15 +227,15 @@ public open class Sender<T>(
      */
     public open fun sendDeadline(msg: T, deadline: Instant): Result<Unit, SendTimeoutError<T>> =
         when (val matchVal = this.flavor) {
-            is SenderFlavor.Array -> {
+            is SenderFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.send(msg, deadline)
             }
-            is SenderFlavor.List -> {
+            is SenderFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.send(msg, deadline)
             }
-            is SenderFlavor.Zero -> {
+            is SenderFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.send(msg, deadline)
             }
@@ -268,15 +268,15 @@ public open class Sender<T>(
      */
     public open fun isEmpty(): Boolean =
         when (val matchVal = this.flavor) {
-            is SenderFlavor.Array -> {
+            is SenderFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.isEmpty()
             }
-            is SenderFlavor.List -> {
+            is SenderFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.isEmpty()
             }
-            is SenderFlavor.Zero -> {
+            is SenderFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.isEmpty()
             }
@@ -308,15 +308,15 @@ public open class Sender<T>(
      */
     public open fun isFull(): Boolean =
         when (val matchVal = this.flavor) {
-            is SenderFlavor.Array -> {
+            is SenderFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.isFull()
             }
-            is SenderFlavor.List -> {
+            is SenderFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.isFull()
             }
-            is SenderFlavor.Zero -> {
+            is SenderFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.isFull()
             }
@@ -346,15 +346,15 @@ public open class Sender<T>(
      */
     public open fun len(): Int =
         when (val matchVal = this.flavor) {
-            is SenderFlavor.Array -> {
+            is SenderFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.len()
             }
-            is SenderFlavor.List -> {
+            is SenderFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.len()
             }
-            is SenderFlavor.Zero -> {
+            is SenderFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.len()
             }
@@ -384,15 +384,15 @@ public open class Sender<T>(
      */
     public open fun capacity(): Int? =
         when (val matchVal = this.flavor) {
-            is SenderFlavor.Array -> {
+            is SenderFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.capacity()
             }
-            is SenderFlavor.List -> {
+            is SenderFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.capacity()
             }
-            is SenderFlavor.Zero -> {
+            is SenderFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.capacity()
             }
@@ -419,17 +419,17 @@ public open class Sender<T>(
         run {
             val matchVal = Pair(this.flavor, other.flavor)
             when {
-                matchVal.first is SenderFlavor.Array && matchVal.second is SenderFlavor.Array -> {
+                matchVal.first is SenderFlavor.Array<*> && matchVal.second is SenderFlavor.Array<*> -> {
                     val (a) = matchVal.first as SenderFlavor.Array<T>
                     val (b) = matchVal.second as SenderFlavor.Array<T>
                     a == b
                 }
-                matchVal.first is SenderFlavor.List && matchVal.second is SenderFlavor.List -> {
+                matchVal.first is SenderFlavor.List<*> && matchVal.second is SenderFlavor.List<*> -> {
                     val (a1) = matchVal.first as SenderFlavor.List<T>
                     val (b1) = matchVal.second as SenderFlavor.List<T>
                     a1 == b1
                 }
-                matchVal.first is SenderFlavor.Zero && matchVal.second is SenderFlavor.Zero -> {
+                matchVal.first is SenderFlavor.Zero<*> && matchVal.second is SenderFlavor.Zero<*> -> {
                     val (a2) = matchVal.first as SenderFlavor.Zero<T>
                     val (b2) = matchVal.second as SenderFlavor.Zero<T>
                     a2 == b2
@@ -459,15 +459,15 @@ public open class Sender<T>(
      */
     public open fun isDisconnected(): Boolean =
         when (val matchVal = this.flavor) {
-            is SenderFlavor.Array -> {
+            is SenderFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.isDisconnected()
             }
-            is SenderFlavor.List -> {
+            is SenderFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.isDisconnected()
             }
-            is SenderFlavor.Zero -> {
+            is SenderFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.isDisconnected()
             }
@@ -475,15 +475,15 @@ public open class Sender<T>(
 
     public open fun drop() {
         when (val matchVal = this.flavor) {
-            is SenderFlavor.Array -> {
+            is SenderFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.release({ c -> c.disconnectSenders() })
             }
-            is SenderFlavor.List -> {
+            is SenderFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.release({ c -> c.disconnectSenders() })
             }
-            is SenderFlavor.Zero -> {
+            is SenderFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.release({ c -> c.disconnect() })
             }
@@ -493,15 +493,15 @@ public open class Sender<T>(
     public open fun clone(): Sender<T> {
         val flavor =
             when (val matchVal = this.flavor) {
-                is SenderFlavor.Array -> {
+                is SenderFlavor.Array<*> -> {
                     val (chan) = matchVal
                     SenderFlavor.Array(chan.acquire())
                 }
-                is SenderFlavor.List -> {
+                is SenderFlavor.List<*> -> {
                     val (chan1) = matchVal
                     SenderFlavor.List(chan1.acquire())
                 }
-                is SenderFlavor.Zero -> {
+                is SenderFlavor.Zero<*> -> {
                     val (chan2) = matchVal
                     SenderFlavor.Zero(chan2.acquire())
                 }
@@ -509,7 +509,7 @@ public open class Sender<T>(
         return Sender(flavor = flavor)
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Sender").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Sender").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 }
 
 /**
@@ -589,15 +589,15 @@ public open class Receiver<T>(
      */
     public open fun tryRecv(): Result<T, TryRecvError> =
         when (val matchVal = this.flavor) {
-            is ReceiverFlavor.Array -> {
+            is ReceiverFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.tryRecv()
             }
-            is ReceiverFlavor.List -> {
+            is ReceiverFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.tryRecv()
             }
-            is ReceiverFlavor.Zero -> {
+            is ReceiverFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.tryRecv()
             }
@@ -662,15 +662,15 @@ public open class Receiver<T>(
      */
     public open fun recv(): Result<T, RecvError> =
         when (val matchVal = this.flavor) {
-            is ReceiverFlavor.Array -> {
+            is ReceiverFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.recv(null)
             }
-            is ReceiverFlavor.List -> {
+            is ReceiverFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.recv(null)
             }
-            is ReceiverFlavor.Zero -> {
+            is ReceiverFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.recv(null)
             }
@@ -794,15 +794,15 @@ public open class Receiver<T>(
      */
     public open fun recvDeadline(deadline: Instant): Result<T, RecvTimeoutError> =
         when (val matchVal = this.flavor) {
-            is ReceiverFlavor.Array -> {
+            is ReceiverFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.recv(deadline)
             }
-            is ReceiverFlavor.List -> {
+            is ReceiverFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.recv(deadline)
             }
-            is ReceiverFlavor.Zero -> {
+            is ReceiverFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.recv(deadline)
             }
@@ -870,15 +870,15 @@ public open class Receiver<T>(
      */
     public open fun isEmpty(): Boolean =
         when (val matchVal = this.flavor) {
-            is ReceiverFlavor.Array -> {
+            is ReceiverFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.isEmpty()
             }
-            is ReceiverFlavor.List -> {
+            is ReceiverFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.isEmpty()
             }
-            is ReceiverFlavor.Zero -> {
+            is ReceiverFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.isEmpty()
             }
@@ -909,15 +909,15 @@ public open class Receiver<T>(
      */
     public open fun isFull(): Boolean =
         when (val matchVal = this.flavor) {
-            is ReceiverFlavor.Array -> {
+            is ReceiverFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.isFull()
             }
-            is ReceiverFlavor.List -> {
+            is ReceiverFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.isFull()
             }
-            is ReceiverFlavor.Zero -> {
+            is ReceiverFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.isFull()
             }
@@ -946,15 +946,15 @@ public open class Receiver<T>(
      */
     public open fun len(): Int =
         when (val matchVal = this.flavor) {
-            is ReceiverFlavor.Array -> {
+            is ReceiverFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.len()
             }
-            is ReceiverFlavor.List -> {
+            is ReceiverFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.len()
             }
-            is ReceiverFlavor.Zero -> {
+            is ReceiverFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.len()
             }
@@ -983,15 +983,15 @@ public open class Receiver<T>(
      */
     public open fun capacity(): Int? =
         when (val matchVal = this.flavor) {
-            is ReceiverFlavor.Array -> {
+            is ReceiverFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.capacity()
             }
-            is ReceiverFlavor.List -> {
+            is ReceiverFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.capacity()
             }
-            is ReceiverFlavor.Zero -> {
+            is ReceiverFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.capacity()
             }
@@ -1018,17 +1018,17 @@ public open class Receiver<T>(
         run {
             val matchVal = Pair(this.flavor, other.flavor)
             when {
-                matchVal.first is ReceiverFlavor.Array && matchVal.second is ReceiverFlavor.Array -> {
+                matchVal.first is ReceiverFlavor.Array<*> && matchVal.second is ReceiverFlavor.Array<*> -> {
                     val (a) = matchVal.first as ReceiverFlavor.Array<T>
                     val (b) = matchVal.second as ReceiverFlavor.Array<T>
                     a == b
                 }
-                matchVal.first is ReceiverFlavor.List && matchVal.second is ReceiverFlavor.List -> {
+                matchVal.first is ReceiverFlavor.List<*> && matchVal.second is ReceiverFlavor.List<*> -> {
                     val (a1) = matchVal.first as ReceiverFlavor.List<T>
                     val (b1) = matchVal.second as ReceiverFlavor.List<T>
                     a1 == b1
                 }
-                matchVal.first is ReceiverFlavor.Zero && matchVal.second is ReceiverFlavor.Zero -> {
+                matchVal.first is ReceiverFlavor.Zero<*> && matchVal.second is ReceiverFlavor.Zero<*> -> {
                     val (a2) = matchVal.first as ReceiverFlavor.Zero<T>
                     val (b2) = matchVal.second as ReceiverFlavor.Zero<T>
                     a2 == b2
@@ -1085,15 +1085,15 @@ public open class Receiver<T>(
      */
     public open fun isDisconnected(): Boolean =
         when (val matchVal = this.flavor) {
-            is ReceiverFlavor.Array -> {
+            is ReceiverFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.isDisconnected()
             }
-            is ReceiverFlavor.List -> {
+            is ReceiverFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.isDisconnected()
             }
-            is ReceiverFlavor.Zero -> {
+            is ReceiverFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.isDisconnected()
             }
@@ -1101,15 +1101,15 @@ public open class Receiver<T>(
 
     public open fun drop() {
         when (val matchVal = this.flavor) {
-            is ReceiverFlavor.Array -> {
+            is ReceiverFlavor.Array<*> -> {
                 val (chan) = matchVal
                 chan.release({ c -> c.disconnectReceivers() })
             }
-            is ReceiverFlavor.List -> {
+            is ReceiverFlavor.List<*> -> {
                 val (chan1) = matchVal
                 chan1.release({ c -> c.disconnectReceivers() })
             }
-            is ReceiverFlavor.Zero -> {
+            is ReceiverFlavor.Zero<*> -> {
                 val (chan2) = matchVal
                 chan2.release({ c -> c.disconnect() })
             }
@@ -1119,15 +1119,15 @@ public open class Receiver<T>(
     public open fun clone(): Receiver<T> {
         val flavor =
             when (val matchVal = this.flavor) {
-                is ReceiverFlavor.Array -> {
+                is ReceiverFlavor.Array<*> -> {
                     val (chan) = matchVal
                     ReceiverFlavor.Array(chan.acquire())
                 }
-                is ReceiverFlavor.List -> {
+                is ReceiverFlavor.List<*> -> {
                     val (chan1) = matchVal
                     ReceiverFlavor.List(chan1.acquire())
                 }
-                is ReceiverFlavor.Zero -> {
+                is ReceiverFlavor.Zero<*> -> {
                     val (chan2) = matchVal
                     ReceiverFlavor.Zero(chan2.acquire())
                 }
@@ -1135,7 +1135,7 @@ public open class Receiver<T>(
         return Receiver(flavor = flavor)
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Receiver").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Receiver").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 }
 
 /**

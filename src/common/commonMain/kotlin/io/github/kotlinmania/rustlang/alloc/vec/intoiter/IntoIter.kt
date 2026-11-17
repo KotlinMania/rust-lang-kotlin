@@ -8,12 +8,13 @@ import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
@@ -21,8 +22,10 @@ import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.dangling
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -79,7 +82,7 @@ public open class IntoIter<T, A : Allocator>(
      * For non-ZSTs the pointer is treated as `NonNull<T>`
      */
     public var end: ConstPtr,
-) : AsRef<List<T>>, TrustedFused, TrustedLen, TrustedRandomAccessNoCoerce, InPlaceIterable, SourceIter, Iterable<T> {
+) : AsRef<List<T>>, TrustedFused, TrustedLen, InPlaceIterable, SourceIter, Iterable<T> {
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
@@ -92,7 +95,7 @@ public open class IntoIter<T, A : Allocator>(
     // Manually mirroring what `List` has,
     // because otherwise we get `T: RefUnwindSafe` from `NonNull`.
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "IntoIter").field(this.asSlice()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "IntoIter").field(this.asSlice()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Returns the remaining items of this iterator as a slice.
@@ -109,7 +112,7 @@ public open class IntoIter<T, A : Allocator>(
      */
     public open fun asSlice(): List<T> {
         // ignore-tidy-undocumented-unchecked
-        return Slice.fromRawParts(this.ptr.asPtr(), this.len())
+        return linearSliceView(this.ptr.asPtr(), this.len().toInt(), PrimitiveLayouts.U8)
     }
 
     /**
@@ -322,7 +325,7 @@ public open class IntoIter<T, A : Allocator>(
             if (len < n) {
                 this.forgetRemainingElements()
                 // SAFETY: ZSTs can be conjured ex nihilo, only the amount has to be correct
-                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
+                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len, n))
             }
             this.end = ConstPtr((this.end).rawAddress - ((n).toLong()))
             // SAFETY: ditto
@@ -334,7 +337,7 @@ public open class IntoIter<T, A : Allocator>(
             run {
                 copyNonoverlapping((this.ptr.asPtr()).asConstPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), len)
                 this.forgetRemainingElements()
-                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
+                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len, n))
             }
         }
         // SAFETY: `len` is larger than the array size. Copy a fixed amount here to fully initialize
@@ -374,7 +377,7 @@ public open class IntoIter<T, A : Allocator>(
         return accum1
     }
 
-    public open fun <Residual, B, R> tryFold(accum: B, f: (B, T) -> R, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout(), fromOutputRFn: (B) -> R): R where R : Try<B> {
+    public open fun <Residual, B, R> tryFold(accum: B, f: (B, T) -> R, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout(), fromOutputRFn: (B) -> R): R where R : Try<B, Residual> {
         var accum1 = accum
         if (((typeLayoutT).sizeBytes == 0L)) {
             while (((this.ptr.asPtr()).rawAddress.toULong() != (MutPtr((this.end).rawAddress)).rawAddress.toULong())) {
@@ -382,7 +385,7 @@ public open class IntoIter<T, A : Allocator>(
                 val tmp = this.ptr.read()
                 // See `next` for why we subtract from `end` here.
                 this.end = ConstPtr((this.end).rawAddress - ((1).toLong()))
-                accum1 = when (val tryResult = f(accum1, tmp)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                accum1 = when (val tryResult = f(accum1, tmp)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
             }
         } else {
             // SAFETY: `self.end` can only be null if `T` is a ZST.
@@ -392,7 +395,7 @@ public open class IntoIter<T, A : Allocator>(
                 // SAFETY: the maximum this can be is `self.end`.
                 // Increment `self.ptr` first to avoid double dropping in the event of a panic.
                 this.ptr = this.ptr.add(1)
-                accum1 = when (val tryResult = f(accum1, tmp1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                accum1 = when (val tryResult = f(accum1, tmp1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
             }
         }
         return fromOutputRFn(accum1)
@@ -441,7 +444,7 @@ public open class IntoIter<T, A : Allocator>(
             if (len < n) {
                 this.forgetRemainingElements()
                 // SAFETY: ZSTs can be conjured ex nihilo, only the amount has to be correct
-                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, n - len until n))
+                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, n - len until n, n))
             }
             this.end = ConstPtr((this.end).rawAddress - ((n).toLong()))
             // SAFETY: ditto
@@ -453,7 +456,7 @@ public open class IntoIter<T, A : Allocator>(
             run {
                 copyNonoverlapping((this.ptr.asPtr()).asConstPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), len)
                 this.forgetRemainingElements()
-                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
+                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len, n))
             }
         }
         // SAFETY: `len` is larger than the array size. Copy a fixed amount here to fully initialize
@@ -537,10 +540,6 @@ public open class IntoIter<T, A : Allocator>(
          */
         public fun <T, A : Allocator> default(defaultAFn: () -> A): IntoIter<T, A> where A : Allocator = Vec.newIn(defaultAFn()).intoIter()
 
-        // TrustedRandomAccess (without NoCoerce) must not be implemented because
-        // subtypes/supertypes of `T` might not be `NonDrop`
-        public val MAY_HAVE_SIDE_EFFECT: Boolean = false
-
         // In addition to the SAFETY invariants of the following three unchecked traits
         // also refer to the vec.inPlaceCollect module documentation to get an overview
         public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = NonZero.new(1)
@@ -553,5 +552,9 @@ public interface NonDrop
 
 // T: Copy as approximation for !Drop since getUnchecked does not advance self.ptr
 // and thus we can't implement drop-handling
+
+// TrustedRandomAccess (without NoCoerce) must not be implemented because
+// subtypes/supertypes of `T` might not be `NonDrop`
+public val MAY_HAVE_SIDE_EFFECT: Boolean = false
 
 public fun <T> IntoIter<T, Global>.asIntoIter(): IntoIter<T, Global> = this

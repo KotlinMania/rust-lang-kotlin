@@ -9,6 +9,8 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
@@ -331,7 +333,7 @@ public open class Channel<T> internal constructor(
             // Try advancing the tail forward.
             run {
                 val matchVal = this.tail.index.compareExchangeWeak(tail, newTail, Ordering.SeqCst, Ordering.Acquire)
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     run {
                         // If we've reached the end of the block, install the next one.
                         if (offset + 1 == BLOCK_CAP) {
@@ -344,7 +346,7 @@ public open class Channel<T> internal constructor(
                         token.list.offset = offset
                         return true
                     }
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     backoff.spinLight()
                     tail = this.tail.index.load(Ordering.Acquire)
                     block = this.tail.block.load(Ordering.Acquire)
@@ -423,7 +425,7 @@ public open class Channel<T> internal constructor(
             // Try moving the head index forward.
             run {
                 val matchVal = this.head.index.compareExchangeWeak(head, newHead, Ordering.SeqCst, Ordering.Acquire)
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     run {
                         // If we've reached the end of the block, move to the next one.
                         if (offset + 1 == BLOCK_CAP) {
@@ -439,7 +441,7 @@ public open class Channel<T> internal constructor(
                         token.list.offset = offset
                         return true
                     }
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     backoff.spinLight()
                     head = this.head.index.load(Ordering.Acquire)
                     block = this.head.block.load(Ordering.Acquire)
@@ -479,11 +481,11 @@ public open class Channel<T> internal constructor(
      */
     public open fun trySend(msg: T): Result<Unit, TrySendError<T>> =
         this.send(msg, null).mapErr({ err -> when (err) {
-            is SendTimeoutError.Disconnected -> {
+            is SendTimeoutError.Disconnected<*> -> {
                 val (msg1) = err
                 TrySendError.Disconnected(msg1)
             }
-            is SendTimeoutError.Timeout -> error("unreachable")
+            is SendTimeoutError.Timeout<*> -> error("unreachable")
         } })
 
     /**

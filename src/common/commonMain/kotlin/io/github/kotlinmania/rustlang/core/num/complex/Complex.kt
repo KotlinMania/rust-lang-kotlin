@@ -10,6 +10,10 @@ import io.github.kotlinmania.rustlang.core.num.imp.libm.complex.rustMulhc3
 import io.github.kotlinmania.rustlang.core.ops.arith.Add
 import io.github.kotlinmania.rustlang.core.ops.arith.Neg
 import io.github.kotlinmania.rustlang.core.ops.arith.Sub
+import io.github.kotlinmania.rustlang.core.ops.arith.add
+import io.github.kotlinmania.rustlang.core.ops.arith.neg
+import io.github.kotlinmania.rustlang.core.ops.arith.sub
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 /**
  * A [complex number], represented in rectangular form.
@@ -82,7 +86,7 @@ public open class Complex<T>(
      * The imaginary component.
      */
     public var im: T,
-) : Neg<Complex<Output>>, Add<Complex<T>, Complex<Output>>, Sub<Complex<T>, Complex<Output>> {
+) {
     public open fun clone(): Complex<T> = Complex(re, im)
 
     /**
@@ -102,79 +106,6 @@ public open class Complex<T>(
      * ```
      */
     public open fun conjugate(): Complex<T> = Complex(re = this.re, im = -this.im)
-
-    /**
-     * Negate a complex number.
-     *
-     * The negation of `a + bi` is `- a - bi`: both components are negated.
-     * Geometrically this is a rotation of 180°.
-     *
-     * ```kotlin
-     * import std.num.Complex
-     *
-     * @feature(complexNumbers)
-     * public fun doctestEntry() {
-     *     check(-Complex.new(3.0, 2.0) == Complex.new(-3.0, -2.0))
-     * }
-     * ```
-     */
-    public override fun neg(): Complex<Output> = Complex.new(-this.re, -this.im)
-
-    /**
-     * Complex addition operates on each component separately.
-     *
-     * ```kotlin
-     * import std.num.Complex
-     *
-     * @feature(complexNumbers)
-     * public fun doctestEntry() {
-     *     check(Complex.new(2.0, 3.0) + Complex.new(5.0, 9.0) == Complex.new(7.0, 12.0))
-     * }
-     * ```
-     */
-    public override fun add(rhs: Complex<T>): Complex<Output> = Complex.new(this.re + rhs.re, this.im + rhs.im)
-
-    /**
-     * Scalar addition operates only on the real component.
-     *
-     * ```kotlin
-     * import std.num.Complex
-     *
-     * @feature(complexNumbers)
-     * public fun doctestEntry() {
-     *     check(Complex.new(2.0, 3.0) + 10.0 == Complex.new(12.0, 3.0))
-     * }
-     * ```
-     */
-    public override fun add(rhs: T): Complex<Output> = Complex.new(this.re + rhs, this.im)
-
-    /**
-     * Complex subtraction operates on each component separately.
-     *
-     * ```kotlin
-     * import std.num.Complex
-     *
-     * @feature(complexNumbers)
-     * public fun doctestEntry() {
-     *     check(Complex.new(2.0, 3.0) - Complex.new(5.0, 9.0) == Complex.new(-3.0, -6.0))
-     * }
-     * ```
-     */
-    public override fun sub(rhs: Complex<T>): Complex<Output> = Complex.new(this.re - rhs.re, this.im - rhs.im)
-
-    /**
-     * Scalar subtraction operates only on the real component.
-     *
-     * ```kotlin
-     * import std.num.Complex
-     *
-     * @feature(complexNumbers)
-     * public fun doctestEntry() {
-     *     check(Complex.new(2.0, 3.0) - 10.0 == Complex.new(-8.0, 3.0))
-     * }
-     * ```
-     */
-    public override fun sub(rhs: T): Complex<Output> = Complex.new(this.re - rhs, this.im)
 
     public companion object {
         public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Complex<T>> =
@@ -210,6 +141,79 @@ public open class Complex<T>(
         public fun <T> default(defaultTFn: () -> T): Complex<T> = Complex(re = defaultTFn(), im = defaultTFn())
     }
 }
+
+/**
+ * Negate a complex number.
+ *
+ * The negation of `a + bi` is `- a - bi`: both components are negated.
+ * Geometrically this is a rotation of 180°.
+ *
+ * ```kotlin
+ * import std.num.Complex
+ *
+ * @feature(complexNumbers)
+ * public fun doctestEntry() {
+ *     check(-Complex.new(3.0, 2.0) == Complex.new(-3.0, -2.0))
+ * }
+ * ```
+ */
+public fun <Output, T : Neg<Output>> Complex<T>.neg(): Complex<Output> = Complex.new(-this.re, -this.im)
+
+/**
+ * Complex addition operates on each component separately.
+ *
+ * ```kotlin
+ * import std.num.Complex
+ *
+ * @feature(complexNumbers)
+ * public fun doctestEntry() {
+ *     check(Complex.new(2.0, 3.0) + Complex.new(5.0, 9.0) == Complex.new(7.0, 12.0))
+ * }
+ * ```
+ */
+public fun <Output, T : Add<T, Output>> Complex<T>.add(rhs: Complex<T>): Complex<Output> = Complex.new(this.re + rhs.re, this.im + rhs.im)
+
+/**
+ * Scalar addition operates only on the real component.
+ *
+ * ```kotlin
+ * import std.num.Complex
+ *
+ * @feature(complexNumbers)
+ * public fun doctestEntry() {
+ *     check(Complex.new(2.0, 3.0) + 10.0 == Complex.new(12.0, 3.0))
+ * }
+ * ```
+ */
+public fun <T : Add<T, T>> Complex<T>.add(rhs: T): Complex<Output> = Complex.new(this.re + rhs, this.im)
+
+/**
+ * Complex subtraction operates on each component separately.
+ *
+ * ```kotlin
+ * import std.num.Complex
+ *
+ * @feature(complexNumbers)
+ * public fun doctestEntry() {
+ *     check(Complex.new(2.0, 3.0) - Complex.new(5.0, 9.0) == Complex.new(-3.0, -6.0))
+ * }
+ * ```
+ */
+public fun <Output, T : Sub<T, Output>> Complex<T>.sub(rhs: Complex<T>): Complex<Output> = Complex.new(this.re - rhs.re, this.im - rhs.im)
+
+/**
+ * Scalar subtraction operates only on the real component.
+ *
+ * ```kotlin
+ * import std.num.Complex
+ *
+ * @feature(complexNumbers)
+ * public fun doctestEntry() {
+ *     check(Complex.new(2.0, 3.0) - 10.0 == Complex.new(-8.0, 3.0))
+ * }
+ * ```
+ */
+public fun <T : Sub<T, T>> Complex<T>.sub(rhs: T): Complex<Output> = Complex.new(this.re - rhs, this.im)
 
 public fun Complex<F16>.mul(rhs: Complex<F16>): Complex<F16> {
     val a = this.re

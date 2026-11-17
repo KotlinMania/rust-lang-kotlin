@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CSizeT
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CSsizeT
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.CInt
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.cinterop.stdSysFsUnixClose
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.cinterop.stdSysFsUnixOpen
 import kotlinx.cinterop.ByteVar

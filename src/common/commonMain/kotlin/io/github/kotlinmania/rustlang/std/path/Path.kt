@@ -22,10 +22,12 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.num.rotateRight
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.and
 import io.github.kotlinmania.rustlang.core.result.or
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.slice.splitLast
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
@@ -33,6 +35,7 @@ import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.ReadDir
 import io.github.kotlinmania.rustlang.std.fs.exists
 import io.github.kotlinmania.rustlang.std.fs.metadata
+import io.github.kotlinmania.rustlang.std.fs.readDir
 import io.github.kotlinmania.rustlang.std.fs.symlinkMetadata
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.Prefix.*
@@ -240,11 +243,11 @@ public sealed class Prefix {
         fun osStrLen(s: OsStr): Int = s.asEncodedBytes().len()
         return when (this) {
             is Verbatim -> {
-                val (x) = this
+                val (x) = this as Verbatim
                 4 + osStrLen(x)
             }
             is VerbatimUNC -> {
-                val (x1, y) = this
+                val (x1, y) = this as VerbatimUNC
                 8 + osStrLen(x1) +
                     if (osStrLen(y) > 0) {
                         1 + osStrLen(y)
@@ -254,7 +257,7 @@ public sealed class Prefix {
             }
             is VerbatimDisk -> 6
             is Unc -> {
-                val (x2, y1) = this
+                val (x2, y1) = this as Unc
                 2 + osStrLen(x2) +
                     if (osStrLen(y1) > 0) {
                         1 + osStrLen(y1)
@@ -263,7 +266,7 @@ public sealed class Prefix {
                     }
             }
             is DeviceNS -> {
-                val (x3) = this
+                val (x3) = this as DeviceNS
                 4 + osStrLen(x3)
             }
             is Disk -> 2
@@ -620,14 +623,14 @@ public sealed class Component : AsRef<OsStr> {
     public open fun asOsStr(): OsStr =
         when (this) {
             is Component.Prefix -> {
-                val (p) = this
+                val (p) = this as Component.Prefix
                 p.asOsStr()
             }
             Component.RootDir -> OsStr.new(MAIN_SEPARATOR_STR)
             Component.CurDir -> OsStr.new(".")
             Component.ParentDir -> OsStr.new("..")
             is Component.Normal -> {
-                val (path) = this
+                val (path) = this as Component.Normal
                 path
             }
         }
@@ -691,9 +694,9 @@ public open class Components(
                     value = v
                 }
 
-            public open fun fmt(f1: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f1.append(entries.joinToString(", ", "[", "]")) } }.entries(this.value.components()).finish()
+            public open fun fmt(f1: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f1.append(entries.joinToString(", ", "[", "]")) } }.entries(this.value.components()).finish(); Result.Ok<Unit, Error>(Unit) }
         }
-        return DebugTuple(f, "Components").field(DebugHelper(this.asPath())).finish()
+        return run { DebugTuple(f, "Components").field(DebugHelper(this.asPath())).finish(); Result.Ok<Unit, Error>(Unit) }
     }
 
     // how long is the prefix, if any?
@@ -1036,9 +1039,9 @@ public open class Iter(
                     value = v
                 }
 
-            public open fun fmt(f1: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f1.append(entries.joinToString(", ", "[", "]")) } }.entries(this.value.iter()).finish()
+            public open fun fmt(f1: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f1.append(entries.joinToString(", ", "[", "]")) } }.entries(this.value.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
         }
-        return DebugTuple(f, "Iter").field(DebugHelper(this.asPath())).finish()
+        return run { DebugTuple(f, "Iter").field(DebugHelper(this.asPath())).finish(); Result.Ok<Unit, Error>(Unit) }
     }
 
     /**
@@ -1707,7 +1710,7 @@ public open class PathBuf(
         this.push(p)
     }
 
-    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun deref(): Path = Path.new(this.inner)
 
@@ -2777,7 +2780,7 @@ public open class Path internal constructor(
      * println("${metadata.fileType()}")
      * ```
      */
-    public open fun metadata(): Result<Metadata, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.metadata(this)
+    public open fun metadata(): Result<Metadata, io.github.kotlinmania.rustlang.core.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.metadata(this)
 
     /**
      * Queries the metadata about a file without following symlinks.
@@ -2794,7 +2797,7 @@ public open class Path internal constructor(
      * println("${metadata.fileType()}")
      * ```
      */
-    public open fun symlinkMetadata(): Result<Metadata, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.symlinkMetadata(this)
+    public open fun symlinkMetadata(): Result<Metadata, io.github.kotlinmania.rustlang.core.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.symlinkMetadata(this)
 
     /**
      * Returns the canonical, absolute form of the path with all intermediate
@@ -2820,7 +2823,7 @@ public open class Path internal constructor(
      * check(path.canonicalize().unwrap() == PathBuf.from("/foo/test/bar.rs"))
      * ```
      */
-    public open fun canonicalize(): Result<PathBuf, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.canonicalize(this)
+    public open fun canonicalize(): Result<PathBuf, io.github.kotlinmania.rustlang.core.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.canonicalize(this)
 
     /**
      * Makes the path absolute without accessing the filesystem.
@@ -2848,7 +2851,7 @@ public open class Path internal constructor(
      * }
      * ```
      */
-    public open fun absolute(): Result<PathBuf, io.github.kotlinmania.rustlang.std.io.error.Error> = absolute(this)
+    public open fun absolute(): Result<PathBuf, io.github.kotlinmania.rustlang.core.io.error.Error> = absolute(this)
 
     /**
      * Normalize a path, including `..` without traversing the filesystem.
@@ -2942,7 +2945,7 @@ public open class Path internal constructor(
      * val pathLink = path.readLink().expect("the path should be an existing symbolic link")
      * ```
      */
-    public open fun readLink(): Result<PathBuf, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.readLink(this)
+    public open fun readLink(): Result<PathBuf, io.github.kotlinmania.rustlang.core.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.readLink(this)
 
     /**
      * Returns an iterator over the entries within a directory.
@@ -2966,7 +2969,7 @@ public open class Path internal constructor(
      * }
      * ```
      */
-    public open fun readDir(): Result<ReadDir, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.readDir(this)
+    public open fun readDir(): Result<ReadDir, io.github.kotlinmania.rustlang.core.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.readDir(this)
 
     /**
      * Returns `true` if the path points at an existing entity.
@@ -3028,7 +3031,7 @@ public open class Path internal constructor(
      * [TOCTOU]: fs#time-of-check-to-time-of-use-toctou
      * [exists]: Self.exists
      */
-    public open fun tryExists(): Result<Boolean, io.github.kotlinmania.rustlang.std.io.error.Error> = exists(this)
+    public open fun tryExists(): Result<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error> = exists(this)
 
     /**
      * Returns `true` if the path exists on disk and is pointing at a regular file.
@@ -3134,7 +3137,7 @@ public open class Path internal constructor(
 
     public open fun asRef(): OsStr = this.inner
 
-    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this.inner).toString()); Result.Ok(Unit) }
+    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this.inner).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun eq(other: Path): Boolean = (this.components() == other.components()).toUByte()
 
@@ -3367,7 +3370,7 @@ public open class StripPrefixError(
  * would escape the path.
  */
 public open class NormalizeError {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("parent reference `..` points outside of base directory"); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("parent reference `..` points outside of base directory"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<NormalizeError> =
@@ -3407,11 +3410,11 @@ public open class NormalizeError {
  * [Display]: fmt.Display
  */
 public open class Display(
-    public var inner: Display,
+    public var inner: io.github.kotlinmania.rustlang.std.ffi.osstr.Display,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok(Unit) }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok<Unit, Error>(Unit) }
 }
 
 public fun String.eq(other: Path): Boolean = (other == this).toUByte()
@@ -3565,10 +3568,10 @@ public fun OsString.partialCmpCowPath(other: Path): Ordering? = Path.partialCmp(
  * [windows-path]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfullpathnamew
  * [cygwin-path]: https://cygwin.com/cygwin-api/func-cygwin-conv-path.html
  */
-public fun absolute(path: Path): Result<PathBuf, io.github.kotlinmania.rustlang.std.io.error.Error> {
+public fun absolute(path: Path): Result<PathBuf, io.github.kotlinmania.rustlang.core.io.error.Error> {
     val path1 = path
     return if (path1.asOsStr().isEmpty()) {
-        Result.Err<PathBuf, io.github.kotlinmania.rustlang.std.io.error.Error>(constError(ErrorKind.InvalidInput, "cannot make an empty path absolute"))
+        Result.Err<PathBuf, io.github.kotlinmania.rustlang.core.io.error.Error>(constError(ErrorKind.InvalidInput, "cannot make an empty path absolute"))
     } else {
         io.github.kotlinmania.rustlang.std.sys.path.unix.absolute(path1)
     }

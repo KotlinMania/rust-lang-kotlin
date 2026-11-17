@@ -1,8 +1,6 @@
 // port-lint: source option.rs
 package io.github.kotlinmania.rustlang.core.option
 
-import io.github.kotlinmania.rustlang.core.clone.TrivialClone
-import io.github.kotlinmania.rustlang.core.clone.UseCloned
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
@@ -25,6 +23,7 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.deref.Deref
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefMut
+import io.github.kotlinmania.rustlang.core.ops.deref.derefMut
 import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Residual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
@@ -579,7 +578,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 // var sizeOfBiggestAnimal = 0
 // for (bigThing in allTheBigThings) {
 //     when {
-//         bigThing is Kingdom.Animal && (bigThing as Kingdom.Animal).field0 > sizeOfBiggestAnimal -> {
+//         bigThing is Kingdom.Animal && bigThing.field0 > sizeOfBiggestAnimal -> {
 //             val (size, name) = bigThing
 //             // Now we've found the name of some big animal
 //             sizeOfBiggestAnimal = size
@@ -605,7 +604,7 @@ public typealias TryType<T> = Option<T>
 /**
  * The `Option` type. See [the module level documentation](self) for more.
  */
-public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, StructuralPartialEq, Try<Option<T>, T, Option<Nothing>>, FromResidual<Option<Nothing>, Option<T>> {
+public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<Nothing>>, FromResidual<Option<Nothing>, Option<T>> {
     /**
      * No value.
      */
@@ -636,7 +635,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun isSome(): Boolean =
         when (this) {
-            is Some -> true
+            is Some<*> -> true
             else -> false
         }
 
@@ -660,8 +659,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
     public open fun isSomeAnd(f: (T) -> Boolean): Boolean =
         when (this) {
             null -> false
-            is Some -> {
-                val (x) = this
+            is Some<*> -> {
+                val (x) = this as Some<T>
                 f(x)
             }
         }
@@ -700,8 +699,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
     public open fun isNoneOr(f: (T) -> Boolean): Boolean =
         when (this) {
             null -> true
-            is Some -> {
-                val (x) = this
+            is Some<*> -> {
+                val (x) = this as Some<T>
                 f(x)
             }
         }
@@ -734,8 +733,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun asRef(): Option<T> =
         when (this) {
-            is Some -> {
-                val (x) = this
+            is Some<*> -> {
+                val (x) = this as Some<T>
                 Some(x)
             }
             null -> None
@@ -760,8 +759,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun asMut(): Option<T> =
         when (this) {
-            is Some -> {
-                val (x) = this
+            is Some<*> -> {
+                val (x) = this as Some<T>
                 Some(x)
             }
             null -> None
@@ -777,7 +776,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         return when (val matchVal = Pin.getRef(this).asRef()) {
             // SAFETY: `x` is guaranteed to be pinned because it comes from `self`
             // which is pinned.
-            is Some -> {
+            is Some<*> -> {
                 val (x) = matchVal
                 Some(Pin.newUnchecked(x))
             }
@@ -794,7 +793,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         // SAFETY: `getUncheckedMut` is never used to move the `Option` inside `self`.
         // `x` is guaranteed to be pinned because it comes from `self` which is pinned.
         return when (val matchVal = Pin.getUncheckedMut(this).asMut()) {
-            is Some -> {
+            is Some<*> -> {
                 val (x) = matchVal
                 Some(Pin.newUnchecked(x))
             }
@@ -941,8 +940,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun expect(msg: String): T =
         when (this) {
-            is Some -> {
-                val (value) = this
+            is Some<*> -> {
+                val (value) = this as Some<T>
                 value
             }
             null -> expectFailed(msg)
@@ -985,8 +984,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun unwrap(): T =
         when (this) {
-            is Some -> {
-                val (value) = this
+            is Some<*> -> {
+                val (value) = this as Some<T>
                 value
             }
             null -> unwrapFailed()
@@ -1010,8 +1009,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun unwrapOr(default: T): T =
         when (this) {
-            is Some -> {
-                val (x) = this
+            is Some<*> -> {
+                val (x) = this as Some<T>
                 x
             }
             null -> default
@@ -1030,8 +1029,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun unwrapOrElse(f: () -> T): T =
         when (this) {
-            is Some -> {
-                val (x) = this
+            is Some<*> -> {
+                val (x) = this as Some<T>
                 x
             }
             null -> f()
@@ -1058,8 +1057,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun unwrapOrDefault(defaultTFn: () -> T): T =
         when (this) {
-            is Some -> {
-                val (x) = this
+            is Some<*> -> {
+                val (x) = this as Some<T>
                 x
             }
             null -> defaultTFn()
@@ -1090,8 +1089,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun unwrapUnchecked(): T =
         when (this) {
-            is Some -> {
-                val (value) = this
+            is Some<*> -> {
+                val (value) = this as Some<T>
                 value
             }
             // SAFETY: the safety contract must be upheld by the caller.
@@ -1122,8 +1121,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun <U> map(f: (T) -> U): Option<U> =
         when (this) {
-            is Some -> {
-                val (x) = this
+            is Some<*> -> {
+                val (x) = this as Some<T>
                 Some(f(x))
             }
             null -> None
@@ -1145,7 +1144,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * ```
      */
     public open fun inspect(f: (T) -> Unit): Option<T> {
-        if (this is Some) {
+        if (this is Some<*>) {
             val (x) = this
             f(x)
         }
@@ -1173,8 +1172,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun <U> mapOr(default: U, f: (T) -> U): U =
         when (this) {
-            is Some -> {
-                val (t) = this
+            is Some<*> -> {
+                val (t) = this as Some<T>
                 f(t)
             }
             null -> default
@@ -1209,8 +1208,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun <U> mapOrElse(default: () -> U, f: (T) -> U): U =
         when (this) {
-            is Some -> {
-                val (t) = this
+            is Some<*> -> {
+                val (t) = this as Some<T>
                 f(t)
             }
             null -> default()
@@ -1234,8 +1233,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun <U> mapOrDefault(f: (T) -> U, defaultUFn: () -> U): U =
         when (this) {
-            is Some -> {
-                val (t) = this
+            is Some<*> -> {
+                val (t) = this as Some<T>
                 f(t)
             }
             null -> defaultUFn()
@@ -1265,8 +1264,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun <E> okOr(err: E): Result<T, E> =
         when (this) {
-            is Some -> {
-                val (v) = this
+            is Some<*> -> {
+                val (v) = this as Some<T>
                 Result.Ok<T, E>(v)
             }
             null -> Result.Err<T, E>(err)
@@ -1291,8 +1290,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun <E> okOrElse(err: () -> E): Result<T, E> =
         when (this) {
-            is Some -> {
-                val (v) = this
+            is Some<*> -> {
+                val (v) = this as Some<T>
                 Result.Ok<T, E>(v)
             }
             null -> Result.Err<T, E>(err())
@@ -1404,7 +1403,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun <U> and(optb: Option<U>): Option<U> =
         when (this) {
-            is Some -> optb
+            is Some<*> -> optb
             null -> None
         }
 
@@ -1438,8 +1437,8 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun <U> andThen(f: (T) -> Option<U>): Option<U> =
         when (this) {
-            is Some -> {
-                val (x) = this
+            is Some<*> -> {
+                val (x) = this as Some<T>
                 f(x)
             }
             null -> None
@@ -1471,7 +1470,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * [Some]: Some
      */
     public open fun filter(predicate: (T) -> Boolean): Option<T> {
-        if (this is Some) {
+        if (this is Some<*>) {
             val (x) = this
             if (predicate(x)) {
                 return Some(x)
@@ -1508,7 +1507,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun or(optb: Option<T>): Option<T> =
         when (this) {
-            is Some -> {
+            is Some<*> -> {
                 val x = this
                 x
             }
@@ -1535,7 +1534,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun orElse(f: () -> Option<T>): Option<T> =
         when (this) {
-            is Some -> {
+            is Some<*> -> {
                 val x = this
                 x
             }
@@ -1566,11 +1565,11 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         run {
             val matchVal = Pair(this, optb)
             when {
-                matchVal.first is Some && matchVal.second == null -> {
+                matchVal.first is Some<*> && matchVal.second == null -> {
                     val a = matchVal.first
                     a
                 }
-                matchVal.first == null && matchVal.second is Some -> {
+                matchVal.first == null && matchVal.second is Some<*> -> {
                     val b = matchVal.second
                     b
                 }
@@ -1724,7 +1723,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
     public open fun <Residual, R> getOrTryInsertWith(f: () -> R): TryType where R : Try<R, T, Residual> {
         var selfMut = this
         if (selfMut == null) {
-            selfMut = Some(when (val tryResult = f()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) })
+            selfMut = Some(when (val tryResult = f()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") })
         }
         // SAFETY: a `None` variant for `self` would have been replaced by a `Some`
         // variant in the code above.
@@ -1827,7 +1826,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         run {
             val matchVal = Pair(this, other)
             when {
-                matchVal.first is Some && matchVal.second is Some -> {
+                matchVal.first is Some<*> && matchVal.second is Some<*> -> {
                     val (a) = matchVal.first as Some<T>
                     val (b) = matchVal.second as Some<T>
                     Some(Pair(a, b))
@@ -1863,7 +1862,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         run {
             val matchVal = Pair(this, other)
             when {
-                matchVal.first is Some && matchVal.second is Some -> {
+                matchVal.first is Some<*> && matchVal.second is Some<*> -> {
                     val (a) = matchVal.first as Some<T>
                     val (b) = matchVal.second as Some<T>
                     Some(f(a, b))
@@ -1899,16 +1898,16 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         run {
             val matchVal = Pair(this, other)
             when {
-                matchVal.first is Some && matchVal.second is Some -> {
+                matchVal.first is Some<*> && matchVal.second is Some<*> -> {
                     val (a) = matchVal.first as Some<T>
                     val (b) = matchVal.second as Some<T>
                     Some(f(a, b))
                 }
-                matchVal.first is Some -> {
+                matchVal.first is Some<*> -> {
                     val (a1) = matchVal.first as Some<T>
                     Some(a1.into())
                 }
-                matchVal.second is Some -> {
+                matchVal.second is Some<*> -> {
                     val (b1) = matchVal.second as Some<T>
                     Some(b1.into())
                 }
@@ -1939,20 +1938,20 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
     // ////////////////////////////////////////////////////////////////////////
     // Note(constHack): the T: [const] Destruct should be inferred from the Self: [const] Destruct in cloneFrom.
     // See https://github.com/rust-lang/rust/issues/144207
-    public override fun clone(cloneTFn: (T) -> T = { it }): Option<T> =
+    public open fun clone(cloneTFn: (T) -> T = { it }): Option<T> =
         when (this) {
-            is Some -> {
-                val (x) = this
+            is Some<*> -> {
+                val (x) = this as Some<T>
                 Some(cloneTFn(x))
             }
             null -> None
         }
 
-    public override fun cloneFrom(source: Option<T>, cloneTFn: (T) -> T = { it }) {
+    public open fun cloneFrom(source: Option<T>, cloneTFn: (T) -> T = { it }) {
         run {
             val matchVal = Pair(this, source)
             when {
-                matchVal.first is Some && matchVal.second is Some -> {
+                matchVal.first is Some<*> && matchVal.second is Some<*> -> {
                     val (to) = matchVal.first as Some<T>
                     val (from) = matchVal.second as Some<T>
                     to.cloneFrom(from)
@@ -1992,13 +1991,13 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         return run {
             val matchVal = Pair(this, other)
             when {
-                matchVal.first is Some && matchVal.second is Some -> {
+                matchVal.first is Some<*> && matchVal.second is Some<*> -> {
                     val (l) = matchVal.first as Some<T>
                     val (r) = matchVal.second as Some<T>
                     l == r
                 }
-                matchVal.first is Some && matchVal.second == null -> false
-                matchVal.first == null && matchVal.second is Some -> false
+                matchVal.first is Some<*> && matchVal.second == null -> false
+                matchVal.first == null && matchVal.second is Some<*> -> false
                 else -> true
             }
         }
@@ -2016,13 +2015,13 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         run {
             val matchVal = Pair(this, other)
             when {
-                matchVal.first is Some && matchVal.second is Some -> {
+                matchVal.first is Some<*> && matchVal.second is Some<*> -> {
                     val (l) = matchVal.first as Some<T>
                     val (r) = matchVal.second as Some<T>
                     l.partialCmp(r)
                 }
-                matchVal.first is Some && matchVal.second == null -> Some(cmp.Ordering.Greater)
-                matchVal.first == null && matchVal.second is Some -> Some(cmp.Ordering.Less)
+                matchVal.first is Some<*> && matchVal.second == null -> Some(cmp.Ordering.Greater)
+                matchVal.first == null && matchVal.second is Some<*> -> Some(cmp.Ordering.Less)
                 else -> Some(cmp.Ordering.Equal)
             }
         }
@@ -2031,21 +2030,21 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         run {
             val matchVal = Pair(this, other)
             when {
-                matchVal.first is Some && matchVal.second is Some -> {
+                matchVal.first is Some<*> && matchVal.second is Some<*> -> {
                     val (l) = matchVal.first as Some<T>
                     val (r) = matchVal.second as Some<T>
                     l.cmp(r)
                 }
-                matchVal.first is Some && matchVal.second == null -> cmp.Ordering.Greater
-                matchVal.first == null && matchVal.second is Some -> cmp.Ordering.Less
+                matchVal.first is Some<*> && matchVal.second == null -> cmp.Ordering.Greater
+                matchVal.first == null && matchVal.second is Some<*> -> cmp.Ordering.Less
                 else -> cmp.Ordering.Equal
             }
         }
 
     public override fun branch(): ControlFlow<Option<Nothing>, T> =
         when (this) {
-            is Some -> {
-                val (v) = this
+            is Some<*> -> {
+                val (v) = this as Some<T>
                 ControlFlow.Continue(v)
             }
             null -> ControlFlow.Break(None)
@@ -2104,9 +2103,9 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
  */
 public fun <T, U> Option<Pair<T, U>>.unzip(): Pair<Option<T>, Option<U>> =
     when (this) {
-        is Some -> {
-            val a = this.value.first
-            val b = this.value.second
+        is Some<*> -> {
+            val a = (this as Some<T>).value.first
+            val b = (this as Some<T>).value.second
             Pair(Some(a), Some(b))
         }
         null -> Pair(None, None)
@@ -2130,8 +2129,8 @@ public fun <T> Option<T>.copied(): Option<T> {
     // Note(const-Note): this implementation, which sidesteps using `Option.map` since it's not const
     // ready yet, should be reverted when possible to avoid code repetition
     return when (this) {
-        is Some -> {
-            val (v) = this
+        is Some<*> -> {
+            val (v) = this as Some<T>
             Some(v)
         }
         null -> None
@@ -2193,12 +2192,12 @@ public fun <T> Option<T>.cloned(): Option<T> = this.asDeref().cloned()
  */
 public fun <T, E> Option<Result<T, E>>.transpose(): Result<Option<T>, E> =
     when {
-        this is Some && (this as Some<T>).value is Result.Ok -> {
-            val x = ((this as Some<T>).value as Result.Ok).value
+        this is Some<*> && (this as Some<T>).value is Result.Ok<*, *> -> {
+            val x = ((this as Some<T>).value as Result.Ok<*, *>).value
             Result.Ok<Option<T>, E>(Some(x))
         }
-        this is Some && (this as Some<T>).value is Result.Err -> {
-            val e = ((this as Some<T>).value as Result.Err).error
+        this is Some<*> && (this as Some<T>).value is Result.Err<*, *> -> {
+            val e = ((this as Some<T>).value as Result.Err<*, *>).error
             Result.Err<Option<T>, E>(e)
         }
         else -> Result.Ok<Option<T>, E>(None)
@@ -2248,9 +2247,9 @@ public open class Item<A>(
 
     public open fun clone(): Item<A> = Item(opt)
 
-    public override fun next(): Option<A> = this.opt.also { this.opt = null }
+    public open fun next(): Option<A> = this.opt.also { this.opt = null }
 
-    public override fun sizeHint(): Pair<Int, Option<Int>> {
+    public open fun sizeHint(): Pair<Int, Option<Int>> {
         val len = this.opt.len()
         return Pair(len, Some(len))
     }
@@ -2279,9 +2278,9 @@ public open class Iter<A>(
         }
     }
 
-    public override fun next(): Option<A> = this.inner.next()
+    public open fun next(): Option<A> = this.inner.next()
 
-    public override fun sizeHint(): Pair<Int, Option<Int>> = this.inner.sizeHint()
+    public open fun sizeHint(): Pair<Int, Option<Int>> = this.inner.sizeHint()
 
     public open fun nextBack(): Option<A> = this.inner.nextBack()
 
@@ -2307,9 +2306,9 @@ public open class IterMut<A>(
         }
     }
 
-    public override fun next(): Option<A> = this.inner.next()
+    public open fun next(): Option<A> = this.inner.next()
 
-    public override fun sizeHint(): Pair<Int, Option<Int>> = this.inner.sizeHint()
+    public open fun sizeHint(): Pair<Int, Option<Int>> = this.inner.sizeHint()
 
     public open fun nextBack(): Option<A> = this.inner.nextBack()
 }
@@ -2335,9 +2334,9 @@ public open class IntoIter<A>(
 
     public open fun clone(): IntoIter<A> = IntoIter(inner)
 
-    public override fun next(): Option<A> = this.inner.next()
+    public open fun next(): Option<A> = this.inner.next()
 
-    public override fun sizeHint(): Pair<Int, Option<Int>> = this.inner.sizeHint()
+    public open fun sizeHint(): Pair<Int, Option<Int>> = this.inner.sizeHint()
 
     public open fun nextBack(): Option<A> = this.inner.nextBack()
 }
@@ -2347,7 +2346,7 @@ public open class IntoIter<A>(
  */
 public open class OptionFlatten<A>(
     public var iter: Option<A>,
-) : TrustedLen, Iterable<Item> {
+) : Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@OptionFlatten.next()) {
@@ -2359,72 +2358,72 @@ public open class OptionFlatten<A>(
 
     public open fun clone(): OptionFlatten<A> = OptionFlatten(iter)
 
-    public override fun next(): Option<Item> =
+    public open fun next(): Option<Item> =
         when (val matchVal = this.iter) {
-            is Some -> {
+            is Some<*> -> {
                 val (iter) = matchVal
                 iter.next()
             }
             null -> None
         }
 
-    public override fun sizeHint(): Pair<Int, Option<Int>> =
+    public open fun sizeHint(): Pair<Int, Option<Int>> =
         when (val matchVal = this.iter) {
-            is Some -> {
+            is Some<*> -> {
                 val (iter) = matchVal
                 iter.sizeHint()
             }
             null -> Pair(0, Some(0))
         }
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
         when (val matchVal = this.iter) {
-            is Some -> {
+            is Some<*> -> {
                 val (iter) = matchVal
                 iter.advanceBy(n)
             }
             null -> NonZero.new<NonZeroUsizeInner, Int>(n).mapOr(Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit), { Result.Err(it) })
         }
 
-    public override fun nth(n: Int): Option<Item> =
+    public open fun nth(n: Int): Option<Item> =
         when (val matchVal = this.iter) {
-            is Some -> {
+            is Some<*> -> {
                 val (iter) = matchVal
                 iter.nth(n)
             }
             null -> None
         }
 
-    public override fun <Acc> fold(init: Acc, fold: (Acc, Item) -> Acc): Acc =
+    public open fun <Acc> fold(init: Acc, fold: (Acc, Item) -> Acc): Acc =
         when (val matchVal = this.iter) {
-            is Some -> {
+            is Some<*> -> {
                 val (iter) = matchVal
                 iter.fold(init, fold)
             }
             null -> init
         }
 
-    public override fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> =
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> =
         when (val matchVal = this.iter) {
-            is Some -> {
+            is Some<*> -> {
                 val (iter) = matchVal
                 iter.tryFold(init, fold)
             }
             null -> init
         }
 
-    public override fun count(): Int =
+    public open fun count(): Int =
         when (val matchVal = this.iter) {
-            is Some -> {
+            is Some<*> -> {
                 val (iter) = matchVal
                 iter.count()
             }
             null -> 0
         }
 
-    public override fun last(): Option<Item> =
+    public open fun last(): Option<Item> =
         when (val matchVal = this.iter) {
-            is Some -> {
+            is Some<*> -> {
                 val (iter) = matchVal
                 iter.last()
             }
@@ -2433,7 +2432,7 @@ public open class OptionFlatten<A>(
 
     public open fun nextBack(): Option<Item> =
         when (val matchVal = this.iter) {
-            is Some -> {
+            is Some<*> -> {
                 val (iter) = matchVal
                 iter.nextBack()
             }
@@ -2442,7 +2441,7 @@ public open class OptionFlatten<A>(
 
     public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
         when (val matchVal = this.iter) {
-            is Some -> {
+            is Some<*> -> {
                 val (iter) = matchVal
                 iter.advanceBackBy(n)
             }
@@ -2451,7 +2450,7 @@ public open class OptionFlatten<A>(
 
     public open fun nthBack(n: Int): Option<Item> =
         when (val matchVal = this.iter) {
-            is Some -> {
+            is Some<*> -> {
                 val (iter) = matchVal
                 iter.nthBack(n)
             }
@@ -2460,7 +2459,7 @@ public open class OptionFlatten<A>(
 
     public open fun <Acc> rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc =
         when (val matchVal = this.iter) {
-            is Some -> {
+            is Some<*> -> {
                 val (iter) = matchVal
                 iter.rfold(init, fold)
             }
@@ -2469,7 +2468,7 @@ public open class OptionFlatten<A>(
 
     public open fun <Residual, Acc, R> tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> =
         when (val matchVal = this.iter) {
-            is Some -> {
+            is Some<*> -> {
                 val (iter) = matchVal
                 iter.tryRfold(init, fold)
             }
@@ -2496,7 +2495,7 @@ public open class OptionFlatten<A>(
  * ```kotlin
  * val items = mutableListOf(0u.toUShort(), 1, 2)
  * val res: List<UShort>? = ArrayDeque((ArrayDeque(items)).map({ x -> x.checkedAdd(1) })).toMutableList()
- * check(res == mutableListOf(1, 2, 3))
+ * check(res == mutableListOf(1u, 2u, 3u))
  * ```
  *
  * As you can see, this will return the expected, valid items.
@@ -2559,8 +2558,8 @@ public fun <T, V, I : Iterable<Option<T>>> fromIteratorFromIterOptionV(iter: I):
 public fun <T> Option<Option<T>>.flatten(): Option<T> {
     // Note(const-Note): could be written with `andThen`
     return when (this) {
-        is Some -> {
-            val (inner) = this
+        is Some<*> -> {
+            val (inner) = this as Some<T>
             inner
         }
         null -> None
@@ -2588,8 +2587,8 @@ public fun <T> Option<Option<T>>.flatten(): Option<T> {
  */
 public fun <T> Option<Option<T>>.flattenRef(): Option<T> =
     when (this) {
-        is Some -> {
-            val (inner) = this
+        is Some<*> -> {
+            val (inner) = this as Some<T>
             inner.asRef()
         }
         null -> None
@@ -2622,8 +2621,8 @@ public fun <T> Option<Option<T>>.flattenRef(): Option<T> =
  */
 public fun <T> Option<Option<T>>.flattenMut(): Option<T> =
     when (this) {
-        is Some -> {
-            val (inner) = this
+        is Some<*> -> {
+            val (inner) = this as Some<T>
             inner.asMut()
         }
         null -> None

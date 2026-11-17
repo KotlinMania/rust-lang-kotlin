@@ -1,9 +1,6 @@
 // port-lint: source detect/os/windows/aarch64.rs
 package io.github.kotlinmania.rustlang.stddetect.detect.os.windows.aarch64
 
-import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
-import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.cache.cache
 
@@ -49,7 +46,7 @@ public fun detectFeatures(): cache.Initializer {
     val PF_ARM_V82_I8MM_INSTRUCTIONS_AVAILABLE: UInt = 66u
     val PF_ARM_V82_FP16_INSTRUCTIONS_AVAILABLE: UInt = 67u
     val PF_ARM_V86_BF16_INSTRUCTIONS_AVAILABLE: UInt = 68u
-    fun isProcessorFeaturePresent(processorFeature: Dword): Bool = run { val ptr = kmAllocZeroed(maxOf(1L, (PrimitiveLayouts.I32).sizeBytes), maxOf(1L, (PrimitiveLayouts.I32).alignBytes)); val res = (PrimitiveLayouts.I32).readNative(ptr); kmDealloc(ptr, maxOf(1L, (PrimitiveLayouts.I32).sizeBytes), maxOf(1L, (PrimitiveLayouts.I32).alignBytes)); res }
+    fun isProcessorFeaturePresent(processorFeature: Dword): Bool = 0
     val value = cache.Initializer.default()
     run {
         var enableFeature =

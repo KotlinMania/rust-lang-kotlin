@@ -23,6 +23,7 @@ import io.github.kotlinmania.rustlang.core.num.wrappingShl
 import io.github.kotlinmania.rustlang.core.num.wrappingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.CountBits
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorAbs
@@ -1359,7 +1360,7 @@ public expect fun maxnumV4f32(a: VectorFloat, b: VectorFloat): VectorFloat
 public expect fun maxnumV2f64(a: VectorDouble, b: VectorDouble): VectorDouble
 
 public open class ShuffleMask(
-    public var value: UIntArray = UIntArray((N).toInt()),
+    public var value: UIntArray = UIntArray(0),
 ) {
     public var field0: UIntArray
         get() = value
@@ -2370,7 +2371,7 @@ public fun <T : VectorSearchString<T>> vecSearchStringUntilZeroCc(a: T, b: T, c:
 /**
  * Vector Convert from float (even elements) to double
  */
-public fun vecDoublee(a: VectorFloat): VectorDouble = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 2)); _simdArg0 }; VectorDouble() }
+public fun vecDoublee(a: VectorFloat): VectorDouble = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); _simdArg0 }; VectorDouble() }
 
 // Note: the C version uses a shuffle mask with poison; we can't do that
 // @cfgAttr(all(test, targetFeature = "vector-enhancements-1"), assertInstr(vledb))
@@ -2380,7 +2381,7 @@ public fun vecDoublee(a: VectorFloat): VectorDouble = run { val _simdArg0 = run 
  */
 public fun vecFloate(a: VectorDouble): VectorFloat {
     val truncated: F32x2 = run { val _simdArg0 = a; _simdArg0 }
-    return run { val _simdArg0 = truncated; val _simdArg1 = truncated; val _simdArg2 = SimdShuffleIdx(listOf(0, 0, 1, 1)); _simdArg0 }
+    return run { val _simdArg0 = truncated; val _simdArg1 = truncated; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 0u, 1u, 1u)); _simdArg0 }
 }
 
 /**

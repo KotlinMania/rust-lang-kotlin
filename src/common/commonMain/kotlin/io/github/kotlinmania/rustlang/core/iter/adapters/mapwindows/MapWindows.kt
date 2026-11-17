@@ -55,6 +55,10 @@ public open class MapWindows<I, F, Item> internal constructor(
     public var inner: MapWindowsInner<I, Item> = innerCtorArg
         internal set
 
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "MapWindows").field("iter", this.inner.iter).finish(); Result.Ok<Unit, Unit>(Unit) }
+
+    public open fun clone(): MapWindows<I, F, Item> = MapWindows(f = this.f.clone(), inner = this.inner.clone())
+
     public companion object {
         public operator fun <I, F, Item> invoke(
             f: F,
@@ -63,6 +67,15 @@ public open class MapWindows<I, F, Item> internal constructor(
             f = f,
             innerCtorArg = inner,
         )
+
+        public fun <I, F> new(iter: I, f: F, n: Int, typeLayoutI: TypeLayout<I> = UnresolvedTypeLayout()): MapWindows<I, F, Item> {
+            check(n != 0) { "array in `Iterator::map_windows` must contain more than 0 elements" }
+            // Only ZST arrays' length can be so large.
+            if (((UnresolvedTypeLayout<Item>()).sizeBytes == 0L)) {
+                check(n.checkedMul(2) != null) { "array size of `Iterator::map_windows` is too large" }
+            }
+            return MapWindows(inner = MapWindowsInner.new(iter, n), f = f)
+        }
     }
 }
 
@@ -85,6 +98,46 @@ public open class MapWindowsInner<I, Item> internal constructor(
     public var buffer: Buffer<Item>? = bufferCtorArg
         internal set
 
+    public open fun nextWindow(): List<Item>? {
+        when (val matchVal = this.buffer) {
+            // It is the first time to advance. We collect
+            // the first `N` items from `self.iter` to initialize `self.buffer`.
+            null -> this.buffer = Buffer.tryFromIter(this.iter, n)
+            else -> {
+                val buffer = matchVal
+                when (val matchVal1 = this.iter.next()) {
+                    null -> {
+                        this.buffer.also { this.buffer = null }
+                    }
+                    // Advance the iterator. We first call `next` before changing our buffer
+                    // at all. This means that if `next` panics, our invariant is upheld and
+                    // our `Drop` impl drops the correct elements.
+                    else -> {
+                        val item = matchVal1
+                        buffer.push(item)
+                    }
+                }
+            }
+        }
+        return this.buffer?.let({ it.asArrayRef() })
+    }
+
+    public open fun sizeHint(): Pair<Int, Int?> {
+        val (lo, hi) = this.iter.sizeHint()
+        return if (this.buffer != null) {
+            // If the first `N` items are already yielded by the inner iterator,
+            // the size hint is then equal to the that of the inner iterator's.
+            Pair(lo, hi)
+        } else {
+            // If the first `N` items are not yet yielded by the inner iterator,
+            // the first `N` elements should be counted as one window, so both bounds
+            // should subtract `N - 1`.
+            Pair(lo.saturatingSub(N - 1), hi.map({ hi1 -> hi1.saturatingSub(N - 1) }))
+        }
+    }
+
+    public open fun clone(): MapWindowsInner<I, Item> = MapWindowsInner(iter = this.iter.clone(), buffer = this.buffer)
+
     public companion object {
         public operator fun <I, Item> invoke(
             iter: I,
@@ -93,6 +146,8 @@ public open class MapWindowsInner<I, Item> internal constructor(
             iter = iter,
             bufferCtorArg = buffer,
         )
+
+        public fun <I> new(iter: I, n: Int): MapWindowsInner<I, Item> = MapWindowsInner(iter = iter, buffer = null)
     }
 }
 
@@ -111,165 +166,116 @@ public open class MapWindowsInner<I, Item> internal constructor(
 public open class Buffer<T>(
     public var buffer: List<List<MaybeUninit<T>>>,
     public var start: Int,
-)
+) {
+    public open fun bufferPtr(): ConstPtr = ConstPtr((this.buffer.asPtr()).rawAddress)
 
-public fun <I, F> MapWindows.Companion.new(iter: I, f: F, n: Int, typeLayoutI: TypeLayout<I> = UnresolvedTypeLayout()): MapWindows<I, F, Item> {
-    check(n != 0) { "array in `Iterator::map_windows` must contain more than 0 elements" }
-    // Only ZST arrays' length can be so large.
-    if (((UnresolvedTypeLayout<Item>()).sizeBytes == 0L)) {
-        check(n.checkedMul(2) != null) { "array size of `Iterator::map_windows` is too large" }
+    public open fun bufferMutPtr(): MutPtr = MutPtr((this.buffer.asMutPtr()).rawAddress)
+
+    public open fun asArrayRef(): List<T> {
+        if (false) {
+            check(this.start + N <= 2 * N)
+        }
+        // SAFETY: our invariant guarantees these elements are initialized.
+        return this.bufferPtr().add(this.start).cast()
     }
-    return MapWindows(inner = MapWindowsInner.new(iter, n), f = f)
-}
 
-public fun <I> MapWindowsInner.Companion.new(iter: I, n: Int): MapWindowsInner<I, Item> = MapWindowsInner(iter = iter, buffer = null)
+    public open fun asUninitArrayMut(): MaybeUninit<List<T>> {
+        if (false) {
+            check(this.start + N <= 2 * N)
+        }
+        // SAFETY: our invariant guarantees these elements are in bounds.
+        return this.bufferMutPtr().add(this.start).cast()
+    }
 
-public fun <I> MapWindowsInner<I, Item>.nextWindow(n: Int): List<Item>? {
-    when (val matchVal = this.buffer) {
-        // It is the first time to advance. We collect
-        // the first `N` items from `self.iter` to initialize `self.buffer`.
-        null -> this.buffer = Buffer.tryFromIter(this.iter, n)
-        else -> {
-            val buffer = matchVal
-            when (val matchVal1 = this.iter.next()) {
-                null -> {
-                    this.buffer.also { this.buffer = null }
-                }
-                // Advance the iterator. We first call `next` before changing our buffer
-                // at all. This means that if `next` panics, our invariant is upheld and
-                // our `Drop` impl drops the correct elements.
-                else -> {
-                    val item = matchVal1
-                    buffer.push(item)
-                }
+    /**
+     * Pushes a new item `next` to the back, and pops the front-most one.
+     *
+     * All the elements will be shifted to the front end when pushing reaches
+     * the back end.
+     */
+    public open fun push(next: T) {
+        val bufferMutPtr = this.bufferMutPtr()
+        if (false) {
+            check(this.start + N <= 2 * N)
+        }
+        val toDrop2 =
+            if (this.start == N) {
+                // We have reached the end of our buffer and have to copy
+                // everything to the start. Example layout for N = 3.
+                //
+                // 0   1   2   3   4   5            0   1   2   3   4   5
+                // ┌───┬───┬───┬───┬───┬───┐        ┌───┬───┬───┬───┬───┬───┐
+                // │ - │ - │ - │ a │ b │ c │   ->   │ b │ c │ n │ - │ - │ - │
+                // └───┴───┴───┴───┴───┴───┘        └───┴───┴───┴───┴───┴───┘
+                // ↑                    ↑
+                // start                start
+                // SAFETY: the two pointers are valid for reads/writes of N -1
+                // elements because our array's size is semantically 2 * N. The
+                // regions also don't overlap for the same reason.
+                //
+                // We leave the old elements in place. As soon as `start` is set
+                // to 0, we treat them as uninitialized and treat their copies
+                // as initialized.
+                val toDrop =
+                    run {
+                        copyNonoverlapping(bufferMutPtr.add(this.start + 1), bufferMutPtr, N - 1)
+                        bufferMutPtr.add(N - 1).write(next)
+                        bufferMutPtr.add(this.start)
+                    }
+                this.start = 0
+                toDrop
+            } else {
+                // SAFETY: `self.start` is < N as guaranteed by the invariant
+                // plus the check above. Even if the drop at the end panics,
+                // the invariant is upheld.
+                //
+                // Example layout for N = 3:
+                //
+                // 0   1   2   3   4   5            0   1   2   3   4   5
+                // ┌───┬───┬───┬───┬───┬───┐        ┌───┬───┬───┬───┬───┬───┐
+                // │ - │ a │ b │ c │ - │ - │   ->   │ - │ - │ b │ c │ n │ - │
+                // └───┴───┴───┴───┴───┴───┘        └───┴───┴───┴───┴───┴───┘
+                // ↑                                    ↑
+                // start                                start
+                //
+                val toDrop1 =
+                    run {
+                        bufferMutPtr.add(this.start + N).write(next)
+                        bufferMutPtr.add(this.start)
+                    }
+                this.start += 1
+                toDrop1
             }
+        // SAFETY: the index is valid and this is element `a` in the
+        // diagram above and has not been dropped yet.
+        dropInPlace(toDrop2.castInit())
+    }
+
+    public open fun clone(): Buffer<T> {
+        // Use `ManuallyDrop` until buffer is fully written to avoid dropping uninitialized elements on panic.
+        // (See `Buffer` rustdoc for safety invariant)
+        val buffer = Buffer(buffer = listOf(List((N).toInt()) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }, List((N).toInt()) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }), start = this.start)
+        // `clone()` could panic; `ManuallyDrop` guards against that.
+        buffer.asUninitArrayMut().write(this.asArrayRef().clone())
+        // We initialized the buffer above, so we are good now
+        return ManuallyDrop.intoInner(buffer)
+    }
+
+    public open fun drop() {
+        // SAFETY: our invariant guarantees that N elements starting from
+        // `self.start` are initialized. We drop them here.
+        run {
+            val initializedPart: MutPtr = this.bufferMutPtr().add(this.start).cast().castSlice(N)
+            dropInPlace(initializedPart)
         }
     }
-    return this.buffer?.let({ it.asArrayRef() })
-}
 
-public fun <I> MapWindowsInner<I, Item>.sizeHint(n: Int): Pair<Int, Int?> {
-    val (lo, hi) = this.iter.sizeHint()
-    return if (this.buffer != null) {
-        // If the first `N` items are already yielded by the inner iterator,
-        // the size hint is then equal to the that of the inner iterator's.
-        Pair(lo, hi)
-    } else {
-        // If the first `N` items are not yet yielded by the inner iterator,
-        // the first `N` elements should be counted as one window, so both bounds
-        // should subtract `N - 1`.
-        Pair(lo.saturatingSub(n - 1), hi.map({ hi1 -> hi1.saturatingSub(n - 1) }))
-    }
-}
-
-public fun <T> Buffer.Companion.tryFromIter(iter: Any, n: Int): Buffer<T>? {
-    val firstHalf = (iterNextChunk(iter, n).ok() ?: return null)
-    val buffer = listOf(MaybeUninit.new(firstHalf, PrimitiveLayouts.U8).transpose(), List(n) { MaybeUninit.uninit(PrimitiveLayouts.U8) })
-    return Buffer(buffer = buffer, start = 0)
-}
-
-public fun <T> Buffer<T>.bufferPtr(n: Int): ConstPtr = ConstPtr((this.buffer.asPtr()).rawAddress)
-
-public fun <T> Buffer<T>.bufferMutPtr(n: Int): MutPtr = MutPtr((this.buffer.asMutPtr()).rawAddress)
-
-public fun <T> Buffer<T>.asArrayRef(n: Int): List<T> {
-    if (false) {
-        check(this.start + n <= 2 * n)
-    }
-    // SAFETY: our invariant guarantees these elements are initialized.
-    return ConstPtr((ConstPtr((this.bufferPtr()).rawAddress + ((this.start).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).rawAddress)
-}
-
-public fun <T> Buffer<T>.asUninitArrayMut(n: Int): MaybeUninit<List<T>> {
-    if (false) {
-        check(this.start + n <= 2 * n)
-    }
-    // SAFETY: our invariant guarantees these elements are in bounds.
-    return MutPtr((MutPtr((this.bufferMutPtr()).rawAddress + ((this.start).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).rawAddress)
-}
-
-/**
- * Pushes a new item `next` to the back, and pops the front-most one.
- *
- * All the elements will be shifted to the front end when pushing reaches
- * the back end.
- */
-public fun <T> Buffer<T>.push(next: T, n: Int) {
-    val bufferMutPtr = this.bufferMutPtr()
-    if (false) {
-        check(this.start + n <= 2 * n)
-    }
-    val toDrop2 =
-        if (this.start == n) {
-            // We have reached the end of our buffer and have to copy
-            // everything to the start. Example layout for N = 3.
-            //
-            // 0   1   2   3   4   5            0   1   2   3   4   5
-            // ┌───┬───┬───┬───┬───┬───┐        ┌───┬───┬───┬───┬───┬───┐
-            // │ - │ - │ - │ a │ b │ c │   ->   │ b │ c │ n │ - │ - │ - │
-            // └───┴───┴───┴───┴───┴───┘        └───┴───┴───┴───┴───┴───┘
-            // ↑                    ↑
-            // start                start
-            // SAFETY: the two pointers are valid for reads/writes of N -1
-            // elements because our array's size is semantically 2 * N. The
-            // regions also don't overlap for the same reason.
-            //
-            // We leave the old elements in place. As soon as `start` is set
-            // to 0, we treat them as uninitialized and treat their copies
-            // as initialized.
-            val toDrop =
-                run {
-                    copyNonoverlapping((MutPtr((bufferMutPtr).rawAddress + ((this.start + 1).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).asConstPtr(), bufferMutPtr, n - 1, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<T>>())
-                    (UnresolvedTypeLayout<MaybeUninit<T>>()).readNative((MutPtr((bufferMutPtr).rawAddress + ((n - 1).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).write(next)
-                    MutPtr((bufferMutPtr).rawAddress + ((this.start).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))
-                }
-            this.start = 0
-            toDrop
-        } else {
-            // SAFETY: `self.start` is < N as guaranteed by the invariant
-            // plus the check above. Even if the drop at the end panics,
-            // the invariant is upheld.
-            //
-            // Example layout for N = 3:
-            //
-            // 0   1   2   3   4   5            0   1   2   3   4   5
-            // ┌───┬───┬───┬───┬───┬───┐        ┌───┬───┬───┬───┬───┬───┐
-            // │ - │ a │ b │ c │ - │ - │   ->   │ - │ - │ b │ c │ n │ - │
-            // └───┴───┴───┴───┴───┴───┘        └───┴───┴───┴───┴───┴───┘
-            // ↑                                    ↑
-            // start                                start
-            //
-            val toDrop1 =
-                run {
-                    (UnresolvedTypeLayout<MaybeUninit<T>>()).readNative((MutPtr((bufferMutPtr).rawAddress + ((this.start + n).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).write(next)
-                    MutPtr((bufferMutPtr).rawAddress + ((this.start).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))
-                }
-            this.start += 1
-            toDrop1
+    public companion object {
+        public fun <T> tryFromIter(iter: Any, n: Int): Buffer<T>? {
+            val firstHalf = (iterNextChunk(iter, n).ok() ?: return null)
+            val buffer = listOf(MaybeUninit.new(firstHalf, PrimitiveLayouts.U8).transpose(), List(n) { MaybeUninit.uninit(PrimitiveLayouts.U8) })
+            return Buffer(buffer = buffer, start = 0)
         }
-    // SAFETY: the index is valid and this is element `a` in the
-    // diagram above and has not been dropped yet.
-    dropInPlace(toDrop2.castInit())
-}
-
-public fun <T> Buffer<T>.clone(n: Int): Buffer<T> {
-    // Use `ManuallyDrop` until buffer is fully written to avoid dropping uninitialized elements on panic.
-    // (See `Buffer` rustdoc for safety invariant)
-    val buffer = Buffer(buffer = listOf(List(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }, List(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }), start = this.start)
-    // `clone()` could panic; `ManuallyDrop` guards against that.
-    buffer.asUninitArrayMut().write(this.asArrayRef().clone())
-    // We initialized the buffer above, so we are good now
-    return ManuallyDrop.intoInner(buffer)
-}
-
-public fun <I> MapWindowsInner<I, Item>.clone(n: Int): MapWindowsInner<I, Item> = MapWindowsInner(iter = this.iter.clone(), buffer = this.buffer)
-
-public fun <T> Buffer<T>.drop(n: Int) {
-    // SAFETY: our invariant guarantees that N elements starting from
-    // `self.start` are initialized. We drop them here.
-    run {
-        val initializedPart: MutPtr = MutPtr((MutPtr((this.bufferMutPtr()).rawAddress + ((this.start).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).castSlice(n)
-        dropInPlace(initializedPart)
     }
 }
 
@@ -280,7 +286,3 @@ public fun <I, R> MapWindows<I, F, Item>.next(n: Int): R? {
 }
 
 public fun <I, R> MapWindows<I, F, Item>.sizeHint(n: Int): Pair<Int, Int?> = this.inner.sizeHint()
-
-public fun <I, F> MapWindows<I, F, Item>.fmt(f: StringBuilder, n: Int): Result<Unit, Unit> = DebugStruct(f, "MapWindows").field("iter", this.inner.iter).finish()
-
-public fun <I, F> MapWindows<I, F, Item>.clone(n: Int): MapWindows<I, F, Item> = MapWindows(f = this.f.clone(), inner = this.inner.clone())

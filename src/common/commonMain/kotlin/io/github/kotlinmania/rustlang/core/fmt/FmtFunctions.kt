@@ -17,6 +17,7 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.exposeProvenance
 import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
@@ -99,7 +100,7 @@ public fun write(output: Write, fmt: Arguments): Result {
         null -> {}
         else -> {
             val s = matchVal
-            return output.append(s)
+            return run { output.append(s); RustResult.Ok<Unit, Error>(Unit) }
         }
     }
     var template = fmt.template
@@ -147,7 +148,7 @@ public fun write(output: Write, fmt: Arguments): Result {
             // Having this as a separate case improves performance for the common case.
             // SAFETY: We can assume the template only refers to arguments that exist.
             run {
-                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, FormattingOptions.new()))) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, FormattingOptions.new()))) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
             }
             argIndex += 1
         } else {
@@ -190,7 +191,7 @@ public fun write(output: Write, fmt: Arguments): Result {
             }
             // SAFETY: We can assume the template only refers to arguments that exist.
             run {
-                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, opt))) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, opt))) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
             }
             argIndex += 1
         }
@@ -454,10 +455,10 @@ public fun <T : Debug> RefCell<T>.fmt(f: Formatter): Result {
     val d = DebugStruct(f, "RefCell")
     run {
         val matchVal = this.tryBorrow()
-        when (matchVal) { is RustResult.Ok -> {
+        when (matchVal) { is RustResult.Ok<*, *> -> {
             val borrow = matchVal.value
             d.field("value", borrow)
-        }; is RustResult.Err -> {
+        }; is RustResult.Err<*, *> -> {
             d.field("value", "<borrowed>")
         } }
     }

@@ -39,7 +39,7 @@ public class DebugTuple(
 public open class PeekMut<T, A : Allocator>(
     public var vec: List<T>,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "PeekMut").field(this.deref()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "PeekMut").field(this.deref()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun deref(): T {
         val idx = this.vec.size - 1

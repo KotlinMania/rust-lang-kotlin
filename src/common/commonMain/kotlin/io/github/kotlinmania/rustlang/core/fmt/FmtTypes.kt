@@ -255,7 +255,7 @@ public val ALIGN_UNKNOWN: UInt = 3u shl 29
  *
  * open class Point(public var x: Int, public var y: Int) {
  *     public open fun fmt(f: StringBuilder): Result<Unit> {
- *         return DebugStruct(f, "Point").field("x", this.x).field("y", this.y).finish()
+ *         return run { DebugStruct(f, "Point").field("x", this.x).field("y", this.y).finish(); Result.success(Unit) }
  *     }
  * }
  * val origin = Point(x = 0, y = 0)
@@ -322,7 +322,7 @@ public interface Debug {
      * public fun doctestEntry() {
      *     open class Position(public var longitude: Float, public var latitude: Float) {
      *         public open fun fmt(f: StringBuilder): Result<Unit> {
-     *             return DebugTuple(f, "").field(this.longitude).field(this.latitude).finish()
+     *             return run { DebugTuple(f, "").field(this.longitude).field(this.latitude).finish(); Result.success(Unit) }
      *         }
      *     }
      *     val position = Position(longitude = 1.987f, latitude = 2.983f)

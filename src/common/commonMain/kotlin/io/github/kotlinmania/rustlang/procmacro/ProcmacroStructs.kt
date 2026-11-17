@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.num.fromStrRadix
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
 import io.github.kotlinmania.rustlang.procmacro.bridge.DelimSpan
@@ -63,7 +64,7 @@ public class DebugStruct(
 public open class EscapeError(
     public var kind: EscapeErrorKind,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.kind).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.kind).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun from(value: io.github.kotlinmania.rustlang.rustcliteralescaper.EscapeError): EscapeError {
@@ -136,13 +137,13 @@ public open class TokenStream(
      * considered errors, is unspecified and may change in the future.
      */
     public open fun expandExpr(): Result<TokenStream, ExpandError> {
-        val stream = when (val tryResult = (this.value?.let { Result.Ok<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, ExpandError>(it) } ?: Result.Err<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, ExpandError>(ExpandError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<TokenStream, ExpandError>(tryResult.error) }
+        val stream = when (val tryResult = (this.value?.let { Result.Ok<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, ExpandError>(it) } ?: Result.Err<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, ExpandError>(ExpandError()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<TokenStream, ExpandError>(tryResult.error) }
         return run {
             val matchVal = BridgeMethods.tsExpandExpr(stream)
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val stream1 = matchVal.value
                 Result.Ok<TokenStream, ExpandError>(TokenStream(stream1))
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 Result.Err<TokenStream, ExpandError>(ExpandError())
             } }
         }
@@ -166,7 +167,7 @@ public open class TokenStream(
             null -> Result.Ok<Unit, Error>(Unit)
             else -> {
                 val ts = matchVal
-                run { f.append("${BridgeMethods.tsToString(ts)}"); Result.Ok(Unit) }
+                run { f.append("${BridgeMethods.tsToString(ts)}"); Result.Ok<Unit, Error>(Unit) }
             }
         }
 
@@ -175,7 +176,7 @@ public open class TokenStream(
      */
     public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> {
         f.append("TokenStream ")
-        return object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
+        return run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
     }
 
     public open fun <I : Iterable<TokenTree>> extend(trees: I) {
@@ -224,7 +225,7 @@ public open class TokenStream(
          * change these errors into `LexError`s later.
          */
         public fun fromStr(src: String): Result<TokenStream, LexError> {
-            return Result.Ok<TokenStream, LexError>(TokenStream(when (val tryResult = BridgeMethods.tsFromStr(src).mapErr({ LexError(it) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<TokenStream, LexError>(tryResult.error) }))
+            return Result.Ok<TokenStream, LexError>(TokenStream(when (val tryResult = BridgeMethods.tsFromStr(src).mapErr({ LexError(it) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<TokenStream, LexError>(tryResult.error) }))
         }
 
         public fun default(): TokenStream = TokenStream.new()
@@ -272,14 +273,14 @@ public open class LexError(
             value = v
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(this.value); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(this.value); Result.Ok<Unit, Error>(Unit) }
 }
 
 /**
  * Error returned from `TokenStream.expandExpr`.
  */
 public open class ExpandError {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("macro expansion failed"); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("macro expansion failed"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<ExpandError> =
@@ -625,9 +626,9 @@ public open class Group internal constructor(
      * into the same group (modulo spans), except for possibly `TokenTree.Group`s
      * with `Delimiter.None` delimiters.
      */
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${TokenStream.from(TokenTree.from(this.clone()))}"); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${TokenStream.from(TokenTree.from(this.clone()))}"); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Group").field("delimiter", this.delimiter()).field("stream", this.stream()).field("span", this.span()).finish()
+    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Group").field("delimiter", this.delimiter()).field("stream", this.stream()).field("span", this.span()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(
@@ -700,9 +701,9 @@ public open class Punct internal constructor(
      * Prints the punctuation character as a string that should be losslessly convertible
      * back into the same character.
      */
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this.asChar()}"); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this.asChar()}"); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Punct").field("ch", this.asChar()).field("spacing", this.spacing()).field("span", this.span()).finish()
+    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Punct").field("ch", this.asChar()).field("spacing", this.spacing()).field("span", this.span()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun eq(rhs: Char): Boolean = this.asChar() == rhs
 
@@ -773,10 +774,10 @@ public open class Ident internal constructor(
                 f.append(prefix)
             }
         }
-        return run { f.append((this.value.sym).toString()); Result.Ok(Unit) }
+        return run { f.append((this.value.sym).toString()); Result.Ok<Unit, Error>(Unit) }
     }
 
-    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Ident").field("ident", this.toString()).field("span", this.span()).finish()
+    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Ident").field("ident", this.toString()).field("span", this.span()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(
@@ -952,10 +953,10 @@ public open class Literal internal constructor(
                     // Force-inlining here is aggressive but the closure is
                     // called on every char in the string, so it can be hot in
                     // programs with many long strings containing escapes.
-                    unescapeStr(symbol, { c -> when (c) { is Result.Ok -> {
+                    unescapeStr(symbol, { c -> when (c) { is Result.Ok<*, *> -> {
                         val c1 = c.value
                         buf += c1
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         val err = c.error
                         if (err.isFatal()) {
                             error = ConversionErrorKind.FailedToUnescape(err.into())
@@ -985,18 +986,18 @@ public open class Literal internal constructor(
                 var error = null
                 val buf = ArrayList(symbol.len())
                 unescapeCStr(symbol, { span, res -> when {
-                    res is Result.Ok && res.value is MixedUnit.Char -> {
+                    res is Result.Ok<*, *> && res.value is MixedUnit.Char -> {
                         val valueVal = res.value
                         val (c) = valueVal as MixedUnit.Char
                         buf.addAll(c.get().encodeUtf8(List(4) { 0 }).encodeToByteArray().map { it.toUByte() })
                     }
-                    res is Result.Ok && res.value is MixedUnit.HighByte -> {
+                    res is Result.Ok<*, *> && res.value is MixedUnit.HighByte -> {
                         val valueVal1 = res.value
                         val (b) = valueVal1 as MixedUnit.HighByte
                         buf.add(b.get())
                     }
                     else -> {
-                        val err = res.error
+                        val err = (res as Result.Err<*, *>).error
                         if (err.isFatal()) {
                             error = ConversionErrorKind.FailedToUnescape(err.into())
                         }
@@ -1030,10 +1031,10 @@ public open class Literal internal constructor(
             LitKind.ByteStr -> {
                 val buf = ArrayList(symbol.len())
                 var error = null
-                unescapeByteStr(symbol, { res -> when (res) { is Result.Ok -> {
+                unescapeByteStr(symbol, { res -> when (res) { is Result.Ok<*, *> -> {
                     val b = res.value
                     buf.add(b)
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     val err = res.error
                     if (err.isFatal()) {
                         error = ConversionErrorKind.FailedToUnescape(err.into())
@@ -1271,7 +1272,7 @@ public open class Literal internal constructor(
             Result.Ok(Unit)
         })
 
-    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Literal").field("kind", "${this.value.kind}").field("symbol", this.value.symbol).field("suffix", "${this.value.suffix}").field("span", this.value.span).finish()
+    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Literal").field("kind", "${this.value.kind}").field("symbol", this.value.symbol).field("suffix", "${this.value.suffix}").field("span", this.value.span).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(
@@ -1820,10 +1821,10 @@ public open class Literal internal constructor(
         public fun fromStr(src: String): Result<Literal, LexError> =
             run {
                 val matchVal = BridgeMethods.literalFromStr(src)
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val literal = matchVal.value
                     Result.Ok<Literal, LexError>(Literal(literal))
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     val msg = matchVal.error
                     Result.Err<Literal, LexError>(LexError(msg))
                 } }

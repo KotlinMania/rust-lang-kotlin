@@ -68,9 +68,9 @@ public open class OnceBox<T> internal constructor(
         val newPtr = Box.intoRaw(Pin.intoInnerUnchecked(f()))
         return run {
             val matchVal = this.ptr.compareExchange(MutPtr(0L), newPtr, Release, Acquire)
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 Pin.newUnchecked(newPtr)
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val ptr = matchVal.error
                 // Lost the race to another thread.
                 // Drop the value we created, and use the one from the other thread instead.

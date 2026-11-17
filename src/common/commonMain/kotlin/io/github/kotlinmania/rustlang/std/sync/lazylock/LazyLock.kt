@@ -106,35 +106,6 @@ public open class LazyLock<T, F> internal constructor(
         }
     }
 
-    /**
-     * Dereferences the value.
-     *
-     * This method will block the calling thread if another initialization
-     * routine is currently running.
-     *
-     * # Panics
-     *
-     * If the initialization closure panics (the one that is passed to the [new] method), the
-     * panic is propagated to the caller, and the lock becomes poisoned. This will cause all future
-     * accesses of the lock (via [force] or a dereference) to panic.
-     *
-     * [new]: LazyLock.new
-     * [force]: LazyLock.force
-     */
-    public open fun deref(): T = LazyLock.force(this)
-
-    /**
-     * # Panics
-     *
-     * If the initialization closure panics (the one that is passed to the [new] method), the
-     * panic is propagated to the caller, and the lock becomes poisoned. This will cause all future
-     * accesses of the lock (via [force] or a dereference) to panic.
-     *
-     * [new]: LazyLock.new
-     * [force]: LazyLock.force
-     */
-    public open fun derefMut(): T = LazyLock.forceMut(this)
-
     public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val d = DebugTuple(f, "LazyLock")
         when (val matchVal = LazyLock.get(this)) {
@@ -449,6 +420,35 @@ public open class LazyLock<T, F> internal constructor(
         public fun <T, F> from(value: T): LazyLock<T, F> = LazyLock(once = Once.newComplete(), data = UnsafeCell.new(Data(value = value)))
     }
 }
+
+/**
+ * Dereferences the value.
+ *
+ * This method will block the calling thread if another initialization
+ * routine is currently running.
+ *
+ * # Panics
+ *
+ * If the initialization closure panics (the one that is passed to the [new] method), the
+ * panic is propagated to the caller, and the lock becomes poisoned. This will cause all future
+ * accesses of the lock (via [force] or a dereference) to panic.
+ *
+ * [new]: LazyLock.new
+ * [force]: LazyLock.force
+ */
+public fun <T> LazyLock<T, F>.deref(): T = LazyLock.force(this)
+
+/**
+ * # Panics
+ *
+ * If the initialization closure panics (the one that is passed to the [new] method), the
+ * panic is propagated to the caller, and the lock becomes poisoned. This will cause all future
+ * accesses of the lock (via [force] or a dereference) to panic.
+ *
+ * [new]: LazyLock.new
+ * [force]: LazyLock.force
+ */
+public fun <T> LazyLock<T, F>.derefMut(): T = LazyLock.forceMut(this)
 
 /**
  * Creates a new lazy value using `Default` as the initializing function.

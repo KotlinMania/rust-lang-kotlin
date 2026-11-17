@@ -6,11 +6,14 @@ import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.seek.Seek
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
+import io.github.kotlinmania.rustlang.core.io.seek.seek
 import io.github.kotlinmania.rustlang.core.io.sizehint.SizeHint
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -51,28 +54,28 @@ public open class Empty : SizeHint, Write<Empty>, Seek {
 
     public override fun upperBound(): Int? = 0
 
-    public override fun write(buf: List<UByte>): Result<Int> = Result.Ok(buf.size)
+    public override fun write(buf: List<UByte>): Result<Int> = RustResult.Ok(buf.size)
 
     public override fun writeVectored(bufs: List<IoSlice>): Result<Int> {
         val totalLen = bufs.map({ b -> b.len() }).sum()
-        return Result.Ok(totalLen)
+        return RustResult.Ok(totalLen)
     }
 
     public override fun isWriteVectored(): Boolean = true
 
-    public override fun writeAll(buf: List<UByte>): Result<Unit> = Result.Ok(Unit)
+    public override fun writeAll(buf: List<UByte>): Result<Unit> = RustResult.Ok(Unit)
 
-    public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = Result.Ok(Unit)
+    public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = RustResult.Ok(Unit)
 
-    public override fun writeFmt(args: fmt.Arguments): Result<Unit> = Result.Ok(Unit)
+    public override fun writeFmt(args: fmt.Arguments): Result<Unit> = RustResult.Ok(Unit)
 
-    public override fun flush(): Result<Unit> = Result.Ok(Unit)
+    public override fun flush(): Result<Unit> = RustResult.Ok(Unit)
 
-    public override fun seek(pos: SeekFrom): Result<ULong> = Result.Ok(0)
+    public override fun seek(pos: SeekFrom): Result<ULong> = RustResult.Ok(0)
 
-    public override fun streamLen(): Result<ULong> = Result.Ok(0)
+    public override fun streamLen(): Result<ULong> = RustResult.Ok(0)
 
-    public override fun streamPosition(): Result<ULong> = Result.Ok(0)
+    public override fun streamPosition(): Result<ULong> = RustResult.Ok(0)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Empty> =
@@ -137,7 +140,7 @@ public open class Repeat(
 
     public override fun upperBound(): Int? = null
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Repeat").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): RustResult<Unit, Unit> = run { DebugStruct(f, "Repeat").finishNonExhaustive(); RustResult.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<Repeat> =
@@ -189,22 +192,22 @@ public fun repeat(byte: UByte): Repeat = Repeat(byte = byte)
 public open class Sink : Write<Sink> {
     public open fun clone(): Sink = Sink()
 
-    public override fun write(buf: List<UByte>): Result<Int> = Result.Ok(buf.size)
+    public override fun write(buf: List<UByte>): Result<Int> = RustResult.Ok(buf.size)
 
     public override fun writeVectored(bufs: List<IoSlice>): Result<Int> {
         val totalLen = bufs.map({ b -> b.len() }).sum()
-        return Result.Ok(totalLen)
+        return RustResult.Ok(totalLen)
     }
 
     public override fun isWriteVectored(): Boolean = true
 
-    public override fun writeAll(buf: List<UByte>): Result<Unit> = Result.Ok(Unit)
+    public override fun writeAll(buf: List<UByte>): Result<Unit> = RustResult.Ok(Unit)
 
-    public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = Result.Ok(Unit)
+    public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = RustResult.Ok(Unit)
 
-    public override fun writeFmt(args: fmt.Arguments): Result<Unit> = Result.Ok(Unit)
+    public override fun writeFmt(args: fmt.Arguments): Result<Unit> = RustResult.Ok(Unit)
 
-    public override fun flush(): Result<Unit> = Result.Ok(Unit)
+    public override fun flush(): Result<Unit> = RustResult.Ok(Unit)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Sink> =
@@ -389,7 +392,7 @@ public open class Take<T>(
     public var inner: T,
     public var len: ULong,
     public var limit: ULong,
-) : SizeHint, Seek {
+) : SizeHint {
     public override fun lowerBound(): Int = minOf(this.inner.lowerBound().toULong(), this.limit).toInt()
 
     public override fun upperBound(): Int? =
@@ -539,65 +542,6 @@ public open class Take<T>(
         return this::inner
     }
 
-    public override fun seek(pos: SeekFrom): Result<ULong> {
-        val newPosition =
-            when (pos) {
-                is SeekFrom.Start -> {
-                    val (v) = pos
-                    v
-                }
-                is SeekFrom.Current -> {
-                    val (v1) = pos
-                    this.position().checkedAddSigned(v1)
-                }
-                is SeekFrom.End -> {
-                    val (v2) = pos
-                    this.len.checkedAddSigned(v2)
-                }
-            }
-        val newPosition1 =
-            when {
-                newPosition != null && newPosition <= this.len -> {
-                    val v3 = newPosition
-                    v3
-                }
-                else -> { return Result.Err(ErrorKind.InvalidInput.into()) }
-            }
-        while (newPosition1 != this.position()) {
-            when (val matchVal = newPosition1.checkedSignedDiff(this.position())) {
-                null -> {}
-                else -> {
-                    val offset = matchVal
-                    when (val tryResult = this.inner.seekRelative(offset)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, Error>(tryResult.error) }
-                    this.limit = (this.limit - (offset.toULong()))
-                    break
-                }
-            }
-            val offset1 =
-                if (newPosition1 > this.position()) {
-                    Long.MAX_VALUE
-                } else {
-                    Long.MIN_VALUE
-                }
-            when (val tryResult = this.inner.seekRelative(offset1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, Error>(tryResult.error) }
-            this.limit = (this.limit - (offset1.toULong()))
-        }
-        return Result.Ok(newPosition1)
-    }
-
-    public override fun streamLen(): Result<ULong> = Result.Ok(this.len)
-
-    public override fun streamPosition(): Result<ULong> = Result.Ok(this.position())
-
-    public override fun seekRelative(offset: Long): Result<Unit> {
-        if (!this.position().checkedAddSigned(offset).isSomeAnd({ p -> p <= this.len })) {
-            return Result.Err(ErrorKind.InvalidInput.into())
-        }
-        when (val tryResult = this.inner.seekRelative(offset)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
-        this.limit = (this.limit - (offset.toULong()))
-        return Result.Ok(Unit)
-    }
-
     public companion object {
         public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Take<T>> =
             object : TypeLayout<Take<T>> {
@@ -629,6 +573,65 @@ public open class Take<T>(
                 }
             }
     }
+}
+
+public fun <T : Seek> Take<T>.seek(pos: SeekFrom): Result<ULong> {
+    val newPosition =
+        when (pos) {
+            is SeekFrom.Start -> {
+                val (v) = pos
+                v
+            }
+            is SeekFrom.Current -> {
+                val (v1) = pos
+                this.position().checkedAddSigned(v1)
+            }
+            is SeekFrom.End -> {
+                val (v2) = pos
+                this.len.checkedAddSigned(v2)
+            }
+        }
+    val newPosition1 =
+        when {
+            newPosition != null && newPosition <= this.len -> {
+                val v3 = newPosition
+                v3
+            }
+            else -> { return RustResult.Err(ErrorKind.InvalidInput.into()) }
+        }
+    while (newPosition1 != this.position()) {
+        when (val matchVal = newPosition1.checkedSignedDiff(this.position())) {
+            null -> {}
+            else -> {
+                val offset = matchVal
+                when (val tryResult = this.inner.seekRelative(offset)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<ULong, Error>(tryResult.error) }
+                this.limit = (this.limit - (offset.toULong()))
+                break
+            }
+        }
+        val offset1 =
+            if (newPosition1 > this.position()) {
+                Long.MAX_VALUE
+            } else {
+                Long.MIN_VALUE
+            }
+        when (val tryResult = this.inner.seekRelative(offset1)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<ULong, Error>(tryResult.error) }
+        this.limit = (this.limit - (offset1.toULong()))
+    }
+    return RustResult.Ok(newPosition1)
+}
+
+public fun <T : Seek> Take<T>.streamLen(): Result<ULong> = RustResult.Ok(this.len)
+
+public fun <T : Seek> Take<T>.streamPosition(): Result<ULong> = RustResult.Ok(this.position())
+
+public fun <T : Seek> Take<T>.seekRelative(offset: Long): Result<Unit> {
+    if (!this.position().checkedAddSigned(offset).isSomeAnd({ p -> p <= this.len })) {
+        return RustResult.Err(ErrorKind.InvalidInput.into())
+    }
+    when (val tryResult = this.inner.seekRelative(offset)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+    this.limit = (this.limit - (offset.toULong()))
+    return RustResult.Ok(Unit)
 }
 
 public fun <T> take(inner: T, limit: ULong): Take<T> = Take(inner = inner, limit = limit, len = limit)

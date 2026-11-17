@@ -4,5 +4,6 @@ package io.github.kotlinmania.rustlang.std.sys.net.hostname.unsupported
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
-public fun hostname(): Result<OsString> = Result.Err(Error.UNSUPPORTED_PLATFORM)
+public fun hostname(): Result<OsString> = RustResult.Err(Error.UNSUPPORTED_PLATFORM)

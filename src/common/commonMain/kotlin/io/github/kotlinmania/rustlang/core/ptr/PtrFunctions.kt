@@ -402,7 +402,7 @@ public fun <T> dropGlue(arg0: T) {
  * // this pointer has the address 0
  * ```
  */
-public fun nullVal(): ConstPtr = fromRawParts(withoutProvenance<Unit>(0))
+public fun nullVal(): ConstPtr = fromRawParts(withoutProvenance<Unit>(0), Unit)
 
 /**
  * Creates a null mutable raw pointer.
@@ -423,7 +423,7 @@ public fun nullVal(): ConstPtr = fromRawParts(withoutProvenance<Unit>(0))
  * // this pointer has the address 0
  * ```
  */
-public fun nullMut(): MutPtr = fromRawPartsMut(withoutProvenanceMut<Unit>(0))
+public fun nullMut(): MutPtr = fromRawPartsMut(withoutProvenanceMut<Unit>(0), Unit)
 
 /**
  * Creates a pointer with the given address and no [provenance][ptr#provenance].

@@ -1,13 +1,10 @@
 // port-lint: source panicking.rs
 package io.github.kotlinmania.rustlang.std.panicking.paniccount
 
-import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.thread.LocalKey
-import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
 
 public val ALWAYS_ABORT_FLAG: Int = 1 shl (32u - 1u).toInt()
 
@@ -18,10 +15,6 @@ public sealed class MustAbort {
     public data object AlwaysAbort : MustAbort()
     public data object PanicInHook : MustAbort()
 }
-
-// Panic count for the current thread and whether a panic hook is currently
-// being executed..
-public val LOCAL_PANIC_COUNT: LocalKey<Cell<Pair<Int, Boolean>>> = threadLocalInner(key, Cell, Cell.new(Pair(0, false)))
 
 // Sum of panic counts from all threads. The purpose of this is to have
 // a fast path in `countIsZero` (which is used by `panicking`). In any particular

@@ -16,7 +16,6 @@ import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.AcqRel
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
-import io.github.kotlinmania.rustlang.std.sync.poison.Guard
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.INIT_ONCE_STATIC_INIT
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FALSE
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.InitOnce
@@ -29,6 +28,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.tlsFree
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.tlsGetValue
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.tlsSetValue
 import io.github.kotlinmania.rustlang.std.sys.stdio.windows.panicOutput
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.enable
 
 // Implementation of `LazyKey` for Windows.
 //
@@ -88,7 +88,7 @@ public open class LazyKey internal constructor(
         if (this.dtor != null) {
             // Needs to be called on all threads where the key might have a non-null value!
             // Otherwise, `runDtors` might not be called on this thread.
-            Guard.enable()
+            enable()
         }
         return when (val matchVal = this.key.load(Acquire).checkedSub(1)) {
             null -> this.init()
@@ -163,9 +163,9 @@ public open class LazyKey internal constructor(
             }
             run {
                 val matchVal2 = this.key.compareExchange(0, (key1 + 1u), AcqRel, Acquire)
-                when (matchVal2) { is Result.Ok -> {
+                when (matchVal2) { is Result.Ok<*, *> -> {
                     key1
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     val new = matchVal2.error
                     run {
                         // Some other thread completed initialization first, so destroy
@@ -237,9 +237,9 @@ public fun registerDtor(key: LazyKey) {
         key.next.store(head, Relaxed)
         run {
             val matchVal = DTORS.compareExchangeWeak(head, thisRef, Release, Acquire)
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 break
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val new = matchVal.error
                 head = new
             } }

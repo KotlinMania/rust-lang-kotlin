@@ -4,6 +4,8 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.nullVal
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlernone.dropHandler
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlernone.makeHandler
 

@@ -12,12 +12,14 @@ import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.simd.I32x4
 import io.github.kotlinmania.rustlang.corearch.simd.I32x8
 import io.github.kotlinmania.rustlang.corearch.simd.I64x2
 import io.github.kotlinmania.rustlang.corearch.simd.I64x4
 import io.github.kotlinmania.rustlang.corearch.simd.I8x32
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.U32x8
 import io.github.kotlinmania.rustlang.corearch.simd.U64x4
 
@@ -144,7 +146,7 @@ public fun mm256AndnotPd(a: M256d, b: M256d): M256d =
     run {
         val a1: U64x4 = transmuteWithLayouts<M256d, U64x4>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<U64x4>())
         val b1: U64x4 = transmuteWithLayouts<M256d, U64x4>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<U64x4>())
-        transmute(run { val _simdArg0 = run { val _simdArg0 = u64x4.splat((0uL).inv()); val _simdArg1 = a1; _simdArg0 }; val _simdArg1 = b1; _simdArg0 })
+        transmute(run { val _simdArg0 = run { val _simdArg0 = Simd<ULong>(List(4) { (0uL).inv() }); val _simdArg1 = a1; _simdArg0 }; val _simdArg1 = b1; _simdArg0 })
     }
 
 /**
@@ -158,7 +160,7 @@ public fun mm256AndnotPs(a: M256, b: M256): M256 =
     run {
         val a1: U32x8 = transmuteWithLayouts<M256, U32x8>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<U32x8>())
         val b1: U32x8 = transmuteWithLayouts<M256, U32x8>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<U32x8>())
-        transmute(run { val _simdArg0 = run { val _simdArg0 = u32x8.splat((0u).inv()); val _simdArg1 = a1; _simdArg0 }; val _simdArg1 = b1; _simdArg0 })
+        transmute(run { val _simdArg0 = run { val _simdArg0 = Simd<UInt>(List(8) { (0u).inv() }); val _simdArg1 = a1; _simdArg0 }; val _simdArg1 = b1; _simdArg0 })
     }
 
 /**
@@ -221,7 +223,7 @@ public fun mm256AddsubPd(a: M256d, b: M256d): M256d =
         val b1 = b.asF64x4()
         val add = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
         val sub = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
-        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(4, 1, 6, 3)); _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 6u, 3u)); _simdArg0 }
     }
 
 /**
@@ -236,7 +238,7 @@ public fun mm256AddsubPs(a: M256, b: M256): M256 =
         val b1 = b.asF32x8()
         val add = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
         val sub = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
-        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(8, 1, 10, 3, 12, 5, 14, 7)); _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 1u, 10u, 3u, 12u, 5u, 14u, 7u)); _simdArg0 }
     }
 
 /**
@@ -401,7 +403,7 @@ public fun mm256BlendPs(a: M256, b: M256, imm8: Int): M256 {
  */
 public fun mm256BlendvPd(a: M256d, b: M256d, c: M256d): M256d =
     run {
-        val mask: I64x4 = run { val _simdArg0 = transmuteWithLayouts<M256d, I64x4>(c, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<I64x4>()); val _simdArg1 = i64x4.ZERO; _simdArg0 }
+        val mask: I64x4 = run { val _simdArg0 = transmuteWithLayouts<M256d, I64x4>(c, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<I64x4>()); val _simdArg1 = Simd<Long>(List(4) { 0L }); _simdArg0 }
         transmute(run { val _simdArg0 = mask; val _simdArg1 = b.asF64x4(); val _simdArg2 = a.asF64x4(); _simdArg1 })
     }
 
@@ -413,7 +415,7 @@ public fun mm256BlendvPd(a: M256d, b: M256d, c: M256d): M256d =
  */
 public fun mm256BlendvPs(a: M256, b: M256, c: M256): M256 =
     run {
-        val mask: I32x8 = run { val _simdArg0 = transmuteWithLayouts<M256, I32x8>(c, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<I32x8>()); val _simdArg1 = i32x8.ZERO; _simdArg0 }
+        val mask: I32x8 = run { val _simdArg0 = transmuteWithLayouts<M256, I32x8>(c, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<I32x8>()); val _simdArg1 = Simd<Int>(List(8) { 0 }); _simdArg0 }
         transmute(run { val _simdArg0 = mask; val _simdArg1 = b.asF32x8(); val _simdArg2 = a.asF32x8(); _simdArg1 })
     }
 
@@ -442,8 +444,8 @@ public fun mm256DpPs(a: M256, b: M256, imm8: Int): M256 {
  */
 public fun mm256HaddPd(a: M256d, b: M256d): M256d =
     run {
-        val even = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 2, 6)); _simdArg0 }
-        val odd = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 5, 3, 7)); _simdArg0 }
+        val even = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); _simdArg0 }
+        val odd = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); _simdArg0 }
         run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }
     }
 
@@ -458,8 +460,8 @@ public fun mm256HaddPd(a: M256d, b: M256d): M256d =
  */
 public fun mm256HaddPs(a: M256, b: M256): M256 =
     run {
-        val even = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 8, 10, 4, 6, 12, 14)); _simdArg0 }
-        val odd = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 9, 11, 5, 7, 13, 15)); _simdArg0 }
+        val even = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 8u, 10u, 4u, 6u, 12u, 14u)); _simdArg0 }
+        val odd = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 9u, 11u, 5u, 7u, 13u, 15u)); _simdArg0 }
         run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }
     }
 
@@ -473,8 +475,8 @@ public fun mm256HaddPs(a: M256, b: M256): M256 =
  */
 public fun mm256HsubPd(a: M256d, b: M256d): M256d =
     run {
-        val even = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 2, 6)); _simdArg0 }
-        val odd = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 5, 3, 7)); _simdArg0 }
+        val even = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); _simdArg0 }
+        val odd = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); _simdArg0 }
         run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }
     }
 
@@ -489,8 +491,8 @@ public fun mm256HsubPd(a: M256d, b: M256d): M256d =
  */
 public fun mm256HsubPs(a: M256, b: M256): M256 =
     run {
-        val even = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 8, 10, 4, 6, 12, 14)); _simdArg0 }
-        val odd = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 9, 11, 5, 7, 13, 15)); _simdArg0 }
+        val even = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 8u, 10u, 4u, 6u, 12u, 14u)); _simdArg0 }
+        val odd = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 9u, 11u, 5u, 7u, 13u, 15u)); _simdArg0 }
         run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }
     }
 
@@ -863,7 +865,7 @@ public fun mm256Extractf128Ps(a: M256, imm1: Int): M128 {
     run {
         check(0 <= imm1 && imm1 < (1 shl 1)) { "IMM1 doesn't fit in 1 bits (unsigned)" }
     }
-    return run { val _simdArg0 = a; val _simdArg1 = mm256UndefinedPs(); val _simdArg2 = SimdShuffleIdx(listOf(listOf(0, 1, 2, 3), listOf(4, 5, 6, 7))[imm1]); _simdArg0 }
+    return run { val _simdArg0 = a; val _simdArg1 = mm256UndefinedPs(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(uintArrayOf(0u, 1u, 2u, 3u), uintArrayOf(4u, 5u, 6u, 7u))[imm1]); _simdArg0 }
 }
 
 /**
@@ -876,7 +878,7 @@ public fun mm256Extractf128Pd(a: M256d, imm1: Int): M128d {
     run {
         check(0 <= imm1 && imm1 < (1 shl 1)) { "IMM1 doesn't fit in 1 bits (unsigned)" }
     }
-    return run { val _simdArg0 = a; val _simdArg1 = mm256UndefinedPd(); val _simdArg2 = SimdShuffleIdx(listOf(listOf(0, 1), listOf(2, 3))[imm1]); _simdArg0 }
+    return run { val _simdArg0 = a; val _simdArg1 = mm256UndefinedPd(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(uintArrayOf(0u, 1u), uintArrayOf(2u, 3u))[imm1]); _simdArg0 }
 }
 
 /**
@@ -889,7 +891,7 @@ public fun mm256Extractf128Si256(a: M256i, imm1: Int): M128i {
         check(0 <= imm1 && imm1 < (1 shl 1)) { "IMM1 doesn't fit in 1 bits (unsigned)" }
     }
     return run {
-        val dst: I64x2 = run { val _simdArg0 = a.asI64x4(); val _simdArg1 = i64x4.ZERO; val _simdArg2 = SimdShuffleIdx(listOf(listOf(0, 1), listOf(2, 3))[imm1]); _simdArg0 }
+        val dst: I64x2 = run { val _simdArg0 = a.asI64x4(); val _simdArg1 = Simd<Long>(List(4) { 0L }); val _simdArg2 = SimdShuffleIdx(uintArrayOf(uintArrayOf(0u, 1u), uintArrayOf(2u, 3u))[imm1]); _simdArg0 }
         transmuteWithLayouts<I64x2, M128i>(dst, UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
     }
 }
@@ -1084,7 +1086,7 @@ public fun mm256Permute2f128Si256(a: M256i, b: M256i, imm8: Int): M256i {
     }
     return run {
         val r = run { val _simdArg0 = a.asI64x4(); val _simdArg1 = b.asI64x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(idx(imm8, 0u), idx(imm8, 1u), idx(imm8, 2u), idx(imm8, 3u))); _simdArg0 }
-        val r1: I64x4 = run { val _simdArg0 = r; val _simdArg1 = i64x4.ZERO; val _simdArg2 = SimdShuffleIdx(uintArrayOf(idx0(imm8, 0u), idx0(imm8, 1u), idx0(imm8, 2u), idx0(imm8, 3u))); _simdArg0 }
+        val r1: I64x4 = run { val _simdArg0 = r; val _simdArg1 = Simd<Long>(List(4) { 0L }); val _simdArg2 = SimdShuffleIdx(uintArrayOf(idx0(imm8, 0u), idx0(imm8, 1u), idx0(imm8, 2u), idx0(imm8, 3u))); _simdArg0 }
         r1.asM256i()
     }
 }
@@ -1119,7 +1121,7 @@ public fun mm256BroadcastSd(f: Double): M256d = mm256Set1Pd(f)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_broadcast_ps)
  */
-public fun mm256BroadcastPs(a: M128): M256 = run { val _simdArg0 = a; val _simdArg1 = mmSetzeroPs(); val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 0, 1, 2, 3)); _simdArg0 }
+public fun mm256BroadcastPs(a: M128): M256 = run { val _simdArg0 = a; val _simdArg1 = mmSetzeroPs(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 0u, 1u, 2u, 3u)); _simdArg0 }
 
 /**
  * Broadcasts 128 bits from memory (composed of 2 packed double-precision
@@ -1127,7 +1129,7 @@ public fun mm256BroadcastPs(a: M128): M256 = run { val _simdArg0 = a; val _simdA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_broadcast_pd)
  */
-public fun mm256BroadcastPd(a: M128d): M256d = run { val _simdArg0 = a; val _simdArg1 = mmSetzeroPd(); val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 0, 1)); _simdArg0 }
+public fun mm256BroadcastPd(a: M128d): M256d = run { val _simdArg0 = a; val _simdArg1 = mmSetzeroPd(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 0u, 1u)); _simdArg0 }
 
 /**
  * Copies `a` to result, then inserts 128 bits (composed of 4 packed
@@ -1140,7 +1142,7 @@ public fun mm256Insertf128Ps(a: M256, b: M128, imm1: Int): M256 {
     run {
         check(0 <= imm1 && imm1 < (1 shl 1)) { "IMM1 doesn't fit in 1 bits (unsigned)" }
     }
-    return run { val _simdArg0 = a; val _simdArg1 = mm256Castps128Ps256(b); val _simdArg2 = SimdShuffleIdx(listOf(listOf(8, 9, 10, 11, 4, 5, 6, 7), listOf(0, 1, 2, 3, 8, 9, 10, 11))[imm1]); _simdArg0 }
+    return run { val _simdArg0 = a; val _simdArg1 = mm256Castps128Ps256(b); val _simdArg2 = SimdShuffleIdx(uintArrayOf(uintArrayOf(8u, 9u, 10u, 11u, 4u, 5u, 6u, 7u), uintArrayOf(0u, 1u, 2u, 3u, 8u, 9u, 10u, 11u))[imm1]); _simdArg0 }
 }
 
 /**
@@ -1154,7 +1156,7 @@ public fun mm256Insertf128Pd(a: M256d, b: M128d, imm1: Int): M256d {
     run {
         check(0 <= imm1 && imm1 < (1 shl 1)) { "IMM1 doesn't fit in 1 bits (unsigned)" }
     }
-    return run { val _simdArg0 = a; val _simdArg1 = mm256Castpd128Pd256(b); val _simdArg2 = SimdShuffleIdx(listOf(listOf(4, 5, 2, 3), listOf(0, 1, 4, 5))[imm1]); _simdArg0 }
+    return run { val _simdArg0 = a; val _simdArg1 = mm256Castpd128Pd256(b); val _simdArg2 = SimdShuffleIdx(uintArrayOf(uintArrayOf(4u, 5u, 2u, 3u), uintArrayOf(0u, 1u, 4u, 5u))[imm1]); _simdArg0 }
 }
 
 /**
@@ -1168,7 +1170,7 @@ public fun mm256Insertf128Si256(a: M256i, b: M128i, imm1: Int): M256i {
         check(0 <= imm1 && imm1 < (1 shl 1)) { "IMM1 doesn't fit in 1 bits (unsigned)" }
     }
     return run {
-        val dst: I64x4 = run { val _simdArg0 = a.asI64x4(); val _simdArg1 = mm256Castsi128Si256(b).asI64x4(); val _simdArg2 = SimdShuffleIdx(listOf(listOf(4, 5, 2, 3), listOf(0, 1, 4, 5))[imm1]); _simdArg0 }
+        val dst: I64x4 = run { val _simdArg0 = a.asI64x4(); val _simdArg1 = mm256Castsi128Si256(b).asI64x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(uintArrayOf(4u, 5u, 2u, 3u), uintArrayOf(0u, 1u, 4u, 5u))[imm1]); _simdArg0 }
         transmuteWithLayouts<I64x4, M256i>(dst, UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
     }
 }
@@ -1369,7 +1371,7 @@ public fun mm256StoreuSi256(memAddr: MutPtr, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskload_pd)
  */
 public fun mm256MaskloadPd(memAddr: ConstPtr, mask: M256i): M256d {
-    val mask1 = run { val _simdArg0 = mask.asI64x4(); val _simdArg1 = i64x4.splat(63); _simdArg0 }
+    val mask1 = run { val _simdArg0 = mask.asI64x4(); val _simdArg1 = Simd<Long>(List(4) { 63L }); _simdArg0 }
     return run { val _simdArg0 = mask1; val _simdArg1 = memAddr; val _simdArg2 = mm256SetzeroPd(); _simdArg2 }
 }
 
@@ -1380,7 +1382,7 @@ public fun mm256MaskloadPd(memAddr: ConstPtr, mask: M256i): M256d {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskstore_pd)
  */
 public fun mm256MaskstorePd(memAddr: MutPtr, mask: M256i, a: M256d) {
-    val mask1 = run { val _simdArg0 = mask.asI64x4(); val _simdArg1 = i64x4.splat(63); _simdArg0 }
+    val mask1 = run { val _simdArg0 = mask.asI64x4(); val _simdArg1 = Simd<Long>(List(4) { 63L }); _simdArg0 }
     run { val _simdArg0 = mask1; val _simdArg1 = memAddr; val _simdArg2 = a; Unit }
 }
 
@@ -1392,7 +1394,7 @@ public fun mm256MaskstorePd(memAddr: MutPtr, mask: M256i, a: M256d) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskload_pd)
  */
 public fun mmMaskloadPd(memAddr: ConstPtr, mask: M128i): M128d {
-    val mask1 = run { val _simdArg0 = mask.asI64x2(); val _simdArg1 = i64x2.splat(63); _simdArg0 }
+    val mask1 = run { val _simdArg0 = mask.asI64x2(); val _simdArg1 = Simd<Long>(List(2) { 63L }); _simdArg0 }
     return run { val _simdArg0 = mask1; val _simdArg1 = memAddr; val _simdArg2 = mmSetzeroPd(); _simdArg2 }
 }
 
@@ -1403,7 +1405,7 @@ public fun mmMaskloadPd(memAddr: ConstPtr, mask: M128i): M128d {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskstore_pd)
  */
 public fun mmMaskstorePd(memAddr: MutPtr, mask: M128i, a: M128d) {
-    val mask1 = run { val _simdArg0 = mask.asI64x2(); val _simdArg1 = i64x2.splat(63); _simdArg0 }
+    val mask1 = run { val _simdArg0 = mask.asI64x2(); val _simdArg1 = Simd<Long>(List(2) { 63L }); _simdArg0 }
     run { val _simdArg0 = mask1; val _simdArg1 = memAddr; val _simdArg2 = a; Unit }
 }
 
@@ -1415,7 +1417,7 @@ public fun mmMaskstorePd(memAddr: MutPtr, mask: M128i, a: M128d) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskload_ps)
  */
 public fun mm256MaskloadPs(memAddr: ConstPtr, mask: M256i): M256 {
-    val mask1 = run { val _simdArg0 = mask.asI32x8(); val _simdArg1 = i32x8.splat(31); _simdArg0 }
+    val mask1 = run { val _simdArg0 = mask.asI32x8(); val _simdArg1 = Simd<Int>(List(8) { 31 }); _simdArg0 }
     return run { val _simdArg0 = mask1; val _simdArg1 = memAddr; val _simdArg2 = mm256SetzeroPs(); _simdArg2 }
 }
 
@@ -1426,7 +1428,7 @@ public fun mm256MaskloadPs(memAddr: ConstPtr, mask: M256i): M256 {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskstore_ps)
  */
 public fun mm256MaskstorePs(memAddr: MutPtr, mask: M256i, a: M256) {
-    val mask1 = run { val _simdArg0 = mask.asI32x8(); val _simdArg1 = i32x8.splat(31); _simdArg0 }
+    val mask1 = run { val _simdArg0 = mask.asI32x8(); val _simdArg1 = Simd<Int>(List(8) { 31 }); _simdArg0 }
     run { val _simdArg0 = mask1; val _simdArg1 = memAddr; val _simdArg2 = a; Unit }
 }
 
@@ -1438,7 +1440,7 @@ public fun mm256MaskstorePs(memAddr: MutPtr, mask: M256i, a: M256) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskload_ps)
  */
 public fun mmMaskloadPs(memAddr: ConstPtr, mask: M128i): M128 {
-    val mask1 = run { val _simdArg0 = mask.asI32x4(); val _simdArg1 = i32x4.splat(31); _simdArg0 }
+    val mask1 = run { val _simdArg0 = mask.asI32x4(); val _simdArg1 = Simd<Int>(List(4) { 31 }); _simdArg0 }
     return run { val _simdArg0 = mask1; val _simdArg1 = memAddr; val _simdArg2 = mmSetzeroPs(); _simdArg2 }
 }
 
@@ -1449,7 +1451,7 @@ public fun mmMaskloadPs(memAddr: ConstPtr, mask: M128i): M128 {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskstore_ps)
  */
 public fun mmMaskstorePs(memAddr: MutPtr, mask: M128i, a: M128) {
-    val mask1 = run { val _simdArg0 = mask.asI32x4(); val _simdArg1 = i32x4.splat(31); _simdArg0 }
+    val mask1 = run { val _simdArg0 = mask.asI32x4(); val _simdArg1 = Simd<Int>(List(4) { 31 }); _simdArg0 }
     run { val _simdArg0 = mask1; val _simdArg1 = memAddr; val _simdArg2 = a; Unit }
 }
 
@@ -1459,7 +1461,7 @@ public fun mmMaskstorePs(memAddr: MutPtr, mask: M128i, a: M128) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_movehdup_ps)
  */
-public fun mm256MovehdupPs(a: M256): M256 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 1, 3, 3, 5, 5, 7, 7)); _simdArg0 }
+public fun mm256MovehdupPs(a: M256): M256 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 1u, 3u, 3u, 5u, 5u, 7u, 7u)); _simdArg0 }
 
 /**
  * Duplicate even-indexed single-precision (32-bit) floating-point elements
@@ -1467,7 +1469,7 @@ public fun mm256MovehdupPs(a: M256): M256 = run { val _simdArg0 = a; val _simdAr
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_moveldup_ps)
  */
-public fun mm256MoveldupPs(a: M256): M256 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 0, 2, 2, 4, 4, 6, 6)); _simdArg0 }
+public fun mm256MoveldupPs(a: M256): M256 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 0u, 2u, 2u, 4u, 4u, 6u, 6u)); _simdArg0 }
 
 /**
  * Duplicate even-indexed double-precision (64-bit) floating-point elements
@@ -1475,7 +1477,7 @@ public fun mm256MoveldupPs(a: M256): M256 = run { val _simdArg0 = a; val _simdAr
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_movedup_pd)
  */
-public fun mm256MovedupPd(a: M256d): M256d = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 0, 2, 2)); _simdArg0 }
+public fun mm256MovedupPd(a: M256d): M256d = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 0u, 2u, 2u)); _simdArg0 }
 
 /**
  * Loads 256-bits of integer data from unaligned memory into result.
@@ -1574,7 +1576,7 @@ public fun mm256RsqrtPs(a: M256): M256 = vrsqrtps(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_unpackhi_pd)
  */
-public fun mm256UnpackhiPd(a: M256d, b: M256d): M256d = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 5, 3, 7)); _simdArg0 }
+public fun mm256UnpackhiPd(a: M256d, b: M256d): M256d = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); _simdArg0 }
 
 /**
  * Unpacks and interleave single-precision (32-bit) floating-point elements
@@ -1582,7 +1584,7 @@ public fun mm256UnpackhiPd(a: M256d, b: M256d): M256d = run { val _simdArg0 = a;
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_unpackhi_ps)
  */
-public fun mm256UnpackhiPs(a: M256, b: M256): M256 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(2, 10, 3, 11, 6, 14, 7, 15)); _simdArg0 }
+public fun mm256UnpackhiPs(a: M256, b: M256): M256 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 10u, 3u, 11u, 6u, 14u, 7u, 15u)); _simdArg0 }
 
 /**
  * Unpacks and interleave double-precision (64-bit) floating-point elements
@@ -1590,7 +1592,7 @@ public fun mm256UnpackhiPs(a: M256, b: M256): M256 = run { val _simdArg0 = a; va
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_unpacklo_pd)
  */
-public fun mm256UnpackloPd(a: M256d, b: M256d): M256d = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 2, 6)); _simdArg0 }
+public fun mm256UnpackloPd(a: M256d, b: M256d): M256d = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); _simdArg0 }
 
 /**
  * Unpacks and interleave single-precision (32-bit) floating-point elements
@@ -1598,7 +1600,7 @@ public fun mm256UnpackloPd(a: M256d, b: M256d): M256d = run { val _simdArg0 = a;
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_unpacklo_ps)
  */
-public fun mm256UnpackloPs(a: M256, b: M256): M256 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 8, 1, 9, 4, 12, 5, 13)); _simdArg0 }
+public fun mm256UnpackloPs(a: M256, b: M256): M256 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 1u, 9u, 4u, 12u, 5u, 13u)); _simdArg0 }
 
 /**
  * Computes the bitwise AND of 256 bits (representing integer data) in `a` and
@@ -1624,7 +1626,7 @@ public fun mm256TestzSi256(a: M256i, b: M256i): Int =
  */
 public fun mm256TestcSi256(a: M256i, b: M256i): Int =
     run {
-        val r = run { val _simdArg0 = run { val _simdArg0 = a.asI64x4(); val _simdArg1 = i64x4.splat(0.inv()); _simdArg0 }; val _simdArg1 = b.asI64x4(); _simdArg0 }
+        val r = run { val _simdArg0 = run { val _simdArg0 = a.asI64x4(); val _simdArg1 = Simd<Long>(List(4) { 0L.inv() }); _simdArg0 }; val _simdArg1 = b.asI64x4(); _simdArg0 }
         (if (0L == run { val _simdArg0 = r; _simdArg0 }) 1 else 0)
     }
 
@@ -1692,7 +1694,7 @@ public fun mm256TestnzcPd(a: M256d, b: M256d): Int = vtestnzcpd256(a, b)
  */
 public fun mmTestzPd(a: M128d, b: M128d): Int =
     run {
-        val r: I64x2 = run { val _simdArg0 = transmuteWithLayouts<M128d, I64x2>(mmAndPd(a, b), UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<I64x2>()); val _simdArg1 = i64x2.ZERO; _simdArg0 }
+        val r: I64x2 = run { val _simdArg0 = transmuteWithLayouts<M128d, I64x2>(mmAndPd(a, b), UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<I64x2>()); val _simdArg1 = Simd<Long>(List(2) { 0L }); _simdArg0 }
         (if (0L == run { val _simdArg0 = r; _simdArg0 }) 1 else 0)
     }
 
@@ -1709,7 +1711,7 @@ public fun mmTestzPd(a: M128d, b: M128d): Int =
  */
 public fun mmTestcPd(a: M128d, b: M128d): Int =
     run {
-        val r: I64x2 = run { val _simdArg0 = transmuteWithLayouts<M128d, I64x2>(mmAndnotPd(a, b), UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<I64x2>()); val _simdArg1 = i64x2.ZERO; _simdArg0 }
+        val r: I64x2 = run { val _simdArg0 = transmuteWithLayouts<M128d, I64x2>(mmAndnotPd(a, b), UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<I64x2>()); val _simdArg1 = Simd<Long>(List(2) { 0L }); _simdArg0 }
         (if (0L == run { val _simdArg0 = r; _simdArg0 }) 1 else 0)
     }
 
@@ -1780,7 +1782,7 @@ public fun mm256TestnzcPs(a: M256, b: M256): Int = vtestnzcps256(a, b)
  */
 public fun mmTestzPs(a: M128, b: M128): Int =
     run {
-        val r: I32x4 = run { val _simdArg0 = transmuteWithLayouts<M128, I32x4>(mmAndPs(a, b), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<I32x4>()); val _simdArg1 = i32x4.ZERO; _simdArg0 }
+        val r: I32x4 = run { val _simdArg0 = transmuteWithLayouts<M128, I32x4>(mmAndPs(a, b), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<I32x4>()); val _simdArg1 = Simd<Int>(List(4) { 0 }); _simdArg0 }
         (if (0 == run { val _simdArg0 = r; _simdArg0 }) 1 else 0)
     }
 
@@ -1797,7 +1799,7 @@ public fun mmTestzPs(a: M128, b: M128): Int =
  */
 public fun mmTestcPs(a: M128, b: M128): Int =
     run {
-        val r: I32x4 = run { val _simdArg0 = transmuteWithLayouts<M128, I32x4>(mmAndnotPs(a, b), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<I32x4>()); val _simdArg1 = i32x4.ZERO; _simdArg0 }
+        val r: I32x4 = run { val _simdArg0 = transmuteWithLayouts<M128, I32x4>(mmAndnotPs(a, b), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<I32x4>()); val _simdArg1 = Simd<Int>(List(4) { 0 }); _simdArg0 }
         (if (0 == run { val _simdArg0 = r; _simdArg0 }) 1 else 0)
     }
 
@@ -1826,7 +1828,7 @@ public fun mm256MovemaskPd(a: M256d): Int {
     // Propagate the highest bit to the rest, because simdBitmask
     // requires all-1 or all-0.
     return run {
-        val mask: I64x4 = run { val _simdArg0 = transmuteWithLayouts<M256d, I64x4>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<I64x4>()); val _simdArg1 = i64x4.ZERO; _simdArg0 }
+        val mask: I64x4 = run { val _simdArg0 = transmuteWithLayouts<M256d, I64x4>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<I64x4>()); val _simdArg1 = Simd<Long>(List(4) { 0L }); _simdArg0 }
         (run { val _simdArg0 = mask; 0u }).toInt()
     }
 }
@@ -1842,7 +1844,7 @@ public fun mm256MovemaskPs(a: M256): Int {
     // Propagate the highest bit to the rest, because simdBitmask
     // requires all-1 or all-0.
     return run {
-        val mask: I32x8 = run { val _simdArg0 = transmuteWithLayouts<M256, I32x8>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<I32x8>()); val _simdArg1 = i32x8.ZERO; _simdArg0 }
+        val mask: I32x8 = run { val _simdArg0 = transmuteWithLayouts<M256, I32x8>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<I32x8>()); val _simdArg1 = Simd<Int>(List(8) { 0 }); _simdArg0 }
         (run { val _simdArg0 = mask; 0u }).toInt()
     }
 }
@@ -1952,7 +1954,7 @@ public fun mm256SetrPs(a: Float, b: Float, c: Float, d: Float, e: Float, f: Floa
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_setr_epi8)
  */
-public fun mm256SetrEpi8(e00: Byte, e01: Byte, e02: Byte, e03: Byte, e04: Byte, e05: Byte, e06: Byte, e07: Byte, e08: Byte, e09: Byte, e10: Byte, e11: Byte, e12: Byte, e13: Byte, e14: Byte, e15: Byte, e16: Byte, e17: Byte, e18: Byte, e19: Byte, e20: Byte, e21: Byte, e22: Byte, e23: Byte, e24: Byte, e25: Byte, e26: Byte, e27: Byte, e28: Byte, e29: Byte, e30: Byte, e31: Byte): M256i = transmute(i8x32.new(e00, e01, e02, e03, e04, e05, e06, e07, e08, e09, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31))
+public fun mm256SetrEpi8(e00: Byte, e01: Byte, e02: Byte, e03: Byte, e04: Byte, e05: Byte, e06: Byte, e07: Byte, e08: Byte, e09: Byte, e10: Byte, e11: Byte, e12: Byte, e13: Byte, e14: Byte, e15: Byte, e16: Byte, e17: Byte, e18: Byte, e19: Byte, e20: Byte, e21: Byte, e22: Byte, e23: Byte, e24: Byte, e25: Byte, e26: Byte, e27: Byte, e28: Byte, e29: Byte, e30: Byte, e31: Byte): M256i = transmute(Simd<Byte>(listOf(e00, e01, e02, e03, e04, e05, e06, e07, e08, e09, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31)))
 
 // This intrinsic has no corresponding instruction.
 
@@ -1962,7 +1964,7 @@ public fun mm256SetrEpi8(e00: Byte, e01: Byte, e02: Byte, e03: Byte, e04: Byte, 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_setr_epi16)
  */
-public fun mm256SetrEpi16(e00: Short, e01: Short, e02: Short, e03: Short, e04: Short, e05: Short, e06: Short, e07: Short, e08: Short, e09: Short, e10: Short, e11: Short, e12: Short, e13: Short, e14: Short, e15: Short): M256i = transmute(i16x16.new(e00, e01, e02, e03, e04, e05, e06, e07, e08, e09, e10, e11, e12, e13, e14, e15))
+public fun mm256SetrEpi16(e00: Short, e01: Short, e02: Short, e03: Short, e04: Short, e05: Short, e06: Short, e07: Short, e08: Short, e09: Short, e10: Short, e11: Short, e12: Short, e13: Short, e14: Short, e15: Short): M256i = transmute(Simd<Short>(listOf(e00, e01, e02, e03, e04, e05, e06, e07, e08, e09, e10, e11, e12, e13, e14, e15)))
 
 // This intrinsic has no corresponding instruction.
 
@@ -1972,7 +1974,7 @@ public fun mm256SetrEpi16(e00: Short, e01: Short, e02: Short, e03: Short, e04: S
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_setr_epi32)
  */
-public fun mm256SetrEpi32(e0: Int, e1: Int, e2: Int, e3: Int, e4: Int, e5: Int, e6: Int, e7: Int): M256i = transmute(i32x8.new(e0, e1, e2, e3, e4, e5, e6, e7))
+public fun mm256SetrEpi32(e0: Int, e1: Int, e2: Int, e3: Int, e4: Int, e5: Int, e6: Int, e7: Int): M256i = transmute(Simd<Int>(listOf(e0, e1, e2, e3, e4, e5, e6, e7)))
 
 // This intrinsic has no corresponding instruction.
 
@@ -1982,7 +1984,7 @@ public fun mm256SetrEpi32(e0: Int, e1: Int, e2: Int, e3: Int, e4: Int, e5: Int, 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_setr_epi64x)
  */
-public fun mm256SetrEpi64x(a: Long, b: Long, c: Long, d: Long): M256i = transmute(i64x4.new(a, b, c, d))
+public fun mm256SetrEpi64x(a: Long, b: Long, c: Long, d: Long): M256i = transmute(Simd<Long>(listOf(a, b, c, d)))
 
 // This intrinsic has no corresponding instruction.
 
@@ -1992,7 +1994,7 @@ public fun mm256SetrEpi64x(a: Long, b: Long, c: Long, d: Long): M256i = transmut
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_set1_pd)
  */
-public fun mm256Set1Pd(a: Double): M256d = f64x4.splat(a).asM256d()
+public fun mm256Set1Pd(a: Double): M256d = Simd<Double>(List(4) { a }).asM256d()
 
 // This intrinsic has no corresponding instruction.
 
@@ -2002,7 +2004,7 @@ public fun mm256Set1Pd(a: Double): M256d = f64x4.splat(a).asM256d()
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_set1_ps)
  */
-public fun mm256Set1Ps(a: Float): M256 = f32x8.splat(a).asM256()
+public fun mm256Set1Ps(a: Float): M256 = Simd<Float>(List(8) { a }).asM256()
 
 // This intrinsic has no corresponding instruction.
 
@@ -2012,7 +2014,7 @@ public fun mm256Set1Ps(a: Float): M256 = f32x8.splat(a).asM256()
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_set1_epi8)
  */
-public fun mm256Set1Epi8(a: Byte): M256i = i8x32.splat(a).asM256i()
+public fun mm256Set1Epi8(a: Byte): M256i = Simd<Byte>(List(32) { a }).asM256i()
 
 // @cfgAttr(test, assertInstr(vpshufb))
 // This intrinsic has no corresponding instruction.
@@ -2023,7 +2025,7 @@ public fun mm256Set1Epi8(a: Byte): M256i = i8x32.splat(a).asM256i()
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_set1_epi16)
  */
-public fun mm256Set1Epi16(a: Short): M256i = i16x16.splat(a).asM256i()
+public fun mm256Set1Epi16(a: Short): M256i = Simd<Short>(List(16) { a }).asM256i()
 
 // This intrinsic has no corresponding instruction.
 
@@ -2033,7 +2035,7 @@ public fun mm256Set1Epi16(a: Short): M256i = i16x16.splat(a).asM256i()
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_set1_epi32)
  */
-public fun mm256Set1Epi32(a: Int): M256i = i32x8.splat(a).asM256i()
+public fun mm256Set1Epi32(a: Int): M256i = Simd<Int>(List(8) { a }).asM256i()
 
 // This intrinsic has no corresponding instruction.
 
@@ -2043,7 +2045,7 @@ public fun mm256Set1Epi32(a: Int): M256i = i32x8.splat(a).asM256i()
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_set1_epi64x)
  */
-public fun mm256Set1Epi64x(a: Long): M256i = i64x4.splat(a).asM256i()
+public fun mm256Set1Epi64x(a: Long): M256i = Simd<Long>(List(4) { a }).asM256i()
 
 // This intrinsic is only used for compilation and does not generate any
 // instructions, thus it has zero latency.
@@ -2113,7 +2115,7 @@ public fun mm256Castsi256Pd(a: M256i): M256d = transmuteWithLayouts<M256i, M256d
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_castps256_ps128)
  */
-public fun mm256Castps256Ps128(a: M256): M128 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+public fun mm256Castps256Ps128(a: M256): M128 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }
 
 // This intrinsic is only used for compilation and does not generate any
 // instructions, thus it has zero latency.
@@ -2123,7 +2125,7 @@ public fun mm256Castps256Ps128(a: M256): M128 = run { val _simdArg0 = a; val _si
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_castpd256_pd128)
  */
-public fun mm256Castpd256Pd128(a: M256d): M128d = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }
+public fun mm256Castpd256Pd128(a: M256d): M128d = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }
 
 // This intrinsic is only used for compilation and does not generate any
 // instructions, thus it has zero latency.
@@ -2136,7 +2138,7 @@ public fun mm256Castpd256Pd128(a: M256d): M128d = run { val _simdArg0 = a; val _
 public fun mm256Castsi256Si128(a: M256i): M128i =
     run {
         val a1 = a.asI64x4()
-        val dst: I64x2 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }
+        val dst: I64x2 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }
         transmuteWithLayouts<I64x2, M128i>(dst, UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
     }
 
@@ -2153,7 +2155,7 @@ public fun mm256Castsi256Si128(a: M256i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_castps128_ps256)
  */
-public fun mm256Castps128Ps256(a: M128): M256 = run { val _simdArg0 = a; val _simdArg1 = mmUndefinedPs(); val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 4, 4, 4)); _simdArg0 }
+public fun mm256Castps128Ps256(a: M128): M256 = run { val _simdArg0 = a; val _simdArg1 = mmUndefinedPs(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 4u, 4u, 4u)); _simdArg0 }
 
 // This intrinsic is only used for compilation and does not generate any
 // instructions, thus it has zero latency.
@@ -2168,7 +2170,7 @@ public fun mm256Castps128Ps256(a: M128): M256 = run { val _simdArg0 = a; val _si
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_castpd128_pd256)
  */
-public fun mm256Castpd128Pd256(a: M128d): M256d = run { val _simdArg0 = a; val _simdArg1 = mmUndefinedPd(); val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 2)); _simdArg0 }
+public fun mm256Castpd128Pd256(a: M128d): M256d = run { val _simdArg0 = a; val _simdArg1 = mmUndefinedPd(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 2u)); _simdArg0 }
 
 // This intrinsic is only used for compilation and does not generate any
 // instructions, thus it has zero latency.
@@ -2186,8 +2188,8 @@ public fun mm256Castpd128Pd256(a: M128d): M256d = run { val _simdArg0 = a; val _
 public fun mm256Castsi128Si256(a: M128i): M256i =
     run {
         val a1 = a.asI64x2()
-        val undefined = i64x2.ZERO
-        val dst: I64x4 = run { val _simdArg0 = a1; val _simdArg1 = undefined; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 2)); _simdArg0 }
+        val undefined = Simd<Long>(List(2) { 0L })
+        val dst: I64x4 = run { val _simdArg0 = a1; val _simdArg1 = undefined; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 2u)); _simdArg0 }
         transmuteWithLayouts<I64x4, M256i>(dst, UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
     }
 
@@ -2201,7 +2203,7 @@ public fun mm256Castsi128Si256(a: M128i): M256i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_zextps128_ps256)
  */
-public fun mm256Zextps128Ps256(a: M128): M256 = run { val _simdArg0 = a; val _simdArg1 = mmSetzeroPs(); val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)); _simdArg0 }
+public fun mm256Zextps128Ps256(a: M128): M256 = run { val _simdArg0 = a; val _simdArg1 = mmSetzeroPs(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
 
 // This intrinsic is only used for compilation and does not generate any
 // instructions, thus it has zero latency.
@@ -2215,8 +2217,8 @@ public fun mm256Zextps128Ps256(a: M128): M256 = run { val _simdArg0 = a; val _si
  */
 public fun mm256Zextsi128Si256(a: M128i): M256i =
     run {
-        val b = i64x2.ZERO
-        val dst: I64x4 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+        val b = Simd<Long>(List(2) { 0L })
+        val dst: I64x4 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }
         transmuteWithLayouts<I64x4, M256i>(dst, UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
     }
 
@@ -2231,7 +2233,7 @@ public fun mm256Zextsi128Si256(a: M128i): M256i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_zextpd128_pd256)
  */
-public fun mm256Zextpd128Pd256(a: M128d): M256d = run { val _simdArg0 = a; val _simdArg1 = mmSetzeroPd(); val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+public fun mm256Zextpd128Pd256(a: M128d): M256d = run { val _simdArg0 = a; val _simdArg1 = mmSetzeroPd(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }
 
 // This intrinsic has no corresponding instruction.
 
@@ -2274,7 +2276,7 @@ public fun mm256UndefinedSi256(): M256i = M256i()
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_set_m128)
  */
-public fun mm256SetM128(hi: M128, lo: M128): M256 = run { val _simdArg0 = lo; val _simdArg1 = hi; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)); _simdArg0 }
+public fun mm256SetM128(hi: M128, lo: M128): M256 = run { val _simdArg0 = lo; val _simdArg1 = hi; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
 
 /**
  * Sets packed __m256d returned vector with the supplied values.

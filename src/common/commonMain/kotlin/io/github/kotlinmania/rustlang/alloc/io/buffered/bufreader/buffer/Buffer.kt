@@ -6,9 +6,10 @@ import io.github.kotlinmania.rustlang.alloc.io.constError
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedBuf
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
-import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 // An encapsulation of `BufReader`s buffer management logic.
 //
@@ -95,10 +96,10 @@ public open class Buffer internal constructor(
             // no part will become uninitialized.
             buf.setInit()
         }
-        when (val tryResult = reader.readBuf(buf.unfilled())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }
+        when (val tryResult = reader.readBuf(buf.unfilled())) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
         this.filled += buf.len()
         this.initialized = buf.isInit()
-        return Result.Ok(buf.len())
+        return RustResult.Ok(buf.len())
     }
 
     /**
@@ -128,9 +129,9 @@ public open class Buffer internal constructor(
             this.pos = 0
             this.filled = buf.len()
             this.initialized = buf.isInit()
-            when (val tryResult = result) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, Error>(tryResult.error) }
+            when (val tryResult = result) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, Error>(tryResult.error) }
         }
-        return Result.Ok(this.buffer())
+        return RustResult.Ok(this.buffer())
     }
 
     public companion object {
@@ -154,11 +155,11 @@ public open class Buffer internal constructor(
         public fun tryWithCapacity(capacity: Int): Result<Buffer> =
             run {
                 val matchVal = Box.tryNewUninitSlice(capacity)
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is RustResult.Ok<*, *> -> {
                     val buf = matchVal.value
-                    Result.Ok(Buffer(buf = buf, pos = 0, filled = 0, initialized = false))
-                }; is Result.Err -> {
-                    Result.Err(constError(ErrorKind.OutOfMemory, "failed to allocate read buffer"))
+                    RustResult.Ok(Buffer(buf = buf, pos = 0, filled = 0, initialized = false))
+                }; is RustResult.Err<*, *> -> {
+                    RustResult.Err(constError(ErrorKind.OutOfMemory, "failed to allocate read buffer"))
                 } }
             }
     }

@@ -69,11 +69,11 @@ public open class Empty<T>(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Empty").finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Empty").finish(); Result.Ok<Unit, Unit>(Unit) }
 
-    public override fun next(): T? = null
+    public open fun next(): T? = null
 
-    public override fun sizeHint(): Pair<Int, Int?> = Pair(0, 0)
+    public open fun sizeHint(): Pair<Int, Int?> = Pair(0, 0)
 
     public open fun nextBack(): T? = null
 

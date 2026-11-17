@@ -37,11 +37,11 @@ public sealed class BytesOrWideString {
     public open fun toStrLossy(): String =
         when (this) {
             is Bytes -> {
-                val (slice) = this
+                val (slice) = this as Bytes
                 String.fromUtf8Lossy(slice)
             }
             is Wide -> {
-                val (wide) = this
+                val (wide) = this as Wide
                 String.fromUtf16Lossy(wide)
             }
         }
@@ -70,7 +70,7 @@ public sealed class BytesOrWideString {
         if (this is BytesOrWideString.Bytes) {
             val (b) = this
             when (val matchVal = String.fromUtf8(b)) {
-                is Result.Ok -> {
+                is Result.Ok<*, *> -> {
                     val s = matchVal.value
                     return PathBuf.from(s)
                 }

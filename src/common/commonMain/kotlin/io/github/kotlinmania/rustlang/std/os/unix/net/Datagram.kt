@@ -28,6 +28,10 @@ import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
+import io.github.kotlinmania.rustlang.std.os.fd.asFd
+import io.github.kotlinmania.rustlang.std.os.fd.asRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.intoRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.os.unix.net.ancillary.SocketAncillary
 import io.github.kotlinmania.rustlang.std.os.unix.net.ancillary.recvVectoredWithAncillaryFrom
@@ -35,6 +39,8 @@ import io.github.kotlinmania.rustlang.std.os.unix.net.ancillary.sendVectoredWith
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.asInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.Socket
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
@@ -95,14 +101,14 @@ public open class UnixDatagram(
         val builder = DebugStruct(fmt, "UnixDatagram")
         builder.field("fd", this.value.asInner())
         when (val matchVal = this.localAddr()) {
-            is Result.Ok -> {
+            is Result.Ok<*, *> -> {
                 val addr = matchVal.value
                 builder.field("local", addr)
             }
             else -> {}
         }
         when (val matchVal1 = this.peerAddr()) {
-            is Result.Ok -> {
+            is Result.Ok<*, *> -> {
                 val addr1 = matchVal1.value
                 builder.field("peer", addr1)
             }
@@ -138,12 +144,12 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun connect(path: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
+    public open fun connect(path: Path): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> {
         run {
-            val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-            when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.connect(this.asRawFd(), constPtrFromRustCast((addrOf(addr))), len))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
+            val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+            when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.connect(this.asRawFd(), constPtrFromRustCast((addrOf(addr))), len))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
         }
-        return Result.Ok<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(Unit)
+        return Result.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 
     /**
@@ -169,11 +175,11 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun connectAddr(socketAddr: SocketAddr): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
+    public open fun connectAddr(socketAddr: SocketAddr): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> {
         run {
-            when (val tryResult = cvt(connect(this.asRawFd(), (addrOf(socketAddr.addr)), socketAddr.len))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
+            when (val tryResult = cvt(connect(this.asRawFd(), (addrOf(socketAddr.addr)), socketAddr.len))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
         }
-        return Result.Ok<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(Unit)
+        return Result.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 
     /**
@@ -194,7 +200,7 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun tryClone(): Result<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.duplicate().map({ UnixDatagram(it) })
+    public open fun tryClone(): Result<UnixDatagram, io.github.kotlinmania.rustlang.core.io.error.Error> = this.value.duplicate().map({ UnixDatagram(it) })
 
     /**
      * Returns the address of this socket.
@@ -210,7 +216,7 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun localAddr(): Result<SocketAddr, io.github.kotlinmania.rustlang.std.io.error.Error> = SocketAddr.new({ addr, len -> getsockname(this.asRawFd(), addr, len) })
+    public open fun localAddr(): Result<SocketAddr, io.github.kotlinmania.rustlang.core.io.error.Error> = SocketAddr.new({ addr, len -> getsockname(this.asRawFd(), addr, len) })
 
     /**
      * Returns the address of this socket's peer.
@@ -232,9 +238,9 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun peerAddr(): Result<SocketAddr, io.github.kotlinmania.rustlang.std.io.error.Error> = SocketAddr.new({ addr, len -> getpeername(this.asRawFd(), addr, len) })
+    public open fun peerAddr(): Result<SocketAddr, io.github.kotlinmania.rustlang.core.io.error.Error> = SocketAddr.new({ addr, len -> getpeername(this.asRawFd(), addr, len) })
 
-    public open fun recvFromFlags(buf: MutableList<UByte>, flags: CInt): Result<Pair<Int, SocketAddr>, io.github.kotlinmania.rustlang.std.io.error.Error> {
+    public open fun recvFromFlags(buf: MutableList<UByte>, flags: CInt): Result<Pair<Int, SocketAddr>, io.github.kotlinmania.rustlang.core.io.error.Error> {
         var count = 0
         val addr =
             when (val tryResult = SocketAddr.new({ addr, len -> run {
@@ -246,8 +252,8 @@ public open class UnixDatagram(
                 } else {
                     -1
                 }
-            } })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Int, SocketAddr>, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-        return Result.Ok<Pair<Int, SocketAddr>, io.github.kotlinmania.rustlang.std.io.error.Error>(Pair(count.toInt(), addr))
+            } })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Int, SocketAddr>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+        return Result.Ok<Pair<Int, SocketAddr>, io.github.kotlinmania.rustlang.core.io.error.Error>(Pair(count.toInt(), addr))
     }
 
     /**
@@ -269,7 +275,7 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun recvFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>, io.github.kotlinmania.rustlang.std.io.error.Error> = this.recvFromFlags(buf, 0)
+    public open fun recvFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>, io.github.kotlinmania.rustlang.core.io.error.Error> = this.recvFromFlags(buf, 0)
 
     /**
      * Receives data from the socket.
@@ -288,7 +294,7 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun recv(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.read(buf)
+    public open fun recv(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.value.read(buf)
 
     /**
      * Receives data and ancillary data from socket.
@@ -327,10 +333,10 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun recvVectoredWithAncillaryFrom(bufs: MutableList<IoSliceMut>, ancillary: SocketAncillary): Result<Triple<Int, Boolean, SocketAddr>, io.github.kotlinmania.rustlang.std.io.error.Error> {
-        val (count, truncated, addr) = when (val tryResult = recvVectoredWithAncillaryFrom(this.value, bufs, ancillary)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Triple<Int, Boolean, SocketAddr>, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-        val addr1 = when (val tryResult = addr) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Triple<Int, Boolean, SocketAddr>, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-        return Result.Ok<Triple<Int, Boolean, SocketAddr>, io.github.kotlinmania.rustlang.std.io.error.Error>(Triple(count, truncated, addr1))
+    public open fun recvVectoredWithAncillaryFrom(bufs: MutableList<IoSliceMut>, ancillary: SocketAncillary): Result<Triple<Int, Boolean, SocketAddr>, io.github.kotlinmania.rustlang.core.io.error.Error> {
+        val (count, truncated, addr) = when (val tryResult = recvVectoredWithAncillaryFrom(this.value, bufs, ancillary)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Triple<Int, Boolean, SocketAddr>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+        val addr1 = when (val tryResult = addr) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Triple<Int, Boolean, SocketAddr>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+        return Result.Ok<Triple<Int, Boolean, SocketAddr>, io.github.kotlinmania.rustlang.core.io.error.Error>(Triple(count, truncated, addr1))
     }
 
     /**
@@ -370,10 +376,10 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun recvVectoredWithAncillary(bufs: MutableList<IoSliceMut>, ancillary: SocketAncillary): Result<Pair<Int, Boolean>, io.github.kotlinmania.rustlang.std.io.error.Error> {
-        val (count, truncated, addr) = when (val tryResult = recvVectoredWithAncillaryFrom(this.value, bufs, ancillary)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Int, Boolean>, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-        when (val tryResult = addr) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Int, Boolean>, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-        return Result.Ok<Pair<Int, Boolean>, io.github.kotlinmania.rustlang.std.io.error.Error>(Pair(count, truncated))
+    public open fun recvVectoredWithAncillary(bufs: MutableList<IoSliceMut>, ancillary: SocketAncillary): Result<Pair<Int, Boolean>, io.github.kotlinmania.rustlang.core.io.error.Error> {
+        val (count, truncated, addr) = when (val tryResult = recvVectoredWithAncillaryFrom(this.value, bufs, ancillary)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Int, Boolean>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+        when (val tryResult = addr) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Int, Boolean>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+        return Result.Ok<Pair<Int, Boolean>, io.github.kotlinmania.rustlang.core.io.error.Error>(Pair(count, truncated))
     }
 
     /**
@@ -392,11 +398,11 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun sendTo(buf: List<UByte>, path: Path): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
+    public open fun sendTo(buf: List<UByte>, path: Path): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> {
         return run {
-            val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-            val count = when (val tryResult = cvt(sendto(this.asRawFd(), buf.asPtr(), buf.size, MSG_NOSIGNAL, constPtrFromRustCast((addrOf(addr))), len))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-            Result.Ok<Int, io.github.kotlinmania.rustlang.std.io.error.Error>(count.toInt())
+            val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+            val count = when (val tryResult = cvt(sendto(this.asRawFd(), buf.asPtr(), buf.size, MSG_NOSIGNAL, constPtrFromRustCast((addrOf(addr))), len))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+            Result.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(count.toInt())
         }
     }
 
@@ -419,10 +425,10 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun sendToAddr(buf: List<UByte>, socketAddr: SocketAddr): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
+    public open fun sendToAddr(buf: List<UByte>, socketAddr: SocketAddr): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> {
         return run {
-            val count = when (val tryResult = cvt(sendto(this.asRawFd(), buf.asPtr(), buf.size, MSG_NOSIGNAL, (addrOf(socketAddr.addr)), socketAddr.len))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-            Result.Ok<Int, io.github.kotlinmania.rustlang.std.io.error.Error>(count.toInt())
+            val count = when (val tryResult = cvt(sendto(this.asRawFd(), buf.asPtr(), buf.size, MSG_NOSIGNAL, (addrOf(socketAddr.addr)), socketAddr.len))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+            Result.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(count.toInt())
         }
     }
 
@@ -446,7 +452,7 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun send(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.write(buf)
+    public open fun send(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.value.write(buf)
 
     /**
      * Sends data and ancillary data on the socket to the specified address.
@@ -479,7 +485,7 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun sendVectoredWithAncillaryTo(bufs: List<IoSlice>, ancillary: SocketAncillary, path: Path): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = sendVectoredWithAncillaryTo(this.value, path, bufs, ancillary)
+    public open fun sendVectoredWithAncillaryTo(bufs: List<IoSlice>, ancillary: SocketAncillary, path: Path): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = sendVectoredWithAncillaryTo(this.value, path, bufs, ancillary)
 
     /**
      * Sends data and ancillary data on the socket.
@@ -512,7 +518,7 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun sendVectoredWithAncillary(bufs: List<IoSlice>, ancillary: SocketAncillary): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = sendVectoredWithAncillaryTo(this.value, null, bufs, ancillary)
+    public open fun sendVectoredWithAncillary(bufs: List<IoSlice>, ancillary: SocketAncillary): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = sendVectoredWithAncillaryTo(this.value, null, bufs, ancillary)
 
     /**
      * Sets the read timeout for the socket.
@@ -553,7 +559,7 @@ public open class UnixDatagram(
      * )
      * ```
      */
-    public open fun setReadTimeout(timeout: Duration?): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setTimeout(timeout, SO_RCVTIMEO)
+    public open fun setReadTimeout(timeout: Duration?): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = this.value.setTimeout(timeout, SO_RCVTIMEO)
 
     /**
      * Sets the write timeout for the socket.
@@ -594,7 +600,7 @@ public open class UnixDatagram(
      * )
      * ```
      */
-    public open fun setWriteTimeout(timeout: Duration?): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setTimeout(timeout, SO_SNDTIMEO)
+    public open fun setWriteTimeout(timeout: Duration?): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = this.value.setTimeout(timeout, SO_SNDTIMEO)
 
     /**
      * Returns the read timeout of this socket.
@@ -613,7 +619,7 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun readTimeout(): Result<Duration?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.timeout(SO_RCVTIMEO)
+    public open fun readTimeout(): Result<Duration?, io.github.kotlinmania.rustlang.core.io.error.Error> = this.value.timeout(SO_RCVTIMEO)
 
     /**
      * Returns the write timeout of this socket.
@@ -632,7 +638,7 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun writeTimeout(): Result<Duration?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.timeout(SO_SNDTIMEO)
+    public open fun writeTimeout(): Result<Duration?, io.github.kotlinmania.rustlang.core.io.error.Error> = this.value.timeout(SO_SNDTIMEO)
 
     /**
      * Moves the socket into or out of nonblocking mode.
@@ -648,7 +654,7 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun setNonblocking(nonblocking: Boolean): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setNonblocking(nonblocking)
+    public open fun setNonblocking(nonblocking: Boolean): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = this.value.setNonblocking(nonblocking)
 
     /**
      * Set the id of the socket for network filtering purpose
@@ -663,7 +669,7 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun setMark(mark: UInt): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setMark(mark)
+    public open fun setMark(mark: UInt): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = this.value.setMark(mark)
 
     /**
      * Returns the value of the `SO_ERROR` option.
@@ -681,7 +687,7 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, io.github.kotlinmania.rustlang.core.io.error.Error> = this.value.takeError()
 
     /**
      * Shut down the read, write, or both halves of this connection.
@@ -700,7 +706,7 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun shutdown(how: Shutdown): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.shutdown(how)
+    public open fun shutdown(how: Shutdown): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = this.value.shutdown(how)
 
     /**
      * Receives data on the socket from the remote address to which it is
@@ -724,7 +730,7 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun peek(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.peek(buf)
+    public open fun peek(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.value.peek(buf)
 
     /**
      * Receives a single datagram message on the socket, without removing it from the
@@ -754,7 +760,7 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun peekFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>, io.github.kotlinmania.rustlang.std.io.error.Error> = this.recvFromFlags(buf, MSG_PEEK)
+    public open fun peekFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>, io.github.kotlinmania.rustlang.core.io.error.Error> = this.recvFromFlags(buf, MSG_PEEK)
 
     public override fun asRawFd(): RawFd = this.value.asInner().asRawFd()
 
@@ -781,12 +787,12 @@ public open class UnixDatagram(
          * );
          * ```kotlin
          */
-        public fun bind(path: Path): Result<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error> {
+        public fun bind(path: Path): Result<UnixDatagram, io.github.kotlinmania.rustlang.core.io.error.Error> {
             return run {
-                val socket = when (val tryResult = UnixDatagram.unbound()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-                val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-                when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.bind(socket.asRawFd(), constPtrFromRustCast((addrOf(addr))), ((len as Any?) as Result<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error>)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-                Result.Ok<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error>(socket)
+                val socket = when (val tryResult = UnixDatagram.unbound()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UnixDatagram, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+                val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UnixDatagram, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+                when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.bind(socket.asRawFd(), constPtrFromRustCast((addrOf(addr))), len))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UnixDatagram, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+                Result.Ok<UnixDatagram, io.github.kotlinmania.rustlang.core.io.error.Error>(socket)
             }
         }
 
@@ -811,11 +817,11 @@ public open class UnixDatagram(
          * )
          * ```kotlin
          */
-        public fun bindAddr(socketAddr: SocketAddr): Result<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error> {
+        public fun bindAddr(socketAddr: SocketAddr): Result<UnixDatagram, io.github.kotlinmania.rustlang.core.io.error.Error> {
             return run {
-                val socket = when (val tryResult = UnixDatagram.unbound()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-                when (val tryResult = cvt(bind(socket.asRawFd(), (addrOf(socketAddr.addr)), ((socketAddr.len as Any?) as Result<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error>)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-                Result.Ok<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error>(socket)
+                val socket = when (val tryResult = UnixDatagram.unbound()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UnixDatagram, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+                when (val tryResult = cvt(bind(socket.asRawFd(), (addrOf(socketAddr.addr)), socketAddr.len))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UnixDatagram, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+                Result.Ok<UnixDatagram, io.github.kotlinmania.rustlang.core.io.error.Error>(socket)
             }
         }
 
@@ -835,9 +841,9 @@ public open class UnixDatagram(
          * );
          * ```kotlin
          */
-        public fun unbound(): Result<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error> {
-            val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_DGRAM)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-            return Result.Ok<UnixDatagram, io.github.kotlinmania.rustlang.std.io.error.Error>(UnixDatagram(inner))
+        public fun unbound(): Result<UnixDatagram, io.github.kotlinmania.rustlang.core.io.error.Error> {
+            val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_DGRAM)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UnixDatagram, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+            return Result.Ok<UnixDatagram, io.github.kotlinmania.rustlang.core.io.error.Error>(UnixDatagram(inner))
         }
 
         /**
@@ -858,9 +864,9 @@ public open class UnixDatagram(
          * );
          * ```kotlin
          */
-        public fun pair(): Result<Pair<UnixDatagram, UnixDatagram>, io.github.kotlinmania.rustlang.std.io.error.Error> {
-            val (i1, i2) = when (val tryResult = Socket.newPair(AF_UNIX, SOCK_DGRAM)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<UnixDatagram, UnixDatagram>, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
-            return Result.Ok<Pair<UnixDatagram, UnixDatagram>, io.github.kotlinmania.rustlang.std.io.error.Error>(Pair(UnixDatagram(i1), UnixDatagram(i2)))
+        public fun pair(): Result<Pair<UnixDatagram, UnixDatagram>, io.github.kotlinmania.rustlang.core.io.error.Error> {
+            val (i1, i2) = when (val tryResult = Socket.newPair(AF_UNIX, SOCK_DGRAM)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<UnixDatagram, UnixDatagram>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+            return Result.Ok<Pair<UnixDatagram, UnixDatagram>, io.github.kotlinmania.rustlang.core.io.error.Error>(Pair(UnixDatagram(i1), UnixDatagram(i2)))
         }
 
         public fun fromRawFd(fd: RawFd): UnixDatagram = UnixDatagram(Socket.fromInner(FromInner.fromInner(OwnedFd.fromRawFd(fd))))

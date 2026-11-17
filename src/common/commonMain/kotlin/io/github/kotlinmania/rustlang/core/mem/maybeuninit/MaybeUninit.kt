@@ -28,9 +28,11 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.fromRef
 import io.github.kotlinmania.rustlang.core.ptr.read
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.splitLastMut
 
 // Lang item so we can wrap other types in it. This is useful for coroutines.
 
@@ -233,7 +235,7 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  *     // All the fields are initialized, so we call `assumeInit` to get an initialized Foo.
  *     uninit.assumeInit()
  * }
- * check(foo == Foo(name = "Bob".toString(), list = mutableListOf(0, 1, 2)))
+ * check(foo == Foo(name = "Bob".toString(), list = mutableListOf(0u, 1u, 2u)))
  * ```
  * [raw.mut]: https://doc.rust-lang.org/reference/types/pointer.html#r-type.pointer.raw.constructor
  * [validity]: ../../reference/behavior-considered-undefined.html#r-undefined.validity
@@ -446,7 +448,7 @@ public open class MaybeUninit<T>(
         // NB: there is no `.padFmt` so we can't use a simpler `formatArgs("MaybeUninit<(..)>").
         val fullName = "MaybeUninit"
         val prefixLen = (fullName.indexOf("MaybeUninit").takeIf { it >= 0 })!!
-        return run { f.append(fullName.substring(prefixLen)); Result.Ok(Unit) }
+        return run { f.append(fullName.substring(prefixLen)); Result.Ok<Unit, Unit>(Unit) }
     }
 
     /**
@@ -1733,7 +1735,7 @@ public fun <T> MaybeUninit<List<T>>.asMut(n: Int): List<MaybeUninit<T>> {
 
 public fun <T> MaybeUninit<List<T>>.asMutMaybeUninitTSlice(n: Int): MutableList<MaybeUninit<T>> = this.asMut()
 
-public fun <T> fromMaybeUninitTArrayn(arr: MaybeUninit<List<T>>, n: Int): List<MaybeUninit<T>> = arr.transpose()
+public fun <T> fromMaybeUninitTArrayn(arr: MaybeUninit<List<T>>, n: Int): List<MaybeUninit<T>> = arr.transpose(n)
 
 /**
  * Transposes a `[MaybeUninit<T>; N]` into a `MaybeUninit<[T; N]>`.

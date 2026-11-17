@@ -14,6 +14,7 @@ import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.withoutProvenance
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 
 // This is a densely packed error representation which is used on targets with
@@ -224,7 +225,7 @@ public open class Repr internal constructor(
             val res = Repr(ptr, Unit)
             if (false) {
                 check(when (val matchVal1 = res.data()) {
-                    is ErrorData.Custom -> true
+                    is ErrorData.Custom<*> -> true
                     else -> false
                 }) { "repr(custom) encoding failed" }
             }
@@ -240,7 +241,7 @@ public open class Repr internal constructor(
                 check(run {
                     val matchVal = res.data()
                     when {
-                        matchVal is ErrorData.Os && (matchVal as ErrorData.Os).value == code -> {
+                        matchVal is ErrorData.Os<*> && matchVal.value == code -> {
                             val (c) = matchVal
                             true
                         }
@@ -260,7 +261,7 @@ public open class Repr internal constructor(
                 check(run {
                     val matchVal = res.data()
                     when {
-                        matchVal is ErrorData.Simple && (matchVal as ErrorData.Simple).value == kind -> {
+                        matchVal is ErrorData.Simple<*> && matchVal.value == kind -> {
                             val (k) = matchVal
                             true
                         }

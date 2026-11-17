@@ -14,8 +14,13 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.Encode
 import io.github.kotlinmania.rustlang.procmacro.bridge.Mark
 import io.github.kotlinmania.rustlang.procmacro.bridge.arena.Arena
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
-import io.github.kotlinmania.rustlang.procmacro.bridge.client.Client
+import io.github.kotlinmania.rustlang.procmacro.bridge.client.Methods
+import io.github.kotlinmania.rustlang.procmacro.bridge.decode
+import io.github.kotlinmania.rustlang.procmacro.bridge.encode
 import io.github.kotlinmania.rustlang.procmacro.bridge.fxhash.FxHashMap
+import io.github.kotlinmania.rustlang.procmacro.bridge.mark
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.HandleStore
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.MarkedSymbol
 import io.github.kotlinmania.rustlang.procmacro.bridge.server.Server
 
 // Client-side interner used for symbols.
@@ -91,7 +96,7 @@ public open class Symbol internal constructor(
             return if (string.isAscii()) {
                 Result.Err(Unit)
             } else {
-                Client.Methods.symbolNormalizeAndValidateIdent(string)
+                Methods.symbolNormalizeAndValidateIdent(string)
             }.unwrapOrElse({ error("`$string` is not a valid identifier") })
         }
 
@@ -199,7 +204,7 @@ public open class Interner internal constructor(
         this.strings.clear()
         // SAFETY: This is cleared after the names and strings tables are
         // cleared out, so no references into the arena should remain.
-        this.arena = Arena.Arena.new()
+        this.arena = Arena.new()
     }
 
     public companion object {

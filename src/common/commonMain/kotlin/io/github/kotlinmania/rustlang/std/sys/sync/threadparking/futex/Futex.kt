@@ -15,7 +15,7 @@ public typealias Futex = SmallFutex
 
 public typealias State = SmallPrimitive
 
-public val PARKED: State = State.MAX_VALUE
+public val PARKED: State = UInt.MAX_VALUE
 
 public val EMPTY: State = 0u
 
@@ -105,7 +105,7 @@ public open class Parker(
          * requires this to happen in-place.
          */
         public fun newInPlace(parker: MutPtr) {
-            (UnresolvedTypeLayout<Parker>()).writeNative((parker).rawAddress, Parker(state = Futex.new(EMPTY)))
+            (UnresolvedTypeLayout<Parker>()).writeNative((parker).rawAddress, Parker(state = SmallFutex.new(EMPTY)))
         }
     }
 }

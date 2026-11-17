@@ -255,7 +255,7 @@ public fun <T : SetFileInformation> setFileInformationByHandle(handle: Handle, i
     fun setInfo(handle1: Handle, cls: Int, info1: ConstPtr, size: UInt): Result<Unit, WinError> =
         run {
             val result = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.setFileInformationByHandle(handle1, cls, info1, size)
-            (result != 0).thenSome().okOrElse(::getLastError)
+            (result != 0).thenSome(Unit).okOrElse(::getLastError)
         }
     // SAFETY: The `SetFileInformation` trait ensures that this is safe.
     return setInfo(handle, T.CLASS, info.asPtr(), info.size())

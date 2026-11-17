@@ -2,12 +2,12 @@
 package io.github.kotlinmania.rustlang.std.net.tcp
 
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.net.Shutdown
 import io.github.kotlinmania.rustlang.std.net.socketaddr.ToSocketAddrs
 import io.github.kotlinmania.rustlang.std.sys.AsInner
@@ -514,7 +514,7 @@ public open class TcpStream(
      * stream.takeError().expect("No error was expected...")
      * ```
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value.takeError()
+    public open fun takeError(): Result<Error?, Error> = this.value.takeError()
 
     /**
      * Moves this TCP stream into or out of nonblocking mode.
@@ -546,14 +546,14 @@ public open class TcpStream(
      *         val matchVal = stream.readToEnd(buf)
      *         when {
      *             matchVal is Ok -> { break }
-     *             matchVal is Err && (matchVal as Err).value.kind() == io.ErrorKind.WouldBlock -> {
+     *             matchVal is Err && matchVal.value.kind() == io.ErrorKind.WouldBlock -> {
      *                 val (e) = matchVal
      *                 // wait until network socket is ready, typically implemented
      *                 // via platform-specific APIs such as epoll or IOCP
      *                 waitForFd()
      *             }
      *             else -> {
-     *                 val (e1) = matchVal
+     *                 val (e1) = matchVal as Err
      *                 error("encountered IO error: $e")
      *             }
      *         }
@@ -965,7 +965,7 @@ public open class TcpListener(
      * listener.takeError().expect("`takeError` should succeed")
      * ```
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value.takeError()
+    public open fun takeError(): Result<Error?, Error> = this.value.takeError()
 
     /**
      * Moves this TCP stream into or out of nonblocking mode.
@@ -998,7 +998,7 @@ public open class TcpListener(
      *             // do something with the TcpStream
      *             handleConnection(s)
      *         }
-     *         stream is Err && (stream as Err).value.kind() == io.ErrorKind.WouldBlock -> {
+     *         stream is Err && stream.value.kind() == io.ErrorKind.WouldBlock -> {
      *             val (e) = stream
      *             // wait until network socket is ready, typically implemented
      *             // via platform-specific APIs such as epoll or IOCP
@@ -1006,7 +1006,7 @@ public open class TcpListener(
      *             continue
      *         }
      *         else -> {
-     *             val (e1) = stream
+     *             val (e1) = stream as Err
      *             error("encountered IO error: $e")
      *         }
      *     }

@@ -93,9 +93,9 @@ public open class LazyKey internal constructor(
         }
         return run {
             val matchVal1 = this.key.compareExchange(KEY_SENTVAL, key.toInt(), Ordering.Release, Ordering.Acquire)
-            when (matchVal1) { is Result.Ok -> {
+            when (matchVal1) { is Result.Ok<*, *> -> {
                 key.toInt()
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val n = matchVal1.error
                 run {
                     destroy(key)

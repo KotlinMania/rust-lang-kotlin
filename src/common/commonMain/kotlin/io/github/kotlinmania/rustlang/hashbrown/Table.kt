@@ -311,10 +311,10 @@ public open class HashTable<T, A> internal constructor(
     public open fun entry(hash: ULong, eq: (T) -> Boolean, hasher: (T) -> ULong): Entry<T, A> =
         run {
             val matchVal = this.raw.findOrFindInsertIndex(hash, eq, hasher)
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val bucket = matchVal.value
                 Entry.Occupied(OccupiedEntry(bucket = bucket, table = this))
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val insertIndex = matchVal.error
                 Entry.Vacant(VacantEntry(tag = Tag.full(hash), index = insertIndex, table = this))
             } }
@@ -1181,7 +1181,7 @@ public open class HashTable<T, A> internal constructor(
         this.raw = source.raw
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <T, A> invoke(
@@ -1439,13 +1439,13 @@ public sealed class Entry<T, A> {
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is Entry.Vacant -> {
-                val (v) = this
-                DebugTuple(f, "Entry").field(v).finish()
+            is Entry.Vacant<*, *> -> {
+                val (v) = this as Entry.Vacant<T, A>
+                run { DebugTuple(f, "Entry").field(v).finish(); Result.Ok<Unit, Error>(Unit) }
             }
-            is Entry.Occupied -> {
-                val (o) = this
-                DebugTuple(f, "Entry").field(o).finish()
+            is Entry.Occupied<*, *> -> {
+                val (o) = this as Entry.Occupied<T, A>
+                run { DebugTuple(f, "Entry").field(o).finish(); Result.Ok<Unit, Error>(Unit) }
             }
         }
 
@@ -1469,13 +1469,13 @@ public sealed class Entry<T, A> {
      */
     public open fun insert(value: T): OccupiedEntry<T, A> =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *> -> {
+                val (entry) = this as Entry.Occupied<T, A>
                 entry.getMut() = value
                 entry
             }
-            is Entry.Vacant -> {
-                val (entry1) = this
+            is Entry.Vacant<*, *> -> {
+                val (entry1) = this as Entry.Vacant<T, A>
                 entry1.insert(value)
             }
         }
@@ -1506,12 +1506,12 @@ public sealed class Entry<T, A> {
      */
     public open fun orInsert(default: T): OccupiedEntry<T, A> =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *> -> {
+                val (entry) = this as Entry.Occupied<T, A>
                 entry
             }
-            is Entry.Vacant -> {
-                val (entry1) = this
+            is Entry.Vacant<*, *> -> {
+                val (entry1) = this as Entry.Vacant<T, A>
                 entry1.insert(default)
             }
         }
@@ -1537,12 +1537,12 @@ public sealed class Entry<T, A> {
      */
     public open fun orInsertWith(default: () -> T): OccupiedEntry<T, A> =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *> -> {
+                val (entry) = this as Entry.Occupied<T, A>
                 entry
             }
-            is Entry.Vacant -> {
-                val (entry1) = this
+            is Entry.Vacant<*, *> -> {
+                val (entry1) = this as Entry.Vacant<T, A>
                 entry1.insert(default())
             }
         }
@@ -1569,13 +1569,13 @@ public sealed class Entry<T, A> {
      */
     public open fun andModify(f: (T) -> Unit): Entry<T, A> =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *> -> {
+                val (entry) = this as Entry.Occupied<T, A>
                 f(entry.getMut())
                 Entry.Occupied(entry)
             }
-            is Entry.Vacant -> {
-                val (entry1) = this
+            is Entry.Vacant<*, *> -> {
+                val (entry1) = this as Entry.Vacant<T, A>
                 Entry.Vacant(entry1)
             }
         }
@@ -1585,12 +1585,12 @@ public sealed class Entry<T, A> {
      */
     public open fun intoTable(): HashTable<T, A> =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *> -> {
+                val (entry) = this as Entry.Occupied<T, A>
                 entry.table
             }
-            is Entry.Vacant -> {
-                val (entry1) = this
+            is Entry.Vacant<*, *> -> {
+                val (entry1) = this as Entry.Vacant<T, A>
                 entry1.table
             }
         }
@@ -1646,7 +1646,7 @@ public open class OccupiedEntry<T, A> internal constructor(
     public var table: HashTable<T, A> = tableCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedEntry").field("value", this.get()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "OccupiedEntry").field("value", this.get()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Takes the value out of the entry, and returns it along with a
@@ -1939,7 +1939,7 @@ public open class VacantEntry<T, A> internal constructor(
     public var table: HashTable<T, A> = tableCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("VacantEntry"); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("VacantEntry"); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Inserts a new element into the table with the hash that was used to
@@ -2034,7 +2034,7 @@ public open class AbsentEntry<T, A> internal constructor(
     public var table: HashTable<T, A> = tableCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("AbsentEntry"); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("AbsentEntry"); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Converts the `AbsentEntry` into a mutable reference to the underlying
@@ -2093,7 +2093,7 @@ public open class Iter<T>(
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Iter<T> = Iter(inner = this.inner.clone(), marker = Unit)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun <T> default(): Iter<T> = Iter(inner = RawIter.default(), marker = Unit)
@@ -2144,7 +2144,7 @@ public open class IterMut<T>(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun <T> default(): IterMut<T> = IterMut(inner = RawIter.default(), marker = Unit)
@@ -2242,7 +2242,7 @@ public open class UnsafeIter<T>(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun <T> default(): UnsafeIter<T> = UnsafeIter(inner = RawIter.default(), marker = Unit)
@@ -2280,7 +2280,7 @@ public open class IterBuckets<T>(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun <T> default(): IterBuckets<T> = IterBuckets(inner = FullBucketsIndices.default(), marker = Unit)
@@ -2325,7 +2325,7 @@ public open class IterHash<T>(
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): IterHash<T> = IterHash(inner = this.inner.clone(), marker = Unit)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun <T> default(): IterHash<T> = IterHash(inner = RawIterHash.default(), marker = Unit)
@@ -2367,7 +2367,7 @@ public open class IterHashMut<T>(
 
     public open fun <B> fold(init: B, f: (B, T) -> B): B = this.inner.fold(init, { acc, bucket -> f(acc, bucket.asMut()) })
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(IterHash(inner = this.inner.clone(), marker = Unit)).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(IterHash(inner = this.inner.clone(), marker = Unit)).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun <T> default(): IterHashMut<T> = IterHashMut(inner = RawIterHash.default(), marker = Unit)
@@ -2397,7 +2397,7 @@ public open class IterHashBuckets<T>(
 
     public open fun next(): Int? = this.inner.next()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun <T> default(): IterHashBuckets<T> = IterHashBuckets(inner = RawIterHashIndices.default(), marker = Unit)
@@ -2442,7 +2442,7 @@ public open class IntoIter<T, A> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <T, A> invoke(
@@ -2491,7 +2491,7 @@ public open class Drain<T, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <T, A : Allocator> invoke(
@@ -2511,22 +2511,9 @@ public open class Drain<T, A : Allocator> internal constructor(
 public open class ExtractIf<T, F, A : Allocator> internal constructor(
     public var f: F,
     innerCtorArg: RawExtractIf<T, A>,
-) : Iterable<T> {
+) {
     public var inner: RawExtractIf<T, A> = innerCtorArg
         internal set
-
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@ExtractIf.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
-    public open fun next(): T? = this.inner.next({ value -> (this.f)(value) })
-
-    public open fun sizeHint(): Pair<Int, Int?> = Pair(0, this.inner.iter.sizeHint().second)
 
     public companion object {
         public operator fun <T, F, A : Allocator> invoke(
@@ -2538,3 +2525,7 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
         )
     }
 }
+
+public fun <T, A : Allocator> ExtractIf<T, F, A>.next(): T? = this.inner.next({ value -> (this.f)(value) })
+
+public fun <T, A : Allocator> ExtractIf<T, F, A>.sizeHint(): Pair<Int, Int?> = Pair(0, this.inner.iter.sizeHint().second)

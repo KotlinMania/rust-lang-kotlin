@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.num.imp.x87f80
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 public class DebugTuple(
     private val out: StringBuilder,

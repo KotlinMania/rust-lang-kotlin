@@ -18,7 +18,9 @@ import io.github.kotlinmania.rustlang.core.ops.bit.BitAndAssign
 import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
 import io.github.kotlinmania.rustlang.core.ops.bit.BitOrAssign
 import io.github.kotlinmania.rustlang.core.ops.bit.Not
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.splitFirst
 
 /**
  * An IP address, either IPv4 or IPv6.
@@ -73,11 +75,11 @@ public sealed class IpAddr {
     public open fun isUnspecified(): Boolean =
         when (this) {
             is IpAddr.V4 -> {
-                val (ip) = this
+                val (ip) = this as IpAddr.V4
                 ip.isUnspecified()
             }
             is IpAddr.V6 -> {
-                val (ip1) = this
+                val (ip1) = this as IpAddr.V6
                 ip1.isUnspecified()
             }
         }
@@ -102,11 +104,11 @@ public sealed class IpAddr {
     public open fun isLoopback(): Boolean =
         when (this) {
             is IpAddr.V4 -> {
-                val (ip) = this
+                val (ip) = this as IpAddr.V4
                 ip.isLoopback()
             }
             is IpAddr.V6 -> {
-                val (ip1) = this
+                val (ip1) = this as IpAddr.V6
                 ip1.isLoopback()
             }
         }
@@ -134,11 +136,11 @@ public sealed class IpAddr {
     public open fun isGlobal(): Boolean =
         when (this) {
             is IpAddr.V4 -> {
-                val (ip) = this
+                val (ip) = this as IpAddr.V4
                 ip.isGlobal()
             }
             is IpAddr.V6 -> {
-                val (ip1) = this
+                val (ip1) = this as IpAddr.V6
                 ip1.isGlobal()
             }
         }
@@ -163,11 +165,11 @@ public sealed class IpAddr {
     public open fun isMulticast(): Boolean =
         when (this) {
             is IpAddr.V4 -> {
-                val (ip) = this
+                val (ip) = this as IpAddr.V4
                 ip.isMulticast()
             }
             is IpAddr.V6 -> {
-                val (ip1) = this
+                val (ip1) = this as IpAddr.V6
                 ip1.isMulticast()
             }
         }
@@ -195,11 +197,11 @@ public sealed class IpAddr {
     public open fun isDocumentation(): Boolean =
         when (this) {
             is IpAddr.V4 -> {
-                val (ip) = this
+                val (ip) = this as IpAddr.V4
                 ip.isDocumentation()
             }
             is IpAddr.V6 -> {
-                val (ip1) = this
+                val (ip1) = this as IpAddr.V6
                 ip1.isDocumentation()
             }
         }
@@ -227,11 +229,11 @@ public sealed class IpAddr {
     public open fun isBenchmarking(): Boolean =
         when (this) {
             is IpAddr.V4 -> {
-                val (ip) = this
+                val (ip) = this as IpAddr.V4
                 ip.isBenchmarking()
             }
             is IpAddr.V6 -> {
-                val (ip1) = this
+                val (ip1) = this as IpAddr.V6
                 ip1.isBenchmarking()
             }
         }
@@ -305,7 +307,7 @@ public sealed class IpAddr {
         when (this) {
             is IpAddr.V4 -> this
             is IpAddr.V6 -> {
-                val (v6) = this
+                val (v6) = this as IpAddr.V6
                 v6.toCanonical()
             }
         }
@@ -330,11 +332,11 @@ public sealed class IpAddr {
     public open fun asOctets(): List<UByte> =
         when (this) {
             is IpAddr.V4 -> {
-                val (ip) = this
+                val (ip) = this as IpAddr.V4
                 ip.asOctets().asSlice()
             }
             is IpAddr.V6 -> {
-                val (ip1) = this
+                val (ip1) = this as IpAddr.V6
                 ip1.asOctets().asSlice()
             }
         }
@@ -342,21 +344,21 @@ public sealed class IpAddr {
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> =
         when (this) {
             is IpAddr.V4 -> {
-                val (ip) = this
+                val (ip) = this as IpAddr.V4
                 ip.fmt(fmt)
             }
             is IpAddr.V6 -> {
-                val (ip1) = this
+                val (ip1) = this as IpAddr.V6
                 ip1.fmt(fmt)
             }
         }
 
-    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun eq(other: Ipv4Addr): Boolean =
         when (this) {
             is IpAddr.V4 -> {
-                val (v4) = this
+                val (v4) = this as IpAddr.V4
                 v4 == other
             }
             is IpAddr.V6 -> false
@@ -365,7 +367,7 @@ public sealed class IpAddr {
     public open fun partialCmp(other: Ipv4Addr): Ordering? =
         when (this) {
             is IpAddr.V4 -> {
-                val (v4) = this
+                val (v4) = this as IpAddr.V4
                 v4.partialCmp(other)
             }
             is IpAddr.V6 -> Ordering.Greater
@@ -375,7 +377,7 @@ public sealed class IpAddr {
         when (this) {
             is IpAddr.V4 -> false
             is IpAddr.V6 -> {
-                val (v6) = this
+                val (v6) = this as IpAddr.V6
                 v6 == other
             }
         }
@@ -384,7 +386,7 @@ public sealed class IpAddr {
         when (this) {
             is IpAddr.V4 -> Ordering.Less
             is IpAddr.V6 -> {
-                val (v6) = this
+                val (v6) = this as IpAddr.V6
                 v6.partialCmp(other)
             }
         }
@@ -1003,11 +1005,11 @@ public open class Ipv4Addr(
             val buf = DisplayBuffer.buffer(LONGEST_IPV4_ADDR.len())
             val buf1 = DisplayBuffer.new(buf)
             buf1.writeFmt("${octets[0]}.${octets[1]}.${octets[2]}.${octets[3]}").unwrap()
-            run { fmt.append(buf1.asStr()); Result.Ok(Unit) }
+            run { fmt.append(buf1.asStr()); Result.Ok<Unit, Unit>(Unit) }
         }
     }
 
-    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun eq(other: IpAddr): Boolean =
         when (other) {
@@ -1967,10 +1969,10 @@ public open class Ipv6Addr(
                             else -> {
                                 val first = matchVal.first
                                 val tail = matchVal.second
-                                when (val tryResult = f1.writeFmt("$first")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                                when (val tryResult = f1.writeFmt("$first")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
                                 for (segment in tail) {
                                     f1.append(':')
-                                    when (val tryResult = f1.writeFmt("$segment")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                                    when (val tryResult = f1.writeFmt("$segment")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
                                 }
                             }
                         }
@@ -1996,7 +1998,7 @@ public open class Ipv6Addr(
                         longest
                     }
                     if (zeroes.len > 1) {
-                        when (val tryResult = fmtSubslice(f, ((segments).sliceArray(0 until zeroes.start)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+                        when (val tryResult = fmtSubslice(f, ((segments).sliceArray(0 until zeroes.start)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
                         f.append("::")
                         fmtSubslice(f, ((segments).sliceArray(zeroes.start + zeroes.len until segments.size)))
                     } else {
@@ -2013,11 +2015,11 @@ public open class Ipv6Addr(
             val buf = DisplayBuffer.buffer(LONGEST_IPV6_ADDR.len())
             val buf1 = DisplayBuffer.new(buf)
             buf1.writeFmt("${this}").unwrap()
-            run { f.append(buf1.asStr()); Result.Ok(Unit) }
+            run { f.append(buf1.asStr()); Result.Ok<Unit, Unit>(Unit) }
         }
     }
 
-    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun eq(other: IpAddr): Boolean =
         when (other) {

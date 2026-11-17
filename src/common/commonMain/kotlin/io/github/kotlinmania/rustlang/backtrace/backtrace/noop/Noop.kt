@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.backtrace.backtrace.noop
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 // Empty implementation of unwinding used when no other implementation is
 // appropriate.

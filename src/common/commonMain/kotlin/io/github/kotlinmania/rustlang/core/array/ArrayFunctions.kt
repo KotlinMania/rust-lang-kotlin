@@ -22,6 +22,7 @@ import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Residual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ops.trytrait.fromResidual
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -141,11 +142,11 @@ public fun <T> fromFn(f: (Int) -> T, n: Int): List<T> = tryFromFn(NeverShortCirc
 public fun <Output, Residual, R> tryFromFn(cb: (Int) -> R, n: Int): ChangeOutputType<R, List<Output>> where R : Try<R, Output, Residual> {
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Output>()) }
     return when (val matchVal = tryFromFnErased(array, cb)) {
-        is ControlFlow.Break -> {
+        is ControlFlow.Break<*, *> -> {
             val (r) = matchVal
             FromResidual.fromResidual(r)
         }
-        is ControlFlow.Continue -> {
+        is ControlFlow.Continue<*, *> -> {
             // SAFETY: All elements of the array were populated.
             MaybeUninit.arrayAssumeInit(array, n)
         }
@@ -186,12 +187,12 @@ public fun <T> fromMut(s: T): List<T> {
 public fun <Output, Residual, R : Try<R, Output, Residual>> tryFromFnErased(buffer: MutableList<MaybeUninit<Output>>, generator: (Int) -> R): ControlFlow<Residual, Unit> {
     val guard = Guard(arrayMut = buffer, initialized = 0)
     while (guard.initialized < guard.arrayMut.size) {
-        val item = when (val tryResult = generator(guard.initialized).branch()) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<Residual, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
+        val item = when (val tryResult = generator(guard.initialized).branch()) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<Residual, Unit>(tryResult.value) }
         // SAFETY: The loop condition ensures we have space to push the item
         guard.pushUnchecked(item)
     }
     forget(guard)
-    return ControlFlow.Continue()
+    return ControlFlow.Continue(Unit)
 }
 
 /**
@@ -397,7 +398,7 @@ public fun <T, H> List<T>.hashFromTArrayn(state: H, n: Int) {
     this.hash(state)
 }
 
-public fun <T> List<T>.fmtFromTArrayn(f: StringBuilder, n: Int): Result<Unit, Unit> = run { f.append((this).toString()); Result.Ok(Unit) }
+public fun <T> List<T>.fmtFromTArrayn(f: StringBuilder, n: Int): Result<Unit, Unit> = run { f.append((this).toString()); Result.Ok<Unit, Unit>(Unit) }
 
 public fun <T> List<T>.intoIter(n: Int): Iter<T> = this.iter()
 
@@ -823,10 +824,10 @@ public fun <T> List<T>.rsplitArrayMut(n: Int, m: Int): Pair<MutableList<T>, List
 public fun <I : Iterator<T>, T> I.specNextChunk(n: Int): Result<List<T>, IntoIter<T>> {
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     val r = iterNextChunkErased(array, this)
-    return when (r) { is Result.Ok -> {
+    return when (r) { is Result.Ok<*, *> -> {
         // SAFETY: All elements of `array` were populated.
         Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(array, n))
-    }; is Result.Err -> {
+    }; is Result.Err<*, *> -> {
         val initialized = r.error
         // SAFETY: Only the first `initialized` elements were populated
         Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(array, 0 until initialized, n))
@@ -852,10 +853,10 @@ public fun <I, T> I.specNextChunkTN(n: Int): Result<List<T>, IntoIter<T>> where 
 public fun <I, T> I.specNextChunkBack(n: Int): Result<List<T>, IntoIter<T>> {
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     val r = iterNextChunkBackErased(array, this)
-    return when (r) { is Result.Ok -> {
+    return when (r) { is Result.Ok<*, *> -> {
         // SAFETY: All elements of `array` were populated.
         Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(array, n))
-    }; is Result.Err -> {
+    }; is Result.Err<*, *> -> {
         val initialized = r.error
         // SAFETY: Only the last `initialized` elements were populated
         Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(array, n - initialized until n, n))

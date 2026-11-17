@@ -14,11 +14,19 @@ import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
+import io.github.kotlinmania.rustlang.std.os.fd.asFd
+import io.github.kotlinmania.rustlang.std.os.fd.asRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.intoRawFd
 import io.github.kotlinmania.rustlang.std.process.ExitStatus
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.sys.asInner
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.std.sys.fromInner
+import io.github.kotlinmania.rustlang.std.sys.intoInner
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 import io.github.kotlinmania.rustlang.std.sys.process.unix.pidfd.PidFd as InnerPidFd
 
 // Linux-specific extensions to primitives in the [std.process] module.
@@ -102,7 +110,7 @@ public open class PidFd internal constructor(
      * [Child.tryWait]: process.Child.tryWait
      */
     public open fun tryWait(): Result<ExitStatus?> {
-        return Result.Ok(when (val tryResult = this.inner.tryWait()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }.map(FromInner::fromInner))
+        return RustResult.Ok(when (val tryResult = this.inner.tryWait()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }.map(FromInner::fromInner))
     }
 
     public override fun asInner(): InnerPidFd = this.inner
@@ -170,7 +178,7 @@ public interface ChildExt<T> {
      * [pidfd]: ChildExt.pidfd
      * [Child]: process.Child
      */
-    public fun intoPidfd(): Result<PidFd, T>
+    public fun intoPidfd(): RustResult<PidFd, T>
 }
 
 /**

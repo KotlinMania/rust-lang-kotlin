@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.test.helpers.shuffle
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.orElse
 import io.github.kotlinmania.rustlang.std.hash.random.DefaultHasher
 import io.github.kotlinmania.rustlang.std.time.SystemTime

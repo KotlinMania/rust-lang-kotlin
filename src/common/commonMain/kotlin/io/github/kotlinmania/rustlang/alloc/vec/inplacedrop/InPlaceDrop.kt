@@ -4,7 +4,9 @@ package io.github.kotlinmania.rustlang.alloc.vec.inplacedrop
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 // A helper struct for in-place iteration that drops the destination slice of iteration,
 // i.e. the head. The source slice (the tail) is dropped by IntoIter.

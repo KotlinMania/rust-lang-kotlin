@@ -4,12 +4,7 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.skip
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.intrinsics.unlikely
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
@@ -23,6 +18,7 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public typealias Source<I> = I.Source
@@ -39,7 +35,7 @@ public typealias Source<I> = I.Source
 public open class Skip<I>(
     public var iter: I,
     public var n: Int,
-) : TrustedFused, SourceIter<Source>, InPlaceIterable, TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen, Iterable<Item> {
+) : Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Skip.next()) {
@@ -51,14 +47,14 @@ public open class Skip<I>(
 
     public open fun clone(): Skip<I> = Skip(iter, n)
 
-    public override fun next(): Item? =
+    public open fun next(): Item? =
         if (unlikely(this.n > 0)) {
             this.iter.nth(take(this.n))
         } else {
             this.iter.next()
         }
 
-    public override fun nth(n: Int): Item? {
+    public open fun nth(n: Int): Item? {
         return if (this.n > 0) {
             val skip: Int = take(this.n)
             // Checked add to handle overflow case.
@@ -83,7 +79,7 @@ public open class Skip<I>(
         }
     }
 
-    public override fun count(): Int {
+    public open fun count(): Int {
         if (this.n > 0) {
             // nth(n) skips n+1
             if (this.iter.nth(this.n - 1) == null) {
@@ -93,7 +89,7 @@ public open class Skip<I>(
         return this.iter.count()
     }
 
-    public override fun last(): Item? {
+    public open fun last(): Item? {
         if (this.n > 0) {
             // nth(n) skips n+1
             (this.iter.nth(this.n - 1) ?: return null)
@@ -101,7 +97,7 @@ public open class Skip<I>(
         return this.iter.last()
     }
 
-    public override fun sizeHint(): Pair<Int, Int?> {
+    public open fun sizeHint(): Pair<Int, Int?> {
         val (lower, upper) = this.iter.sizeHint()
         val lower1 = lower.saturatingSub(this.n)
         val upper1 =
@@ -115,7 +111,7 @@ public open class Skip<I>(
         return Pair(lower1, upper1)
     }
 
-    public override fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         val n = this.n
         this.n = 0
         if (n > 0) {
@@ -127,7 +123,7 @@ public open class Skip<I>(
         return this.iter.tryFold(init, fold)
     }
 
-    public override fun <Acc> fold(init: Acc, fold: (Acc, Item) -> Acc): Acc {
+    public open fun <Acc> fold(init: Acc, fold: (Acc, Item) -> Acc): Acc {
         if (this.n > 0) {
             // nth(n) skips n+1
             if (this.iter.nth(this.n - 1) == null) {
@@ -137,7 +133,7 @@ public open class Skip<I>(
         return this.iter.fold(init, fold)
     }
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         var n1 = n
         if (this.n > 0 && n1 == 0) {
             // If we try to process our skips now, we might witness the end of the inner iterator,
@@ -151,9 +147,9 @@ public open class Skip<I>(
         val remainder =
             run {
                 val matchVal = this.iter.advanceBy(skipAndAdvance)
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     0
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     val n2 = matchVal.error
                     n2.get()
                 } }
@@ -165,9 +161,9 @@ public open class Skip<I>(
         if (unlikely(remainder == 0 && n1 > 0)) {
             n1 = run {
                 val matchVal1 = this.iter.advanceBy(n1)
-                when (matchVal1) { is Result.Ok -> {
+                when (matchVal1) { is Result.Ok<*, *> -> {
                     0
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     val n3 = matchVal1.error
                     n3.get()
                 } }
@@ -176,7 +172,7 @@ public open class Skip<I>(
         return ((NonZero.new<NonZeroUsizeInner, Int>(n1))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
-    public override fun iteratorGetUnchecked(idx: Int): Item {
+    public open fun iteratorGetUnchecked(idx: Int): Item {
         // SAFETY: the caller must uphold the contract for
         // `Iterator.__iterator_get_unchecked`.
         //
@@ -247,16 +243,6 @@ public open class Skip<I>(
         return ((NonZero.new<NonZeroUsizeInner, Int>(n - min))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
-    public override fun asInner(): Source {
-        // SAFETY: unchecked function forwarding to unchecked function with the same requirements
-        return this.iter.asInner()
-    }
-
-    // SAFETY: This adapter is shortening. TrustedLen requires the upper bound to be calculated correctly.
-    // These requirements can only be satisfied when the upper bound of the inner iterator's upper
-    // bound is never `None`. I: TrustedRandomAccess happens to provide this guarantee while
-    // I: TrustedLen would not.
-
     public companion object {
         public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<Skip<I>> =
             object : TypeLayout<Skip<I>> {
@@ -284,11 +270,21 @@ public open class Skip<I>(
             }
 
         public fun <I> new(iter: I, n: Int): Skip<I> = Skip(iter = iter, n = n)
-
-        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
-
-        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
-
-        public val MAY_HAVE_SIDE_EFFECT: Boolean = I.MAY_HAVE_SIDE_EFFECT
     }
 }
+
+public fun <Source, I> Skip<I>.asInner(): Source where I : SourceIter<Source> {
+    // SAFETY: unchecked function forwarding to unchecked function with the same requirements
+    return this.iter.asInner()
+}
+
+public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
+
+public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
+
+public val MAY_HAVE_SIDE_EFFECT: Boolean = I.MAY_HAVE_SIDE_EFFECT
+
+// SAFETY: This adapter is shortening. TrustedLen requires the upper bound to be calculated correctly.
+// These requirements can only be satisfied when the upper bound of the inner iterator's upper
+// bound is never `None`. I: TrustedRandomAccess happens to provide this guarantee while
+// I: TrustedLen would not.

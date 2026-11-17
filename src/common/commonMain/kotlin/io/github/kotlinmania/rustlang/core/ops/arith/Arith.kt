@@ -47,13 +47,12 @@ import io.github.kotlinmania.rustlang.core.U128
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     open class Point<T>(public var x: T, public var y: T) : Add<Point<T>, Any?, Point<T>> {
+ *     open class Point<T>(public var x: T, public var y: T) {
  *         public open fun clone(): Point<T> = Point(x, y)
- *
- *         // Notice that the implementation uses the associated type `Output`.
- *         public open fun add(other: Point<T>): Point<T> {
- *             return Point(x = this.x + other.x, y = this.y + other.y)
- *         }
+ *     }
+ *     // Notice that the implementation uses the associated type `Output`.
+ *     fun <T : Add<T, T>> Point<T>.add(other: Point<T>): Point<T> {
+ *         return Point(x = this.x + other.x, y = this.y + other.y)
  *     }
  *     check(Point(x = 1, y = 0) + Point(x = 2, y = 3) == Point(x = 3, y = 3))
  * }
@@ -169,11 +168,10 @@ public fun F128.addF128(other: F128): Output = Add.Add(this, other)
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     open class Point<T>(public var x: T, public var y: T) : Sub<Point<T>, Any?, Point<T>> {
- *         // Notice that the implementation uses the associated type `Output`.
- *         public open fun sub(other: Point<T>): Point<T> {
- *             return Point(x = this.x - other.x, y = this.y - other.y)
- *         }
+ *     open class Point<T>(public var x: T, public var y: T)
+ *     // Notice that the implementation uses the associated type `Output`.
+ *     fun <T : Sub<T, T>> Point<T>.sub(other: Point<T>): Point<T> {
+ *         return Point(x = this.x - other.x, y = this.y - other.y)
  *     }
  *     check(Point(x = 2, y = 3) - Point(x = 1, y = 0) == Point(x = 1, y = 3))
  * }

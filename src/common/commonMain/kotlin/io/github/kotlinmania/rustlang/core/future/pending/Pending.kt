@@ -43,7 +43,7 @@ public open class Pending<T>(
 ) : Future<T> {
     public override fun poll(arg0: Context): Poll<T> = Poll.Pending
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Pending").finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Pending").finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun clone(): Pending<T> = pending()
 }

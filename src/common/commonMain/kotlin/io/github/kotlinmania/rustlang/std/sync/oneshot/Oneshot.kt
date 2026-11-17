@@ -179,7 +179,7 @@ public open class Sender<T>(
      */
     public open fun isClosed(): Boolean = this.inner.isDisconnected()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Sender").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Sender").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 }
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -424,7 +424,7 @@ public open class Receiver<T>(
             io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Disconnected -> RecvTimeoutError.Disconnected
         } })
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Receiver").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Receiver").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 }
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -451,11 +451,11 @@ public sealed class TryRecvError<T> {
      */
     public class Disconnected<T>() : TryRecvError<T>()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "TryRecvError").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "TryRecvError").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is TryRecvError.Empty -> "receiving on an empty oneshot channel".fmt(f)
+            is TryRecvError.Empty<*> -> "receiving on an empty oneshot channel".fmt(f)
             TryRecvError.Disconnected -> "receiving on a closed oneshot channel".fmt(f)
         }
 
@@ -531,11 +531,11 @@ public sealed class RecvTimeoutError<T> {
      */
     public class Disconnected<T>() : RecvTimeoutError<T>()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "RecvTimeoutError").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "RecvTimeoutError").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is RecvTimeoutError.Timeout -> "timed out waiting on oneshot channel".fmt(f)
+            is RecvTimeoutError.Timeout<*> -> "timed out waiting on oneshot channel".fmt(f)
             RecvTimeoutError.Disconnected -> "receiving on a closed oneshot channel".fmt(f)
         }
 

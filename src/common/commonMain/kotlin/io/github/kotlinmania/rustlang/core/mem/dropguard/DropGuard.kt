@@ -42,7 +42,7 @@ public open class DropGuard<T, F, Output>(
         f(inner)
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         /**

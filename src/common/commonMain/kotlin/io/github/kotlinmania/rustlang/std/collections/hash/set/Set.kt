@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.iter.adapters.chain.Chain
+import io.github.kotlinmania.rustlang.core.iter.adapters.chain.chain
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.collections.hash.map.mapTryReserveError
 import io.github.kotlinmania.rustlang.std.hash.random.RandomState
@@ -788,38 +789,7 @@ public open class HashSet<T, S, A : Allocator> internal constructor(
         this.base = other.base
     }
 
-    public open fun eq(other: HashSet<T, S, A>): Boolean {
-        if (this.len() != other.len()) {
-            return false
-        }
-        return this.iter().all({ key -> other.contains(key) })
-    }
-
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish()
-
-    public open fun <I : Iterable<T>> extend(iter: I) {
-        this.base.extend(iter)
-    }
-
-    public open fun extendOne(item: T) {
-        this.base.add(item)
-    }
-
-    public open fun extendReserve(additional: Int) {
-        this.base.extendReserve(additional)
-    }
-
-    public open fun <I : Iterable<T>> extendT(iter: I) {
-        this.extend(iter.iterator().cloned())
-    }
-
-    public open fun extendOneT(item: T) {
-        this.base.add(item)
-    }
-
-    public open fun extendReserveT(additional: Int) {
-        Extend.extendReserve(this, additional)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun intoIter(): Iter<T> = this.iter()
 
@@ -1025,15 +995,22 @@ public fun <T, S> HashSet.Companion.withCapacityAndHasher(capacity: Int, hasher:
 
 public fun <K, V, A : Allocator> mapEntry(raw: Entry<K, V, A>): Entry<K, V, A> =
     when (raw) {
-        is Entry.Occupied -> {
+        is Entry.Occupied<*, *, *> -> {
             val (base) = raw
             Entry.Occupied(OccupiedEntry(base = base))
         }
-        is Entry.Vacant -> {
+        is Entry.Vacant<*, *, *> -> {
             val (base1) = raw
             Entry.Vacant(VacantEntry(base = base1))
         }
     }
+
+public fun <T, S, A> HashSet<T, S, A>.eq(other: HashSet<T, S, A>): Boolean where S : BuildHasher, A : Allocator {
+    if (this.len() != other.len()) {
+        return false
+    }
+    return this.iter().all({ key -> other.contains(key) })
+}
 
 public fun <T, S, I : Iterable<T>> fromIteratorFromIterHashSetTS(iter: I, defaultSFn: () -> S): HashSet<T, S, Global> where S : BuildHasher {
     val set = HashSet.withHasher(defaultSFn())
@@ -1069,6 +1046,30 @@ public fun <T, S, I : Iterable<T>> fromIteratorFromIterHashSetTS(iter: I, defaul
  * ```
  */
 public fun <T> fromHashSetTRandomState(arr: List<T>, n: Int): HashSet<T, RandomState, Global> = HashSet.fromIter(arr)
+
+public fun <T, S, A, I : Iterable<T>> HashSet<T, S, A>.extend(iter: I) where S : BuildHasher, A : Allocator {
+    this.base.extend(iter)
+}
+
+public fun <T, S, A> HashSet<T, S, A>.extendOne(item: T) where S : BuildHasher, A : Allocator {
+    this.base.add(item)
+}
+
+public fun <T, S, A> HashSet<T, S, A>.extendReserve(additional: Int) where S : BuildHasher, A : Allocator {
+    this.base.extendReserve(additional)
+}
+
+public fun <T, S, A, I : Iterable<T>> HashSet<T, S, A>.extendT(iter: I) where S : BuildHasher, A : Allocator {
+    this.extend(iter.iterator().cloned())
+}
+
+public fun <T, S, A> HashSet<T, S, A>.extendOneT(item: T) where S : BuildHasher, A : Allocator {
+    this.base.add(item)
+}
+
+public fun <T, S, A> HashSet<T, S, A>.extendReserveT(additional: Int) where S : BuildHasher, A : Allocator {
+    Extend.extendReserve(this, additional)
+}
 
 /**
  * Creates an empty `HashSet<T, S>` with the `Default` value for the hasher.
@@ -1194,7 +1195,7 @@ public open class Iter<K>(
 
     public open fun len(): Int = this.base.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun <K> default(): Iter<K> = Iter(base = Iter.default())
@@ -1241,7 +1242,7 @@ public open class IntoIter<K, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.base.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.base).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.base).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <K, A : Allocator> invoke(
@@ -1292,7 +1293,7 @@ public open class Drain<K, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.base.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.base).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.base).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <K, A : Allocator> invoke(
@@ -1319,24 +1320,11 @@ public open class Drain<K, A : Allocator> internal constructor(
  */
 public open class ExtractIf<K, F, A : Allocator> internal constructor(
     baseCtorArg: ExtractIf<K, F, A>,
-) : Iterable<K> {
+) {
     public var base: ExtractIf<K, F, A> = baseCtorArg
         internal set
 
-    override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
-        override fun computeNext() {
-            when (val v = this@ExtractIf.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
-    public open fun next(): K? = this.base.next()
-
-    public open fun sizeHint(): Pair<Int, Int?> = this.base.sizeHint()
-
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "ExtractIf").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "ExtractIf").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <K, F, A : Allocator> invoke(
@@ -1367,44 +1355,12 @@ public open class Intersection<T, S, A : Allocator> internal constructor(
     // iterator of the first set
     public var iter: Iter<T>,
     otherCtorArg: HashSet<T, S, A>,
-) : Iterable<T> {
+) {
     // the second set
     public var other: HashSet<T, S, A> = otherCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@Intersection.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
     public open fun clone(): Intersection<T, S, A> = Intersection(this.iter, this.other).copy(iter = this.iter.clone())
-
-    public open fun next(): T? {
-        while (true) {
-            val elt = (this.iter.next() ?: return null)
-            if (this.other.contains(elt)) {
-                return elt
-            }
-        }
-    }
-
-    public open fun sizeHint(): Pair<Int, Int?> {
-        val (_, upper) = this.iter.sizeHint()
-        return Pair(0, upper)
-    }
-
-    public open fun <B> fold(init: B, f: (B, T) -> B): B =
-        this.iter.fold(init, { acc, elt -> if (this.other.contains(elt)) {
-            f(acc, elt)
-        } else {
-            acc
-        } })
-
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(
@@ -1437,44 +1393,12 @@ public open class Difference<T, S, A : Allocator> internal constructor(
     // iterator of the first set
     public var iter: Iter<T>,
     otherCtorArg: HashSet<T, S, A>,
-) : Iterable<T> {
+) {
     // the second set
     public var other: HashSet<T, S, A> = otherCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@Difference.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
     public open fun clone(): Difference<T, S, A> = Difference(this.iter, this.other).copy(iter = this.iter.clone())
-
-    public open fun next(): T? {
-        while (true) {
-            val elt = (this.iter.next() ?: return null)
-            if (!this.other.contains(elt)) {
-                return elt
-            }
-        }
-    }
-
-    public open fun sizeHint(): Pair<Int, Int?> {
-        val (_, upper) = this.iter.sizeHint()
-        return Pair(0, upper)
-    }
-
-    public open fun <B> fold(init: B, f: (B, T) -> B): B =
-        this.iter.fold(init, { acc, elt -> if (this.other.contains(elt)) {
-            acc
-        } else {
-            f(acc, elt)
-        } })
-
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(
@@ -1505,28 +1429,11 @@ public open class Difference<T, S, A : Allocator> internal constructor(
  */
 public open class SymmetricDifference<T, S, A : Allocator> internal constructor(
     iterCtorArg: Chain<Difference<T, S, A>, Difference<T, S, A>>,
-) : Iterable<T> {
+) {
     public var iter: Chain<Difference<T, S, A>, Difference<T, S, A>> = iterCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@SymmetricDifference.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
     public open fun clone(): SymmetricDifference<T, S, A> = SymmetricDifference(iter = this.iter.clone())
-
-    public open fun next(): T? = this.iter.next()
-
-    public open fun sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
-
-    public open fun <B> fold(init: B, f: (B, T) -> B): B = this.iter.fold(init, f)
-
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(
@@ -1555,30 +1462,11 @@ public open class SymmetricDifference<T, S, A : Allocator> internal constructor(
  */
 public open class Union<T, S, A : Allocator> internal constructor(
     iterCtorArg: Chain<Iter<T>, Difference<T, S, A>>,
-) : Iterable<T> {
+) {
     public var iter: Chain<Iter<T>, Difference<T, S, A>> = iterCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@Union.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
     public open fun clone(): Union<T, S, A> = Union(iter = this.iter.clone())
-
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-
-    public open fun next(): T? = this.iter.next()
-
-    public open fun sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
-
-    public open fun count(): Int = this.iter.count()
-
-    public open fun <B> fold(init: B, f: (B, T) -> B): B = this.iter.fold(init, f)
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(
@@ -1588,6 +1476,74 @@ public open class Union<T, S, A : Allocator> internal constructor(
         )
     }
 }
+
+public fun <K, A : Allocator> ExtractIf<K, F, A>.next(): K? = this.base.next()
+
+public fun <K, A : Allocator> ExtractIf<K, F, A>.sizeHint(): Pair<Int, Int?> = this.base.sizeHint()
+
+public fun <T, S, A> Intersection<T, S, A>.next(): T? where S : BuildHasher, A : Allocator {
+    while (true) {
+        val elt = (this.iter.next() ?: return null)
+        if (this.other.contains(elt)) {
+            return elt
+        }
+    }
+}
+
+public fun <T, S, A> Intersection<T, S, A>.sizeHint(): Pair<Int, Int?> where S : BuildHasher, A : Allocator {
+    val (_, upper) = this.iter.sizeHint()
+    return Pair(0, upper)
+}
+
+public fun <T, S, A, B> Intersection<T, S, A>.fold(init: B, f: (B, T) -> B): B where S : BuildHasher, A : Allocator =
+    this.iter.fold(init, { acc, elt -> if (this.other.contains(elt)) {
+        f(acc, elt)
+    } else {
+        acc
+    } })
+
+public fun <T, S, A> Intersection<T, S, A>.fmt(f: StringBuilder): Result<Unit, Error> where S : BuildHasher, A : Allocator = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
+
+public fun <T, S, A> Difference<T, S, A>.next(): T? where S : BuildHasher, A : Allocator {
+    while (true) {
+        val elt = (this.iter.next() ?: return null)
+        if (!this.other.contains(elt)) {
+            return elt
+        }
+    }
+}
+
+public fun <T, S, A> Difference<T, S, A>.sizeHint(): Pair<Int, Int?> where S : BuildHasher, A : Allocator {
+    val (_, upper) = this.iter.sizeHint()
+    return Pair(0, upper)
+}
+
+public fun <T, S, A, B> Difference<T, S, A>.fold(init: B, f: (B, T) -> B): B where S : BuildHasher, A : Allocator =
+    this.iter.fold(init, { acc, elt -> if (this.other.contains(elt)) {
+        acc
+    } else {
+        f(acc, elt)
+    } })
+
+public fun <T, S, A> Difference<T, S, A>.fmt(f: StringBuilder): Result<Unit, Error> where S : BuildHasher, A : Allocator = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
+
+public fun <T, S, A> SymmetricDifference<T, S, A>.next(): T? where S : BuildHasher, A : Allocator = this.iter.next()
+
+public fun <T, S, A> SymmetricDifference<T, S, A>.sizeHint(): Pair<Int, Int?> where S : BuildHasher, A : Allocator = this.iter.sizeHint()
+
+public fun <T, S, A, B> SymmetricDifference<T, S, A>.fold(init: B, f: (B, T) -> B): B where S : BuildHasher, A : Allocator = this.iter.fold(init, f)
+
+public fun <T, S, A> SymmetricDifference<T, S, A>.fmt(f: StringBuilder): Result<Unit, Error> where S : BuildHasher, A : Allocator = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
+
+public fun <T, S, A : Allocator> Union<T, S, A>.fmt(f: StringBuilder): Result<Unit, Error> where S : BuildHasher, A : Allocator = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
+
+public fun <T, S, A> Union<T, S, A>.next(): T? where S : BuildHasher, A : Allocator = this.iter.next()
+
+public fun <T, S, A> Union<T, S, A>.sizeHint(): Pair<Int, Int?> where S : BuildHasher, A : Allocator = this.iter.sizeHint()
+
+public fun <T, S, A> Union<T, S, A>.count(): Int where S : BuildHasher, A : Allocator = this.iter.count()
+
+public fun <T, S, A, B> Union<T, S, A>.fold(init: B, f: (B, T) -> B): B where S : BuildHasher, A : Allocator = this.iter.fold(init, f)
 
 /**
  * A view into a single entry in a set, which may either be vacant or occupied.
@@ -1714,13 +1670,13 @@ public sealed class Entry<T, S, A : Allocator> {
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is Entry.Vacant -> {
-                val (v) = this
-                DebugTuple(f, "Entry").field(v).finish()
+            is Entry.Vacant<*, *, *> -> {
+                val (v) = this as Entry.Vacant<T, S, A>
+                run { DebugTuple(f, "Entry").field(v).finish(); Result.Ok<Unit, Error>(Unit) }
             }
-            is Entry.Occupied -> {
-                val (o) = this
-                DebugTuple(f, "Entry").field(o).finish()
+            is Entry.Occupied<*, *, *> -> {
+                val (o) = this as Entry.Occupied<T, S, A>
+                run { DebugTuple(f, "Entry").field(o).finish(); Result.Ok<Unit, Error>(Unit) }
             }
         }
 
@@ -1740,12 +1696,12 @@ public sealed class Entry<T, S, A : Allocator> {
      */
     public open fun insert(): OccupiedEntry<T, S, A> =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *, *> -> {
+                val (entry) = this as Entry.Occupied<T, S, A>
                 entry
             }
-            is Entry.Vacant -> {
-                val (entry1) = this
+            is Entry.Vacant<*, *, *> -> {
+                val (entry1) = this as Entry.Vacant<T, S, A>
                 entry1.insertEntry()
             }
         }
@@ -1770,7 +1726,7 @@ public sealed class Entry<T, S, A : Allocator> {
      * ```
      */
     public open fun orInsert() {
-        if (this is Entry.Vacant) {
+        if (this is Entry.Vacant<*, *, *>) {
             val (entry) = this
             entry.insert()
         }
@@ -1795,12 +1751,12 @@ public sealed class Entry<T, S, A : Allocator> {
      */
     public open fun get(): T =
         when (this) {
-            is Entry.Occupied -> {
-                val (entry) = this
+            is Entry.Occupied<*, *, *> -> {
+                val (entry) = this as Entry.Occupied<T, S, A>
                 entry.get()
             }
-            is Entry.Vacant -> {
-                val (entry1) = this
+            is Entry.Vacant<*, *, *> -> {
+                val (entry1) = this as Entry.Vacant<T, S, A>
                 entry1.get()
             }
         }
@@ -1851,7 +1807,7 @@ public open class OccupiedEntry<T, S, A : Allocator> internal constructor(
     public var base: OccupiedEntry<T, S, A> = baseCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedEntry").field("value", this.get()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "OccupiedEntry").field("value", this.get()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Gets a reference to the value in the entry.
@@ -1958,7 +1914,7 @@ public open class VacantEntry<T, S, A : Allocator> internal constructor(
     public var base: VacantEntry<T, S, A> = baseCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "VacantEntry").field(this.get()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "VacantEntry").field(this.get()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Gets a reference to the value that would be used when inserting

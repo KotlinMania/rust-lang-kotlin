@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.panicabort.android
 
 import io.github.kotlinmania.rustlang.alloc.panicking.PanicPayload
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -10,7 +11,6 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.libc.CChar
 import io.github.kotlinmania.rustlang.libc.dlsym
 import io.github.kotlinmania.rustlang.libc.malloc
 import io.github.kotlinmania.rustlang.libc.unix.bsd.RTLD_DEFAULT

@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
@@ -210,12 +211,12 @@ public open class Channel<T> internal constructor(
                 // Try moving the tail.
                 run {
                     val matchVal = this.tail.compareExchangeWeak(tail, newTail, Ordering.SeqCst, Ordering.Relaxed)
-                    when (matchVal) { is Result.Ok -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         // Prepare the token for the follow-up call to `write`.
                         token.array.slot = (constPtrFromRustCast(slot)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
                         token.array.stamp = tail + 1
                         return true
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         backoff.spinLight()
                         tail = this.tail.load(Ordering.Relaxed)
                     } }
@@ -286,12 +287,12 @@ public open class Channel<T> internal constructor(
                 // Try moving the head.
                 run {
                     val matchVal = this.head.compareExchangeWeak(head, new, Ordering.SeqCst, Ordering.Relaxed)
-                    when (matchVal) { is Result.Ok -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         // Prepare the token for the follow-up call to `read`.
                         token.array.slot = (constPtrFromRustCast(slot)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
                         token.array.stamp = head.wrappingAdd(this.oneLap)
                         return true
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         backoff.spinLight()
                         head = this.head.load(Ordering.Relaxed)
                     } }

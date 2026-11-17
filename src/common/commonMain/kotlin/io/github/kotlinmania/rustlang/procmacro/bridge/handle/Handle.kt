@@ -24,7 +24,7 @@ public open class OwnedStore<T> internal constructor(
 
     public open fun alloc(x: T): Handle {
         val counter = this.counter.fetchAdd(1, Ordering.Relaxed)
-        val handle = Handle.new(counter).expect("`proc_macro` handle counter overflowed")
+        val handle = NonZero.new(counter).expect("`proc_macro` handle counter overflowed")
         check(this.data.put(handle, x) == null)
         return handle
     }

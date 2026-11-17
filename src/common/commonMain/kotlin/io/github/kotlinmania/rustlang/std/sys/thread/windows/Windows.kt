@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.thread.windows
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
@@ -9,7 +10,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.windows.io.HandleOrNull
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.STACK_SIZE_PARAM_IS_A_RESERVATION
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setThreadDescription
@@ -41,7 +41,7 @@ public open class Thread internal constructor(
     public open fun join() {
         val rc = waitForSingleObject(this.handle.asRawHandle(), INFINITE)
         if (rc == WAIT_FAILED) {
-            error("failed to join on thread: ${io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError()}")
+            error("failed to join on thread: ${Error.lastOsError()}")
         }
     }
 
@@ -79,7 +79,7 @@ public open class Thread internal constructor(
                     HandleOrNull.fromRawHandle(ret)
                 }
             return when (val matchVal = ret1.tryInto()) {
-                is Result.Ok -> {
+                is Result.Ok<*, *> -> {
                     val handle = matchVal.value
                     Result.Ok<Thread, Error>(Thread(handle = Handle.fromInner(handle)))
                 }
@@ -87,7 +87,7 @@ public open class Thread internal constructor(
                     // The thread failed to start and as a result data was not consumed. Therefore, it is
                     // safe to reconstruct the box so that it gets deallocated.
                     (Box.fromRaw(data)).let { }
-                    Result.Err<Thread, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
+                    Result.Err<Thread, Error>(Error.lastOsError())
                 }
             }
         }
@@ -102,7 +102,7 @@ public fun availableParallelism(): Result<NonZero<Int, NonZeroUsizeInner>, Error
             sysinfo.dwNumberOfProcessors.toInt()
         }
     return when (res) {
-        0 -> Result.Err<NonZero<Int, NonZeroUsizeInner>, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.UNKNOWN_THREAD_COUNT)
+        0 -> Result.Err<NonZero<Int, NonZeroUsizeInner>, Error>(Error.UNKNOWN_THREAD_COUNT)
         else -> {
             val cpus = res
             Result.Ok<NonZero<Int, NonZeroUsizeInner>, Error>(NonZero.newUnchecked<NonZeroUsizeInner, Int>(cpus))
@@ -123,10 +123,10 @@ public fun currentOsId(): ULong? {
 
 public fun setName(name: CStr) {
     when (val matchVal = name.toStr()) {
-        is Result.Ok -> {
+        is Result.Ok<*, *> -> {
             val utf8 = matchVal.value
             when (val matchVal1 = toU16s(utf8)) {
-                is Result.Ok -> {
+                is Result.Ok<*, *> -> {
                     val utf16 = matchVal1.value
                     setNameWide(utf16)
                 }
@@ -148,8 +148,8 @@ public fun setNameWide(name: List<UShort>) {
 
 public fun sleep(dur: Duration) {
     fun highPrecisionSleep(dur1: Duration): Result<Unit, Unit> {
-        val timer = when (val tryResult = WaitableTimer.highResolution()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = timer.set(dur1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        val timer = when (val tryResult = WaitableTimer.highResolution()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = timer.set(dur1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
         return timer.wait()
     }
     // Directly forward to `Sleep` for its zero duration behavior when indeed

@@ -373,7 +373,7 @@ public open class Thread internal constructor(
             }
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Thread").field("id", this.id()).field("name", this.name()).finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Thread").field("id", this.id()).field("name", this.name()).finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun invoke(

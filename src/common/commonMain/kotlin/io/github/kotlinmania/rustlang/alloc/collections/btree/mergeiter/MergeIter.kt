@@ -44,7 +44,7 @@ public open class MergeIterInner<I, Item> internal constructor(
 
     public open fun clone(): MergeIterInner<I, Item> = MergeIterInner(a = this.a.clone(), b = this.b.clone(), peeked = this.peeked)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "MergeIterInner").field(this.a).field(this.b).field(this.peeked).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "MergeIterInner").field(this.a).field(this.b).field(this.peeked).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Returns the next pair of items stemming from the pair of sources
@@ -59,12 +59,12 @@ public open class MergeIterInner<I, Item> internal constructor(
         var aNext: Any?
         var bNext: Any?
         when (val matchVal = this.peeked.also { this.peeked = null }) {
-            is Peeked.A -> {
+            is Peeked.A<*> -> {
                 val (next) = matchVal as Peeked.A<I>
                 aNext = next
                 bNext = this.b.next()
             }
-            is Peeked.B -> {
+            is Peeked.B<*> -> {
                 val (next1) = matchVal as Peeked.B<I>
                 bNext = next1
                 aNext = this.a.next()
@@ -91,8 +91,8 @@ public open class MergeIterInner<I, Item> internal constructor(
      */
     public open fun lens(): Pair<Int, Int> =
         when (val matchVal = this.peeked) {
-            is Peeked.A -> Pair(1 + this.a.len(), this.b.len())
-            is Peeked.B -> Pair(this.a.len(), 1 + this.b.len())
+            is Peeked.A<*> -> Pair(1 + this.a.len(), this.b.len())
+            is Peeked.B<*> -> Pair(this.a.len(), 1 + this.b.len())
             else -> Pair(this.a.len(), this.b.len())
         }
 

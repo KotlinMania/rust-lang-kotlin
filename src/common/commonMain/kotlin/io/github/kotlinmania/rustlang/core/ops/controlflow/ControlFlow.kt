@@ -32,7 +32,7 @@ public typealias TryType<B, C> = ControlFlow<B, C>
  *     if (403 % x == 0) {
  *         return@closure ControlFlow.Break(x)
  *     }
- *     ControlFlow.Continue()
+ *     ControlFlow.Continue(Unit)
  * })
  * check(r == ControlFlow.Break(13))
  * ```
@@ -51,18 +51,18 @@ public typealias TryType<B, C> = ControlFlow<B, C>
  *             null -> {}
  *             else -> {
  *                 val left = matchVal
- *                 when (val tryResult = left.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
+ *                 when (val tryResult = left.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value) }
  *             }
  *         }
- *         when (val tryResult = f(this.value)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
+ *         when (val tryResult = f(this.value)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value) }
  *         when (val matchVal1 = this.right) {
  *             null -> {}
  *             else -> {
  *                 val right = matchVal1
- *                 when (val tryResult = right.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
+ *                 when (val tryResult = right.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value) }
  *             }
  *         }
- *         return ControlFlow.Continue()
+ *         return ControlFlow.Continue(Unit)
  *     }
  *
  *     public open fun leaf(value: T): TreeNode<T>? {
@@ -76,7 +76,7 @@ public typealias TryType<B, C> = ControlFlow<B, C>
  *         ControlFlow.Break(value)
  *     } else {
  *         sum += value
- *         ControlFlow.Continue()
+ *         ControlFlow.Continue(Unit)
  *     }
  * })
  * check(res == ControlFlow.Break(-1))
@@ -100,12 +100,12 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
 
     public override fun branch(): ControlFlow<ControlFlow<B, Nothing>, C> =
         when (this) {
-            is ControlFlow.Continue -> {
-                val (c) = this
+            is ControlFlow.Continue<*, *> -> {
+                val (c) = this as ControlFlow.Continue<B, C>
                 ControlFlow.Continue(c)
             }
-            is ControlFlow.Break -> {
-                val (b) = this
+            is ControlFlow.Break<*, *> -> {
+                val (b) = this as ControlFlow.Break<B, C>
                 ControlFlow.Break(ControlFlow.Break(b))
             }
         }
@@ -124,7 +124,7 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
      */
     public open fun isBreak(): Boolean =
         when (this) {
-            is ControlFlow.Break -> true
+            is ControlFlow.Break<*, *> -> true
             else -> false
         }
 
@@ -142,7 +142,7 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
      */
     public open fun isContinue(): Boolean =
         when (this) {
-            is ControlFlow.Continue -> true
+            is ControlFlow.Continue<*, *> -> true
             else -> false
         }
 
@@ -161,9 +161,9 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
      */
     public open fun breakValue(): B? =
         when (this) {
-            is ControlFlow.Continue -> null
-            is ControlFlow.Break -> {
-                val (x) = this
+            is ControlFlow.Continue<*, *> -> null
+            is ControlFlow.Break<*, *> -> {
+                val (x) = this as ControlFlow.Break<B, C>
                 x
             }
         }
@@ -187,7 +187,7 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
      *             if (predicate(t)) {
      *                 ControlFlow.Break(t)
      *             } else {
-     *                 ControlFlow.Continue()
+     *                 ControlFlow.Continue(Unit)
      *             }
      *         }
      *         return this.traverseInorder(f).breakOk()
@@ -198,18 +198,18 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
      *             null -> {}
      *             else -> {
      *                 val left = matchVal
-     *                 when (val tryResult = left.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
+     *                 when (val tryResult = left.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value) }
      *             }
      *         }
-     *         when (val tryResult = f(this.value)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
+     *         when (val tryResult = f(this.value)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value) }
      *         when (val matchVal1 = this.right) {
      *             null -> {}
      *             else -> {
      *                 val right = matchVal1
-     *                 when (val tryResult = right.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
+     *                 when (val tryResult = right.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value) }
      *             }
      *         }
-     *         return ControlFlow.Continue()
+     *         return ControlFlow.Continue(Unit)
      *     }
      *
      *     public open fun leaf(value: T): TreeNode<T>? {
@@ -223,12 +223,12 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
      */
     public open fun breakOk(): Result<B, C> =
         when (this) {
-            is ControlFlow.Continue -> {
-                val (c) = this
+            is ControlFlow.Continue<*, *> -> {
+                val (c) = this as ControlFlow.Continue<B, C>
                 Result.Err<B, C>(c)
             }
-            is ControlFlow.Break -> {
-                val (b) = this
+            is ControlFlow.Break<*, *> -> {
+                val (b) = this as ControlFlow.Break<B, C>
                 Result.Ok<B, C>(b)
             }
         }
@@ -239,12 +239,12 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
      */
     public open fun <T> mapBreak(f: (B) -> T): ControlFlow<T, C> =
         when (this) {
-            is ControlFlow.Continue -> {
-                val (x) = this
+            is ControlFlow.Continue<*, *> -> {
+                val (x) = this as ControlFlow.Continue<B, C>
                 ControlFlow.Continue(x)
             }
-            is ControlFlow.Break -> {
-                val (x1) = this
+            is ControlFlow.Break<*, *> -> {
+                val (x1) = this as ControlFlow.Break<B, C>
                 ControlFlow.Break(f(x1))
             }
         }
@@ -264,11 +264,11 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
      */
     public open fun continueValue(): C? =
         when (this) {
-            is ControlFlow.Continue -> {
-                val (x) = this
+            is ControlFlow.Continue<*, *> -> {
+                val (x) = this as ControlFlow.Continue<B, C>
                 x
             }
-            is ControlFlow.Break -> null
+            is ControlFlow.Break<*, *> -> null
         }
 
     /**
@@ -294,18 +294,18 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
      *             null -> {}
      *             else -> {
      *                 val left = matchVal
-     *                 when (val tryResult = left.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
+     *                 when (val tryResult = left.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value) }
      *             }
      *         }
-     *         when (val tryResult = f(this.value)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
+     *         when (val tryResult = f(this.value)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value) }
      *         when (val matchVal1 = this.right) {
      *             null -> {}
      *             else -> {
      *                 val right = matchVal1
-     *                 when (val tryResult = right.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
+     *                 when (val tryResult = right.traverseInorder(f)) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, Unit>(tryResult.value) }
      *             }
      *         }
-     *         return ControlFlow.Continue()
+     *         return ControlFlow.Continue(Unit)
      *     }
      *
      *     public open fun leaf(value: T): TreeNode<T>? {
@@ -320,19 +320,19 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
      *     if (value > 4) {
      *         return@closure ControlFlow.Break("too big value detected")
      *     }
-     *     ControlFlow.Continue()
+     *     ControlFlow.Continue(Unit)
      * })
      * check(res == Result.failure("too big value detected"))
      * ```
      */
     public open fun continueOk(): Result<C, B> =
         when (this) {
-            is ControlFlow.Continue -> {
-                val (c) = this
+            is ControlFlow.Continue<*, *> -> {
+                val (c) = this as ControlFlow.Continue<B, C>
                 Result.Ok<C, B>(c)
             }
-            is ControlFlow.Break -> {
-                val (b) = this
+            is ControlFlow.Break<*, *> -> {
+                val (b) = this as ControlFlow.Break<B, C>
                 Result.Err<C, B>(b)
             }
         }
@@ -343,12 +343,12 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
      */
     public open fun <T> mapContinue(f: (C) -> T): ControlFlow<B, T> =
         when (this) {
-            is ControlFlow.Continue -> {
-                val (x) = this
+            is ControlFlow.Continue<*, *> -> {
+                val (x) = this as ControlFlow.Continue<B, C>
                 ControlFlow.Continue(f(x))
             }
-            is ControlFlow.Break -> {
-                val (x1) = this
+            is ControlFlow.Break<*, *> -> {
+                val (x1) = this as ControlFlow.Break<B, C>
                 ControlFlow.Break(x1)
             }
         }
@@ -358,7 +358,7 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
 
         public fun <B, C> fromResidual(residual: ControlFlow<B, Nothing>): ControlFlow<B, C> =
             when (residual) {
-                is ControlFlow.Break -> {
+                is ControlFlow.Break<*, *> -> {
                     val (b) = residual
                     ControlFlow.Break(b)
                 }
@@ -383,12 +383,12 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
  */
 public fun <T> ControlFlow<T, T>.intoValue(): T =
     when (this) {
-        is ControlFlow.Continue -> {
-            val (x) = this
+        is ControlFlow.Continue<*, *> -> {
+            val (x) = this as ControlFlow.Continue<*, *>
             x
         }
-        is ControlFlow.Break -> {
-            val (x1) = this
+        is ControlFlow.Break<*, *> -> {
+            val (x1) = this as ControlFlow.Break<*, *>
             x1
         }
     }
@@ -400,13 +400,13 @@ public fun <T> ControlFlow<T, T>.intoValue(): T =
 /**
  * Creates a `ControlFlow` from any type implementing `Try`.
  */
-public fun <Output, Residual, R : Try<R, Output, Residual>> ControlFlow.Companion.fromTry(r: R, branchRFn: (R) -> ControlFlow<Residual, Output>, fromResidualRFn: (R) -> R): ControlFlow<R, Output> where R : Try<R, Output, Residual> =
+public fun <Output, Residual, R : Try<R, Output, Residual>> ControlFlow.Companion.fromTry(r: R, branchRFn: (R) -> ControlFlow<ControlFlow<B, Nothing>, C>, fromResidualRFn: (R) -> R): ControlFlow<R, Output> where R : Try<R, Output, Residual> =
     when (val matchVal = branchRFn(r)) {
-        is ControlFlow.Continue -> {
+        is ControlFlow.Continue<*, *> -> {
             val (v) = matchVal
             ControlFlow.Continue(v)
         }
-        is ControlFlow.Break -> {
+        is ControlFlow.Break<*, *> -> {
             val (v1) = matchVal
             ControlFlow.Break(fromResidualRFn(v1))
         }
@@ -415,14 +415,14 @@ public fun <Output, Residual, R : Try<R, Output, Residual>> ControlFlow.Companio
 /**
  * Converts a `ControlFlow` into any type implementing `Try`.
  */
-public fun <Output, Residual, R : Try<R, Output, Residual>> ControlFlow<R, Output>.intoTry(fromOutputRFn: (Output) -> R): R where R : Try<R, Output, Residual> =
+public fun <Output, Residual, R : Try<R, Output, Residual>> ControlFlow<R, Output>.intoTry(fromOutputRFn: (C) -> R): R where R : Try<R, Output, Residual> =
     when (this) {
-        is ControlFlow.Continue -> {
-            val (v) = this
+        is ControlFlow.Continue<*, *> -> {
+            val (v) = this as ControlFlow.Continue<*, *>
             fromOutputRFn(v)
         }
-        is ControlFlow.Break -> {
-            val (v1) = this
+        is ControlFlow.Break<*, *> -> {
+            val (v1) = this as ControlFlow.Break<*, *>
             v1
         }
     }

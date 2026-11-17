@@ -281,7 +281,7 @@ public interface DoubleEndedIterator {
             val matchVal = this.nextBack()
             if (matchVal == null) break
             val x = matchVal
-            accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
         }
         return accum
     }
@@ -402,10 +402,10 @@ public interface DoubleEndedIterator {
                 if (predicate1(x)) {
                     ControlFlow.Break(x)
                 } else {
-                    ControlFlow.Continue()
+                    ControlFlow.Continue(Unit)
                 }
             }
-        return this.tryRfold(check(predicate)).breakValue()
+        return this.tryRfold(Unit, check(predicate)).breakValue()
     }
 }
 
@@ -435,7 +435,7 @@ public fun <Residual, I : DoubleEndedIterator, B, R> I.specTryRfold(init: B, f: 
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }

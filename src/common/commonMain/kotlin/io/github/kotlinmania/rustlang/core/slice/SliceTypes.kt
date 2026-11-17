@@ -57,7 +57,7 @@ public sealed class GetDisjointMutError {
                 GetDisjointMutError.IndexOutOfBounds -> "an index is out of bounds"
                 GetDisjointMutError.OverlappingIndices -> "there were overlapping indices"
             }
-        return run { f.append((msg).toString()); Result.Ok(Unit) }
+        return run { f.append((msg).toString()); Result.Ok<Unit, Unit>(Unit) }
     }
 }
 

@@ -25,6 +25,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.metadata.DynMetadata
 import io.github.kotlinmania.rustlang.core.ptr.metadata.Pointee
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
@@ -175,7 +176,7 @@ public fun <T> T.typeId(): TypeId = RustTypeId.of<T>()
 // //////////////////////////////////////////////////////////////////////////
 // Extension methods for Any trait objects.
 // //////////////////////////////////////////////////////////////////////////
-public fun Any.fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Any").finishNonExhaustive()
+public fun Any.fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Any").finishNonExhaustive(); Result.Ok<Unit, Unit>(Unit) }
 
 // Ensure that the result of e.g., joining a thread can be printed and
 // hence used with `unwrap`. May eventually no longer be needed if

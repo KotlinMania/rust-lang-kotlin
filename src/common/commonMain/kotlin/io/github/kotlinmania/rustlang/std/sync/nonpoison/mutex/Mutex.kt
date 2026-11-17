@@ -337,7 +337,7 @@ public open class Mutex<T>(
             val matchVal = this.tryLock()
             when {
                 matchVal is Result.Ok<*, *> -> {
-                    val guard = (matchVal as Result.Ok<*, *>).value
+                    val guard = matchVal.value
                     d.field("data", guard)
                 }
                 else -> {
@@ -419,7 +419,7 @@ public open class MutexGuard<T>(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
@@ -522,7 +522,7 @@ public open class MappedMutexGuard<T>(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 

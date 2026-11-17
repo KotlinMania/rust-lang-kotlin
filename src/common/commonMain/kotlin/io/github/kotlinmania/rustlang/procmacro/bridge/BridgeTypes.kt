@@ -98,51 +98,49 @@ public sealed class IdentKind : Mark<IdentKind, IdentKind> {
     }
 }
 
-public sealed class TokenTree<TokenStream, Span, Symbol> : Mark<TokenTree<TokenStream, Span, Symbol>, TokenTree<Unmarked, Unmarked, Unmarked>> {
+public sealed class TokenTree<TokenStream, Span, Symbol> {
     public data class Group<TokenStream, Span, Symbol>(public var value: Group<TokenStream, Span>) : TokenTree<TokenStream, Span, Symbol>()
     public data class Punct<TokenStream, Span, Symbol>(public var value: Punct<Span>) : TokenTree<TokenStream, Span, Symbol>()
     public data class Ident<TokenStream, Span, Symbol>(public var value: Ident<Span, Symbol>) : TokenTree<TokenStream, Span, Symbol>()
     public data class Literal<TokenStream, Span, Symbol>(public var value: Literal<Span, Symbol>) : TokenTree<TokenStream, Span, Symbol>()
-
-    public override fun unmark(): TokenTree<Unmarked, Unmarked, Unmarked> =
-        when (this) {
-            is TokenTree.Group -> {
-                val (tt) = this
-                TokenTree.Group(tt.unmark())
-            }
-            is TokenTree.Punct -> {
-                val (tt1) = this
-                TokenTree.Punct(tt1.unmark())
-            }
-            is TokenTree.Ident -> {
-                val (tt2) = this
-                TokenTree.Ident(tt2.unmark())
-            }
-            is TokenTree.Literal -> {
-                val (tt3) = this
-                TokenTree.Literal(tt3.unmark())
-            }
-        }
-
-    public companion object {
-        public fun <Unmarked, TokenStream, Span, Symbol> mark(unmarked: TokenTree<Unmarked, Unmarked, Unmarked>): TokenTree<TokenStream, Span, Symbol> =
-            when (unmarked) {
-                is TokenTree.Group -> {
-                    val (tt) = unmarked
-                    TokenTree.Group(Mark.Mark(tt))
-                }
-                is TokenTree.Punct -> {
-                    val (tt1) = unmarked
-                    TokenTree.Punct(Mark.Mark(tt1))
-                }
-                is TokenTree.Ident -> {
-                    val (tt2) = unmarked
-                    TokenTree.Ident(Mark.Mark(tt2))
-                }
-                is TokenTree.Literal -> {
-                    val (tt3) = unmarked
-                    TokenTree.Literal(Mark.Mark(tt3))
-                }
-            }
-    }
 }
+
+public fun <Unmarked, TokenStream : Mark<TokenStream, Unmarked>, Span : Mark<Span, Unmarked>, Symbol : Mark<Symbol, Unmarked>> markTokenTreeTokenStreamSpanSymbol(unmarked: TokenTree<Unmarked, Unmarked, Unmarked>): TokenTree<TokenStream, Span, Symbol> =
+    when (unmarked) {
+        is TokenTree.Group<*, *, *> -> {
+            val (tt) = unmarked
+            TokenTree.Group(Mark.Mark(tt))
+        }
+        is TokenTree.Punct<*, *, *> -> {
+            val (tt1) = unmarked
+            TokenTree.Punct(Mark.Mark(tt1))
+        }
+        is TokenTree.Ident<*, *, *> -> {
+            val (tt2) = unmarked
+            TokenTree.Ident(Mark.Mark(tt2))
+        }
+        is TokenTree.Literal<*, *, *> -> {
+            val (tt3) = unmarked
+            TokenTree.Literal(Mark.Mark(tt3))
+        }
+    }
+
+public fun <Unmarked, TokenStream : Mark<TokenStream, Unmarked>, Span : Mark<Span, Unmarked>, Symbol : Mark<Symbol, Unmarked>> TokenTree<TokenStream, Span, Symbol>.unmark(): TokenTree<Unmarked, Unmarked, Unmarked> =
+    when (this) {
+        is TokenTree.Group<*, *, *> -> {
+            val (tt) = this as TokenTree.Group<TokenStream, Span, Symbol>
+            TokenTree.Group(tt.unmark())
+        }
+        is TokenTree.Punct<*, *, *> -> {
+            val (tt1) = this as TokenTree.Punct<TokenStream, Span, Symbol>
+            TokenTree.Punct(tt1.unmark())
+        }
+        is TokenTree.Ident<*, *, *> -> {
+            val (tt2) = this as TokenTree.Ident<TokenStream, Span, Symbol>
+            TokenTree.Ident(tt2.unmark())
+        }
+        is TokenTree.Literal<*, *, *> -> {
+            val (tt3) = this as TokenTree.Literal<TokenStream, Span, Symbol>
+            TokenTree.Literal(tt3.unmark())
+        }
+    }

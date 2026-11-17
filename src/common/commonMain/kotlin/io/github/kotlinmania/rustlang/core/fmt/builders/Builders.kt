@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 
@@ -29,7 +30,7 @@ public open class PadAdapter(
             this.buf.append("    ")
         }
         this.state.onNewline = c == '\n'
-        return run { this.buf.append(c); Result.Ok(Unit) }
+        return run { this.buf.append(c); Result.Ok<Unit, Unit>(Unit) }
     }
 
     public companion object {
@@ -84,16 +85,16 @@ public open class DebugOnce<F>(
         set(v) {
             value = v
         }
-
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        when (val matchVal = this.value.also { this.value = null }) {
-            null -> error("formatting closure called more than once")
-            else -> {
-                val valueFmt = matchVal
-                valueFmt(f)
-            }
-        }
 }
+
+public fun DebugOnce<F>.fmt(f: StringBuilder): Result<Unit, Unit> =
+    when (val matchVal = this.value.also { this.value = null }) {
+        null -> error("formatting closure called more than once")
+        else -> {
+            val valueFmt = matchVal
+            valueFmt(f)
+        }
+    }
 
 /**
  * A struct to help with [`fmt.Debug`](Debug) implementations.
@@ -152,7 +153,7 @@ public open class DebugStruct internal constructor(
                 val writer = PadAdapter.wrap(this.fmt, slot, state)
                 writer.append(name)
                 writer.append(": ")
-                when (val tryResult = value.fmt(writer)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
+                when (val tryResult = value.fmt(writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
                 writer.append(",\n")
             } else {
                 val prefix =
@@ -384,7 +385,7 @@ public open class DebugTuple internal constructor(
                 val slot = null
                 val state = Default.default()
                 val writer = PadAdapter.wrap(this.fmt, slot, state)
-                when (val tryResult = value.fmt(writer)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure2 Result.Err(tryResult.error) }
+                when (val tryResult = value.fmt(writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error) }
                 writer.append(",\n")
             } else {
                 val prefix =
@@ -603,7 +604,7 @@ public open class DebugInner internal constructor(
                 val slot = null
                 val state = Default.default()
                 val writer = PadAdapter.wrap(this.fmt, slot, state)
-                when (val tryResult = entry.fmt(writer)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure5 Result.Err(tryResult.error) }
+                when (val tryResult = entry.fmt(writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure5 Result.Err(tryResult.error) }
                 writer.append(",\n")
             } else {
                 if (this.hasFields) {
@@ -677,7 +678,7 @@ public open class DebugSet(
      *         object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "{", "}")) } }.entry(this.field0).entry(this.field1).finish()
      *     }
      * }
-     * check("${Foo(mutableListOf(10, 11), mutableListOf(12, 13))}" == "{[10, 11], [12, 13]}")
+     * check("${Foo(mutableListOf(10, 11), mutableListOf(12u, 13u))}" == "{[10, 11], [12, 13]}")
      * ```
      */
     public open fun entry(entry: Any): DebugSet {
@@ -701,7 +702,7 @@ public open class DebugSet(
      *         object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "{", "}")) } }.entry(this.field0).entryWith({ fmt1 -> object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt1.append(entries.joinToString(", ", "{", "}")) } }.entries(this.field1).finish() }).finish()
      *     }
      * }
-     * check("${Foo(mutableListOf(10, 11), mutableListOf(12, 13))}" == "{[10, 11], {12, 13}}")
+     * check("${Foo(mutableListOf(10, 11), mutableListOf(12u, 13u))}" == "{[10, 11], {12, 13}}")
      * ```
      */
     public open fun entryWith(entryFmt: (StringBuilder) -> Result<Unit, Error>): DebugSet {
@@ -722,7 +723,7 @@ public open class DebugSet(
      *         object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "{", "}")) } }.entries(this.field0.iter()).entries(this.field1.iter()).finish()
      *     }
      * }
-     * check("${Foo(mutableListOf(10, 11), mutableListOf(12, 13))}" == "{10, 11, 12, 13}")
+     * check("${Foo(mutableListOf(10, 11), mutableListOf(12u, 13u))}" == "{10, 11, 12, 13}")
      * ```
      */
     public open fun <D, I> entries(entries: I): DebugSet where I : Iterable<D> {
@@ -858,7 +859,7 @@ public open class DebugList(
      *         object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "[", "]")) } }.entry(this.field0).entry(this.field1).finish()
      *     }
      * }
-     * check("${Foo(mutableListOf(10, 11), mutableListOf(12, 13))}" == "[[10, 11], [12, 13]]")
+     * check("${Foo(mutableListOf(10, 11), mutableListOf(12u, 13u))}" == "[[10, 11], [12, 13]]")
      * ```
      */
     public open fun entry(entry: Any): DebugList {
@@ -882,7 +883,7 @@ public open class DebugList(
      *         object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "[", "]")) } }.entry(this.field0).entryWith({ fmt1 -> object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt1.append(entries.joinToString(", ", "{", "}")) } }.entries(this.field1).finish() }).finish()
      *     }
      * }
-     * check("${Foo(mutableListOf(10, 11), mutableListOf(12, 13))}" == "[[10, 11], {12, 13}]")
+     * check("${Foo(mutableListOf(10, 11), mutableListOf(12u, 13u))}" == "[[10, 11], {12, 13}]")
      * ```
      */
     public open fun entryWith(entryFmt: (StringBuilder) -> Result<Unit, Error>): DebugList {
@@ -903,7 +904,7 @@ public open class DebugList(
      *         object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "[", "]")) } }.entries(this.field0.iter()).entries(this.field1.iter()).finish()
      *     }
      * }
-     * check("${Foo(mutableListOf(10, 11), mutableListOf(12, 13))}" == "[10, 11, 12, 13]")
+     * check("${Foo(mutableListOf(10, 11), mutableListOf(12u, 13u))}" == "[10, 11, 12, 13]")
      * ```
      */
     public open fun <D, I> entries(entries: I): DebugList where I : Iterable<D> {
@@ -1098,13 +1099,13 @@ public open class DebugMap internal constructor(
                 val slot = null
                 this.state = PadAdapterState.default()
                 val writer = PadAdapter.wrap(this.fmt, slot, this.state)
-                when (val tryResult = key.fmt(writer)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure8 Result.Err(tryResult.error) }
+                when (val tryResult = key.fmt(writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure8 Result.Err(tryResult.error) }
                 writer.append(": ")
             } else {
                 if (this.hasFields) {
                     this.fmt.append(", ")
                 }
-                when (val tryResult = key.fmt(this.fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure8 Result.Err(tryResult.error) }
+                when (val tryResult = key.fmt(this.fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure8 Result.Err(tryResult.error) }
                 this.fmt.append(": ")
             }
             this.hasKey = true
@@ -1191,10 +1192,10 @@ public open class DebugMap internal constructor(
             if (this.isPretty()) {
                 val slot = null
                 val writer = PadAdapter.wrap(this.fmt, slot, this.state)
-                when (val tryResult = value.fmt(writer)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure9 Result.Err(tryResult.error) }
+                when (val tryResult = value.fmt(writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure9 Result.Err(tryResult.error) }
                 writer.append(",\n")
             } else {
-                when (val tryResult = value.fmt(this.fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure9 Result.Err(tryResult.error) }
+                when (val tryResult = value.fmt(this.fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure9 Result.Err(tryResult.error) }
             }
             this.hasKey = false
             Result.Ok<Unit, Error>(Unit)
@@ -1416,10 +1417,6 @@ public open class FromFn<F>(
             value = v
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = (this.value)(f)
-
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = (this.value)(f)
-
     public companion object {
         public fun <F> typeLayout(typeLayoutF: TypeLayout<F>): TypeLayout<FromFn<F>> =
             object : TypeLayout<FromFn<F>> {
@@ -1442,3 +1439,5 @@ public open class FromFn<F>(
             }
     }
 }
+
+public fun FromFn<F>.fmt(f: StringBuilder): Result<Unit, Unit> = (this.value)(f)

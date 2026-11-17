@@ -293,7 +293,7 @@ public fun <Src, Item, I, T> fromIterInPlace(iterator: I, typeLayoutT: TypeLayou
             val dstSize = sizeOf<T>(typeLayoutT = typeLayoutT).uncheckedMul(dstCap)
             val newLayout = Layout.fromSizeAlignUnchecked(dstSize, dstAlign)
             val result = alloc.shrink(dstBuf.cast(), oldLayout, newLayout)
-            val reallocated = when (val tryResult = result) { is Result.Ok -> tryResult.value; is Result.Err -> handleAllocError(newLayout) }
+            val reallocated = when (val tryResult = result) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> handleAllocError(newLayout) }
             dstBuf = reallocated.cast()
         }
     } else {

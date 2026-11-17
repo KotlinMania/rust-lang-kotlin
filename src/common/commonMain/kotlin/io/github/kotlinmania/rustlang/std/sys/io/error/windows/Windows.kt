@@ -175,15 +175,15 @@ public fun formatError(errnum: Int, f: StringBuilder): Result<Unit, Error> {
         if (res == 0) {
             // Sometimes FormatMessageW can fail e.g., system doesn't like 0 as langId,
             val fmErr = errno()
-            return run { f.append("OS Error $errnum (FormatMessageW() returned error $fmErr)"); Result.Ok(Unit) }
+            return run { f.append("OS Error $errnum (FormatMessageW() returned error $fmErr)"); Result.Ok<Unit, Error>(Unit) }
         }
         run {
             val matchVal = String.fromUtf16(((buf).sliceArray(0 until res)))
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val msg = matchVal.value
                 // Trim trailing CRLF inserted by FormatMessageW
                 f.append(msg.trimAsciiEnd())
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 f.append("OS Error $errnum1 (FormatMessageW() returned invalid UTF-16)")
             } }
         }

@@ -19,6 +19,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
+import io.github.kotlinmania.rustlang.core.slice.splitAtMut
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Mut
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
@@ -53,6 +54,7 @@ import io.github.kotlinmania.rustlang.core.str.iter.SplitWhitespace
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
+import io.github.kotlinmania.rustlang.core.str.traits.fromStr
 
 public fun sliceErrorFail(s: String, begin: Int, end: Int): Nothing = constEvalSelect(Triple(s, begin, end), ::sliceErrorFailCt, ::sliceErrorFailRt)
 
@@ -1176,7 +1178,7 @@ public fun String.linesAny(): LinesAny = LinesAny(this.lines())
  * check(utf16Len <= utf8Len)
  * ```
  */
-public fun String.encodeUtf16(): EncodeUtf16 = EncodeUtf16(chars = this.chars(), extra = 0)
+public fun String.encodeUtf16(): EncodeUtf16 = EncodeUtf16(chars = this.chars(), extra = 0u)
 
 /**
  * Returns `true` if the given pattern matches a sub-slice of

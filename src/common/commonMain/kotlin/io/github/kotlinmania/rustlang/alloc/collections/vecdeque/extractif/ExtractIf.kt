@@ -4,7 +4,9 @@ package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.extractif
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -72,58 +74,14 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
      * The filter test predicate.
      */
     public var pred: F,
-) : Iterable<T> {
+) {
     public var vec: VecDeque<T, A> = vecCtorArg
         internal set
-
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@ExtractIf.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
 
     /**
      * Returns a reference to the underlying allocator.
      */
     public open fun allocator(): A = this.vec.allocator()
-
-    public open fun next(): T? {
-        while (this.idx < this.end) {
-            val i = this.idx
-            val idx = this.vec.toWrappedIndex(i)
-            // SAFETY:
-            // We know that `i<self.end` from the if guard and that `self.end <= self.oldLen` from
-            // the validity of `Self`. Therefore `i` points to an element within `vec`.
-            //
-            // Additionally, the i-th element is valid because each element is visited at most once
-            // and it is the first time we access vec[i].
-            //
-            // Note: we can't use `vec.getMut(i).unwrap()` here since the precondition for that
-            // function is that i < vec.len, but we've set vec's length to zero.
-            val cur = this.vec.ptr().add(idx.asIndex())
-            val drained = (this.pred)(cur)
-            // Update the index *after* the predicate is called. If the index
-            // is updated prior and the predicate panics, the element at this
-            // index would be leaked.
-            this.idx += 1
-            if (drained) {
-                this.del += 1
-                // SAFETY: We never touch this element again after returning it.
-                return read(cur)
-            } else if (this.del > 0) {
-                val holeSlot = this.vec.toWrappedIndex(i - this.del)
-                // SAFETY: `self.del` > 0, so the hole slot must not overlap with current element.
-                // We use copy for move, and never touch this element again.
-                this.vec.wrapCopy(idx, holeSlot, 1)
-            }
-        }
-        return null
-    }
-
-    public open fun sizeHint(): Pair<Int, Int?> = Pair(0, this.end - this.idx)
 
     public open fun drop() {
         if (this.del > 0) {
@@ -153,7 +111,7 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
             } else {
                 null
             }
-        return DebugStruct(f, "ExtractIf").field("peek", peek).finishNonExhaustive()
+        return run { DebugStruct(f, "ExtractIf").field("peek", peek).finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
     }
 
     public companion object {
@@ -175,7 +133,7 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
 
         public fun <T, F, A : Allocator, R : RangeBounds<Int>> new(vec: VecDeque<T, A>, pred: F, range: R): ExtractIf<T, F, A> {
             val oldLen = vec.len()
-            val structVal = Slice.range(range, 0 until oldLen)
+            val structVal = Range(range, 0 until oldLen)
             val start = structVal.start
             val end = structVal.end
             // Guard against the deque getting leaked (leak amplification)
@@ -184,3 +142,38 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
         }
     }
 }
+
+public fun <T, A : Allocator> ExtractIf<T, F, A>.next(): T? {
+    while (this.idx < this.end) {
+        val i = this.idx
+        val idx = this.vec.toWrappedIndex(i)
+        // SAFETY:
+        // We know that `i<self.end` from the if guard and that `self.end <= self.oldLen` from
+        // the validity of `Self`. Therefore `i` points to an element within `vec`.
+        //
+        // Additionally, the i-th element is valid because each element is visited at most once
+        // and it is the first time we access vec[i].
+        //
+        // Note: we can't use `vec.getMut(i).unwrap()` here since the precondition for that
+        // function is that i < vec.len, but we've set vec's length to zero.
+        val cur = this.vec.ptr().add(idx.asIndex())
+        val drained = (this.pred)(cur)
+        // Update the index *after* the predicate is called. If the index
+        // is updated prior and the predicate panics, the element at this
+        // index would be leaked.
+        this.idx += 1
+        if (drained) {
+            this.del += 1
+            // SAFETY: We never touch this element again after returning it.
+            return read(cur)
+        } else if (this.del > 0) {
+            val holeSlot = this.vec.toWrappedIndex(i - this.del)
+            // SAFETY: `self.del` > 0, so the hole slot must not overlap with current element.
+            // We use copy for move, and never touch this element again.
+            this.vec.wrapCopy(idx, holeSlot, 1)
+        }
+    }
+    return null
+}
+
+public fun <T, A : Allocator> ExtractIf<T, F, A>.sizeHint(): Pair<Int, Int?> = Pair(0, this.end - this.idx)

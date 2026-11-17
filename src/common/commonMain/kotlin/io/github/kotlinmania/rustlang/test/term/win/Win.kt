@@ -1,14 +1,14 @@
 // port-lint: source term/win.rs
 package io.github.kotlinmania.rustlang.test.term.win
 
+import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.test.term.Terminal
 import io.github.kotlinmania.rustlang.test.term.color.BLACK
 import io.github.kotlinmania.rustlang.test.term.color.BLUE
 import io.github.kotlinmania.rustlang.test.term.color.CYAN
@@ -18,6 +18,7 @@ import io.github.kotlinmania.rustlang.test.term.color.MAGENTA
 import io.github.kotlinmania.rustlang.test.term.color.RED
 import io.github.kotlinmania.rustlang.test.term.color.WHITE
 import io.github.kotlinmania.rustlang.test.term.color.YELLOW
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 // Windows console handling
 
@@ -30,7 +31,7 @@ public open class WinConsole<T>(
     public var defBackground: Color,
     public var foreground: Color,
     public var background: Color,
-) : Write, Terminal {
+) {
     public open fun apply() {
         var accum: Word = 0u
         accum = accum or colorToBits(this.foreground)
@@ -45,23 +46,6 @@ public open class WinConsole<T>(
             val out = GetStdHandle(STD_OUTPUT_HANDLE)
             SetConsoleTextAttribute(out, accum)
         }
-    }
-
-    public open fun write(buf: List<UByte>): Result<Int> = this.buf.write(buf)
-
-    public open fun flush(): Result<Unit> = this.buf.flush()
-
-    public override fun fg(color: Color): Result<Boolean> {
-        this.foreground = color
-        this.apply()
-        return Result.Ok(true)
-    }
-
-    public override fun reset(): Result<Boolean> {
-        this.foreground = this.defForeground
-        this.background = this.defBackground
-        this.apply()
-        return Result.Ok(true)
     }
 
     public companion object {
@@ -296,4 +280,21 @@ public fun bitsToColor(bits: UShort): Color {
         }
     return color or (UInt.from(bits) and 0x8u)
     // copy the hi-intensity bit
+}
+
+public fun <T : Write> WinConsole<T>.write(buf: List<UByte>): Result<Int> = this.buf.write(buf)
+
+public fun <T : Write> WinConsole<T>.flush(): Result<Unit> = this.buf.flush()
+
+public fun <T : Write> WinConsole<T>.fg(color: Color): Result<Boolean> {
+    this.foreground = color
+    this.apply()
+    return RustResult.Ok(true)
+}
+
+public fun <T : Write> WinConsole<T>.reset(): Result<Boolean> {
+    this.foreground = this.defForeground
+    this.background = this.defBackground
+    this.apply()
+    return RustResult.Ok(true)
 }

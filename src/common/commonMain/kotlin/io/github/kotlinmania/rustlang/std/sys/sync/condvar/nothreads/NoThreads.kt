@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.sync.condvar.nothreads
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.sys.sync.mutex.nothreads.Mutex
 import io.github.kotlinmania.rustlang.std.thread.functions.sleep

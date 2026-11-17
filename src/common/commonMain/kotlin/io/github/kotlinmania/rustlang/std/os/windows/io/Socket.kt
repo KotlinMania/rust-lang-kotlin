@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.os.windows.io
 
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -11,7 +12,6 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.Rc
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.net.tcp.TcpListener
 import io.github.kotlinmania.rustlang.std.net.tcp.TcpStream
 import io.github.kotlinmania.rustlang.std.net.udp.UdpSocket
@@ -83,14 +83,14 @@ public open class BorrowedSocket internal constructor(
     public open fun tryCloneToOwned(): Result<OwnedSocket, Error> {
         val info = MaybeUninit.zeroed(UnresolvedTypeLayout<Result<OwnedSocket, Error>>()).assumeInit()
         val result = C.WSADuplicateSocketW(((this.asRawSocket() as Any?) as C.Socket), C.GetCurrentProcessId(), info)
-        when (val tryResult = cvt(result)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OwnedSocket, Error>(tryResult.error) }
+        when (val tryResult = cvt(result)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OwnedSocket, Error>(tryResult.error) }
         val socket = C.WSASocketW(info.iAddressFamily, info.iSocketType, info.iProtocol, info, 0, C.WSA_FLAG_OVERLAPPED or C.WSA_FLAG_NO_HANDLE_INHERIT)
         return if (socket != C.INVALID_SOCKET) {
             Result.Ok<OwnedSocket, Error>(OwnedSocket.fromRawSocket(((socket as Any?) as RawSocket), fieldLayout = UnresolvedTypeLayout<NotAllOnes<RawSocket>>()))
         } else {
             val error = C.WSAGetLastError()
             if (error != C.WSAEPROTOTYPE && error != C.WSAEINVAL) {
-                return Result.Err<OwnedSocket, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(error))
+                return Result.Err<OwnedSocket, Error>(Error.fromRawOsError(error))
             }
             val socket1 = C.WSASocketW(info.iAddressFamily, info.iSocketType, info.iProtocol, info, 0, C.WSA_FLAG_OVERLAPPED)
             if (socket1 == C.INVALID_SOCKET) {
@@ -98,7 +98,7 @@ public open class BorrowedSocket internal constructor(
             }
             run {
                 val socket2 = OwnedSocket.fromRawSocket(((socket1 as Any?) as RawSocket), fieldLayout = UnresolvedTypeLayout<NotAllOnes<RawSocket>>())
-                when (val tryResult = socket2.setNoInherit()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OwnedSocket, Error>(tryResult.error) }
+                when (val tryResult = socket2.setNoInherit()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OwnedSocket, Error>(tryResult.error) }
                 Result.Ok<OwnedSocket, Error>(socket2)
             }
         }
@@ -106,7 +106,7 @@ public open class BorrowedSocket internal constructor(
 
     public override fun asRawSocket(): RawSocket = this.socket.asInner()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "BorrowedSocket").field("socket", this.socket).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "BorrowedSocket").field("socket", this.socket).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public override fun asSocket(): BorrowedSocket = this
 
@@ -128,7 +128,7 @@ public open class BorrowedSocket internal constructor(
          * the returned `BorrowedSocket`, and it must not have the value
          * `INVALID_SOCKET`.
          */
-        public fun borrowRaw(socket: RawSocket): BorrowedSocket = BorrowedSocket(socket = ValidRawSocket.new(socket).expect("socket != -1"), phantom = Unit)
+        public fun borrowRaw(socket: RawSocket): BorrowedSocket = BorrowedSocket(socket = NotAllOnes.new(socket).expect("socket != -1"), phantom = Unit)
     }
 }
 
@@ -173,7 +173,7 @@ public open class OwnedSocket internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "OwnedSocket").field("socket", this.socket).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "OwnedSocket").field("socket", this.socket).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public override fun asSocket(): BorrowedSocket {
         // Safety: `OwnedSocket` and `BorrowedSocket` have the same validity
@@ -187,7 +187,7 @@ public open class OwnedSocket internal constructor(
 
         public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<ValidRawSocket> = UnresolvedTypeLayout()): OwnedSocket = OwnedSocket(fieldStorage, fieldLayout)
 
-        public fun fromRawSocket(socket: RawSocket, fieldLayout: TypeLayout<NotAllOnes<RawSocket>> = UnresolvedTypeLayout()): OwnedSocket = OwnedSocket(socket = ValidRawSocket.new(socket).expect("socket != -1"), fieldLayout = fieldLayout)
+        public fun fromRawSocket(socket: RawSocket, fieldLayout: TypeLayout<NotAllOnes<RawSocket>> = UnresolvedTypeLayout()): OwnedSocket = OwnedSocket(socket = NotAllOnes.new(socket).expect("socket != -1"), fieldLayout = fieldLayout)
 
         /**
          * Takes ownership of a [`TcpStream`](net.TcpStream)'s socket.
@@ -209,7 +209,7 @@ public open class OwnedSocket internal constructor(
 /**
  * Returns the last error from the Windows socket interface.
  */
-public fun lastError(): io.github.kotlinmania.rustlang.core.io.error.Error = io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(C.WSAGetLastError())
+public fun lastError(): Error = Error.fromRawOsError(C.WSAGetLastError())
 
 /**
  * A trait to borrow the socket from an underlying object.

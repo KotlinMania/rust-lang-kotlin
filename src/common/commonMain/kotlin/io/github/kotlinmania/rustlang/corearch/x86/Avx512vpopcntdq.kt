@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 
 // Vectorized Population Count Instructions for Double- and Quadwords (VPOPCNTDQ)
 //
@@ -27,7 +28,7 @@ public fun mm512PopcntEpi32(a: M512i): M512i = transmute(run { val _simdArg0 = a
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_popcnt_epi32)
  */
-public fun mm512MaskzPopcntEpi32(k: Mmask16, a: M512i): M512i = transmute(run { val _simdArg0 = k; val _simdArg1 = run { val _simdArg0 = a.asI32x16(); _simdArg0 }; val _simdArg2 = i32x16.ZERO; _simdArg1 })
+public fun mm512MaskzPopcntEpi32(k: Mmask16, a: M512i): M512i = transmute(run { val _simdArg0 = k; val _simdArg1 = run { val _simdArg0 = a.asI32x16(); _simdArg0 }; val _simdArg2 = Simd<Int>(List(16) { 0 }); _simdArg1 })
 
 /**
  * For each packed 32-bit integer maps the value to the number of logical 1 bits.
@@ -54,7 +55,7 @@ public fun mm256PopcntEpi32(a: M256i): M256i = transmute(run { val _simdArg0 = a
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_popcnt_epi32)
  */
-public fun mm256MaskzPopcntEpi32(k: Mmask8, a: M256i): M256i = transmute(run { val _simdArg0 = k; val _simdArg1 = run { val _simdArg0 = a.asI32x8(); _simdArg0 }; val _simdArg2 = i32x8.ZERO; _simdArg1 })
+public fun mm256MaskzPopcntEpi32(k: Mmask8, a: M256i): M256i = transmute(run { val _simdArg0 = k; val _simdArg1 = run { val _simdArg0 = a.asI32x8(); _simdArg0 }; val _simdArg2 = Simd<Int>(List(8) { 0 }); _simdArg1 })
 
 /**
  * For each packed 32-bit integer maps the value to the number of logical 1 bits.
@@ -81,7 +82,7 @@ public fun mmPopcntEpi32(a: M128i): M128i = transmute(run { val _simdArg0 = a.as
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_popcnt_epi32)
  */
-public fun mmMaskzPopcntEpi32(k: Mmask8, a: M128i): M128i = transmute(run { val _simdArg0 = k; val _simdArg1 = run { val _simdArg0 = a.asI32x4(); _simdArg0 }; val _simdArg2 = i32x4.ZERO; _simdArg1 })
+public fun mmMaskzPopcntEpi32(k: Mmask8, a: M128i): M128i = transmute(run { val _simdArg0 = k; val _simdArg1 = run { val _simdArg0 = a.asI32x4(); _simdArg0 }; val _simdArg2 = Simd<Int>(List(4) { 0 }); _simdArg1 })
 
 /**
  * For each packed 32-bit integer maps the value to the number of logical 1 bits.
@@ -108,7 +109,7 @@ public fun mm512PopcntEpi64(a: M512i): M512i = transmute(run { val _simdArg0 = a
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_popcnt_epi64)
  */
-public fun mm512MaskzPopcntEpi64(k: Mmask8, a: M512i): M512i = transmute(run { val _simdArg0 = k; val _simdArg1 = run { val _simdArg0 = a.asI64x8(); _simdArg0 }; val _simdArg2 = i64x8.ZERO; _simdArg1 })
+public fun mm512MaskzPopcntEpi64(k: Mmask8, a: M512i): M512i = transmute(run { val _simdArg0 = k; val _simdArg1 = run { val _simdArg0 = a.asI64x8(); _simdArg0 }; val _simdArg2 = Simd<Long>(List(8) { 0L }); _simdArg1 })
 
 /**
  * For each packed 64-bit integer maps the value to the number of logical 1 bits.
@@ -135,7 +136,7 @@ public fun mm256PopcntEpi64(a: M256i): M256i = transmute(run { val _simdArg0 = a
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_popcnt_epi64)
  */
-public fun mm256MaskzPopcntEpi64(k: Mmask8, a: M256i): M256i = transmute(run { val _simdArg0 = k; val _simdArg1 = run { val _simdArg0 = a.asI64x4(); _simdArg0 }; val _simdArg2 = i64x4.ZERO; _simdArg1 })
+public fun mm256MaskzPopcntEpi64(k: Mmask8, a: M256i): M256i = transmute(run { val _simdArg0 = k; val _simdArg1 = run { val _simdArg0 = a.asI64x4(); _simdArg0 }; val _simdArg2 = Simd<Long>(List(4) { 0L }); _simdArg1 })
 
 /**
  * For each packed 64-bit integer maps the value to the number of logical 1 bits.
@@ -162,7 +163,7 @@ public fun mmPopcntEpi64(a: M128i): M128i = transmute(run { val _simdArg0 = a.as
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_popcnt_epi64)
  */
-public fun mmMaskzPopcntEpi64(k: Mmask8, a: M128i): M128i = transmute(run { val _simdArg0 = k; val _simdArg1 = run { val _simdArg0 = a.asI64x2(); _simdArg0 }; val _simdArg2 = i64x2.ZERO; _simdArg1 })
+public fun mmMaskzPopcntEpi64(k: Mmask8, a: M128i): M128i = transmute(run { val _simdArg0 = k; val _simdArg1 = run { val _simdArg0 = a.asI64x2(); _simdArg0 }; val _simdArg2 = Simd<Long>(List(2) { 0L }); _simdArg1 })
 
 /**
  * For each packed 64-bit integer maps the value to the number of logical 1 bits.

@@ -14,6 +14,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
@@ -116,10 +117,10 @@ public open class Backtrace(
             closure@{ fmt1: StringBuilder, path: BytesOrWideString ->
                 val path1 = path.intoPathBuf()
                 if (style != PrintFmt.Full) {
-                    if (cwd is Result.Ok) {
+                    if (cwd is Result.Ok<*, *>) {
                         val cwd1 = cwd.value
                         when (val matchVal = path1.takeIf { it.startsWith(cwd1) }?.removePrefix(cwd1)) {
-                            is Result.Ok -> {
+                            is Result.Ok<*, *> -> {
                                 val suffix = matchVal.value
                                 return@closure fmt1.append((suffix.display()).toString())
                             }
@@ -130,11 +131,11 @@ public open class Backtrace(
                 fmt1.append((path1.display()).toString())
             }
         val f = BacktraceFmt.new(fmt, style, printPath)
-        when (val tryResult = f.addContext()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = f.addContext()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         for (frame in this.frames) {
-            when (val tryResult = f.frame().backtraceFrame(frame)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = f.frame().backtraceFrame(frame)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         }
-        when (val tryResult = f.finish()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = f.finish()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         return Result.Ok<Unit, Error>(Unit)
     }
 
@@ -283,7 +284,7 @@ public open class TracePtr internal constructor(
 
         public fun <D> deserialize(deserializer: D): Result<TracePtr, Error> where D : Deserializer {
             open class PrimitiveVisitor : Visitor {
-                public open fun expecting(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append("usize"); Result.Ok(Unit) }
+                public open fun expecting(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append("usize"); Result.Ok<Unit, Error>(Unit) }
 
                 public open fun <E> visitU8(v: UByte): Result<TracePtr, E> = Result.Ok<TracePtr, E>(TracePtr(MutPtr((v.toInt()).toLong())))
 
@@ -293,14 +294,14 @@ public open class TracePtr internal constructor(
                     if (32u >= 32u) {
                         Result.Ok<TracePtr, E>(TracePtr(MutPtr((v.toInt()).toLong())))
                     } else {
-                        Result.Err<TracePtr, E>(invalidTypeEFn(Unexpected.Unsigned(((v as Any?) as Result<TracePtr, E>)), this))
+                        Result.Err<TracePtr, E>(invalidTypeEFn(Unexpected.Unsigned(v), this))
                     }
 
                 public open fun <E> visitU64(v: ULong, invalidTypeEFn: (Any?, PrimitiveVisitor) -> Any?): Result<TracePtr, E> =
                     if (32u >= 64u) {
                         Result.Ok<TracePtr, E>(TracePtr(MutPtr((v.toInt()).toLong())))
                     } else {
-                        Result.Err<TracePtr, E>(invalidTypeEFn(Unexpected.Unsigned(((v as Any?) as Result<TracePtr, E>)), this))
+                        Result.Err<TracePtr, E>(invalidTypeEFn(Unexpected.Unsigned(v), this))
                     }
             }
             return deserializer.deserializeU64(PrimitiveVisitor())
@@ -394,7 +395,7 @@ public open class BacktraceFrame(
         }
     }
 
-    public open fun fmt(fmt: StringBuilder): Result<Unit, Error> = DebugStruct(fmt, "BacktraceFrame").field("ip", this.ip()).field("symbol_address", this.symbolAddress()).finish()
+    public open fun fmt(fmt: StringBuilder): Result<Unit, Error> = run { DebugStruct(fmt, "BacktraceFrame").field("ip", this.ip()).field("symbol_address", this.symbolAddress()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun from(frame: Frame): BacktraceFrame = BacktraceFrame(frame = Frame.Raw(frame), symbols = null)
@@ -408,11 +409,11 @@ public sealed class Frame {
     public open fun ip(): MutPtr =
         when (this) {
             is Frame.Raw -> {
-                val (f) = this
+                val (f) = this as Frame.Raw
                 f.ip()
             }
             is Frame.Deserialized -> {
-                val ip = this.ip
+                val ip = (this as Frame.Deserialized).ip
                 ip.intoVoid()
             }
         }
@@ -420,11 +421,11 @@ public sealed class Frame {
     public open fun symbolAddress(): MutPtr =
         when (this) {
             is Frame.Raw -> {
-                val (f) = this
+                val (f) = this as Frame.Raw
                 f.symbolAddress()
             }
             is Frame.Deserialized -> {
-                val symbolAddress = this.symbolAddress
+                val symbolAddress = (this as Frame.Deserialized).symbolAddress
                 symbolAddress.intoVoid()
             }
         }
@@ -432,11 +433,11 @@ public sealed class Frame {
     public open fun moduleBaseAddress(): MutPtr? =
         when (this) {
             is Frame.Raw -> {
-                val (f) = this
+                val (f) = this as Frame.Raw
                 f.moduleBaseAddress()
             }
             is Frame.Deserialized -> {
-                val moduleBaseAddress = this.moduleBaseAddress
+                val moduleBaseAddress = (this as Frame.Deserialized).moduleBaseAddress
                 moduleBaseAddress.map({ addr -> addr.intoVoid() })
             }
         }
@@ -452,11 +453,11 @@ public sealed class Frame {
             }
         when (this) {
             is Frame.Raw -> {
-                val (f) = this
+                val (f) = this as Frame.Raw
                 resolveFrame(f, sym)
             }
             is Frame.Deserialized -> {
-                val ip = this.ip
+                val ip = (this as Frame.Deserialized).ip
                 resolve(ip.intoVoid(), sym)
             }
         }
@@ -534,7 +535,7 @@ public open class BacktraceSymbol(
      */
     public open fun colno(): UInt? = this.colno
 
-    public open fun fmt(fmt: StringBuilder): Result<Unit, Error> = DebugStruct(fmt, "BacktraceSymbol").field("name", this.name()).field("addr", this.addr()).field("filename", this.filename()).field("lineno", this.lineno()).field("colno", this.colno()).finish()
+    public open fun fmt(fmt: StringBuilder): Result<Unit, Error> = run { DebugStruct(fmt, "BacktraceSymbol").field("name", this.name()).field("addr", this.addr()).field("filename", this.filename()).field("lineno", this.lineno()).field("colno", this.colno()).finish(); Result.Ok<Unit, Error>(Unit) }
 }
 
 public open class SerializedFrame(
@@ -551,6 +552,6 @@ public fun <S> BacktraceFrame.serialize(s: S): Result<Ok, Error> where S : Seria
 }
 
 public fun <D> deserializeBacktraceFrame(d: D): Result<BacktraceFrame, Error> where D : Deserializer {
-    val frame: SerializedFrame = when (val tryResult = SerializedFrame.deserialize(d)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<BacktraceFrame, Error>(tryResult.error) }
+    val frame: SerializedFrame = when (val tryResult = SerializedFrame.deserialize(d)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<BacktraceFrame, Error>(tryResult.error) }
     return Result.Ok<BacktraceFrame, Error>(BacktraceFrame(frame = Frame.Deserialized(ip = TracePtr.fromAddr(frame.ip), symbolAddress = TracePtr.fromAddr(frame.symbolAddress), moduleBaseAddress = frame.moduleBaseAddress?.let(TracePtr::fromAddr)), symbols = frame.symbols))
 }

@@ -37,7 +37,7 @@ public fun detectFeatures(): cache.Initializer {
             }
         }
     when (val matchVal = auxv()) {
-        is Result.Ok -> {
+        is Result.Ok<*, *> -> {
             val auxv = matchVal.value
             // note: the PowerPC values are the mask to do the test (instead of the
             // index of the bit to test like in ARM and Aarch64)

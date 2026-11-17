@@ -19,6 +19,7 @@ import io.github.kotlinmania.rustlang.core.pin.PinSafePointer
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.eq
+import io.github.kotlinmania.rustlang.core.ptr.fromMut
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -583,9 +584,9 @@ public open class Cell<T> internal constructor(
     }
 }
 
-public fun <T> Cell<List<T>>.asRef(n: Int): List<Cell<T>> = this.asArrayOfCells()
+public fun <T> Cell<List<T>>.asRef(n: Int): List<Cell<T>> = this.asArrayOfCells(n)
 
-public fun <T> Cell<List<T>>.asRefCellTSlice(n: Int): List<Cell<T>> = this.asArrayOfCells()
+public fun <T> Cell<List<T>>.asRefCellTSlice(n: Int): List<Cell<T>> = this.asArrayOfCells(n)
 
 public fun <T> Cell<List<T>>.asRef(): List<Cell<T>> = this.asSliceOfCells()
 
@@ -820,10 +821,10 @@ public open class RefCell<T> internal constructor(
     public open fun borrow(): Ref<T> =
         run {
             val matchVal = this.tryBorrow()
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val b = matchVal.value
                 b
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val err = matchVal.error
                 panicAlreadyMutablyBorrowed(err)
             } }
@@ -905,10 +906,10 @@ public open class RefCell<T> internal constructor(
     public open fun borrowMut(): RefMut<T> =
         run {
             val matchVal = this.tryBorrowMut()
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val b = matchVal.value
                 b
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val err = matchVal.error
                 panicAlreadyBorrowed(err)
             } }
@@ -1263,7 +1264,7 @@ public open class BorrowRef internal constructor(
         }
         // Prevent the borrow counter from overflowing into
         // a writing borrow.
-        check(borrow != BorrowCounter.MAX_VALUE)
+        check(borrow != Int.MAX_VALUE)
         this.borrow.replace(borrow + 1)
         return BorrowRef(borrow = this.borrow)
     }
@@ -1312,7 +1313,7 @@ public open class Ref<T>(
     public var value: NonNull,
     public var borrow: BorrowRef,
 ) : DerefPure, PinSafePointer {
-    public override fun deref(): T {
+    public open fun deref(): T {
         // SAFETY: the value is accessible as long as we hold our borrow.
         return (this).value.value.asRef()
     }
@@ -1428,10 +1429,10 @@ public open class Ref<T>(
         public fun <T, U, E> tryMap(orig: Ref<T>, f: (T) -> Result<U, E>): Result<Ref<U>, Pair<Ref<T>, E>> =
             run {
                 val matchVal = f((orig).value)
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val value = matchVal.value
                     Result.Ok<Ref<U>, Pair<Ref<T>, E>>(Ref(value = NonNull.from(value), borrow = (orig).value.borrow))
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     val e = matchVal.error
                     Result.Err<Ref<U>, Pair<Ref<T>, E>>(Pair(orig, e))
                 } }
@@ -1531,7 +1532,7 @@ public open class BorrowRefMut internal constructor(
             check(isWriting(borrow))
         }
         // Prevent the borrow counter from underflowing.
-        check(borrow != BorrowCounter.MIN_VALUE)
+        check(borrow != Int.MIN_VALUE)
         this.borrow.set(borrow - 1)
         return BorrowRefMut(borrow = this.borrow)
     }
@@ -1572,7 +1573,7 @@ public open class RefMut<T>(
     // `NonNull` is covariant over `T`, so we need to reintroduce invariance.
     public var marker: Unit,
 ) : DerefPure, PinSafePointer {
-    public override fun deref(): T {
+    public open fun deref(): T {
         // SAFETY: the value is accessible as long as we hold our borrow.
         return (this).value.value.asRef()
     }
@@ -1709,10 +1710,10 @@ public open class RefMut<T>(
             // escape.
             return run {
                 val matchVal = f((orig).value)
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val value = matchVal.value
                     Result.Ok<RefMut<U>, Pair<RefMut<T>, E>>(RefMut(value = NonNull.from(value), borrow = (orig).value.borrow, marker = Unit))
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     val e = matchVal.error
                     Result.Err<RefMut<U>, Pair<RefMut<T>, E>>(Pair(orig, e))
                 } }

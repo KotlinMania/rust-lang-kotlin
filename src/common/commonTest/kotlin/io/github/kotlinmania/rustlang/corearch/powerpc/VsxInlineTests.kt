@@ -1,6 +1,9 @@
 // port-lint: tests powerpc/vsx.rs
 package io.github.kotlinmania.rustlang.corearch.powerpc
 
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
+import io.github.kotlinmania.rustlang.corearch.simd.SimdM
+
 // PowerPC Vector Scalar eXtensions (VSX) intrinsics.
 //
 // The references are: [POWER ISA v2.07B (for POWER8 & POWER8 with NVIDIA
@@ -10,45 +13,45 @@ package io.github.kotlinmania.rustlang.corearch.powerpc
 // [POWER ISA v3.0B (for POWER9)]: https://ibm.box.com/s/1hzcwkwf8rbju5h9iyf44wm94amnlcrv
 
 public fun testVecXxpermdiU64x2() {
-    val a = VectorUnsignedLong.from(u64x2.fromArray(listOf(0, 1)))
-    val b = VectorUnsignedLong.from(u64x2.fromArray(listOf(2, 3)))
+    val a = VectorUnsignedLong.from(Simd<ULong>((listOf(0, 1)).toList()))
+    val b = VectorUnsignedLong.from(Simd<ULong>((listOf(2, 3)).toList()))
     run {
-        check(u64x2.fromArray(listOf(0, 2)) == u64x2.from(vecXxpermdi(a, b, 0)))
-        check(u64x2.fromArray(listOf(1, 2)) == u64x2.from(vecXxpermdi(a, b, 1)))
-        check(u64x2.fromArray(listOf(0, 3)) == u64x2.from(vecXxpermdi(a, b, 2)))
-        check(u64x2.fromArray(listOf(1, 3)) == u64x2.from(vecXxpermdi(a, b, 3)))
+        check(Simd<ULong>((listOf(0, 2)).toList()) == u64x2.from(vecXxpermdi(a, b, 0)))
+        check(Simd<ULong>((listOf(1, 2)).toList()) == u64x2.from(vecXxpermdi(a, b, 1)))
+        check(Simd<ULong>((listOf(0, 3)).toList()) == u64x2.from(vecXxpermdi(a, b, 2)))
+        check(Simd<ULong>((listOf(1, 3)).toList()) == u64x2.from(vecXxpermdi(a, b, 3)))
     }
 }
 
 public fun testVecXxpermdiI64x2() {
-    val a = VectorSignedLong.from(i64x2.fromArray(listOf(0, -1)))
-    val b = VectorSignedLong.from(i64x2.fromArray(listOf(2, -3)))
+    val a = VectorSignedLong.from(Simd<Long>((listOf(0, -1)).toList()))
+    val b = VectorSignedLong.from(Simd<Long>((listOf(2, -3)).toList()))
     run {
-        check(i64x2.fromArray(listOf(0, 2)) == i64x2.from(vecXxpermdi(a, b, 0)))
-        check(i64x2.fromArray(listOf(-1, 2)) == i64x2.from(vecXxpermdi(a, b, 1)))
-        check(i64x2.fromArray(listOf(0, -3)) == i64x2.from(vecXxpermdi(a, b, 2)))
-        check(i64x2.fromArray(listOf(-1, -3)) == i64x2.from(vecXxpermdi(a, b, 3)))
+        check(Simd<Long>((listOf(0, 2)).toList()) == i64x2.from(vecXxpermdi(a, b, 0)))
+        check(Simd<Long>((listOf(-1, 2)).toList()) == i64x2.from(vecXxpermdi(a, b, 1)))
+        check(Simd<Long>((listOf(0, -3)).toList()) == i64x2.from(vecXxpermdi(a, b, 2)))
+        check(Simd<Long>((listOf(-1, -3)).toList()) == i64x2.from(vecXxpermdi(a, b, 3)))
     }
 }
 
 public fun testVecXxpermdiM64x2() {
-    val a = VectorBoolLong.from(m64x2.fromArray(booleanArrayOf(false, true)))
-    val b = VectorBoolLong.from(m64x2.fromArray(booleanArrayOf(false, true)))
+    val a = VectorBoolLong.from(SimdM<Long>((booleanArrayOf(false, true)).toList()))
+    val b = VectorBoolLong.from(SimdM<Long>((booleanArrayOf(false, true)).toList()))
     run {
-        check(m64x2.fromArray(booleanArrayOf(false, false)) == m64x2.from(vecXxpermdi(a, b, 0)))
-        check(m64x2.fromArray(booleanArrayOf(true, false)) == m64x2.from(vecXxpermdi(a, b, 1)))
-        check(m64x2.fromArray(booleanArrayOf(false, true)) == m64x2.from(vecXxpermdi(a, b, 2)))
-        check(m64x2.fromArray(booleanArrayOf(true, true)) == m64x2.from(vecXxpermdi(a, b, 3)))
+        check(SimdM<Long>((booleanArrayOf(false, false)).toList()) == m64x2.from(vecXxpermdi(a, b, 0)))
+        check(SimdM<Long>((booleanArrayOf(true, false)).toList()) == m64x2.from(vecXxpermdi(a, b, 1)))
+        check(SimdM<Long>((booleanArrayOf(false, true)).toList()) == m64x2.from(vecXxpermdi(a, b, 2)))
+        check(SimdM<Long>((booleanArrayOf(true, true)).toList()) == m64x2.from(vecXxpermdi(a, b, 3)))
     }
 }
 
 public fun testVecXxpermdiF64x2() {
-    val a = VectorDouble.from(f64x2.fromArray(listOf(0.0, 1.0)))
-    val b = VectorDouble.from(f64x2.fromArray(listOf(2.0, 3.0)))
+    val a = VectorDouble.from(Simd<Double>((listOf(0.0, 1.0)).toList()))
+    val b = VectorDouble.from(Simd<Double>((listOf(2.0, 3.0)).toList()))
     run {
-        check(f64x2.fromArray(listOf(0.0, 2.0)) == f64x2.from(vecXxpermdi(a, b, 0)))
-        check(f64x2.fromArray(listOf(1.0, 2.0)) == f64x2.from(vecXxpermdi(a, b, 1)))
-        check(f64x2.fromArray(listOf(0.0, 3.0)) == f64x2.from(vecXxpermdi(a, b, 2)))
-        check(f64x2.fromArray(listOf(1.0, 3.0)) == f64x2.from(vecXxpermdi(a, b, 3)))
+        check(Simd<Double>((listOf(0.0, 2.0)).toList()) == f64x2.from(vecXxpermdi(a, b, 0)))
+        check(Simd<Double>((listOf(1.0, 2.0)).toList()) == f64x2.from(vecXxpermdi(a, b, 1)))
+        check(Simd<Double>((listOf(0.0, 3.0)).toList()) == f64x2.from(vecXxpermdi(a, b, 2)))
+        check(Simd<Double>((listOf(1.0, 3.0)).toList()) == f64x2.from(vecXxpermdi(a, b, 3)))
     }
 }

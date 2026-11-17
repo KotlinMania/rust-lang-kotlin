@@ -136,7 +136,7 @@ public fun usize(value: NonZero<Int, NonZeroUsizeInner>): UInt {
     val implFn = ::u64
     // SAFETY: We have selected the correct `implFn`, so the converting `val` to the argument is
     // safe.
-    return implFn(NonZero.newUnchecked(value.get().toUInt()))
+    return implFn(NonZero.newUnchecked(value.get()))
 }
 
 public fun i8(value: Byte): UInt? =

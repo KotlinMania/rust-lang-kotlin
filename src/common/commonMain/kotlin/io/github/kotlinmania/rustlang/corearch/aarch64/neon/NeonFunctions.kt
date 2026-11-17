@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUnsignedTypes::class)
+
 package io.github.kotlinmania.rustlang.corearch.aarch64.neon
 
 import io.github.kotlinmania.rustlang.core.intrinsics.*
@@ -25,8 +27,8 @@ public fun vld1DupF64(ptr: ConstPtr): Float64x1T = vld1F64(ptr)
  * Load multiple single-element structures to one, two, three, or four registers
  */
 public fun vld1qDupF64(ptr: ConstPtr): Float64x2T {
-    val x = vld1qLaneF64(ptr, transmute(f64x2.splat(0.0)), 0)
-    return run { val _simdArg0 = x; val _simdArg1 = x; val _simdArg2 = SimdShuffleIdx(listOf(0, 0)); _simdArg0 }
+    val x = vld1qLaneF64(ptr, transmute(Simd<Double>(List(2) { 0.0.toDouble() })), 0)
+    return run { val _simdArg0 = x; val _simdArg1 = x; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 0u)); _simdArg0 }
 }
 
 /**
@@ -136,7 +138,7 @@ public fun vextF64(a: Float64x1T, b: Float64x1T, n: Int): Float64x1T {
 /**
  * Duplicate vector element to vector or scalar
  */
-public fun vdupNP64(value: P64): Poly64x1T = transmute(u64x1.new(value))
+public fun vdupNP64(value: P64): Poly64x1T = transmute(Simd<ULong>(listOf(value)))
 
 /**
  * Duplicate vector element to vector or scalar
@@ -146,7 +148,7 @@ public fun vdupNF64(value: Double): Float64x1T = Float64x1T.splat(value)
 /**
  * Duplicate vector element to vector or scalar
  */
-public fun vdupqNP64(value: P64): Poly64x2T = transmute(u64x2.new(value, value))
+public fun vdupqNP64(value: P64): Poly64x2T = transmute(Simd<ULong>(listOf(value, value)))
 
 /**
  * Duplicate vector element to vector or scalar

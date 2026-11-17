@@ -36,7 +36,6 @@ import io.github.kotlinmania.rustlang.corearch.simd.U32x4
 import io.github.kotlinmania.rustlang.corearch.simd.U64x2
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 import io.github.kotlinmania.rustlang.corearch.simd.U8x8
-import io.github.kotlinmania.rustlang.corearch.simdShuffle
 
 public typealias V = Simd<F16>
 
@@ -1876,7 +1875,7 @@ public fun vcgeqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T = run { val _simdArg0
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcgezF16)
  */
 public fun vcgezF16(a: Float16x4T): Uint16x4T {
-    val b: F16x4 = f16x4.new(0.0, 0.0, 0.0, 0.0)
+    val b: F16x4 = Simd<F16>(listOf(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f)))
     return run { val _simdArg0 = a; val _simdArg1 = transmuteWithLayouts<F16x4, Float16x4T>(b, UnresolvedTypeLayout<F16x4>(), UnresolvedTypeLayout<Float16x4T>()); _simdArg0 }
 }
 
@@ -1885,7 +1884,7 @@ public fun vcgezF16(a: Float16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcgezqF16)
  */
 public fun vcgezqF16(a: Float16x8T): Uint16x8T {
-    val b: F16x8 = f16x8.new(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    val b: F16x8 = Simd<F16>(listOf(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f)))
     return run { val _simdArg0 = a; val _simdArg1 = transmuteWithLayouts<F16x8, Float16x8T>(b, UnresolvedTypeLayout<F16x8>(), UnresolvedTypeLayout<Float16x8T>()); _simdArg0 }
 }
 
@@ -1990,7 +1989,7 @@ public fun vcgtqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T = run { val _simdArg0
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcgtzF16)
  */
 public fun vcgtzF16(a: Float16x4T): Uint16x4T {
-    val b: F16x4 = f16x4.new(0.0, 0.0, 0.0, 0.0)
+    val b: F16x4 = Simd<F16>(listOf(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f)))
     return run { val _simdArg0 = a; val _simdArg1 = transmuteWithLayouts<F16x4, Float16x4T>(b, UnresolvedTypeLayout<F16x4>(), UnresolvedTypeLayout<Float16x4T>()); _simdArg0 }
 }
 
@@ -1999,7 +1998,7 @@ public fun vcgtzF16(a: Float16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcgtzqF16)
  */
 public fun vcgtzqF16(a: Float16x8T): Uint16x8T {
-    val b: F16x8 = f16x8.new(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    val b: F16x8 = Simd<F16>(listOf(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f)))
     return run { val _simdArg0 = a; val _simdArg1 = transmuteWithLayouts<F16x8, Float16x8T>(b, UnresolvedTypeLayout<F16x8>(), UnresolvedTypeLayout<Float16x8T>()); _simdArg0 }
 }
 
@@ -2104,7 +2103,7 @@ public fun vcleqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T = run { val _simdArg0
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vclezF16)
  */
 public fun vclezF16(a: Float16x4T): Uint16x4T {
-    val b: F16x4 = f16x4.new(0.0, 0.0, 0.0, 0.0)
+    val b: F16x4 = Simd<F16>(listOf(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f)))
     return run { val _simdArg0 = a; val _simdArg1 = transmuteWithLayouts<F16x4, Float16x4T>(b, UnresolvedTypeLayout<F16x4>(), UnresolvedTypeLayout<Float16x4T>()); _simdArg0 }
 }
 
@@ -2113,7 +2112,7 @@ public fun vclezF16(a: Float16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vclezqF16)
  */
 public fun vclezqF16(a: Float16x8T): Uint16x8T {
-    val b: F16x8 = f16x8.new(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    val b: F16x8 = Simd<F16>(listOf(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f)))
     return run { val _simdArg0 = a; val _simdArg1 = transmuteWithLayouts<F16x8, Float16x8T>(b, UnresolvedTypeLayout<F16x8>(), UnresolvedTypeLayout<Float16x8T>()); _simdArg0 }
 }
 
@@ -2308,7 +2307,7 @@ public fun vcltqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T = run { val _simdArg0
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcltzF16)
  */
 public fun vcltzF16(a: Float16x4T): Uint16x4T {
-    val b: F16x4 = f16x4.new(0.0, 0.0, 0.0, 0.0)
+    val b: F16x4 = Simd<F16>(listOf(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f)))
     return run { val _simdArg0 = a; val _simdArg1 = transmuteWithLayouts<F16x4, Float16x4T>(b, UnresolvedTypeLayout<F16x4>(), UnresolvedTypeLayout<Float16x4T>()); _simdArg0 }
 }
 
@@ -2317,7 +2316,7 @@ public fun vcltzF16(a: Float16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcltzqF16)
  */
 public fun vcltzqF16(a: Float16x8T): Uint16x8T {
-    val b: F16x8 = f16x8.new(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    val b: F16x8 = Simd<F16>(listOf(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f)))
     return run { val _simdArg0 = a; val _simdArg1 = transmuteWithLayouts<F16x8, Float16x8T>(b, UnresolvedTypeLayout<F16x8>(), UnresolvedTypeLayout<Float16x8T>()); _simdArg0 }
 }
 
@@ -2433,79 +2432,79 @@ public fun vcntqP8(a: Poly8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Pol
  * Join two smaller vectors into a single larger vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcombineF16)
  */
-public fun vcombineF16(a: Float16x4T, b: Float16x4T): Float16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)); _simdArg0 }
+public fun vcombineF16(a: Float16x4T, b: Float16x4T): Float16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
 
 /**
  * Join two smaller vectors into a single larger vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcombineF32)
  */
-public fun vcombineF32(a: Float32x2T, b: Float32x2T): Float32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+public fun vcombineF32(a: Float32x2T, b: Float32x2T): Float32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }
 
 /**
  * Join two smaller vectors into a single larger vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcombineS8)
  */
-public fun vcombineS8(a: Int8x8T, b: Int8x8T): Int8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)); _simdArg0 }
+public fun vcombineS8(a: Int8x8T, b: Int8x8T): Int8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
 
 /**
  * Join two smaller vectors into a single larger vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcombineS16)
  */
-public fun vcombineS16(a: Int16x4T, b: Int16x4T): Int16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)); _simdArg0 }
+public fun vcombineS16(a: Int16x4T, b: Int16x4T): Int16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
 
 /**
  * Join two smaller vectors into a single larger vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcombineS32)
  */
-public fun vcombineS32(a: Int32x2T, b: Int32x2T): Int32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+public fun vcombineS32(a: Int32x2T, b: Int32x2T): Int32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }
 
 /**
  * Join two smaller vectors into a single larger vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcombineS64)
  */
-public fun vcombineS64(a: Int64x1T, b: Int64x1T): Int64x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }
+public fun vcombineS64(a: Int64x1T, b: Int64x1T): Int64x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }
 
 /**
  * Join two smaller vectors into a single larger vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcombineU8)
  */
-public fun vcombineU8(a: Uint8x8T, b: Uint8x8T): Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)); _simdArg0 }
+public fun vcombineU8(a: Uint8x8T, b: Uint8x8T): Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
 
 /**
  * Join two smaller vectors into a single larger vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcombineU16)
  */
-public fun vcombineU16(a: Uint16x4T, b: Uint16x4T): Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)); _simdArg0 }
+public fun vcombineU16(a: Uint16x4T, b: Uint16x4T): Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
 
 /**
  * Join two smaller vectors into a single larger vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcombineU32)
  */
-public fun vcombineU32(a: Uint32x2T, b: Uint32x2T): Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+public fun vcombineU32(a: Uint32x2T, b: Uint32x2T): Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }
 
 /**
  * Join two smaller vectors into a single larger vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcombineU64)
  */
-public fun vcombineU64(a: Uint64x1T, b: Uint64x1T): Uint64x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }
+public fun vcombineU64(a: Uint64x1T, b: Uint64x1T): Uint64x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }
 
 /**
  * Join two smaller vectors into a single larger vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcombineP8)
  */
-public fun vcombineP8(a: Poly8x8T, b: Poly8x8T): Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)); _simdArg0 }
+public fun vcombineP8(a: Poly8x8T, b: Poly8x8T): Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
 
 /**
  * Join two smaller vectors into a single larger vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcombineP16)
  */
-public fun vcombineP16(a: Poly16x4T, b: Poly16x4T): Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)); _simdArg0 }
+public fun vcombineP16(a: Poly16x4T, b: Poly16x4T): Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
 
 /**
  * Join two smaller vectors into a single larger vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcombineP64)
  */
-public fun vcombineP64(a: Poly64x1T, b: Poly64x1T): Poly64x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }
+public fun vcombineP64(a: Poly64x1T, b: Poly64x1T): Poly64x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }
 
 /**
  * Insert vector element from another vector element
@@ -4177,73 +4176,73 @@ public fun vfmsqNF32(a: Float32x4T, b: Float32x4T, c: Float): Float32x4T = vfmsq
  * Duplicate vector element to vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetHighF16)
  */
-public fun vgetHighF16(a: Float16x8T): Float16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(4, 5, 6, 7)); _simdArg0 }
+public fun vgetHighF16(a: Float16x8T): Float16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetLowF16)
  */
-public fun vgetLowF16(a: Float16x8T): Float16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+public fun vgetLowF16(a: Float16x8T): Float16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetHighF32)
  */
-public fun vgetHighF32(a: Float32x4T): Float32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(2, 3)); _simdArg0 }
+public fun vgetHighF32(a: Float32x4T): Float32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetHighP16)
  */
-public fun vgetHighP16(a: Poly16x8T): Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(4, 5, 6, 7)); _simdArg0 }
+public fun vgetHighP16(a: Poly16x8T): Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetHighP8)
  */
-public fun vgetHighP8(a: Poly8x16T): Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(8, 9, 10, 11, 12, 13, 14, 15)); _simdArg0 }
+public fun vgetHighP8(a: Poly8x16T): Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetHighS16)
  */
-public fun vgetHighS16(a: Int16x8T): Int16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(4, 5, 6, 7)); _simdArg0 }
+public fun vgetHighS16(a: Int16x8T): Int16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetHighS32)
  */
-public fun vgetHighS32(a: Int32x4T): Int32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(2, 3)); _simdArg0 }
+public fun vgetHighS32(a: Int32x4T): Int32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetHighS8)
  */
-public fun vgetHighS8(a: Int8x16T): Int8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(8, 9, 10, 11, 12, 13, 14, 15)); _simdArg0 }
+public fun vgetHighS8(a: Int8x16T): Int8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetHighU16)
  */
-public fun vgetHighU16(a: Uint16x8T): Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(4, 5, 6, 7)); _simdArg0 }
+public fun vgetHighU16(a: Uint16x8T): Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetHighU32)
  */
-public fun vgetHighU32(a: Uint32x4T): Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(2, 3)); _simdArg0 }
+public fun vgetHighU32(a: Uint32x4T): Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetHighU8)
  */
-public fun vgetHighU8(a: Uint8x16T): Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(8, 9, 10, 11, 12, 13, 14, 15)); _simdArg0 }
+public fun vgetHighU8(a: Uint8x16T): Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetHighP64)
  */
-public fun vgetHighP64(a: Poly64x2T): Poly64x1T = transmute(u64x1.new(run { val _simdArg0 = a; val _simdArg1 = 1; _simdArg0 }))
+public fun vgetHighP64(a: Poly64x2T): Poly64x1T = transmute(Simd<ULong>(listOf((run { val _simdArg0 = a; val _simdArg1 = 1uL; _simdArg0 }).toULong())))
 
 /**
  * Duplicate vector element to vector or scalar
@@ -4547,61 +4546,61 @@ public fun vgetLaneU64(v: Uint64x1T, imm5: Int): ULong {
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetLowF32)
  */
-public fun vgetLowF32(a: Float32x4T): Float32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }
+public fun vgetLowF32(a: Float32x4T): Float32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetLowP16)
  */
-public fun vgetLowP16(a: Poly16x8T): Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+public fun vgetLowP16(a: Poly16x8T): Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetLowP8)
  */
-public fun vgetLowP8(a: Poly8x16T): Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)); _simdArg0 }
+public fun vgetLowP8(a: Poly8x16T): Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetLowS16)
  */
-public fun vgetLowS16(a: Int16x8T): Int16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+public fun vgetLowS16(a: Int16x8T): Int16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetLowS32)
  */
-public fun vgetLowS32(a: Int32x4T): Int32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }
+public fun vgetLowS32(a: Int32x4T): Int32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetLowS8)
  */
-public fun vgetLowS8(a: Int8x16T): Int8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)); _simdArg0 }
+public fun vgetLowS8(a: Int8x16T): Int8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetLowU16)
  */
-public fun vgetLowU16(a: Uint16x8T): Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+public fun vgetLowU16(a: Uint16x8T): Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetLowU32)
  */
-public fun vgetLowU32(a: Uint32x4T): Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }
+public fun vgetLowU32(a: Uint32x4T): Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetLowU8)
  */
-public fun vgetLowU8(a: Uint8x16T): Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)); _simdArg0 }
+public fun vgetLowU8(a: Uint8x16T): Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
 
 /**
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetLowP64)
  */
-public fun vgetLowP64(a: Poly64x2T): Poly64x1T = transmute(u64x1.new(run { val _simdArg0 = a; val _simdArg1 = 0; _simdArg0 }))
+public fun vgetLowP64(a: Poly64x2T): Poly64x1T = transmute(Simd<ULong>(listOf((run { val _simdArg0 = a; val _simdArg1 = 0uL; _simdArg0 }).toULong())))
 
 /**
  * Duplicate vector element to vector or scalar
@@ -4838,8 +4837,8 @@ public fun vhsubqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld1DupF16(ptr: ConstPtr): Float16x4T {
-    val x: Float16x4T = vld1LaneF16(ptr, transmute(f16x4.splat(0.0)), 0)
-    return run { val _simdArg0 = x; val _simdArg1 = x; val _simdArg2 = SimdShuffleIdx(listOf(0, 0, 0, 0)); _simdArg0 }
+    val x: Float16x4T = vld1LaneF16(ptr, transmute(Simd<F16>(List(4) { F16.fromFloat(0.0f) })), 0)
+    return run { val _simdArg0 = x; val _simdArg1 = x; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 0u, 0u, 0u)); _simdArg0 }
 }
 
 /**
@@ -4849,8 +4848,8 @@ public fun vld1DupF16(ptr: ConstPtr): Float16x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld1qDupF16(ptr: ConstPtr): Float16x8T {
-    val x: Float16x8T = vld1qLaneF16(ptr, transmute(f16x8.splat(0.0)), 0)
-    return run { val _simdArg0 = x; val _simdArg1 = x; val _simdArg2 = SimdShuffleIdx(listOf(0, 0, 0, 0, 0, 0, 0, 0)); _simdArg0 }
+    val x: Float16x8T = vld1qLaneF16(ptr, transmute(Simd<F16>(List(8) { F16.fromFloat(0.0f) })), 0)
+    return run { val _simdArg0 = x; val _simdArg1 = x; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)); _simdArg0 }
 }
 
 /**
@@ -4859,7 +4858,7 @@ public fun vld1qDupF16(ptr: ConstPtr): Float16x8T {
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupF32(ptr: ConstPtr): Float32x2T = transmute(f32x2.splat(readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.F32)))
+public fun vld1DupF32(ptr: ConstPtr): Float32x2T = transmute(Simd<Float>(List(2) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.F32).toFloat() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4867,7 +4866,7 @@ public fun vld1DupF32(ptr: ConstPtr): Float32x2T = transmute(f32x2.splat(readUna
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupP16(ptr: ConstPtr): Poly16x4T = transmute(u16x4.splat(readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P16>())))
+public fun vld1DupP16(ptr: ConstPtr): Poly16x4T = transmute(Simd<UShort>(List(4) { readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P16>()).toUShort() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4875,7 +4874,7 @@ public fun vld1DupP16(ptr: ConstPtr): Poly16x4T = transmute(u16x4.splat(readUnal
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupP8(ptr: ConstPtr): Poly8x8T = transmute(u8x8.splat(readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P8>())))
+public fun vld1DupP8(ptr: ConstPtr): Poly8x8T = transmute(Simd<UByte>(List(8) { readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P8>()).toUByte() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4883,7 +4882,7 @@ public fun vld1DupP8(ptr: ConstPtr): Poly8x8T = transmute(u8x8.splat(readUnalign
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupS16(ptr: ConstPtr): Int16x4T = transmute(i16x4.splat(readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I16)))
+public fun vld1DupS16(ptr: ConstPtr): Int16x4T = transmute(Simd<Short>(List(4) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I16).toShort() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4891,7 +4890,7 @@ public fun vld1DupS16(ptr: ConstPtr): Int16x4T = transmute(i16x4.splat(readUnali
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupS32(ptr: ConstPtr): Int32x2T = transmute(i32x2.splat(readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I32)))
+public fun vld1DupS32(ptr: ConstPtr): Int32x2T = transmute(Simd<Int>(List(2) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I32).toInt() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4899,7 +4898,7 @@ public fun vld1DupS32(ptr: ConstPtr): Int32x2T = transmute(i32x2.splat(readUnali
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupS8(ptr: ConstPtr): Int8x8T = transmute(i8x8.splat(readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I8)))
+public fun vld1DupS8(ptr: ConstPtr): Int8x8T = transmute(Simd<Byte>(List(8) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I8).toByte() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4907,7 +4906,7 @@ public fun vld1DupS8(ptr: ConstPtr): Int8x8T = transmute(i8x8.splat(readUnaligne
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupU16(ptr: ConstPtr): Uint16x4T = transmute(u16x4.splat(readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U16)))
+public fun vld1DupU16(ptr: ConstPtr): Uint16x4T = transmute(Simd<UShort>(List(4) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U16).toUShort() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4915,7 +4914,7 @@ public fun vld1DupU16(ptr: ConstPtr): Uint16x4T = transmute(u16x4.splat(readUnal
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupU32(ptr: ConstPtr): Uint32x2T = transmute(u32x2.splat(readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U32)))
+public fun vld1DupU32(ptr: ConstPtr): Uint32x2T = transmute(Simd<UInt>(List(2) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U32).toUInt() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4923,7 +4922,7 @@ public fun vld1DupU32(ptr: ConstPtr): Uint32x2T = transmute(u32x2.splat(readUnal
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupU8(ptr: ConstPtr): Uint8x8T = transmute(u8x8.splat(readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U8)))
+public fun vld1DupU8(ptr: ConstPtr): Uint8x8T = transmute(Simd<UByte>(List(8) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U8).toUByte() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4931,7 +4930,7 @@ public fun vld1DupU8(ptr: ConstPtr): Uint8x8T = transmute(u8x8.splat(readUnalign
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupF32(ptr: ConstPtr): Float32x4T = transmute(f32x4.splat(readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.F32)))
+public fun vld1qDupF32(ptr: ConstPtr): Float32x4T = transmute(Simd<Float>(List(4) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.F32).toFloat() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4939,7 +4938,7 @@ public fun vld1qDupF32(ptr: ConstPtr): Float32x4T = transmute(f32x4.splat(readUn
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupP16(ptr: ConstPtr): Poly16x8T = transmute(u16x8.splat(readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P16>())))
+public fun vld1qDupP16(ptr: ConstPtr): Poly16x8T = transmute(Simd<UShort>(List(8) { readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P16>()).toUShort() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4947,7 +4946,7 @@ public fun vld1qDupP16(ptr: ConstPtr): Poly16x8T = transmute(u16x8.splat(readUna
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupP8(ptr: ConstPtr): Poly8x16T = transmute(u8x16.splat(readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P8>())))
+public fun vld1qDupP8(ptr: ConstPtr): Poly8x16T = transmute(Simd<UByte>(List(16) { readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P8>()).toUByte() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4955,7 +4954,7 @@ public fun vld1qDupP8(ptr: ConstPtr): Poly8x16T = transmute(u8x16.splat(readUnal
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupS16(ptr: ConstPtr): Int16x8T = transmute(i16x8.splat(readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I16)))
+public fun vld1qDupS16(ptr: ConstPtr): Int16x8T = transmute(Simd<Short>(List(8) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I16).toShort() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4963,7 +4962,7 @@ public fun vld1qDupS16(ptr: ConstPtr): Int16x8T = transmute(i16x8.splat(readUnal
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupS32(ptr: ConstPtr): Int32x4T = transmute(i32x4.splat(readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I32)))
+public fun vld1qDupS32(ptr: ConstPtr): Int32x4T = transmute(Simd<Int>(List(4) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I32).toInt() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4971,7 +4970,7 @@ public fun vld1qDupS32(ptr: ConstPtr): Int32x4T = transmute(i32x4.splat(readUnal
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupS64(ptr: ConstPtr): Int64x2T = transmute(i64x2.splat(readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I64)))
+public fun vld1qDupS64(ptr: ConstPtr): Int64x2T = transmute(Simd<Long>(List(2) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I64).toLong() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4979,7 +4978,7 @@ public fun vld1qDupS64(ptr: ConstPtr): Int64x2T = transmute(i64x2.splat(readUnal
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupS8(ptr: ConstPtr): Int8x16T = transmute(i8x16.splat(readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I8)))
+public fun vld1qDupS8(ptr: ConstPtr): Int8x16T = transmute(Simd<Byte>(List(16) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I8).toByte() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4987,7 +4986,7 @@ public fun vld1qDupS8(ptr: ConstPtr): Int8x16T = transmute(i8x16.splat(readUnali
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupU16(ptr: ConstPtr): Uint16x8T = transmute(u16x8.splat(readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U16)))
+public fun vld1qDupU16(ptr: ConstPtr): Uint16x8T = transmute(Simd<UShort>(List(8) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U16).toUShort() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4995,7 +4994,7 @@ public fun vld1qDupU16(ptr: ConstPtr): Uint16x8T = transmute(u16x8.splat(readUna
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupU32(ptr: ConstPtr): Uint32x4T = transmute(u32x4.splat(readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U32)))
+public fun vld1qDupU32(ptr: ConstPtr): Uint32x4T = transmute(Simd<UInt>(List(4) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U32).toUInt() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -5003,7 +5002,7 @@ public fun vld1qDupU32(ptr: ConstPtr): Uint32x4T = transmute(u32x4.splat(readUna
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupU64(ptr: ConstPtr): Uint64x2T = transmute(u64x2.splat(readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U64)))
+public fun vld1qDupU64(ptr: ConstPtr): Uint64x2T = transmute(Simd<ULong>(List(2) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U64).toULong() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -5011,7 +5010,7 @@ public fun vld1qDupU64(ptr: ConstPtr): Uint64x2T = transmute(u64x2.splat(readUna
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupU8(ptr: ConstPtr): Uint8x16T = transmute(u8x16.splat(readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U8)))
+public fun vld1qDupU8(ptr: ConstPtr): Uint8x16T = transmute(Simd<UByte>(List(16) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U8).toUByte() }))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -6024,8 +6023,8 @@ public fun vld1qP16X4(a: ConstPtr): Poly16x8x4T = readUnaligned(a, typeLayoutT =
  *  * Neon intrinsic unchecked
  */
 public fun vld1qDupP64(ptr: ConstPtr): Poly64x2T {
-    val x = vld1qLaneP64(ptr, transmute(u64x2.splat(0)), 0)
-    return run { val _simdArg0 = x; val _simdArg1 = x; val _simdArg2 = SimdShuffleIdx(listOf(0, 0)); _simdArg0 }
+    val x = vld1qLaneP64(ptr, transmute(Simd<ULong>(List(2) { 0uL })), 0)
+    return run { val _simdArg0 = x; val _simdArg1 = x; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 0u)); _simdArg0 }
 }
 
 /**
@@ -6036,7 +6035,7 @@ public fun vld1qDupP64(ptr: ConstPtr): Poly64x2T {
  */
 public fun vld2DupF16(a: ConstPtr): Float16x4x2T {
     fun vld2DupF16(ptr: ConstPtr): Float16x4x2T = Float16x4x2T()
-    return vld2DupF16(((a as Any?) as Float16x4x2T))
+    return vld2DupF16(a)
 }
 
 /**
@@ -6047,7 +6046,7 @@ public fun vld2DupF16(a: ConstPtr): Float16x4x2T {
  */
 public fun vld2qDupF16(a: ConstPtr): Float16x8x2T {
     fun vld2qDupF16(ptr: ConstPtr): Float16x8x2T = Float16x8x2T()
-    return vld2qDupF16(((a as Any?) as Float16x8x2T))
+    return vld2qDupF16(a)
 }
 
 /**
@@ -6058,7 +6057,7 @@ public fun vld2qDupF16(a: ConstPtr): Float16x8x2T {
  */
 public fun vld2DupF32(a: ConstPtr): Float32x2x2T {
     fun vld2DupF32(ptr: ConstPtr): Float32x2x2T = Float32x2x2T()
-    return vld2DupF32(((a as Any?) as Float32x2x2T))
+    return vld2DupF32(a)
 }
 
 /**
@@ -6069,7 +6068,7 @@ public fun vld2DupF32(a: ConstPtr): Float32x2x2T {
  */
 public fun vld2qDupF32(a: ConstPtr): Float32x4x2T {
     fun vld2qDupF32(ptr: ConstPtr): Float32x4x2T = Float32x4x2T()
-    return vld2qDupF32(((a as Any?) as Float32x4x2T))
+    return vld2qDupF32(a)
 }
 
 /**
@@ -6080,7 +6079,7 @@ public fun vld2qDupF32(a: ConstPtr): Float32x4x2T {
  */
 public fun vld2DupS8(a: ConstPtr): Int8x8x2T {
     fun vld2DupS8(ptr: ConstPtr): Int8x8x2T = Int8x8x2T()
-    return vld2DupS8(((a as Any?) as Int8x8x2T))
+    return vld2DupS8(a)
 }
 
 /**
@@ -6091,7 +6090,7 @@ public fun vld2DupS8(a: ConstPtr): Int8x8x2T {
  */
 public fun vld2qDupS8(a: ConstPtr): Int8x16x2T {
     fun vld2qDupS8(ptr: ConstPtr): Int8x16x2T = Int8x16x2T()
-    return vld2qDupS8(((a as Any?) as Int8x16x2T))
+    return vld2qDupS8(a)
 }
 
 /**
@@ -6102,7 +6101,7 @@ public fun vld2qDupS8(a: ConstPtr): Int8x16x2T {
  */
 public fun vld2DupS16(a: ConstPtr): Int16x4x2T {
     fun vld2DupS16(ptr: ConstPtr): Int16x4x2T = Int16x4x2T()
-    return vld2DupS16(((a as Any?) as Int16x4x2T))
+    return vld2DupS16(a)
 }
 
 /**
@@ -6113,7 +6112,7 @@ public fun vld2DupS16(a: ConstPtr): Int16x4x2T {
  */
 public fun vld2qDupS16(a: ConstPtr): Int16x8x2T {
     fun vld2qDupS16(ptr: ConstPtr): Int16x8x2T = Int16x8x2T()
-    return vld2qDupS16(((a as Any?) as Int16x8x2T))
+    return vld2qDupS16(a)
 }
 
 /**
@@ -6124,7 +6123,7 @@ public fun vld2qDupS16(a: ConstPtr): Int16x8x2T {
  */
 public fun vld2DupS32(a: ConstPtr): Int32x2x2T {
     fun vld2DupS32(ptr: ConstPtr): Int32x2x2T = Int32x2x2T()
-    return vld2DupS32(((a as Any?) as Int32x2x2T))
+    return vld2DupS32(a)
 }
 
 /**
@@ -6135,7 +6134,7 @@ public fun vld2DupS32(a: ConstPtr): Int32x2x2T {
  */
 public fun vld2qDupS32(a: ConstPtr): Int32x4x2T {
     fun vld2qDupS32(ptr: ConstPtr): Int32x4x2T = Int32x4x2T()
-    return vld2qDupS32(((a as Any?) as Int32x4x2T))
+    return vld2qDupS32(a)
 }
 
 /**
@@ -6154,7 +6153,7 @@ public fun vld2DupP64(a: ConstPtr): Poly64x1x2T = transmuteWithLayouts<Int64x1x2
  */
 public fun vld2DupS64(a: ConstPtr): Int64x1x2T {
     fun vld2DupS64(ptr: ConstPtr): Int64x1x2T = Int64x1x2T()
-    return vld2DupS64(((a as Any?) as Int64x1x2T))
+    return vld2DupS64(a)
 }
 
 /**
@@ -6253,7 +6252,7 @@ public fun vld2qDupP16(a: ConstPtr): Poly16x8x2T = transmuteWithLayouts<Int16x8x
  */
 public fun vld2F16(a: ConstPtr): Float16x4x2T {
     fun vld2F16(ptr: ConstPtr): Float16x4x2T = Float16x4x2T()
-    return vld2F16(((a as Any?) as Float16x4x2T))
+    return vld2F16(a)
 }
 
 /**
@@ -6264,7 +6263,7 @@ public fun vld2F16(a: ConstPtr): Float16x4x2T {
  */
 public fun vld2qF16(a: ConstPtr): Float16x8x2T {
     fun vld2qF16(ptr: ConstPtr): Float16x8x2T = Float16x8x2T()
-    return vld2qF16(((a as Any?) as Float16x8x2T))
+    return vld2qF16(a)
 }
 
 /**
@@ -6275,7 +6274,7 @@ public fun vld2qF16(a: ConstPtr): Float16x8x2T {
  */
 public fun vld2F32(a: ConstPtr): Float32x2x2T {
     fun vld2F32(ptr: ConstPtr): Float32x2x2T = Float32x2x2T()
-    return vld2F32(((a as Any?) as Float32x2x2T))
+    return vld2F32(a)
 }
 
 /**
@@ -6286,7 +6285,7 @@ public fun vld2F32(a: ConstPtr): Float32x2x2T {
  */
 public fun vld2qF32(a: ConstPtr): Float32x4x2T {
     fun vld2qF32(ptr: ConstPtr): Float32x4x2T = Float32x4x2T()
-    return vld2qF32(((a as Any?) as Float32x4x2T))
+    return vld2qF32(a)
 }
 
 /**
@@ -6297,7 +6296,7 @@ public fun vld2qF32(a: ConstPtr): Float32x4x2T {
  */
 public fun vld2S8(a: ConstPtr): Int8x8x2T {
     fun vld2S8(ptr: ConstPtr): Int8x8x2T = Int8x8x2T()
-    return vld2S8(((a as Any?) as Int8x8x2T))
+    return vld2S8(a)
 }
 
 /**
@@ -6308,7 +6307,7 @@ public fun vld2S8(a: ConstPtr): Int8x8x2T {
  */
 public fun vld2qS8(a: ConstPtr): Int8x16x2T {
     fun vld2qS8(ptr: ConstPtr): Int8x16x2T = Int8x16x2T()
-    return vld2qS8(((a as Any?) as Int8x16x2T))
+    return vld2qS8(a)
 }
 
 /**
@@ -6319,7 +6318,7 @@ public fun vld2qS8(a: ConstPtr): Int8x16x2T {
  */
 public fun vld2S16(a: ConstPtr): Int16x4x2T {
     fun vld2S16(ptr: ConstPtr): Int16x4x2T = Int16x4x2T()
-    return vld2S16(((a as Any?) as Int16x4x2T))
+    return vld2S16(a)
 }
 
 /**
@@ -6330,7 +6329,7 @@ public fun vld2S16(a: ConstPtr): Int16x4x2T {
  */
 public fun vld2qS16(a: ConstPtr): Int16x8x2T {
     fun vld2qS16(ptr: ConstPtr): Int16x8x2T = Int16x8x2T()
-    return vld2qS16(((a as Any?) as Int16x8x2T))
+    return vld2qS16(a)
 }
 
 /**
@@ -6341,7 +6340,7 @@ public fun vld2qS16(a: ConstPtr): Int16x8x2T {
  */
 public fun vld2S32(a: ConstPtr): Int32x2x2T {
     fun vld2S32(ptr: ConstPtr): Int32x2x2T = Int32x2x2T()
-    return vld2S32(((a as Any?) as Int32x2x2T))
+    return vld2S32(a)
 }
 
 /**
@@ -6352,7 +6351,7 @@ public fun vld2S32(a: ConstPtr): Int32x2x2T {
  */
 public fun vld2qS32(a: ConstPtr): Int32x4x2T {
     fun vld2qS32(ptr: ConstPtr): Int32x4x2T = Int32x4x2T()
-    return vld2qS32(((a as Any?) as Int32x4x2T))
+    return vld2qS32(a)
 }
 
 /**
@@ -6366,7 +6365,7 @@ public fun vld2LaneF16(a: ConstPtr, b: Float16x4x2T, lane: Int): Float16x4x2T {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld2LaneF16(b.first, b.second, lane.toLong(), ((a as Any?) as Float16x4x2T))
+    return vld2LaneF16(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -6380,7 +6379,7 @@ public fun vld2qLaneF16(a: ConstPtr, b: Float16x8x2T, lane: Int): Float16x8x2T {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return vld2qLaneF16(b.first, b.second, lane.toLong(), ((a as Any?) as Float16x8x2T))
+    return vld2qLaneF16(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -6394,7 +6393,7 @@ public fun vld2LaneF32(a: ConstPtr, b: Float32x2x2T, lane: Int): Float32x2x2T {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld2LaneF32(b.first, b.second, lane.toLong(), ((a as Any?) as Float32x2x2T))
+    return vld2LaneF32(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -6408,7 +6407,7 @@ public fun vld2qLaneF32(a: ConstPtr, b: Float32x4x2T, lane: Int): Float32x4x2T {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld2qLaneF32(b.first, b.second, lane.toLong(), ((a as Any?) as Float32x4x2T))
+    return vld2qLaneF32(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -6422,7 +6421,7 @@ public fun vld2LaneS8(a: ConstPtr, b: Int8x8x2T, lane: Int): Int8x8x2T {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return vld2LaneS8(b.first, b.second, lane.toLong(), ((a as Any?) as Int8x8x2T))
+    return vld2LaneS8(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -6436,7 +6435,7 @@ public fun vld2LaneS16(a: ConstPtr, b: Int16x4x2T, lane: Int): Int16x4x2T {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld2LaneS16(b.first, b.second, lane.toLong(), ((a as Any?) as Int16x4x2T))
+    return vld2LaneS16(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -6450,7 +6449,7 @@ public fun vld2qLaneS16(a: ConstPtr, b: Int16x8x2T, lane: Int): Int16x8x2T {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return vld2qLaneS16(b.first, b.second, lane.toLong(), ((a as Any?) as Int16x8x2T))
+    return vld2qLaneS16(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -6464,7 +6463,7 @@ public fun vld2LaneS32(a: ConstPtr, b: Int32x2x2T, lane: Int): Int32x2x2T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return vld2LaneS32(b.first, b.second, lane.toLong(), ((a as Any?) as Int32x2x2T))
+    return vld2LaneS32(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -6478,7 +6477,7 @@ public fun vld2qLaneS32(a: ConstPtr, b: Int32x4x2T, lane: Int): Int32x4x2T {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld2qLaneS32(b.first, b.second, lane.toLong(), ((a as Any?) as Int32x4x2T))
+    return vld2qLaneS32(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -6601,7 +6600,7 @@ public fun vld2P64(a: ConstPtr): Poly64x1x2T = transmuteWithLayouts<Int64x1x2T, 
  */
 public fun vld2S64(a: ConstPtr): Int64x1x2T {
     fun vld2S64(ptr: ConstPtr): Int64x1x2T = Int64x1x2T()
-    return vld2S64(((a as Any?) as Int64x1x2T))
+    return vld2S64(a)
 }
 
 /**
@@ -6700,7 +6699,7 @@ public fun vld2qP16(a: ConstPtr): Poly16x8x2T = transmuteWithLayouts<Int16x8x2T,
  */
 public fun vld3DupF16(a: ConstPtr): Float16x4x3T {
     fun vld3DupF16(ptr: ConstPtr): Float16x4x3T = Float16x4x3T()
-    return vld3DupF16(((a as Any?) as Float16x4x3T))
+    return vld3DupF16(a)
 }
 
 /**
@@ -6711,7 +6710,7 @@ public fun vld3DupF16(a: ConstPtr): Float16x4x3T {
  */
 public fun vld3qDupF16(a: ConstPtr): Float16x8x3T {
     fun vld3qDupF16(ptr: ConstPtr): Float16x8x3T = Float16x8x3T()
-    return vld3qDupF16(((a as Any?) as Float16x8x3T))
+    return vld3qDupF16(a)
 }
 
 /**
@@ -6722,7 +6721,7 @@ public fun vld3qDupF16(a: ConstPtr): Float16x8x3T {
  */
 public fun vld3DupF32(a: ConstPtr): Float32x2x3T {
     fun vld3DupF32(ptr: ConstPtr): Float32x2x3T = Float32x2x3T()
-    return vld3DupF32(((a as Any?) as Float32x2x3T))
+    return vld3DupF32(a)
 }
 
 /**
@@ -6733,7 +6732,7 @@ public fun vld3DupF32(a: ConstPtr): Float32x2x3T {
  */
 public fun vld3qDupF32(a: ConstPtr): Float32x4x3T {
     fun vld3qDupF32(ptr: ConstPtr): Float32x4x3T = Float32x4x3T()
-    return vld3qDupF32(((a as Any?) as Float32x4x3T))
+    return vld3qDupF32(a)
 }
 
 /**
@@ -6744,7 +6743,7 @@ public fun vld3qDupF32(a: ConstPtr): Float32x4x3T {
  */
 public fun vld3DupS8(a: ConstPtr): Int8x8x3T {
     fun vld3DupS8(ptr: ConstPtr): Int8x8x3T = Int8x8x3T()
-    return vld3DupS8(((a as Any?) as Int8x8x3T))
+    return vld3DupS8(a)
 }
 
 /**
@@ -6755,7 +6754,7 @@ public fun vld3DupS8(a: ConstPtr): Int8x8x3T {
  */
 public fun vld3qDupS8(a: ConstPtr): Int8x16x3T {
     fun vld3qDupS8(ptr: ConstPtr): Int8x16x3T = Int8x16x3T()
-    return vld3qDupS8(((a as Any?) as Int8x16x3T))
+    return vld3qDupS8(a)
 }
 
 /**
@@ -6766,7 +6765,7 @@ public fun vld3qDupS8(a: ConstPtr): Int8x16x3T {
  */
 public fun vld3DupS16(a: ConstPtr): Int16x4x3T {
     fun vld3DupS16(ptr: ConstPtr): Int16x4x3T = Int16x4x3T()
-    return vld3DupS16(((a as Any?) as Int16x4x3T))
+    return vld3DupS16(a)
 }
 
 /**
@@ -6777,7 +6776,7 @@ public fun vld3DupS16(a: ConstPtr): Int16x4x3T {
  */
 public fun vld3qDupS16(a: ConstPtr): Int16x8x3T {
     fun vld3qDupS16(ptr: ConstPtr): Int16x8x3T = Int16x8x3T()
-    return vld3qDupS16(((a as Any?) as Int16x8x3T))
+    return vld3qDupS16(a)
 }
 
 /**
@@ -6788,7 +6787,7 @@ public fun vld3qDupS16(a: ConstPtr): Int16x8x3T {
  */
 public fun vld3DupS32(a: ConstPtr): Int32x2x3T {
     fun vld3DupS32(ptr: ConstPtr): Int32x2x3T = Int32x2x3T()
-    return vld3DupS32(((a as Any?) as Int32x2x3T))
+    return vld3DupS32(a)
 }
 
 /**
@@ -6799,7 +6798,7 @@ public fun vld3DupS32(a: ConstPtr): Int32x2x3T {
  */
 public fun vld3qDupS32(a: ConstPtr): Int32x4x3T {
     fun vld3qDupS32(ptr: ConstPtr): Int32x4x3T = Int32x4x3T()
-    return vld3qDupS32(((a as Any?) as Int32x4x3T))
+    return vld3qDupS32(a)
 }
 
 /**
@@ -6810,7 +6809,7 @@ public fun vld3qDupS32(a: ConstPtr): Int32x4x3T {
  */
 public fun vld3DupS64(a: ConstPtr): Int64x1x3T {
     fun vld3DupS64(ptr: ConstPtr): Int64x1x3T = Int64x1x3T()
-    return vld3DupS64(((a as Any?) as Int64x1x3T))
+    return vld3DupS64(a)
 }
 
 /**
@@ -6918,10 +6917,10 @@ public fun vld3qDupP16(a: ConstPtr): Poly16x8x3T = transmuteWithLayouts<Int16x8x
 public fun vld3F16(a: ConstPtr): Float16x4x3T =
     run {
         val arr: Arr = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, (4 * 3).toInt()))
-        val w: W = W.fromArray(arr)
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 4, 3, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 4, 3, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 4, 3, 2 > Unit)
+        val w: W = Simd.fromArray(arr)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 2)); _simdArg0 }
         transmute(Triple(v0, v1, v2))
     }
 
@@ -6934,10 +6933,10 @@ public fun vld3F16(a: ConstPtr): Float16x4x3T =
 public fun vld3qF16(a: ConstPtr): Float16x8x3T =
     run {
         val arr: Arr = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, (8 * 3).toInt()))
-        val w: W = W.fromArray(arr)
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 8, 3, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 8, 3, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 8, 3, 2 > Unit)
+        val w: W = Simd.fromArray(arr)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 2)); _simdArg0 }
         transmute(Triple(v0, v1, v2))
     }
 
@@ -6950,10 +6949,10 @@ public fun vld3qF16(a: ConstPtr): Float16x8x3T =
 public fun vld3F32(a: ConstPtr): Float32x2x3T =
     run {
         val arr: Arr = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = PrimitiveArrayLayouts.floatArray((2 * 3).toInt()))
-        val w: W = W.fromArray(arr)
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 2, 3, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 2, 3, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 2, 3, 2 > Unit)
+        val w: W = Simd.fromArray(arr)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 2)); _simdArg0 }
         transmute(Triple(v0, v1, v2))
     }
 
@@ -6966,10 +6965,10 @@ public fun vld3F32(a: ConstPtr): Float32x2x3T =
 public fun vld3qF32(a: ConstPtr): Float32x4x3T =
     run {
         val arr: Arr = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = PrimitiveArrayLayouts.floatArray((4 * 3).toInt()))
-        val w: W = W.fromArray(arr)
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 4, 3, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 4, 3, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 4, 3, 2 > Unit)
+        val w: W = Simd.fromArray(arr)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 2)); _simdArg0 }
         transmute(Triple(v0, v1, v2))
     }
 
@@ -6982,10 +6981,10 @@ public fun vld3qF32(a: ConstPtr): Float32x4x3T =
 public fun vld3S8(a: ConstPtr): Int8x8x3T =
     run {
         val arr: Arr = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = PrimitiveArrayLayouts.byteArray((8 * 3).toInt()))
-        val w: W = W.fromArray(arr)
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 8, 3, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 8, 3, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 8, 3, 2 > Unit)
+        val w: W = Simd.fromArray(arr)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 2)); _simdArg0 }
         transmute(Triple(v0, v1, v2))
     }
 
@@ -6998,10 +6997,10 @@ public fun vld3S8(a: ConstPtr): Int8x8x3T =
 public fun vld3qS8(a: ConstPtr): Int8x16x3T =
     run {
         val arr: Arr = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = PrimitiveArrayLayouts.byteArray((16 * 3).toInt()))
-        val w: W = W.fromArray(arr)
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 16, 3, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 16, 3, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 16, 3, 2 > Unit)
+        val w: W = Simd.fromArray(arr)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(16, 3, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(16, 3, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(16, 3, 2)); _simdArg0 }
         transmute(Triple(v0, v1, v2))
     }
 
@@ -7014,10 +7013,10 @@ public fun vld3qS8(a: ConstPtr): Int8x16x3T =
 public fun vld3S16(a: ConstPtr): Int16x4x3T =
     run {
         val arr: Arr = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = PrimitiveArrayLayouts.shortArray((4 * 3).toInt()))
-        val w: W = W.fromArray(arr)
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 4, 3, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 4, 3, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 4, 3, 2 > Unit)
+        val w: W = Simd.fromArray(arr)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 2)); _simdArg0 }
         transmute(Triple(v0, v1, v2))
     }
 
@@ -7030,10 +7029,10 @@ public fun vld3S16(a: ConstPtr): Int16x4x3T =
 public fun vld3qS16(a: ConstPtr): Int16x8x3T =
     run {
         val arr: Arr = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = PrimitiveArrayLayouts.shortArray((8 * 3).toInt()))
-        val w: W = W.fromArray(arr)
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 8, 3, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 8, 3, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 8, 3, 2 > Unit)
+        val w: W = Simd.fromArray(arr)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 2)); _simdArg0 }
         transmute(Triple(v0, v1, v2))
     }
 
@@ -7046,10 +7045,10 @@ public fun vld3qS16(a: ConstPtr): Int16x8x3T =
 public fun vld3S32(a: ConstPtr): Int32x2x3T =
     run {
         val arr: Arr = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = PrimitiveArrayLayouts.intArray((2 * 3).toInt()))
-        val w: W = W.fromArray(arr)
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 2, 3, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 2, 3, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 2, 3, 2 > Unit)
+        val w: W = Simd.fromArray(arr)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 2)); _simdArg0 }
         transmute(Triple(v0, v1, v2))
     }
 
@@ -7062,10 +7061,10 @@ public fun vld3S32(a: ConstPtr): Int32x2x3T =
 public fun vld3qS32(a: ConstPtr): Int32x4x3T =
     run {
         val arr: Arr = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = PrimitiveArrayLayouts.intArray((4 * 3).toInt()))
-        val w: W = W.fromArray(arr)
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 4, 3, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 4, 3, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 4, 3, 2 > Unit)
+        val w: W = Simd.fromArray(arr)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 2)); _simdArg0 }
         transmute(Triple(v0, v1, v2))
     }
 
@@ -7080,7 +7079,7 @@ public fun vld3LaneF16(a: ConstPtr, b: Float16x4x3T, lane: Int): Float16x4x3T {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld3LaneF16(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Float16x4x3T))
+    return vld3LaneF16(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -7094,7 +7093,7 @@ public fun vld3qLaneF16(a: ConstPtr, b: Float16x8x3T, lane: Int): Float16x8x3T {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return vld3qLaneF16(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Float16x8x3T))
+    return vld3qLaneF16(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -7108,7 +7107,7 @@ public fun vld3LaneF32(a: ConstPtr, b: Float32x2x3T, lane: Int): Float32x2x3T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return vld3LaneF32(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Float32x2x3T))
+    return vld3LaneF32(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -7122,7 +7121,7 @@ public fun vld3qLaneF32(a: ConstPtr, b: Float32x4x3T, lane: Int): Float32x4x3T {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld3qLaneF32(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Float32x4x3T))
+    return vld3qLaneF32(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -7136,7 +7135,7 @@ public fun vld3LaneS8(a: ConstPtr, b: Int8x8x3T, lane: Int): Int8x8x3T {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return vld3LaneS8(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Int8x8x3T))
+    return vld3LaneS8(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -7150,7 +7149,7 @@ public fun vld3LaneS16(a: ConstPtr, b: Int16x4x3T, lane: Int): Int16x4x3T {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld3LaneS16(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Int16x4x3T))
+    return vld3LaneS16(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -7164,7 +7163,7 @@ public fun vld3qLaneS16(a: ConstPtr, b: Int16x8x3T, lane: Int): Int16x8x3T {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    return vld3qLaneS16(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Int16x8x3T))
+    return vld3qLaneS16(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -7178,7 +7177,7 @@ public fun vld3LaneS32(a: ConstPtr, b: Int32x2x3T, lane: Int): Int32x2x3T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return vld3LaneS32(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Int32x2x3T))
+    return vld3LaneS32(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -7192,7 +7191,7 @@ public fun vld3qLaneS32(a: ConstPtr, b: Int32x4x3T, lane: Int): Int32x4x3T {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld3qLaneS32(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Int32x4x3T))
+    return vld3qLaneS32(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -7411,7 +7410,7 @@ public fun vld3qP16(a: ConstPtr): Poly16x8x3T = transmuteWithLayouts<Int16x8x3T,
  */
 public fun vld4DupF16(a: ConstPtr): Float16x4x4T {
     fun vld4DupF16(ptr: ConstPtr): Float16x4x4T = Float16x4x4T()
-    return vld4DupF16(((a as Any?) as Float16x4x4T))
+    return vld4DupF16(a)
 }
 
 /**
@@ -7422,7 +7421,7 @@ public fun vld4DupF16(a: ConstPtr): Float16x4x4T {
  */
 public fun vld4qDupF16(a: ConstPtr): Float16x8x4T {
     fun vld4qDupF16(ptr: ConstPtr): Float16x8x4T = Float16x8x4T()
-    return vld4qDupF16(((a as Any?) as Float16x8x4T))
+    return vld4qDupF16(a)
 }
 
 /**
@@ -7433,7 +7432,7 @@ public fun vld4qDupF16(a: ConstPtr): Float16x8x4T {
  */
 public fun vld4DupF32(a: ConstPtr): Float32x2x4T {
     fun vld4DupF32(ptr: ConstPtr): Float32x2x4T = Float32x2x4T()
-    return vld4DupF32(((a as Any?) as Float32x2x4T))
+    return vld4DupF32(a)
 }
 
 /**
@@ -7444,7 +7443,7 @@ public fun vld4DupF32(a: ConstPtr): Float32x2x4T {
  */
 public fun vld4qDupF32(a: ConstPtr): Float32x4x4T {
     fun vld4qDupF32(ptr: ConstPtr): Float32x4x4T = Float32x4x4T()
-    return vld4qDupF32(((a as Any?) as Float32x4x4T))
+    return vld4qDupF32(a)
 }
 
 /**
@@ -7455,7 +7454,7 @@ public fun vld4qDupF32(a: ConstPtr): Float32x4x4T {
  */
 public fun vld4DupS8(a: ConstPtr): Int8x8x4T {
     fun vld4DupS8(ptr: ConstPtr): Int8x8x4T = Int8x8x4T()
-    return vld4DupS8(((a as Any?) as Int8x8x4T))
+    return vld4DupS8(a)
 }
 
 /**
@@ -7466,7 +7465,7 @@ public fun vld4DupS8(a: ConstPtr): Int8x8x4T {
  */
 public fun vld4qDupS8(a: ConstPtr): Int8x16x4T {
     fun vld4qDupS8(ptr: ConstPtr): Int8x16x4T = Int8x16x4T()
-    return vld4qDupS8(((a as Any?) as Int8x16x4T))
+    return vld4qDupS8(a)
 }
 
 /**
@@ -7477,7 +7476,7 @@ public fun vld4qDupS8(a: ConstPtr): Int8x16x4T {
  */
 public fun vld4DupS16(a: ConstPtr): Int16x4x4T {
     fun vld4DupS16(ptr: ConstPtr): Int16x4x4T = Int16x4x4T()
-    return vld4DupS16(((a as Any?) as Int16x4x4T))
+    return vld4DupS16(a)
 }
 
 /**
@@ -7488,7 +7487,7 @@ public fun vld4DupS16(a: ConstPtr): Int16x4x4T {
  */
 public fun vld4qDupS16(a: ConstPtr): Int16x8x4T {
     fun vld4qDupS16(ptr: ConstPtr): Int16x8x4T = Int16x8x4T()
-    return vld4qDupS16(((a as Any?) as Int16x8x4T))
+    return vld4qDupS16(a)
 }
 
 /**
@@ -7499,7 +7498,7 @@ public fun vld4qDupS16(a: ConstPtr): Int16x8x4T {
  */
 public fun vld4DupS32(a: ConstPtr): Int32x2x4T {
     fun vld4DupS32(ptr: ConstPtr): Int32x2x4T = Int32x2x4T()
-    return vld4DupS32(((a as Any?) as Int32x2x4T))
+    return vld4DupS32(a)
 }
 
 /**
@@ -7510,7 +7509,7 @@ public fun vld4DupS32(a: ConstPtr): Int32x2x4T {
  */
 public fun vld4qDupS32(a: ConstPtr): Int32x4x4T {
     fun vld4qDupS32(ptr: ConstPtr): Int32x4x4T = Int32x4x4T()
-    return vld4qDupS32(((a as Any?) as Int32x4x4T))
+    return vld4qDupS32(a)
 }
 
 /**
@@ -7521,7 +7520,7 @@ public fun vld4qDupS32(a: ConstPtr): Int32x4x4T {
  */
 public fun vld4DupS64(a: ConstPtr): Int64x1x4T {
     fun vld4DupS64(ptr: ConstPtr): Int64x1x4T = Int64x1x4T()
-    return vld4DupS64(((a as Any?) as Int64x1x4T))
+    return vld4DupS64(a)
 }
 
 /**
@@ -7629,10 +7628,10 @@ public fun vld4qDupP16(a: ConstPtr): Poly16x8x4T = transmuteWithLayouts<Int16x8x
 public fun vld4F16(a: ConstPtr): Float16x4x4T =
     run {
         val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 2 > Unit)
-        val v3: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 3 > Unit)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 2)); _simdArg0 }
+        val v3: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 3)); _simdArg0 }
         transmute(listOf(v0, v1, v2, v3))
     }
 
@@ -7645,10 +7644,10 @@ public fun vld4F16(a: ConstPtr): Float16x4x4T =
 public fun vld4qF16(a: ConstPtr): Float16x8x4T =
     run {
         val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 2 > Unit)
-        val v3: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 3 > Unit)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 2)); _simdArg0 }
+        val v3: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 3)); _simdArg0 }
         transmute(listOf(v0, v1, v2, v3))
     }
 
@@ -7661,10 +7660,10 @@ public fun vld4qF16(a: ConstPtr): Float16x8x4T =
 public fun vld4F32(a: ConstPtr): Float32x2x4T =
     run {
         val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 2 > Unit)
-        val v3: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 3 > Unit)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 2)); _simdArg0 }
+        val v3: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 3)); _simdArg0 }
         transmute(listOf(v0, v1, v2, v3))
     }
 
@@ -7677,10 +7676,10 @@ public fun vld4F32(a: ConstPtr): Float32x2x4T =
 public fun vld4qF32(a: ConstPtr): Float32x4x4T =
     run {
         val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 2 > Unit)
-        val v3: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 3 > Unit)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 2)); _simdArg0 }
+        val v3: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 3)); _simdArg0 }
         transmute(listOf(v0, v1, v2, v3))
     }
 
@@ -7693,10 +7692,10 @@ public fun vld4qF32(a: ConstPtr): Float32x4x4T =
 public fun vld4S8(a: ConstPtr): Int8x8x4T =
     run {
         val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 2 > Unit)
-        val v3: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 3 > Unit)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 2)); _simdArg0 }
+        val v3: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 3)); _simdArg0 }
         transmute(listOf(v0, v1, v2, v3))
     }
 
@@ -7709,10 +7708,10 @@ public fun vld4S8(a: ConstPtr): Int8x8x4T =
 public fun vld4qS8(a: ConstPtr): Int8x16x4T =
     run {
         val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 16, 4, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 16, 4, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 16, 4, 2 > Unit)
-        val v3: V = simdShuffle(w, w, deinterleaveMask, 16, 4, 3 > Unit)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(16, 4, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(16, 4, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(16, 4, 2)); _simdArg0 }
+        val v3: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(16, 4, 3)); _simdArg0 }
         transmute(listOf(v0, v1, v2, v3))
     }
 
@@ -7725,10 +7724,10 @@ public fun vld4qS8(a: ConstPtr): Int8x16x4T =
 public fun vld4S16(a: ConstPtr): Int16x4x4T =
     run {
         val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 2 > Unit)
-        val v3: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 3 > Unit)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 2)); _simdArg0 }
+        val v3: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 3)); _simdArg0 }
         transmute(listOf(v0, v1, v2, v3))
     }
 
@@ -7741,10 +7740,10 @@ public fun vld4S16(a: ConstPtr): Int16x4x4T =
 public fun vld4qS16(a: ConstPtr): Int16x8x4T =
     run {
         val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 2 > Unit)
-        val v3: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 3 > Unit)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 2)); _simdArg0 }
+        val v3: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 3)); _simdArg0 }
         transmute(listOf(v0, v1, v2, v3))
     }
 
@@ -7757,10 +7756,10 @@ public fun vld4qS16(a: ConstPtr): Int16x8x4T =
 public fun vld4S32(a: ConstPtr): Int32x2x4T =
     run {
         val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 2 > Unit)
-        val v3: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 3 > Unit)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 2)); _simdArg0 }
+        val v3: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 3)); _simdArg0 }
         transmute(listOf(v0, v1, v2, v3))
     }
 
@@ -7773,10 +7772,10 @@ public fun vld4S32(a: ConstPtr): Int32x2x4T =
 public fun vld4qS32(a: ConstPtr): Int32x4x4T =
     run {
         val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
-        val v0: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 0 > Unit)
-        val v1: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 1 > Unit)
-        val v2: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 2 > Unit)
-        val v3: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 3 > Unit)
+        val v0: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 0)); _simdArg0 }
+        val v1: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 1)); _simdArg0 }
+        val v2: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 2)); _simdArg0 }
+        val v3: V = run { val _simdArg0 = w; val _simdArg1 = w; val _simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 3)); _simdArg0 }
         transmute(listOf(v0, v1, v2, v3))
     }
 
@@ -7791,7 +7790,7 @@ public fun vld4LaneF16(a: ConstPtr, b: Float16x4x4T, lane: Int): Float16x4x4T {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld4LaneF16(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Float16x4x4T))
+    return vld4LaneF16(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -7805,7 +7804,7 @@ public fun vld4qLaneF16(a: ConstPtr, b: Float16x8x4T, lane: Int): Float16x8x4T {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return vld4qLaneF16(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Float16x8x4T))
+    return vld4qLaneF16(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -7819,7 +7818,7 @@ public fun vld4LaneF32(a: ConstPtr, b: Float32x2x4T, lane: Int): Float32x2x4T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return vld4LaneF32(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Float32x2x4T))
+    return vld4LaneF32(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -7833,7 +7832,7 @@ public fun vld4qLaneF32(a: ConstPtr, b: Float32x4x4T, lane: Int): Float32x4x4T {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld4qLaneF32(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Float32x4x4T))
+    return vld4qLaneF32(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -7847,7 +7846,7 @@ public fun vld4LaneS8(a: ConstPtr, b: Int8x8x4T, lane: Int): Int8x8x4T {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return vld4LaneS8(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Int8x8x4T))
+    return vld4LaneS8(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -7861,7 +7860,7 @@ public fun vld4LaneS16(a: ConstPtr, b: Int16x4x4T, lane: Int): Int16x4x4T {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld4LaneS16(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Int16x4x4T))
+    return vld4LaneS16(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -7875,7 +7874,7 @@ public fun vld4qLaneS16(a: ConstPtr, b: Int16x8x4T, lane: Int): Int16x8x4T {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return vld4qLaneS16(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Int16x8x4T))
+    return vld4qLaneS16(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -7889,7 +7888,7 @@ public fun vld4LaneS32(a: ConstPtr, b: Int32x2x4T, lane: Int): Int32x2x4T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return vld4LaneS32(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Int32x2x4T))
+    return vld4LaneS32(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -7903,7 +7902,7 @@ public fun vld4qLaneS32(a: ConstPtr, b: Int32x4x4T, lane: Int): Int32x4x4T {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld4qLaneS32(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Int32x4x4T))
+    return vld4qLaneS32(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -14943,229 +14942,229 @@ public fun vreinterpretqP128P64(a: Poly64x2T): P128 = transmuteWithLayouts<Poly6
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev16P8)
  */
-public fun vrev16P8(a: Poly8x8T): Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0, 3, 2, 5, 4, 7, 6)); _simdArg0 }
+public fun vrev16P8(a: Poly8x8T): Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 3u, 2u, 5u, 4u, 7u, 6u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev16S8)
  */
-public fun vrev16S8(a: Int8x8T): Int8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0, 3, 2, 5, 4, 7, 6)); _simdArg0 }
+public fun vrev16S8(a: Int8x8T): Int8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 3u, 2u, 5u, 4u, 7u, 6u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev16U8)
  */
-public fun vrev16U8(a: Uint8x8T): Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0, 3, 2, 5, 4, 7, 6)); _simdArg0 }
+public fun vrev16U8(a: Uint8x8T): Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 3u, 2u, 5u, 4u, 7u, 6u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev16qP8)
  */
-public fun vrev16qP8(a: Poly8x16T): Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14)); _simdArg0 }
+public fun vrev16qP8(a: Poly8x16T): Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 3u, 2u, 5u, 4u, 7u, 6u, 9u, 8u, 11u, 10u, 13u, 12u, 15u, 14u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev16qS8)
  */
-public fun vrev16qS8(a: Int8x16T): Int8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14)); _simdArg0 }
+public fun vrev16qS8(a: Int8x16T): Int8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 3u, 2u, 5u, 4u, 7u, 6u, 9u, 8u, 11u, 10u, 13u, 12u, 15u, 14u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev16qU8)
  */
-public fun vrev16qU8(a: Uint8x16T): Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14)); _simdArg0 }
+public fun vrev16qU8(a: Uint8x16T): Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 3u, 2u, 5u, 4u, 7u, 6u, 9u, 8u, 11u, 10u, 13u, 12u, 15u, 14u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev32P16)
  */
-public fun vrev32P16(a: Poly16x4T): Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0, 3, 2)); _simdArg0 }
+public fun vrev32P16(a: Poly16x4T): Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 3u, 2u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev32P8)
  */
-public fun vrev32P8(a: Poly8x8T): Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0, 7, 6, 5, 4)); _simdArg0 }
+public fun vrev32P8(a: Poly8x8T): Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u, 7u, 6u, 5u, 4u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev32S16)
  */
-public fun vrev32S16(a: Int16x4T): Int16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0, 3, 2)); _simdArg0 }
+public fun vrev32S16(a: Int16x4T): Int16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 3u, 2u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev32S8)
  */
-public fun vrev32S8(a: Int8x8T): Int8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0, 7, 6, 5, 4)); _simdArg0 }
+public fun vrev32S8(a: Int8x8T): Int8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u, 7u, 6u, 5u, 4u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev32U16)
  */
-public fun vrev32U16(a: Uint16x4T): Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0, 3, 2)); _simdArg0 }
+public fun vrev32U16(a: Uint16x4T): Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 3u, 2u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev32U8)
  */
-public fun vrev32U8(a: Uint8x8T): Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0, 7, 6, 5, 4)); _simdArg0 }
+public fun vrev32U8(a: Uint8x8T): Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u, 7u, 6u, 5u, 4u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev32qP16)
  */
-public fun vrev32qP16(a: Poly16x8T): Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0, 3, 2, 5, 4, 7, 6)); _simdArg0 }
+public fun vrev32qP16(a: Poly16x8T): Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 3u, 2u, 5u, 4u, 7u, 6u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev32qP8)
  */
-public fun vrev32qP8(a: Poly8x16T): Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12)); _simdArg0 }
+public fun vrev32qP8(a: Poly8x16T): Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u, 7u, 6u, 5u, 4u, 11u, 10u, 9u, 8u, 15u, 14u, 13u, 12u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev32qS16)
  */
-public fun vrev32qS16(a: Int16x8T): Int16x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0, 3, 2, 5, 4, 7, 6)); _simdArg0 }
+public fun vrev32qS16(a: Int16x8T): Int16x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 3u, 2u, 5u, 4u, 7u, 6u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev32qS8)
  */
-public fun vrev32qS8(a: Int8x16T): Int8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12)); _simdArg0 }
+public fun vrev32qS8(a: Int8x16T): Int8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u, 7u, 6u, 5u, 4u, 11u, 10u, 9u, 8u, 15u, 14u, 13u, 12u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev32qU16)
  */
-public fun vrev32qU16(a: Uint16x8T): Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0, 3, 2, 5, 4, 7, 6)); _simdArg0 }
+public fun vrev32qU16(a: Uint16x8T): Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 3u, 2u, 5u, 4u, 7u, 6u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev32qU8)
  */
-public fun vrev32qU8(a: Uint8x16T): Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12)); _simdArg0 }
+public fun vrev32qU8(a: Uint8x16T): Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u, 7u, 6u, 5u, 4u, 11u, 10u, 9u, 8u, 15u, 14u, 13u, 12u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64F32)
  */
-public fun vrev64F32(a: Float32x2T): Float32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0)); _simdArg0 }
+public fun vrev64F32(a: Float32x2T): Float32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64P16)
  */
-public fun vrev64P16(a: Poly16x4T): Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0)); _simdArg0 }
+public fun vrev64P16(a: Poly16x4T): Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64P8)
  */
-public fun vrev64P8(a: Poly8x8T): Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(7, 6, 5, 4, 3, 2, 1, 0)); _simdArg0 }
+public fun vrev64P8(a: Poly8x8T): Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(7u, 6u, 5u, 4u, 3u, 2u, 1u, 0u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64S16)
  */
-public fun vrev64S16(a: Int16x4T): Int16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0)); _simdArg0 }
+public fun vrev64S16(a: Int16x4T): Int16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64S32)
  */
-public fun vrev64S32(a: Int32x2T): Int32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0)); _simdArg0 }
+public fun vrev64S32(a: Int32x2T): Int32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64S8)
  */
-public fun vrev64S8(a: Int8x8T): Int8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(7, 6, 5, 4, 3, 2, 1, 0)); _simdArg0 }
+public fun vrev64S8(a: Int8x8T): Int8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(7u, 6u, 5u, 4u, 3u, 2u, 1u, 0u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64U16)
  */
-public fun vrev64U16(a: Uint16x4T): Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0)); _simdArg0 }
+public fun vrev64U16(a: Uint16x4T): Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64U32)
  */
-public fun vrev64U32(a: Uint32x2T): Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0)); _simdArg0 }
+public fun vrev64U32(a: Uint32x2T): Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64U8)
  */
-public fun vrev64U8(a: Uint8x8T): Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(7, 6, 5, 4, 3, 2, 1, 0)); _simdArg0 }
+public fun vrev64U8(a: Uint8x8T): Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(7u, 6u, 5u, 4u, 3u, 2u, 1u, 0u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64qF32)
  */
-public fun vrev64qF32(a: Float32x4T): Float32x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0, 3, 2)); _simdArg0 }
+public fun vrev64qF32(a: Float32x4T): Float32x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 3u, 2u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64qP16)
  */
-public fun vrev64qP16(a: Poly16x8T): Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0, 7, 6, 5, 4)); _simdArg0 }
+public fun vrev64qP16(a: Poly16x8T): Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u, 7u, 6u, 5u, 4u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64qP8)
  */
-public fun vrev64qP8(a: Poly8x16T): Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(7, 6, 5, 4, 3, 2, 1, 0, 15, 14, 13, 12, 11, 10, 9, 8)); _simdArg0 }
+public fun vrev64qP8(a: Poly8x16T): Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(7u, 6u, 5u, 4u, 3u, 2u, 1u, 0u, 15u, 14u, 13u, 12u, 11u, 10u, 9u, 8u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64qS16)
  */
-public fun vrev64qS16(a: Int16x8T): Int16x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0, 7, 6, 5, 4)); _simdArg0 }
+public fun vrev64qS16(a: Int16x8T): Int16x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u, 7u, 6u, 5u, 4u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64qS32)
  */
-public fun vrev64qS32(a: Int32x4T): Int32x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0, 3, 2)); _simdArg0 }
+public fun vrev64qS32(a: Int32x4T): Int32x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 3u, 2u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64qS8)
  */
-public fun vrev64qS8(a: Int8x16T): Int8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(7, 6, 5, 4, 3, 2, 1, 0, 15, 14, 13, 12, 11, 10, 9, 8)); _simdArg0 }
+public fun vrev64qS8(a: Int8x16T): Int8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(7u, 6u, 5u, 4u, 3u, 2u, 1u, 0u, 15u, 14u, 13u, 12u, 11u, 10u, 9u, 8u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64qU16)
  */
-public fun vrev64qU16(a: Uint16x8T): Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0, 7, 6, 5, 4)); _simdArg0 }
+public fun vrev64qU16(a: Uint16x8T): Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u, 7u, 6u, 5u, 4u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64qU32)
  */
-public fun vrev64qU32(a: Uint32x4T): Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0, 3, 2)); _simdArg0 }
+public fun vrev64qU32(a: Uint32x4T): Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 3u, 2u)); _simdArg0 }
 
 /**
  * Reversing vector elements (swap endianness)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64qU8)
  */
-public fun vrev64qU8(a: Uint8x16T): Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(7, 6, 5, 4, 3, 2, 1, 0, 15, 14, 13, 12, 11, 10, 9, 8)); _simdArg0 }
+public fun vrev64qU8(a: Uint8x16T): Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(7u, 6u, 5u, 4u, 3u, 2u, 1u, 0u, 15u, 14u, 13u, 12u, 11u, 10u, 9u, 8u)); _simdArg0 }
 
 /**
  * Reverse elements in 64-bit doublewords
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64F16)
  */
-public fun vrev64F16(a: Float16x4T): Float16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0)); _simdArg0 }
+public fun vrev64F16(a: Float16x4T): Float16x4T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u)); _simdArg0 }
 
 /**
  * Reverse elements in 64-bit doublewords
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrev64qF16)
  */
-public fun vrev64qF16(a: Float16x8T): Float16x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0, 7, 6, 5, 4)); _simdArg0 }
+public fun vrev64qF16(a: Float16x8T): Float16x8T = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u, 7u, 6u, 5u, 4u)); _simdArg0 }
 
 /**
  * Rounding halving add
@@ -18449,7 +18448,7 @@ public fun vst1qLaneP64(a: MutPtr, b: Poly64x2T, lane: Int) {
  */
 public fun vst2F16(a: MutPtr, b: Float16x4x2T) {
     fun vst2F16(a1: Float16x4T, b1: Float16x4T, ptr: MutPtr) {}
-    vst2F16(b.first, b.second, ((a as Any?) as Unit))
+    vst2F16(b.first, b.second, a)
 }
 
 /**
@@ -18460,7 +18459,7 @@ public fun vst2F16(a: MutPtr, b: Float16x4x2T) {
  */
 public fun vst2qF16(a: MutPtr, b: Float16x8x2T) {
     fun vst2qF16(a1: Float16x8T, b1: Float16x8T, ptr: MutPtr) {}
-    vst2qF16(b.first, b.second, ((a as Any?) as Unit))
+    vst2qF16(b.first, b.second, a)
 }
 
 /**
@@ -18471,7 +18470,7 @@ public fun vst2qF16(a: MutPtr, b: Float16x8x2T) {
  */
 public fun vst2F32(a: MutPtr, b: Float32x2x2T) {
     run {
-        val w: W = simdShuffle(b.first, b.second, interleaveMask, 2, 2, 2, 2 > Unit)
+        val w: W = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(interleaveMask(2 * 2, 2, 2)); _simdArg0 }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -18484,7 +18483,7 @@ public fun vst2F32(a: MutPtr, b: Float32x2x2T) {
  */
 public fun vst2qF32(a: MutPtr, b: Float32x4x2T) {
     run {
-        val w: W = simdShuffle(b.first, b.second, interleaveMask, 4, 2, 4, 2 > Unit)
+        val w: W = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(interleaveMask(4 * 2, 4, 2)); _simdArg0 }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -18497,7 +18496,7 @@ public fun vst2qF32(a: MutPtr, b: Float32x4x2T) {
  */
 public fun vst2S8(a: MutPtr, b: Int8x8x2T) {
     run {
-        val w: W = simdShuffle(b.first, b.second, interleaveMask, 8, 2, 8, 2 > Unit)
+        val w: W = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(interleaveMask(8 * 2, 8, 2)); _simdArg0 }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -18510,7 +18509,7 @@ public fun vst2S8(a: MutPtr, b: Int8x8x2T) {
  */
 public fun vst2qS8(a: MutPtr, b: Int8x16x2T) {
     run {
-        val w: W = simdShuffle(b.first, b.second, interleaveMask, 16, 2, 16, 2 > Unit)
+        val w: W = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(interleaveMask(16 * 2, 16, 2)); _simdArg0 }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -18523,7 +18522,7 @@ public fun vst2qS8(a: MutPtr, b: Int8x16x2T) {
  */
 public fun vst2S16(a: MutPtr, b: Int16x4x2T) {
     run {
-        val w: W = simdShuffle(b.first, b.second, interleaveMask, 4, 2, 4, 2 > Unit)
+        val w: W = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(interleaveMask(4 * 2, 4, 2)); _simdArg0 }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -18536,7 +18535,7 @@ public fun vst2S16(a: MutPtr, b: Int16x4x2T) {
  */
 public fun vst2qS16(a: MutPtr, b: Int16x8x2T) {
     run {
-        val w: W = simdShuffle(b.first, b.second, interleaveMask, 8, 2, 8, 2 > Unit)
+        val w: W = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(interleaveMask(8 * 2, 8, 2)); _simdArg0 }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -18549,7 +18548,7 @@ public fun vst2qS16(a: MutPtr, b: Int16x8x2T) {
  */
 public fun vst2S32(a: MutPtr, b: Int32x2x2T) {
     run {
-        val w: W = simdShuffle(b.first, b.second, interleaveMask, 2, 2, 2, 2 > Unit)
+        val w: W = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(interleaveMask(2 * 2, 2, 2)); _simdArg0 }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -18562,7 +18561,7 @@ public fun vst2S32(a: MutPtr, b: Int32x2x2T) {
  */
 public fun vst2qS32(a: MutPtr, b: Int32x4x2T) {
     run {
-        val w: W = simdShuffle(b.first, b.second, interleaveMask, 4, 2, 4, 2 > Unit)
+        val w: W = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(interleaveMask(4 * 2, 4, 2)); _simdArg0 }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -18578,7 +18577,7 @@ public fun vst2LaneF16(a: MutPtr, b: Float16x4x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst2LaneF16(b.first, b.second, lane.toLong(), ((a as Any?) as Unit))
+    vst2LaneF16(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -18592,7 +18591,7 @@ public fun vst2qLaneF16(a: MutPtr, b: Float16x8x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst2qLaneF16(b.first, b.second, lane.toLong(), ((a as Any?) as Unit))
+    vst2qLaneF16(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -18606,7 +18605,7 @@ public fun vst2LaneF32(a: MutPtr, b: Float32x2x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst2LaneF32(b.first, b.second, lane.toLong(), ((a as Any?) as Unit))
+    vst2LaneF32(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -18620,7 +18619,7 @@ public fun vst2qLaneF32(a: MutPtr, b: Float32x4x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst2qLaneF32(b.first, b.second, lane.toLong(), ((a as Any?) as Unit))
+    vst2qLaneF32(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -18634,7 +18633,7 @@ public fun vst2LaneS8(a: MutPtr, b: Int8x8x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst2LaneS8(b.first, b.second, lane.toLong(), ((a as Any?) as Unit))
+    vst2LaneS8(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -18648,7 +18647,7 @@ public fun vst2LaneS16(a: MutPtr, b: Int16x4x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst2LaneS16(b.first, b.second, lane.toLong(), ((a as Any?) as Unit))
+    vst2LaneS16(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -18662,7 +18661,7 @@ public fun vst2qLaneS16(a: MutPtr, b: Int16x8x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst2qLaneS16(b.first, b.second, lane.toLong(), ((a as Any?) as Unit))
+    vst2qLaneS16(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -18676,7 +18675,7 @@ public fun vst2LaneS32(a: MutPtr, b: Int32x2x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst2LaneS32(b.first, b.second, lane.toLong(), ((a as Any?) as Unit))
+    vst2LaneS32(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -18690,7 +18689,7 @@ public fun vst2qLaneS32(a: MutPtr, b: Int32x4x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst2qLaneS32(b.first, b.second, lane.toLong(), ((a as Any?) as Unit))
+    vst2qLaneS32(b.first, b.second, lane.toLong(), a)
 }
 
 /**
@@ -18935,7 +18934,7 @@ public fun vst2qP16(a: MutPtr, b: Poly16x8x2T) {
  */
 public fun vst3F16(a: MutPtr, b: Float16x4x3T) {
     fun vst3F16(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, ptr: MutPtr) {}
-    vst3F16(b.first, b.second, b.third, ((a as Any?) as Unit))
+    vst3F16(b.first, b.second, b.third, a)
 }
 
 /**
@@ -18946,7 +18945,7 @@ public fun vst3F16(a: MutPtr, b: Float16x4x3T) {
  */
 public fun vst3qF16(a: MutPtr, b: Float16x8x3T) {
     fun vst3qF16(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, ptr: MutPtr) {}
-    vst3qF16(b.first, b.second, b.third, ((a as Any?) as Unit))
+    vst3qF16(b.first, b.second, b.third, a)
 }
 
 /**
@@ -18959,7 +18958,7 @@ public fun vst3F32(a: MutPtr, b: Float32x2x3T) {
     run {
         val v0v1: Simd<Float> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
         val v2v2: Simd<Float> = run { val _simdArg0 = b.third; val _simdArg1 = b.third; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
-        val w: W = simdShuffle(v0v1, v2v2, interleaveMask, 2, 3, 2, 3 > Unit)
+        val w: W = run { val _simdArg0 = v0v1; val _simdArg1 = v2v2; val _simdArg2 = SimdShuffleIdx(interleaveMask(2 * 3, 2, 3)); _simdArg0 }
         val arr: FloatArray = transmuteCopy(w)
         (PrimitiveArrayLayouts.floatArray((2 * 3).toInt())).writeNative((MutPtr((a).rawAddress)).rawAddress, arr)
     }
@@ -18975,7 +18974,7 @@ public fun vst3qF32(a: MutPtr, b: Float32x4x3T) {
     run {
         val v0v1: Simd<Float> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val v2v2: Simd<Float> = run { val _simdArg0 = b.third; val _simdArg1 = b.third; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
-        val w: W = simdShuffle(v0v1, v2v2, interleaveMask, 4, 3, 4, 3 > Unit)
+        val w: W = run { val _simdArg0 = v0v1; val _simdArg1 = v2v2; val _simdArg2 = SimdShuffleIdx(interleaveMask(4 * 3, 4, 3)); _simdArg0 }
         val arr: FloatArray = transmuteCopy(w)
         (PrimitiveArrayLayouts.floatArray((4 * 3).toInt())).writeNative((MutPtr((a).rawAddress)).rawAddress, arr)
     }
@@ -18991,7 +18990,7 @@ public fun vst3S8(a: MutPtr, b: Int8x8x3T) {
     run {
         val v0v1: Simd<Byte> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(8 * 2)); _simdArg0 }
         val v2v2: Simd<Byte> = run { val _simdArg0 = b.third; val _simdArg1 = b.third; val _simdArg2 = SimdShuffleIdx(identity(8 * 2)); _simdArg0 }
-        val w: W = simdShuffle(v0v1, v2v2, interleaveMask, 8, 3, 8, 3 > Unit)
+        val w: W = run { val _simdArg0 = v0v1; val _simdArg1 = v2v2; val _simdArg2 = SimdShuffleIdx(interleaveMask(8 * 3, 8, 3)); _simdArg0 }
         val arr: ByteArray = transmuteCopy(w)
         (PrimitiveArrayLayouts.byteArray((8 * 3).toInt())).writeNative((MutPtr((a).rawAddress)).rawAddress, arr)
     }
@@ -19007,7 +19006,7 @@ public fun vst3qS8(a: MutPtr, b: Int8x16x3T) {
     run {
         val v0v1: Simd<Byte> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(16 * 2)); _simdArg0 }
         val v2v2: Simd<Byte> = run { val _simdArg0 = b.third; val _simdArg1 = b.third; val _simdArg2 = SimdShuffleIdx(identity(16 * 2)); _simdArg0 }
-        val w: W = simdShuffle(v0v1, v2v2, interleaveMask, 16, 3, 16, 3 > Unit)
+        val w: W = run { val _simdArg0 = v0v1; val _simdArg1 = v2v2; val _simdArg2 = SimdShuffleIdx(interleaveMask(16 * 3, 16, 3)); _simdArg0 }
         val arr: ByteArray = transmuteCopy(w)
         (PrimitiveArrayLayouts.byteArray((16 * 3).toInt())).writeNative((MutPtr((a).rawAddress)).rawAddress, arr)
     }
@@ -19023,7 +19022,7 @@ public fun vst3S16(a: MutPtr, b: Int16x4x3T) {
     run {
         val v0v1: Simd<Short> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val v2v2: Simd<Short> = run { val _simdArg0 = b.third; val _simdArg1 = b.third; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
-        val w: W = simdShuffle(v0v1, v2v2, interleaveMask, 4, 3, 4, 3 > Unit)
+        val w: W = run { val _simdArg0 = v0v1; val _simdArg1 = v2v2; val _simdArg2 = SimdShuffleIdx(interleaveMask(4 * 3, 4, 3)); _simdArg0 }
         val arr: ShortArray = transmuteCopy(w)
         (PrimitiveArrayLayouts.shortArray((4 * 3).toInt())).writeNative((MutPtr((a).rawAddress)).rawAddress, arr)
     }
@@ -19039,7 +19038,7 @@ public fun vst3qS16(a: MutPtr, b: Int16x8x3T) {
     run {
         val v0v1: Simd<Short> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(8 * 2)); _simdArg0 }
         val v2v2: Simd<Short> = run { val _simdArg0 = b.third; val _simdArg1 = b.third; val _simdArg2 = SimdShuffleIdx(identity(8 * 2)); _simdArg0 }
-        val w: W = simdShuffle(v0v1, v2v2, interleaveMask, 8, 3, 8, 3 > Unit)
+        val w: W = run { val _simdArg0 = v0v1; val _simdArg1 = v2v2; val _simdArg2 = SimdShuffleIdx(interleaveMask(8 * 3, 8, 3)); _simdArg0 }
         val arr: ShortArray = transmuteCopy(w)
         (PrimitiveArrayLayouts.shortArray((8 * 3).toInt())).writeNative((MutPtr((a).rawAddress)).rawAddress, arr)
     }
@@ -19055,7 +19054,7 @@ public fun vst3S32(a: MutPtr, b: Int32x2x3T) {
     run {
         val v0v1: Simd<Int> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
         val v2v2: Simd<Int> = run { val _simdArg0 = b.third; val _simdArg1 = b.third; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
-        val w: W = simdShuffle(v0v1, v2v2, interleaveMask, 2, 3, 2, 3 > Unit)
+        val w: W = run { val _simdArg0 = v0v1; val _simdArg1 = v2v2; val _simdArg2 = SimdShuffleIdx(interleaveMask(2 * 3, 2, 3)); _simdArg0 }
         val arr: IntArray = transmuteCopy(w)
         (PrimitiveArrayLayouts.intArray((2 * 3).toInt())).writeNative((MutPtr((a).rawAddress)).rawAddress, arr)
     }
@@ -19071,7 +19070,7 @@ public fun vst3qS32(a: MutPtr, b: Int32x4x3T) {
     run {
         val v0v1: Simd<Int> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val v2v2: Simd<Int> = run { val _simdArg0 = b.third; val _simdArg1 = b.third; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
-        val w: W = simdShuffle(v0v1, v2v2, interleaveMask, 4, 3, 4, 3 > Unit)
+        val w: W = run { val _simdArg0 = v0v1; val _simdArg1 = v2v2; val _simdArg2 = SimdShuffleIdx(interleaveMask(4 * 3, 4, 3)); _simdArg0 }
         val arr: IntArray = transmuteCopy(w)
         (PrimitiveArrayLayouts.intArray((4 * 3).toInt())).writeNative((MutPtr((a).rawAddress)).rawAddress, arr)
     }
@@ -19088,7 +19087,7 @@ public fun vst3LaneF16(a: MutPtr, b: Float16x4x3T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst3LaneF16(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Unit))
+    vst3LaneF16(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -19102,7 +19101,7 @@ public fun vst3qLaneF16(a: MutPtr, b: Float16x8x3T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst3qLaneF16(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Unit))
+    vst3qLaneF16(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -19116,7 +19115,7 @@ public fun vst3LaneF32(a: MutPtr, b: Float32x2x3T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst3LaneF32(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Unit))
+    vst3LaneF32(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -19130,7 +19129,7 @@ public fun vst3qLaneF32(a: MutPtr, b: Float32x4x3T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst3qLaneF32(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Unit))
+    vst3qLaneF32(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -19144,7 +19143,7 @@ public fun vst3LaneS8(a: MutPtr, b: Int8x8x3T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst3LaneS8(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Unit))
+    vst3LaneS8(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -19158,7 +19157,7 @@ public fun vst3LaneS16(a: MutPtr, b: Int16x4x3T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst3LaneS16(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Unit))
+    vst3LaneS16(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -19172,7 +19171,7 @@ public fun vst3qLaneS16(a: MutPtr, b: Int16x8x3T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst3qLaneS16(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Unit))
+    vst3qLaneS16(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -19186,7 +19185,7 @@ public fun vst3LaneS32(a: MutPtr, b: Int32x2x3T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst3LaneS32(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Unit))
+    vst3LaneS32(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -19200,7 +19199,7 @@ public fun vst3qLaneS32(a: MutPtr, b: Int32x4x3T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst3qLaneS32(b.first, b.second, b.third, lane.toLong(), ((a as Any?) as Unit))
+    vst3qLaneS32(b.first, b.second, b.third, lane.toLong(), a)
 }
 
 /**
@@ -19445,7 +19444,7 @@ public fun vst3qP16(a: MutPtr, b: Poly16x8x3T) {
  */
 public fun vst4F16(a: MutPtr, b: Float16x4x4T) {
     fun vst4F16(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, d: Float16x4T, ptr: MutPtr) {}
-    vst4F16(b.first, b.second, b.third, b.field3, ((a as Any?) as Unit))
+    vst4F16(b.first, b.second, b.third, b.field3, a)
 }
 
 /**
@@ -19456,7 +19455,7 @@ public fun vst4F16(a: MutPtr, b: Float16x4x4T) {
  */
 public fun vst4qF16(a: MutPtr, b: Float16x8x4T) {
     fun vst4qF16(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, d: Float16x8T, ptr: MutPtr) {}
-    vst4qF16(b.first, b.second, b.third, b.field3, ((a as Any?) as Unit))
+    vst4qF16(b.first, b.second, b.third, b.field3, a)
 }
 
 /**
@@ -19469,7 +19468,7 @@ public fun vst4F32(a: MutPtr, b: Float32x2x4T) {
     run {
         val v0v1: Simd<Float> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
         val v2v3: Simd<Float> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
-        val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 2, 4, 2, 4 > Unit)
+        val w: W = run { val _simdArg0 = v0v1; val _simdArg1 = v2v3; val _simdArg2 = SimdShuffleIdx(interleaveMask(2 * 4, 2, 4)); _simdArg0 }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -19484,7 +19483,7 @@ public fun vst4qF32(a: MutPtr, b: Float32x4x4T) {
     run {
         val v0v1: Simd<Float> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val v2v3: Simd<Float> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
-        val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 4, 4, 4, 4 > Unit)
+        val w: W = run { val _simdArg0 = v0v1; val _simdArg1 = v2v3; val _simdArg2 = SimdShuffleIdx(interleaveMask(4 * 4, 4, 4)); _simdArg0 }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -19499,7 +19498,7 @@ public fun vst4S8(a: MutPtr, b: Int8x8x4T) {
     run {
         val v0v1: Simd<Byte> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(8 * 2)); _simdArg0 }
         val v2v3: Simd<Byte> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(8 * 2)); _simdArg0 }
-        val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 8, 4, 8, 4 > Unit)
+        val w: W = run { val _simdArg0 = v0v1; val _simdArg1 = v2v3; val _simdArg2 = SimdShuffleIdx(interleaveMask(8 * 4, 8, 4)); _simdArg0 }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -19514,7 +19513,7 @@ public fun vst4qS8(a: MutPtr, b: Int8x16x4T) {
     run {
         val v0v1: Simd<Byte> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(16 * 2)); _simdArg0 }
         val v2v3: Simd<Byte> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(16 * 2)); _simdArg0 }
-        val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 16, 4, 16, 4 > Unit)
+        val w: W = run { val _simdArg0 = v0v1; val _simdArg1 = v2v3; val _simdArg2 = SimdShuffleIdx(interleaveMask(16 * 4, 16, 4)); _simdArg0 }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -19529,7 +19528,7 @@ public fun vst4S16(a: MutPtr, b: Int16x4x4T) {
     run {
         val v0v1: Simd<Short> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val v2v3: Simd<Short> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
-        val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 4, 4, 4, 4 > Unit)
+        val w: W = run { val _simdArg0 = v0v1; val _simdArg1 = v2v3; val _simdArg2 = SimdShuffleIdx(interleaveMask(4 * 4, 4, 4)); _simdArg0 }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -19544,7 +19543,7 @@ public fun vst4qS16(a: MutPtr, b: Int16x8x4T) {
     run {
         val v0v1: Simd<Short> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(8 * 2)); _simdArg0 }
         val v2v3: Simd<Short> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(8 * 2)); _simdArg0 }
-        val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 8, 4, 8, 4 > Unit)
+        val w: W = run { val _simdArg0 = v0v1; val _simdArg1 = v2v3; val _simdArg2 = SimdShuffleIdx(interleaveMask(8 * 4, 8, 4)); _simdArg0 }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -19559,7 +19558,7 @@ public fun vst4S32(a: MutPtr, b: Int32x2x4T) {
     run {
         val v0v1: Simd<Int> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
         val v2v3: Simd<Int> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
-        val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 2, 4, 2, 4 > Unit)
+        val w: W = run { val _simdArg0 = v0v1; val _simdArg1 = v2v3; val _simdArg2 = SimdShuffleIdx(interleaveMask(2 * 4, 2, 4)); _simdArg0 }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -19574,7 +19573,7 @@ public fun vst4qS32(a: MutPtr, b: Int32x4x4T) {
     run {
         val v0v1: Simd<Int> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val v2v3: Simd<Int> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
-        val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 4, 4, 4, 4 > Unit)
+        val w: W = run { val _simdArg0 = v0v1; val _simdArg1 = v2v3; val _simdArg2 = SimdShuffleIdx(interleaveMask(4 * 4, 4, 4)); _simdArg0 }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -19590,7 +19589,7 @@ public fun vst4LaneF16(a: MutPtr, b: Float16x4x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst4LaneF16(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Unit))
+    vst4LaneF16(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -19604,7 +19603,7 @@ public fun vst4qLaneF16(a: MutPtr, b: Float16x8x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst4qLaneF16(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Unit))
+    vst4qLaneF16(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -19618,7 +19617,7 @@ public fun vst4LaneF32(a: MutPtr, b: Float32x2x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst4LaneF32(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Unit))
+    vst4LaneF32(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -19632,7 +19631,7 @@ public fun vst4qLaneF32(a: MutPtr, b: Float32x4x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst4qLaneF32(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Unit))
+    vst4qLaneF32(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -19646,7 +19645,7 @@ public fun vst4LaneS8(a: MutPtr, b: Int8x8x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst4LaneS8(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Unit))
+    vst4LaneS8(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -19660,7 +19659,7 @@ public fun vst4LaneS16(a: MutPtr, b: Int16x4x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst4LaneS16(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Unit))
+    vst4LaneS16(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -19674,7 +19673,7 @@ public fun vst4qLaneS16(a: MutPtr, b: Int16x8x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst4qLaneS16(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Unit))
+    vst4qLaneS16(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -19688,7 +19687,7 @@ public fun vst4LaneS32(a: MutPtr, b: Int32x2x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst4LaneS32(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Unit))
+    vst4LaneS32(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -19702,7 +19701,7 @@ public fun vst4qLaneS32(a: MutPtr, b: Int32x4x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst4qLaneS32(b.first, b.second, b.third, b.field3, lane.toLong(), ((a as Any?) as Unit))
+    vst4qLaneS32(b.first, b.second, b.third, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -20129,7 +20128,7 @@ public fun vsubhnHighU64(a: Uint32x2T, b: Uint64x2T, c: Uint64x2T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsubhnS16)
  */
 public fun vsubhnS16(a: Int16x8T, b: Int16x8T): Int8x8T {
-    val c: I16x8 = i16x8.new(8, 8, 8, 8, 8, 8, 8, 8)
+    val c: I16x8 = Simd<Short>(listOf(8.toShort(), 8.toShort(), 8.toShort(), 8.toShort(), 8.toShort(), 8.toShort(), 8.toShort(), 8.toShort()))
     return run { val _simdArg0 = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }; val _simdArg1 = transmuteWithLayouts<I16x8, Int8x8T>(c, UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<Int8x8T>()); _simdArg0 }; _simdArg0 }
 }
 
@@ -20138,7 +20137,7 @@ public fun vsubhnS16(a: Int16x8T, b: Int16x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsubhnS32)
  */
 public fun vsubhnS32(a: Int32x4T, b: Int32x4T): Int16x4T {
-    val c: I32x4 = i32x4.new(16, 16, 16, 16)
+    val c: I32x4 = Simd<Int>(listOf(16, 16, 16, 16))
     return run { val _simdArg0 = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }; val _simdArg1 = transmuteWithLayouts<I32x4, Int16x4T>(c, UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<Int16x4T>()); _simdArg0 }; _simdArg0 }
 }
 
@@ -20147,7 +20146,7 @@ public fun vsubhnS32(a: Int32x4T, b: Int32x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsubhnS64)
  */
 public fun vsubhnS64(a: Int64x2T, b: Int64x2T): Int32x2T {
-    val c: I64x2 = i64x2.new(32, 32)
+    val c: I64x2 = Simd<Long>(listOf(32L, 32L))
     return run { val _simdArg0 = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }; val _simdArg1 = transmuteWithLayouts<I64x2, Int32x2T>(c, UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<Int32x2T>()); _simdArg0 }; _simdArg0 }
 }
 
@@ -20156,7 +20155,7 @@ public fun vsubhnS64(a: Int64x2T, b: Int64x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsubhnU16)
  */
 public fun vsubhnU16(a: Uint16x8T, b: Uint16x8T): Uint8x8T {
-    val c: U16x8 = u16x8.new(8, 8, 8, 8, 8, 8, 8, 8)
+    val c: U16x8 = Simd<UShort>(listOf(8u.toUShort(), 8u.toUShort(), 8u.toUShort(), 8u.toUShort(), 8u.toUShort(), 8u.toUShort(), 8u.toUShort(), 8u.toUShort()))
     return run { val _simdArg0 = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }; val _simdArg1 = transmuteWithLayouts<U16x8, Uint8x8T>(c, UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<Uint8x8T>()); _simdArg0 }; _simdArg0 }
 }
 
@@ -20165,7 +20164,7 @@ public fun vsubhnU16(a: Uint16x8T, b: Uint16x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsubhnU32)
  */
 public fun vsubhnU32(a: Uint32x4T, b: Uint32x4T): Uint16x4T {
-    val c: U32x4 = u32x4.new(16, 16, 16, 16)
+    val c: U32x4 = Simd<UInt>(listOf(16u, 16u, 16u, 16u))
     return run { val _simdArg0 = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }; val _simdArg1 = transmuteWithLayouts<U32x4, Uint16x4T>(c, UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<Uint16x4T>()); _simdArg0 }; _simdArg0 }
 }
 
@@ -20174,7 +20173,7 @@ public fun vsubhnU32(a: Uint32x4T, b: Uint32x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsubhnU64)
  */
 public fun vsubhnU64(a: Uint64x2T, b: Uint64x2T): Uint32x2T {
-    val c: U64x2 = u64x2.new(32, 32)
+    val c: U64x2 = Simd<ULong>(listOf(32uL, 32uL))
     return run { val _simdArg0 = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }; val _simdArg1 = transmuteWithLayouts<U64x2, Uint32x2T>(c, UnresolvedTypeLayout<U64x2>(), UnresolvedTypeLayout<Uint32x2T>()); _simdArg0 }; _simdArg0 }
 }
 
@@ -20338,8 +20337,8 @@ public fun vsudotqLaneqS32(a: Int32x4T, b: Int8x16T, c: Uint8x16T, lane: Int): I
  */
 public fun vtrnF16(a: Float16x4T, b: Float16x4T): Float16x4x2T =
     run {
-        val a1: Float16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 2, 6)); Float16x4T() }
-        val b1: Float16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 5, 3, 7)); Float16x4T() }
+        val a1: Float16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); Float16x4T() }
+        val b1: Float16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); Float16x4T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20349,8 +20348,8 @@ public fun vtrnF16(a: Float16x4T, b: Float16x4T): Float16x4x2T =
  */
 public fun vtrnqF16(a: Float16x8T, b: Float16x8T): Float16x8x2T =
     run {
-        val a1: Float16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 8, 2, 10, 4, 12, 6, 14)); Float16x8T() }
-        val b1: Float16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 9, 3, 11, 5, 13, 7, 15)); Float16x8T() }
+        val a1: Float16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 2u, 10u, 4u, 12u, 6u, 14u)); Float16x8T() }
+        val b1: Float16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 9u, 3u, 11u, 5u, 13u, 7u, 15u)); Float16x8T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20360,8 +20359,8 @@ public fun vtrnqF16(a: Float16x8T, b: Float16x8T): Float16x8x2T =
  */
 public fun vtrnF32(a: Float32x2T, b: Float32x2T): Float32x2x2T =
     run {
-        val a1: Float32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2)); Float32x2T() }
-        val b1: Float32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3)); Float32x2T() }
+        val a1: Float32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Float32x2T() }
+        val b1: Float32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Float32x2T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20371,8 +20370,8 @@ public fun vtrnF32(a: Float32x2T, b: Float32x2T): Float32x2x2T =
  */
 public fun vtrnS32(a: Int32x2T, b: Int32x2T): Int32x2x2T =
     run {
-        val a1: Int32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2)); Int32x2T() }
-        val b1: Int32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3)); Int32x2T() }
+        val a1: Int32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Int32x2T() }
+        val b1: Int32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Int32x2T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20382,8 +20381,8 @@ public fun vtrnS32(a: Int32x2T, b: Int32x2T): Int32x2x2T =
  */
 public fun vtrnU32(a: Uint32x2T, b: Uint32x2T): Uint32x2x2T =
     run {
-        val a1: Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2)); Uint32x2T() }
-        val b1: Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3)); Uint32x2T() }
+        val a1: Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Uint32x2T() }
+        val b1: Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Uint32x2T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20393,8 +20392,8 @@ public fun vtrnU32(a: Uint32x2T, b: Uint32x2T): Uint32x2x2T =
  */
 public fun vtrnqF32(a: Float32x4T, b: Float32x4T): Float32x4x2T =
     run {
-        val a1: Float32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 2, 6)); Float32x4T() }
-        val b1: Float32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 5, 3, 7)); Float32x4T() }
+        val a1: Float32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); Float32x4T() }
+        val b1: Float32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); Float32x4T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20404,8 +20403,8 @@ public fun vtrnqF32(a: Float32x4T, b: Float32x4T): Float32x4x2T =
  */
 public fun vtrnS8(a: Int8x8T, b: Int8x8T): Int8x8x2T =
     run {
-        val a1: Int8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 8, 2, 10, 4, 12, 6, 14)); Int8x8T() }
-        val b1: Int8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 9, 3, 11, 5, 13, 7, 15)); Int8x8T() }
+        val a1: Int8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 2u, 10u, 4u, 12u, 6u, 14u)); Int8x8T() }
+        val b1: Int8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 9u, 3u, 11u, 5u, 13u, 7u, 15u)); Int8x8T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20415,8 +20414,8 @@ public fun vtrnS8(a: Int8x8T, b: Int8x8T): Int8x8x2T =
  */
 public fun vtrnqS8(a: Int8x16T, b: Int8x16T): Int8x16x2T =
     run {
-        val a1: Int8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 16, 2, 18, 4, 20, 6, 22, 8, 24, 10, 26, 12, 28, 14, 30)); Int8x16T() }
-        val b1: Int8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 17, 3, 19, 5, 21, 7, 23, 9, 25, 11, 27, 13, 29, 15, 31)); Int8x16T() }
+        val a1: Int8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 16u, 2u, 18u, 4u, 20u, 6u, 22u, 8u, 24u, 10u, 26u, 12u, 28u, 14u, 30u)); Int8x16T() }
+        val b1: Int8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 17u, 3u, 19u, 5u, 21u, 7u, 23u, 9u, 25u, 11u, 27u, 13u, 29u, 15u, 31u)); Int8x16T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20426,8 +20425,8 @@ public fun vtrnqS8(a: Int8x16T, b: Int8x16T): Int8x16x2T =
  */
 public fun vtrnS16(a: Int16x4T, b: Int16x4T): Int16x4x2T =
     run {
-        val a1: Int16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 2, 6)); Int16x4T() }
-        val b1: Int16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 5, 3, 7)); Int16x4T() }
+        val a1: Int16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); Int16x4T() }
+        val b1: Int16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); Int16x4T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20437,8 +20436,8 @@ public fun vtrnS16(a: Int16x4T, b: Int16x4T): Int16x4x2T =
  */
 public fun vtrnqS16(a: Int16x8T, b: Int16x8T): Int16x8x2T =
     run {
-        val a1: Int16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 8, 2, 10, 4, 12, 6, 14)); Int16x8T() }
-        val b1: Int16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 9, 3, 11, 5, 13, 7, 15)); Int16x8T() }
+        val a1: Int16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 2u, 10u, 4u, 12u, 6u, 14u)); Int16x8T() }
+        val b1: Int16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 9u, 3u, 11u, 5u, 13u, 7u, 15u)); Int16x8T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20448,8 +20447,8 @@ public fun vtrnqS16(a: Int16x8T, b: Int16x8T): Int16x8x2T =
  */
 public fun vtrnqS32(a: Int32x4T, b: Int32x4T): Int32x4x2T =
     run {
-        val a1: Int32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 2, 6)); Int32x4T() }
-        val b1: Int32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 5, 3, 7)); Int32x4T() }
+        val a1: Int32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); Int32x4T() }
+        val b1: Int32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); Int32x4T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20459,8 +20458,8 @@ public fun vtrnqS32(a: Int32x4T, b: Int32x4T): Int32x4x2T =
  */
 public fun vtrnU8(a: Uint8x8T, b: Uint8x8T): Uint8x8x2T =
     run {
-        val a1: Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 8, 2, 10, 4, 12, 6, 14)); Uint8x8T() }
-        val b1: Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 9, 3, 11, 5, 13, 7, 15)); Uint8x8T() }
+        val a1: Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 2u, 10u, 4u, 12u, 6u, 14u)); Uint8x8T() }
+        val b1: Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 9u, 3u, 11u, 5u, 13u, 7u, 15u)); Uint8x8T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20470,8 +20469,8 @@ public fun vtrnU8(a: Uint8x8T, b: Uint8x8T): Uint8x8x2T =
  */
 public fun vtrnqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16x2T =
     run {
-        val a1: Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 16, 2, 18, 4, 20, 6, 22, 8, 24, 10, 26, 12, 28, 14, 30)); Uint8x16T() }
-        val b1: Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 17, 3, 19, 5, 21, 7, 23, 9, 25, 11, 27, 13, 29, 15, 31)); Uint8x16T() }
+        val a1: Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 16u, 2u, 18u, 4u, 20u, 6u, 22u, 8u, 24u, 10u, 26u, 12u, 28u, 14u, 30u)); Uint8x16T() }
+        val b1: Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 17u, 3u, 19u, 5u, 21u, 7u, 23u, 9u, 25u, 11u, 27u, 13u, 29u, 15u, 31u)); Uint8x16T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20481,8 +20480,8 @@ public fun vtrnqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16x2T =
  */
 public fun vtrnU16(a: Uint16x4T, b: Uint16x4T): Uint16x4x2T =
     run {
-        val a1: Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 2, 6)); Uint16x4T() }
-        val b1: Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 5, 3, 7)); Uint16x4T() }
+        val a1: Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); Uint16x4T() }
+        val b1: Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); Uint16x4T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20492,8 +20491,8 @@ public fun vtrnU16(a: Uint16x4T, b: Uint16x4T): Uint16x4x2T =
  */
 public fun vtrnqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8x2T =
     run {
-        val a1: Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 8, 2, 10, 4, 12, 6, 14)); Uint16x8T() }
-        val b1: Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 9, 3, 11, 5, 13, 7, 15)); Uint16x8T() }
+        val a1: Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 2u, 10u, 4u, 12u, 6u, 14u)); Uint16x8T() }
+        val b1: Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 9u, 3u, 11u, 5u, 13u, 7u, 15u)); Uint16x8T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20503,8 +20502,8 @@ public fun vtrnqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8x2T =
  */
 public fun vtrnqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4x2T =
     run {
-        val a1: Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 2, 6)); Uint32x4T() }
-        val b1: Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 5, 3, 7)); Uint32x4T() }
+        val a1: Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); Uint32x4T() }
+        val b1: Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); Uint32x4T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20514,8 +20513,8 @@ public fun vtrnqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4x2T =
  */
 public fun vtrnP8(a: Poly8x8T, b: Poly8x8T): Poly8x8x2T =
     run {
-        val a1: Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 8, 2, 10, 4, 12, 6, 14)); Poly8x8T() }
-        val b1: Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 9, 3, 11, 5, 13, 7, 15)); Poly8x8T() }
+        val a1: Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 2u, 10u, 4u, 12u, 6u, 14u)); Poly8x8T() }
+        val b1: Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 9u, 3u, 11u, 5u, 13u, 7u, 15u)); Poly8x8T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20525,8 +20524,8 @@ public fun vtrnP8(a: Poly8x8T, b: Poly8x8T): Poly8x8x2T =
  */
 public fun vtrnqP8(a: Poly8x16T, b: Poly8x16T): Poly8x16x2T =
     run {
-        val a1: Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 16, 2, 18, 4, 20, 6, 22, 8, 24, 10, 26, 12, 28, 14, 30)); Poly8x16T() }
-        val b1: Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 17, 3, 19, 5, 21, 7, 23, 9, 25, 11, 27, 13, 29, 15, 31)); Poly8x16T() }
+        val a1: Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 16u, 2u, 18u, 4u, 20u, 6u, 22u, 8u, 24u, 10u, 26u, 12u, 28u, 14u, 30u)); Poly8x16T() }
+        val b1: Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 17u, 3u, 19u, 5u, 21u, 7u, 23u, 9u, 25u, 11u, 27u, 13u, 29u, 15u, 31u)); Poly8x16T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20536,8 +20535,8 @@ public fun vtrnqP8(a: Poly8x16T, b: Poly8x16T): Poly8x16x2T =
  */
 public fun vtrnP16(a: Poly16x4T, b: Poly16x4T): Poly16x4x2T =
     run {
-        val a1: Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 2, 6)); Poly16x4T() }
-        val b1: Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 5, 3, 7)); Poly16x4T() }
+        val a1: Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); Poly16x4T() }
+        val b1: Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); Poly16x4T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20547,8 +20546,8 @@ public fun vtrnP16(a: Poly16x4T, b: Poly16x4T): Poly16x4x2T =
  */
 public fun vtrnqP16(a: Poly16x8T, b: Poly16x8T): Poly16x8x2T =
     run {
-        val a1: Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 8, 2, 10, 4, 12, 6, 14)); Poly16x8T() }
-        val b1: Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 9, 3, 11, 5, 13, 7, 15)); Poly16x8T() }
+        val a1: Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 2u, 10u, 4u, 12u, 6u, 14u)); Poly16x8T() }
+        val b1: Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 9u, 3u, 11u, 5u, 13u, 7u, 15u)); Poly16x8T() }
         transmute(Pair(a1, b1))
     }
 
@@ -20559,7 +20558,7 @@ public fun vtrnqP16(a: Poly16x8T, b: Poly16x8T): Poly16x8x2T =
 public fun vtstS8(a: Int8x8T, b: Int8x8T): Uint8x8T =
     run {
         val c: Int8x8T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-        val d: I8x8 = i8x8.new(0, 0, 0, 0, 0, 0, 0, 0)
+        val d: I8x8 = Simd<Byte>(listOf(0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte()))
         run { val _simdArg0 = c; val _simdArg1 = transmuteWithLayouts<I8x8, Int8x8T>(d, UnresolvedTypeLayout<I8x8>(), UnresolvedTypeLayout<Int8x8T>()); _simdArg0 }
     }
 
@@ -20570,7 +20569,7 @@ public fun vtstS8(a: Int8x8T, b: Int8x8T): Uint8x8T =
 public fun vtstqS8(a: Int8x16T, b: Int8x16T): Uint8x16T =
     run {
         val c: Int8x16T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-        val d: I8x16 = i8x16.new(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        val d: I8x16 = Simd<Byte>(listOf(0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte()))
         run { val _simdArg0 = c; val _simdArg1 = transmuteWithLayouts<I8x16, Int8x16T>(d, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<Int8x16T>()); _simdArg0 }
     }
 
@@ -20581,7 +20580,7 @@ public fun vtstqS8(a: Int8x16T, b: Int8x16T): Uint8x16T =
 public fun vtstS16(a: Int16x4T, b: Int16x4T): Uint16x4T =
     run {
         val c: Int16x4T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-        val d: I16x4 = i16x4.new(0, 0, 0, 0)
+        val d: I16x4 = Simd<Short>(listOf(0.toShort(), 0.toShort(), 0.toShort(), 0.toShort()))
         run { val _simdArg0 = c; val _simdArg1 = transmuteWithLayouts<I16x4, Int16x4T>(d, UnresolvedTypeLayout<I16x4>(), UnresolvedTypeLayout<Int16x4T>()); _simdArg0 }
     }
 
@@ -20592,7 +20591,7 @@ public fun vtstS16(a: Int16x4T, b: Int16x4T): Uint16x4T =
 public fun vtstqS16(a: Int16x8T, b: Int16x8T): Uint16x8T =
     run {
         val c: Int16x8T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-        val d: I16x8 = i16x8.new(0, 0, 0, 0, 0, 0, 0, 0)
+        val d: I16x8 = Simd<Short>(listOf(0.toShort(), 0.toShort(), 0.toShort(), 0.toShort(), 0.toShort(), 0.toShort(), 0.toShort(), 0.toShort()))
         run { val _simdArg0 = c; val _simdArg1 = transmuteWithLayouts<I16x8, Int16x8T>(d, UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<Int16x8T>()); _simdArg0 }
     }
 
@@ -20603,7 +20602,7 @@ public fun vtstqS16(a: Int16x8T, b: Int16x8T): Uint16x8T =
 public fun vtstS32(a: Int32x2T, b: Int32x2T): Uint32x2T =
     run {
         val c: Int32x2T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-        val d: I32x2 = i32x2.new(0, 0)
+        val d: I32x2 = Simd<Int>(listOf(0, 0))
         run { val _simdArg0 = c; val _simdArg1 = transmuteWithLayouts<I32x2, Int32x2T>(d, UnresolvedTypeLayout<I32x2>(), UnresolvedTypeLayout<Int32x2T>()); _simdArg0 }
     }
 
@@ -20614,7 +20613,7 @@ public fun vtstS32(a: Int32x2T, b: Int32x2T): Uint32x2T =
 public fun vtstqS32(a: Int32x4T, b: Int32x4T): Uint32x4T =
     run {
         val c: Int32x4T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-        val d: I32x4 = i32x4.new(0, 0, 0, 0)
+        val d: I32x4 = Simd<Int>(listOf(0, 0, 0, 0))
         run { val _simdArg0 = c; val _simdArg1 = transmuteWithLayouts<I32x4, Int32x4T>(d, UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<Int32x4T>()); _simdArg0 }
     }
 
@@ -20625,7 +20624,7 @@ public fun vtstqS32(a: Int32x4T, b: Int32x4T): Uint32x4T =
 public fun vtstP8(a: Poly8x8T, b: Poly8x8T): Uint8x8T =
     run {
         val c: Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-        val d: I8x8 = i8x8.new(0, 0, 0, 0, 0, 0, 0, 0)
+        val d: I8x8 = Simd<Byte>(listOf(0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte()))
         run { val _simdArg0 = c; val _simdArg1 = transmuteWithLayouts<I8x8, Poly8x8T>(d, UnresolvedTypeLayout<I8x8>(), UnresolvedTypeLayout<Poly8x8T>()); _simdArg0 }
     }
 
@@ -20636,7 +20635,7 @@ public fun vtstP8(a: Poly8x8T, b: Poly8x8T): Uint8x8T =
 public fun vtstqP8(a: Poly8x16T, b: Poly8x16T): Uint8x16T =
     run {
         val c: Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-        val d: I8x16 = i8x16.new(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        val d: I8x16 = Simd<Byte>(listOf(0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte(), 0.toByte()))
         run { val _simdArg0 = c; val _simdArg1 = transmuteWithLayouts<I8x16, Poly8x16T>(d, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<Poly8x16T>()); _simdArg0 }
     }
 
@@ -20647,7 +20646,7 @@ public fun vtstqP8(a: Poly8x16T, b: Poly8x16T): Uint8x16T =
 public fun vtstP16(a: Poly16x4T, b: Poly16x4T): Uint16x4T =
     run {
         val c: Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-        val d: I16x4 = i16x4.new(0, 0, 0, 0)
+        val d: I16x4 = Simd<Short>(listOf(0.toShort(), 0.toShort(), 0.toShort(), 0.toShort()))
         run { val _simdArg0 = c; val _simdArg1 = transmuteWithLayouts<I16x4, Poly16x4T>(d, UnresolvedTypeLayout<I16x4>(), UnresolvedTypeLayout<Poly16x4T>()); _simdArg0 }
     }
 
@@ -20658,7 +20657,7 @@ public fun vtstP16(a: Poly16x4T, b: Poly16x4T): Uint16x4T =
 public fun vtstqP16(a: Poly16x8T, b: Poly16x8T): Uint16x8T =
     run {
         val c: Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-        val d: I16x8 = i16x8.new(0, 0, 0, 0, 0, 0, 0, 0)
+        val d: I16x8 = Simd<Short>(listOf(0.toShort(), 0.toShort(), 0.toShort(), 0.toShort(), 0.toShort(), 0.toShort(), 0.toShort(), 0.toShort()))
         run { val _simdArg0 = c; val _simdArg1 = transmuteWithLayouts<I16x8, Poly16x8T>(d, UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<Poly16x8T>()); _simdArg0 }
     }
 
@@ -20669,7 +20668,7 @@ public fun vtstqP16(a: Poly16x8T, b: Poly16x8T): Uint16x8T =
 public fun vtstU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T =
     run {
         val c: Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-        val d: U8x8 = u8x8.new(0, 0, 0, 0, 0, 0, 0, 0)
+        val d: U8x8 = Simd<UByte>(listOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte()))
         run { val _simdArg0 = c; val _simdArg1 = transmuteWithLayouts<U8x8, Uint8x8T>(d, UnresolvedTypeLayout<U8x8>(), UnresolvedTypeLayout<Uint8x8T>()); _simdArg0 }
     }
 
@@ -20680,7 +20679,7 @@ public fun vtstU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T =
 public fun vtstqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T =
     run {
         val c: Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-        val d: U8x16 = u8x16.new(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        val d: U8x16 = Simd<UByte>(listOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte()))
         run { val _simdArg0 = c; val _simdArg1 = transmuteWithLayouts<U8x16, Uint8x16T>(d, UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<Uint8x16T>()); _simdArg0 }
     }
 
@@ -20691,7 +20690,7 @@ public fun vtstqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T =
 public fun vtstU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T =
     run {
         val c: Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-        val d: U16x4 = u16x4.new(0, 0, 0, 0)
+        val d: U16x4 = Simd<UShort>(listOf(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort()))
         run { val _simdArg0 = c; val _simdArg1 = transmuteWithLayouts<U16x4, Uint16x4T>(d, UnresolvedTypeLayout<U16x4>(), UnresolvedTypeLayout<Uint16x4T>()); _simdArg0 }
     }
 
@@ -20702,7 +20701,7 @@ public fun vtstU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T =
 public fun vtstqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T =
     run {
         val c: Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-        val d: U16x8 = u16x8.new(0, 0, 0, 0, 0, 0, 0, 0)
+        val d: U16x8 = Simd<UShort>(listOf(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort()))
         run { val _simdArg0 = c; val _simdArg1 = transmuteWithLayouts<U16x8, Uint16x8T>(d, UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<Uint16x8T>()); _simdArg0 }
     }
 
@@ -20713,7 +20712,7 @@ public fun vtstqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T =
 public fun vtstU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T =
     run {
         val c: Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-        val d: U32x2 = u32x2.new(0, 0)
+        val d: U32x2 = Simd<UInt>(listOf(0u, 0u))
         run { val _simdArg0 = c; val _simdArg1 = transmuteWithLayouts<U32x2, Uint32x2T>(d, UnresolvedTypeLayout<U32x2>(), UnresolvedTypeLayout<Uint32x2T>()); _simdArg0 }
     }
 
@@ -20724,7 +20723,7 @@ public fun vtstU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T =
 public fun vtstqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T =
     run {
         val c: Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-        val d: U32x4 = u32x4.new(0, 0, 0, 0)
+        val d: U32x4 = Simd<UInt>(listOf(0u, 0u, 0u, 0u))
         run { val _simdArg0 = c; val _simdArg1 = transmuteWithLayouts<U32x4, Uint32x4T>(d, UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<Uint32x4T>()); _simdArg0 }
     }
 
@@ -20813,8 +20812,8 @@ public fun vusmmlaqS32(a: Int32x4T, b: Uint8x16T, c: Int8x16T): Int32x4T {
  */
 public fun vuzpF16(a: Float16x4T, b: Float16x4T): Float16x4x2T =
     run {
-        val a0: Float16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6)); Float16x4T() }
-        val b0: Float16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7)); Float16x4T() }
+        val a0: Float16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); Float16x4T() }
+        val b0: Float16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); Float16x4T() }
         transmute(Pair(a0, b0))
     }
 
@@ -20824,8 +20823,8 @@ public fun vuzpF16(a: Float16x4T, b: Float16x4T): Float16x4x2T =
  */
 public fun vuzpqF16(a: Float16x8T, b: Float16x8T): Float16x8x2T =
     run {
-        val a0: Float16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14)); Float16x8T() }
-        val b0: Float16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15)); Float16x8T() }
+        val a0: Float16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); Float16x8T() }
+        val b0: Float16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); Float16x8T() }
         transmute(Pair(a0, b0))
     }
 
@@ -20835,8 +20834,8 @@ public fun vuzpqF16(a: Float16x8T, b: Float16x8T): Float16x8x2T =
  */
 public fun vuzpF32(a: Float32x2T, b: Float32x2T): Float32x2x2T =
     run {
-        val a0: Float32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2)); Float32x2T() }
-        val b0: Float32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3)); Float32x2T() }
+        val a0: Float32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Float32x2T() }
+        val b0: Float32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Float32x2T() }
         transmute(Pair(a0, b0))
     }
 
@@ -20846,8 +20845,8 @@ public fun vuzpF32(a: Float32x2T, b: Float32x2T): Float32x2x2T =
  */
 public fun vuzpS32(a: Int32x2T, b: Int32x2T): Int32x2x2T =
     run {
-        val a0: Int32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2)); Int32x2T() }
-        val b0: Int32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3)); Int32x2T() }
+        val a0: Int32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Int32x2T() }
+        val b0: Int32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Int32x2T() }
         transmute(Pair(a0, b0))
     }
 
@@ -20857,8 +20856,8 @@ public fun vuzpS32(a: Int32x2T, b: Int32x2T): Int32x2x2T =
  */
 public fun vuzpU32(a: Uint32x2T, b: Uint32x2T): Uint32x2x2T =
     run {
-        val a0: Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2)); Uint32x2T() }
-        val b0: Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3)); Uint32x2T() }
+        val a0: Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Uint32x2T() }
+        val b0: Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Uint32x2T() }
         transmute(Pair(a0, b0))
     }
 
@@ -20868,8 +20867,8 @@ public fun vuzpU32(a: Uint32x2T, b: Uint32x2T): Uint32x2x2T =
  */
 public fun vuzpqF32(a: Float32x4T, b: Float32x4T): Float32x4x2T =
     run {
-        val a0: Float32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6)); Float32x4T() }
-        val b0: Float32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7)); Float32x4T() }
+        val a0: Float32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); Float32x4T() }
+        val b0: Float32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); Float32x4T() }
         transmute(Pair(a0, b0))
     }
 
@@ -20879,8 +20878,8 @@ public fun vuzpqF32(a: Float32x4T, b: Float32x4T): Float32x4x2T =
  */
 public fun vuzpS8(a: Int8x8T, b: Int8x8T): Int8x8x2T =
     run {
-        val a0: Int8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14)); Int8x8T() }
-        val b0: Int8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15)); Int8x8T() }
+        val a0: Int8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); Int8x8T() }
+        val b0: Int8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); Int8x8T() }
         transmute(Pair(a0, b0))
     }
 
@@ -20890,8 +20889,8 @@ public fun vuzpS8(a: Int8x8T, b: Int8x8T): Int8x8x2T =
  */
 public fun vuzpqS8(a: Int8x16T, b: Int8x16T): Int8x16x2T =
     run {
-        val a0: Int8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30)); Int8x16T() }
-        val b0: Int8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31)); Int8x16T() }
+        val a0: Int8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u, 16u, 18u, 20u, 22u, 24u, 26u, 28u, 30u)); Int8x16T() }
+        val b0: Int8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u, 17u, 19u, 21u, 23u, 25u, 27u, 29u, 31u)); Int8x16T() }
         transmute(Pair(a0, b0))
     }
 
@@ -20901,8 +20900,8 @@ public fun vuzpqS8(a: Int8x16T, b: Int8x16T): Int8x16x2T =
  */
 public fun vuzpS16(a: Int16x4T, b: Int16x4T): Int16x4x2T =
     run {
-        val a0: Int16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6)); Int16x4T() }
-        val b0: Int16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7)); Int16x4T() }
+        val a0: Int16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); Int16x4T() }
+        val b0: Int16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); Int16x4T() }
         transmute(Pair(a0, b0))
     }
 
@@ -20912,8 +20911,8 @@ public fun vuzpS16(a: Int16x4T, b: Int16x4T): Int16x4x2T =
  */
 public fun vuzpqS16(a: Int16x8T, b: Int16x8T): Int16x8x2T =
     run {
-        val a0: Int16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14)); Int16x8T() }
-        val b0: Int16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15)); Int16x8T() }
+        val a0: Int16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); Int16x8T() }
+        val b0: Int16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); Int16x8T() }
         transmute(Pair(a0, b0))
     }
 
@@ -20923,8 +20922,8 @@ public fun vuzpqS16(a: Int16x8T, b: Int16x8T): Int16x8x2T =
  */
 public fun vuzpqS32(a: Int32x4T, b: Int32x4T): Int32x4x2T =
     run {
-        val a0: Int32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6)); Int32x4T() }
-        val b0: Int32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7)); Int32x4T() }
+        val a0: Int32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); Int32x4T() }
+        val b0: Int32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); Int32x4T() }
         transmute(Pair(a0, b0))
     }
 
@@ -20934,8 +20933,8 @@ public fun vuzpqS32(a: Int32x4T, b: Int32x4T): Int32x4x2T =
  */
 public fun vuzpU8(a: Uint8x8T, b: Uint8x8T): Uint8x8x2T =
     run {
-        val a0: Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14)); Uint8x8T() }
-        val b0: Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15)); Uint8x8T() }
+        val a0: Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); Uint8x8T() }
+        val b0: Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); Uint8x8T() }
         transmute(Pair(a0, b0))
     }
 
@@ -20945,8 +20944,8 @@ public fun vuzpU8(a: Uint8x8T, b: Uint8x8T): Uint8x8x2T =
  */
 public fun vuzpqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16x2T =
     run {
-        val a0: Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30)); Uint8x16T() }
-        val b0: Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31)); Uint8x16T() }
+        val a0: Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u, 16u, 18u, 20u, 22u, 24u, 26u, 28u, 30u)); Uint8x16T() }
+        val b0: Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u, 17u, 19u, 21u, 23u, 25u, 27u, 29u, 31u)); Uint8x16T() }
         transmute(Pair(a0, b0))
     }
 
@@ -20956,8 +20955,8 @@ public fun vuzpqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16x2T =
  */
 public fun vuzpU16(a: Uint16x4T, b: Uint16x4T): Uint16x4x2T =
     run {
-        val a0: Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6)); Uint16x4T() }
-        val b0: Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7)); Uint16x4T() }
+        val a0: Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); Uint16x4T() }
+        val b0: Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); Uint16x4T() }
         transmute(Pair(a0, b0))
     }
 
@@ -20967,8 +20966,8 @@ public fun vuzpU16(a: Uint16x4T, b: Uint16x4T): Uint16x4x2T =
  */
 public fun vuzpqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8x2T =
     run {
-        val a0: Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14)); Uint16x8T() }
-        val b0: Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15)); Uint16x8T() }
+        val a0: Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); Uint16x8T() }
+        val b0: Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); Uint16x8T() }
         transmute(Pair(a0, b0))
     }
 
@@ -20978,8 +20977,8 @@ public fun vuzpqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8x2T =
  */
 public fun vuzpqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4x2T =
     run {
-        val a0: Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6)); Uint32x4T() }
-        val b0: Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7)); Uint32x4T() }
+        val a0: Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); Uint32x4T() }
+        val b0: Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); Uint32x4T() }
         transmute(Pair(a0, b0))
     }
 
@@ -20989,8 +20988,8 @@ public fun vuzpqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4x2T =
  */
 public fun vuzpP8(a: Poly8x8T, b: Poly8x8T): Poly8x8x2T =
     run {
-        val a0: Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14)); Poly8x8T() }
-        val b0: Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15)); Poly8x8T() }
+        val a0: Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); Poly8x8T() }
+        val b0: Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); Poly8x8T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21000,8 +20999,8 @@ public fun vuzpP8(a: Poly8x8T, b: Poly8x8T): Poly8x8x2T =
  */
 public fun vuzpqP8(a: Poly8x16T, b: Poly8x16T): Poly8x16x2T =
     run {
-        val a0: Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30)); Poly8x16T() }
-        val b0: Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31)); Poly8x16T() }
+        val a0: Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u, 16u, 18u, 20u, 22u, 24u, 26u, 28u, 30u)); Poly8x16T() }
+        val b0: Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u, 17u, 19u, 21u, 23u, 25u, 27u, 29u, 31u)); Poly8x16T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21011,8 +21010,8 @@ public fun vuzpqP8(a: Poly8x16T, b: Poly8x16T): Poly8x16x2T =
  */
 public fun vuzpP16(a: Poly16x4T, b: Poly16x4T): Poly16x4x2T =
     run {
-        val a0: Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6)); Poly16x4T() }
-        val b0: Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7)); Poly16x4T() }
+        val a0: Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); Poly16x4T() }
+        val b0: Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); Poly16x4T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21022,8 +21021,8 @@ public fun vuzpP16(a: Poly16x4T, b: Poly16x4T): Poly16x4x2T =
  */
 public fun vuzpqP16(a: Poly16x8T, b: Poly16x8T): Poly16x8x2T =
     run {
-        val a0: Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14)); Poly16x8T() }
-        val b0: Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15)); Poly16x8T() }
+        val a0: Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); Poly16x8T() }
+        val b0: Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); Poly16x8T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21033,8 +21032,8 @@ public fun vuzpqP16(a: Poly16x8T, b: Poly16x8T): Poly16x8x2T =
  */
 public fun vzipF16(a: Float16x4T, b: Float16x4T): Float16x4x2T =
     run {
-        val a0: Float16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 1, 5)); Float16x4T() }
-        val b0: Float16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(2, 6, 3, 7)); Float16x4T() }
+        val a0: Float16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); Float16x4T() }
+        val b0: Float16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); Float16x4T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21044,8 +21043,8 @@ public fun vzipF16(a: Float16x4T, b: Float16x4T): Float16x4x2T =
  */
 public fun vzipqF16(a: Float16x8T, b: Float16x8T): Float16x8x2T =
     run {
-        val a0: Float16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 8, 1, 9, 2, 10, 3, 11)); Float16x8T() }
-        val b0: Float16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(4, 12, 5, 13, 6, 14, 7, 15)); Float16x8T() }
+        val a0: Float16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 1u, 9u, 2u, 10u, 3u, 11u)); Float16x8T() }
+        val b0: Float16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 12u, 5u, 13u, 6u, 14u, 7u, 15u)); Float16x8T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21055,8 +21054,8 @@ public fun vzipqF16(a: Float16x8T, b: Float16x8T): Float16x8x2T =
  */
 public fun vzipF32(a: Float32x2T, b: Float32x2T): Float32x2x2T =
     run {
-        val a0: Float32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2)); Float32x2T() }
-        val b0: Float32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3)); Float32x2T() }
+        val a0: Float32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Float32x2T() }
+        val b0: Float32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Float32x2T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21066,8 +21065,8 @@ public fun vzipF32(a: Float32x2T, b: Float32x2T): Float32x2x2T =
  */
 public fun vzipS32(a: Int32x2T, b: Int32x2T): Int32x2x2T =
     run {
-        val a0: Int32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2)); Int32x2T() }
-        val b0: Int32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3)); Int32x2T() }
+        val a0: Int32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Int32x2T() }
+        val b0: Int32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Int32x2T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21077,8 +21076,8 @@ public fun vzipS32(a: Int32x2T, b: Int32x2T): Int32x2x2T =
  */
 public fun vzipU32(a: Uint32x2T, b: Uint32x2T): Uint32x2x2T =
     run {
-        val a0: Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2)); Uint32x2T() }
-        val b0: Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3)); Uint32x2T() }
+        val a0: Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Uint32x2T() }
+        val b0: Uint32x2T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Uint32x2T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21088,8 +21087,8 @@ public fun vzipU32(a: Uint32x2T, b: Uint32x2T): Uint32x2x2T =
  */
 public fun vzipS8(a: Int8x8T, b: Int8x8T): Int8x8x2T =
     run {
-        val a0: Int8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 8, 1, 9, 2, 10, 3, 11)); Int8x8T() }
-        val b0: Int8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(4, 12, 5, 13, 6, 14, 7, 15)); Int8x8T() }
+        val a0: Int8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 1u, 9u, 2u, 10u, 3u, 11u)); Int8x8T() }
+        val b0: Int8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 12u, 5u, 13u, 6u, 14u, 7u, 15u)); Int8x8T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21099,8 +21098,8 @@ public fun vzipS8(a: Int8x8T, b: Int8x8T): Int8x8x2T =
  */
 public fun vzipS16(a: Int16x4T, b: Int16x4T): Int16x4x2T =
     run {
-        val a0: Int16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 1, 5)); Int16x4T() }
-        val b0: Int16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(2, 6, 3, 7)); Int16x4T() }
+        val a0: Int16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); Int16x4T() }
+        val b0: Int16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); Int16x4T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21110,8 +21109,8 @@ public fun vzipS16(a: Int16x4T, b: Int16x4T): Int16x4x2T =
  */
 public fun vzipU8(a: Uint8x8T, b: Uint8x8T): Uint8x8x2T =
     run {
-        val a0: Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 8, 1, 9, 2, 10, 3, 11)); Uint8x8T() }
-        val b0: Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(4, 12, 5, 13, 6, 14, 7, 15)); Uint8x8T() }
+        val a0: Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 1u, 9u, 2u, 10u, 3u, 11u)); Uint8x8T() }
+        val b0: Uint8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 12u, 5u, 13u, 6u, 14u, 7u, 15u)); Uint8x8T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21121,8 +21120,8 @@ public fun vzipU8(a: Uint8x8T, b: Uint8x8T): Uint8x8x2T =
  */
 public fun vzipU16(a: Uint16x4T, b: Uint16x4T): Uint16x4x2T =
     run {
-        val a0: Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 1, 5)); Uint16x4T() }
-        val b0: Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(2, 6, 3, 7)); Uint16x4T() }
+        val a0: Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); Uint16x4T() }
+        val b0: Uint16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); Uint16x4T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21132,8 +21131,8 @@ public fun vzipU16(a: Uint16x4T, b: Uint16x4T): Uint16x4x2T =
  */
 public fun vzipP8(a: Poly8x8T, b: Poly8x8T): Poly8x8x2T =
     run {
-        val a0: Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 8, 1, 9, 2, 10, 3, 11)); Poly8x8T() }
-        val b0: Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(4, 12, 5, 13, 6, 14, 7, 15)); Poly8x8T() }
+        val a0: Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 1u, 9u, 2u, 10u, 3u, 11u)); Poly8x8T() }
+        val b0: Poly8x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 12u, 5u, 13u, 6u, 14u, 7u, 15u)); Poly8x8T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21143,8 +21142,8 @@ public fun vzipP8(a: Poly8x8T, b: Poly8x8T): Poly8x8x2T =
  */
 public fun vzipP16(a: Poly16x4T, b: Poly16x4T): Poly16x4x2T =
     run {
-        val a0: Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 1, 5)); Poly16x4T() }
-        val b0: Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(2, 6, 3, 7)); Poly16x4T() }
+        val a0: Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); Poly16x4T() }
+        val b0: Poly16x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); Poly16x4T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21154,8 +21153,8 @@ public fun vzipP16(a: Poly16x4T, b: Poly16x4T): Poly16x4x2T =
  */
 public fun vzipqF32(a: Float32x4T, b: Float32x4T): Float32x4x2T =
     run {
-        val a0: Float32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 1, 5)); Float32x4T() }
-        val b0: Float32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(2, 6, 3, 7)); Float32x4T() }
+        val a0: Float32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); Float32x4T() }
+        val b0: Float32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); Float32x4T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21165,8 +21164,8 @@ public fun vzipqF32(a: Float32x4T, b: Float32x4T): Float32x4x2T =
  */
 public fun vzipqS8(a: Int8x16T, b: Int8x16T): Int8x16x2T =
     run {
-        val a0: Int8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 16, 1, 17, 2, 18, 3, 19, 4, 20, 5, 21, 6, 22, 7, 23)); Int8x16T() }
-        val b0: Int8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(8, 24, 9, 25, 10, 26, 11, 27, 12, 28, 13, 29, 14, 30, 15, 31)); Int8x16T() }
+        val a0: Int8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 16u, 1u, 17u, 2u, 18u, 3u, 19u, 4u, 20u, 5u, 21u, 6u, 22u, 7u, 23u)); Int8x16T() }
+        val b0: Int8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 24u, 9u, 25u, 10u, 26u, 11u, 27u, 12u, 28u, 13u, 29u, 14u, 30u, 15u, 31u)); Int8x16T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21176,8 +21175,8 @@ public fun vzipqS8(a: Int8x16T, b: Int8x16T): Int8x16x2T =
  */
 public fun vzipqS16(a: Int16x8T, b: Int16x8T): Int16x8x2T =
     run {
-        val a0: Int16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 8, 1, 9, 2, 10, 3, 11)); Int16x8T() }
-        val b0: Int16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(4, 12, 5, 13, 6, 14, 7, 15)); Int16x8T() }
+        val a0: Int16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 1u, 9u, 2u, 10u, 3u, 11u)); Int16x8T() }
+        val b0: Int16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 12u, 5u, 13u, 6u, 14u, 7u, 15u)); Int16x8T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21187,8 +21186,8 @@ public fun vzipqS16(a: Int16x8T, b: Int16x8T): Int16x8x2T =
  */
 public fun vzipqS32(a: Int32x4T, b: Int32x4T): Int32x4x2T =
     run {
-        val a0: Int32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 1, 5)); Int32x4T() }
-        val b0: Int32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(2, 6, 3, 7)); Int32x4T() }
+        val a0: Int32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); Int32x4T() }
+        val b0: Int32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); Int32x4T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21198,8 +21197,8 @@ public fun vzipqS32(a: Int32x4T, b: Int32x4T): Int32x4x2T =
  */
 public fun vzipqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16x2T =
     run {
-        val a0: Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 16, 1, 17, 2, 18, 3, 19, 4, 20, 5, 21, 6, 22, 7, 23)); Uint8x16T() }
-        val b0: Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(8, 24, 9, 25, 10, 26, 11, 27, 12, 28, 13, 29, 14, 30, 15, 31)); Uint8x16T() }
+        val a0: Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 16u, 1u, 17u, 2u, 18u, 3u, 19u, 4u, 20u, 5u, 21u, 6u, 22u, 7u, 23u)); Uint8x16T() }
+        val b0: Uint8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 24u, 9u, 25u, 10u, 26u, 11u, 27u, 12u, 28u, 13u, 29u, 14u, 30u, 15u, 31u)); Uint8x16T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21209,8 +21208,8 @@ public fun vzipqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16x2T =
  */
 public fun vzipqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8x2T =
     run {
-        val a0: Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 8, 1, 9, 2, 10, 3, 11)); Uint16x8T() }
-        val b0: Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(4, 12, 5, 13, 6, 14, 7, 15)); Uint16x8T() }
+        val a0: Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 1u, 9u, 2u, 10u, 3u, 11u)); Uint16x8T() }
+        val b0: Uint16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 12u, 5u, 13u, 6u, 14u, 7u, 15u)); Uint16x8T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21220,8 +21219,8 @@ public fun vzipqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8x2T =
  */
 public fun vzipqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4x2T =
     run {
-        val a0: Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 1, 5)); Uint32x4T() }
-        val b0: Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(2, 6, 3, 7)); Uint32x4T() }
+        val a0: Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); Uint32x4T() }
+        val b0: Uint32x4T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); Uint32x4T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21231,8 +21230,8 @@ public fun vzipqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4x2T =
  */
 public fun vzipqP8(a: Poly8x16T, b: Poly8x16T): Poly8x16x2T =
     run {
-        val a0: Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 16, 1, 17, 2, 18, 3, 19, 4, 20, 5, 21, 6, 22, 7, 23)); Poly8x16T() }
-        val b0: Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(8, 24, 9, 25, 10, 26, 11, 27, 12, 28, 13, 29, 14, 30, 15, 31)); Poly8x16T() }
+        val a0: Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 16u, 1u, 17u, 2u, 18u, 3u, 19u, 4u, 20u, 5u, 21u, 6u, 22u, 7u, 23u)); Poly8x16T() }
+        val b0: Poly8x16T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 24u, 9u, 25u, 10u, 26u, 11u, 27u, 12u, 28u, 13u, 29u, 14u, 30u, 15u, 31u)); Poly8x16T() }
         transmute(Pair(a0, b0))
     }
 
@@ -21242,7 +21241,7 @@ public fun vzipqP8(a: Poly8x16T, b: Poly8x16T): Poly8x16x2T =
  */
 public fun vzipqP16(a: Poly16x8T, b: Poly16x8T): Poly16x8x2T =
     run {
-        val a0: Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 8, 1, 9, 2, 10, 3, 11)); Poly16x8T() }
-        val b0: Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(4, 12, 5, 13, 6, 14, 7, 15)); Poly16x8T() }
+        val a0: Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 1u, 9u, 2u, 10u, 3u, 11u)); Poly16x8T() }
+        val b0: Poly16x8T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 12u, 5u, 13u, 6u, 14u, 7u, 15u)); Poly16x8T() }
         transmute(Pair(a0, b0))
     }

@@ -93,7 +93,7 @@ public open class NumBuffer<T, Buf>(
     public var buf: Buf,
     public var phantom: Unit,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "NumBuffer").finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "NumBuffer").finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         /**

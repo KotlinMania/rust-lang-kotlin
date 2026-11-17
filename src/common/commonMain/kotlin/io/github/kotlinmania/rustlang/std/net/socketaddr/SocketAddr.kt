@@ -1,6 +1,7 @@
 // port-lint: source net/socket_addr.rs
 package io.github.kotlinmania.rustlang.std.net.socketaddr
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.net.ipaddr.IpAddr
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv6Addr
@@ -8,7 +9,6 @@ import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV4
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV6
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Iter
 import io.github.kotlinmania.rustlang.std.sys.net.connection.lookupHostString
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.lookupHost
@@ -166,7 +166,7 @@ public fun Pair<String, UShort>.toSocketAddrsFromStringUShort(): Result<ArrayDeq
     val (host, port) = this
     // Try to parse the host as a regular IP address first
     when (val matchVal = host.parse<IpAddr>()) {
-        is Result.Ok -> {
+        is Result.Ok<*, *> -> {
             val addr = matchVal.value
             val addr1 = SocketAddr.new(addr, port)
             return Result.Ok<ArrayDeque<SocketAddr>, Error>(mutableListOf(addr1).intoIter())
@@ -181,7 +181,7 @@ public fun Pair<String, UShort>.toSocketAddrsFromStringUShort(): Result<ArrayDeq
 public fun String.toSocketAddrs(): Result<ArrayDeque<SocketAddr>, Error> {
     // Try to parse as a regular SocketAddr first
     when (val matchVal = this.parse()) {
-        is Result.Ok -> {
+        is Result.Ok<*, *> -> {
             val addr = matchVal.value
             return Result.Ok<ArrayDeque<SocketAddr>, Error>(mutableListOf(addr).intoIter())
         }

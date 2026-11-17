@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.alloc.str
 
 import io.github.kotlinmania.rustlang.alloc.boxed.Box
 import io.github.kotlinmania.rustlang.alloc.slice.Join
+import io.github.kotlinmania.rustlang.alloc.slice.join
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.char.isAscii
@@ -15,6 +16,7 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.splitAtMut
 import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
@@ -327,11 +329,11 @@ public fun <Searcher, P : Pattern<Searcher>> String.replace(from: P, to: String)
         run {
             val matchVal3 = from.asUtf8Pattern()
             when {
-                matchVal3 != null && matchVal3 is Utf8Pattern.StringPattern && (matchVal3 as Utf8Pattern.StringPattern).value.len() <= to.length -> {
+                matchVal3 != null && matchVal3 is Utf8Pattern.StringPattern && matchVal3.value.len() <= to.length -> {
                     val (s1) = matchVal3 as Utf8Pattern.StringPattern
                     this.length
                 }
-                matchVal3 != null && matchVal3 is Utf8Pattern.CharPattern && (matchVal3 as Utf8Pattern.CharPattern).value.lenUtf8() <= to.length -> {
+                matchVal3 != null && matchVal3 is Utf8Pattern.CharPattern && matchVal3.value.lenUtf8() <= to.length -> {
                     val (c1) = matchVal3 as Utf8Pattern.CharPattern
                     this.length
                 }

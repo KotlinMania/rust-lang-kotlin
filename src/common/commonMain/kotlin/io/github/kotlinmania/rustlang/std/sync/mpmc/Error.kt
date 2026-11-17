@@ -29,8 +29,8 @@ public sealed class SendTimeoutError<T> {
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is SendTimeoutError.Timeout -> "timed out waiting on send operation".fmt(f)
-            is SendTimeoutError.Disconnected -> "sending on a disconnected channel".fmt(f)
+            is SendTimeoutError.Timeout<*> -> "timed out waiting on send operation".fmt(f)
+            is SendTimeoutError.Disconnected<*> -> "sending on a disconnected channel".fmt(f)
         }
 
     public companion object {

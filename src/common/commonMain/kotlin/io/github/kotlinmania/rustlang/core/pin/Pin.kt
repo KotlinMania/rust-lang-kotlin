@@ -8,9 +8,8 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
-import io.github.kotlinmania.rustlang.core.ops.deref.LegacyReceiver
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // Types that pin data to a location in memory.
@@ -1027,7 +1026,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 public open class Pin<Ptr>(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Ptr> = UnresolvedTypeLayout(),
-) : DerefPure, LegacyReceiver {
+) {
     public var pointer: Ptr
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
@@ -1199,17 +1198,11 @@ public open class Pin<Ptr>(
     // The following implementations allow untrusted trait implementations to access
     // `self.pointer`, which is only sound because these traits are mentioned in
     // the safety requirements of `PinSafePointer`.
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.pointer).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.pointer).toString()); Result.Ok<Unit, Unit>(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.pointer).toString()); Result.Ok(Unit) }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.pointer).toString()); Result.Ok<Unit, Unit>(Unit) }
 
-    public open fun fmtPointer(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.pointer).toString()); Result.Ok(Unit) }
-
-    // Note: this means that any impl of `CoerceUnsized` that allows coercing from
-    // a type that impls `Deref<Target = impl Unpin>` to a type that impls
-    // `Deref<Target = Unpin>` is unsound. Any such impl would probably be unsound
-    // for other reasons, though, so we just need to take care not to allow such
-    // impls to land in std.
+    public open fun fmtPointer(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.pointer).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         /**
@@ -1589,6 +1582,12 @@ public open class PinHelper<Ptr>(
 public interface PinDerefMutHelper<Target> {
     public fun derefMut(): Target
 }
+
+// Note: this means that any impl of `CoerceUnsized` that allows coercing from
+// a type that impls `Deref<Target = impl Unpin>` to a type that impls
+// `Deref<Target = Unpin>` is unsound. Any such impl would probably be unsound
+// for other reasons, though, so we just need to take care not to allow such
+// impls to land in std.
 
 /**
  * Trait that indicates that this is a pointer that does not misbehave when

@@ -14,6 +14,7 @@ import io.github.kotlinmania.rustlang.core.mem.asMutPtr
 import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 
 // Streaming SIMD Extensions (SSE)
 
@@ -185,34 +186,34 @@ public fun testMmMaxPs() {
 }
 
 public fun testMmAndPs() {
-    val a = f32x4.fromBits(u32x4.splat(0x3)).asM128()
-    val b = f32x4.fromBits(u32x4.splat(0x5)).asM128()
+    val a = f32x4.fromBits(Simd<UInt>(List(4) { 0x3u })).asM128()
+    val b = f32x4.fromBits(Simd<UInt>(List(4) { 0x5u })).asM128()
     val r = mmAndPs(blackBox(a), blackBox(b))
-    val e = f32x4.fromBits(u32x4.splat(0x1)).asM128()
+    val e = f32x4.fromBits(Simd<UInt>(List(4) { 0x1u })).asM128()
     assertEqM128(r, e)
 }
 
 public fun testMmAndnotPs() {
-    val a = f32x4.fromBits(u32x4.splat(0x3)).asM128()
-    val b = f32x4.fromBits(u32x4.splat(0x5)).asM128()
+    val a = f32x4.fromBits(Simd<UInt>(List(4) { 0x3u })).asM128()
+    val b = f32x4.fromBits(Simd<UInt>(List(4) { 0x5u })).asM128()
     val r = mmAndnotPs(blackBox(a), blackBox(b))
-    val e = f32x4.fromBits(u32x4.splat(0x4)).asM128()
+    val e = f32x4.fromBits(Simd<UInt>(List(4) { 0x4u })).asM128()
     assertEqM128(r, e)
 }
 
 public fun testMmOrPs() {
-    val a = f32x4.fromBits(u32x4.splat(0x3)).asM128()
-    val b = f32x4.fromBits(u32x4.splat(0x5)).asM128()
+    val a = f32x4.fromBits(Simd<UInt>(List(4) { 0x3u })).asM128()
+    val b = f32x4.fromBits(Simd<UInt>(List(4) { 0x5u })).asM128()
     val r = mmOrPs(blackBox(a), blackBox(b))
-    val e = f32x4.fromBits(u32x4.splat(0x7)).asM128()
+    val e = f32x4.fromBits(Simd<UInt>(List(4) { 0x7u })).asM128()
     assertEqM128(r, e)
 }
 
 public fun testMmXorPs() {
-    val a = f32x4.fromBits(u32x4.splat(0x3)).asM128()
-    val b = f32x4.fromBits(u32x4.splat(0x5)).asM128()
+    val a = f32x4.fromBits(Simd<UInt>(List(4) { 0x3u })).asM128()
+    val b = f32x4.fromBits(Simd<UInt>(List(4) { 0x5u })).asM128()
     val r = mmXorPs(blackBox(a), blackBox(b))
-    val e = f32x4.fromBits(u32x4.splat(0x6)).asM128()
+    val e = f32x4.fromBits(Simd<UInt>(List(4) { 0x6u })).asM128()
     assertEqM128(r, e)
 }
 
@@ -220,11 +221,11 @@ public fun testMmCmpeqSs() {
     val a = mmSetrPs(1.0f, 2.0f, 3.0f, 4.0f)
     val b = mmSetrPs(-1.0f, 5.0f, 6.0f, 7.0f)
     val r = mmCmpeqSs(a, b).asF32x4().toBits()
-    val e = f32x4.new(Float.fromBits(0u.toInt()), 2.0, 3.0, 4.0).toBits()
+    val e = Simd<Float>(listOf(Float.fromBits(0u.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(r == e)
     val b2 = mmSetrPs(1.0f, 5.0f, 6.0f, 7.0f)
     val r2 = mmCmpeqSs(a, b2).asF32x4().toBits()
-    val e2 = f32x4.new(Float.fromBits(0xffffffffu.toInt()), 2.0, 3.0, 4.0).toBits()
+    val e2 = Simd<Float>(listOf(Float.fromBits(0xffffffffu.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(r2 == e2)
 }
 
@@ -240,13 +241,13 @@ public fun testMmCmpltSs() {
     val d1 = 0u.inv()
     // a.extract(0) < d.extract(0)
     val rb = mmCmpltSs(a, b).asF32x4().toBits()
-    val eb = f32x4.new(Float.fromBits(b1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val eb = Simd<Float>(listOf(Float.fromBits(b1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rb == eb)
     val rc = mmCmpltSs(a, c).asF32x4().toBits()
-    val ec = f32x4.new(Float.fromBits(c1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ec = Simd<Float>(listOf(Float.fromBits(c1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rc == ec)
     val rd = mmCmpltSs(a, d).asF32x4().toBits()
-    val ed = f32x4.new(Float.fromBits(d1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ed = Simd<Float>(listOf(Float.fromBits(d1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rd == ed)
 }
 
@@ -262,13 +263,13 @@ public fun testMmCmpleSs() {
     val d1 = 0u.inv()
     // a.extract(0) <= d.extract(0)
     val rb = mmCmpleSs(a, b).asF32x4().toBits()
-    val eb = f32x4.new(Float.fromBits(b1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val eb = Simd<Float>(listOf(Float.fromBits(b1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rb == eb)
     val rc = mmCmpleSs(a, c).asF32x4().toBits()
-    val ec = f32x4.new(Float.fromBits(c1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ec = Simd<Float>(listOf(Float.fromBits(c1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rc == ec)
     val rd = mmCmpleSs(a, d).asF32x4().toBits()
-    val ed = f32x4.new(Float.fromBits(d1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ed = Simd<Float>(listOf(Float.fromBits(d1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rd == ed)
 }
 
@@ -284,13 +285,13 @@ public fun testMmCmpgtSs() {
     val d1 = 0u
     // a.extract(0) > d.extract(0)
     val rb = mmCmpgtSs(a, b).asF32x4().toBits()
-    val eb = f32x4.new(Float.fromBits(b1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val eb = Simd<Float>(listOf(Float.fromBits(b1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rb == eb)
     val rc = mmCmpgtSs(a, c).asF32x4().toBits()
-    val ec = f32x4.new(Float.fromBits(c1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ec = Simd<Float>(listOf(Float.fromBits(c1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rc == ec)
     val rd = mmCmpgtSs(a, d).asF32x4().toBits()
-    val ed = f32x4.new(Float.fromBits(d1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ed = Simd<Float>(listOf(Float.fromBits(d1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rd == ed)
 }
 
@@ -306,13 +307,13 @@ public fun testMmCmpgeSs() {
     val d1 = 0u
     // a.extract(0) >= d.extract(0)
     val rb = mmCmpgeSs(a, b).asF32x4().toBits()
-    val eb = f32x4.new(Float.fromBits(b1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val eb = Simd<Float>(listOf(Float.fromBits(b1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rb == eb)
     val rc = mmCmpgeSs(a, c).asF32x4().toBits()
-    val ec = f32x4.new(Float.fromBits(c1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ec = Simd<Float>(listOf(Float.fromBits(c1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rc == ec)
     val rd = mmCmpgeSs(a, d).asF32x4().toBits()
-    val ed = f32x4.new(Float.fromBits(d1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ed = Simd<Float>(listOf(Float.fromBits(d1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rd == ed)
 }
 
@@ -328,13 +329,13 @@ public fun testMmCmpneqSs() {
     val d1 = 0u.inv()
     // a.extract(0) != d.extract(0)
     val rb = mmCmpneqSs(a, b).asF32x4().toBits()
-    val eb = f32x4.new(Float.fromBits(b1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val eb = Simd<Float>(listOf(Float.fromBits(b1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rb == eb)
     val rc = mmCmpneqSs(a, c).asF32x4().toBits()
-    val ec = f32x4.new(Float.fromBits(c1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ec = Simd<Float>(listOf(Float.fromBits(c1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rc == ec)
     val rd = mmCmpneqSs(a, d).asF32x4().toBits()
-    val ed = f32x4.new(Float.fromBits(d1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ed = Simd<Float>(listOf(Float.fromBits(d1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rd == ed)
 }
 
@@ -354,13 +355,13 @@ public fun testMmCmpnltSs() {
     val d1 = 0u
     // a.extract(0) >= d.extract(0)
     val rb = mmCmpnltSs(a, b).asF32x4().toBits()
-    val eb = f32x4.new(Float.fromBits(b1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val eb = Simd<Float>(listOf(Float.fromBits(b1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rb == eb)
     val rc = mmCmpnltSs(a, c).asF32x4().toBits()
-    val ec = f32x4.new(Float.fromBits(c1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ec = Simd<Float>(listOf(Float.fromBits(c1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rc == ec)
     val rd = mmCmpnltSs(a, d).asF32x4().toBits()
-    val ed = f32x4.new(Float.fromBits(d1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ed = Simd<Float>(listOf(Float.fromBits(d1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rd == ed)
 }
 
@@ -380,13 +381,13 @@ public fun testMmCmpnleSs() {
     val d1 = 0u
     // a.extract(0) > d.extract(0)
     val rb = mmCmpnleSs(a, b).asF32x4().toBits()
-    val eb = f32x4.new(Float.fromBits(b1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val eb = Simd<Float>(listOf(Float.fromBits(b1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rb == eb)
     val rc = mmCmpnleSs(a, c).asF32x4().toBits()
-    val ec = f32x4.new(Float.fromBits(c1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ec = Simd<Float>(listOf(Float.fromBits(c1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rc == ec)
     val rd = mmCmpnleSs(a, d).asF32x4().toBits()
-    val ed = f32x4.new(Float.fromBits(d1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ed = Simd<Float>(listOf(Float.fromBits(d1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rd == ed)
 }
 
@@ -406,13 +407,13 @@ public fun testMmCmpngtSs() {
     val d1 = 0u.inv()
     // a.extract(0) <= d.extract(0)
     val rb = mmCmpngtSs(a, b).asF32x4().toBits()
-    val eb = f32x4.new(Float.fromBits(b1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val eb = Simd<Float>(listOf(Float.fromBits(b1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rb == eb)
     val rc = mmCmpngtSs(a, c).asF32x4().toBits()
-    val ec = f32x4.new(Float.fromBits(c1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ec = Simd<Float>(listOf(Float.fromBits(c1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rc == ec)
     val rd = mmCmpngtSs(a, d).asF32x4().toBits()
-    val ed = f32x4.new(Float.fromBits(d1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ed = Simd<Float>(listOf(Float.fromBits(d1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rd == ed)
 }
 
@@ -432,13 +433,13 @@ public fun testMmCmpngeSs() {
     val d1 = 0u.inv()
     // a.extract(0) < d.extract(0)
     val rb = mmCmpngeSs(a, b).asF32x4().toBits()
-    val eb = f32x4.new(Float.fromBits(b1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val eb = Simd<Float>(listOf(Float.fromBits(b1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rb == eb)
     val rc = mmCmpngeSs(a, c).asF32x4().toBits()
-    val ec = f32x4.new(Float.fromBits(c1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ec = Simd<Float>(listOf(Float.fromBits(c1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rc == ec)
     val rd = mmCmpngeSs(a, d).asF32x4().toBits()
-    val ed = f32x4.new(Float.fromBits(d1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ed = Simd<Float>(listOf(Float.fromBits(d1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rd == ed)
 }
 
@@ -454,13 +455,13 @@ public fun testMmCmpordSs() {
     val d1 = 0u.inv()
     // a.extract(0) ord d.extract(0)
     val rb = mmCmpordSs(a, b).asF32x4().toBits()
-    val eb = f32x4.new(Float.fromBits(b1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val eb = Simd<Float>(listOf(Float.fromBits(b1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rb == eb)
     val rc = mmCmpordSs(a, c).asF32x4().toBits()
-    val ec = f32x4.new(Float.fromBits(c1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ec = Simd<Float>(listOf(Float.fromBits(c1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rc == ec)
     val rd = mmCmpordSs(a, d).asF32x4().toBits()
-    val ed = f32x4.new(Float.fromBits(d1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ed = Simd<Float>(listOf(Float.fromBits(d1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rd == ed)
 }
 
@@ -476,13 +477,13 @@ public fun testMmCmpunordSs() {
     val d1 = 0u
     // a.extract(0) unord d.extract(0)
     val rb = mmCmpunordSs(a, b).asF32x4().toBits()
-    val eb = f32x4.new(Float.fromBits(b1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val eb = Simd<Float>(listOf(Float.fromBits(b1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rb == eb)
     val rc = mmCmpunordSs(a, c).asF32x4().toBits()
-    val ec = f32x4.new(Float.fromBits(c1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ec = Simd<Float>(listOf(Float.fromBits(c1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rc == ec)
     val rd = mmCmpunordSs(a, d).asF32x4().toBits()
-    val ed = f32x4.new(Float.fromBits(d1.toInt()), 2.0, 3.0, 4.0).toBits()
+    val ed = Simd<Float>(listOf(Float.fromBits(d1.toInt()), 2.0f.toFloat(), 3.0f.toFloat(), 4.0f.toFloat())).toBits()
     check(rd == ed)
 }
 
@@ -491,7 +492,7 @@ public fun testMmCmpeqPs() {
     val b = mmSetrPs(15.0f, 20.0f, 1.0f, NAN)
     val tru = 0u.inv()
     val fls = 0u
-    val e = u32x4.new(fls, fls, tru, fls)
+    val e = Simd<UInt>(listOf(fls, fls, tru, fls))
     val r = mmCmpeqPs(a, b).asF32x4().toBits()
     check(r == e)
 }
@@ -501,7 +502,7 @@ public fun testMmCmpltPs() {
     val b = mmSetrPs(15.0f, 20.0f, 1.0f, NAN)
     val tru = 0u.inv()
     val fls = 0u
-    val e = u32x4.new(tru, fls, fls, fls)
+    val e = Simd<UInt>(listOf(tru, fls, fls, fls))
     val r = mmCmpltPs(a, b).asF32x4().toBits()
     check(r == e)
 }
@@ -511,7 +512,7 @@ public fun testMmCmplePs() {
     val b = mmSetrPs(15.0f, 20.0f, 1.0f, NAN)
     val tru = 0u.inv()
     val fls = 0u
-    val e = u32x4.new(tru, fls, tru, fls)
+    val e = Simd<UInt>(listOf(tru, fls, tru, fls))
     val r = mmCmplePs(a, b).asF32x4().toBits()
     check(r == e)
 }
@@ -521,7 +522,7 @@ public fun testMmCmpgtPs() {
     val b = mmSetrPs(15.0f, 20.0f, 1.0f, 42.0f)
     val tru = 0u.inv()
     val fls = 0u
-    val e = u32x4.new(fls, tru, fls, fls)
+    val e = Simd<UInt>(listOf(fls, tru, fls, fls))
     val r = mmCmpgtPs(a, b).asF32x4().toBits()
     check(r == e)
 }
@@ -531,7 +532,7 @@ public fun testMmCmpgePs() {
     val b = mmSetrPs(15.0f, 20.0f, 1.0f, 42.0f)
     val tru = 0u.inv()
     val fls = 0u
-    val e = u32x4.new(fls, tru, tru, fls)
+    val e = Simd<UInt>(listOf(fls, tru, tru, fls))
     val r = mmCmpgePs(a, b).asF32x4().toBits()
     check(r == e)
 }
@@ -541,7 +542,7 @@ public fun testMmCmpneqPs() {
     val b = mmSetrPs(15.0f, 20.0f, 1.0f, NAN)
     val tru = 0u.inv()
     val fls = 0u
-    val e = u32x4.new(tru, tru, fls, tru)
+    val e = Simd<UInt>(listOf(tru, tru, fls, tru))
     val r = mmCmpneqPs(a, b).asF32x4().toBits()
     check(r == e)
 }
@@ -551,7 +552,7 @@ public fun testMmCmpnltPs() {
     val b = mmSetrPs(15.0f, 20.0f, 1.0f, 5.0f)
     val tru = 0u.inv()
     val fls = 0u
-    val e = u32x4.new(fls, tru, tru, tru)
+    val e = Simd<UInt>(listOf(fls, tru, tru, tru))
     val r = mmCmpnltPs(a, b).asF32x4().toBits()
     check(r == e)
 }
@@ -561,7 +562,7 @@ public fun testMmCmpnlePs() {
     val b = mmSetrPs(15.0f, 20.0f, 1.0f, 5.0f)
     val tru = 0u.inv()
     val fls = 0u
-    val e = u32x4.new(fls, tru, fls, tru)
+    val e = Simd<UInt>(listOf(fls, tru, fls, tru))
     val r = mmCmpnlePs(a, b).asF32x4().toBits()
     check(r == e)
 }
@@ -571,7 +572,7 @@ public fun testMmCmpngtPs() {
     val b = mmSetrPs(15.0f, 20.0f, 1.0f, 5.0f)
     val tru = 0u.inv()
     val fls = 0u
-    val e = u32x4.new(tru, fls, tru, tru)
+    val e = Simd<UInt>(listOf(tru, fls, tru, tru))
     val r = mmCmpngtPs(a, b).asF32x4().toBits()
     check(r == e)
 }
@@ -581,7 +582,7 @@ public fun testMmCmpngePs() {
     val b = mmSetrPs(15.0f, 20.0f, 1.0f, 5.0f)
     val tru = 0u.inv()
     val fls = 0u
-    val e = u32x4.new(tru, fls, fls, tru)
+    val e = Simd<UInt>(listOf(tru, fls, fls, tru))
     val r = mmCmpngePs(a, b).asF32x4().toBits()
     check(r == e)
 }
@@ -591,7 +592,7 @@ public fun testMmCmpordPs() {
     val b = mmSetrPs(15.0f, NAN, 1.0f, NAN)
     val tru = 0u.inv()
     val fls = 0u
-    val e = u32x4.new(tru, fls, fls, fls)
+    val e = Simd<UInt>(listOf(tru, fls, fls, fls))
     val r = mmCmpordPs(a, b).asF32x4().toBits()
     check(r == e)
 }
@@ -601,7 +602,7 @@ public fun testMmCmpunordPs() {
     val b = mmSetrPs(15.0f, NAN, 1.0f, NAN)
     val tru = 0u.inv()
     val fls = 0u
-    val e = u32x4.new(fls, tru, tru, tru)
+    val e = Simd<UInt>(listOf(fls, tru, tru, tru))
     val r = mmCmpunordPs(a, b).asF32x4().toBits()
     check(r == e)
 }

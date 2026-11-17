@@ -1,14 +1,17 @@
 // port-lint: tests x86_64/bt.rs
 package io.github.kotlinmania.rustlang.corearch.x8664
 
+import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+
 public class BtInlineTests {
     // Uses inline assembly
     @kotlin.test.Test
     public fun testBittest64() {
         run {
             val a = 0x50L
-            check(bittest64(((a as Any?) as Unit), 4L) == 1u.toUByte())
-            check(bittest64(((a as Any?) as Unit), 5L) == 0u.toUByte())
+            check(bittest64(ConstPtr(a.toLong()), 4L) == 1u.toUByte())
+            check(bittest64(ConstPtr(a.toLong()), 5L) == 0u.toUByte())
         }
     }
 
@@ -17,10 +20,10 @@ public class BtInlineTests {
     public fun testBittestandset64() {
         run {
             val a = 0x50L
-            check(bittestandset64(((a as Any?) as Unit), 4L) == 1u.toUByte())
-            check(bittestandset64(((a as Any?) as Unit), 4L) == 1u.toUByte())
-            check(bittestandset64(((a as Any?) as Unit), 5L) == 0u.toUByte())
-            check(bittestandset64(((a as Any?) as Unit), 5L) == 1u.toUByte())
+            check(bittestandset64(MutPtr(a.toLong()), 4L) == 1u.toUByte())
+            check(bittestandset64(MutPtr(a.toLong()), 4L) == 1u.toUByte())
+            check(bittestandset64(MutPtr(a.toLong()), 5L) == 0u.toUByte())
+            check(bittestandset64(MutPtr(a.toLong()), 5L) == 1u.toUByte())
         }
     }
 
@@ -29,10 +32,10 @@ public class BtInlineTests {
     public fun testBittestandreset64() {
         run {
             val a = 0x50L
-            check(bittestandreset64(((a as Any?) as Unit), 4L) == 1u.toUByte())
-            check(bittestandreset64(((a as Any?) as Unit), 4L) == 0u.toUByte())
-            check(bittestandreset64(((a as Any?) as Unit), 5L) == 0u.toUByte())
-            check(bittestandreset64(((a as Any?) as Unit), 5L) == 0u.toUByte())
+            check(bittestandreset64(MutPtr(a.toLong()), 4L) == 1u.toUByte())
+            check(bittestandreset64(MutPtr(a.toLong()), 4L) == 0u.toUByte())
+            check(bittestandreset64(MutPtr(a.toLong()), 5L) == 0u.toUByte())
+            check(bittestandreset64(MutPtr(a.toLong()), 5L) == 0u.toUByte())
         }
     }
 
@@ -41,11 +44,11 @@ public class BtInlineTests {
     public fun testBittestandcomplement64() {
         run {
             val a = 0x50L
-            check(bittestandcomplement64(((a as Any?) as Unit), 4L) == 1u.toUByte())
-            check(bittestandcomplement64(((a as Any?) as Unit), 4L) == 0u.toUByte())
-            check(bittestandcomplement64(((a as Any?) as Unit), 4L) == 1u.toUByte())
-            check(bittestandcomplement64(((a as Any?) as Unit), 5L) == 0u.toUByte())
-            check(bittestandcomplement64(((a as Any?) as Unit), 5L) == 1u.toUByte())
+            check(bittestandcomplement64(MutPtr(a.toLong()), 4L) == 1u.toUByte())
+            check(bittestandcomplement64(MutPtr(a.toLong()), 4L) == 0u.toUByte())
+            check(bittestandcomplement64(MutPtr(a.toLong()), 4L) == 1u.toUByte())
+            check(bittestandcomplement64(MutPtr(a.toLong()), 5L) == 0u.toUByte())
+            check(bittestandcomplement64(MutPtr(a.toLong()), 5L) == 1u.toUByte())
         }
     }
 }

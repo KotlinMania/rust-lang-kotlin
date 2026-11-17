@@ -4,6 +4,8 @@ package io.github.kotlinmania.rustlang.coresimd.simd.ptr.constptr
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.exposeProvenance
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.withAddr
 import io.github.kotlinmania.rustlang.coresimd.Simd
 
 public typealias Usize = Simd<Int, N>

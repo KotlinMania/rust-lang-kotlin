@@ -17,6 +17,7 @@ import io.github.kotlinmania.rustlang.core.char.ToLowercase
 import io.github.kotlinmania.rustlang.core.char.ToTitlecase
 import io.github.kotlinmania.rustlang.core.char.ToUppercase
 import io.github.kotlinmania.rustlang.core.char.decode.DecodeUtf16
+import io.github.kotlinmania.rustlang.core.char.decode.decodeUtf16
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphanumeric
@@ -35,6 +36,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.panic.constPanic
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8UncheckedMut
 import io.github.kotlinmania.rustlang.core.unicode.Alphabetic

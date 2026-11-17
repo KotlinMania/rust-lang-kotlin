@@ -17,6 +17,7 @@ import io.github.kotlinmania.rustlang.std.thread.current.currentOrUnnamed
 import io.github.kotlinmania.rustlang.std.thread.lifecycle.JoinInner
 import io.github.kotlinmania.rustlang.std.thread.lifecycle.spawnUnchecked
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -95,7 +96,7 @@ public open class Scope(
      */
     public open fun <T> spawn(f: () -> T): ScopedJoinHandle<T> = Builder.new().spawnScoped(this, f).expect("failed to spawn thread")
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Scope").field("num_running_threads", this.data.numRunningThreads.load(Ordering.Relaxed)).field("a_thread_panicked", this.data.aThreadPanicked.load(Ordering.Relaxed)).field("main_thread", this.data.mainThread).finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): RustResult<Unit, Error> = run { DebugStruct(f, "Scope").field("num_running_threads", this.data.numRunningThreads.load(Ordering.Relaxed)).field("a_thread_panicked", this.data.aThreadPanicked.load(Ordering.Relaxed)).field("main_thread", this.data.mainThread).finishNonExhaustive(); RustResult.Ok<Unit, Error>(Unit) }
 }
 
 /**
@@ -174,7 +175,7 @@ public open class ScopedJoinHandle<T>(
      */
     public open fun isFinished(): Boolean = this.value.isFinished()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "ScopedJoinHandle").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): RustResult<Unit, Error> = run { DebugStruct(f, "ScopedJoinHandle").finishNonExhaustive(); RustResult.Ok<Unit, Error>(Unit) }
 }
 
 public open class ScopeData internal constructor(
@@ -303,15 +304,15 @@ public fun <T> scope(f: (Scope) -> T): T {
     }
     // Throw any panic from `f`, or the return value of `f` if no thread panicked.
     return when {
-        result is Result.Err -> {
+        result is RustResult.Err<*, *> -> {
             val e = result.error
             resumeUnwind(e)
         }
-        result is Result.Ok && scope.data.aThreadPanicked.load(Ordering.Relaxed) -> {
+        result is RustResult.Ok<*, *> && scope.data.aThreadPanicked.load(Ordering.Relaxed) -> {
             error("a scoped thread panicked")
         }
         else -> {
-            val result1 = result.value
+            val result1 = (result as RustResult.Ok<*, *>).value
             result1
         }
     }
@@ -353,9 +354,9 @@ public fun <T> scope(f: (Scope) -> T): T {
  * check(x == a.size)
  * ```
  */
-public fun <T> Builder.spawnScoped(scope: Scope, f: () -> T): Result<ScopedJoinHandle<T>, io.github.kotlinmania.rustlang.std.io.error.Error> {
+public fun <T> Builder.spawnScoped(scope: Scope, f: () -> T): RustResult<ScopedJoinHandle<T>, io.github.kotlinmania.rustlang.core.io.error.Error> {
     val name = this.name
     val stackSize = this.stackSize
     val noHooks = this.noHooks
-    return Result.Ok<ScopedJoinHandle<T>, io.github.kotlinmania.rustlang.std.io.error.Error>(ScopedJoinHandle(when (val tryResult = spawnUnchecked(name, stackSize, noHooks, scope.data.clone(), f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ScopedJoinHandle<T>, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }))
+    return RustResult.Ok<ScopedJoinHandle<T>, io.github.kotlinmania.rustlang.core.io.error.Error>(ScopedJoinHandle(when (val tryResult = spawnUnchecked(name, stackSize, noHooks, scope.data.clone(), f)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<ScopedJoinHandle<T>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }))
 }

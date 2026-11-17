@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.os.unix.fs
 import io.github.kotlinmania.rustlang.alloc.io.read.defaultReadBuf
 import io.github.kotlinmania.rustlang.alloc.io.read.defaultReadVectored
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.write.defaultWriteVectored
@@ -20,10 +21,11 @@ import io.github.kotlinmania.rustlang.std.fs.FileType
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.OpenOptions
 import io.github.kotlinmania.rustlang.std.fs.Permissions
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
+import io.github.kotlinmania.rustlang.std.os.fd.asFd
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 
 // Unix-specific extensions to primitives in the [std.fs] module.
 
@@ -127,28 +129,28 @@ public interface FileExt {
             run {
                 val matchVal = this.readAt(buf1, offset1)
                 when {
-                    matchVal is Result.Ok && matchVal.value == 0 -> {
+                    matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
                         val valueVal = matchVal.value
                         break
                     }
-                    matchVal is Result.Ok -> {
+                    matchVal is Result.Ok<*, *> -> {
                         val n = matchVal.value
                         val tmp = buf1
                         buf1 = tmp.subList(n, tmp.size)
                         offset1 += n.toULong()
                     }
-                    matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                    matchVal is Result.Err<*, *> && matchVal.error.isInterrupted() -> {
                         val e = matchVal.error
                     }
                     else -> {
-                        val e1 = matchVal.error
+                        val e1 = (matchVal as Result.Err<*, *>).error
                         return Result.Err<Unit, Error>(e1)
                     }
                 }
             }
         }
         return if (!buf1.isEmpty()) {
-            Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.READ_EXACT_EOF)
+            Result.Err<Unit, Error>(Error.READ_EXACT_EOF)
         } else {
             Result.Ok<Unit, Error>(Unit)
         }
@@ -227,15 +229,15 @@ public interface FileExt {
             run {
                 val matchVal = this.readBufAt(buf.reborrow(), offset1)
                 when {
-                    matchVal is Result.Ok -> {
+                    matchVal is Result.Ok<*, *> -> {
                         val valueVal = matchVal.value
                     }
-                    matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                    matchVal is Result.Err<*, *> && matchVal.error.isInterrupted() -> {
                         val e = matchVal.error
                         continue
                     }
                     else -> {
-                        val e1 = matchVal.error
+                        val e1 = (matchVal as Result.Err<*, *>).error
                         return Result.Err<Unit, Error>(e1)
                     }
                 }
@@ -243,7 +245,7 @@ public interface FileExt {
             val n = buf.written() - prevWritten
             offset1 += n.toULong()
             if (n == 0) {
-                return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.READ_EXACT_EOF)
+                return Result.Err<Unit, Error>(Error.READ_EXACT_EOF)
             }
         }
         return Result.Ok<Unit, Error>(Unit)
@@ -362,20 +364,20 @@ public interface FileExt {
             run {
                 val matchVal = this.writeAt(buf1, offset1)
                 when {
-                    matchVal is Result.Ok && matchVal.value == 0 -> {
+                    matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
                         val valueVal = matchVal.value
-                        return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.WRITE_ALL_EOF)
+                        return Result.Err<Unit, Error>(Error.WRITE_ALL_EOF)
                     }
-                    matchVal is Result.Ok -> {
+                    matchVal is Result.Ok<*, *> -> {
                         val n = matchVal.value
                         buf1 = ((buf1).subList(n, (buf1).size))
                         offset1 += n.toULong()
                     }
-                    matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                    matchVal is Result.Err<*, *> && matchVal.error.isInterrupted() -> {
                         val e = matchVal.error
                     }
                     else -> {
-                        val e1 = matchVal.error
+                        val e1 = (matchVal as Result.Err<*, *>).error
                         return Result.Err<Unit, Error>(e1)
                     }
                 }

@@ -22,7 +22,7 @@ public fun <T, I, A : Allocator> List<T>.specExtendTI(iterator: I) where I : Tru
 public fun <T, A1 : Allocator, A2 : Allocator> List<T>.specExtend(iterator: IntoIter<T, A2>) {
     // ignore-tidy-undocumented-unchecked
     run {
-        this.appendElements(((iterator.asSlice() as Any?) as Unit))
+        this.appendElements(iterator.asSlice())
     }
     iterator.forgetRemainingElementsAndDealloc()
 }

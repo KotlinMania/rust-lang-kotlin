@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.peekable
 
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
@@ -27,7 +26,7 @@ public open class Peekable<I, Item>(
      * Remember a peeked value, even if it was None.
      */
     public var peeked: Item?,
-) : TrustedLen, SourceIter<Source>, Iterable<Item> {
+) : Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Peekable.next()) {
@@ -43,7 +42,7 @@ public open class Peekable<I, Item>(
     // It ensures that `.peek();.peek();` or `.peek();.next();` only advances the
     // underlying iterator at most once. This does not by itself make the iterator
     // fused.
-    public override fun next(): Item? =
+    public open fun next(): Item? =
         when (val matchVal = this.peeked.also { this.peeked = null }) {
             null -> this.iter.next()
             else -> {
@@ -52,14 +51,14 @@ public open class Peekable<I, Item>(
             }
         }
 
-    public override fun count(): Int =
+    public open fun count(): Int =
         when (val matchVal = this.peeked.also { this.peeked = null }) {
             null -> 0
             else -> 1 + this.iter.count()
             null -> this.iter.count()
         }
 
-    public override fun nth(n: Int): Item? =
+    public open fun nth(n: Int): Item? =
         run {
             val matchVal = this.peeked.also { this.peeked = null }
             when {
@@ -73,7 +72,7 @@ public open class Peekable<I, Item>(
             }
         }
 
-    public override fun last(): Item? {
+    public open fun last(): Item? {
         val peekOpt =
             run {
                 val matchVal = this.peeked.also { this.peeked = null }
@@ -89,7 +88,7 @@ public open class Peekable<I, Item>(
         return (this.iter.last() ?: peekOpt)
     }
 
-    public override fun sizeHint(): Pair<Int, Int?> {
+    public open fun sizeHint(): Pair<Int, Int?> {
         val peekLen =
             when (val matchVal = this.peeked) {
                 null -> { return Pair(0, 0) }
@@ -109,20 +108,20 @@ public open class Peekable<I, Item>(
         return Pair(lo1, hi1)
     }
 
-    public override fun <Residual, B, R> tryFold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Residual> {
+    public open fun <Residual, B, R> tryFold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Residual> {
         val acc =
             when (val matchVal = this.peeked.also { this.peeked = null }) {
                 null -> { return init }
                 else -> {
                     val v = matchVal
-                    when (val tryResult = f(init, v)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                    when (val tryResult = f(init, v)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
                 }
                 null -> init
             }
         return this.iter.tryFold(acc, f)
     }
 
-    public override fun <Acc> fold(init: Acc, fold: (Acc, Item) -> Acc): Acc {
+    public open fun <Acc> fold(init: Acc, fold: (Acc, Item) -> Acc): Acc {
         val acc =
             when (val matchVal = this.peeked) {
                 null -> { return init }
@@ -151,11 +150,11 @@ public open class Peekable<I, Item>(
             else -> {
                 val v = matchVal
                 when (val matchVal1 = this.iter.tryRfold(init, f).branch()) {
-                    is ControlFlow.Continue -> {
+                    is ControlFlow.Continue<*, *> -> {
                         val (acc) = matchVal1
                         f(acc, v)
                     }
-                    is ControlFlow.Break -> {
+                    is ControlFlow.Break<*, *> -> {
                         val (r) = matchVal1
                         this.peeked = v
                         fromResidualRFn(r)
@@ -416,10 +415,10 @@ public open class Peekable<I, Item>(
                     val item = matchVal
                     run {
                         val matchVal1 = f(item)
-                        when (matchVal1) { is Result.Ok -> {
+                        when (matchVal1) { is Result.Ok<*, *> -> {
                             val result = matchVal1.value
                             return result
-                        }; is Result.Err -> {
+                        }; is Result.Err<*, *> -> {
                             val item1 = matchVal1.error
                             item1
                         } }
@@ -479,12 +478,12 @@ public open class Peekable<I, Item>(
         return null
     }
 
-    public override fun asInner(): Source {
-        // SAFETY: unchecked function forwarding to unchecked function with the same requirements
-        return this.iter.asInner()
-    }
-
     public companion object {
         public fun <I> new(iter: I): Peekable<I, Item> = Peekable(iter = iter, peeked = null)
     }
+}
+
+public fun <Source, I> Peekable<I, Item>.asInner(): Source where I : SourceIter<Source> {
+    // SAFETY: unchecked function forwarding to unchecked function with the same requirements
+    return this.iter.asInner()
 }

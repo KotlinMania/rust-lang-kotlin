@@ -14,10 +14,12 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.num.nichetypes.UsizeNoHighBitMinusOne
+import io.github.kotlinmania.rustlang.core.ops.index.index
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
@@ -120,7 +122,7 @@ public open class CStr internal constructor(
      * Shows the underlying bytes as a normal string, with invalid UTF-8
      * presented as hex escape sequences.
      */
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((ByteStr.fromBytes(this.toBytes())).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((ByteStr.fromBytes(this.toBytes())).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     /**
      * Returns the inner pointer to this C string.
@@ -364,7 +366,7 @@ public open class CStr internal constructor(
         }
     }
 
-    public open fun indexRangeFromInt(index: RangeFrom<Int>): CStr = this.index(RangeFrom.from(index))
+    public open fun index(index: range.RangeFrom<Int>): CStr = this.index(RangeFrom.from(index))
 
     public override fun asRef(): CStr = this
 
@@ -495,7 +497,7 @@ public open class CStr internal constructor(
         public fun fromBytesUntilNul(bytes: List<UByte>): Result<CStr, FromBytesUntilNulError> {
             val nulPos = memchr.memchr(0, bytes)
             return when (nulPos) {
-                null -> Result.Err<CStr, FromBytesUntilNulError>(FromBytesUntilNulError())
+                null -> Result.Err<CStr, FromBytesUntilNulError>(FromBytesUntilNulError(Unit))
                 else -> {
                     val nulPos1 = nulPos
                     // Note(const-Note) replace with range index
@@ -626,7 +628,7 @@ public sealed class FromBytesWithNulError {
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
         when (this) {
             is InteriorNul -> {
-                val position = this.position
+                val position = (this as InteriorNul).position
                 f.writeFmt("data provided contains an interior nul byte at byte position $position")
             }
             FromBytesWithNulError.NotNulTerminated -> f.writeFmt("data provided is not nul terminated")
@@ -793,7 +795,7 @@ public open class Bytes internal constructor(
 public open class Display(
     public var cStr: CStr,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.cStr).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.cStr).toString()); Result.Ok<Unit, Unit>(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = run { f.append((ByteStr.fromBytes(this.cStr.toBytes())).toString()); Result.Ok(Unit) }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = run { f.append((ByteStr.fromBytes(this.cStr.toBytes())).toString()); Result.Ok<Unit, Unit>(Unit) }
 }

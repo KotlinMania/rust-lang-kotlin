@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.alloc.alloc.alloc
 import io.github.kotlinmania.rustlang.alloc.alloc.dealloc
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -16,12 +17,12 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.HandleOrInvalid
 import io.github.kotlinmania.rustlang.std.os.windows.io.OwnedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
+import io.github.kotlinmania.rustlang.std.os.windows.io.fromRawHandle
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.File
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.FileAttr
@@ -64,7 +65,7 @@ public open class Dir internal constructor(
         internal set
 
     public open fun duplicate(): Result<Dir, Error> {
-        return Result.Ok<Dir, Error>(Dir(handle = when (val tryResult = this.handle.tryClone()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Dir, Error>(tryResult.error) }))
+        return Result.Ok<Dir, Error>(Dir(handle = when (val tryResult = this.handle.tryClone()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.error) }))
     }
 
     public open fun openFile(path: Path, opts: OpenOptions): Result<File, Error> {
@@ -72,18 +73,18 @@ public open class Dir internal constructor(
         if (path.isAbsolute()) {
             return File.open(path, opts)
         }
-        val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<File, Error>(tryResult.error) }
+        val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<File, Error>(tryResult.error) }
         return this.openFileNative(path1, opts, FILE_NON_DIRECTORY_FILE).map({ handle -> File(handle = handle) })
     }
 
     public open fun removeFile(path: Path): Result<Unit, Error> {
-        val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         return this.removeNative(path1, false)
     }
 
     public open fun rename(from: Path, toDir: Dir, to: Path): Result<Unit, Error> {
-        val from1 = when (val tryResult = toU16sWithoutNul(from)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
-        val to1 = when (val tryResult = toU16sWithoutNul(to)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        val from1 = when (val tryResult = toU16sWithoutNul(from)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        val to1 = when (val tryResult = toU16sWithoutNul(to)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         return this.renameNative(from1, toDir, to1)
     }
 
@@ -96,12 +97,12 @@ public open class Dir internal constructor(
     }
 
     public open fun openDir(path: Path, opts: OpenOptions): Result<Dir, Error> {
-        val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Dir, Error>(tryResult.error) }
+        val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.error) }
         return this.openFileNative(path1, opts, FILE_DIRECTORY_FILE).map({ handle -> Dir(handle = handle) })
     }
 
     public open fun removeDir(path: Path): Result<Unit, Error> {
-        val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         return this.removeNative(path1, true)
     }
 
@@ -121,7 +122,7 @@ public open class Dir internal constructor(
                 FILE_NON_DIRECTORY_FILE
             }
         createOpt = createOpt or FILE_OPEN_REPARSE_POINT
-        val handle = when (val tryResult = this.openFileNative(path, opts, createOpt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        val handle = when (val tryResult = this.openFileNative(path, opts, createOpt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         return File.fromInner(handle).delete().ioResult()
     }
 
@@ -130,11 +131,11 @@ public open class Dir internal constructor(
         // This is a dynamically sized struct so we need to get the position of the last field to calculate the actual size.
         val opts = OpenOptions.new()
         opts.accessMode(DELETE)
-        val handle = when (val tryResult = this.openFileNative(from, opts, FILE_OPEN_REPARSE_POINT)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
-        val structSize = when (val tryResult = (to.size.checkedMul(2)?.let({ x -> x.checkedAdd(0) })?.let { Result.Ok<Any, Error>(it) } ?: Result.Err<Any, Error>(tooLongErr))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
-        val layout = when (val tryResult = Layout.fromSizeAlign(structSize, alignOf<FileRenameInformation>(typeLayoutT = UnresolvedTypeLayout<FileRenameInformation>())).mapErr({ tooLongErr })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
-        val structSize1 = when (val tryResult = UInt.tryFrom(structSize).mapErr({ tooLongErr })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
-        val toByteLen = when (val tryResult = UInt.tryFrom(to.size * 2).mapErr({ tooLongErr })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        val handle = when (val tryResult = this.openFileNative(from, opts, FILE_OPEN_REPARSE_POINT)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        val structSize = when (val tryResult = (to.size.checkedMul(2)?.let({ x -> x.checkedAdd(0) })?.let { Result.Ok<Any, Error>(it) } ?: Result.Err<Any, Error>(tooLongErr))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        val layout = when (val tryResult = Layout.fromSizeAlign(structSize, alignOf<FileRenameInformation>(typeLayoutT = UnresolvedTypeLayout<FileRenameInformation>())).mapErr({ tooLongErr })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        val structSize1 = when (val tryResult = UInt.tryFrom(structSize).mapErr({ tooLongErr })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        val toByteLen = when (val tryResult = UInt.tryFrom(to.size * 2).mapErr({ tooLongErr })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         val fileRenameInfo: Any?
         // SAFETY: We allocate enough memory for a full FILE_RENAME_INFORMATION struct and the filename.
         run {
@@ -166,17 +167,17 @@ public open class Dir internal constructor(
     }
 
     public open fun metadata(path: Path): Result<FileAttr, Error> {
-        val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<FileAttr, Error>(tryResult.error) }
+        val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<FileAttr, Error>(tryResult.error) }
         // Same as the `stat` logic used for `fs.metadata`
         return run {
             val matchVal = this.metadataNative(path1, ReparsePoint.Follow)
             when {
-                matchVal is Result.Err && (matchVal as Result.Err).error.rawOsError() == ERROR_CANT_ACCESS_FILE.toInt() -> {
+                matchVal is Result.Err<*, *> && matchVal.error.rawOsError() == ERROR_CANT_ACCESS_FILE.toInt() -> {
                     val err = matchVal.error
                     // Fallback to opening reparse points when following fails. Needed for UNIX domain
                     // sockets. See <https://github.com/rust-lang/rust/issues/109106>.
                     when (val matchVal1 = this.metadataNative(path1, ReparsePoint.Open)) {
-                        is Result.Ok -> {
+                        is Result.Ok<*, *> -> {
                             val attrs = matchVal1.value
                             if (!attrs.fileType().isSymlink()) {
                                 return Result.Ok<FileAttr, Error>(attrs)
@@ -195,7 +196,7 @@ public open class Dir internal constructor(
     }
 
     public open fun symlinkMetadata(path: Path): Result<FileAttr, Error> {
-        val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<FileAttr, Error>(tryResult.error) }
+        val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<FileAttr, Error>(tryResult.error) }
         return this.metadataNative(path1, ReparsePoint.Open)
     }
 
@@ -211,13 +212,13 @@ public open class Dir internal constructor(
             }
         val name = UnicodeStrRef.fromSlice(path)
         val objectAttributes = ObjectAttributes.withLength().copy(rootDirectory = this.handle.asRawHandle(), objectName = name.asPtr().castMut())
-        val handle = when (val tryResult = ntCreateFile(opts, objectAttributes, createOpt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<FileAttr, Error>(tryResult.error) }
+        val handle = when (val tryResult = ntCreateFile(opts, objectAttributes, createOpt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<FileAttr, Error>(tryResult.error) }
         return File(handle = handle).fileAttr()
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         val b = debugPathHandle(this.handle.asHandle(), f, "Dir")
-        return b.finish()
+        return run { b.finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
     }
 
     public companion object {
@@ -236,16 +237,16 @@ public open class Dir internal constructor(
         }
 
         public fun openWithNative(path: WCStr, opts: OpenOptions): Result<Dir, Error> {
-            val creation = when (val tryResult = opts.getCreationMode()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Dir, Error>(tryResult.error) }
+            val creation = when (val tryResult = opts.getCreationMode()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.error) }
             val localStorageL119C8 = AddressableLocal(SecurityAttributes(nLength = sizeOf<SecurityAttributes>(typeLayoutT = UnresolvedTypeLayout<SecurityAttributes>()).toUInt(), lpSecurityDescriptor = MutPtr(0L), bInheritHandle = opts.inheritHandle.toInt()), UnresolvedTypeLayout<SecurityAttributes>())
-            val handle = createFileW(path.asPtr(), when (val tryResult = opts.getAccessMode()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Dir, Error>(tryResult.error) }, opts.shareMode, localStorageL119C8.asConstPtr(), creation, opts.getFlagsAndAttributes() or FILE_FLAG_BACKUP_SEMANTICS, MutPtr(0L))
+            val handle = createFileW(path.asPtr(), when (val tryResult = opts.getAccessMode()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.error) }, opts.shareMode, localStorageL119C8.asConstPtr(), creation, opts.getFlagsAndAttributes() or FILE_FLAG_BACKUP_SEMANTICS, MutPtr(0L))
             return run {
                 val matchVal = OwnedHandle.tryFrom(HandleOrInvalid.fromRawHandle(handle))
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val handle1 = matchVal.value
                     Result.Ok<Dir, Error>(Dir(handle = Handle.fromInner(handle1)))
-                }; is Result.Err -> {
-                    Result.Err<Dir, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
+                }; is Result.Err<*, *> -> {
+                    Result.Err<Dir, Error>(Error.lastOsError())
                 } }
             }
         }
@@ -253,7 +254,7 @@ public open class Dir internal constructor(
 }
 
 public fun toU16sWithoutNul(path: Path): Result<List<UShort>, Error> {
-    val path1 = when (val tryResult = toU16s(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UShort>, Error>(tryResult.error) }
+    val path1 = when (val tryResult = toU16s(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.error) }
     path1.pop()
     return Result.Ok<List<UShort>, Error>(path1)
 }
@@ -267,10 +268,10 @@ public fun ntCreateFile(opts: OpenOptions, objectAttributes: ObjectAttributes, c
     val handle = MutPtr(0L)
     val ioStatus = IoStatusBlock.PENDING
     // SYNCHRONIZE is included in FILE_GENERIC_READ, but not GENERIC_READ, so we add it manually
-    val access = when (val tryResult = opts.getAccessMode()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Handle, Error>(tryResult.error) } or SYNCHRONIZE
+    val access = when (val tryResult = opts.getAccessMode()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Handle, Error>(tryResult.error) } or SYNCHRONIZE
     // one of FILE_SYNCHRONOUS_IO_(,NON)ALERT is required for later operations to succeed.
     val options = createOptions or FILE_SYNCHRONOUS_IO_NONALERT
-    val status = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.ntCreateFile(handle, access, objectAttributes, ioStatus, ConstPtr(0L), FILE_ATTRIBUTE_NORMAL, opts.shareMode, when (val tryResult = opts.getDisposition()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Handle, Error>(tryResult.error) }, options, ConstPtr(0L), 0u)
+    val status = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.ntCreateFile(handle, access, objectAttributes, ioStatus, ConstPtr(0L), FILE_ATTRIBUTE_NORMAL, opts.shareMode, when (val tryResult = opts.getDisposition()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Handle, Error>(tryResult.error) }, options, ConstPtr(0L), 0u)
     return if (ntSuccess(status)) {
         // SAFETY: ntSuccess guarantees that handle is no longer null
         Result.Ok<Handle, Error>(Handle.fromRawHandle(handle))

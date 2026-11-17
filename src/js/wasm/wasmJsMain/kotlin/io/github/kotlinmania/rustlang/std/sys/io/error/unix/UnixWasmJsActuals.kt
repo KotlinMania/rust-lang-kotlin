@@ -19,7 +19,7 @@ private external fun wasmStdSysIoErrorUnixSetLIBCERRNO(p0: Int)
 @JsFun("() => globalThis.__km_napi_kmcore.stdSysIoErrorUnixErrnoLocation()")
 private external fun wasmStdSysIoErrorUnixErrnoLocation(): String
 
-public actual var LIBC_ERRNO: io.github.kotlinmania.rustlang.libc.CInt
+public actual var LIBC_ERRNO: CInt
     get() = if (sysIoErrorUnixNapiAvailable) wasmStdSysIoErrorUnixGetLIBCERRNO() else throw UnsupportedOperationException("Native FFI addon is not available")
     set(value) {
         if (sysIoErrorUnixNapiAvailable) {

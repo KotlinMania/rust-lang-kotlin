@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.chars
 
@@ -19,10 +20,10 @@ public fun fromU32(i: UInt): Char? {
     // Note(const-Note): once Result.ok is const fn, use it here
     return run {
         val matchVal = charTryFromU32(i)
-        when (matchVal) { is Result.Ok -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val c = matchVal.value
             c
-        }; is Result.Err -> {
+        }; is Result.Err<*, *> -> {
             null
         } }
     }
@@ -110,11 +111,11 @@ public fun tryFromUByte(c: Char): Result<UByte, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
         val matchVal = UByte.tryFrom(UInt.from(c))
-        when (matchVal) { is Result.Ok -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val b = matchVal.value
             Result.Ok<UByte, TryFromCharError>(b)
-        }; is Result.Err -> {
-            Result.Err<UByte, TryFromCharError>(TryFromCharError())
+        }; is Result.Err<*, *> -> {
+            Result.Err<UByte, TryFromCharError>(TryFromCharError(Unit))
         } }
     }
 }
@@ -143,11 +144,11 @@ public fun tryFromUShort(c: Char): Result<UShort, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
         val matchVal = UShort.tryFrom(UInt.from(c))
-        when (matchVal) { is Result.Ok -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val x = matchVal.value
             Result.Ok<UShort, TryFromCharError>(x)
-        }; is Result.Err -> {
-            Result.Err<UShort, TryFromCharError>(TryFromCharError())
+        }; is Result.Err<*, *> -> {
+            Result.Err<UShort, TryFromCharError>(TryFromCharError(Unit))
         } }
     }
 }
@@ -187,11 +188,11 @@ public fun tryFromInt(c: Char): Result<Int, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
         val matchVal = Int.tryFrom(UInt.from(c))
-        when (matchVal) { is Result.Ok -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val x = matchVal.value
             Result.Ok<Int, TryFromCharError>(x)
-        }; is Result.Err -> {
-            Result.Err<Int, TryFromCharError>(TryFromCharError())
+        }; is Result.Err<*, *> -> {
+            Result.Err<Int, TryFromCharError>(TryFromCharError(Unit))
         } }
     }
 }
@@ -283,7 +284,7 @@ public fun charTryFromU32(i: UInt): Result<Char, CharTryFromError> {
     // unsigned comparison against 0x110000 - 0x800 will detect both the wrapped
     // surrogate range as well as the numbers originally larger than 0x110000.
     return if (((i xor 0xD800u) - 0x800u) >= 0x110000u - 0x800u) {
-        Result.Err<Char, CharTryFromError>(CharTryFromError())
+        Result.Err<Char, CharTryFromError>(CharTryFromError(Unit))
     } else {
         // SAFETY: checked that it's a legal unicode value
         Result.Ok<Char, CharTryFromError>(transmuteWithLayouts<UInt, Char>(i, PrimitiveLayouts.U32, UnresolvedTypeLayout<Char>()))

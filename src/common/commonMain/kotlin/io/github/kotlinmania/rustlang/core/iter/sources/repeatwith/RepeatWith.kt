@@ -1,10 +1,10 @@
 // port-lint: source iter/sources/repeat_with.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.repeatwith
 
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -99,34 +99,10 @@ public fun <A> repeatWith(repeater: () -> A): RepeatWith<() -> A> = RepeatWith(r
  */
 public open class RepeatWith<F>(
     public var repeater: F,
-) : TrustedLen, Iterable<A> {
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@RepeatWith.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
+) {
     public open fun clone(): RepeatWith<F> = RepeatWith(repeater)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "RepeatWith").finishNonExhaustive()
-
-    public override fun next(): A? = (this.repeater)()
-
-    public override fun sizeHint(): Pair<Int, Int?> = Pair(Int.MAX_VALUE, null)
-
-    public override fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, A) -> R): R where R : Try<R, Acc, Residual> {
-        var init1 = init
-        // This override isn't strictly needed, but avoids the need to optimize
-        // away the `next`-always-returns-`Some` and emphasizes that the `?`
-        // is the only way to exit the loop.
-        while (true) {
-            val item = (this.repeater)()
-            init1 = when (val tryResult = fold(init1, item)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-        }
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "RepeatWith").finishNonExhaustive(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun <F> typeLayout(typeLayoutF: TypeLayout<F>): TypeLayout<RepeatWith<F>> =
@@ -148,5 +124,20 @@ public open class RepeatWith<F>(
                     (typeLayoutF).writeBytes(buf, offset, value.repeater)
                 }
             }
+    }
+}
+
+public fun <A> RepeatWith<F>.next(): A? = (this.repeater)()
+
+public fun <A> RepeatWith<F>.sizeHint(): Pair<Int, Int?> = Pair(Int.MAX_VALUE, null)
+
+public fun <Residual, A, Acc, R> RepeatWith<F>.tryFold(init: Acc, fold: (Acc, A) -> R): R where R : Try<R, Acc, Residual> {
+    var init1 = init
+    // This override isn't strictly needed, but avoids the need to optimize
+    // away the `next`-always-returns-`Some` and emphasizes that the `?`
+    // is the only way to exit the loop.
+    while (true) {
+        val item = (this.repeater)()
+        init1 = when (val tryResult = fold(init1, item)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
 }

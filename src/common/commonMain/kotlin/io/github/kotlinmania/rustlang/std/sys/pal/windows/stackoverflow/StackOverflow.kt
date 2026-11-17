@@ -14,7 +14,6 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Exception
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.addVectoredExceptionHandler
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.setThreadStackGuarantee
 import io.github.kotlinmania.rustlang.std.sys.stdio.windows.panicOutput
-import io.github.kotlinmania.rustlang.std.sys.thread.windows.Thread
 
 /**
  * Reserve stack space for use in stack overflow exceptions.
@@ -32,9 +31,9 @@ public fun vectoredHandler(exceptionInfo: MutPtr): Int {
         val rec = (UnresolvedTypeLayout<ExceptionPointers>()).readNative((exceptionInfo).rawAddress).exceptionRecord
         val code = rec.exceptionCode
         if (code == EXCEPTION_STACK_OVERFLOW.castUnsigned()) {
-            Thread.withCurrentName({ name ->
+            thread.withCurrentName({ name ->
                 val name1 = name.unwrapOr("<unknown>")
-                val tid = Thread.currentOsId()
+                val tid = thread.currentOsId()
                 when (val matchVal = panicOutput()) {
                     null -> {}
                     else -> {

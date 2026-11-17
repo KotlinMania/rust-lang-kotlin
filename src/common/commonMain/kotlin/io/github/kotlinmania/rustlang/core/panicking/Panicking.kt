@@ -427,7 +427,7 @@ public fun <T> assertMatchesFailed(left: T, right: String, args: fmt.Arguments?)
                 value = v
             }
 
-        public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(this.value); Result.Ok(Unit) }
+        public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(this.value); Result.Ok<Unit, Unit>(Unit) }
     }
     assertFailedInner(AssertKind.Match, left, Pattern(right), args)
 }

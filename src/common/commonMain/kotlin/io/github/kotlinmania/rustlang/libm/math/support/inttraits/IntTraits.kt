@@ -212,7 +212,7 @@ public val MAX1: Int = Int.MAX
 
 public fun Int.absInt(): Int = this.abs()
 
-public fun Int.unsignedAbsInt(): Unsigned = this.unsignedAbs()
+public fun Int.unsignedAbsInt(): Int = this.unsignedAbs()
 
 public val BITS2: UInt = UByte.ZERO.countZeros()
 
@@ -308,7 +308,7 @@ public fun Byte.unsigned(): UByte = this.toUByte()
 
 public fun Byte.absInt(): Byte = this.abs()
 
-public fun Byte.unsignedAbsInt(): Unsigned = this.unsignedAbs()
+public fun Byte.unsignedAbsInt(): UByte = this.unsignedAbs()
 
 public fun intFromUnsignedByte(me: UByte): Byte = me.toByte()
 
@@ -456,7 +456,7 @@ public fun Short.unsigned(): UShort = this.toUShort()
 
 public fun Short.absInt(): Short = this.abs()
 
-public fun Short.unsignedAbsInt(): Unsigned = this.unsignedAbs()
+public fun Short.unsignedAbsInt(): UShort = this.unsignedAbs()
 
 public fun intFromUnsignedShort(me: UShort): Short = me.toShort()
 
@@ -694,7 +694,7 @@ public fun Long.unsigned(): ULong = this.toULong()
 
 public fun Long.absInt(): Long = this.abs()
 
-public fun Long.unsignedAbsInt(): Unsigned = this.unsignedAbs()
+public fun Long.unsignedAbsInt(): ULong = this.unsignedAbs()
 
 public fun intFromUnsignedLong(me: ULong): Long = me.toLong()
 
@@ -842,7 +842,7 @@ public fun I128.unsigned(): U128 = this.toU128()
 
 public fun I128.absInt(): I128 = this.abs()
 
-public fun I128.unsignedAbsInt(): Unsigned = this.unsignedAbs()
+public fun I128.unsignedAbsInt(): U128 = this.unsignedAbs()
 
 public fun intFromUnsignedI128(me: U128): I128 = me.toI128()
 

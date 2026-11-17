@@ -5,6 +5,8 @@ package io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import io.github.kotlinmania.rustlang.core.slice.splitFirst
 
 // Common utilities, for internal use only.
 

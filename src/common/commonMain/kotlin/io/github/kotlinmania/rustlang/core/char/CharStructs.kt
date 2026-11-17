@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.iteratorGetUnchecked as underlyingIteratorGetUnchecked
 
@@ -60,7 +61,7 @@ public open class EscapeUnicode internal constructor(
 
     public open fun len(): Int = this.value.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public operator fun invoke(
@@ -119,7 +120,7 @@ public open class EscapeDefault internal constructor(
 
     public open fun len(): Int = this.value.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public operator fun invoke(
@@ -178,7 +179,7 @@ public open class EscapeDebug internal constructor(
 
     public open fun len(): Int = this.value.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public operator fun invoke(
@@ -223,19 +224,19 @@ public open class ToUppercase(
 
     public open fun clone(): ToUppercase = ToUppercase(value)
 
-    public override fun next(): Char? = this.value.next()
+    public open fun next(): Char? = this.value.next()
 
-    public override fun sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
+    public open fun sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
 
-    public override fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.value.fold(init, fold)
+    public open fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.value.fold(init, fold)
 
-    public override fun count(): Int = this.value.count()
+    public open fun count(): Int = this.value.count()
 
-    public override fun last(): Char? = this.value.last()
+    public open fun last(): Char? = this.value.last()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
-    public override fun iteratorGetUnchecked(idx: Int): Char = this.value.underlyingIteratorGetUnchecked(idx)
+    public open fun iteratorGetUnchecked(idx: Int): Char = this.value.underlyingIteratorGetUnchecked(idx)
 
     public open fun nextBack(): Char? = this.value.nextBack()
 
@@ -247,7 +248,7 @@ public open class ToUppercase(
 
     public open fun isEmpty(): Boolean = this.value.isEmpty()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
@@ -282,19 +283,19 @@ public open class ToTitlecase(
 
     public open fun clone(): ToTitlecase = ToTitlecase(value)
 
-    public override fun next(): Char? = this.value.next()
+    public open fun next(): Char? = this.value.next()
 
-    public override fun sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
+    public open fun sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
 
-    public override fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.value.fold(init, fold)
+    public open fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.value.fold(init, fold)
 
-    public override fun count(): Int = this.value.count()
+    public open fun count(): Int = this.value.count()
 
-    public override fun last(): Char? = this.value.last()
+    public open fun last(): Char? = this.value.last()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
-    public override fun iteratorGetUnchecked(idx: Int): Char = this.value.underlyingIteratorGetUnchecked(idx)
+    public open fun iteratorGetUnchecked(idx: Int): Char = this.value.underlyingIteratorGetUnchecked(idx)
 
     public open fun nextBack(): Char? = this.value.nextBack()
 
@@ -306,7 +307,7 @@ public open class ToTitlecase(
 
     public open fun isEmpty(): Boolean = this.value.isEmpty()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
@@ -341,19 +342,19 @@ public open class ToLowercase(
 
     public open fun clone(): ToLowercase = ToLowercase(value)
 
-    public override fun next(): Char? = this.value.next()
+    public open fun next(): Char? = this.value.next()
 
-    public override fun sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
+    public open fun sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
 
-    public override fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.value.fold(init, fold)
+    public open fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.value.fold(init, fold)
 
-    public override fun count(): Int = this.value.count()
+    public open fun count(): Int = this.value.count()
 
-    public override fun last(): Char? = this.value.last()
+    public open fun last(): Char? = this.value.last()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
-    public override fun iteratorGetUnchecked(idx: Int): Char = this.value.underlyingIteratorGetUnchecked(idx)
+    public open fun iteratorGetUnchecked(idx: Int): Char = this.value.underlyingIteratorGetUnchecked(idx)
 
     public open fun nextBack(): Char? = this.value.nextBack()
 
@@ -365,7 +366,7 @@ public open class ToLowercase(
 
     public open fun isEmpty(): Boolean = this.value.isEmpty()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
@@ -400,19 +401,19 @@ public open class ToCasefold(
 
     public open fun clone(): ToCasefold = ToCasefold(value)
 
-    public override fun next(): Char? = this.value.next()
+    public open fun next(): Char? = this.value.next()
 
-    public override fun sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
+    public open fun sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
 
-    public override fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.value.fold(init, fold)
+    public open fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.value.fold(init, fold)
 
-    public override fun count(): Int = this.value.count()
+    public open fun count(): Int = this.value.count()
 
-    public override fun last(): Char? = this.value.last()
+    public open fun last(): Char? = this.value.last()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
-    public override fun iteratorGetUnchecked(idx: Int): Char = this.value.underlyingIteratorGetUnchecked(idx)
+    public open fun iteratorGetUnchecked(idx: Int): Char = this.value.underlyingIteratorGetUnchecked(idx)
 
     public open fun nextBack(): Char? = this.value.nextBack()
 
@@ -424,7 +425,7 @@ public open class ToCasefold(
 
     public open fun isEmpty(): Boolean = this.value.isEmpty()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
@@ -454,19 +455,19 @@ public open class CaseMappingIter internal constructor(
 
     public open fun clone(): CaseMappingIter = CaseMappingIter(value)
 
-    public override fun next(): Char? = this.value.next()
+    public open fun next(): Char? = this.value.next()
 
-    public override fun sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
+    public open fun sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
 
-    public override fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.value.fold(init, fold)
+    public open fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.value.fold(init, fold)
 
-    public override fun count(): Int = this.value.count()
+    public open fun count(): Int = this.value.count()
 
-    public override fun last(): Char? = this.value.last()
+    public open fun last(): Char? = this.value.last()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
-    public override fun iteratorGetUnchecked(idx: Int): Char {
+    public open fun iteratorGetUnchecked(idx: Int): Char {
         // SAFETY: just forwarding requirements to caller
         return this.value.underlyingIteratorGetUnchecked(idx)
     }

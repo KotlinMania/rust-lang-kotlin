@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.rustcdemangle.Demangle
+import io.github.kotlinmania.rustlang.rustcdemangle.demangle
 import io.github.kotlinmania.rustlang.rustcdemangle.tryDemangle
 import io.github.kotlinmania.rustlang.std.path.Path
 
@@ -198,7 +199,7 @@ public open class SymbolName(
             else -> {
                 val cpp = matchVal1
                 when (val matchVal2 = cpp.demangle()) {
-                    is Result.Ok -> {
+                    is Result.Ok<*, *> -> {
                         val s1 = matchVal2.value
                         return s1.fmt(f)
                     }
@@ -222,7 +223,7 @@ public open class SymbolName(
             else -> {
                 val cpp = matchVal1
                 when (val matchVal2 = cpp.demangle()) {
-                    is Result.Ok -> {
+                    is Result.Ok<*, *> -> {
                         val s1 = matchVal2.value
                         return s1.fmt(f)
                     }

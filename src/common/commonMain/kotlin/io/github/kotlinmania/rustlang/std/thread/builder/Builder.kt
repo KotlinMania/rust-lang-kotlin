@@ -1,8 +1,8 @@
 // port-lint: source thread/builder.rs
 package io.github.kotlinmania.rustlang.std.thread.builder
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.thread.joinhandle.JoinHandle
 import io.github.kotlinmania.rustlang.std.thread.lifecycle.spawnUnchecked
 
@@ -213,7 +213,7 @@ public open class Builder(
         val name = this.name
         val stackSize = this.stackSize
         val noHooks = this.noHooks
-        return Result.Ok<JoinHandle<T>, Error>(JoinHandle(when (val tryResult = spawnUnchecked(name, stackSize, noHooks, null, f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<JoinHandle<T>, Error>(tryResult.error) }))
+        return Result.Ok<JoinHandle<T>, Error>(JoinHandle(when (val tryResult = spawnUnchecked(name, stackSize, noHooks, null, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<JoinHandle<T>, Error>(tryResult.error) }))
     }
 
     public companion object {

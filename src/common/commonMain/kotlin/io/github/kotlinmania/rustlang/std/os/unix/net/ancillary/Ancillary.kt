@@ -1,6 +1,7 @@
 // port-lint: source os/unix/net/ancillary.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net.ancillary
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
@@ -21,7 +22,6 @@ import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.CMSG_DATA
 import io.github.kotlinmania.rustlang.libc.CMSG_FIRSTHDR
 import io.github.kotlinmania.rustlang.libc.CMSG_LEN
@@ -39,8 +39,8 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_CTRUNC
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_TRUNC
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Ucred
 import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.os.unix.net.SockaddrUn
 import io.github.kotlinmania.rustlang.std.os.unix.net.SocketAddr
 import io.github.kotlinmania.rustlang.std.path.Path
@@ -55,13 +55,13 @@ public fun recvVectoredWithAncillaryFrom(socket: Socket, bufs: MutableList<IoSli
         msg.msgName = (localStorageL41C8.asMutPtr())
         msg.msgNamelen = sizeOf<SockaddrUn>(typeLayoutT = UnresolvedTypeLayout<SockaddrUn>())
         msg.msgIov = bufs.asMutPtr()
-        msg.msgIovlen = ((bufs.size as Any?) as Result<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error>)
-        msg.msgControllen = ((ancillary.buffer.size as Any?) as Result<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error>)
+        msg.msgIovlen = bufs.size
+        msg.msgControllen = ancillary.buffer.size
         // macos requires that the control pointer is null when the len is 0.
         if (msg.msgControllen > 0) {
             msg.msgControl = ancillary.buffer.asMutPtr()
         }
-        val count = when (val tryResult = socket.recvMsg(RustMutableReference(localStorageL42C8.asMutPtr(), localStorageL42C8.layout))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error>(tryResult.error) }
+        val count = when (val tryResult = socket.recvMsg(RustMutableReference(localStorageL42C8.asMutPtr(), localStorageL42C8.layout))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error>(tryResult.error) }
         ancillary.length = msg.msgControllen.toInt()
         ancillary.truncated = (msg.msgFlags and MSG_CTRUNC == MSG_CTRUNC).toUByte()
         val truncated = msg.msgFlags and MSG_TRUNC == MSG_TRUNC
@@ -75,7 +75,7 @@ public fun sendVectoredWithAncillaryTo(socket: Socket, path: Path?, bufs: List<I
         var (msgName, msgNamelen) =
             if (path != null) {
                 val path1 = path
-                when (val tryResult = io.github.kotlinmania.rustlang.std.os.unix.net.SockaddrUn(path1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }
+                when (val tryResult = io.github.kotlinmania.rustlang.std.os.unix.net.SockaddrUn(path1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.error) }
             } else {
                 Pair(MaybeUninit.zeroed(UnresolvedTypeLayout<Result<Int, Error>>()).assumeInit(), 0)
             }
@@ -84,8 +84,8 @@ public fun sendVectoredWithAncillaryTo(socket: Socket, path: Path?, bufs: List<I
         msg.msgName = mutPtrFromRustCast((addrOfMut(msgName)))
         msg.msgNamelen = msgNamelen
         msg.msgIov = (bufs.asPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-        msg.msgIovlen = ((bufs.size as Any?) as Result<Int, Error>)
-        msg.msgControllen = ((ancillary.length as Any?) as Result<Int, Error>)
+        msg.msgIovlen = bufs.size
+        msg.msgControllen = ancillary.length
         // macos requires that the control pointer is null when the len is 0.
         if (msg.msgControllen > 0) {
             msg.msgControl = ancillary.buffer.asMutPtr()
@@ -102,7 +102,7 @@ public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutabl
         if (cmsgSize != null) {
             val sourceLen = cmsgSize
             when (val matchVal = UInt.tryFrom(sourceLen)) {
-                is Result.Ok -> {
+                is Result.Ok<*, *> -> {
                     val sourceLen1 = matchVal.value
                     sourceLen1
                 }
@@ -132,7 +132,7 @@ public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutabl
         (length1).write(newLength1)
         val msg: Msghdr  = Msghdr()
         msg.msgControl = buffer.asMutPtr()
-        msg.msgControllen = ((length1).read()).toUByte()
+        msg.msgControllen = (length1).read()
         var cmsg = CMSG_FIRSTHDR(msg)
         var previousCmsg = cmsg
         while (!cmsg.isNull()) {
@@ -150,7 +150,7 @@ public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutabl
         }
         previousCmsg.cmsgLevel = cmsgLevel
         previousCmsg.cmsgType = cmsgType
-        previousCmsg.cmsgLen = CMSG_LEN(sourceLen2).toUByte()
+        previousCmsg.cmsgLen = CMSG_LEN(sourceLen2)
         val data = CMSG_DATA(previousCmsg).cast()
         memcpy(data, source.asPtr(), sourceLen2.toInt())
     }
@@ -416,7 +416,7 @@ public open class Messages(
         return run {
             val msg: Msghdr  = Msghdr()
             msg.msgControl = (this.buffer.asPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-            msg.msgControllen = null
+            msg.msgControllen = this.buffer.size
             val cmsg =
                 when (val matchVal = this.current) {
                     null -> {
@@ -427,7 +427,7 @@ public open class Messages(
                         CMSG_NXTHDR(msg, current)
                     }
                 }
-            val cmsg1 = when (val tryResult = cmsg.asRef()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<AncillaryData, AncillaryError, Error>(tryResult.error) }
+            val cmsg1 = when (val tryResult = cmsg.asRef()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<AncillaryData, AncillaryError, Error>(tryResult.error) }
             // Most operating systems, but not Linux or emscripten, return the previous pointer
             // when its length is zero. Therefore, check if the previous pointer is the same as
             // the current one.

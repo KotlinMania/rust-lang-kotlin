@@ -52,15 +52,15 @@ public fun <T, R> partialSort(v: MutableList<T>, range: R, isLess: (T, T) -> Boo
     val structVal = range(range, 0 until len)
     val start = structVal.start
     val end = structVal.end
-    if (end - start <= 1) {
+    if (end - start <= 1u.toUShort()) {
         // Empty range or single element. This case can be resolved in at most
         // single partitionAtIndex call, without further sorting.
-        if (end == 0 || start == len) {
+        if (end == 0 || start == len.toUShort()) {
             // Do nothing if it is an empty range at start or end: all guarantees
             // are already upheld.
             return
         }
-        partitionAtIndex(v1, start, isLess)
+        partitionAtIndex(v1, start.toInt(), isLess)
         return
     }
     var v2 = v1
@@ -68,7 +68,7 @@ public fun <T, R> partialSort(v: MutableList<T>, range: R, isLess: (T, T) -> Boo
         v2 = partitionAtIndex(v2, end - 1, isLess).first
     }
     if (start >= PARTITION_THRESHOLD) {
-        v2 = partitionAtIndex(v2, start, isLess).third
+        v2 = partitionAtIndex(v2, start.toInt(), isLess).third
     }
     sort(v2, isLess)
 }

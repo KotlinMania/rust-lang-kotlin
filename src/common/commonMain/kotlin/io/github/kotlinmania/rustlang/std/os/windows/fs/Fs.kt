@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.os.windows.fs
 
 import io.github.kotlinmania.rustlang.alloc.io.read.defaultReadBuf
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.fs.FileTimes
@@ -10,9 +11,9 @@ import io.github.kotlinmania.rustlang.std.fs.FileType
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.OpenOptions
 import io.github.kotlinmania.rustlang.std.fs.Permissions
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.symlinkInner
 import io.github.kotlinmania.rustlang.std.time.SystemTime
 
@@ -107,24 +108,24 @@ public interface FileExt {
             run {
                 val matchVal = this.seekRead(buf1, offset1)
                 when {
-                    matchVal is Result.Ok && matchVal.value == 0 -> {
+                    matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
                         val valueVal = matchVal.value
                         break
                     }
-                    matchVal is Result.Ok -> {
+                    matchVal is Result.Ok<*, *> -> {
                         val n = matchVal.value
                         buf1 = buf1.subList(n, buf1.size)
                         offset1 += n.toULong()
                     }
                     else -> {
-                        val e = matchVal.error
+                        val e = (matchVal as Result.Err<*, *>).error
                         return Result.Err<Unit, Error>(e)
                     }
                 }
             }
         }
         return if (!buf1.isEmpty()) {
-            Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.READ_EXACT_EOF)
+            Result.Err<Unit, Error>(Error.READ_EXACT_EOF)
         } else {
             Result.Ok<Unit, Error>(Unit)
         }
@@ -206,7 +207,7 @@ public interface FileExt {
             val prevWritten = buf.written()
             run {
                 val matchVal = this.seekReadBuf(buf.reborrow(), offset1)
-                when (matchVal) { is Result.Ok -> {}; is Result.Err -> {
+                when (matchVal) { is Result.Ok<*, *> -> {}; is Result.Err<*, *> -> {
                     val e = matchVal.error
                     return Result.Err<Unit, Error>(e)
                 } }
@@ -214,7 +215,7 @@ public interface FileExt {
             val n = buf.written() - prevWritten
             offset1 += n.toULong()
             if (n == 0) {
-                return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.READ_EXACT_EOF)
+                return Result.Err<Unit, Error>(Error.READ_EXACT_EOF)
             }
         }
         return Result.Ok<Unit, Error>(Unit)
@@ -297,17 +298,17 @@ public interface FileExt {
             run {
                 val matchVal = this.seekWrite(buf1, offset1)
                 when {
-                    matchVal is Result.Ok && matchVal.value == 0 -> {
+                    matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
                         val valueVal = matchVal.value
-                        return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.WRITE_ALL_EOF)
+                        return Result.Err<Unit, Error>(Error.WRITE_ALL_EOF)
                     }
-                    matchVal is Result.Ok -> {
+                    matchVal is Result.Ok<*, *> -> {
                         val n = matchVal.value
                         buf1 = ((buf1).subList(n, (buf1).size))
                         offset1 += n.toULong()
                     }
                     else -> {
-                        val e = matchVal.error
+                        val e = (matchVal as Result.Err<*, *>).error
                         return Result.Err<Unit, Error>(e)
                     }
                 }

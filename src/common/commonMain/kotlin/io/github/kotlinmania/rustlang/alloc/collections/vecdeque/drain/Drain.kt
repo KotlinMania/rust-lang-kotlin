@@ -88,7 +88,7 @@ public open class Drain<T, A : Allocator> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Drain").field(this.drainLen).field(this.idx).field(this.tailLen).field(this.remaining).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "Drain").field(this.drainLen).field(this.idx).field(this.tailLen).field(this.remaining).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun drop(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         open class DropGuard<T, A : Allocator>(

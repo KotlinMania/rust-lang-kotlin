@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -173,7 +174,7 @@ public open class Cache(
 
 public fun disableFeatures(disable: List<UByte>, value: Initializer) {
     when (val matchVal = String.fromUtf8(disable)) {
-        is Result.Ok -> {
+        is Result.Ok<*, *> -> {
             val disable1 = matchVal.value
             for (v in disable1.split(" ")) {
                 Feature.fromStr(v).map({ v1 -> value.unset(v1.toUInt()) })
@@ -187,11 +188,11 @@ public fun initialize(value: Initializer): Initializer {
     val RUST_STD_DETECT_UNSTABLE: CStr = "RUST_STD_DETECT_UNSTABLE"
     fun getEnvironmentVariableA(name: ConstPtr, buffer: MutPtr, size: UInt): UInt = 0u
     val len = GetEnvironmentVariableA(RUST_STD_DETECT_UNSTABLE.asPtr().cast(), MutPtr(0L), 0)
-    if (len > 0) {
+    if (len > 0u) {
         // +1 to include the null terminator.
         val env = mutableListOf(0, len.toInt() + 1)
-        val len1 = GetEnvironmentVariableA(RUST_STD_DETECT_UNSTABLE.asPtr().cast(), env.asMutPtr(), len + 1)
-        if (len1 > 0) {
+        val len1 = GetEnvironmentVariableA(RUST_STD_DETECT_UNSTABLE.asPtr().cast(), env.asMutPtr(), len + 1u)
+        if (len1 > 0u) {
             disableFeatures(env[0 until len1.toInt()], value)
         }
     }

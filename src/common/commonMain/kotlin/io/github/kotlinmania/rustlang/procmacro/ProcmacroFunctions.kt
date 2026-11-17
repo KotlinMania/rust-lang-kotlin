@@ -21,19 +21,19 @@ public fun isAvailable(): Boolean = io.github.kotlinmania.rustlang.procmacro.bri
 
 public fun treeToBridgeTree(tree: TokenTree): io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, io.github.kotlinmania.rustlang.procmacro.bridge.client.Span, Symbol> =
     when (tree) {
-        is TokenTree.Group -> {
+        is TokenTree.Group<*, *, *> -> {
             val (tt) = tree
             io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree.Group(tt.value)
         }
-        is TokenTree.Punct -> {
+        is TokenTree.Punct<*, *, *> -> {
             val (tt1) = tree
             io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree.Punct(tt1.value)
         }
-        is TokenTree.Ident -> {
+        is TokenTree.Ident<*, *, *> -> {
             val (tt2) = tree
             io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree.Ident(tt2.value)
         }
-        is TokenTree.Literal -> {
+        is TokenTree.Literal<*, *, *> -> {
             val (tt3) = tree
             io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree.Literal(tt3.value)
         }

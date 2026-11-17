@@ -254,13 +254,13 @@ public sealed class RustcEntry<K, V, A> {
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is Vacant -> {
-                val (v) = this
-                DebugTuple(f, "Entry").field(v).finish()
+            is Vacant<*, *, *> -> {
+                val (v) = this as Vacant<K, V, A>
+                run { DebugTuple(f, "Entry").field(v).finish(); Result.Ok<Unit, Error>(Unit) }
             }
-            is Occupied -> {
-                val (o) = this
-                DebugTuple(f, "Entry").field(o).finish()
+            is Occupied<*, *, *> -> {
+                val (o) = this as Occupied<K, V, A>
+                run { DebugTuple(f, "Entry").field(o).finish(); Result.Ok<Unit, Error>(Unit) }
             }
         }
 
@@ -279,12 +279,12 @@ public sealed class RustcEntry<K, V, A> {
      */
     public open fun insert(value: V): RustcOccupiedEntry<K, V, A> =
         when (this) {
-            is Vacant -> {
-                val (entry) = this
+            is Vacant<*, *, *> -> {
+                val (entry) = this as Vacant<K, V, A>
                 entry.insertEntry(value)
             }
-            is Occupied -> {
-                val (entry1) = this
+            is Occupied<*, *, *> -> {
+                val (entry1) = this as Occupied<K, V, A>
                 entry1.insert(value)
                 entry1
             }
@@ -308,12 +308,12 @@ public sealed class RustcEntry<K, V, A> {
      */
     public open fun orInsert(default: V): V =
         when (this) {
-            is Occupied -> {
-                val (entry) = this
+            is Occupied<*, *, *> -> {
+                val (entry) = this as Occupied<K, V, A>
                 entry.intoMut()
             }
-            is Vacant -> {
-                val (entry1) = this
+            is Vacant<*, *, *> -> {
+                val (entry1) = this as Vacant<K, V, A>
                 entry1.insert(default)
             }
         }
@@ -335,12 +335,12 @@ public sealed class RustcEntry<K, V, A> {
      */
     public open fun orInsertWith(default: () -> V): V =
         when (this) {
-            is Occupied -> {
-                val (entry) = this
+            is Occupied<*, *, *> -> {
+                val (entry) = this as Occupied<K, V, A>
                 entry.intoMut()
             }
-            is Vacant -> {
-                val (entry1) = this
+            is Vacant<*, *, *> -> {
+                val (entry1) = this as Vacant<K, V, A>
                 entry1.insert(default())
             }
         }
@@ -359,12 +359,12 @@ public sealed class RustcEntry<K, V, A> {
      */
     public open fun key(): K =
         when (this) {
-            is Occupied -> {
-                val (entry) = this
+            is Occupied<*, *, *> -> {
+                val (entry) = this as Occupied<K, V, A>
                 entry.key()
             }
-            is Vacant -> {
-                val (entry1) = this
+            is Vacant<*, *, *> -> {
+                val (entry1) = this as Vacant<K, V, A>
                 entry1.key()
             }
         }
@@ -391,13 +391,13 @@ public sealed class RustcEntry<K, V, A> {
      */
     public open fun andModify(f: (V) -> Unit): RustcEntry<K, V, A> =
         when (this) {
-            is Occupied -> {
-                val (entry) = this
+            is Occupied<*, *, *> -> {
+                val (entry) = this as Occupied<K, V, A>
                 f(entry.getMut())
                 Occupied(entry)
             }
-            is Vacant -> {
-                val (entry1) = this
+            is Vacant<*, *, *> -> {
+                val (entry1) = this as Vacant<K, V, A>
                 Vacant(entry1)
             }
         }
@@ -418,12 +418,12 @@ public sealed class RustcEntry<K, V, A> {
      */
     public open fun orDefault(defaultVFn: () -> V): V =
         when (this) {
-            is Occupied -> {
-                val (entry) = this
+            is Occupied<*, *, *> -> {
+                val (entry) = this as Occupied<K, V, A>
                 entry.intoMut()
             }
-            is Vacant -> {
-                val (entry1) = this
+            is Vacant<*, *, *> -> {
+                val (entry1) = this as Vacant<K, V, A>
                 entry1.insert(defaultVFn())
             }
         }
@@ -443,7 +443,7 @@ public open class RustcOccupiedEntry<K, V, A> internal constructor(
     public var table: RawTable<Pair<K, V>, A> = tableCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Gets a reference to the key in the entry.
@@ -636,7 +636,7 @@ public open class RustcVacantEntry<K, V, A> internal constructor(
     public var table: RawTable<Pair<K, V>, A> = tableCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "VacantEntry").field(this.key()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "VacantEntry").field(this.key()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Gets a reference to the key that would be used when inserting a value

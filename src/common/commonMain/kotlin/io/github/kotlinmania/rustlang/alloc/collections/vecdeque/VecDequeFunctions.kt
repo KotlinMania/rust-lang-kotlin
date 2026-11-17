@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.alloc.collections.vecdeque
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.read
 
 /**
  * Turn a [VecDeque.T] into a [Vec.T].

@@ -30,6 +30,7 @@ import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.hashbrown.Guard
@@ -1056,10 +1057,10 @@ public open class RawTable<T, A : Allocator>(
         this.reserve(1, hasher)
         return run {
             val matchVal = this.table.findOrFindInsertIndexInner(hash, { index -> eq(this.bucket(index).asRef()) })
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val index = matchVal.value
                 Result.Ok<Bucket<T>, Int>(this.bucket(index))
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val index1 = matchVal.error
                 Result.Err<Bucket<T>, Int>(index1)
             } }
@@ -1438,15 +1439,6 @@ public open class RawTable<T, A : Allocator>(
         }
     }
 
-    public open fun cloneFromSpecRawTableClone(source: RawTable<T, A>) {
-        run {
-            kmCopyNonoverlapping((source.table.ctrl(0)).rawAddress, (this.table.ctrl(0)).rawAddress, (this.table.numCtrlBytes()).toLong() * (UnresolvedTypeLayout<Tag>()).sizeBytes)
-            source.dataStart().asPtr().copyToNonoverlapping(this.dataStart().asPtr(), this.table.numBuckets())
-        }
-        this.table.items = source.table.items
-        this.table.growthLeft = source.table.growthLeft
-    }
-
     /**
      * Common code for `clone` and `cloneFrom`. Assumes:
      * - `self.numBuckets() == source.numBuckets()`.
@@ -1523,7 +1515,7 @@ public open class RawTable<T, A : Allocator>(
          */
         public fun <T, A : Allocator> newUninitialized(alloc: A, buckets: Int, fallibility: Fallibility): Result<RawTable<T, A>, TryReserveError> {
             check(buckets.isPowerOfTwo())
-            return Result.Ok<RawTable<T, A>, TryReserveError>(RawTable(table = when (val tryResult = RawTableInner.newUninitialized(alloc, RawTable.TABLE_LAYOUT, buckets, fallibility)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<RawTable<T, A>, TryReserveError>(tryResult.error) }, alloc = alloc, marker = Unit))
+            return Result.Ok<RawTable<T, A>, TryReserveError>(RawTable(table = when (val tryResult = RawTableInner.newUninitialized(alloc, RawTable.TABLE_LAYOUT, buckets, fallibility)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<RawTable<T, A>, TryReserveError>(tryResult.error) }, alloc = alloc, marker = Unit))
         }
 
         /**
@@ -2540,7 +2532,7 @@ public open class RawTableInner internal constructor(
     public open fun <A> prepareResize(alloc: A, tableLayout: TableLayout, capacity: Int, fallibility: Fallibility): Result<ScopeGuard<RawTableInner, (RawTableInner) -> Unit>, TryReserveError> where A : Allocator {
         check(this.items <= capacity)
         // Allocate and initialize the new table.
-        val newTable = when (val tryResult = RawTableInner.fallibleWithCapacity(alloc, tableLayout, capacity, fallibility)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        val newTable = when (val tryResult = RawTableInner.fallibleWithCapacity(alloc, tableLayout, capacity, fallibility)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         // The hash function may panic, in which case we simply free the new
         // table without dropping any elements that may have been copied into
         // it.
@@ -2700,7 +2692,7 @@ public open class RawTableInner internal constructor(
     public open fun <A> resizeInner(alloc: A, capacity: Int, hasher: (RawTableInner, Int) -> ULong, fallibility: Fallibility, layout: TableLayout): Result<Unit, TryReserveError> where A : Allocator {
         // SAFETY: We know for sure that `alloc` and `layout` matches the [Allocator] and [TableLayout]
         // that were used to allocate this table.
-        val newTable = when (val tryResult = this.prepareResize(alloc, layout, capacity, fallibility)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
+        val newTable = when (val tryResult = this.prepareResize(alloc, layout, capacity, fallibility)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
         // SAFETY: We know for sure that RawTableInner will outlive the
         // returned `FullBucketsIndices` iterator, and the caller of this
         // function ensures that the control bytes are properly initialized.
@@ -3091,7 +3083,7 @@ public open class RawTableInner internal constructor(
             val ptr: NonNull =
                 run {
                     val matchVal = doAlloc(alloc, layout)
-                    when (matchVal) { is Result.Ok -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         val block = matchVal.value
                         // The allocator can't return a value smaller than was
                         // requested, so this can be != instead of >=.
@@ -3110,7 +3102,7 @@ public open class RawTableInner internal constructor(
                             buckets1 = x
                         }
                         block.cast()
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         return Result.Err<RawTableInner, TryReserveError>(fallibility.allocErr(layout))
                     } }
                 }
@@ -3132,8 +3124,8 @@ public open class RawTableInner internal constructor(
                 // SAFETY: We checked that we could successfully allocate the new table, and then
                 // initialized all control bytes with the constant `Tag.EMPTY` byte.
                 run {
-                    val buckets = when (val tryResult = (capacityToBuckets(capacity, tableLayout)?.let { Result.Ok<Int, TryReserveError>(it) } ?: Result.Err<Int, TryReserveError>(fallibility.capacityOverflow()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<RawTableInner, TryReserveError>(tryResult.error) }
-                    val result = when (val tryResult = RawTableInner.newUninitialized(alloc, tableLayout, buckets, fallibility)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<RawTableInner, TryReserveError>(tryResult.error) }
+                    val buckets = when (val tryResult = (capacityToBuckets(capacity, tableLayout)?.let { Result.Ok<Int, TryReserveError>(it) } ?: Result.Err<Int, TryReserveError>(fallibility.capacityOverflow()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<RawTableInner, TryReserveError>(tryResult.error) }
+                    val result = when (val tryResult = RawTableInner.newUninitialized(alloc, tableLayout, buckets, fallibility)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<RawTableInner, TryReserveError>(tryResult.error) }
                     // SAFETY: We checked that the table is allocated and therefore the table already has
                     // `self.bucketMask + 1 + Group.WIDTH` number of control bytes (see TableLayout.calculateLayoutFor)
                     // so writing `self.numCtrlBytes() == bucketMask + 1 + Group.WIDTH` bytes is safe.
@@ -3223,6 +3215,15 @@ public fun maximumBucketsIn(allocationSize: Int, tableLayout: TableLayout, group
  */
 public interface RawTableClone<T> {
     public fun cloneFromSpec(source: T)
+}
+
+public fun <T : TrivialClone, A : Allocator> RawTable<T, A>.cloneFromSpec(source: RawTable<T, A>) {
+    run {
+        kmCopyNonoverlapping((source.table.ctrl(0)).rawAddress, (this.table.ctrl(0)).rawAddress, (this.table.numCtrlBytes()).toLong() * (UnresolvedTypeLayout<Tag>()).sizeBytes)
+        source.dataStart().asPtr().copyToNonoverlapping(this.dataStart().asPtr(), this.table.numBuckets())
+    }
+    this.table.items = source.table.items
+    this.table.growthLeft = source.table.growthLeft
 }
 
 /**

@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1
 
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
@@ -9,7 +10,6 @@ import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv6Addr
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.net.Shutdown
 import io.github.kotlinmania.rustlang.std.net.socketaddr.ToSocketAddrs
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
@@ -18,10 +18,16 @@ import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
 import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
+import io.github.kotlinmania.rustlang.std.os.fd.asFd
+import io.github.kotlinmania.rustlang.std.os.fd.asRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.intoRawFd
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.sys.asInner
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.pal.unsupported.unsupported
 import io.github.kotlinmania.rustlang.std.sys.pal.wasi.err2io
 import io.github.kotlinmania.rustlang.wasip1.FDFLAGS_NONBLOCK
@@ -122,7 +128,7 @@ public open class TcpStream(
                 Shutdown.Write -> SDFLAGS_WR
                 Shutdown.Both -> SDFLAGS_RD or SDFLAGS_WR
             }
-        return sockShutdown(((this.socket().asRawFd() as Any?) as Result<Unit, Error>), wasiHow).mapErr(err2io)
+        return sockShutdown(this.socket().asRawFd(), wasiHow).mapErr(err2io)
     }
 
     public open fun duplicate(): Result<TcpStream, Error> = unsupported()
@@ -147,10 +153,10 @@ public open class TcpStream(
 
     public open fun hopLimitV6(): Result<UByte, Error> = unsupported()
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = unsupported()
+    public open fun takeError(): Result<Error?, Error> = unsupported()
 
     public open fun setNonblocking(state: Boolean): Result<Unit, Error> {
-        val fdstat = when (val tryResult = fdFdstatGet(((this.socket().asInner().asRawFd() as Any?) as Fd)).mapErr(err2io)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        val fdstat = when (val tryResult = fdFdstatGet(((this.socket().asInner().asRawFd() as Any?) as Fd)).mapErr(err2io)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         var flags = fdstat.fsFlags
         if (state) {
             flags = flags or FDFLAGS_NONBLOCK
@@ -164,7 +170,7 @@ public open class TcpStream(
 
     public open fun intoSocket(): Socket = this.inner
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "TcpStream").field("fd", this.inner.asRawFd()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "TcpStream").field("fd", this.inner.asRawFd()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public fun <Iter, A : ToSocketAddrs<Iter>> connect(arg0: A): Result<TcpStream, Error> = unsupported()
@@ -181,7 +187,7 @@ public open class TcpListener(
     public open fun socketAddr(): Result<SocketAddr, Error> = unsupported()
 
     public open fun accept(): Result<Pair<TcpStream, SocketAddr>, Error> {
-        val fd = when (val tryResult = sockAccept(((this.asInner().asInner().asRawFd() as Any?) as Result<Pair<TcpStream, SocketAddr>, Error>), 0).mapErr(err2io)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<TcpStream, SocketAddr>, Error>(tryResult.error) }
+        val fd = when (val tryResult = sockAccept(this.asInner().asInner().asRawFd(), 0).mapErr(err2io)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<TcpStream, SocketAddr>, Error>(tryResult.error) }
         return Result.Ok<Pair<TcpStream, SocketAddr>, Error>(Pair(TcpStream.fromInner(Socket.fromRawFd(fd.toInt())), SocketAddr.new(Ipv4Addr.UNSPECIFIED.into(), 0)))
     }
 
@@ -199,10 +205,10 @@ public open class TcpListener(
 
     public open fun onlyV6(): Result<Boolean, Error> = unsupported()
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = unsupported()
+    public open fun takeError(): Result<Error?, Error> = unsupported()
 
     public open fun setNonblocking(state: Boolean): Result<Unit, Error> {
-        val fdstat = when (val tryResult = fdFdstatGet(((this.socket().asInner().asRawFd() as Any?) as Fd)).mapErr(err2io)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        val fdstat = when (val tryResult = fdFdstatGet(((this.socket().asInner().asRawFd() as Any?) as Fd)).mapErr(err2io)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         var flags = fdstat.fsFlags
         if (state) {
             flags = flags or FDFLAGS_NONBLOCK
@@ -220,7 +226,7 @@ public open class TcpListener(
 
     public override fun intoInner(): Socket = this.inner
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "TcpListener").field("fd", this.inner.asRawFd()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "TcpListener").field("fd", this.inner.asRawFd()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public fun <Iter, A : ToSocketAddrs<Iter>> bind(arg0: A): Result<TcpListener, Error> = unsupported()
@@ -288,7 +294,7 @@ public open class UdpSocket(
 
     public open fun multicastHopLimitV6(): Result<UByte, Error> = unsupported()
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = unsupported()
+    public open fun takeError(): Result<Error?, Error> = unsupported()
 
     public open fun setNonblocking(arg0: Boolean): Result<Unit, Error> = unsupported()
 
@@ -308,7 +314,7 @@ public open class UdpSocket(
 
     public override fun intoInner(): Socket = this.inner
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "UdpSocket").field("fd", this.inner.asRawFd()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "UdpSocket").field("fd", this.inner.asRawFd()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public fun <Iter, A : ToSocketAddrs<Iter>> bind(arg0: A): Result<UdpSocket, Error> = unsupported()

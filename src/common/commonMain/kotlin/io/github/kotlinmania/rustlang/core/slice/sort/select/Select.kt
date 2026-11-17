@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.slice.sort.shared.pivot.choosePivot
 import io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort.insertionSortShiftLeft
 import io.github.kotlinmania.rustlang.core.slice.sort.unstable.quicksort.partition
+import io.github.kotlinmania.rustlang.core.slice.splitAtMut
 
 // This module contains the implementation for `slice.selectNthUnstable`.
 // It uses an introselect algorithm based on ipnsort by Lukas Bergdoll and Orson Peters,

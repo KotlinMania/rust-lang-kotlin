@@ -274,7 +274,7 @@ public interface Unescape<Unit> {
      */
     public fun unescapeSingle(chars: Chars): Result<Unit, EscapeError> {
         val res =
-            when (val tryResult = when (val matchVal = when (val tryResult = (chars.next()?.let { Result.Ok<Char, EscapeError>(it) } ?: Result.Err<Char, EscapeError>(EscapeError.ZeroChars))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, EscapeError>(tryResult.error) }) {
+            when (val tryResult = when (val matchVal = when (val tryResult = (chars.next()?.let { Result.Ok<Char, EscapeError>(it) } ?: Result.Err<Char, EscapeError>(EscapeError.ZeroChars))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, EscapeError>(tryResult.error) }) {
                 '\\' -> this.unescape1(chars)
                 '\n', '\t', '\'' -> Result.Err<Unit, EscapeError>(EscapeError.EscapeOnlyChar)
                 '\r' -> Result.Err<Unit, EscapeError>(EscapeError.BareCarriageReturn)
@@ -282,7 +282,7 @@ public interface Unescape<Unit> {
                     val c = matchVal
                     this.char2unit(c)
                 }
-            }) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, EscapeError>(tryResult.error) }
+            }) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, EscapeError>(tryResult.error) }
         if (chars.next() != null) {
             return Result.Err<Unit, EscapeError>(EscapeError.MoreThanOneChar)
         }
@@ -294,14 +294,14 @@ public interface Unescape<Unit> {
      */
     public fun unescape1(chars: Chars): Result<Unit, EscapeError> {
         // Previous character was '\\', unescape what follows.
-        val c = when (val tryResult = (chars.next()?.let { Result.Ok<Char, EscapeError>(it) } ?: Result.Err<Char, EscapeError>(EscapeError.LoneSlash))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, EscapeError>(tryResult.error) }
+        val c = when (val tryResult = (chars.next()?.let { Result.Ok<Char, EscapeError>(it) } ?: Result.Err<Char, EscapeError>(EscapeError.LoneSlash))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, EscapeError>(tryResult.error) }
         return if (c == '0') {
             Unescape.ZERO_RESULT
         } else {
             simpleEscape(c).map({ b -> this.nonzeroByte2unit(b) }).orElse(closure@{ c1 -> when (c1) {
-                'x' -> this.hex2unit(when (val tryResult = hexEscape(chars)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) })
+                'x' -> this.hex2unit(when (val tryResult = hexEscape(chars)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) })
                 'u' -> this.unicode2unit(run {
-                    val value = when (val tryResult = unicodeEscape(chars)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
+                    val value = when (val tryResult = unicodeEscape(chars)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
                     if (value > Char.MAX_VALUE.toUInt()) {
                         Result.Err(EscapeError.OutOfRangeUnicodeEscape)
                     } else {

@@ -18,6 +18,8 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.castConst
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
@@ -43,7 +45,7 @@ public open class Mapping(
          */
         public fun mk(data: Mmap, mk: (List<UByte>, Stash) -> Context?): Mapping? {
             return Mapping.mkOrOther(data, closure@{ data1, stash ->
-                val cx = when (val tryResult = mk(data1, stash)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
+                val cx = when (val tryResult = mk(data1, stash)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
                 Either.B(cx)
             })
         }
@@ -56,11 +58,11 @@ public open class Mapping(
             val stash = Stash.new()
             val cx1 =
                 when (val matchVal = (mk(data, stash) ?: return null)) {
-                    is Either.A -> {
+                    is Either.A<*, *> -> {
                         val (mapping) = matchVal
                         return mapping
                     }
-                    is Either.B -> {
+                    is Either.B<*, *> -> {
                         val (cx) = matchVal
                         cx
                     }
@@ -385,12 +387,12 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
                 }
             var anyFrames = false
             when (val matchVal2 = cx1.findFrames(stash1, addr1.toULong())) {
-                is Result.Ok -> {
+                is Result.Ok<*, *> -> {
                     val frames = matchVal2.value
                     while (true) {
                         val matchVal3 = frames.next()
-                        if (!(matchVal3 is Result.Ok && matchVal3.value != null)) break
-                        val valueVal = (matchVal3 as Result.Ok).value
+                        if (!(matchVal3 is Result.Ok<*, *> && matchVal3.value != null)) break
+                        val valueVal = (matchVal3 as Result.Ok<*, *>).value
                         val frame = valueVal
                         anyFrames = true
                         val name =
@@ -413,12 +415,12 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
                         val objectCx = matchVal5.first
                         val objectAddr = matchVal5.second
                         when (val matchVal6 = objectCx.findFrames(stash1, objectAddr)) {
-                            is Result.Ok -> {
+                            is Result.Ok<*, *> -> {
                                 val frames1 = matchVal6.value
                                 while (true) {
                                     val matchVal7 = frames1.next()
-                                    if (!(matchVal7 is Result.Ok && matchVal7.value != null)) break
-                                    val valueVal1 = (matchVal7 as Result.Ok).value
+                                    if (!(matchVal7 is Result.Ok<*, *> && matchVal7.value != null)) break
+                                    val valueVal1 = (matchVal7 as Result.Ok<*, *>).value
                                     val frame1 = valueVal1
                                     anyFrames = true
                                     call(Symbol.Frame(addr = mutPtrFromRustCast(addr1), location = frame1.location, name = frame1.function.map({ f1 -> f1.name.slice() })))
@@ -496,12 +498,12 @@ public sealed class Symbol {
     public open fun name(): SymbolName? {
         return when (this) {
             is Symbol.Frame -> {
-                val name = this.name
+                val name = (this as Symbol.Frame).name
                 val name1 = (name.asRef() ?: return null)
                 SymbolName.new(name1)
             }
             is Symbol.Symtab -> {
-                val name2 = this.name
+                val name2 = (this as Symbol.Symtab).name
                 SymbolName.new(name2)
             }
         }
@@ -510,7 +512,7 @@ public sealed class Symbol {
     public open fun addr(): MutPtr? =
         when (this) {
             is Symbol.Frame -> {
-                val addr = this.addr
+                val addr = (this as Symbol.Frame).addr
                 addr
             }
             is Symbol.Symtab -> null
@@ -519,7 +521,7 @@ public sealed class Symbol {
     public open fun filenameRaw(): BytesOrWideString? {
         return when (this) {
             is Symbol.Frame -> {
-                val location = this.location
+                val location = (this as Symbol.Frame).location
                 val file = ((location.asRef() ?: return null).file ?: return null)
                 BytesOrWideString.Bytes(file.encodeToByteArray().map { it.toUByte() })
             }
@@ -530,7 +532,7 @@ public sealed class Symbol {
     public open fun filename(): Path? {
         return when (this) {
             is Symbol.Frame -> {
-                val location = this.location
+                val location = (this as Symbol.Frame).location
                 val file = ((location.asRef() ?: return null).file ?: return null)
                 Path.new(file)
             }
@@ -541,7 +543,7 @@ public sealed class Symbol {
     public open fun lineno(): UInt? {
         return when (this) {
             is Symbol.Frame -> {
-                val location = this.location
+                val location = (this as Symbol.Frame).location
                 (location.asRef() ?: return null).line
             }
             is Symbol.Symtab -> null
@@ -551,7 +553,7 @@ public sealed class Symbol {
     public open fun colno(): UInt? {
         return when (this) {
             is Symbol.Frame -> {
-                val location = this.location
+                val location = (this as Symbol.Frame).location
                 (location.asRef() ?: return null).column
             }
             is Symbol.Symtab -> null

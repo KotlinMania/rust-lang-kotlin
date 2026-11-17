@@ -38,6 +38,8 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.Zip
 import io.github.kotlinmania.rustlang.core.iter.traits.accum.Product
 import io.github.kotlinmania.rustlang.core.iter.traits.accum.Sum
+import io.github.kotlinmania.rustlang.core.iter.traits.accum.product
+import io.github.kotlinmania.rustlang.core.iter.traits.accum.sum
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -768,7 +770,7 @@ public interface Iterator<SelfType, Item> {
      */
     public fun forEach(f: (Item) -> Unit) {
         fun <T> call(f1: (T) -> Unit): (Unit, T) -> Unit = { item -> f1(item) }
-        this.fold(call(f))
+        this.fold(Unit, call(f))
     }
 
     /**
@@ -2100,7 +2102,7 @@ public interface Iterator<SelfType, Item> {
             val matchVal = this.next()
             if (matchVal == null) break
             val x = matchVal
-            accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
         }
         return accum
     }
@@ -2143,14 +2145,14 @@ public interface Iterator<SelfType, Item> {
      *     if (323 % x == 0) {
      *         return@closure ControlFlow.Break(x)
      *     }
-     *     ControlFlow.Continue()
+     *     ControlFlow.Continue(Unit)
      * })
      * check(r == ControlFlow.Break(17))
      * ```
      */
     public fun <Residual, R> tryForEach(f: (Item) -> R): R where R : Try<R, Unit, Residual> {
         fun <T, R> call(f1: (T) -> R): (Unit, T) -> R = { x -> f1(x) }
-        return this.tryFold(call(f))
+        return this.tryFold(Unit, call(f))
     }
 
     /**
@@ -2398,12 +2400,12 @@ public interface Iterator<SelfType, Item> {
         fun <T> check(f1: (T) -> Boolean): (Unit, T) -> ControlFlow<Unit, Unit> =
             { x ->
                 if (f1(x)) {
-                    ControlFlow.Continue()
+                    ControlFlow.Continue(Unit)
                 } else {
-                    ControlFlow.Break()
+                    ControlFlow.Break(Unit)
                 }
             }
-        return this.tryFold(check(f)) == ControlFlow.Continue()
+        return this.tryFold(Unit, check(f)) == ControlFlow.Continue(Unit)
     }
 
     /**
@@ -2444,12 +2446,12 @@ public interface Iterator<SelfType, Item> {
         fun <T> check(f1: (T) -> Boolean): (Unit, T) -> ControlFlow<Unit, Unit> =
             { x ->
                 if (f1(x)) {
-                    ControlFlow.Break()
+                    ControlFlow.Break(Unit)
                 } else {
-                    ControlFlow.Continue()
+                    ControlFlow.Continue(Unit)
                 }
             }
-        return this.tryFold(check(f)) == ControlFlow.Break()
+        return this.tryFold(Unit, check(f)) == ControlFlow.Break(Unit)
     }
 
     /**
@@ -2511,10 +2513,10 @@ public interface Iterator<SelfType, Item> {
                 if (predicate1(x)) {
                     ControlFlow.Break(x)
                 } else {
-                    ControlFlow.Continue()
+                    ControlFlow.Continue(Unit)
                 }
             }
-        return this.tryFold(check(predicate)).breakValue()
+        return this.tryFold(Unit, check(predicate)).breakValue()
     }
 
     /**
@@ -2534,13 +2536,13 @@ public interface Iterator<SelfType, Item> {
     public fun <B> findMap(f: (Item) -> B?): B? {
         fun <T, B> check(f1: (T) -> B?): (Unit, T) -> ControlFlow<B, Unit> =
             { x -> when (val matchVal = f1(x)) {
-                null -> ControlFlow.Continue()
+                null -> ControlFlow.Continue(Unit)
                 else -> {
                     val x1 = matchVal
                     ControlFlow.Break(x1)
                 }
             } }
-        return this.tryFold(check(f)).breakValue()
+        return this.tryFold(Unit, check(f)).breakValue()
     }
 
     /**
@@ -2644,12 +2646,12 @@ public interface Iterator<SelfType, Item> {
                     ControlFlow.Break((acc1).read())
                 } else {
                     (acc1).let { targetPlace -> var currentValue = targetPlace.read(); currentValue += (1); targetPlace.write(currentValue) }
-                    ControlFlow.Continue()
+                    ControlFlow.Continue(Unit)
                 }
             }
         }
         val localStorageL3167C8 = AddressableLocal(0, PrimitiveLayouts.I32)
-        return this.tryFold(check(predicate, RustMutableReference(localStorageL3167C8.asMutPtr(), localStorageL3167C8.layout))).breakValue()
+        return this.tryFold(Unit, check(predicate, RustMutableReference(localStorageL3167C8.asMutPtr(), localStorageL3167C8.layout))).breakValue()
     }
 
     /**
@@ -3108,18 +3110,18 @@ public interface Iterator<SelfType, Item> {
     public fun <I> cmpBy(other: I, cmp: (Item, I.Item) -> Ordering): Ordering {
         fun <X, Y> compare(cmp1: (Item, I.Item) -> Ordering): (X, Y) -> ControlFlow<Ordering, Unit> =
             { x, y -> when (val matchVal = cmp1(x, y)) {
-                Ordering.Equal -> ControlFlow.Continue()
+                Ordering.Equal -> ControlFlow.Continue(Unit)
                 else -> {
                     val nonEq = matchVal
                     ControlFlow.Break(nonEq)
                 }
             } }
         return when (val matchVal = iterCompare(this, other.iterator(), compare(cmp))) {
-            is ControlFlow.Continue -> {
+            is ControlFlow.Continue<*, *> -> {
                 val (ord) = matchVal
                 ord
             }
-            is ControlFlow.Break -> {
+            is ControlFlow.Break<*, *> -> {
                 val (ord1) = matchVal
                 ord1
             }
@@ -3183,18 +3185,18 @@ public interface Iterator<SelfType, Item> {
     public fun <I> partialCmpBy(other: I, partialCmp: (Item, I.Item) -> Ordering?): Ordering? {
         fun <X, Y> compare(partialCmp1: (Item, I.Item) -> Ordering?): (X, Y) -> ControlFlow<Ordering?, Unit> =
             { x, y -> when (val matchVal = partialCmp1(x, y)) {
-                Ordering.Equal -> ControlFlow.Continue()
+                Ordering.Equal -> ControlFlow.Continue(Unit)
                 else -> {
                     val nonEq = matchVal
                     ControlFlow.Break(nonEq)
                 }
             } }
         return when (val matchVal = iterCompare(this, other.iterator(), compare(partialCmp))) {
-            is ControlFlow.Continue -> {
+            is ControlFlow.Continue<*, *> -> {
                 val (ord) = matchVal
                 ord
             }
-            is ControlFlow.Break -> {
+            is ControlFlow.Break<*, *> -> {
                 val (ord1) = matchVal
                 ord1
             }
@@ -3233,9 +3235,9 @@ public interface Iterator<SelfType, Item> {
         fun <X, Y> compare(eq1: (Item, I.Item) -> Boolean): (X, Y) -> ControlFlow<Unit, Unit> =
             { x, y ->
                 if (eq1(x, y)) {
-                    ControlFlow.Continue()
+                    ControlFlow.Continue(Unit)
                 } else {
-                    ControlFlow.Break()
+                    ControlFlow.Break(Unit)
                 }
             }
         return SpecIterEq.SpecIterEq(this, other.iterator(), compare(eq))
@@ -3458,11 +3460,11 @@ public fun <Item, A, B, T> iterCompare(a: A, b: B, f: (A.Item, B.Item) -> Contro
             }
         } }
     return when (val matchVal = a.tryForEach(compare(b, f))) {
-        is ControlFlow.Continue -> ControlFlow.Continue(when (val matchVal1 = b.next()) {
+        is ControlFlow.Continue<*, *> -> ControlFlow.Continue(when (val matchVal1 = b.next()) {
             null -> Ordering.Equal
             else -> Ordering.Less
         })
-        is ControlFlow.Break -> {
+        is ControlFlow.Break<*, *> -> {
             val (x) = matchVal
             x
         }
@@ -3497,7 +3499,7 @@ public fun <Item, Residual, I : Iterator<I, Item>, B, R> I.specTryFold(init: B, 
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }

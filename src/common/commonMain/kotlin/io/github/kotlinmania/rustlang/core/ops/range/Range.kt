@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.ops.range.Bound.Excluded
 import io.github.kotlinmania.rustlang.core.ops.range.Bound.Included
 import io.github.kotlinmania.rustlang.core.ops.range.Bound.Unbounded
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -120,9 +121,9 @@ public open class Range<Idx>(
     public open fun clone(): Range<Idx> = Range(start, end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -240,8 +241,8 @@ public open class RangeFrom<Idx>(
     public open fun clone(): RangeFrom<Idx> = RangeFrom(start)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -332,8 +333,8 @@ public open class RangeTo<Idx>(
     public open fun clone(): RangeTo<Idx> = RangeTo(end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -492,11 +493,11 @@ public open class RangeInclusive<Idx>(
     public open fun intoInner(): Pair<Idx, Idx> = Pair(this.start, this.end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
         if (this.exhausted) {
-            when (val tryResult = fmt.writeFmt(" (exhausted)")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+            when (val tryResult = fmt.writeFmt(" (exhausted)")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
         }
         return Result.Ok<Unit, Unit>(Unit)
     }
@@ -680,8 +681,8 @@ public open class RangeToInclusive<Idx>(
     public open fun clone(): RangeToInclusive<Idx> = RangeToInclusive(end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -784,12 +785,12 @@ public sealed class Bound<T> {
      */
     public open fun asRef(): Bound<T> =
         when (this) {
-            is Included -> {
-                val (x) = this
+            is Included<*> -> {
+                val (x) = this as Included<T>
                 Included(x)
             }
-            is Excluded -> {
-                val (x1) = this
+            is Excluded<*> -> {
+                val (x1) = this as Excluded<T>
                 Excluded(x1)
             }
             Unbounded -> Unbounded
@@ -800,12 +801,12 @@ public sealed class Bound<T> {
      */
     public open fun asMut(): Bound<T> =
         when (this) {
-            is Included -> {
-                val (x) = this
+            is Included<*> -> {
+                val (x) = this as Included<T>
                 Included(x)
             }
-            is Excluded -> {
-                val (x1) = this
+            is Excluded<*> -> {
+                val (x1) = this as Excluded<T>
                 Excluded(x1)
             }
             Unbounded -> Unbounded
@@ -835,12 +836,12 @@ public sealed class Bound<T> {
     public open fun <U> map(f: (T) -> U): Bound<U> =
         when (this) {
             Unbounded -> Unbounded
-            is Included -> {
-                val (x) = this
+            is Included<*> -> {
+                val (x) = this as Included<T>
                 Included(f(x))
             }
-            is Excluded -> {
-                val (x1) = this
+            is Excluded<*> -> {
+                val (x1) = this as Excluded<T>
                 Excluded(f(x1))
             }
         }
@@ -865,12 +866,12 @@ public sealed class Bound<T> {
 public fun <T> Bound<T>.copied(): Bound<T> =
     when (this) {
         Bound.Unbounded -> Bound.Unbounded
-        is Bound.Included -> {
-            val (x) = this
+        is Bound.Included<*> -> {
+            val (x) = this as Bound.Included<T>
             Bound.Included(x)
         }
-        is Bound.Excluded -> {
-            val (x1) = this
+        is Bound.Excluded<*> -> {
+            val (x1) = this as Bound.Excluded<T>
             Bound.Excluded(x1)
         }
     }
@@ -893,12 +894,12 @@ public fun <T> Bound<T>.copied(): Bound<T> =
 public fun <T> Bound<T>.cloned(cloneTFn: (T) -> T = { it }): Bound<T> =
     when (this) {
         Bound.Unbounded -> Bound.Unbounded
-        is Bound.Included -> {
-            val (x) = this
+        is Bound.Included<*> -> {
+            val (x) = this as Bound.Included<T>
             Bound.Included(cloneTFn(x))
         }
-        is Bound.Excluded -> {
-            val (x1) = this
+        is Bound.Excluded<*> -> {
+            val (x1) = this as Bound.Excluded<T>
             Bound.Excluded(cloneTFn(x1))
         }
     }
@@ -958,22 +959,22 @@ public interface RangeBounds<T> {
      */
     public fun <U> contains(item: U): Boolean =
         (when (val matchVal = this.startBound()) {
-            is Included -> {
+            is Included<*> -> {
                 val (start) = matchVal
                 (kmCompareValues(start, item) <= 0)
             }
-            is Excluded -> {
+            is Excluded<*> -> {
                 val (start1) = matchVal
                 (kmCompareValues(start1, item) < 0)
             }
             Unbounded -> true
         }) &&
             (when (val matchVal1 = this.endBound()) {
-                is Included -> {
+                is Included<*> -> {
                     val (end) = matchVal1
                     (kmCompareValues(item, end) <= 0)
                 }
-                is Excluded -> {
+                is Excluded<*> -> {
                     val (end1) = matchVal1
                     (kmCompareValues(item, end1) < 0)
                 }
@@ -1047,17 +1048,17 @@ public interface RangeBounds<T> {
             when {
                 matchVal.first == Unbounded -> true
                 matchVal.second == Unbounded -> true
-                matchVal.first is Included && matchVal.second is Excluded -> {
+                matchVal.first is Included<*> && matchVal.second is Excluded<*> -> {
                     val (start) = matchVal.first as Included<T>
                     val (end) = matchVal.second as Excluded<T>
                     (kmCompareValues(start, end) < 0)
                 }
-                matchVal.first is Excluded && matchVal.second is Included -> {
+                matchVal.first is Excluded<*> && matchVal.second is Included<*> -> {
                     val (start1) = matchVal.first as Excluded<T>
                     val (end1) = matchVal.second as Included<T>
                     (kmCompareValues(start1, end1) < 0)
                 }
-                matchVal.first is Excluded && matchVal.second is Excluded -> {
+                matchVal.first is Excluded<*> && matchVal.second is Excluded<*> -> {
                     val (start2) = matchVal.first as Excluded<T>
                     val (end2) = matchVal.second as Excluded<T>
                     (kmCompareValues(start2, end2) < 0)
@@ -1139,12 +1140,12 @@ public interface IntoBounds<T> : RangeBounds<T> {
             run {
                 val matchVal = Pair(selfStart, otherStart)
                 when {
-                    matchVal.first is Included && matchVal.second is Included -> {
+                    matchVal.first is Included<*> && matchVal.second is Included<*> -> {
                         val (a) = matchVal.first as Included<T>
                         val (b) = matchVal.second as Included<T>
                         Included(a.max(b))
                     }
-                    matchVal.first is Excluded && matchVal.second is Excluded -> {
+                    matchVal.first is Excluded<*> && matchVal.second is Excluded<*> -> {
                         val (a1) = matchVal.first as Excluded<T>
                         val (b1) = matchVal.second as Excluded<T>
                         Excluded(a1.max(b1))
@@ -1158,7 +1159,7 @@ public interface IntoBounds<T> : RangeBounds<T> {
                         val x1 = matchVal.second
                         x1
                     }
-                    matchVal.first is Included && matchVal.second is Excluded -> {
+                    matchVal.first is Included<*> && matchVal.second is Excluded<*> -> {
                         val (i) = matchVal.first as Included<T>
                         val (e) = matchVal.second as Excluded<T>
                         if (i > e) {
@@ -1182,12 +1183,12 @@ public interface IntoBounds<T> : RangeBounds<T> {
             run {
                 val matchVal1 = Pair(selfEnd, otherEnd)
                 when {
-                    matchVal1.first is Included && matchVal1.second is Included -> {
+                    matchVal1.first is Included<*> && matchVal1.second is Included<*> -> {
                         val (a2) = matchVal1.first as Included<T>
                         val (b2) = matchVal1.second as Included<T>
                         Included(a2.min(b2))
                     }
-                    matchVal1.first is Excluded && matchVal1.second is Excluded -> {
+                    matchVal1.first is Excluded<*> && matchVal1.second is Excluded<*> -> {
                         val (a3) = matchVal1.first as Excluded<T>
                         val (b3) = matchVal1.second as Excluded<T>
                         Excluded(a3.min(b3))
@@ -1201,7 +1202,7 @@ public interface IntoBounds<T> : RangeBounds<T> {
                         val x3 = matchVal1.second
                         x3
                     }
-                    matchVal1.first is Included && matchVal1.second is Excluded -> {
+                    matchVal1.first is Included<*> && matchVal1.second is Excluded<*> -> {
                         val (i2) = matchVal1.first as Included<T>
                         val (e2) = matchVal1.second as Excluded<T>
                         if (i2 < e2) {
@@ -1270,11 +1271,11 @@ public fun <T> RangeToInclusive<T>.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair
 
 public fun <T> Pair<Bound<T>, Bound<T>>.startBound(): Bound<T> =
     when {
-        this.first is Included -> {
+        this.first is Included<*> -> {
             val (start) = this.first as Included<T>
             Included(start)
         }
-        this.first is Excluded -> {
+        this.first is Excluded<*> -> {
             val (start1) = this.first as Excluded<T>
             Excluded(start1)
         }
@@ -1283,11 +1284,11 @@ public fun <T> Pair<Bound<T>, Bound<T>>.startBound(): Bound<T> =
 
 public fun <T> Pair<Bound<T>, Bound<T>>.endBound(): Bound<T> =
     when {
-        this.second is Included -> {
+        this.second is Included<*> -> {
             val (end) = this.second as Included<T>
             Included(end)
         }
-        this.second is Excluded -> {
+        this.second is Excluded<*> -> {
             val (end1) = this.second as Excluded<T>
             Excluded(end1)
         }

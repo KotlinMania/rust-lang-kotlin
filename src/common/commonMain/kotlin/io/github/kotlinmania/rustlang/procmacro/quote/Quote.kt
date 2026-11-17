@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.procmacro.quote
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.procmacro.BitOr
 import io.github.kotlinmania.rustlang.procmacro.Delimiter
 import io.github.kotlinmania.rustlang.procmacro.Group
@@ -14,6 +15,7 @@ import io.github.kotlinmania.rustlang.procmacro.Span
 import io.github.kotlinmania.rustlang.procmacro.TokenStream
 import io.github.kotlinmania.rustlang.procmacro.TokenTree
 import io.github.kotlinmania.rustlang.procmacro.totokens.ToTokens
+import io.github.kotlinmania.rustlang.procmacro.totokens.toTokens
 import io.github.kotlinmania.rustlang.std.path.Iter
 import io.github.kotlinmania.rustlang.procmacro.quote.HasIterator as HasIter
 import io.github.kotlinmania.rustlang.procmacro.quote.ThereIsNoIteratorInRepetition as DoesNotHaveIter
@@ -121,7 +123,7 @@ public fun <Iter, T : RepAsIteratorExt<Iter>> RepInterp<T>.quoteIntoIter(): Pair
 // Implements the relevant traits, and exports a dummy `next()` method.
 public open class RepInterp<T>(
     public var value: T,
-) : ToTokens, Iterable<Item> {
+) : Iterable<Item> {
     public var field0: T
         get() = value
         set(v) {
@@ -147,10 +149,6 @@ public open class RepInterp<T>(
 
     public open fun nextIterator(): Item? = this.value.next()
 
-    public override fun toTokens(tokens: TokenStream) {
-        this.value.toTokens(tokens)
-    }
-
     public companion object {
         public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<RepInterp<T>> =
             object : TypeLayout<RepInterp<T>> {
@@ -172,6 +170,10 @@ public open class RepInterp<T>(
                 }
             }
     }
+}
+
+public fun <T : ToTokens> RepInterp<T>.toTokens(tokens: TokenStream) {
+    this.value.toTokens(tokens)
 }
 
 /**
@@ -210,7 +212,7 @@ public fun quote(stream: TokenStream): TokenStream {
         if (afterDollar) {
             afterDollar = false
             when {
-                tree is TokenTree.Group -> {
+                tree is TokenTree.Group<*, *, *> -> {
                     val (tt) = tree
                     // Handles repetition by expanding `$(CONTENTS) SEP_OPT *` to `( REP_EXPANDED )`.
                     val contents = tt.stream()
@@ -219,14 +221,14 @@ public fun quote(stream: TokenStream): TokenStream {
                         run {
                             val matchVal1 = Pair(iter.removeFirstOrNull(), iter.peek())
                             when {
-                                matchVal1.first != null && matchVal1.first is TokenTree.Punct && matchVal1.second != null && matchVal1.second is TokenTree.Punct && (matchVal1.first as TokenTree.Punct).value.spacing() == Spacing.Joint && (matchVal1.second as TokenTree.Punct).value.asChar() == '*' -> {
-                                    val (sep) = matchVal1.first as TokenTree.Punct
-                                    val (star) = matchVal1.second as TokenTree.Punct
+                                matchVal1.first != null && matchVal1.first is TokenTree.Punct<*, *, *> && matchVal1.second != null && matchVal1.second is TokenTree.Punct<*, *, *> && (matchVal1.first as TokenTree.Punct<*, *, *>).value.spacing() == Spacing.Joint && (matchVal1.second as TokenTree.Punct<*, *, *>).value.asChar() == '*' -> {
+                                    val (sep) = matchVal1.first as TokenTree.Punct<*, *, *>
+                                    val (star) = matchVal1.second as TokenTree.Punct<*, *, *>
                                     iter.removeFirstOrNull()
                                     sep
                                 }
-                                matchVal1.first != null && matchVal1.first is TokenTree.Punct && (matchVal1.first as TokenTree.Punct).value.asChar() == '*' -> {
-                                    val (star1) = matchVal1.first as TokenTree.Punct
+                                matchVal1.first != null && matchVal1.first is TokenTree.Punct<*, *, *> && (matchVal1.first as TokenTree.Punct<*, *, *>).value.asChar() == '*' -> {
+                                    val (star1) = matchVal1.first as TokenTree.Punct<*, *, *>
                                     null
                                 }
                                 else -> error("`\$(...)` must be followed by `*` in `quote!`")
@@ -480,7 +482,7 @@ public fun quote(stream: TokenStream): TokenStream {
                     }.toTokens(tokens)
                     continue
                 }
-                tree is TokenTree.Ident -> {
+                tree is TokenTree.Ident<*, *, *> -> {
                     run {
                         val ts25 = TokenStream.new()
                         TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts25)
@@ -505,12 +507,12 @@ public fun quote(stream: TokenStream): TokenStream {
                     }.toTokens(tokens)
                     continue
                 }
-                tree is TokenTree.Punct && (tree as TokenTree.Punct).value.asChar() == '$' -> {
+                tree is TokenTree.Punct<*, *, *> && tree.value.asChar() == '$' -> {
                     val (tt1) = tree
                 }
                 else -> error("`\$` must be followed by an ident or `\$` or a repetition group in `quote!`")
             }
-        } else if (tree is TokenTree.Punct) {
+        } else if (tree is TokenTree.Punct<*, *, *>) {
             val (tt2) = tree
             if (tt2.asChar() == '$') {
                 afterDollar = true
@@ -518,7 +520,7 @@ public fun quote(stream: TokenStream): TokenStream {
             }
         }
         when (tree) {
-            is TokenTree.Punct -> {
+            is TokenTree.Punct<*, *, *> -> {
                 val (tt3) = tree
                 run {
                     val ts27 = TokenStream.new()
@@ -591,7 +593,7 @@ public fun quote(stream: TokenStream): TokenStream {
                     ts27
                 }
             }
-            is TokenTree.Group -> {
+            is TokenTree.Group<*, *, *> -> {
                 val (tt4) = tree
                 run {
                     val ts33 = TokenStream.new()
@@ -686,7 +688,7 @@ public fun quote(stream: TokenStream): TokenStream {
                     ts33
                 }
             }
-            is TokenTree.Ident -> {
+            is TokenTree.Ident<*, *, *> -> {
                 val (tt5) = tree
                 val literal = tt5.toString()
                 val (literal1, ctor) =
@@ -761,7 +763,7 @@ public fun quote(stream: TokenStream): TokenStream {
                     ts43
                 }
             }
-            is TokenTree.Literal -> {
+            is TokenTree.Literal<*, *, *> -> {
                 val (tt6) = tree
                 run {
                     val ts47 = TokenStream.new()
@@ -928,18 +930,18 @@ public fun collectMetaVars(contentStream: TokenStream): List<Ident> {
             if (matchVal == null) break
             val tree = matchVal
             when {
-                tree is TokenTree.Punct && (tree as TokenTree.Punct).value.asChar() == '$' -> {
+                tree is TokenTree.Punct<*, *, *> && tree.value.asChar() == '$' -> {
                     val (tt) = tree
                     when (val matchVal1 = iter.peek()) {
                         is Some -> {
-                            val (id) = matchVal1 as TokenTree.Ident
+                            val (id) = matchVal1 as TokenTree.Ident<*, *, *>
                             out.push(id.clone())
                             iter.removeFirstOrNull()
                         }
                         else -> {}
                     }
                 }
-                tree is TokenTree.Group -> {
+                tree is TokenTree.Group<*, *, *> -> {
                     val (tt1) = tree
                     helper(tt1.stream(), out)
                 }

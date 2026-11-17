@@ -562,7 +562,7 @@ public fun init(): Result<Init, Unit> {
                 return Result.Err<Init, Unit>(Unit)
             }
             when (val matchVal = LOCK.compareExchange(MutPtr(0L), lock, SeqCst, SeqCst)) {
-                is Result.Err -> {
+                is Result.Err<*, *> -> {
                     val other = matchVal.error
                     check(!other.isNull())
                     CloseHandle(lock)
@@ -588,7 +588,7 @@ public fun init(): Result<Init, Unit> {
         // once, though, so we've got a global boolean indicating whether we're
         // done yet or not.
         // Note: https://github.com/rust-lang/backtrace-rs/issues/678
-        when (val tryResult = DBGHELP.ensureOpen()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Init, Unit>(tryResult.error) }
+        when (val tryResult = DBGHELP.ensureOpen()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Init, Unit>(tryResult.error) }
         if (INITIALIZED.inv()) {
             setOptionalOptions(ret.dbghelp())
             INITIALIZED = true
@@ -628,7 +628,7 @@ public fun setOptionalOptions(dbghelp: MutPtr): Unit? {
         val searchPathBuf = mutableListOf<UShort>()
         searchPathBuf.resize(1024, 0)
         // Prefill the buffer with the current search path.
-        if (((UnresolvedTypeLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symGetSearchPathW() ?: return null)(GetCurrentProcess(), searchPathBuf.asMutPtr(), null) == TRUE) {
+        if (((UnresolvedTypeLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symGetSearchPathW() ?: return null)(GetCurrentProcess(), searchPathBuf.asMutPtr(), searchPathBuf.size) == TRUE) {
             // Trim the buffer to the actual length of the string.
             val len = lstrlenW(searchPathBuf.asMutPtr())
             check(len >= 0)

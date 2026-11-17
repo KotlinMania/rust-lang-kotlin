@@ -2,10 +2,12 @@
 package io.github.kotlinmania.rustlang.std.sys.paths.unix
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -17,7 +19,6 @@ import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.readLink
 import io.github.kotlinmania.rustlang.std.io.constError
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.OsStringExt
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.asBytes
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromBytes
@@ -42,7 +43,7 @@ public fun getcwd(): Result<PathBuf, Error> {
                 buf.shrinkToFit()
                 return Result.Ok<PathBuf, Error>(PathBuf.from(OsString.fromVec(buf)))
             } else {
-                val error = io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError()
+                val error = Error.lastOsError()
                 if (error.rawOsError() != ERANGE) {
                     return Result.Err<PathBuf, Error>(error)
                 }
@@ -57,11 +58,11 @@ public fun getcwd(): Result<PathBuf, Error> {
 }
 
 public fun chdir(p: path.Path): Result<Unit, Error> {
-    val result = when (val tryResult = runPathWithCstr(p, { p1 -> Result.Ok(io.github.kotlinmania.rustlang.libc.chdir(p1.asPtr())) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+    val result = when (val tryResult = runPathWithCstr(p, { p1 -> Result.Ok(io.github.kotlinmania.rustlang.libc.chdir(p1.asPtr())) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
     return if (result == 0) {
         Result.Ok<Unit, Error>(Unit)
     } else {
-        Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
+        Result.Err<Unit, Error>(Error.lastOsError())
     }
 }
 
@@ -87,7 +88,7 @@ public fun splitPathsRef(unparsed: OsStr): SplitPathsRef? {
 }
 
 public open class JoinPathsError {
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("path segment contains separator `${Char.from(PATH_SEPARATOR)}`"); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("path segment contains separator `${Char.from(PATH_SEPARATOR)}`"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<JoinPathsError> =
@@ -125,7 +126,7 @@ public fun currentExe(): Result<PathBuf, Error> =
     run {
         val matchVal = readLink("/proc/self/exe")
         when {
-            matchVal is Result.Err && (matchVal as Result.Err).error.kind() == ErrorKind.NotFound -> {
+            matchVal is Result.Err<*, *> && matchVal.error.kind() == ErrorKind.NotFound -> {
                 val e = matchVal.error
                 Result.Err<PathBuf, Error>(constError(ErrorKind.Uncategorized, "no /proc/self/exe available. Is /proc mounted?"))
             }

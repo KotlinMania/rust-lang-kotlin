@@ -162,7 +162,7 @@ public open class RwLock<T>(
                 val guard = matchVal.value
                 Result.Ok<T, PoisonError<Unit>>(guard.clone())
             }; is Result.Err<*, *> -> {
-                Result.Err<T, PoisonError<Unit>>(PoisonError.new())
+                Result.Err<T, PoisonError<Unit>>(PoisonError.new(Unit))
             } }
         }
 
@@ -557,12 +557,12 @@ public open class RwLock<T>(
             val matchVal = this.tryRead()
             when {
                 matchVal is Result.Ok<*, *> -> {
-                    val guard = (matchVal as Result.Ok<*, *>).value
+                    val guard = matchVal.value
                     d.field("data", guard)
                 }
-                matchVal is Result.Err<*, *> && matchVal.error is TryLockError.Poisoned -> {
-                    val errorVal = (matchVal as Result.Err<*, *>).error
-                    val (err) = errorVal as TryLockError.Poisoned
+                matchVal is Result.Err<*, *> && matchVal.error is TryLockError.Poisoned<*> -> {
+                    val errorVal = matchVal.error
+                    val (err) = errorVal as TryLockError.Poisoned<*>
                     d.field("data", err.getRef())
                 }
                 else -> {

@@ -203,9 +203,9 @@ public open class Chars(
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = f.writeFmt("Chars(")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = f.writeFmt(")")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = f.writeFmt("Chars(")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
+        when (val tryResult = f.writeFmt(")")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -362,27 +362,27 @@ public open class Bytes internal constructor(
 
     public open fun clone(): Bytes = Bytes(value)
 
-    public override fun next(): UByte? = this.value.next()
+    public open fun next(): UByte? = this.value.next()
 
-    public override fun sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
+    public open fun sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
 
-    public override fun count(): Int = this.value.count()
+    public open fun count(): Int = this.value.count()
 
-    public override fun last(): UByte? = this.value.last()
+    public open fun last(): UByte? = this.value.last()
 
-    public override fun nth(n: Int): UByte? = this.value.nth(n)
+    public open fun nth(n: Int): UByte? = this.value.nth(n)
 
-    public override fun all(f: (UByte) -> Boolean): Boolean = this.value.all(f)
+    public open fun all(f: (UByte) -> Boolean): Boolean = this.value.all(f)
 
-    public override fun any(f: (UByte) -> Boolean): Boolean = this.value.any(f)
+    public open fun any(f: (UByte) -> Boolean): Boolean = this.value.any(f)
 
-    public override fun find(predicate: (UByte) -> Boolean): UByte? = this.value.indexOf(predicate).takeIf { it >= 0 }
+    public open fun find(predicate: (UByte) -> Boolean): UByte? = this.value.indexOf(predicate).takeIf { it >= 0 }
 
-    public override fun position(predicate: (UByte) -> Boolean): Int? = this.value.indexOfFirst(predicate).takeIf { it >= 0 }
+    public open fun position(predicate: (UByte) -> Boolean): Int? = this.value.indexOfFirst(predicate).takeIf { it >= 0 }
 
-    public override fun rposition(predicate: (UByte) -> Boolean): Int? = this.value.indexOfLast(predicate).takeIf { it >= 0 }
+    public open fun rposition(predicate: (UByte) -> Boolean): Int? = this.value.indexOfLast(predicate).takeIf { it >= 0 }
 
-    public override fun iteratorGetUnchecked(idx: Int): UByte {
+    public open fun iteratorGetUnchecked(idx: Int): UByte {
         // SAFETY: the caller must uphold the safety contract
         // for `Iterator.__iterator_get_unchecked`.
         return this.value.underlyingIteratorGetUnchecked(idx)
@@ -421,7 +421,7 @@ public open class SplitInternal<P : Pattern<Searcher>, Searcher>(
         return s.copy(matcher = s.matcher.clone())
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "SplitInternal").field("start", this.start).field("end", this.end).field("matcher", this.matcher).field("allow_trailing_empty", this.allowTrailingEmpty).field("finished", this.finished).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "SplitInternal").field("start", this.start).field("end", this.end).field("matcher", this.matcher).field("allow_trailing_empty", this.allowTrailingEmpty).field("finished", this.finished).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun getEnd(): String? {
         if (!this.finished) {
@@ -609,7 +609,7 @@ public open class Split<P : Pattern<Searcher>, Searcher> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "Split").field(this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "Split").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? = this.value.next()
 
@@ -673,7 +673,7 @@ public open class RSplit<P : Pattern<Searcher>, Searcher> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "RSplit").field(this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "RSplit").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? = this.value.nextBack()
 
@@ -737,7 +737,7 @@ public open class SplitTerminator<P : Pattern<Searcher>, Searcher> internal cons
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "SplitTerminator").field(this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "SplitTerminator").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? = this.value.next()
 
@@ -801,7 +801,7 @@ public open class RSplitTerminator<P : Pattern<Searcher>, Searcher> internal con
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "RSplitTerminator").field(this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "RSplitTerminator").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? = this.value.nextBack()
 
@@ -854,7 +854,7 @@ public open class SplitNInternal<P : Pattern<Searcher>, Searcher> internal const
         return s.copy(iter = s.iter.clone())
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "SplitNInternal").field("iter", this.iter).field("count", this.count).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "SplitNInternal").field("iter", this.iter).field("count", this.count).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? =
         when (this.count) {
@@ -921,7 +921,7 @@ public open class SplitN<P : Pattern<Searcher>, Searcher> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "SplitN").field(this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "SplitN").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? = this.value.next()
 
@@ -983,7 +983,7 @@ public open class RSplitN<P : Pattern<Searcher>, Searcher> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "RSplitN").field(this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "RSplitN").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? = this.value.nextBack()
 
@@ -1033,7 +1033,7 @@ public open class MatchIndicesInternal<P : Pattern<Searcher>, Searcher>(
         return MatchIndicesInternal(s.value.clone())
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "MatchIndicesInternal").field(this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "MatchIndicesInternal").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): Pair<Int, String>? = this.value.nextMatch().map({ (start, end) -> Pair(start, this.value.haystack().getUnchecked(start until end)) })
 
@@ -1066,7 +1066,7 @@ public open class MatchIndices<P : Pattern<Searcher>, Searcher> internal constru
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "MatchIndices").field(this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "MatchIndices").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): Pair<Int, String>? = this.value.next()
 
@@ -1109,7 +1109,7 @@ public open class RMatchIndices<P : Pattern<Searcher>, Searcher> internal constr
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "RMatchIndices").field(this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "RMatchIndices").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): Pair<Int, String>? = this.value.nextBack()
 
@@ -1140,7 +1140,7 @@ public open class MatchesInternal<P : Pattern<Searcher>, Searcher>(
         return MatchesInternal(s.value.clone())
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "MatchesInternal").field(this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "MatchesInternal").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? {
         // SAFETY: `Searcher` guarantees that `start` and `end` lie on unicode boundaries.
@@ -1179,7 +1179,7 @@ public open class Matches<P : Pattern<Searcher>, Searcher> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "Matches").field(this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "Matches").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? = this.value.next()
 
@@ -1222,7 +1222,7 @@ public open class RMatches<P : Pattern<Searcher>, Searcher> internal constructor
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "RMatches").field(this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "RMatches").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? = this.value.nextBack()
 
@@ -1504,7 +1504,7 @@ public open class SplitInclusive<P : Pattern<Searcher>, Searcher> internal const
 
     public open fun next(): String? = this.value.nextInclusive()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "SplitInclusive").field("0", this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "SplitInclusive").field("0", this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): SplitInclusive<P, Searcher> = SplitInclusive(this.value.clone())
@@ -1564,7 +1564,7 @@ public open class EncodeUtf16(
 
     public open fun clone(): EncodeUtf16 = EncodeUtf16(chars, extra)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "EncodeUtf16").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "EncodeUtf16").finishNonExhaustive(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): UShort? {
         if (this.extra != 0u.toUShort()) {

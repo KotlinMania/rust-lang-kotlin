@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.num.trailingZeros
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libm.math.support.env.Round
 import io.github.kotlinmania.rustlang.libm.math.support.env.Status
@@ -28,12 +29,12 @@ public fun hf16(s: String): F16 =
     run {
         val matchVal = parseHexExact(s, 16u, 10u)
         when {
-            matchVal is Result.Ok -> {
+            matchVal is Result.Ok<*, *> -> {
                 val bits = matchVal.value
                 F16.fromBits(bits.toUShort())
             }
             else -> {
-                val errorVal = matchVal.error
+                val errorVal = (matchVal as Result.Err<*, *>).error
                 val (s1) = errorVal as HexFloatParseError
                 error("$s1")
             }
@@ -47,12 +48,12 @@ public fun hf32(s: String): kotlin.Float =
     run {
         val matchVal = parseHexExact(s, 32u, 23u)
         when {
-            matchVal is Result.Ok -> {
+            matchVal is Result.Ok<*, *> -> {
                 val bits = matchVal.value
                 f32FromBits(bits.toUInt())
             }
             else -> {
-                val errorVal = matchVal.error
+                val errorVal = (matchVal as Result.Err<*, *>).error
                 val (s1) = errorVal as HexFloatParseError
                 error("$s1")
             }
@@ -66,12 +67,12 @@ public fun hf64(s: String): Double =
     run {
         val matchVal = parseHexExact(s, 64u, 52u)
         when {
-            matchVal is Result.Ok -> {
+            matchVal is Result.Ok<*, *> -> {
                 val bits = matchVal.value
                 f64FromBits(bits.toULong())
             }
             else -> {
-                val errorVal = matchVal.error
+                val errorVal = (matchVal as Result.Err<*, *>).error
                 val (s1) = errorVal as HexFloatParseError
                 error("$s1")
             }
@@ -85,12 +86,12 @@ public fun hf128(s: String): F128 =
     run {
         val matchVal = parseHexExact(s, 128u, 112u)
         when {
-            matchVal is Result.Ok -> {
+            matchVal is Result.Ok<*, *> -> {
                 val bits = matchVal.value
                 F128.fromBits(bits)
             }
             else -> {
-                val errorVal = matchVal.error
+                val errorVal = (matchVal as Result.Err<*, *>).error
                 val (s1) = errorVal as HexFloatParseError
                 error("$s1")
             }
@@ -116,26 +117,26 @@ public fun parseHexExact(s: String, bits: UInt, sigBits: UInt): Result<U128, Hex
     run {
         val matchVal = parseAny(s, bits, sigBits, Round.Nearest)
         when {
-            matchVal is Result.Err -> {
+            matchVal is Result.Err<*, *> -> {
                 val e = matchVal.error
                 Result.Err<U128, HexFloatParseError>(e)
             }
-            matchVal is Result.Ok && matchVal.value.second == Status.OK -> {
+            matchVal is Result.Ok<*, *> && matchVal.value.second == Status.OK -> {
                 val valueVal = matchVal.value
                 val bits1 = valueVal.first
                 Result.Ok<U128, HexFloatParseError>(bits1)
             }
-            matchVal is Result.Ok && (matchVal as Result.Ok).value.second.overflow() -> {
+            matchVal is Result.Ok<*, *> && matchVal.value.second.overflow() -> {
                 val valueVal1 = matchVal.value
                 val status = valueVal1.second
                 Result.Err<U128, HexFloatParseError>(HexFloatParseError("the value is too huge"))
             }
-            matchVal is Result.Ok && (matchVal as Result.Ok).value.second.underflow() -> {
+            matchVal is Result.Ok<*, *> && matchVal.value.second.underflow() -> {
                 val valueVal2 = matchVal.value
                 val status1 = valueVal2.second
                 Result.Err<U128, HexFloatParseError>(HexFloatParseError("the value is too tiny"))
             }
-            matchVal is Result.Ok && (matchVal as Result.Ok).value.second.inexact() -> {
+            matchVal is Result.Ok<*, *> && matchVal.value.second.inexact() -> {
                 val valueVal3 = matchVal.value
                 val status2 = valueVal3.second
                 Result.Err<U128, HexFloatParseError>(HexFloatParseError("the value is too precise"))
@@ -185,10 +186,10 @@ public fun parseAny(s: String, bits: UInt, sigBits: UInt, round: Round): Result<
                     }
                 run {
                     val matchVal1 = parseFinite(rest1, bits, sigBits, round1)
-                    when (matchVal1) { is Result.Ok -> {
+                    when (matchVal1) { is Result.Ok<*, *> -> {
                         val res = matchVal1.value
                         res
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         val e = matchVal1.error
                         return Result.Err<Pair<U128, Status>, HexFloatParseError>(e)
                     } }
@@ -211,16 +212,16 @@ public fun parseFinite(b: List<UByte>, bits: UInt, sigBits: UInt, roundingMode: 
         run {
             val matchVal = parseHex(b)
             when {
-                matchVal is Result.Err -> {
+                matchVal is Result.Err<*, *> -> {
                     val e = matchVal.error
                     return Result.Err<Pair<U128, Status>, HexFloatParseError>(e)
                 }
-                matchVal is Result.Ok && matchVal.value.sig == 0 -> {
+                matchVal is Result.Ok<*, *> && matchVal.value.sig == 0 -> {
                     val valueVal = matchVal.value
                     return Result.Ok<Pair<U128, Status>, HexFloatParseError>(Pair(0, Status.OK))
                 }
                 else -> {
-                    val valueVal1 = matchVal.value
+                    val valueVal1 = (matchVal as Result.Ok<*, *>).value
                     val sig = valueVal1.sig
                     val exp = valueVal1.exp
                     Pair(sig, exp)
@@ -480,9 +481,9 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> fmtAnyHex(x: F, f: Str
         return Result.Ok<Unit, Error>(Unit)
     }
     if (x.isInfinite()) {
-        return run { f.append("inf"); Result.Ok(Unit) }
+        return run { f.append("inf"); Result.Ok<Unit, Error>(Unit) }
     } else if (x == F.ZERO) {
-        return run { f.append("0x0p+0"); Result.Ok(Unit) }
+        return run { f.append("0x0p+0"); Result.Ok<Unit, Error>(Unit) }
     }
     var exponent = x.expUnbiased()
     val sig = x.toBits() and F.SIG_MASK
@@ -497,7 +498,7 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> fmtAnyHex(x: F, f: Str
         } else {
             "1."
         }
-    return run { f.append("0x$leading${sig}p$exponent"); Result.Ok(Unit) }
+    return run { f.append("0x$leading${sig}p$exponent"); Result.Ok<Unit, Error>(Unit) }
 }
 
 /**
@@ -559,43 +560,43 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> F.fmt(f: StringBuilder
         fmtAnyHex(this, f)
     }
 
-public fun Byte.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok(Unit) }
+public fun Byte.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok<Unit, Error>(Unit) }
 
-public fun Short.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok(Unit) }
+public fun Short.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok<Unit, Error>(Unit) }
 
-public fun Int.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok(Unit) }
+public fun Int.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok<Unit, Error>(Unit) }
 
-public fun Long.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok(Unit) }
+public fun Long.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok<Unit, Error>(Unit) }
 
-public fun I128.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok(Unit) }
+public fun I128.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok<Unit, Error>(Unit) }
 
-public fun UByte.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok(Unit) }
+public fun UByte.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok<Unit, Error>(Unit) }
 
-public fun UShort.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok(Unit) }
+public fun UShort.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok<Unit, Error>(Unit) }
 
-public fun UInt.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok(Unit) }
+public fun UInt.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok<Unit, Error>(Unit) }
 
-public fun ULong.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok(Unit) }
+public fun ULong.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok<Unit, Error>(Unit) }
 
-public fun U128.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok(Unit) }
+public fun U128.fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this}"); Result.Ok<Unit, Error>(Unit) }
 
 // Not really a meaningful impl, but makes some generics easier.
 public fun Boolean.fmt(f: StringBuilder): Result<Unit, Error> = cfgSelectNofmt(feature, "compiler-builtins", f, unsupportedBranch, write, f, "{self}")
 
 public fun <T1, T2> Pair<T1, T2>.fmt(f: StringBuilder): Result<Unit, Error> where T1 : DisplayHex, T2 : DisplayHex {
     f.append("(")
-    when (val tryResult = this.value.fmt(f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = this.value.fmt(f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
     f.append(", ")
-    when (val tryResult = this.field1.fmt(f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
-    return run { f.append(")"); Result.Ok(Unit) }
+    when (val tryResult = this.field1.fmt(f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+    return run { f.append(")"); Result.Ok<Unit, Error>(Unit) }
 }
 
 public fun <T1, T2, T3> Triple<T1, T2, T3>.fmt(f: StringBuilder): Result<Unit, Error> where T1 : DisplayHex, T2 : DisplayHex, T3 : DisplayHex {
     f.append("(")
-    when (val tryResult = this.value.fmt(f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = this.value.fmt(f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
     f.append(", ")
-    when (val tryResult = this.field1.fmt(f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = this.field1.fmt(f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
     f.append(", ")
-    when (val tryResult = this.field2.fmt(f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
-    return run { f.append(")"); Result.Ok(Unit) }
+    when (val tryResult = this.field2.fmt(f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+    return run { f.append(")"); Result.Ok<Unit, Error>(Unit) }
 }

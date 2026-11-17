@@ -79,7 +79,7 @@ public fun <Int, F : Float<F, Int>> parseLongMantissa(s: List<UByte>): BiasedFp 
                     }
                 }
             } else {
-                getShift((((-d.decimalPoint) as Any?) as BiasedFp))
+                getShift((-d.decimalPoint))
             }
         d.leftShift(shift1)
         if (d.decimalPoint > DecimalSeq.DECIMAL_POINT_RANGE) {

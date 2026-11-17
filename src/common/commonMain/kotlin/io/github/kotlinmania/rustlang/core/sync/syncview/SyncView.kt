@@ -1,12 +1,12 @@
 // port-lint: source sync/sync_view.rs
 package io.github.kotlinmania.rustlang.core.sync.syncview
 
-import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.convert.AsMut
 import io.github.kotlinmania.rustlang.core.convert.AsRef
+import io.github.kotlinmania.rustlang.core.convert.asMut
+import io.github.kotlinmania.rustlang.core.convert.asRef
 import io.github.kotlinmania.rustlang.core.future.future.Future
-import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -23,6 +23,7 @@ import io.github.kotlinmania.rustlang.core.ops.function.FnMut
 import io.github.kotlinmania.rustlang.core.ops.function.FnOnce
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.fromMut
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.task.poll.Poll
 import io.github.kotlinmania.rustlang.core.task.wake.Context
@@ -150,7 +151,7 @@ public typealias Return<G> = G.Return
 public open class SyncView<T>(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
-) : Future<Output>, AsRef<T>, AsMut<T>, TrivialClone<SyncView<T>>, StructuralPartialEq {
+) : AsRef<T>, AsMut<T> {
     public var inner: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
@@ -161,7 +162,7 @@ public open class SyncView<T>(
 
     // See `SyncView`s docs for justification.
 
-    public open fun fmt(f: StringBuilder): Result<Unit, fmt.Error> = DebugStruct(f, "SyncView").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, fmt.Error> = run { DebugStruct(f, "SyncView").finishNonExhaustive(); Result.Ok<Unit, fmt.Error>(Unit) }
 
     /**
      * Unwrap the value contained in the `SyncView`
@@ -196,8 +197,6 @@ public open class SyncView<T>(
         return Pin.newUnchecked(this.getRef().inner)
     }
 
-    public override fun poll(cx: Context): Poll<Output> = this.asPinMut().poll(cx)
-
     /**
      * Gets shared access to the underlying value.
      */
@@ -208,7 +207,7 @@ public open class SyncView<T>(
      */
     public override fun asMut(): T = this.inner
 
-    public override fun clone(): SyncView<T> = SyncView(inner = this.inner.clone(), fieldLayout = this.fieldLayout)
+    public open fun clone(): SyncView<T> = SyncView(inner = this.inner.clone(), fieldLayout = this.fieldLayout)
 
     public open fun eq(other: SyncView<U>): Boolean = this.inner == other.inner
 
@@ -266,6 +265,8 @@ public fun <CallOnceFuture, Output, F, Args> SyncView<F>.asyncCallOnce(args: Arg
 public fun <CallRefFuture, CallOnceFuture, Output, F, Args> SyncView<F>.asyncCallMut(args: Args): CallRefFuture where F : AsyncFnMut<Args, CallRefFuture, CallOnceFuture, Output> = this.asMut().asyncCallMut(args)
 
 public fun <CallRefFuture, CallOnceFuture, Output, F, Args> SyncView<F>.asyncCall(args: Args): CallRefFuture where F : AsyncFn<Args, CallRefFuture, CallOnceFuture, Output> = this.asRef().asyncCall(args)
+
+public fun <Output, T> SyncView<T>.poll(cx: Context): Poll<Output> where T : Future<Output> = this.asPinMut().poll(cx)
 
 // also #98407
 public fun <Yield, Return, R, G> SyncView<G>.resume(arg: R, resumeGFn: (G, R) -> CoroutineState<Yield, Return>): CoroutineState<Yield, Return> where G : Coroutine<R, Yield, Return> = resumeGFn(this.asPinMut(), arg)

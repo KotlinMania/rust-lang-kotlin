@@ -37,6 +37,7 @@ import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.writeVolatile
 import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
+import io.github.kotlinmania.rustlang.core.slice.splitAtMut
 
 /**
  * # Examples
@@ -55,7 +56,7 @@ public fun MutPtr.isNull(): Boolean = ((ConstPtr((this).rawAddress)).rawAddress 
 /**
  * Casts to a pointer of another type.
  */
-public fun MutPtr.cast(): MutPtr = MutPtr(this.rawAddress, this.rawMeta)
+public fun MutPtr.cast(): MutPtr = this
 
 /**
  * Try to cast to a pointer of another type by checking alignment.
@@ -161,7 +162,7 @@ public fun MutPtr.withMetadataOf(meta: ConstPtr): MutPtr = linearMutSliceView(Mu
  *
  * [castMut]: pointer.castMut
  */
-public fun MutPtr.castConst(): ConstPtr = ConstPtr(this.rawAddress, this.rawMeta)
+public fun MutPtr.castConst(): ConstPtr = this
 
 /**
  * [withoutProvenance]: withoutProvenanceMut
@@ -692,7 +693,7 @@ public fun <T> MutPtr.asUninitMut(typeLayoutT: TypeLayout<T> = UnresolvedTypeLay
  * differences, and it should also not be stabilized before we have a better understanding
  * of this issue.
  */
-public fun MutPtr.guaranteedEq(other: MutPtr): Boolean? = (ConstPtr(this.rawAddress, this.rawMeta)).guaranteedEq(((other as Any?) as Boolean?))
+public fun MutPtr.guaranteedEq(other: MutPtr): Boolean? = (ConstPtr(this.rawAddress, this.rawMeta)).guaranteedEq(other)
 
 /**
  * Returns whether two pointers are guaranteed to be inequal.
@@ -713,7 +714,7 @@ public fun MutPtr.guaranteedEq(other: MutPtr): Boolean? = (ConstPtr(this.rawAddr
  * differences, and it should also not be stabilized before we have a better understanding
  * of this issue.
  */
-public fun MutPtr.guaranteedNe(other: MutPtr): Boolean? = (ConstPtr(this.rawAddress, this.rawMeta)).guaranteedNe(((other as Any?) as Boolean?))
+public fun MutPtr.guaranteedNe(other: MutPtr): Boolean? = (ConstPtr(this.rawAddress, this.rawMeta)).guaranteedNe(other)
 
 // even without panics, this helps for Miri backtraces
 
@@ -1531,7 +1532,7 @@ public fun MutPtr.isAlignedTo(align: Int): Boolean {
  * This is always safe, since UB can only occur if the pointer is read
  * before being initialized.
  */
-public fun MutPtr.castUninit(): MutPtr = MutPtr(this.rawAddress, this.rawMeta)
+public fun MutPtr.castUninit(): MutPtr = this
 
 /**
  * Forms a raw mutable slice from a pointer and a length.
@@ -1578,7 +1579,7 @@ public fun MutPtr.castSlice(len: Int): MutPtr = sliceFromRawPartsMut(this, len)
  * This is always safe, since UB can only occur if the pointer is read
  * before being initialized.
  */
-public fun MutPtr.castInit(): MutPtr = MutPtr(this.rawAddress, this.rawMeta)
+public fun MutPtr.castInit(): MutPtr = this
 
 /**
  * Returns the length of a raw slice.

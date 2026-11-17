@@ -22,7 +22,7 @@ public interface Swizzle {
         return run { val _simdArg0 = vector; val _simdArg1 = vector; val _simdArg2 = run {
             // The index list needs to be returned as a vector.
             open class SimdShuffleIdx(
-                public var value: UIntArray = UIntArray((LEN).toInt()),
+                public var value: UIntArray = UIntArray(0),
             ) {
                 public var field0: UIntArray
                     get() = value
@@ -54,7 +54,7 @@ public interface Swizzle {
         return run { val _simdArg0 = first; val _simdArg1 = second; val _simdArg2 = run {
             // The index list needs to be returned as a vector.
             open class SimdShuffleIdx(
-                public var value: UIntArray = UIntArray((LEN).toInt()),
+                public var value: UIntArray = UIntArray(0),
             ) {
                 public var field0: UIntArray
                     get() = value
@@ -310,7 +310,7 @@ public fun <Mask, T> Simd<T>.deinterleave(other: Simd<T>, n: Int): Pair<Simd<T>,
  * If `M` < `N`, truncates the vector to the first `M` elements.
  *
  * ```kotlin
- * val x = fromArray(listOf(0, 1, 2, 3))
+ * val x = Simd<UInt>((listOf(0, 1, 2, 3)).toList())
  * check(x.resize(9).toArray() == listOf(0, 1, 2, 3, 9, 9, 9, 9))
  * check(x.resize(9).toArray() == listOf(0, 1))
  * ```
@@ -338,8 +338,8 @@ public fun <Mask, T> Simd<T>.resize(value: T, n: Int, m: Int): Simd<T> {
  * Extract a vector from another vector.
  *
  * ```kotlin
- * val x = fromArray(listOf(0, 1, 2, 3))
- * check((x, extract, 1) == (2 > Unit.toArray()))
+ * val x = Simd<UInt>((listOf(0, 1, 2, 3)).toList())
+ * check(x.extract().toArray() == listOf(1, 2))
  * ```
  */
 public fun <Mask, T> Simd<T>.extract(n: Int, start: Int, len: Int): Simd<T> {
@@ -485,7 +485,7 @@ public fun <Mask, Unsigned, T> Mask<T>.resize(value: Boolean, n: Int, m: Int): M
  *
  * ```kotlin
  * val x = fromArray(booleanArrayOf(false, true, true, false))
- * check((x, extract, 1) == (2 > Unit.toArray()))
+ * check(x.extract().toArray() == booleanArrayOf(true, true))
  * ```
  */
 public fun <Mask, Unsigned, T> Mask<T>.extract(n: Int, start: Int, len: Int): Mask<T> where T : MaskElement<T, Mask, Unsigned> {

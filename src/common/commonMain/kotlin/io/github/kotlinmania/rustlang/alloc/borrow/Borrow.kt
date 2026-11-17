@@ -155,12 +155,12 @@ public sealed class Cow<B, Owned> : Borrow<B> {
 
     public open fun clone(): Cow<B, Owned> =
         when (this) {
-            is Borrowed -> {
-                val (b) = this
+            is Borrowed<*> -> {
+                val (b) = this as Borrowed<B>
                 Borrowed(b)
             }
-            is Cow.Owned -> {
-                val (o) = this
+            is Cow.Owned<*> -> {
+                val (o) = this as Cow.Owned<B>
                 val b1: B = o.borrow()
                 Cow.Owned(b1.toOwned())
             }
@@ -170,7 +170,7 @@ public sealed class Cow<B, Owned> : Borrow<B> {
         run {
             val matchVal = Pair(this, source)
             when {
-                matchVal.first is Cow.Owned && matchVal.second is Cow.Owned -> {
+                matchVal.first is Cow.Owned<*> && matchVal.second is Cow.Owned<*> -> {
                     val (dest) = matchVal.first as Cow.Owned<B>
                     val (o) = matchVal.second as Cow.Owned<B>
                     o.borrow().cloneInto(dest)
@@ -202,18 +202,18 @@ public sealed class Cow<B, Owned> : Borrow<B> {
     public open fun toMut(): Owned {
         var selfMut = this
         return when (selfMut) {
-            is Borrowed -> {
+            is Borrowed<*> -> {
                 val (borrowed) = selfMut
                 selfMut = Cow.Owned(borrowed.toOwned())
                 when (selfMut) {
-                    is Borrowed -> error("unreachable")
-                    is Cow.Owned -> {
+                    is Borrowed<*> -> error("unreachable")
+                    is Cow.Owned<*> -> {
                         val (owned) = selfMut
                         owned
                     }
                 }
             }
-            is Cow.Owned -> {
+            is Cow.Owned<*> -> {
                 val (owned1) = selfMut
                 owned1
             }
@@ -250,12 +250,12 @@ public sealed class Cow<B, Owned> : Borrow<B> {
      */
     public open fun intoOwned(): Owned =
         when (this) {
-            is Borrowed -> {
-                val (borrowed) = this
+            is Borrowed<*> -> {
+                val (borrowed) = this as Borrowed<B>
                 borrowed.toOwned()
             }
-            is Cow.Owned -> {
-                val (owned) = this
+            is Cow.Owned<*> -> {
+                val (owned) = this as Cow.Owned<B>
                 owned
             }
         }
@@ -265,12 +265,12 @@ public sealed class Cow<B, Owned> : Borrow<B> {
     // @rustcConstUnstable(feature = "constConvert", issue = "143773")
     public open fun deref(): B =
         when (this) {
-            is Borrowed -> {
-                val (borrowed) = this
+            is Borrowed<*> -> {
+                val (borrowed) = this as Borrowed<B>
                 borrowed
             }
-            is Cow.Owned -> {
-                val (owned) = this
+            is Cow.Owned<*> -> {
+                val (owned) = this as Cow.Owned<B>
                 owned.borrow()
             }
         }
@@ -283,25 +283,25 @@ public sealed class Cow<B, Owned> : Borrow<B> {
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is Borrowed -> {
-                val (b) = this
-                run { f.append((b).toString()); Result.Ok(Unit) }
+            is Borrowed<*> -> {
+                val (b) = this as Borrowed<B>
+                run { f.append((b).toString()); Result.Ok<Unit, Error>(Unit) }
             }
-            is Cow.Owned -> {
-                val (o) = this
-                run { f.append((o).toString()); Result.Ok(Unit) }
+            is Cow.Owned<*> -> {
+                val (o) = this as Cow.Owned<B>
+                run { f.append((o).toString()); Result.Ok<Unit, Error>(Unit) }
             }
         }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is Borrowed -> {
-                val (b) = this
-                run { f.append((b).toString()); Result.Ok(Unit) }
+            is Borrowed<*> -> {
+                val (b) = this as Borrowed<B>
+                run { f.append((b).toString()); Result.Ok<Unit, Error>(Unit) }
             }
-            is Cow.Owned -> {
-                val (o) = this
-                run { f.append((o).toString()); Result.Ok(Unit) }
+            is Cow.Owned<*> -> {
+                val (o) = this as Cow.Owned<B>
+                run { f.append((o).toString()); Result.Ok<Unit, Error>(Unit) }
             }
         }
 
@@ -335,8 +335,8 @@ public sealed class Cow<B, Owned> : Borrow<B> {
          */
         public fun <Owned, B> isBorrowed(c: Cow<B, Owned>): Boolean where B : ToOwned<Owned> =
             when (c) {
-                is Borrowed -> true
-                is Cow.Owned -> false
+                is Borrowed<*> -> true
+                is Cow.Owned<*> -> false
             }
 
         /**
@@ -395,7 +395,7 @@ public fun Cow<String>.addAssign(rhs: String) {
         selfMut = Cow.Borrowed(rhs)
     } else if (!rhs.isEmpty()) {
         when (val matchVal = selfMut) {
-            is Cow.Borrowed -> {
+            is Cow.Borrowed<*> -> {
                 val (lhs) = matchVal
                 var s = ""
                 s += lhs
@@ -413,7 +413,7 @@ public fun Cow<String>.addAssign(rhs: Cow<String>) {
         selfMut = rhs
     } else if (!rhs.isEmpty()) {
         when (val matchVal = selfMut) {
-            is Cow.Borrowed -> {
+            is Cow.Borrowed<*> -> {
                 val (lhs) = matchVal
                 var s = ""
                 s += lhs

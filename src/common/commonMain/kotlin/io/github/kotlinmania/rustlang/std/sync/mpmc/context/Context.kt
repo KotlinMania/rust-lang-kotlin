@@ -12,8 +12,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Selected
 import io.github.kotlinmania.rustlang.std.sync.mpmc.waker.currentThreadId
-import io.github.kotlinmania.rustlang.std.thread.LocalKey
-import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
+import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalProcessAttrs
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 import io.github.kotlinmania.rustlang.std.time.Instant
 
@@ -79,9 +78,9 @@ public open class Context(
                     // The deadline has been reached. Try aborting select.
                     return run {
                         val matchVal = this.trySelect(Selected.Aborted)
-                        when (matchVal) { is Result.Ok -> {
+                        when (matchVal) { is Result.Ok<*, *> -> {
                             Selected.Aborted
-                        }; is Result.Err -> {
+                        }; is Result.Err<*, *> -> {
                             val s = matchVal.error
                             s
                         } }
@@ -111,10 +110,7 @@ public open class Context(
          * Creates a new context for the duration of the closure.
          */
         public fun <R> with(f: (Context) -> R): R {
-            /**
-             * Cached thread-local context.
-             */
-            val CONTEXT: LocalKey<Cell<Context?>> = threadLocalInner(key, Cell, Option, Context, Cell.new(Context.new()))
+            threadLocalProcessAttrs(doc, " Cached thread-local context.", CONTEXT, Cell, Option, Context, Cell, new, Some, Context, new)
             var f1 = f
             var f2 =
                 { cx: Context ->

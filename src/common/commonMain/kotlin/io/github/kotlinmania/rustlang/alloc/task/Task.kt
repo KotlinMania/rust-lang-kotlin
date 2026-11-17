@@ -161,14 +161,13 @@ public fun <W : Wake> fromRawWaker(waker: W): RawWaker = rawWaker(waker)
 public fun wakerFn(f: () -> Unit): Waker {
     open class WakeFn<F>(
         public var f: () -> Unit,
-    ) : Wake {
-        public override fun wake() {
-            (this.f)()
-        }
+    )
+    fun WakeFn<() -> Unit>.wake() {
+        (this.f)()
+    }
 
-        public override fun wakeByRef() {
-            (this.f)()
-        }
+    fun WakeFn<() -> Unit>.wakeByRef() {
+        (this.f)()
     }
     return Waker.from(WakeFn(f = f))
 }
@@ -343,14 +342,13 @@ public fun <W : LocalWake> fromLocalWaker(waker: W): LocalWaker {
 public fun localWakerFn(f: () -> Unit): LocalWaker {
     open class LocalWakeFn<F>(
         public var f: () -> Unit,
-    ) : LocalWake {
-        public override fun wake() {
-            (this.f)()
-        }
+    )
+    fun LocalWakeFn<() -> Unit>.wake() {
+        (this.f)()
+    }
 
-        public override fun wakeByRef() {
-            (this.f)()
-        }
+    fun LocalWakeFn<() -> Unit>.wakeByRef() {
+        (this.f)()
     }
     return LocalWaker.from(LocalWakeFn(f = f))
 }

@@ -22,6 +22,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -995,12 +996,12 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, Edge>.ins
         val insertionEdge =
             when (insertion) {
                 // ignore-tidy-undocumented-unchecked
-                is LeftOrRight.Left -> {
+                is LeftOrRight.Left<*> -> {
                     val (insertIdx) = insertion
                     Handle.newEdge(result.left.reborrowMut(), insertIdx)
                 }
                 // ignore-tidy-undocumented-unchecked
-                is LeftOrRight.Right -> {
+                is LeftOrRight.Right<*> -> {
                     val (insertIdx1) = insertion
                     Handle.newEdge(result.right.borrowMut(), insertIdx1)
                 }
@@ -1061,12 +1062,12 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Internal>, Edge>
         var insertionEdge =
             when (insertion) {
                 // ignore-tidy-undocumented-unchecked
-                is LeftOrRight.Left -> {
+                is LeftOrRight.Left<*> -> {
                     val (insertIdx) = insertion
                     Handle.newEdge(result.left.reborrowMut(), insertIdx)
                 }
                 // ignore-tidy-undocumented-unchecked
-                is LeftOrRight.Right -> {
+                is LeftOrRight.Right<*> -> {
                     val (insertIdx1) = insertion
                     Handle.newEdge(result.right.borrowMut(), insertIdx1)
                 }
@@ -1106,7 +1107,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, Edge>.ins
     while (true) {
         split1 = run {
             val matchVal1 = split1.left.ascend()
-            when (matchVal1) { is Result.Ok -> {
+            when (matchVal1) { is Result.Ok<*, *> -> {
                 val parent = matchVal1.value
                 when (val matchVal2 = parent.insert(split1.kv.first, split1.kv.second, split1.right, alloc.clone())) {
                     // SAFETY: we have finished splitting and can now re-awaken the
@@ -1117,7 +1118,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, Edge>.ins
                         split2.forgetNodeType()
                     }
                 }
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val root = matchVal1.error
                 splitRoot(split1.copy(left = root))
                 // SAFETY: we have finished splitting and can now re-awaken the
@@ -1413,11 +1414,11 @@ public open class BalancingContext<K, V> internal constructor(
         val oldLeftLen = this.leftChild.len()
         val rightLen = this.rightChild.len()
         check(when (trackEdgeIdx) {
-            is LeftOrRight.Left -> {
+            is LeftOrRight.Left<*> -> {
                 val (idx) = trackEdgeIdx
                 idx <= oldLeftLen
             }
-            is LeftOrRight.Right -> {
+            is LeftOrRight.Right<*> -> {
                 val (idx1) = trackEdgeIdx
                 idx1 <= rightLen
             }
@@ -1425,11 +1426,11 @@ public open class BalancingContext<K, V> internal constructor(
         val child = this.mergeTrackingChild(alloc)
         val newIdx =
             when (trackEdgeIdx) {
-                is LeftOrRight.Left -> {
+                is LeftOrRight.Left<*> -> {
                     val (idx2) = trackEdgeIdx
                     idx2
                 }
-                is LeftOrRight.Right -> {
+                is LeftOrRight.Right<*> -> {
                     val (idx3) = trackEdgeIdx
                     oldLeftLen + 1 + idx3
                 }
@@ -1499,7 +1500,7 @@ public open class BalancingContext<K, V> internal constructor(
             run {
                 val matchVal = Pair(leftNode.reborrowMut().force(), rightNode.reborrowMut().force())
                 when {
-                    matchVal.first is ForceResult.Internal && matchVal.second is ForceResult.Internal -> {
+                    matchVal.first is ForceResult.Internal<*, *> && matchVal.second is ForceResult.Internal<*, *> -> {
                         val (left) = matchVal.first as ForceResult.Internal<*, *>
                         val (right) = matchVal.second as ForceResult.Internal<*, *>
                         // Make room for stolen edges.
@@ -1508,7 +1509,7 @@ public open class BalancingContext<K, V> internal constructor(
                         moveToSlice(left.edgeAreaMut(newLeftLen + 1 until oldLeftLen + 1), right.edgeAreaMut(0 until count))
                         right.correctChildrensParentLinks(0 until newRightLen + 1)
                     }
-                    matchVal.first is ForceResult.Leaf && matchVal.second is ForceResult.Leaf -> {}
+                    matchVal.first is ForceResult.Leaf<*, *> && matchVal.second is ForceResult.Leaf<*, *> -> {}
                     else -> error("unreachable")
                 }
             }
@@ -1552,7 +1553,7 @@ public open class BalancingContext<K, V> internal constructor(
             run {
                 val matchVal = Pair(leftNode.reborrowMut().force(), rightNode.reborrowMut().force())
                 when {
-                    matchVal.first is ForceResult.Internal && matchVal.second is ForceResult.Internal -> {
+                    matchVal.first is ForceResult.Internal<*, *> && matchVal.second is ForceResult.Internal<*, *> -> {
                         val (left) = matchVal.first as ForceResult.Internal<*, *>
                         val (right) = matchVal.second as ForceResult.Internal<*, *>
                         // Steal edges.
@@ -1562,7 +1563,7 @@ public open class BalancingContext<K, V> internal constructor(
                         left.correctChildrensParentLinks(oldLeftLen + 1 until newLeftLen + 1)
                         right.correctChildrensParentLinks(0 until newRightLen + 1)
                     }
-                    matchVal.first is ForceResult.Leaf && matchVal.second is ForceResult.Leaf -> {}
+                    matchVal.first is ForceResult.Leaf<*, *> && matchVal.second is ForceResult.Leaf<*, *> -> {}
                     else -> error("unreachable")
                 }
             }
@@ -1610,27 +1611,27 @@ public fun <K, V> NodeRef<Mut, K, V, LeafOrInternal>.chooseParentKv(): Result<Le
     // ignore-tidy-undocumented-unchecked
     return run {
         val matchVal = read(this).ascend()
-        when (matchVal) { is Result.Ok -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val parentEdge = matchVal.value
             run {
                 val matchVal1 = parentEdge.leftKv()
-                when (matchVal1) { is Result.Ok -> {
+                when (matchVal1) { is Result.Ok<*, *> -> {
                     val leftParentKv = matchVal1.value
                     Result.Ok<LeftOrRight<BalancingContext<K, V>>, NodeRef<Mut, K, V, LeafOrInternal>>(LeftOrRight.Left(BalancingContext(parent = read(leftParentKv), leftChild = leftParentKv.leftEdge().descend(), rightChild = this)))
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     val parentEdge1 = matchVal1.error
                     run {
                         val matchVal2 = parentEdge1.rightKv()
-                        when (matchVal2) { is Result.Ok -> {
+                        when (matchVal2) { is Result.Ok<*, *> -> {
                             val rightParentKv = matchVal2.value
                             Result.Ok<LeftOrRight<BalancingContext<K, V>>, NodeRef<Mut, K, V, LeafOrInternal>>(LeftOrRight.Right(BalancingContext(parent = read(rightParentKv), leftChild = this, rightChild = rightParentKv.rightEdge().descend())))
-                        }; is Result.Err -> {
+                        }; is Result.Err<*, *> -> {
                             error("empty internal node")
                         } }
                     }
                 } }
             }
-        }; is Result.Err -> {
+        }; is Result.Err<*, *> -> {
             val root = matchVal.error
             Result.Err<LeftOrRight<BalancingContext<K, V>>, NodeRef<Mut, K, V, LeafOrInternal>>(root)
         } }
@@ -1647,11 +1648,11 @@ public fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>.forg
  */
 public fun <BorrowType, K, V, Type> Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, Type>.force(): ForceResult<Handle<NodeRef<BorrowType, K, V, Leaf>, Type>, Handle<NodeRef<BorrowType, K, V, Internal>, Type>> =
     when (val matchVal = this.node.force()) {
-        is ForceResult.Leaf -> {
+        is ForceResult.Leaf<*, *> -> {
             val (node) = matchVal
             ForceResult.Leaf(Handle(node = node, idx = this.idx, marker = Unit))
         }
-        is ForceResult.Internal -> {
+        is ForceResult.Internal<*, *> -> {
             val (node1) = matchVal
             ForceResult.Internal(Handle(node = node1, idx = this.idx, marker = Unit))
         }
@@ -1688,13 +1689,13 @@ public fun <K, V> Handle<NodeRef<Mut, K, V, LeafOrInternal>, Edge>.moveSuffix(ri
             run {
                 val matchVal = Pair(leftNode.force(), rightNode.force())
                 when {
-                    matchVal.first is ForceResult.Internal && matchVal.second is ForceResult.Internal -> {
+                    matchVal.first is ForceResult.Internal<*, *> && matchVal.second is ForceResult.Internal<*, *> -> {
                         val (left) = matchVal.first as ForceResult.Internal<*, *>
                         val (right1) = matchVal.second as ForceResult.Internal<*, *>
                         moveToSlice(left.edgeAreaMut(newLeftLen + 1 until oldLeftLen + 1), right1.edgeAreaMut(1 until newRightLen + 1))
                         right1.correctChildrensParentLinks(1 until newRightLen + 1)
                     }
-                    matchVal.first is ForceResult.Leaf && matchVal.second is ForceResult.Leaf -> {}
+                    matchVal.first is ForceResult.Leaf<*, *> && matchVal.second is ForceResult.Leaf<*, *> -> {}
                     else -> error("unreachable")
                 }
             }

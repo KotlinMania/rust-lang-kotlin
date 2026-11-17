@@ -60,7 +60,7 @@ public fun Mapping.Companion.new(path: Path): Mapping? {
     // symbolication purposes.
     return Mapping.mk(map, closure@{ data1, stash ->
         val (macho1, data2) = when (val tryResult = findHeader(data1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
-        val endian1 = when (val tryResult = macho1.endian().ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
+        val endian1 = when (val tryResult = macho1.endian().ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
         val obj = when (val tryResult = Object.parse(macho1, endian1, data2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
         Context.new(stash, obj, null, null)
     })
@@ -72,10 +72,10 @@ public fun Mapping.Companion.loadDsym(dir: Path, uuid: UByteArray): Mapping? {
         val filename =
             run {
                 val matchVal = entry1.fileName().intoString()
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val name = matchVal.value
                     name
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     continue
                 } }
             }
@@ -104,8 +104,8 @@ public fun Mapping.Companion.tryDsymCandidate(dir: Path, uuid: UByteArray): Mapp
         val candidate =
             Mapping.mk(map, closure1@{ data, stash ->
                 val (macho, data1) = when (val tryResult = findHeader(data)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
-                val endian = when (val tryResult = macho.endian().ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }
-                val entryUuid = when (val tryResult = when (val tryResult = macho.uuid(endian, data1, 0).ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }
+                val endian = when (val tryResult = macho.endian().ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }
+                val entryUuid = when (val tryResult = when (val tryResult = macho.uuid(endian, data1, 0).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }
                 if (!entryUuid.contentEquals(uuid)) {
                     return@closure1 null
                 }
@@ -161,7 +161,7 @@ public fun findHeader(data: List<UByte>): Pair<Mach, List<UByte>>? {
         }
         else -> { return null }
     }
-    return Mach.parse(data2.first, 0).ok()?.let({ h -> Pair(h, data2.first) })
+    return MachHeader64.parse(data2.first, 0).ok()?.let({ h -> Pair(h, data2.first) })
 }
 
 // This is used both for executables/libraries and source object files.
@@ -192,10 +192,10 @@ public open class Object(
         val i2 =
             run {
                 val matchVal = this.syms.binarySearchByKey(addr, { (_, addr1) -> addr1 })
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val i = matchVal.value
                     i
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     val i1 = matchVal.error
                     (i1.checkedSub(1) ?: return null)
                 } }
@@ -243,8 +243,8 @@ public open class Object(
             var objectMappings = mutableListOf()
             while (true) {
                 val matchVal = commands.next()
-                if (!(matchVal is Result.Ok && matchVal.value != null)) break
-                val valueVal = (matchVal as Result.Ok).value
+                if (!(matchVal is Result.Ok<*, *> && matchVal.value != null)) break
+                val valueVal = (matchVal as Result.Ok<*, *>).value
                 val command = valueVal
                 when (val matchVal2 = (MachSegment.fromCommand(command).ok() ?: return null)) {
                     null -> {
@@ -254,7 +254,7 @@ public open class Object(
                                 val symtab = matchVal1
                                 val symbols = (symtab.symbols<Mach>(endian, data).ok() ?: return null)
                                 syms = symbols.iter().mapNotNull(closure2@{ nlist: MachNlist ->
-                                    val name = when (val tryResult = nlist.name(endian, symbols.strings()).ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure2 Result.Err(tryResult.error) }
+                                    val name = when (val tryResult = nlist.name(endian, symbols.strings()).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error) }
                                     if (name.len() > 0 && nlist.isDefinition()) {
                                         Pair(name, ULong.from(nlist.nValue(endian)))
                                     } else {
@@ -300,13 +300,13 @@ public fun objectMapping(file: ObjectMapFile): Mapping? {
                 null -> data
                 else -> {
                     val memberName1 = memberName
-                    val archive = when (val tryResult = Object.ArchiveFile.parse(data).ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err(tryResult.error) }
-                    val member = when (val tryResult = archive.members().mapNotNull(Result::ok).indexOf({ m -> m.name() == memberName1 }).takeIf { it >= 0 }) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err(tryResult.error) }
-                    when (val tryResult = member.data(data).ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err(tryResult.error) }
+                    val archive = when (val tryResult = Object.ArchiveFile.parse(data).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
+                    val member = when (val tryResult = archive.members().mapNotNull(Result::ok).indexOf({ m -> m.name() == memberName1 }).takeIf { it >= 0 }) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
+                    when (val tryResult = member.data(data).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
                 }
             }
         val (macho, data2) = when (val tryResult = findHeader(data1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
-        val endian = when (val tryResult = macho.endian().ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err(tryResult.error) }
+        val endian = when (val tryResult = macho.endian().ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
         val obj = when (val tryResult = Object.parse(macho, endian, data2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
         Context.new(stash, obj, null, null)
     })

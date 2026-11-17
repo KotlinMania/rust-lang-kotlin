@@ -117,10 +117,10 @@ public fun rustEhPersonalityImpl(version: CInt, actions: UnwindAction, exception
         val ehAction =
             run {
                 val matchVal = findEhAction(context)
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val action = matchVal.value
                     action
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     return URC_FATAL_PHASE1_ERROR
                 } }
             }

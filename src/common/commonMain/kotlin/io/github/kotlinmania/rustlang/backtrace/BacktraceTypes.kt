@@ -43,7 +43,7 @@ public open class LockGuard internal constructor(
 /**
  * The global lock
  */
-public var LOCK: Mutex<Unit> = Mutex.new()
+public var LOCK: Mutex<Unit> = Mutex.new(Unit)
 
 /**
  * Acquire a partially unsound(!!!) global re-entrant lock over

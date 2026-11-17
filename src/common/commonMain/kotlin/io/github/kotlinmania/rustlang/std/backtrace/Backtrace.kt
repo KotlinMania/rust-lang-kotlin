@@ -14,7 +14,6 @@ import io.github.kotlinmania.rustlang.std.sync.lazylock.LazyLock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.lock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.outputFilename
 import io.github.kotlinmania.rustlang.std.sys.backtrace.setImageBase
-import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 
 // Support for capturing a stack backtrace of an OS thread
 //
@@ -94,8 +93,8 @@ public open class Backtrace(
     public open fun fmt(fmt: StringBuilder): Result<Unit, Error> {
         val capture =
             when (val matchVal = this.inner) {
-                Inner.Unsupported -> { return run { fmt.append("<unsupported>"); Result.Ok(Unit) } }
-                Inner.Disabled -> { return run { fmt.append("<disabled>"); Result.Ok(Unit) } }
+                Inner.Unsupported -> { return run { fmt.append("<unsupported>"); Result.Ok<Unit, Error>(Unit) } }
+                Inner.Disabled -> { return run { fmt.append("<disabled>"); Result.Ok<Unit, Error>(Unit) } }
                 is Inner.Captured -> {
                     val (c) = matchVal
                     c
@@ -142,8 +141,8 @@ public open class Backtrace(
     public open fun fmtDisplay(fmt: StringBuilder): Result<Unit, Error> {
         val capture =
             when (val matchVal = this.inner) {
-                Inner.Unsupported -> { return run { fmt.append("unsupported backtrace"); Result.Ok(Unit) } }
-                Inner.Disabled -> { return run { fmt.append("disabled backtrace"); Result.Ok(Unit) } }
+                Inner.Unsupported -> { return run { fmt.append("unsupported backtrace"); Result.Ok<Unit, Error>(Unit) } }
+                Inner.Disabled -> { return run { fmt.append("disabled backtrace"); Result.Ok<Unit, Error>(Unit) } }
                 is Inner.Captured -> {
                     val (c) = matchVal
                     c
@@ -166,10 +165,10 @@ public open class Backtrace(
                 outputFilename(fmt1, path, style, cwd.asRef().ok())
             }
         val f = BacktraceFmt.new(fmt, style, printPath)
-        when (val tryResult = f.addContext()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = f.addContext()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         for (frame in frames) {
             if (frame.symbols.isEmpty()) {
-                when (val tryResult = f.frame().printRaw(frame.frame.ip(), null, null, null)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = f.frame().printRaw(frame.frame.ip(), null, null, null)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
             } else {
                 for (symbol in frame.symbols.iter()) {
                     when (val tryResult = f.frame().printRawWithColumn(frame.frame.ip(), symbol.name.asRef().map({ b -> SymbolName.new(b) }), symbol.filename.asRef().map({ b -> when (b) {
@@ -181,11 +180,11 @@ public open class Backtrace(
                             val (w1) = b
                             BytesOrWideString.Wide(w1)
                         }
-                    } }), symbol.lineno, symbol.colno)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                    } }), symbol.lineno, symbol.colno)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
             }
         }
-        when (val tryResult = f.finish()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = f.finish()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
         return Result.Ok<Unit, Error>(Unit)
     }
 
@@ -206,17 +205,17 @@ public open class Backtrace(
             }
             val enabled =
                 run {
-                    val matchVal = Env.variable("RUST_LIB_BACKTRACE")
-                    when (matchVal) { is Result.Ok -> {
+                    val matchVal = env.variable("RUST_LIB_BACKTRACE")
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         val s = matchVal.value
                         s != "0"
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         run {
-                            val matchVal1 = Env.variable("RUST_BACKTRACE")
-                            when (matchVal1) { is Result.Ok -> {
+                            val matchVal1 = env.variable("RUST_BACKTRACE")
+                            when (matchVal1) { is Result.Ok<*, *> -> {
                                 val s1 = matchVal1.value
                                 s1 != "0"
-                            }; is Result.Err -> {
+                            }; is Result.Err<*, *> -> {
                                 false
                             } }
                         }
@@ -388,7 +387,7 @@ public sealed class RawFrame {
     public open fun ip(): MutPtr =
         when (this) {
             is RawFrame.Actual -> {
-                val (frame) = this
+                val (frame) = this as RawFrame.Actual
                 frame.ip()
             }
         }
@@ -429,7 +428,7 @@ public open class BacktraceSymbol(
                 fmt.append(", line: $line")
             }
         }
-        return run { fmt.append(" }"); Result.Ok(Unit) }
+        return run { fmt.append(" }"); Result.Ok<Unit, Error>(Unit) }
     }
 }
 
@@ -440,11 +439,11 @@ public sealed class BytesOrWide {
     public open fun fmt(fmt: StringBuilder): Result<Unit, Error> =
         outputFilename(fmt, when (this) {
             is BytesOrWide.Bytes -> {
-                val (w) = this
+                val (w) = this as BytesOrWide.Bytes
                 BytesOrWideString.Bytes(w)
             }
             is BytesOrWide.Wide -> {
-                val (w1) = this
+                val (w1) = this as BytesOrWide.Wide
                 BytesOrWideString.Wide(w1)
             }
         }, PrintFmt.Short, currentDir().asRef().ok())

@@ -87,7 +87,7 @@ public open class ByteString internal constructor(
     public override fun toString(): Result<String, Utf8Error> {
         // Avoid allocating a copy of the contents for invalid UTF-8
         when (val matchVal = String.fromUtf8(this.value)) {
-            is Result.Err -> {
+            is Result.Err<*, *> -> {
                 val e = matchVal.error
                 return Result.Err<String, Utf8Error>(e)
             }
@@ -101,9 +101,9 @@ public open class ByteString internal constructor(
 
     public open fun derefMut(): List<UByte> = this.value
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.asBytestr()).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.asBytestr()).toString()); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.asBytestr()).toString()); Result.Ok(Unit) }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.asBytestr()).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun asRef(): List<UByte> = this.value
 
@@ -330,32 +330,32 @@ public fun fromCowByteStr(s: ByteStr): ByteStr = s
 
 public fun fromBoxByteStr(s: List<UByte>): ByteStr {
     // SAFETY: `ByteStr` is a transparent wrapper around `[UByte]`.
-    return Box.fromRaw(((Box.intoRaw(s) as Any?) as ByteStr))
+    return Box.fromRaw(Box.intoRaw(s))
 }
 
 public fun fromBoxUByteSlice(s: ByteStr): List<UByte> {
     // SAFETY: `ByteStr` is a transparent wrapper around `[UByte]`.
-    return Box.fromRaw(((Box.intoRaw(s) as Any?) as List<UByte>))
+    return Box.fromRaw(Box.intoRaw(s))
 }
 
 public fun fromRcByteStr(s: List<UByte>): ByteStr {
     // SAFETY: `ByteStr` is a transparent wrapper around `[UByte]`.
-    return Rc.fromRaw(((Rc.intoRaw(s) as Any?) as ByteStr))
+    return Rc.fromRaw(Rc.intoRaw(s))
 }
 
 public fun fromRcUByteSlice(s: ByteStr): List<UByte> {
     // SAFETY: `ByteStr` is a transparent wrapper around `[UByte]`.
-    return Rc.fromRaw(((Rc.intoRaw(s) as Any?) as List<UByte>))
+    return Rc.fromRaw(Rc.intoRaw(s))
 }
 
 public fun fromArcByteStr(s: List<UByte>): ByteStr {
     // SAFETY: `ByteStr` is a transparent wrapper around `[UByte]`.
-    return Arc.fromRaw(((Arc.intoRaw(s) as Any?) as ByteStr))
+    return Arc.fromRaw(Arc.intoRaw(s))
 }
 
 public fun fromArcUByteSlice(s: ByteStr): List<UByte> {
     // SAFETY: `ByteStr` is a transparent wrapper around `[UByte]`.
-    return Arc.fromRaw(((Arc.intoRaw(s) as Any?) as List<UByte>))
+    return Arc.fromRaw(Arc.intoRaw(s))
 }
 
 public fun ByteStr.eq(other: ByteStr): Boolean {
@@ -419,7 +419,7 @@ public fun List<UByte>.partialCmp(other: ByteStr): Ordering? {
 }
 
 public fun tryFromString(s: ByteStr): Result<String, Utf8Error> {
-    return Result.Ok<String, Utf8Error>(when (val tryResult = String.fromUtf8(s.first)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<String, Utf8Error>(tryResult.error) }.into())
+    return Result.Ok<String, Utf8Error>(when (val tryResult = String.fromUtf8(s.first)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<String, Utf8Error>(tryResult.error) }.into())
 }
 
 /**
@@ -435,7 +435,7 @@ public fun tryFromString(s: ByteStr): Result<String, Utf8Error> {
 public fun ByteStr.toString(): Result<String, Utf8Error> {
     // Avoid allocating a copy of the contents for invalid UTF-8
     when (val matchVal = String.fromUtf8(this.value)) {
-        is Result.Err -> {
+        is Result.Err<*, *> -> {
             val e = matchVal.error
             return Result.Err<String, Utf8Error>(e)
         }

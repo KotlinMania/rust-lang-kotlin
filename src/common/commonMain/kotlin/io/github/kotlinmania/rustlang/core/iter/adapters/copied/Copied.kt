@@ -4,11 +4,7 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.copied
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.array.iterNextChunk
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
@@ -18,6 +14,7 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -36,7 +33,7 @@ public typealias Source<I> = I.Source
  */
 public open class Copied<I>(
     public var it: I,
-) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen, SourceIter<Source>, InPlaceIterable, Iterable<T> {
+) : Iterable<T> {
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Copied.next()) {
@@ -50,25 +47,25 @@ public open class Copied<I>(
 
     public open fun intoInner(): I = this.it
 
-    public override fun next(): T? = this.it.next()
+    public open fun next(): T? = this.it.next()
 
-    public override fun nextChunk(n: Int, specNextChunkIFn: (I) -> Result<List<T>, IntoIter<T>>): Result<List<T>, IntoIter<T>> = specNextChunkIFn(this.it)
+    public open fun nextChunk(n: Int, specNextChunkIFn: (I) -> Result<List<T>, IntoIter<T>>): Result<List<T>, IntoIter<T>> = specNextChunkIFn(this.it)
 
-    public override fun sizeHint(): Pair<Int, Int?> = this.it.sizeHint()
+    public open fun sizeHint(): Pair<Int, Int?> = this.it.sizeHint()
 
-    public override fun <Residual, B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> = this.it.tryFold(init, copyTryFold(f))
+    public open fun <Residual, B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> = this.it.tryFold(init, copyTryFold(f))
 
-    public override fun <Acc> fold(init: Acc, f: (Acc, T) -> Acc): Acc = this.it.fold(init, copyFold(f))
+    public open fun <Acc> fold(init: Acc, f: (Acc, T) -> Acc): Acc = this.it.fold(init, copyFold(f))
 
-    public override fun nth(n: Int): T? = this.it.nth(n).copied()
+    public open fun nth(n: Int): T? = this.it.nth(n).copied()
 
-    public override fun last(): T? = this.it.last()
+    public open fun last(): T? = this.it.last()
 
-    public override fun count(): Int = this.it.count()
+    public open fun count(): Int = this.it.count()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.it.advanceBy(n)
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.it.advanceBy(n)
 
-    public override fun iteratorGetUnchecked(idx: Int): T {
+    public open fun iteratorGetUnchecked(idx: Int): T {
         // SAFETY: the caller must uphold the contract for
         // `Iterator.__iterator_get_unchecked`.
         return tryGetUnchecked(this.it, idx)
@@ -85,11 +82,6 @@ public open class Copied<I>(
     public open fun len(): Int = this.it.len()
 
     public open fun isEmpty(): Boolean = this.it.isEmpty()
-
-    public override fun asInner(): Source {
-        // SAFETY: unchecked function forwarding to unchecked function with the same requirements
-        return this.it.asInner()
-    }
 
     public companion object {
         public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<Copied<I>> =
@@ -114,8 +106,6 @@ public open class Copied<I>(
 
         public fun <I> new(it: I): Copied<I> = Copied(it = it)
 
-        public val MAY_HAVE_SIDE_EFFECT: Boolean = I.MAY_HAVE_SIDE_EFFECT
-
         /**
          * Creates a `Copied` iterator from the default value of `I`
          * ```kotlin
@@ -124,16 +114,14 @@ public open class Copied<I>(
          * ```
          */
         public fun <I> default(defaultIFn: () -> I): Copied<I> = Copied.new(defaultIFn())
-
-        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
-
-        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }
 
 public fun <T, Acc> copyFold(f: (Acc, T) -> Acc): (Acc, T) -> Acc = { acc, elt -> f(acc, elt) }
 
 public fun <T, Acc, R> copyTryFold(f: (Acc, T) -> R): (Acc, T) -> R = { acc, elt -> f(acc, elt) }
+
+public val MAY_HAVE_SIDE_EFFECT: Boolean = I.MAY_HAVE_SIDE_EFFECT
 
 public interface SpecNextChunk<T> : Iterator<T> {
     public fun specNextChunk(): Result<List<T>, IntoIter<T>>
@@ -173,3 +161,12 @@ public fun <T> Iter<T>.specNextChunk(n: Int, typeLayoutT: TypeLayout<T> = Unreso
         Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawArray, n))
     }
 }
+
+public fun <Source, I> Copied<I>.asInner(): Source where I : SourceIter<Source> {
+    // SAFETY: unchecked function forwarding to unchecked function with the same requirements
+    return this.it.asInner()
+}
+
+public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
+
+public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY

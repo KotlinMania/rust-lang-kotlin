@@ -5,13 +5,14 @@ import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sync.mpsc.Sender
 import io.github.kotlinmania.rustlang.test.bench.Bencher
 import io.github.kotlinmania.rustlang.test.bench.benchmark
 import io.github.kotlinmania.rustlang.test.bench.runOnce
 import io.github.kotlinmania.rustlang.test.event.CompletedTest
-import io.github.kotlinmania.rustlang.test.options.Options
+import io.github.kotlinmania.rustlang.test.options.ShouldPanic
 
 // Common types used by `libtest`.
 
@@ -70,15 +71,15 @@ public sealed class TestName {
     public open fun asSlice(): String =
         when (this) {
             is StaticTestName -> {
-                val (s) = this
+                val (s) = this as StaticTestName
                 s
             }
             is DynTestName -> {
-                val (s1) = this
+                val (s1) = this as DynTestName
                 s1
             }
             is AlignedTestName -> {
-                val (s2, _) = this
+                val (s2, _) = this as AlignedTestName
                 s2
             }
         }
@@ -86,7 +87,7 @@ public sealed class TestName {
     public open fun padding(): NamePadding =
         when (this) {
             is AlignedTestName -> {
-                val (_, p) = this
+                val (_, p) = this as AlignedTestName
                 p
             }
             else -> PadNone
@@ -96,22 +97,22 @@ public sealed class TestName {
         val name3 =
             when (this) {
                 is TestName.StaticTestName -> {
-                    val (name) = this
+                    val (name) = this as TestName.StaticTestName
                     name
                 }
                 is TestName.DynTestName -> {
-                    val (name1) = this
+                    val (name1) = this as TestName.DynTestName
                     name1.clone()
                 }
                 is TestName.AlignedTestName -> {
-                    val (name2, _) = this
+                    val (name2, _) = this as TestName.AlignedTestName
                     name2.clone()
                 }
             }
         return TestName.AlignedTestName(name3, padding)
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.asSlice()).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.asSlice()).toString()); Result.Ok<Unit, Error>(Unit) }
 }
 
 // A function that runs a test. If the function returns successfully,
@@ -212,27 +213,27 @@ public sealed class TestFn {
     public open fun intoRunnable(): Runnable =
         when (this) {
             is StaticTestFn -> {
-                val (f) = this
+                val (f) = this as StaticTestFn
                 Runnable.Test(RunnableTest.Static(f))
             }
             is StaticBenchFn -> {
-                val (f1) = this
+                val (f1) = this as StaticBenchFn
                 Runnable.Bench(RunnableBench.Static(f1))
             }
             is StaticBenchAsTestFn -> {
-                val (f2) = this
+                val (f2) = this as StaticBenchAsTestFn
                 Runnable.Test(RunnableTest.StaticBenchAsTest(f2))
             }
             is DynTestFn -> {
-                val (f3) = this
+                val (f3) = this as DynTestFn
                 Runnable.Test(RunnableTest.Dynamic(f3))
             }
             is DynBenchFn -> {
-                val (f4) = this
+                val (f4) = this as DynBenchFn
                 Runnable.Bench(RunnableBench.Dynamic(f4))
             }
             is DynBenchAsTestFn -> {
-                val (f5) = this
+                val (f5) = this as DynBenchAsTestFn
                 Runnable.Test(RunnableTest.DynamicBenchAsTest(f5))
             }
         }
@@ -247,7 +248,7 @@ f.append(when (this) {
             is DynBenchFn -> "DynBenchFn(..)"
             is DynBenchAsTestFn -> "DynBenchAsTestFn(..)"
         })
-Result.Ok(Unit)
+Result.Ok<Unit, Error>(Unit)
 }
 }
 
@@ -313,19 +314,19 @@ public sealed class RunnableTest {
     public open fun run(): Result<Unit, String> =
         when (this) {
             is RunnableTest.Static -> {
-                val (f) = this
+                val (f) = this as RunnableTest.Static
                 rustBeginShortBacktrace(f)
             }
             is RunnableTest.Dynamic -> {
-                val (f1) = this
+                val (f1) = this as RunnableTest.Dynamic
                 rustBeginShortBacktrace({ f1() })
             }
             is RunnableTest.StaticBenchAsTest -> {
-                val (f2) = this
+                val (f2) = this as RunnableTest.StaticBenchAsTest
                 runOnce({ b -> rustBeginShortBacktrace({ f2(b) }) })
             }
             is RunnableTest.DynamicBenchAsTest -> {
-                val (f3) = this
+                val (f3) = this as RunnableTest.DynamicBenchAsTest
                 runOnce({ b -> rustBeginShortBacktrace({ f3(b) }) })
             }
         }
@@ -370,11 +371,11 @@ public sealed class RunnableBench {
     public open fun run(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest>, nocapture: Boolean) {
         when (this) {
             is RunnableBench.Static -> {
-                val (f) = this
+                val (f) = this as RunnableBench.Static
                 benchmark(id, desc.clone(), monitorCh.clone(), nocapture, f)
             }
             is RunnableBench.Dynamic -> {
-                val (f1) = this
+                val (f1) = this as RunnableBench.Dynamic
                 benchmark(id, desc.clone(), monitorCh.clone(), nocapture, { b -> f1(b) })
             }
         }
@@ -456,13 +457,13 @@ public open class TestDesc(
             return null
         }
         when (val matchVal = this.shouldPanic) {
-            Options.ShouldPanic.Yes -> {
+            ShouldPanic.Yes -> {
                 return "should panic"
             }
             is ShouldPanic.YesWithMessage -> {
                 return "should panic"
             }
-            Options.ShouldPanic.No -> {}
+            ShouldPanic.No -> {}
         }
         if (this.compileFail) {
             return "compile fail"
@@ -483,9 +484,9 @@ public open class TestDescAndFn(
     public companion object {
         public fun newDoctest(testName: String, ignore: Boolean, sourceFile: String, startLine: Int, noRun: Boolean, shouldPanic: Boolean, testfn: TestFn): TestDescAndFn =
             TestDescAndFn(desc = TestDesc(name = StaticTestName(testName), ignore = ignore, ignoreMessage = null, sourceFile = sourceFile, startLine = startLine, startCol = 0, endLine = 0, endCol = 0, compileFail = false, noRun = noRun, shouldPanic = if (shouldPanic) {
-                Options.ShouldPanic.Yes
+                ShouldPanic.Yes
             } else {
-                Options.ShouldPanic.No
+                ShouldPanic.No
             }, testType = TestType.DocTest), testfn = testfn)
     }
 }

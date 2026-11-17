@@ -63,7 +63,7 @@ public fun <Int, SignedInt, ISet1, ISet2, D, OtherSign, Unsigned, F> sqrtRound(x
         if (noshift) {
             val expLsb = one shl F.SIG_BITS.toInt()
             val specialCase = (ix - (expLsb.toULong())) >= F.EXP_MASK - expLsb
-            Pair(Exp.NoShift(), specialCase)
+            Pair(Exp.NoShift(Unit), specialCase)
         } else {
             val top = UInt.castFrom(ix shr F.SIG_BITS.toInt())
             val specialCase1 = top.wrappingSub(1) >= F.EXP_SAT - 1
@@ -88,12 +88,12 @@ public fun <Int, SignedInt, ISet1, ISet2, D, OtherSign, Unsigned, F> sqrtRound(x
         val scaled = x * fromPartsFFn(false, F.SIG_BITS + F.EXP_BIAS, zero)
         ix = scaled.toBits()
         when (top1) {
-            is Exp.Shifted -> {
+            is Exp.Shifted<*> -> {
                 val (v) = top1
                 v = scaled.ex()
                 v = ((v) - (F.SIG_BITS.toUInt()))
             }
-            is Exp.NoShift -> {
+            is Exp.NoShift<*> -> {
                 ix = (ix - (F.SIG_BITS shl F.SIG_BITS.toInt()).cast().toULong())
             }
         }
@@ -104,7 +104,7 @@ public fun <Int, SignedInt, ISet1, ISet2, D, OtherSign, Unsigned, F> sqrtRound(x
     // - 2^e is the exponent part of the result
     val (mU22, exp) =
         when (top1) {
-            is Exp.Shifted -> {
+            is Exp.Shifted<*> -> {
                 val (top2) = top1
                 // We now know `x` is positive, so `top` is just its (biased) exponent
                 var e = top2
@@ -117,7 +117,7 @@ public fun <Int, SignedInt, ISet1, ISet2, D, OtherSign, Unsigned, F> sqrtRound(x
                 e = ((e + ((F.EXP_SAT shr 1).toUInt()))) shr 1
                 Pair(mU2, Exp.Shifted(e))
             }
-            is Exp.NoShift -> {
+            is Exp.NoShift<*> -> {
                 val even1 = ix and (one shl F.SIG_BITS.toInt()) != zero
                 // Exponent part of the return value
                 var eNoshift = ix shr 1
@@ -179,11 +179,11 @@ public fun <Int, SignedInt, ISet1, ISet2, D, OtherSign, Unsigned, F> sqrtRound(x
     m += d1 shr (F.BITS - 1).toInt()
     m = m and F.SIG_MASK
     when (exp) {
-        is Exp.Shifted -> {
+        is Exp.Shifted<*> -> {
             val (e1) = exp
             m = m or (IntTy.castFrom(e1) shl F.SIG_BITS.toInt())
         }
-        is Exp.NoShift -> {
+        is Exp.NoShift<*> -> {
             val (e2) = exp
             m = m or e2
         }

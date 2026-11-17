@@ -85,7 +85,7 @@ public fun UByte.fmt(f: StringBuilder): Result<Unit, Unit> {
 /**
  * Format signed integers in the two’s-complement form.
  */
-public fun Byte.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.castUnsigned()).toString()); Result.Ok(Unit) }
+public fun Byte.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.castUnsigned()).toString()); Result.Ok<Unit, Unit>(Unit) }
 
 /**
  * Format unsigned integers in the radix.
@@ -118,7 +118,7 @@ public fun UShort.fmt(f: StringBuilder): Result<Unit, Unit> {
 /**
  * Format signed integers in the two’s-complement form.
  */
-public fun Short.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.castUnsigned()).toString()); Result.Ok(Unit) }
+public fun Short.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.castUnsigned()).toString()); Result.Ok<Unit, Unit>(Unit) }
 
 /**
  * Format unsigned integers in the radix.
@@ -179,7 +179,7 @@ public fun ULong.fmt(f: StringBuilder): Result<Unit, Unit> {
 /**
  * Format signed integers in the two’s-complement form.
  */
-public fun Long.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.castUnsigned()).toString()); Result.Ok(Unit) }
+public fun Long.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.castUnsigned()).toString()); Result.Ok<Unit, Unit>(Unit) }
 
 /**
  * Format unsigned integers in the radix.
@@ -212,7 +212,7 @@ public fun U128.fmt(f: StringBuilder): Result<Unit, Unit> {
 /**
  * Format signed integers in the two’s-complement form.
  */
-public fun I128.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.castUnsigned()).toString()); Result.Ok(Unit) }
+public fun I128.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.castUnsigned()).toString()); Result.Ok<Unit, Unit>(Unit) }
 
 // The string of all two-digit numbers in range 00..99 is used as a lookup table.
 public var DECIMAL_PAIRS: UByteArray = "00010203040506070809101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899".encodeToByteArray().toUByteArray()

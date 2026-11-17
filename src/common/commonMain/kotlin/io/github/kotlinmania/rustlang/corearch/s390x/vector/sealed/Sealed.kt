@@ -18,6 +18,7 @@ import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.PackedTuple
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorBoolChar
@@ -169,6 +170,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.I64x2
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 import io.github.kotlinmania.rustlang.corearch.simd.I8x2
 import io.github.kotlinmania.rustlang.corearch.simd.I8x8
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.U16x4
 import io.github.kotlinmania.rustlang.corearch.simd.U16x8
 import io.github.kotlinmania.rustlang.corearch.simd.U32x2
@@ -684,61 +686,61 @@ public interface VectorSplats<Output, Result> {
     public fun vecSplats(): Output
 }
 
-public fun vecSplatsU8(v: UByte): VectorUnsignedChar = transmute(u8x16.splat(v))
+public fun vecSplatsU8(v: UByte): VectorUnsignedChar = transmute(Simd<UByte>(List(16) { v }))
 
 public fun UByte.vecSplats(): VectorUnsignedChar = vecSplatsU8(this)
 
-public fun vecSplatsI8(v: Byte): VectorSignedChar = transmute(i8x16.splat(v))
+public fun vecSplatsI8(v: Byte): VectorSignedChar = transmute(Simd<Byte>(List(16) { v }))
 
 public fun Byte.vecSplats(): VectorSignedChar = vecSplatsI8(this)
 
-public fun vecSplatsU16(v: UShort): VectorUnsignedShort = transmute(u16x8.splat(v))
+public fun vecSplatsU16(v: UShort): VectorUnsignedShort = transmute(Simd<UShort>(List(8) { v }))
 
 public fun UShort.vecSplats(): VectorUnsignedShort = vecSplatsU16(this)
 
-public fun vecSplatsI16(v: Short): VectorSignedShort = transmute(i16x8.splat(v))
+public fun vecSplatsI16(v: Short): VectorSignedShort = transmute(Simd<Short>(List(8) { v }))
 
 public fun Short.vecSplats(): VectorSignedShort = vecSplatsI16(this)
 
-public fun vecSplatsU32(v: UInt): VectorUnsignedInt = transmute(u32x4.splat(v))
+public fun vecSplatsU32(v: UInt): VectorUnsignedInt = transmute(Simd<UInt>(List(4) { v }))
 
 public fun UInt.vecSplats(): VectorUnsignedInt = vecSplatsU32(this)
 
-public fun vecSplatsI32(v: Int): VectorSignedInt = transmute(i32x4.splat(v))
+public fun vecSplatsI32(v: Int): VectorSignedInt = transmute(Simd<Int>(List(4) { v }))
 
 public fun Int.vecSplats(): VectorSignedInt = vecSplatsI32(this)
 
-public fun vecSplatsU64(v: ULong): VectorUnsignedLongLong = transmute(u64x2.splat(v))
+public fun vecSplatsU64(v: ULong): VectorUnsignedLongLong = transmute(Simd<ULong>(List(2) { v }))
 
 public fun ULong.vecSplats(): VectorUnsignedLongLong = vecSplatsU64(this)
 
-public fun vecSplatsI64(v: Long): VectorSignedLongLong = transmute(i64x2.splat(v))
+public fun vecSplatsI64(v: Long): VectorSignedLongLong = transmute(Simd<Long>(List(2) { v }))
 
 public fun Long.vecSplats(): VectorSignedLongLong = vecSplatsI64(this)
 
-public fun vecSplatsF32(v: Float): VectorFloat = transmute(f32x4.splat(v))
+public fun vecSplatsF32(v: Float): VectorFloat = transmute(Simd<Float>(List(4) { v }))
 
 public fun Float.vecSplats(): VectorFloat = vecSplatsF32(this)
 
-public fun vecSplatsF64(v: Double): VectorDouble = transmute(f64x2.splat(v))
+public fun vecSplatsF64(v: Double): VectorDouble = transmute(Simd<Double>(List(2) { v }))
 
 public fun Double.vecSplats(): VectorDouble = vecSplatsF64(this)
 
-public fun UByte.vecSplatsVectorBoolChar(): VectorBoolChar = transmute(u8x16.splat(this))
+public fun UByte.vecSplatsVectorBoolChar(): VectorBoolChar = transmute(Simd<UByte>(List(16) { this }))
 
-public fun Byte.vecSplatsVectorBoolChar(): VectorBoolChar = transmute(i8x16.splat(this))
+public fun Byte.vecSplatsVectorBoolChar(): VectorBoolChar = transmute(Simd<Byte>(List(16) { this }))
 
-public fun UShort.vecSplatsVectorBoolShort(): VectorBoolShort = transmute(u16x8.splat(this))
+public fun UShort.vecSplatsVectorBoolShort(): VectorBoolShort = transmute(Simd<UShort>(List(8) { this }))
 
-public fun Short.vecSplatsVectorBoolShort(): VectorBoolShort = transmute(i16x8.splat(this))
+public fun Short.vecSplatsVectorBoolShort(): VectorBoolShort = transmute(Simd<Short>(List(8) { this }))
 
-public fun UInt.vecSplatsVectorBoolInt(): VectorBoolInt = transmute(u32x4.splat(this))
+public fun UInt.vecSplatsVectorBoolInt(): VectorBoolInt = transmute(Simd<UInt>(List(4) { this }))
 
-public fun Int.vecSplatsVectorBoolInt(): VectorBoolInt = transmute(i32x4.splat(this))
+public fun Int.vecSplatsVectorBoolInt(): VectorBoolInt = transmute(Simd<Int>(List(4) { this }))
 
-public fun ULong.vecSplatsVectorBoolLongLong(): VectorBoolLongLong = transmute(u64x2.splat(this))
+public fun ULong.vecSplatsVectorBoolLongLong(): VectorBoolLongLong = transmute(Simd<ULong>(List(2) { this }))
 
-public fun Long.vecSplatsVectorBoolLongLong(): VectorBoolLongLong = transmute(i64x2.splat(this))
+public fun Long.vecSplatsVectorBoolLongLong(): VectorBoolLongLong = transmute(Simd<Long>(List(2) { this }))
 
 public interface CountBits<out Result> {
     public fun vecCntlz(): Result
@@ -1003,7 +1005,7 @@ public fun VectorBoolLongLong.vecXor(b: VectorSignedLongLong): VectorSignedLongL
 public fun nor(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
     val a1: U8x16 = transmuteWithLayouts<VectorSignedChar, U8x16>(a, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<U8x16>())
     val b1: U8x16 = transmuteWithLayouts<VectorSignedChar, U8x16>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<U8x16>())
-    return transmute(run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = u8x16.splat(0xff); _simdArg0 })
+    return transmute(run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = Simd<UByte>(List(16) { 0xffu.toUByte() }); _simdArg0 })
 }
 
 public interface VectorNor<Other, out Result> {
@@ -1039,7 +1041,7 @@ public fun VectorDouble.vecNor(b: VectorDouble): VectorDouble = transmuteWithLay
 public fun nand(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
     val a1: U8x16 = transmuteWithLayouts<VectorSignedChar, U8x16>(a, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<U8x16>())
     val b1: U8x16 = transmuteWithLayouts<VectorSignedChar, U8x16>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<U8x16>())
-    return transmute(run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = u8x16.splat(0xff); _simdArg0 })
+    return transmute(run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = Simd<UByte>(List(16) { 0xffu.toUByte() }); _simdArg0 })
 }
 
 public interface VectorNand<Other, out Result> {
@@ -1075,7 +1077,7 @@ public fun VectorDouble.vecNand(b: VectorDouble): VectorDouble = transmuteWithLa
 public fun eqv(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
     val a1: U8x16 = transmuteWithLayouts<VectorSignedChar, U8x16>(a, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<U8x16>())
     val b1: U8x16 = transmuteWithLayouts<VectorSignedChar, U8x16>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<U8x16>())
-    return transmute(run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = u8x16.splat(0xff); _simdArg0 })
+    return transmute(run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = Simd<UByte>(List(16) { 0xffu.toUByte() }); _simdArg0 })
 }
 
 public interface VectorEqv<Other, out Result> {
@@ -1111,7 +1113,7 @@ public fun VectorDouble.vecEqv(b: VectorDouble): VectorDouble = transmuteWithLay
 public fun andc(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
     val a1 = a
     val b1 = b
-    return transmute(run { val _simdArg0 = run { val _simdArg0 = u8x16.splat(0xff); val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; _simdArg0 })
+    return transmute(run { val _simdArg0 = run { val _simdArg0 = Simd<UByte>(List(16) { 0xffu.toUByte() }); val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; _simdArg0 })
 }
 
 public interface VectorAndc<Other, out Result> {
@@ -1147,7 +1149,7 @@ public fun VectorDouble.vecAndc(b: VectorDouble): VectorDouble = transmuteWithLa
 public fun orc(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
     val a1 = a
     val b1 = b
-    return transmute(run { val _simdArg0 = run { val _simdArg0 = u8x16.splat(0xff); val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; _simdArg0 })
+    return transmute(run { val _simdArg0 = run { val _simdArg0 = Simd<UByte>(List(16) { 0xffu.toUByte() }); val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; _simdArg0 })
 }
 
 public interface VectorOrc<Other, out Result> {
@@ -1669,7 +1671,7 @@ public interface VectorReve<T> {
 }
 
 public open class ReverseMask(
-    public var value: UIntArray = UIntArray((N).toInt()),
+    public var value: UIntArray = UIntArray(0),
 ) {
     public var field0: UIntArray
         get() = value
@@ -3658,11 +3660,11 @@ public interface VectorExtendSigned64 {
     public fun vecExtendS64(): VectorSignedLongLong
 }
 
-public fun vsegb(a: VectorSignedChar): VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = u32x2.fromArray(listOf(7, 15)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I8x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I8x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I8x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x2>()).alignBytes)); res } }; _simdArg0 }
+public fun vsegb(a: VectorSignedChar): VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = Simd<UInt>((listOf(7, 15)).toList()); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I8x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I8x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I8x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x2>()).alignBytes)); res } }; _simdArg0 }
 
-public fun vsegh(a: VectorSignedShort): VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = u32x2.fromArray(listOf(3, 7)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x2>()).alignBytes)); res } }; _simdArg0 }
+public fun vsegh(a: VectorSignedShort): VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = Simd<UInt>((listOf(3, 7)).toList()); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x2>()).alignBytes)); res } }; _simdArg0 }
 
-public fun vsegf(a: VectorSignedInt): VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = u32x2.fromArray(listOf(1, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); res } }; _simdArg0 }
+public fun vsegf(a: VectorSignedInt): VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = Simd<UInt>((listOf(1, 3)).toList()); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); res } }; _simdArg0 }
 
 public fun VectorSignedChar.vecExtendS64(): VectorSignedLongLong = vsegb(this)
 

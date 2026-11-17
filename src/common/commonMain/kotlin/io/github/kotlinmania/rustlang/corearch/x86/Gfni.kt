@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 import io.github.kotlinmania.rustlang.corearch.simd.I8x32
 import io.github.kotlinmania.rustlang.corearch.simd.I8x64
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 
 // Galois Field New Instructions (GFNI)
 //
@@ -76,7 +77,7 @@ public fun mm512MaskGf2p8mulEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M5
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_gf2p8mul_epi8)
  */
 public fun mm512MaskzGf2p8mulEpi8(k: Mmask64, a: M512i, b: M512i): M512i {
-    val zero = I8x64.ZERO
+    val zero = Simd<Byte>(List(64) { 0.toByte() })
     return transmute(run { val _simdArg0 = k; val _simdArg1 = vgf2p8mulb512(a.asI8x64(), b.asI8x64()); val _simdArg2 = zero; _simdArg1 })
 }
 
@@ -112,7 +113,7 @@ public fun mm256MaskGf2p8mulEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M2
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_gf2p8mul_epi8)
  */
 public fun mm256MaskzGf2p8mulEpi8(k: Mmask32, a: M256i, b: M256i): M256i {
-    val zero = I8x32.ZERO
+    val zero = Simd<Byte>(List(32) { 0.toByte() })
     return transmute(run { val _simdArg0 = k; val _simdArg1 = vgf2p8mulb256(a.asI8x32(), b.asI8x32()); val _simdArg2 = zero; _simdArg1 })
 }
 
@@ -149,7 +150,7 @@ public fun mmMaskGf2p8mulEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i
  */
 public fun mmMaskzGf2p8mulEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
-        val zero = I8x16.ZERO
+        val zero = Simd<Byte>(List(16) { 0.toByte() })
         transmute(run { val _simdArg0 = k; val _simdArg1 = vgf2p8mulb128(a.asI8x16(), b.asI8x16()); val _simdArg2 = zero; _simdArg1 })
     }
 
@@ -190,7 +191,7 @@ public fun mm512MaskzGf2p8affineEpi64Epi8(k: Mmask64, x: M512i, a: M512i, b: Int
         check(0 <= b && b < (1 shl 8)) { "B doesn't fit in 8 bits (unsigned)" }
     }
     val b = b.toUByte()
-    val zero = I8x64.ZERO
+    val zero = Simd<Byte>(List(64) { 0.toByte() })
     val x1 = x.asI8x64()
     val a1 = a.asI8x64()
     return run {
@@ -260,7 +261,7 @@ public fun mm256MaskzGf2p8affineEpi64Epi8(k: Mmask32, x: M256i, a: M256i, b: Int
         check(0 <= b && b < (1 shl 8)) { "B doesn't fit in 8 bits (unsigned)" }
     }
     val b = b.toUByte()
-    val zero = I8x32.ZERO
+    val zero = Simd<Byte>(List(32) { 0.toByte() })
     val x1 = x.asI8x32()
     val a1 = a.asI8x32()
     return run {
@@ -330,7 +331,7 @@ public fun mmMaskzGf2p8affineEpi64Epi8(k: Mmask16, x: M128i, a: M128i, b: Int): 
         check(0 <= b && b < (1 shl 8)) { "B doesn't fit in 8 bits (unsigned)" }
     }
     val b = b.toUByte()
-    val zero = I8x16.ZERO
+    val zero = Simd<Byte>(List(16) { 0.toByte() })
     val x1 = x.asI8x16()
     val a1 = a.asI8x16()
     return run {
@@ -404,7 +405,7 @@ public fun mm512MaskzGf2p8affineinvEpi64Epi8(k: Mmask64, x: M512i, a: M512i, b: 
         check(0 <= b && b < (1 shl 8)) { "B doesn't fit in 8 bits (unsigned)" }
     }
     val b = b.toUByte()
-    val zero = I8x64.ZERO
+    val zero = Simd<Byte>(List(64) { 0.toByte() })
     val x1 = x.asI8x64()
     val a1 = a.asI8x64()
     return run {
@@ -480,7 +481,7 @@ public fun mm256MaskzGf2p8affineinvEpi64Epi8(k: Mmask32, x: M256i, a: M256i, b: 
         check(0 <= b && b < (1 shl 8)) { "B doesn't fit in 8 bits (unsigned)" }
     }
     val b = b.toUByte()
-    val zero = I8x32.ZERO
+    val zero = Simd<Byte>(List(32) { 0.toByte() })
     val x1 = x.asI8x32()
     val a1 = a.asI8x32()
     return run {
@@ -556,7 +557,7 @@ public fun mmMaskzGf2p8affineinvEpi64Epi8(k: Mmask16, x: M128i, a: M128i, b: Int
         check(0 <= b && b < (1 shl 8)) { "B doesn't fit in 8 bits (unsigned)" }
     }
     val b = b.toUByte()
-    val zero = I8x16.ZERO
+    val zero = Simd<Byte>(List(16) { 0.toByte() })
     val x1 = x.asI8x16()
     val a1 = a.asI8x16()
     return run {

@@ -13,6 +13,7 @@ import io.github.kotlinmania.rustlang.std.panicking.beginPanic
 import io.github.kotlinmania.rustlang.std.panicking.paniccount.setAlwaysAbort
 import io.github.kotlinmania.rustlang.std.sys.backtrace.FULL_BACKTRACE_DEFAULT
 import io.github.kotlinmania.rustlang.std.thread.Result
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 // Panic support in the standard library.
 
@@ -189,9 +190,9 @@ public open class PanicHookInfo(
 
     public open fun forceNoBacktrace(): Boolean = this.forceNoBacktrace
 
-    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> {
+    public open fun fmt(formatter: StringBuilder): RustResult<Unit, Error> {
         formatter.append("panicked at ")
-        when (val tryResult = this.location.fmt(formatter)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = this.location.fmt(formatter)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
         when (val matchVal = this.payloadAsStr()) {
             null -> {}
             else -> {
@@ -200,7 +201,7 @@ public open class PanicHookInfo(
                 formatter.append(payload)
             }
         }
-        return Result.Ok<Unit, Error>(Unit)
+        return RustResult.Ok<Unit, Error>(Unit)
     }
 
     public companion object {
@@ -485,9 +486,9 @@ public fun getBacktraceStyle(): BacktraceStyle? {
         }
     return run {
         val matchVal2 = SHOULD_CAPTURE.compareExchange(0, format.asU8(), Ordering.Relaxed, Ordering.Relaxed)
-        when (matchVal2) { is Result.Ok -> {
+        when (matchVal2) { is RustResult.Ok<*, *> -> {
             format
-        }; is Result.Err -> {
+        }; is RustResult.Err<*, *> -> {
             val new = matchVal2.error
             BacktraceStyle.fromU8(new)
         } }

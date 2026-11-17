@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty
 
 import io.github.kotlinmania.rustlang.libc.isatty
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
+import io.github.kotlinmania.rustlang.std.os.fd.asFd
 
 public fun isTerminal(fd: AsFd): Boolean {
     val fd1 = fd.asFd()

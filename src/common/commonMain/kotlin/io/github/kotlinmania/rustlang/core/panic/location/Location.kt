@@ -98,7 +98,7 @@ public open class Location internal constructor(
         return state
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Location").field("file", this.file()).field("line", this.line).field("column", this.col).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Location").field("file", this.file()).field("line", this.line).field("column", this.col).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     /**
      * Returns the name of the source file from which the panic originated.

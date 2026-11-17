@@ -11,6 +11,8 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.os.raw.CUint
 import io.github.kotlinmania.rustlang.std.os.raw.CUlong
@@ -204,7 +206,7 @@ public val AF_UNIX: AddressFamily = AF_UNIX.toUShort()
 // Desktop specific functions & types
 public val EXCEPTION_CONTINUE_SEARCH: Int = 0
 
-public val INVALID_HANDLE_VALUE: Handle = withoutProvenanceMut(null)
+public val INVALID_HANDLE_VALUE: Handle = withoutProvenanceMut(-1)
 
 // dwShareMode -- CreateFile
 public val FILE_SHARE_DELETE: UInt = cu(FILE_SHARE_DELETE)

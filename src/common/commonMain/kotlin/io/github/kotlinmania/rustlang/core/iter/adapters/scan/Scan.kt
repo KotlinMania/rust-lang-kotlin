@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.scan
 
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
@@ -11,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -53,51 +53,10 @@ public open class Scan<I, St, F>(
     public var iter: I,
     public var f: F,
     public var state: St,
-) : SourceIter<Source>, InPlaceIterable, Iterable<B> {
-    override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
-        override fun computeNext() {
-            when (val v = this@Scan.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
+) {
     public open fun clone(): Scan<I, St, F> = Scan(iter, f, state)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Scan").field("iter", this.iter).field("state", this.state).finish()
-
-    public open fun next(): B? {
-        val a = (this.iter.next() ?: return null)
-        return (this.f)(this.state, a)
-    }
-
-    public open fun sizeHint(): Pair<Int, Int?> {
-        val (_, upper) = this.iter.sizeHint()
-        return Pair(0, upper)
-        // can't know a lower bound, due to the scan function
-    }
-
-    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> {
-        fun <Residual, T, St, B, Acc, R : Try<R, Acc, Residual>> scan(state: St, f: (St, T) -> B?, fold1: (Acc, B) -> R): (Acc, T) -> ControlFlow<R, Acc> =
-            { acc, x -> when (val matchVal = f(state, x)) {
-                null -> ControlFlow.Break(acc)
-                else -> {
-                    val x1 = matchVal
-                    ControlFlow.fromTry(fold1(acc, x1))
-                }
-            } }
-        val state = this.state
-        val f = this.f
-        return this.iter.tryFold(init, scan(state, f, fold)).intoTry()
-    }
-
-    public open fun <Aaa> fold(init: Aaa, fold: (Aaa, B) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
-
-    public override fun asInner(): Source {
-        // SAFETY: unchecked function forwarding to unchecked function with the same requirements
-        return this.iter.asInner()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Scan").field("iter", this.iter).field("state", this.state).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun <I, St, F> typeLayout(typeLayoutI: TypeLayout<I>, typeLayoutF: TypeLayout<F>, typeLayoutSt: TypeLayout<St>): TypeLayout<Scan<I, St, F>> =
@@ -131,9 +90,41 @@ public open class Scan<I, St, F>(
             }
 
         public fun <I, St, F> new(iter: I, state: St, f: F): Scan<I, St, F> = Scan(iter = iter, state = state, f = f)
-
-        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
-
-        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }
+
+public fun <B, I, St> Scan<I, St, F>.next(): B? {
+    val a = (this.iter.next() ?: return null)
+    return (this.f)(this.state, a)
+}
+
+public fun <B, I, St> Scan<I, St, F>.sizeHint(): Pair<Int, Int?> {
+    val (_, upper) = this.iter.sizeHint()
+    return Pair(0, upper)
+    // can't know a lower bound, due to the scan function
+}
+
+public fun <Residual, B, I, St, Acc, R> Scan<I, St, F>.tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> {
+    fun <Residual, T, St, B, Acc, R : Try<R, Acc, Residual>> scan(state: St, f: (St, T) -> B?, fold1: (Acc, B) -> R): (Acc, T) -> ControlFlow<R, Acc> =
+        { acc, x -> when (val matchVal = f(state, x)) {
+            null -> ControlFlow.Break(acc)
+            else -> {
+                val x1 = matchVal
+                ControlFlow.fromTry(fold1(acc, x1))
+            }
+        } }
+    val state = this.state
+    val f = this.f
+    return this.iter.tryFold(init, scan(state, f, fold)).intoTry()
+}
+
+public fun <B, I, St, Aaa> Scan<I, St, F>.fold(init: Aaa, fold: (Aaa, B) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
+
+public fun <Source, St, F, I> Scan<I, St, F>.asInner(): Source where I : SourceIter<Source> {
+    // SAFETY: unchecked function forwarding to unchecked function with the same requirements
+    return this.iter.asInner()
+}
+
+public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
+
+public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY

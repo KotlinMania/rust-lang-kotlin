@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.std.sys.alloc.MIN_ALIGN
 import io.github.kotlinmania.rustlang.std.sys.alloc.reallocFallback
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Bool

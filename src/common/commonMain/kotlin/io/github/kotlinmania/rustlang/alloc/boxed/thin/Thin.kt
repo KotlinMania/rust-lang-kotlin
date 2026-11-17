@@ -70,9 +70,9 @@ public open class ThinBox<T>(
      * `ThinBox<T>` is `Sync` if `T` is `Sync` because the data is owned.
      */
 
-    public open fun fmt(f: Formatter): Result<Unit, Error> = run { f.append((this.deref()).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: Formatter): Result<Unit, Error> = run { f.append((this.deref()).toString()); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDisplay(f: Formatter): Result<Unit, Error> = run { f.append((this.deref()).toString()); Result.Ok(Unit) }
+    public open fun fmtDisplay(f: Formatter): Result<Unit, Error> = run { f.append((this.deref()).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun deref(): T {
         val value = this.data()

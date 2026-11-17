@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.procmacro.bridge.ApiTags
@@ -19,7 +20,15 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.Marked
 import io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
 import io.github.kotlinmania.rustlang.procmacro.bridge.client.Client
+import io.github.kotlinmania.rustlang.procmacro.bridge.client.Span
+import io.github.kotlinmania.rustlang.procmacro.bridge.client.Symbol
+import io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream
+import io.github.kotlinmania.rustlang.procmacro.bridge.decode
+import io.github.kotlinmania.rustlang.procmacro.bridge.encode
 import io.github.kotlinmania.rustlang.procmacro.bridge.handle.Handle
+import io.github.kotlinmania.rustlang.procmacro.bridge.handle.InternedStore
+import io.github.kotlinmania.rustlang.procmacro.bridge.handle.OwnedStore
+import io.github.kotlinmania.rustlang.procmacro.bridge.mark
 import io.github.kotlinmania.rustlang.procmacro.bridge.panicmessage.PanicMessage
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.sync.mpsc.Receiver
@@ -54,7 +63,7 @@ public open class HandleStore<S : Server<TokenStream, Span, Symbol>, TokenStream
         public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> new(): HandleStore<S, TokenStream, Span, Symbol> {
             val TOKEN_STREAM: AtomicU32  = AtomicU32.new(1)
             val SPAN: AtomicU32  = AtomicU32.new(1)
-            return HandleStore(tokenStream = Handle.OwnedStore.new(TOKEN_STREAM), span = Handle.InternedStore.new(SPAN))
+            return HandleStore(tokenStream = OwnedStore.new(TOKEN_STREAM), span = InternedStore.new(SPAN))
         }
     }
 }
@@ -69,13 +78,13 @@ public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> Ma
     s.tokenStream.alloc(this).encode(w, s)
 }
 
-public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> decodeMarkedTokenStreamS(r: List<UByte>, s: HandleStore<S, TokenStream, Span, Symbol>): MarkedTokenStream<S> = s.tokenStream.take(Handle.Handle.decode(r, Unit))
+public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> decodeMarkedTokenStreamS(r: List<UByte>, s: HandleStore<S, TokenStream, Span, Symbol>): MarkedTokenStream<S> = s.tokenStream.take(Handle.decode(r, Unit))
 
 public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> MarkedSpan<S>.encode(w: Buffer, s: HandleStore<S, TokenStream, Span, Symbol>) {
     s.span.alloc(this).encode(w, s)
 }
 
-public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> decodeMarkedSpanS(r: List<UByte>, s: HandleStore<S, TokenStream, Span, Symbol>): MarkedSpan<S> = s.span.copy(Handle.Handle.decode(r, Unit))
+public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> decodeMarkedSpanS(r: List<UByte>, s: HandleStore<S, TokenStream, Span, Symbol>): MarkedSpan<S> = s.span.copy(Handle.decode(r, Unit))
 
 public interface Server<TokenStream, Span, Symbol> {
     public fun globals(): ExpnGlobals<Span>
@@ -759,7 +768,7 @@ public open class RunningSameThreadGuard(
         public fun new(): RunningSameThreadGuard {
             val alreadyRunning = ALREADY_RUNNING_SAME_THREAD.replace(true)
             check(!alreadyRunning) { "same-thread nesting (\"reentrance\") of proc macro executions is not supported" }
-            return RunningSameThreadGuard()
+            return RunningSameThreadGuard(Unit)
         }
     }
 }

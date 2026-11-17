@@ -3,11 +3,11 @@
 
 package io.github.kotlinmania.rustlang.backtrace.symbolize.dbghelp
 
-import io.github.kotlinmania.rustlang.backtrace.dbghelp.Dbghelp
 import io.github.kotlinmania.rustlang.backtrace.dbghelp.SymAddrIncludeInlineTrace
 import io.github.kotlinmania.rustlang.backtrace.dbghelp.SymFromInlineContextW
 import io.github.kotlinmania.rustlang.backtrace.dbghelp.SymGetLineFromInlineContextW
 import io.github.kotlinmania.rustlang.backtrace.dbghelp.SymQueryInlineTrace
+import io.github.kotlinmania.rustlang.backtrace.dbghelp.dbghelp
 import io.github.kotlinmania.rustlang.backtrace.symbolize.ResolveWhat
 import io.github.kotlinmania.rustlang.backtrace.symbolize.SymbolName
 import io.github.kotlinmania.rustlang.backtrace.symbolize.adjustIp
@@ -127,11 +127,11 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
     // Ensure this process's symbols are initialized
     val dbghelp1 =
         run {
-            val matchVal = Dbghelp.init()
-            when (matchVal) { is Result.Ok -> {
+            val matchVal = dbghelp.init()
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val dbghelp = matchVal.value
                 dbghelp
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 return
             } }
         }
@@ -154,7 +154,7 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
  * Note that calling this function requires having dbghelp 6.2+ loaded - and
  * will panic otherwise.
  */
-public fun resolveWithInline(dbghelp: Init, addr: MutPtr, inlineContext: UInt?, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit): Unit? {
+public fun resolveWithInline(dbghelp: dbghelp.Init, addr: MutPtr, inlineContext: UInt?, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit): Unit? {
     val inlineContext1 = inlineContext
     run {
         val currentProcess = GetCurrentProcess()

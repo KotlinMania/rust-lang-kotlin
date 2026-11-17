@@ -13,6 +13,7 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.corearch.x86.mmCvtnessSbh
@@ -533,7 +534,7 @@ public fun testTileStreamLoaddrs() {
 public fun testTileMovrow() {
     run {
         initAmx()
-        val localStorageL1917C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { ((i as Any?) as Any?) } }), PrimitiveArrayLayouts.uByteArray((64).toInt()))
+        val localStorageL1917C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { i } }), PrimitiveArrayLayouts.uByteArray((64).toInt()))
         val config = Tilecfg.default()
         config.palette = 1
         config.colsb[0] = 64
@@ -542,7 +543,7 @@ public fun testTileMovrow() {
         tileLoadd(localStorageL1917C12.elementConstPtr(0), 64, 0)
         for (i in 0 until 16) {
             val row = tileMovrow(i, 0)
-            check(row.asU8x64().asArray() == List(_) { ((i as Any?) as Unit) })
+            check(row.asU8x64().asArray() == List(_) { i })
         }
     }
 }
@@ -550,7 +551,7 @@ public fun testTileMovrow() {
 public fun testTileMovrowi() {
     run {
         initAmx()
-        val localStorageL1960C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { ((i as Any?) as Any?) } }), PrimitiveArrayLayouts.uByteArray((64).toInt()))
+        val localStorageL1960C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { i } }), PrimitiveArrayLayouts.uByteArray((64).toInt()))
         val config = Tilecfg.default()
         config.palette = 1
         config.colsb[0] = 64
@@ -578,7 +579,7 @@ public fun testTileMovrowi() {
                     15 -> tileMovrowi(0, 15)
                     else -> error("row index out of range")
                 }
-            check(row.asU8x64().asArray() == List(_) { ((i as Any?) as Unit) })
+            check(row.asU8x64().asArray() == List(_) { i })
         }
     }
 }
@@ -586,7 +587,7 @@ public fun testTileMovrowi() {
 public fun testTileCvtrowd2ps() {
     run {
         initAmx()
-        val localStorageL1996C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { ((i as Any?) as Any?) } }), PrimitiveArrayLayouts.uIntArray((16).toInt()))
+        val localStorageL1996C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { i } }), PrimitiveArrayLayouts.uIntArray((16).toInt()))
         val config = Tilecfg.default()
         config.palette = 1
         config.colsb[0] = 64
@@ -595,7 +596,7 @@ public fun testTileCvtrowd2ps() {
         tileLoadd(localStorageL1996C12.elementConstPtr(0), 64, 0)
         for (i in 0 until 16) {
             val row = tileCvtrowd2ps(i, 0)
-            check(row.asF32x16().asArray() == List(_) { ((i as Any?) as Unit) })
+            check(row.asF32x16().asArray() == List(_) { i })
         }
     }
 }
@@ -603,7 +604,7 @@ public fun testTileCvtrowd2ps() {
 public fun testTileCvtrowd2psi() {
     run {
         initAmx()
-        val localStorageL2015C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { ((i as Any?) as Any?) } }), PrimitiveArrayLayouts.uIntArray((16).toInt()))
+        val localStorageL2015C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { i } }), PrimitiveArrayLayouts.uIntArray((16).toInt()))
         val config = Tilecfg.default()
         config.palette = 1
         config.colsb[0] = 64
@@ -631,7 +632,7 @@ public fun testTileCvtrowd2psi() {
                     15 -> tileCvtrowd2psi(0, 15)
                     else -> error("row index out of range")
                 }
-            check(row.asF32x16().asArray() == List(_) { ((i as Any?) as Unit) })
+            check(row.asF32x16().asArray() == List(_) { i })
         }
     }
 }
@@ -639,7 +640,7 @@ public fun testTileCvtrowd2psi() {
 public fun testTileCvtrowps2phh() {
     run {
         initAmx()
-        val localStorageL2051C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { ((i as Any?) as Any?) } }), PrimitiveArrayLayouts.floatArray((16).toInt()))
+        val localStorageL2051C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { i } }), PrimitiveArrayLayouts.floatArray((16).toInt()))
         var array by localStorageL2051C12
         val config = Tilecfg.default()
         config.palette = 1
@@ -652,7 +653,7 @@ public fun testTileCvtrowps2phh() {
             check(row.asF16x32().asArray() == fromFn({ j -> if (j and 1 == 0) {
                 0.0
             } else {
-                ((i as Any?) as Any?)
+                i
             } }))
         }
     }
@@ -661,7 +662,7 @@ public fun testTileCvtrowps2phh() {
 public fun testTileCvtrowps2phhi() {
     run {
         initAmx()
-        val localStorageL2073C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { ((i as Any?) as Any?) } }), PrimitiveArrayLayouts.floatArray((16).toInt()))
+        val localStorageL2073C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { i } }), PrimitiveArrayLayouts.floatArray((16).toInt()))
         var array by localStorageL2073C12
         val config = Tilecfg.default()
         config.palette = 1
@@ -693,7 +694,7 @@ public fun testTileCvtrowps2phhi() {
             check(row.asF16x32().asArray() == fromFn({ j -> if (j and 1 == 0) {
                 0.0
             } else {
-                ((i as Any?) as Any?)
+                i
             } }))
         }
     }
@@ -702,7 +703,7 @@ public fun testTileCvtrowps2phhi() {
 public fun testTileCvtrowps2phl() {
     run {
         initAmx()
-        val localStorageL2114C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { ((i as Any?) as Any?) } }), PrimitiveArrayLayouts.floatArray((16).toInt()))
+        val localStorageL2114C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { i } }), PrimitiveArrayLayouts.floatArray((16).toInt()))
         var array by localStorageL2114C12
         val config = Tilecfg.default()
         config.palette = 1
@@ -713,7 +714,7 @@ public fun testTileCvtrowps2phl() {
         for (i in 0 until 16) {
             val row = tileCvtrowps2phl(i, 0)
             check(row.asF16x32().asArray() == fromFn({ j -> if (j and 1 == 0) {
-                ((i as Any?) as Any?)
+                i
             } else {
                 0.0
             } }))
@@ -724,7 +725,7 @@ public fun testTileCvtrowps2phl() {
 public fun testTileCvtrowps2phli() {
     run {
         initAmx()
-        val localStorageL2136C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { ((i as Any?) as Any?) } }), PrimitiveArrayLayouts.floatArray((16).toInt()))
+        val localStorageL2136C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { i } }), PrimitiveArrayLayouts.floatArray((16).toInt()))
         var array by localStorageL2136C12
         val config = Tilecfg.default()
         config.palette = 1
@@ -754,7 +755,7 @@ public fun testTileCvtrowps2phli() {
                     else -> error("row index out of range")
                 }
             check(row.asF16x32().asArray() == fromFn({ j -> if (j and 1 == 0) {
-                ((i as Any?) as Any?)
+                i
             } else {
                 0.0
             } }))
@@ -765,7 +766,7 @@ public fun testTileCvtrowps2phli() {
 public fun testTileCvtrowps2bf16h() {
     run {
         initAmx()
-        val localStorageL2177C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { ((i as Any?) as Any?) } }), PrimitiveArrayLayouts.floatArray((16).toInt()))
+        val localStorageL2177C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { i } }), PrimitiveArrayLayouts.floatArray((16).toInt()))
         var array by localStorageL2177C12
         val config = Tilecfg.default()
         config.palette = 1
@@ -787,7 +788,7 @@ public fun testTileCvtrowps2bf16h() {
 public fun testTileCvtrowps2bf16hi() {
     run {
         initAmx()
-        val localStorageL2203C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { ((i as Any?) as Any?) } }), PrimitiveArrayLayouts.floatArray((16).toInt()))
+        val localStorageL2203C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { i } }), PrimitiveArrayLayouts.floatArray((16).toInt()))
         var array by localStorageL2203C12
         val config = Tilecfg.default()
         config.palette = 1
@@ -828,7 +829,7 @@ public fun testTileCvtrowps2bf16hi() {
 public fun testTileCvtrowps2bf16l() {
     run {
         initAmx()
-        val localStorageL2252C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { ((i as Any?) as Any?) } }), PrimitiveArrayLayouts.floatArray((16).toInt()))
+        val localStorageL2252C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { i } }), PrimitiveArrayLayouts.floatArray((16).toInt()))
         var array by localStorageL2252C12
         val config = Tilecfg.default()
         config.palette = 1
@@ -850,7 +851,7 @@ public fun testTileCvtrowps2bf16l() {
 public fun testTileCvtrowps2bf16li() {
     run {
         initAmx()
-        val localStorageL2278C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { ((i as Any?) as Any?) } }), PrimitiveArrayLayouts.floatArray((16).toInt()))
+        val localStorageL2278C12 = AddressableArrayLocal.fromList(fromFn({ i -> List(_) { i } }), PrimitiveArrayLayouts.floatArray((16).toInt()))
         var array by localStorageL2278C12
         val config = Tilecfg.default()
         config.palette = 1

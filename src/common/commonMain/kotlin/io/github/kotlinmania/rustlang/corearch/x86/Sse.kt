@@ -14,8 +14,10 @@ import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.f32.sqrt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 
 // Streaming SIMD Extensions (SSE)
 
@@ -200,7 +202,7 @@ public fun mmAndnotPs(a: M128, b: M128): M128 =
     run {
         val a1: M128i = transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
         val b1: M128i = transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
-        val mask: M128i = transmute(i32x4.splat(-1))
+        val mask: M128i = transmute(Simd<Int>(List(4) { -1 }))
         transmute(run { val _simdArg0 = run { val _simdArg0 = mask; val _simdArg1 = a1; _simdArg0 }; val _simdArg1 = b1; _simdArg0 })
     }
 
@@ -270,7 +272,7 @@ public fun mmCmpleSs(a: M128, b: M128): M128 = cmpss(a, b, 2)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpgt_ss)
  */
-public fun mmCmpgtSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = cmpss(b, a, 1); val _simdArg2 = SimdShuffleIdx(listOf(4, 1, 2, 3)); _simdArg0 }
+public fun mmCmpgtSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = cmpss(b, a, 1); val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 2u, 3u)); _simdArg0 }
 
 /**
  * Compares the lowest `Float` of both inputs for greater than or equal. The
@@ -280,7 +282,7 @@ public fun mmCmpgtSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _sim
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpge_ss)
  */
-public fun mmCmpgeSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = cmpss(b, a, 2); val _simdArg2 = SimdShuffleIdx(listOf(4, 1, 2, 3)); _simdArg0 }
+public fun mmCmpgeSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = cmpss(b, a, 2); val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 2u, 3u)); _simdArg0 }
 
 /**
  * Compares the lowest `Float` of both inputs for inequality. The lowest 32 bits
@@ -320,7 +322,7 @@ public fun mmCmpnleSs(a: M128, b: M128): M128 = cmpss(a, b, 6)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpngt_ss)
  */
-public fun mmCmpngtSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = cmpss(b, a, 5); val _simdArg2 = SimdShuffleIdx(listOf(4, 1, 2, 3)); _simdArg0 }
+public fun mmCmpngtSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = cmpss(b, a, 5); val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 2u, 3u)); _simdArg0 }
 
 /**
  * Compares the lowest `Float` of both inputs for not-greater-than-or-equal. The
@@ -330,7 +332,7 @@ public fun mmCmpngtSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _si
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpnge_ss)
  */
-public fun mmCmpngeSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = cmpss(b, a, 6); val _simdArg2 = SimdShuffleIdx(listOf(4, 1, 2, 3)); _simdArg0 }
+public fun mmCmpngeSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = cmpss(b, a, 6); val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 2u, 3u)); _simdArg0 }
 
 /**
  * Checks if the lowest `Float` of both inputs are ordered. The lowest 32 bits of
@@ -660,7 +662,7 @@ public fun mmSetSs(a: Float): M128 = m128(floatArrayOf(a, 0.0f, 0.0f, 0.0f))
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_set1_ps)
  */
-public fun mmSet1Ps(a: Float): M128 = f32x4.splat(a).asM128()
+public fun mmSet1Ps(a: Float): M128 = Simd<Float>(List(4) { a }).asM128()
 
 /**
  * Alias for [`mmSet1Ps`](fn._mm_set1_ps.html)
@@ -751,7 +753,7 @@ public fun mmShufflePs(a: M128, b: M128, mask: Int): M128 {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_unpackhi_ps)
  */
-public fun mmUnpackhiPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(2, 6, 3, 7)); _simdArg0 }
+public fun mmUnpackhiPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); _simdArg0 }
 
 /**
  * Unpacks and interleave single-precision (32-bit) floating-point elements
@@ -759,7 +761,7 @@ public fun mmUnpackhiPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_unpacklo_ps)
  */
-public fun mmUnpackloPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 1, 5)); _simdArg0 }
+public fun mmUnpackloPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); _simdArg0 }
 
 /**
  * Combine higher half of `a` and `b`. The higher half of `b` occupies the
@@ -769,7 +771,7 @@ public fun mmUnpackloPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _
  */
 public fun mmMovehlPs(a: M128, b: M128): M128 {
     // Note; figure why this is a different instruction on msvc?
-    return run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(6, 7, 2, 3)); _simdArg0 }
+    return run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(6u, 7u, 2u, 3u)); _simdArg0 }
 }
 
 /**
@@ -778,7 +780,7 @@ public fun mmMovehlPs(a: M128, b: M128): M128 {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_movelh_ps)
  */
-public fun mmMovelhPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 4, 5)); _simdArg0 }
+public fun mmMovelhPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 4u, 5u)); _simdArg0 }
 
 /**
  * Returns a mask of the most significant bit of each element in `a`.
@@ -792,7 +794,7 @@ public fun mmMovemaskPs(a: M128): Int {
     // Propagate the highest bit to the rest, because simdBitmask
     // requires all-1 or all-0.
     return run {
-        val mask: I32x4 = run { val _simdArg0 = transmuteWithLayouts<M128, I32x4>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<I32x4>()); val _simdArg1 = i32x4.ZERO; _simdArg0 }
+        val mask: I32x4 = run { val _simdArg0 = transmuteWithLayouts<M128, I32x4>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<I32x4>()); val _simdArg1 = Simd<Int>(List(4) { 0 }); _simdArg0 }
         (run { val _simdArg0 = mask; 0u }).toInt()
     }
 }
@@ -889,7 +891,7 @@ public fun mmLoaduPs(p: ConstPtr): M128 {
  */
 public fun mmLoadrPs(p: ConstPtr): M128 {
     val a = mmLoadPs(p)
-    return run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0)); _simdArg0 }
+    return run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u)); _simdArg0 }
 }
 
 /**
@@ -925,7 +927,7 @@ public fun mmStoreSs(p: MutPtr, a: M128) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_store1_ps)
  */
 public fun mmStore1Ps(p: MutPtr, a: M128) {
-    val b: M128 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 0, 0, 0)); M128() }
+    val b: M128 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 0u, 0u, 0u)); M128() }
     (UnresolvedTypeLayout<M128>()).writeNative(((MutPtr(p.rawAddress, p.rawMeta))).rawAddress, b)
 }
 
@@ -987,7 +989,7 @@ public fun mmStoreuPs(p: MutPtr, a: M128) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storer_ps)
  */
 public fun mmStorerPs(p: MutPtr, a: M128) {
-    val b: M128 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0)); M128() }
+    val b: M128 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u)); M128() }
     (UnresolvedTypeLayout<M128>()).writeNative(((MutPtr(p.rawAddress, p.rawMeta))).rawAddress, b)
 }
 
@@ -1002,7 +1004,7 @@ public fun mmStorerPs(p: MutPtr, a: M128) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_move_ss)
  */
-public fun mmMoveSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(4, 1, 2, 3)); _simdArg0 }
+public fun mmMoveSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 2u, 3u)); _simdArg0 }
 
 //
 // The following is not a doc comment since it's not clear whether we want to put this into the

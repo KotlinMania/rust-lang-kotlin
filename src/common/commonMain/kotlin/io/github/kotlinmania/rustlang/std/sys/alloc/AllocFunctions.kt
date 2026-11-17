@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.alloc
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.std.sys.alloc.unix.alloc
 import io.github.kotlinmania.rustlang.std.sys.alloc.unix.dealloc
 

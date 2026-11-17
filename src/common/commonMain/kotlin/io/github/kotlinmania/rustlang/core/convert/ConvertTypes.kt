@@ -184,12 +184,12 @@ public interface AsRef<T> {
  *     doit(data.asMut())
  * }
  * fun main() {
- *     var v: List<UByte> = mutableListOf(1, 2, 3)
+ *     var v: List<UByte> = mutableListOf(1u, 2u, 3u)
  *     caesar(v, 5u)
  *     check(v == listOf(6u.toUByte(), 7u.toUByte(), 8u.toUByte()))
  *     nullTerminate(v)
  *     check(v == listOf(6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 0u.toUByte()))
- *     var doc = Document(info = String.From("Example"), content = mutableListOf(17, 19, 8))
+ *     var doc = Document(info = String.From("Example"), content = mutableListOf(17u, 19u, 8u))
  *     caesar(doc, 1u)
  *     check(doc.content == listOf(18u.toUByte(), 20u.toUByte(), 9u.toUByte()))
  *     nullTerminate(doc)

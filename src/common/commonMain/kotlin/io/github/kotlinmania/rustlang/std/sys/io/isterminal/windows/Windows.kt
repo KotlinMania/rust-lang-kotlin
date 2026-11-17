@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.std.os.windows.io.AsHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
+import io.github.kotlinmania.rustlang.std.os.windows.io.asHandle
 import io.github.kotlinmania.rustlang.std.sys.api.utf16
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_DEVICE_CONSOLE
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_DEVICE_NAMED_PIPE

@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.rustcdemangle
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 
@@ -39,22 +40,22 @@ public open class Demangle(
                 run {
                     val matchVal1 = Pair(fmtResult, sizeLimitResult)
                     when {
-                        matchVal1.first is Result.Err && matchVal1.second is Result.Err && (matchVal1.second as Result.Err).error is SizeLimitExhausted -> {
-                            val SizeLimitExhausted = (matchVal1.second as Result.Err).error
+                        matchVal1.first is Result.Err<*, *> && matchVal1.second is Result.Err<*, *> && (matchVal1.second as Result.Err<*, *>).error is SizeLimitExhausted -> {
+                            val SizeLimitExhausted = (matchVal1.second as Result.Err<*, *>).error
                             f.append("{size limit reached}")
                         }
                         else -> {
-                            when (val tryResult = fmtResult) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                            when (val tryResult = fmtResult) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
                             sizeLimitResult.expect("`fmt::Error` from `SizeLimitedFmtAdapter` was discarded")
                         }
                     }
                 }
             }
         }
-        return run { f.append(this.suffix); Result.Ok(Unit) }
+        return run { f.append(this.suffix); Result.Ok<Unit, Error>(Unit) }
     }
 
-    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 }
 
 /**
@@ -111,23 +112,9 @@ public open class SizeLimitExhausted {
 public open class SizeLimitedFmtAdapter<F> internal constructor(
     remainingCtorArg: Result<Int, SizeLimitExhausted>,
     public var inner: F,
-) : Appendable {
+) {
     public var remaining: Result<Int, SizeLimitExhausted> = remainingCtorArg
         internal set
-
-    public open fun writeStr(s: String): Result<Unit, Error> {
-        this.remaining = this.remaining.andThen({ r -> (r.checkedSub(s.length)?.let { Result.Ok<Int, SizeLimitExhausted>(it) } ?: Result.Err<Int, SizeLimitExhausted>(SizeLimitExhausted())) })
-        return run {
-            val matchVal = this.remaining
-            when {
-                matchVal is Result.Ok -> run { this.inner.append(s); Result.Ok(Unit) }
-                else -> {
-                    val SizeLimitExhausted = matchVal.error
-                    Result.Err<Unit, Error>(Error())
-                }
-            }
-        }
-    }
 
     public companion object {
         public operator fun <F> invoke(
@@ -137,5 +124,19 @@ public open class SizeLimitedFmtAdapter<F> internal constructor(
             remainingCtorArg = remaining,
             inner = inner,
         )
+    }
+}
+
+public fun <F : Appendable> SizeLimitedFmtAdapter<F>.writeStr(s: String): Result<Unit, Error> {
+    this.remaining = this.remaining.andThen({ r -> (r.checkedSub(s.length)?.let { Result.Ok<Int, SizeLimitExhausted>(it) } ?: Result.Err<Int, SizeLimitExhausted>(SizeLimitExhausted())) })
+    return run {
+        val matchVal = this.remaining
+        when {
+            matchVal is Result.Ok<*, *> -> run { this.inner.append(s); Result.Ok<Unit, Error>(Unit) }
+            else -> {
+                val SizeLimitExhausted = (matchVal as Result.Err<*, *>).error
+                Result.Err<Unit, Error>(Error())
+            }
+        }
     }
 }

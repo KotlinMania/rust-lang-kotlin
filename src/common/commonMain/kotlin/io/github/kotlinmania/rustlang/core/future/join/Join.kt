@@ -21,8 +21,8 @@ public sealed class MaybeDone<F : Future<Any?>, Output> : Future<Unit> {
 
     public open fun takeOutput(): Output? =
         when (this) {
-            is MaybeDone.Done -> when (val matchVal = replace(this, MaybeDone.Taken)) {
-                is MaybeDone.Done -> {
+            is MaybeDone.Done<*> -> when (val matchVal = replace(this, MaybeDone.Taken)) {
+                is MaybeDone.Done<*> -> {
                     val (value) = matchVal
                     value
                 }
@@ -34,14 +34,14 @@ public sealed class MaybeDone<F : Future<Any?>, Output> : Future<Unit> {
     public override fun poll(cx: Context): Poll<Unit> {
         // SAFETY: pinning in structural for `f`
         when (val matchVal = this.asMut().getUncheckedMut()) {
-            is MaybeDone.Future -> {
+            is MaybeDone.Future<*> -> {
                 val (f) = matchVal
                 val value = ready(Pin.newUnchecked(f).poll(cx))
                 this.set(MaybeDone.Done(value))
             }
-            is MaybeDone.Done -> {}
+            is MaybeDone.Done<*> -> {}
             MaybeDone.Taken -> error("unreachable")
         }
-        return Poll.Ready()
+        return Poll.Ready(Unit)
     }
 }

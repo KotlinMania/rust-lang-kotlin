@@ -20,6 +20,7 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.splitFirst
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
 import io.github.kotlinmania.rustlang.std.rc.Rc
@@ -27,6 +28,7 @@ import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Buf
 import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Slice
 
@@ -488,7 +490,7 @@ public open class OsString(
         this.inner = source.inner
     }
 
-    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun eq(other: OsString): Boolean = (this == other).toUByte()
 
@@ -1207,7 +1209,7 @@ public open class OsStr internal constructor(
         return state
     }
 
-    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this.inner).toString()); Result.Ok(Unit) }
+    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this.inner).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun toOwned(): OsString = this.toOsString()
 
@@ -1438,9 +1440,9 @@ public fun OsStr.partialCmp(other: OsString): Ordering? = OsStr.partialCmp(this,
 public open class Display(
     public var osStr: OsStr,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.osStr).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.osStr).toString()); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.osStr.inner).toString()); Result.Ok(Unit) }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.osStr.inner).toString()); Result.Ok<Unit, Error>(Unit) }
 }
 
 public fun joinSSlice(slice: List<S>, sep: OsStr): OsString {

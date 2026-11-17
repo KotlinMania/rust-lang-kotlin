@@ -41,10 +41,10 @@ public open class Object(
         val i2 =
             run {
                 val matchVal = this.symbols.binarySearchByKey(addr1, { p -> p.first })
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val i = matchVal.value
                     i
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     val i1 = matchVal.error
                     (i1.checkedSub(1) ?: return null)
                 } }

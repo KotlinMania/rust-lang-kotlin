@@ -20,11 +20,21 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.dangling
 import io.github.kotlinmania.rustlang.core.ptr.dropGlue
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.fromMut
+import io.github.kotlinmania.rustlang.core.ptr.fromRef
 import io.github.kotlinmania.rustlang.core.ptr.metadata.Thin
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut
 import io.github.kotlinmania.rustlang.core.ptr.metadata.metadata
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.castConst
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.exposeProvenance
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.withAddr
+import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawParts
 import io.github.kotlinmania.rustlang.core.ptr.withExposedProvenanceMut
+import io.github.kotlinmania.rustlang.core.ptr.withoutProvenance
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 import io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts
@@ -1129,11 +1139,11 @@ public open class NonNull(
      */
     public open fun castSlice(len: Int): NonNull = NonNull.sliceFromRawParts(this, len)
 
-    public override fun clone(): NonNull = NonNull(this.pointer)
+    public open fun clone(): NonNull = NonNull(this.pointer)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.asPtr()).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.asPtr()).toString()); Result.Ok<Unit, Unit>(Unit) }
 
-    public open fun fmtPointer(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.asPtr()).toString()); Result.Ok(Unit) }
+    public open fun fmtPointer(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.asPtr()).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun eq(other: NonNull): Boolean = this.asPtr() == other.asPtr()
 

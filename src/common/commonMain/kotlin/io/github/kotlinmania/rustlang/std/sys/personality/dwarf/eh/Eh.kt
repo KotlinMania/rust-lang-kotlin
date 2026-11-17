@@ -214,7 +214,7 @@ public fun findEhAction(lsda: ConstPtr, context: EHContext): Result<EHAction, Un
             val startEncoding = reader.read<UByte>()
             // base address for landing pad offsets
             if (startEncoding != DW_EH_PE_OMIT) {
-                when (val tryResult = readEncodedPointer(reader, context, startEncoding)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<EHAction, Unit>(tryResult.error) }
+                when (val tryResult = readEncodedPointer(reader, context, startEncoding)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<EHAction, Unit>(tryResult.error) }
             } else {
                 funcStart
             }
@@ -239,9 +239,9 @@ public fun findEhAction(lsda: ConstPtr, context: EHContext): Result<EHAction, Un
         while (((reader.ptr).rawAddress.toULong() < (actionTable).rawAddress.toULong())) {
             run {
                 // these are offsets rather than pointers;
-                val csStart = when (val tryResult = readEncodedOffset(reader, callSiteEncoding)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<EHAction, Unit>(tryResult.error) }
-                val csLen = when (val tryResult = readEncodedOffset(reader, callSiteEncoding)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<EHAction, Unit>(tryResult.error) }
-                val csLpad = when (val tryResult = readEncodedOffset(reader, callSiteEncoding)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<EHAction, Unit>(tryResult.error) }
+                val csStart = when (val tryResult = readEncodedOffset(reader, callSiteEncoding)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<EHAction, Unit>(tryResult.error) }
+                val csLen = when (val tryResult = readEncodedOffset(reader, callSiteEncoding)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<EHAction, Unit>(tryResult.error) }
+                val csLpad = when (val tryResult = readEncodedOffset(reader, callSiteEncoding)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<EHAction, Unit>(tryResult.error) }
                 val csActionEntry = reader.readUleb128()
                 // Callsite table is sorted by csStart, so if we've passed the ip, we
                 // may stop searching.
@@ -393,7 +393,7 @@ public fun readEncodedPointer(reader: DwarfReader, context: EHContext, encoding:
             DW_EH_PE_DATAREL -> context.getDataStart()
             // aligned means the value is aligned to the size of a pointer
             DW_EH_PE_ALIGNED -> {
-                reader.ptr = ConstPtr((when (val tryResult = roundUp((reader.ptr).rawAddress.toInt(), sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ConstPtr, Unit>(tryResult.error) }).toLong())
+                reader.ptr = ConstPtr((when (val tryResult = roundUp((reader.ptr).rawAddress.toInt(), sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ConstPtr, Unit>(tryResult.error) }).toLong())
                 ConstPtr(0L)
             }
             else -> { return Result.Err<ConstPtr, Unit>(Unit) }
@@ -407,7 +407,7 @@ public fun readEncodedPointer(reader: DwarfReader, context: EHContext, encoding:
             }
             reader.read<ConstPtr>()
         } else {
-            val offset = when (val tryResult = readEncodedOffset(reader, encoding and 0x0Fu.toUByte())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ConstPtr, Unit>(tryResult.error) }
+            val offset = when (val tryResult = readEncodedOffset(reader, encoding and 0x0Fu.toUByte())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ConstPtr, Unit>(tryResult.error) }
             basePtr.wrappingAdd(offset)
         }
     if (encoding and DW_EH_PE_INDIRECT != 0u.toUByte()) {

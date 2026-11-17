@@ -148,7 +148,7 @@ public open class IterMut<T>(
      */
     public open fun asMutSlices(): Pair<MutableList<T>, MutableList<T>> = Pair(this.i1.asMutSlice(), this.i2.asMutSlice())
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "IterMut").field(this.i1.toList()).field(this.i2.toList()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "IterMut").field(this.i1.toList()).field(this.i2.toList()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun next(): T? =
         when (val matchVal = this.i1.removeFirstOrNull()) {
@@ -170,9 +170,9 @@ public open class IterMut<T>(
     public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
         run {
             val matchVal = this.i1.advanceBy(n)
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val remaining = matchVal.error
                 swap(this.i1, this.i2)
                 this.i1.advanceBy(remaining.get())
@@ -189,8 +189,8 @@ public open class IterMut<T>(
         return this.i2.fold(accum1, f)
     }
 
-    public open fun <Residual, B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<B> {
-        val acc = when (val tryResult = this.i1.tryFold(init, f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+    public open fun <Residual, B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<B, Residual> {
+        val acc = when (val tryResult = this.i1.tryFold(init, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return this.i2.tryFold(acc, f)
     }
 
@@ -229,9 +229,9 @@ public open class IterMut<T>(
     public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
         run {
             val matchVal = this.i2.advanceBackBy(n)
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val remaining = matchVal.error
                 swap(this.i1, this.i2)
                 this.i2.advanceBackBy(remaining.get())
@@ -243,8 +243,8 @@ public open class IterMut<T>(
         return this.i1.rfold(accum1, f)
     }
 
-    public open fun <Residual, B, R> tryRfold(init: B, f: (B, T) -> R): R where R : Try<B> {
-        val acc = when (val tryResult = this.i2.tryRfold(init, f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+    public open fun <Residual, B, R> tryRfold(init: B, f: (B, T) -> R): R where R : Try<B, Residual> {
+        val acc = when (val tryResult = this.i2.tryRfold(init, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return this.i1.tryRfold(acc, f)
     }
 

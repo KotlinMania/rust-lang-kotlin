@@ -45,11 +45,11 @@ public sealed class Name {
     public override fun toString(): String =
         when (this) {
             is Short -> {
-                val (ch) = this
+                val (ch) = this as Short
                 ch.toString()
             }
             is Long -> {
-                val (s) = this
+                val (s) = this as Long
                 s.toString()
             }
         }
@@ -146,24 +146,24 @@ public sealed class Fail {
     public open fun fmt(f: StringBuilder): io.github.kotlinmania.rustlang.core.result.Result<Unit, Error> =
         when (this) {
             is ArgumentMissing -> {
-                val (nm) = this
-                run { f.append("Argument to option '$nm' missing"); RustResult.Ok(Unit) }
+                val (nm) = this as ArgumentMissing
+                run { f.append("Argument to option '$nm' missing"); RustResult.Ok<Unit, Error>(Unit) }
             }
             is UnrecognizedOption -> {
-                val (nm1) = this
-                run { f.append("Unrecognized option: '$nm1'"); RustResult.Ok(Unit) }
+                val (nm1) = this as UnrecognizedOption
+                run { f.append("Unrecognized option: '$nm1'"); RustResult.Ok<Unit, Error>(Unit) }
             }
             is OptionMissing -> {
-                val (nm2) = this
-                run { f.append("Required option '$nm2' missing"); RustResult.Ok(Unit) }
+                val (nm2) = this as OptionMissing
+                run { f.append("Required option '$nm2' missing"); RustResult.Ok<Unit, Error>(Unit) }
             }
             is OptionDuplicated -> {
-                val (nm3) = this
-                run { f.append("Option '$nm3' given more than once"); RustResult.Ok(Unit) }
+                val (nm3) = this as OptionDuplicated
+                run { f.append("Option '$nm3' given more than once"); RustResult.Ok<Unit, Error>(Unit) }
             }
             is UnexpectedArgument -> {
-                val (nm4) = this
-                run { f.append("Option '$nm4' does not take an argument"); RustResult.Ok(Unit) }
+                val (nm4) = this as UnexpectedArgument
+                run { f.append("Option '$nm4' does not take an argument"); RustResult.Ok<Unit, Error>(Unit) }
             }
         }
 }

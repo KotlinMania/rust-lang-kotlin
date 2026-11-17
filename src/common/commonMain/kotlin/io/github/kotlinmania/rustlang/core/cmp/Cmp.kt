@@ -26,6 +26,7 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.panic.constAssert
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 // Utilities for comparing and ordering values.
 //
@@ -574,7 +575,7 @@ public sealed class Ordering(
 public open class Reverse<T>(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
-) : PartialOrd<Reverse<T>>, Ord<Reverse<T>> {
+) {
     public var field0: T
         get() = value
         set(v) {
@@ -589,24 +590,24 @@ public open class Reverse<T>(
 
     public fun pointerLayout(): TypeLayout<Reverse<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Reverse<T>(ptr, layout) }, { it.value })
 
-    public override fun partialCmp(other: Reverse<T>): Ordering? = other.value.partialCmp(this.value)
-
-    public override fun lt(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) < 0)
-
-    public override fun le(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) <= 0)
-
-    public override fun gt(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) > 0)
-
-    public override fun ge(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) >= 0)
-
-    public override fun cmp(other: Reverse<T>): Ordering = other.value.cmp(this.value)
-
     public open fun clone(): Reverse<T> = Reverse(this.value.clone(), fieldLayout = this.fieldLayout)
 
     public open fun cloneFrom(source: Reverse<T>) {
         this.value = source.value
     }
 }
+
+public fun <T : PartialOrd<T>> Reverse<T>.partialCmp(other: Reverse<T>): Ordering? = other.value.partialCmp(this.value)
+
+public fun <T : PartialOrd<T>> Reverse<T>.lt(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) < 0)
+
+public fun <T : PartialOrd<T>> Reverse<T>.le(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) <= 0)
+
+public fun <T : PartialOrd<T>> Reverse<T>.gt(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) > 0)
+
+public fun <T : PartialOrd<T>> Reverse<T>.ge(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) >= 0)
+
+public fun <T : Ord<T>> Reverse<T>.cmp(other: Reverse<T>): Ordering = other.value.cmp(this.value)
 
 /**
  * A pair where ordering and equality work on only the `key`, ignoring the `value`.
@@ -616,24 +617,8 @@ public open class Reverse<T>(
 public open class KeyAndValue<K, V>(
     public var key: K,
     public var value: V,
-) : PartialEq<KeyAndValue<K, V>>, Eq, PartialOrd<KeyAndValue<K, V>>, Ord<KeyAndValue<K, V>> {
+) {
     public open fun clone(): KeyAndValue<K, V> = KeyAndValue(key, value)
-
-    public override fun eq(other: KeyAndValue<K, V>): Boolean = this.key == other.key
-
-    public override fun ne(other: KeyAndValue<K, V>): Boolean = this.key != other.key
-
-    public override fun partialCmp(other: KeyAndValue<K, V>): Ordering? = this.key.partialCmp(other.key)
-
-    public override fun lt(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) < 0)
-
-    public override fun le(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) <= 0)
-
-    public override fun gt(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) > 0)
-
-    public override fun ge(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) >= 0)
-
-    public override fun cmp(other: KeyAndValue<K, V>): Ordering = this.key.cmp(other.key)
 
     public companion object {
         public fun <K, V> typeLayout(typeLayoutK: TypeLayout<K>, typeLayoutV: TypeLayout<V>): TypeLayout<KeyAndValue<K, V>> =
@@ -662,6 +647,22 @@ public open class KeyAndValue<K, V>(
             }
     }
 }
+
+public fun <K : PartialEq<K>, V> KeyAndValue<K, V>.eq(other: KeyAndValue<K, V>): Boolean = this.key == other.key
+
+public fun <K : PartialEq<K>, V> KeyAndValue<K, V>.ne(other: KeyAndValue<K, V>): Boolean = this.key != other.key
+
+public fun <K : PartialOrd<K>, V> KeyAndValue<K, V>.partialCmp(other: KeyAndValue<K, V>): Ordering? = this.key.partialCmp(other.key)
+
+public fun <K : PartialOrd<K>, V> KeyAndValue<K, V>.lt(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) < 0)
+
+public fun <K : PartialOrd<K>, V> KeyAndValue<K, V>.le(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) <= 0)
+
+public fun <K : PartialOrd<K>, V> KeyAndValue<K, V>.gt(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) > 0)
+
+public fun <K : PartialOrd<K>, V> KeyAndValue<K, V>.ge(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) >= 0)
+
+public fun <K : Ord<K>, V> KeyAndValue<K, V>.cmp(other: KeyAndValue<K, V>): Ordering = this.key.cmp(other.key)
 
 /**
  * Trait for types that form a [total order](https://en.wikipedia.org/wiki/TotalOrder).
@@ -1311,7 +1312,7 @@ public fun <T, U> defaultChainingImpl(lhs: T, rhs: U, p: (Ordering) -> Boolean, 
     return run {
         val matchVal = partialCmpTFn(lhs, rhs)
         when {
-            matchVal != null && matchVal == Equal -> ControlFlow.Continue()
+            matchVal != null && matchVal == Equal -> ControlFlow.Continue(Unit)
             matchVal != null -> {
                 val c = matchVal
                 ControlFlow.Break(p(c))
@@ -1411,7 +1412,7 @@ public fun <T> minBy(v1: T, v2: T, compare: (T, T) -> Ordering): T =
  * ```
  */
 public fun <T, K> minByKey(v1: T, v2: T, f: (T) -> K): T where K : Ord<K> =
-    if (f(v2) < f(v1)) {
+    if ((kmCompareValues(f(v2), f(v1)) < 0)) {
         v2
     } else {
         v1
@@ -1507,7 +1508,7 @@ public fun <T> maxBy(v1: T, v2: T, compare: (T, T) -> Ordering): T =
  * ```
  */
 public fun <T, K> maxByKey(v1: T, v2: T, f: (T) -> K): T where K : Ord<K> =
-    if (f(v2) < f(v1)) {
+    if ((kmCompareValues(f(v2), f(v1)) < 0)) {
         v1
     } else {
         v2
@@ -1623,7 +1624,7 @@ public fun <T> minmaxBy(v1: T, v2: T, compare: (T, T) -> Ordering): List<T> =
  * ```
  */
 public fun <T, K> minmaxByKey(v1: T, v2: T, f: (T) -> K): List<T> where K : Ord<K> =
-    if (f(v2) < f(v1)) {
+    if ((kmCompareValues(f(v2), f(v1)) < 0)) {
         listOf(v2, v1)
     } else {
         listOf(v1, v2)
@@ -1980,7 +1981,7 @@ public fun Boolean.ge(other: Boolean): Boolean = this >= other
 public fun Boolean.chainingLess(other: Boolean): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs < rhs)
     }
@@ -1989,7 +1990,7 @@ public fun Boolean.chainingLess(other: Boolean): ControlFlow<Boolean, Unit> {
 public fun Boolean.chainingGreater(other: Boolean): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs > rhs)
     }
@@ -2017,7 +2018,7 @@ public fun F16.ge(other: F16): Boolean = this >= other
 public fun F16.chainingLess(other: F16): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs < rhs)
     }
@@ -2026,7 +2027,7 @@ public fun F16.chainingLess(other: F16): ControlFlow<Boolean, Unit> {
 public fun F16.chainingGreater(other: F16): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs > rhs)
     }
@@ -2054,7 +2055,7 @@ public fun kotlin.Float.ge(other: kotlin.Float): Boolean = this >= other
 public fun kotlin.Float.chainingLess(other: kotlin.Float): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs < rhs)
     }
@@ -2063,7 +2064,7 @@ public fun kotlin.Float.chainingLess(other: kotlin.Float): ControlFlow<Boolean, 
 public fun kotlin.Float.chainingGreater(other: kotlin.Float): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs > rhs)
     }
@@ -2091,7 +2092,7 @@ public fun Double.ge(other: Double): Boolean = this >= other
 public fun Double.chainingLess(other: Double): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs < rhs)
     }
@@ -2100,7 +2101,7 @@ public fun Double.chainingLess(other: Double): ControlFlow<Boolean, Unit> {
 public fun Double.chainingGreater(other: Double): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs > rhs)
     }
@@ -2128,7 +2129,7 @@ public fun F128.ge(other: F128): Boolean = this >= other
 public fun F128.chainingLess(other: F128): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs < rhs)
     }
@@ -2137,7 +2138,7 @@ public fun F128.chainingLess(other: F128): ControlFlow<Boolean, Unit> {
 public fun F128.chainingGreater(other: F128): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs > rhs)
     }
@@ -2180,7 +2181,7 @@ public fun Char.ge(other: Char): Boolean = this >= other
 public fun Char.chainingLess(other: Char): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs < rhs)
     }
@@ -2189,7 +2190,7 @@ public fun Char.chainingLess(other: Char): ControlFlow<Boolean, Unit> {
 public fun Char.chainingGreater(other: Char): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs > rhs)
     }
@@ -2231,7 +2232,7 @@ public fun Int.ge(other: Int): Boolean = this >= other
 public fun Int.chainingLess(other: Int): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs < rhs)
     }
@@ -2240,7 +2241,7 @@ public fun Int.chainingLess(other: Int): ControlFlow<Boolean, Unit> {
 public fun Int.chainingGreater(other: Int): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs > rhs)
     }
@@ -2276,7 +2277,7 @@ public fun UByte.ge(other: UByte): Boolean = this >= other
 public fun UByte.chainingLess(other: UByte): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs < rhs)
     }
@@ -2285,7 +2286,7 @@ public fun UByte.chainingLess(other: UByte): ControlFlow<Boolean, Unit> {
 public fun UByte.chainingGreater(other: UByte): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs > rhs)
     }
@@ -2321,7 +2322,7 @@ public fun UShort.ge(other: UShort): Boolean = this >= other
 public fun UShort.chainingLess(other: UShort): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs < rhs)
     }
@@ -2330,7 +2331,7 @@ public fun UShort.chainingLess(other: UShort): ControlFlow<Boolean, Unit> {
 public fun UShort.chainingGreater(other: UShort): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs > rhs)
     }
@@ -2366,7 +2367,7 @@ public fun UInt.ge(other: UInt): Boolean = this >= other
 public fun UInt.chainingLess(other: UInt): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs < rhs)
     }
@@ -2375,7 +2376,7 @@ public fun UInt.chainingLess(other: UInt): ControlFlow<Boolean, Unit> {
 public fun UInt.chainingGreater(other: UInt): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs > rhs)
     }
@@ -2411,7 +2412,7 @@ public fun ULong.ge(other: ULong): Boolean = this >= other
 public fun ULong.chainingLess(other: ULong): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs < rhs)
     }
@@ -2420,7 +2421,7 @@ public fun ULong.chainingLess(other: ULong): ControlFlow<Boolean, Unit> {
 public fun ULong.chainingGreater(other: ULong): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs > rhs)
     }
@@ -2456,7 +2457,7 @@ public fun U128.ge(other: U128): Boolean = this >= other
 public fun U128.chainingLess(other: U128): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs < rhs)
     }
@@ -2465,7 +2466,7 @@ public fun U128.chainingLess(other: U128): ControlFlow<Boolean, Unit> {
 public fun U128.chainingGreater(other: U128): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs > rhs)
     }
@@ -2501,7 +2502,7 @@ public fun Byte.ge(other: Byte): Boolean = this >= other
 public fun Byte.chainingLess(other: Byte): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs < rhs)
     }
@@ -2510,7 +2511,7 @@ public fun Byte.chainingLess(other: Byte): ControlFlow<Boolean, Unit> {
 public fun Byte.chainingGreater(other: Byte): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs > rhs)
     }
@@ -2546,7 +2547,7 @@ public fun Short.ge(other: Short): Boolean = this >= other
 public fun Short.chainingLess(other: Short): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs < rhs)
     }
@@ -2555,7 +2556,7 @@ public fun Short.chainingLess(other: Short): ControlFlow<Boolean, Unit> {
 public fun Short.chainingGreater(other: Short): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs > rhs)
     }
@@ -2591,7 +2592,7 @@ public fun Long.ge(other: Long): Boolean = this >= other
 public fun Long.chainingLess(other: Long): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs < rhs)
     }
@@ -2600,7 +2601,7 @@ public fun Long.chainingLess(other: Long): ControlFlow<Boolean, Unit> {
 public fun Long.chainingGreater(other: Long): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs > rhs)
     }
@@ -2636,7 +2637,7 @@ public fun I128.ge(other: I128): Boolean = this >= other
 public fun I128.chainingLess(other: I128): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs < rhs)
     }
@@ -2645,7 +2646,7 @@ public fun I128.chainingLess(other: I128): ControlFlow<Boolean, Unit> {
 public fun I128.chainingGreater(other: I128): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
-        Continue()
+        Continue(Unit)
     } else {
         Break(lhs > rhs)
     }

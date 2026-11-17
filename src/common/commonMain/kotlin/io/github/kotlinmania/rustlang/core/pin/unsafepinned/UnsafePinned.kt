@@ -122,7 +122,7 @@ public open class UnsafePinned<T> internal constructor(
      */
     public open fun get(): MutPtr = this.value.get()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "UnsafePinned").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "UnsafePinned").finishNonExhaustive(); Result.Ok<Unit, Unit>(Unit) }
 
     // @unstable(feature = "unsafePinned", issue = "125735")
 

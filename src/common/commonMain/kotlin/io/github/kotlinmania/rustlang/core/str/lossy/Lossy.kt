@@ -134,10 +134,10 @@ public open class Debug(
             }
             // Broken parts of string as hex escape.
             for (b in chunk.invalid()) {
-                when (val tryResult = f.writeFmt("\\x$b")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+                when (val tryResult = f.writeFmt("\\x$b")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
             }
         }
-        return run { f.append('"'); Result.Ok(Unit) }
+        return run { f.append('"'); Result.Ok<Unit, Unit>(Unit) }
     }
 }
 
@@ -272,5 +272,5 @@ public open class Utf8Chunks(
         return Utf8Chunk(valid = fromUtf8Unchecked(valid), invalid = invalid)
     }
 
-    public open fun fmt(f: Formatter): Result<Unit, Unit> = DebugStruct(f, "Utf8Chunks").field("source", this.debug()).finish()
+    public open fun fmt(f: Formatter): Result<Unit, Unit> = run { DebugStruct(f, "Utf8Chunks").field("source", this.debug()).finish(); Result.Ok<Unit, Unit>(Unit) }
 }

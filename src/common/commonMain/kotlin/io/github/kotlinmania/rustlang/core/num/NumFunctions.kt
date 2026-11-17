@@ -3153,7 +3153,7 @@ public fun Byte.Companion.maxValue(): Byte = Byte.MAX_VALUE
  */
 public fun Byte.clampMagnitude(limit: UByte): Byte =
     when (val matchVal = limit.tryInto()) {
-        is Result.Ok -> {
+        is Result.Ok<*, *> -> {
             val limit1 = matchVal.value
             this.clamp(-limit1, limit1)
         }
@@ -6285,7 +6285,7 @@ public fun Short.Companion.maxValue(): Short = Short.MAX_VALUE
  */
 public fun Short.clampMagnitude(limit: UShort): Short =
     when (val matchVal = limit.tryInto()) {
-        is Result.Ok -> {
+        is Result.Ok<*, *> -> {
             val limit1 = matchVal.value
             this.clamp(-limit1, limit1)
         }
@@ -9417,7 +9417,7 @@ public fun Int.Companion.maxValue(): Int = Int.MAX_VALUE
  */
 public fun Int.clampMagnitude(limit: UInt): Int =
     when (val matchVal = limit.tryInto()) {
-        is Result.Ok -> {
+        is Result.Ok<*, *> -> {
             val limit1 = matchVal.value
             this.clamp(-limit1, limit1)
         }
@@ -12549,7 +12549,7 @@ public fun Long.Companion.maxValue(): Long = Long.MAX_VALUE
  */
 public fun Long.clampMagnitude(limit: ULong): Long =
     when (val matchVal = limit.tryInto()) {
-        is Result.Ok -> {
+        is Result.Ok<*, *> -> {
             val limit1 = matchVal.value
             this.clamp(-limit1, limit1)
         }
@@ -15689,7 +15689,7 @@ public fun I128.Companion.maxValue(): I128 = I128.MAX_VALUE
  */
 public fun I128.clampMagnitude(limit: U128): I128 =
     when (val matchVal = limit.tryInto()) {
-        is Result.Ok -> {
+        is Result.Ok<*, *> -> {
             val limit1 = matchVal.value
             this.clamp(-limit1, limit1)
         }
@@ -16091,7 +16091,7 @@ public fun Int.overflowingSubUnsigned(rhs: Int): Pair<Int, Boolean> {
  */
 public fun Int.clampMagnitude(limit: Int): Int =
     when (val matchVal = limit.tryInto()) {
-        is Result.Ok -> {
+        is Result.Ok<*, *> -> {
             val limit1 = matchVal.value
             this.clamp(-limit1, limit1)
         }

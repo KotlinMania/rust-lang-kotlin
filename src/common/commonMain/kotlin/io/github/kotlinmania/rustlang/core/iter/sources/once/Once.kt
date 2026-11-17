@@ -72,9 +72,9 @@ public open class Once<T>(
 
     public open fun clone(): Once<T> = Once(inner)
 
-    public override fun next(): T? = this.inner.removeFirstOrNull()
+    public open fun next(): T? = this.inner.removeFirstOrNull()
 
-    public override fun sizeHint(): Pair<Int, Int?> = run { val n = this.inner.size; Pair(n, n) }
+    public open fun sizeHint(): Pair<Int, Int?> = run { val n = this.inner.size; Pair(n, n) }
 
     public open fun nextBack(): T? = this.inner.removeLastOrNull()
 

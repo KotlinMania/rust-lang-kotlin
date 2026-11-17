@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.corearch.powerpc.VectorPerm
 import io.github.kotlinmania.rustlang.corearch.powerpc.VectorSignedInt
 import io.github.kotlinmania.rustlang.corearch.powerpc.VectorUnsignedChar
 import io.github.kotlinmania.rustlang.corearch.powerpc.vsum2sws
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 
 // Endian-biased intrinsics
 
@@ -19,7 +20,7 @@ public fun <T> vecPerm(a: T, b: T, c: VectorUnsignedChar): T where T : VectorPer
     // vperm has big-endian bias
     //
     // Xor the mask and flip the arguments
-    val d = transmute(u8x16.new(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255))
+    val d = transmute(Simd<UByte>(listOf(255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte())))
     val c1 = run { val _simdArg0 = c; val _simdArg1 = d; _simdArg0 }
     return b.vecVperm(a, c1)
 }
@@ -31,7 +32,7 @@ public fun vecSum2s(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt {
     // vsum2sws has big-endian bias
     //
     // swap the even b elements with the odd ones
-    val flip = transmute(u8x16.new(4, 5, 6, 7, 0, 1, 2, 3, 12, 13, 14, 15, 8, 9, 10, 11))
+    val flip = transmute(Simd<UByte>(listOf(4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte())))
     val b1 = vecPerm(b, b, flip)
     val c = vsum2sws(a, b1)
     return vecPerm(c, c, flip)

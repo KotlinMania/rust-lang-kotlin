@@ -15,6 +15,8 @@ import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.withoutProvenance
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -236,10 +238,10 @@ public open class Layout(
             }
             else -> {
                 val k = matchVal
-                val repeated = when (val tryResult = padded.repeatPacked(k)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Layout, Int>, LayoutError>(LayoutError()) }
+                val repeated = when (val tryResult = padded.repeatPacked(k)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Layout, Int>, LayoutError>(LayoutError()) }
                 repeated.extendPacked(this)
             }
-        })) { is Result.Ok -> tryResult1.value; is Result.Err -> return Result.Err<Pair<Layout, Int>, LayoutError>(LayoutError()) }
+        })) { is Result.Ok<*, *> -> tryResult1.value; is Result.Err<*, *> -> return Result.Err<Pair<Layout, Int>, LayoutError>(LayoutError()) }
         return Result.Ok<Pair<Layout, Int>, LayoutError>(Pair(result, padded.size()))
     }
 
@@ -291,7 +293,7 @@ public open class Layout(
         // `Long.MAX + 1 + Long.MAX`, which is `Int.MAX`, and cannot overflow.
         val newSize = uncheckedAdd(offset, next.size)
         return when (val matchVal = Layout.fromSizeAlignment(newSize, newAlignment)) {
-            is Result.Ok -> {
+            is Result.Ok<*, *> -> {
                 val layout = matchVal.value
                 Result.Ok<Pair<Layout, Int>, LayoutError>(Pair(layout, offset))
             }
@@ -541,7 +543,7 @@ public open class LayoutError {
     public open fun clone(): LayoutError = LayoutError()
 
     // (we need this for downstream impl of trait Error)
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("invalid parameters to Layout::from_size_align"); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("invalid parameters to Layout::from_size_align"); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<LayoutError> =

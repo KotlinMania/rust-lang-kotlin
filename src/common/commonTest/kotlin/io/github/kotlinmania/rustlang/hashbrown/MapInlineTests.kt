@@ -17,6 +17,9 @@ import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.nullVal
+import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawPartsMut
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicI8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -237,24 +240,24 @@ public val DISARMED_FLAGS: BooleanArray = booleanArrayOf(DISARMED, DISARMED, DIS
 public class MapTestMapInlineTests {
     @kotlin.test.Test
     public fun testZeroCapacities() {
-        val m = HM.new()
+        val m = HashMap.new()
         check(m.capacity() == 0)
-        val m1 = HM.default()
+        val m1 = HashMap.default()
         check(m1.capacity() == 0)
-        val m2 = HM.withHasher(DefaultHashBuilder.default())
+        val m2 = HashMap.withHasher(DefaultHashBuilder.default())
         check(m2.capacity() == 0)
-        val m3 = HM.withCapacity(0)
+        val m3 = HashMap.withCapacity(0)
         check(m3.capacity() == 0)
-        val m4 = HM.withCapacityAndHasher(0, DefaultHashBuilder.default())
+        val m4 = HashMap.withCapacityAndHasher(0, DefaultHashBuilder.default())
         check(m4.capacity() == 0)
-        val m5 = HM.new()
+        val m5 = HashMap.new()
         m5.insert(1, 1)
         m5.insert(2, 2)
         m5.remove(1)
         m5.remove(2)
         m5.shrinkToFit()
         check(m5.capacity() == 0)
-        val m6 = HM.new()
+        val m6 = HashMap.new()
         m6.reserve(0)
         check(m6.capacity() == 0)
     }
@@ -415,8 +418,8 @@ public class MapTestMapInlineTests {
     public fun testEmptyEntry() {
         val m: HashMap<Int, Boolean, DefaultHashBuilder, Global>  = HashMap.new()
         when (val matchVal = m.entry(0)) {
-            is Occupied -> error("panic")
-            is Vacant -> {}
+            is Occupied<*, *, *, *, *> -> error("panic")
+            is Vacant<*, *, *, *, *> -> {}
         }
         check(m.entry(0).orInsert(true))
         check(m.len() == 1)
@@ -426,8 +429,8 @@ public class MapTestMapInlineTests {
     public fun testEmptyEntryRef() {
         val m: HashMap<String, Boolean, DefaultHashBuilder, Global>  = HashMap.new()
         when (val matchVal = m.entryRef("poneyland")) {
-            is EntryRef.Occupied -> error("panic")
-            is EntryRef.Vacant -> {}
+            is EntryRef.Occupied<*, *, *, *, *> -> error("panic")
+            is EntryRef.Vacant<*, *, *, *, *> -> {}
         }
         check(m.entryRef("poneyland").orInsert(true))
         check(m.len() == 1)
@@ -871,8 +874,8 @@ public class MapTestMapInlineTests {
         val map: HashMap  = xs.iter().copied().collect()
         // Existing key (insert)
         when (val matchVal = map.entry(1)) {
-            is Vacant -> error("unreachable")
-            is Occupied -> {
+            is Vacant<*, *, *, *, *> -> error("unreachable")
+            is Occupied<*, *, *, *, *> -> {
                 val (view) = matchVal
                 check(view.get() == 10)
                 check(view.insert(100) == 10)
@@ -882,8 +885,8 @@ public class MapTestMapInlineTests {
         check(map.len() == 6)
         // Existing key (update)
         when (val matchVal1 = map.entry(2)) {
-            is Vacant -> error("unreachable")
-            is Occupied -> {
+            is Vacant<*, *, *, *, *> -> error("unreachable")
+            is Occupied<*, *, *, *, *> -> {
                 val (view1) = matchVal1
                 val v = view1.getMut()
                 val newV = v * 10
@@ -894,8 +897,8 @@ public class MapTestMapInlineTests {
         check(map.len() == 6)
         // Existing key (take)
         when (val matchVal2 = map.entry(3)) {
-            is Vacant -> error("unreachable")
-            is Occupied -> {
+            is Vacant<*, *, *, *, *> -> error("unreachable")
+            is Occupied<*, *, *, *, *> -> {
                 val (view2) = matchVal2
                 check(view2.remove() == 30)
             }
@@ -904,8 +907,8 @@ public class MapTestMapInlineTests {
         check(map.len() == 5)
         // Inexistent key (insert)
         when (val matchVal3 = map.entry(10)) {
-            is Occupied -> error("unreachable")
-            is Vacant -> {
+            is Occupied<*, *, *, *, *> -> error("unreachable")
+            is Vacant<*, *, *, *, *> -> {
                 val (view3) = matchVal3
                 check(view3.insert(1000) == 1000)
             }
@@ -920,8 +923,8 @@ public class MapTestMapInlineTests {
         val map: HashMap  = xs.iter().cloned().collect()
         // Existing key (insert)
         when (val matchVal = map.entryRef("One")) {
-            is EntryRef.Vacant -> error("unreachable")
-            is EntryRef.Occupied -> {
+            is EntryRef.Vacant<*, *, *, *, *> -> error("unreachable")
+            is EntryRef.Occupied<*, *, *, *, *> -> {
                 val (view) = matchVal
                 check(view.get() == 10)
                 check(view.insert(100) == 10)
@@ -931,8 +934,8 @@ public class MapTestMapInlineTests {
         check(map.len() == 6)
         // Existing key (update)
         when (val matchVal1 = map.entryRef("Two")) {
-            is EntryRef.Vacant -> error("unreachable")
-            is EntryRef.Occupied -> {
+            is EntryRef.Vacant<*, *, *, *, *> -> error("unreachable")
+            is EntryRef.Occupied<*, *, *, *, *> -> {
                 val (view1) = matchVal1
                 val v = view1.getMut()
                 val newV = v * 10
@@ -943,8 +946,8 @@ public class MapTestMapInlineTests {
         check(map.len() == 6)
         // Existing key (take)
         when (val matchVal2 = map.entryRef("Three")) {
-            is EntryRef.Vacant -> error("unreachable")
-            is EntryRef.Occupied -> {
+            is EntryRef.Vacant<*, *, *, *, *> -> error("unreachable")
+            is EntryRef.Occupied<*, *, *, *, *> -> {
                 val (view2) = matchVal2
                 check(view2.remove() == 30)
             }
@@ -953,8 +956,8 @@ public class MapTestMapInlineTests {
         check(map.len() == 5)
         // Inexistent key (insert)
         when (val matchVal3 = map.entryRef("Ten")) {
-            is EntryRef.Occupied -> error("unreachable")
-            is EntryRef.Vacant -> {
+            is EntryRef.Occupied<*, *, *, *, *> -> error("unreachable")
+            is EntryRef.Vacant<*, *, *, *, *> -> {
                 val (view3) = matchVal3
                 check(view3.insert(1000) == 1000)
             }
@@ -1033,8 +1036,8 @@ public class MapTestMapInlineTests {
         check(a.len() == 1)
         check(a[key] == value)
         when (val matchVal = a.entry(key)) {
-            is Vacant -> error("panic")
-            is Occupied -> {
+            is Vacant<*, *, *, *, *> -> error("panic")
+            is Occupied<*, *, *, *, *> -> {
                 val (e) = matchVal
                 check(key == e.key())
             }
@@ -1053,8 +1056,8 @@ public class MapTestMapInlineTests {
         check(a.len() == 1)
         check(a[key] == value)
         when (val matchVal = a.entryRef(key)) {
-            is EntryRef.Vacant -> error("panic")
-            is EntryRef.Occupied -> {
+            is EntryRef.Vacant<*, *, *, *, *> -> error("panic")
+            is EntryRef.Occupied<*, *, *, *, *> -> {
                 val (e) = matchVal
                 check(key == e.key())
             }
@@ -1070,8 +1073,8 @@ public class MapTestMapInlineTests {
         val value = "value goes here"
         check(a.isEmpty())
         when (val matchVal = a.entry(key)) {
-            is Occupied -> error("panic")
-            is Vacant -> {
+            is Occupied<*, *, *, *, *> -> error("panic")
+            is Vacant<*, *, *, *, *> -> {
                 val (e) = matchVal
                 check(key == e.key())
                 e.insert(value)
@@ -1088,8 +1091,8 @@ public class MapTestMapInlineTests {
         val value = "value goes here"
         check(a.isEmpty())
         when (val matchVal = a.entryRef(key)) {
-            is EntryRef.Occupied -> error("panic")
-            is EntryRef.Vacant -> {
+            is EntryRef.Occupied<*, *, *, *, *> -> error("panic")
+            is EntryRef.Vacant<*, *, *, *, *> -> {
                 val (e) = matchVal
                 check(key == e.key())
                 e.insert(value)
@@ -1112,18 +1115,18 @@ public class MapTestMapInlineTests {
                 newValue
             })
         when (entry) {
-            is Occupied -> {
+            is Occupied<*, *, *, *, *> -> {
                 val (e) = entry
                 check(e.key() == key)
                 check(e.get() == newValue)
             }
-            is Vacant -> error("panic")
+            is Vacant<*, *, *, *, *> -> error("panic")
         }
         check(a[key] == newValue)
         check(a.len() == 1)
         val entry1 =
             when (val matchVal = a.entry(key)) {
-                is Occupied -> {
+                is Occupied<*, *, *, *, *> -> {
                     val (e1) = matchVal
                     e1.replaceEntryWith({ k, v ->
                         check(k == key)
@@ -1131,14 +1134,14 @@ public class MapTestMapInlineTests {
                         null
                     })
                 }
-                is Vacant -> error("panic")
+                is Vacant<*, *, *, *, *> -> error("panic")
             }
         when (entry1) {
-            is Vacant -> {
+            is Vacant<*, *, *, *, *> -> {
                 val (e2) = entry1
                 check(e2.key() == key)
             }
-            is Occupied -> error("panic")
+            is Occupied<*, *, *, *, *> -> error("panic")
         }
         check(!a.containsKey(key))
         check(a.len() == 0)
@@ -1152,11 +1155,11 @@ public class MapTestMapInlineTests {
         val newValue = "a new value"
         val entry = a.entry(key).andReplaceEntryWith({ error("panic") })
         when (entry) {
-            is Vacant -> {
+            is Vacant<*, *, *, *, *> -> {
                 val (e) = entry
                 check(e.key() == key)
             }
-            is Occupied -> error("panic")
+            is Occupied<*, *, *, *, *> -> error("panic")
         }
         a.insert(key, value)
         val entry1 =
@@ -1166,12 +1169,12 @@ public class MapTestMapInlineTests {
                 newValue
             })
         when (entry1) {
-            is Occupied -> {
+            is Occupied<*, *, *, *, *> -> {
                 val (e1) = entry1
                 check(e1.key() == key)
                 check(e1.get() == newValue)
             }
-            is Vacant -> error("panic")
+            is Vacant<*, *, *, *, *> -> error("panic")
         }
         check(a[key] == newValue)
         check(a.len() == 1)
@@ -1182,11 +1185,11 @@ public class MapTestMapInlineTests {
                 null
             })
         when (entry2) {
-            is Vacant -> {
+            is Vacant<*, *, *, *, *> -> {
                 val (e2) = entry2
                 check(e2.key() == key)
             }
-            is Occupied -> error("panic")
+            is Occupied<*, *, *, *, *> -> error("panic")
         }
         check(!a.containsKey(key))
         check(a.len() == 0)
@@ -1226,19 +1229,19 @@ public class MapTestMapInlineTests {
         val emptyBytes: HashMap<UByte, UByte, DefaultHashBuilder, Global>  = HashMap.new()
         run {
             val matchVal = emptyBytes.tryReserve(Int.MAX_VALUE)
-            if (matchVal is Result.Err && matchVal.error == CapacityOverflow) {} else {
+            if (matchVal is Result.Err<*, *> && matchVal.error == CapacityOverflow) {} else {
                 error("usize::MAX should trigger an overflow!")
             }
         }
         run {
             val matchVal1 = emptyBytes.tryReserve(MAX_ISIZE)
-            if (matchVal1 is Result.Err && matchVal1.error == CapacityOverflow) {} else {
+            if (matchVal1 is Result.Err<*, *> && matchVal1.error == CapacityOverflow) {} else {
                 error("isize::MAX should trigger an overflow!")
             }
         }
         run {
             val matchVal3 = emptyBytes.tryReserve(MAX_ISIZE / 5)
-            if (matchVal3 is Result.Err && matchVal3.error is AllocError) {} else {
+            if (matchVal3 is Result.Err<*, *> && matchVal3.error is AllocError) {} else {
                 // This may succeed if there is enough free memory. Attempt to
                 // allocate a few more hashmaps to ensure the allocation will fail.
                 val emptyBytes2: HashMap<UByte, UByte, DefaultHashBuilder, Global>  = HashMap.new()
@@ -1248,7 +1251,7 @@ public class MapTestMapInlineTests {
                 val emptyBytes4: HashMap<UByte, UByte, DefaultHashBuilder, Global>  = HashMap.new()
                 run {
                     val matchVal2 = emptyBytes4.tryReserve(MAX_ISIZE / 5)
-                    if (matchVal2 is Result.Err && matchVal2.error is AllocError) {} else {
+                    if (matchVal2 is Result.Err<*, *> && matchVal2.error is AllocError) {} else {
                         error("isize::MAX / 5 should trigger an OOM!")
                     }
                 }
@@ -1379,10 +1382,10 @@ public class MapTestMapInlineTests {
                 val map1: HashMap<ULong, CheckedCloneDrop<List<ULong>>, DefaultHashBuilder, MyAlloc> =
                     run {
                         val matchVal = getTestMap((ARMED_FLAGS.zip(DISARMED_FLAGS)), { n -> mutableListOf(n) }, MyAlloc.new(dropped.clone()))
-                        when (matchVal) { is Result.Ok -> {
+                        when (matchVal) { is Result.Ok<*, *> -> {
                             val map = matchVal.value
                             map
-                        }; is Result.Err -> {
+                        }; is Result.Err<*, *> -> {
                             val msg = matchVal.error
                             error("$msg")
                         } }
@@ -1405,10 +1408,10 @@ public class MapTestMapInlineTests {
                 val map1: HashMap<ULong, CheckedCloneDrop<ULong>, DefaultHashBuilder, Global> =
                     run {
                         val matchVal = getTestMap((DISARMED_FLAGS.zip(DISARMED_FLAGS)), { n -> n }, MyAlloc.new(dropped.clone()))
-                        when (matchVal) { is Result.Ok -> {
+                        when (matchVal) { is Result.Ok<*, *> -> {
                             val map = matchVal.value
                             map
-                        }; is Result.Err -> {
+                        }; is Result.Err<*, *> -> {
                             val msg = matchVal.error
                             error("$msg")
                         } }
@@ -1416,10 +1419,10 @@ public class MapTestMapInlineTests {
                 var map2 =
                     run {
                         val matchVal1 = getTestMap((DISARMED_FLAGS.zip(ARMED_FLAGS)), { n -> n }, MyAlloc.new(dropped.clone()))
-                        when (matchVal1) { is Result.Ok -> {
+                        when (matchVal1) { is Result.Ok<*, *> -> {
                             val map2 = matchVal1.value
                             map2
-                        }; is Result.Err -> {
+                        }; is Result.Err<*, *> -> {
                             val msg1 = matchVal1.error
                             error("$msg")
                         } }
@@ -1445,10 +1448,10 @@ public class MapTestMapInlineTests {
             var map1 =
                 run {
                     val matchVal = getTestMap((DISARMED_FLAGS.zip(DISARMED_FLAGS)), { n -> mutableListOf(n) }, MyAlloc.new(dropped.clone()))
-                    when (matchVal) { is Result.Ok -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         val map = matchVal.value
                         map
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         val msg = matchVal.error
                         error("$msg")
                     } }
@@ -1459,10 +1462,10 @@ public class MapTestMapInlineTests {
                         val scopeMap =
                             run {
                                 val matchVal1 = getTestMap((ARMED_FLAGS.zip(DISARMED_FLAGS)), { n -> mutableListOf(n * 2) }, MyAlloc.new(dropped.clone()))
-                                when (matchVal1) { is Result.Ok -> {
+                                when (matchVal1) { is Result.Ok<*, *> -> {
                                     val map2 = matchVal1.value
                                     map2
-                                }; is Result.Err -> {
+                                }; is Result.Err<*, *> -> {
                                     val msg1 = matchVal1.error
                                     return@closure msg1
                                 } }
@@ -1474,7 +1477,7 @@ public class MapTestMapInlineTests {
                         "We must fail the cloning!!!".toOwned()
                     })
                 when (val matchVal1 = result.join()) {
-                    is Result.Ok -> {
+                    is Result.Ok<*, *> -> {
                         error("$msg")
                     }
                     else -> {}
@@ -1511,10 +1514,10 @@ public class MapTestMapInlineTests {
             var map1 =
                 run {
                     val matchVal = getTestMap((booleanArrayOf(DISARMED).zip(booleanArrayOf(DISARMED))), { n -> mutableListOf(n) }, MyAlloc.new(dropped.clone()))
-                    when (matchVal) { is Result.Ok -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         val map = matchVal.value
                         map
-                    }; is Result.Err -> {
+                    }; is Result.Err<*, *> -> {
                         val msg = matchVal.error
                         error("$msg")
                     } }
@@ -1525,10 +1528,10 @@ public class MapTestMapInlineTests {
                         val scopeMap =
                             run {
                                 val matchVal1 = getTestMap((ARMED_FLAGS.zip(DISARMED_FLAGS)), { n -> mutableListOf(n * 2) }, MyAlloc.new(dropped.clone()))
-                                when (matchVal1) { is Result.Ok -> {
+                                when (matchVal1) { is Result.Ok<*, *> -> {
                                     val map2 = matchVal1.value
                                     map2
-                                }; is Result.Err -> {
+                                }; is Result.Err<*, *> -> {
                                     val msg1 = matchVal1.error
                                     return@closure1 msg1
                                 } }
@@ -1540,7 +1543,7 @@ public class MapTestMapInlineTests {
                         "We must fail the cloning!!!".toOwned()
                     })
                 when (val matchVal1 = result.join()) {
-                    is Result.Ok -> {
+                    is Result.Ok<*, *> -> {
                         error("$msg")
                     }
                     else -> {}
@@ -1607,7 +1610,7 @@ public open class MmapAllocator(
             return Result.Err<NonNull, AllocError>(AllocError())
         }
         val nullVal = MutPtr(0L)
-        val len = (when (val tryResult = this.fitToPageSize(layout.size())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }).toULong()
+        val len = (when (val tryResult = this.fitToPageSize(layout.size())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }).toULong()
         val prot = PROT_READ or PROT_WRITE
         val flags = MAP_PRIVATE or MAP_ANON
         val addr = mmap(nullVal, len, prot, flags, -1, 0)
@@ -1695,13 +1698,13 @@ public class MapTestMapWithMmapAllocationsInlineTests {
         check(capacity >= minCapacity) { "failed: $capacity >= $minCapacity" }
         // Fill it up.
         for (i in 0 until capacity) {
-            map.insert(i)
+            map.put(i, Unit)
         }
         // Capacity should not have changed and it should be full.
         check(capacity == map.len())
         check(capacity == map.capacity())
         // Alright, make it grow.
-        map.insert(capacity)
+        map.put(capacity, Unit)
         check(capacity < map.capacity()) { "failed: $capacity < ${map.capacity()}" }
     }
 }

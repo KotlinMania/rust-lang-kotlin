@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.future.future.Future
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.pin.Pin
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.task.poll.Poll
 import io.github.kotlinmania.rustlang.core.task.wake.Context
@@ -197,7 +198,7 @@ public open class AssertUnwindSafe<T>(
 
     public open fun derefMut(): T = this.value
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "AssertUnwindSafe").field(this.value).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "AssertUnwindSafe").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<AssertUnwindSafe<T>> =

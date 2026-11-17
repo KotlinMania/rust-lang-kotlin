@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.os.windows.io
 
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -10,10 +11,10 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.Rc
 import io.github.kotlinmania.rustlang.std.fs.File
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeWriter
 import io.github.kotlinmania.rustlang.std.io.stdio.IsTerminal
@@ -23,6 +24,7 @@ import io.github.kotlinmania.rustlang.std.io.stdio.Stdin
 import io.github.kotlinmania.rustlang.std.io.stdio.StdinLock
 import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
 import io.github.kotlinmania.rustlang.std.io.stdio.StdoutLock
+import io.github.kotlinmania.rustlang.std.io.stdio.isTerminal
 import io.github.kotlinmania.rustlang.std.os.windows.raw.AsRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.raw.FromRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.raw.IntoRawHandle
@@ -32,6 +34,7 @@ import io.github.kotlinmania.rustlang.std.process.ChildStdin
 import io.github.kotlinmania.rustlang.std.process.ChildStdout
 import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt
 import io.github.kotlinmania.rustlang.std.thread.joinhandle.JoinHandle
 
@@ -130,13 +133,13 @@ public open class BorrowedHandle internal constructor(
         when (val tryResult = cvt(run {
             val curProc = C.GetCurrentProcess()
             C.DuplicateHandle(curProc, handle, curProc, ret, access, inherit.toInt(), options)
-        })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OwnedHandle, Error>(tryResult.error) }
+        })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OwnedHandle, Error>(tryResult.error) }
         return Result.Ok<OwnedHandle, Error>(OwnedHandle.fromRawHandle(ret, fieldLayout = UnresolvedTypeLayout<RawHandle>()))
     }
 
     public override fun asRawHandle(): RawHandle = this.handle
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "BorrowedHandle").field("handle", this.handle).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "BorrowedHandle").field("handle", this.handle).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.windows.isTerminal(this)
 
@@ -258,7 +261,7 @@ public open class OwnedHandle internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "OwnedHandle").field("handle", this.handle).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "OwnedHandle").field("handle", this.handle).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.windows.isTerminal(this)
 
@@ -280,7 +283,7 @@ public open class OwnedHandle internal constructor(
                 // SAFETY: The handle is not null.
                 Result.Ok<OwnedHandle, NullHandleError>(OwnedHandle.fromRawHandle(handleOrNull1.first, fieldLayout = fieldLayout))
             } else {
-                Result.Err<OwnedHandle, NullHandleError>(NullHandleError())
+                Result.Err<OwnedHandle, NullHandleError>(NullHandleError(Unit))
             }
         }
 
@@ -290,7 +293,7 @@ public open class OwnedHandle internal constructor(
                 // SAFETY: The handle is not invalid.
                 Result.Ok<OwnedHandle, InvalidHandleError>(OwnedHandle.fromRawHandle(handleOrInvalid1.first, fieldLayout = fieldLayout))
             } else {
-                Result.Err<OwnedHandle, InvalidHandleError>(InvalidHandleError())
+                Result.Err<OwnedHandle, InvalidHandleError>(InvalidHandleError(Unit))
             }
         }
 

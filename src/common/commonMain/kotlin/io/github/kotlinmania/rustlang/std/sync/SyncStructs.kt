@@ -2,6 +2,7 @@ package io.github.kotlinmania.rustlang.std.sync
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 /**
  * A type indicating whether a timed wait on a condition variable returned

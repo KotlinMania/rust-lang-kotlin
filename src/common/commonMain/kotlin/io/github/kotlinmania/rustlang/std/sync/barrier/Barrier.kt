@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sync.barrier
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.condvar.Condvar
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
@@ -66,7 +67,7 @@ public open class Barrier internal constructor(
     public var lock: Mutex<BarrierState> = lockCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Barrier").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Barrier").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Blocks the current thread until all threads have rendezvoused here.
@@ -200,7 +201,7 @@ public open class BarrierWaitResult(
             value = v
         }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "BarrierWaitResult").field("is_leader", this.isLeader()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "BarrierWaitResult").field("is_leader", this.isLeader()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Returns `true` if this thread is the "leader thread" for the call to

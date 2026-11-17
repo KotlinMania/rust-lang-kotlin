@@ -80,12 +80,12 @@ public open class Tag internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         if (this.isSpecial()) {
             if (this.specialIsEmpty()) {
-                run { f.append("EMPTY"); Result.Ok(Unit) }
+                run { f.append("EMPTY"); Result.Ok<Unit, Error>(Unit) }
             } else {
-                run { f.append("DELETED"); Result.Ok(Unit) }
+                run { f.append("DELETED"); Result.Ok<Unit, Error>(Unit) }
             }
         } else {
-            DebugTuple(f, "full").field((this.value and 0x7Fu.toUByte())).finish()
+            run { DebugTuple(f, "full").field((this.value and 0x7Fu.toUByte())).finish(); Result.Ok<Unit, Error>(Unit) }
         }
 
     public companion object {

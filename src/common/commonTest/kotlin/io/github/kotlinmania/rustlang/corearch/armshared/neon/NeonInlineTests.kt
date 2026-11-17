@@ -15,536 +15,537 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.corearch.aarch64.neon.crc32cd
 import io.github.kotlinmania.rustlang.corearch.aarch64.neon.crc32d
 import io.github.kotlinmania.rustlang.corearch.simd.I64x1
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.U64x1
 
 // ARMv7 NEON intrinsics
 
 public fun testVld1LaneS8() {
-    val a = i8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
+    val a = Simd<Byte>(listOf(0.toByte(), 1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 7.toByte()))
     val elem: Byte = 42
-    val e = i8x8.new(0, 1, 2, 3, 4, 5, 6, 42)
+    val e = Simd<Byte>(listOf(0.toByte(), 1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 42.toByte()))
     val r = i8x8.from(vld1LaneS8(elem, a.into(), 7))
     check(r == e)
 }
 
 public fun testVld1qLaneS8() {
-    val a = i8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+    val a = Simd<Byte>(listOf(0.toByte(), 1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 7.toByte(), 8.toByte(), 9.toByte(), 10.toByte(), 11.toByte(), 12.toByte(), 13.toByte(), 14.toByte(), 15.toByte()))
     val elem: Byte = 42
-    val e = i8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 42)
+    val e = Simd<Byte>(listOf(0.toByte(), 1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 7.toByte(), 8.toByte(), 9.toByte(), 10.toByte(), 11.toByte(), 12.toByte(), 13.toByte(), 14.toByte(), 42.toByte()))
     val r = i8x16.from(vld1qLaneS8(elem, a.into(), 15))
     check(r == e)
 }
 
 public fun testVld1LaneS16() {
-    val a = i16x4.new(0, 1, 2, 3)
+    val a = Simd<Short>(listOf(0.toShort(), 1.toShort(), 2.toShort(), 3.toShort()))
     val elem: Short = 42
-    val e = i16x4.new(0, 1, 2, 42)
+    val e = Simd<Short>(listOf(0.toShort(), 1.toShort(), 2.toShort(), 42.toShort()))
     val r = i16x4.from(vld1LaneS16(elem, a.into(), 3))
     check(r == e)
 }
 
 public fun testVld1qLaneS16() {
-    val a = i16x8.new(0, 1, 2, 3, 4, 5, 6, 7)
+    val a = Simd<Short>(listOf(0.toShort(), 1.toShort(), 2.toShort(), 3.toShort(), 4.toShort(), 5.toShort(), 6.toShort(), 7.toShort()))
     val elem: Short = 42
-    val e = i16x8.new(0, 1, 2, 3, 4, 5, 6, 42)
+    val e = Simd<Short>(listOf(0.toShort(), 1.toShort(), 2.toShort(), 3.toShort(), 4.toShort(), 5.toShort(), 6.toShort(), 42.toShort()))
     val r = i16x8.from(vld1qLaneS16(elem, a.into(), 7))
     check(r == e)
 }
 
 public fun testVld1LaneS32() {
-    val a = i32x2.new(0, 1)
+    val a = Simd<Int>(listOf(0, 1))
     val elem: Int = 42
-    val e = i32x2.new(0, 42)
+    val e = Simd<Int>(listOf(0, 42))
     val r = i32x2.from(vld1LaneS32(elem, a.into(), 1))
     check(r == e)
 }
 
 public fun testVld1qLaneS32() {
-    val a = i32x4.new(0, 1, 2, 3)
+    val a = Simd<Int>(listOf(0, 1, 2, 3))
     val elem: Int = 42
-    val e = i32x4.new(0, 1, 2, 42)
+    val e = Simd<Int>(listOf(0, 1, 2, 42))
     val r = i32x4.from(vld1qLaneS32(elem, a.into(), 3))
     check(r == e)
 }
 
 public fun testVld1LaneS64() {
-    val a = i64x1.new(0)
+    val a = Simd<Long>(listOf(0L))
     val elem: Long = 42L
-    val e = i64x1.new(42)
+    val e = Simd<Long>(listOf(42L))
     val r = i64x1.from(vld1LaneS64(elem, a.into(), 0))
     check(r == e)
 }
 
 public fun testVld1qLaneS64() {
-    val a = i64x2.new(0, 1)
+    val a = Simd<Long>(listOf(0L, 1L))
     val elem: Long = 42L
-    val e = i64x2.new(0, 42)
+    val e = Simd<Long>(listOf(0L, 42L))
     val r = i64x2.from(vld1qLaneS64(elem, a.into(), 1))
     check(r == e)
 }
 
 public fun testVld1LaneU8() {
-    val a = u8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
     val elem: UByte = 42u
-    val e = u8x8.new(0, 1, 2, 3, 4, 5, 6, 42)
+    val e = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 42u.toUByte()))
     val r = u8x8.from(vld1LaneU8(elem, a.into(), 7))
     check(r == e)
 }
 
 public fun testVld1qLaneU8() {
-    val a = u8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte()))
     val elem: UByte = 42u
-    val e = u8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 42)
+    val e = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 42u.toUByte()))
     val r = u8x16.from(vld1qLaneU8(elem, a.into(), 15))
     check(r == e)
 }
 
 public fun testVld1LaneU16() {
-    val a = u16x4.new(0, 1, 2, 3)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort()))
     val elem: UShort = 42u
-    val e = u16x4.new(0, 1, 2, 42)
+    val e = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 42u.toUShort()))
     val r = u16x4.from(vld1LaneU16(elem, a.into(), 3))
     check(r == e)
 }
 
 public fun testVld1qLaneU16() {
-    val a = u16x8.new(0, 1, 2, 3, 4, 5, 6, 7)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort()))
     val elem: UShort = 42u
-    val e = u16x8.new(0, 1, 2, 3, 4, 5, 6, 42)
+    val e = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 42u.toUShort()))
     val r = u16x8.from(vld1qLaneU16(elem, a.into(), 7))
     check(r == e)
 }
 
 public fun testVld1LaneU32() {
-    val a = u32x2.new(0, 1)
+    val a = Simd<UInt>(listOf(0u, 1u))
     val elem: UInt = 42u
-    val e = u32x2.new(0, 42)
+    val e = Simd<UInt>(listOf(0u, 42u))
     val r = u32x2.from(vld1LaneU32(elem, a.into(), 1))
     check(r == e)
 }
 
 public fun testVld1qLaneU32() {
-    val a = u32x4.new(0, 1, 2, 3)
+    val a = Simd<UInt>(listOf(0u, 1u, 2u, 3u))
     val elem: UInt = 42u
-    val e = u32x4.new(0, 1, 2, 42)
+    val e = Simd<UInt>(listOf(0u, 1u, 2u, 42u))
     val r = u32x4.from(vld1qLaneU32(elem, a.into(), 3))
     check(r == e)
 }
 
 public fun testVld1LaneU64() {
-    val a = u64x1.new(0)
+    val a = Simd<ULong>(listOf(0uL))
     val elem: ULong = 42uL
-    val e = u64x1.new(42)
+    val e = Simd<ULong>(listOf(42uL))
     val r = u64x1.from(vld1LaneU64(elem, a.into(), 0))
     check(r == e)
 }
 
 public fun testVld1qLaneU64() {
-    val a = u64x2.new(0, 1)
+    val a = Simd<ULong>(listOf(0uL, 1uL))
     val elem: ULong = 42uL
-    val e = u64x2.new(0, 42)
+    val e = Simd<ULong>(listOf(0uL, 42uL))
     val r = u64x2.from(vld1qLaneU64(elem, a.into(), 1))
     check(r == e)
 }
 
 public fun testVld1LaneP8() {
-    val a = u8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
     val elem: P8 = 42u
-    val e = u8x8.new(0, 1, 2, 3, 4, 5, 6, 42)
+    val e = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 42u.toUByte()))
     val r = u8x8.from(vld1LaneP8(elem, a.into(), 7))
     check(r == e)
 }
 
 public fun testVld1qLaneP8() {
-    val a = u8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte()))
     val elem: P8 = 42u
-    val e = u8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 42)
+    val e = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 42u.toUByte()))
     val r = u8x16.from(vld1qLaneP8(elem, a.into(), 15))
     check(r == e)
 }
 
 public fun testVld1LaneP16() {
-    val a = u16x4.new(0, 1, 2, 3)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort()))
     val elem: P16 = 42u
-    val e = u16x4.new(0, 1, 2, 42)
+    val e = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 42u.toUShort()))
     val r = u16x4.from(vld1LaneP16(elem, a.into(), 3))
     check(r == e)
 }
 
 public fun testVld1qLaneP16() {
-    val a = u16x8.new(0, 1, 2, 3, 4, 5, 6, 7)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort()))
     val elem: P16 = 42u
-    val e = u16x8.new(0, 1, 2, 3, 4, 5, 6, 42)
+    val e = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 42u.toUShort()))
     val r = u16x8.from(vld1qLaneP16(elem, a.into(), 7))
     check(r == e)
 }
 
 public fun testVld1LaneP64() {
-    val a = u64x1.new(0)
+    val a = Simd<ULong>(listOf(0uL))
     val elem: ULong = 42uL
-    val e = u64x1.new(42)
+    val e = Simd<ULong>(listOf(42uL))
     val r = u64x1.from(vld1LaneP64(elem, a.into(), 0))
     check(r == e)
 }
 
 public fun testVld1qLaneP64() {
-    val a = u64x2.new(0, 1)
+    val a = Simd<ULong>(listOf(0uL, 1uL))
     val elem: ULong = 42uL
-    val e = u64x2.new(0, 42)
+    val e = Simd<ULong>(listOf(0uL, 42uL))
     val r = u64x2.from(vld1qLaneP64(elem, a.into(), 1))
     check(r == e)
 }
 
 public fun testVld1LaneF32() {
-    val a = f32x2.new(0.0, 1.0)
+    val a = Simd<Float>(listOf(0.0f.toFloat(), 1.0f.toFloat()))
     val elem: Float = 42.0f
-    val e = f32x2.new(0.0, 42.0)
+    val e = Simd<Float>(listOf(0.0f.toFloat(), 42.0f.toFloat()))
     val r = f32x2.from(vld1LaneF32(elem, a.into(), 1))
     check(r == e)
 }
 
 public fun testVld1qLaneF32() {
-    val a = f32x4.new(0.0, 1.0, 2.0, 3.0)
+    val a = Simd<Float>(listOf(0.0f.toFloat(), 1.0f.toFloat(), 2.0f.toFloat(), 3.0f.toFloat()))
     val elem: Float = 42.0f
-    val e = f32x4.new(0.0, 1.0, 2.0, 42.0)
+    val e = Simd<Float>(listOf(0.0f.toFloat(), 1.0f.toFloat(), 2.0f.toFloat(), 42.0f.toFloat()))
     val r = f32x4.from(vld1qLaneF32(elem, a.into(), 3))
     check(r == e)
 }
 
 public fun testVld1DupS8() {
     val elem: Byte = 42
-    val e = i8x8.new(42, 42, 42, 42, 42, 42, 42, 42)
+    val e = Simd<Byte>(listOf(42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte()))
     val r = i8x8.from(vld1DupS8(elem))
     check(r == e)
 }
 
 public fun testVld1qDupS8() {
     val elem: Byte = 42
-    val e = i8x16.new(42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42)
+    val e = Simd<Byte>(listOf(42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte()))
     val r = i8x16.from(vld1qDupS8(elem))
     check(r == e)
 }
 
 public fun testVld1DupS16() {
     val elem: Short = 42
-    val e = i16x4.new(42, 42, 42, 42)
+    val e = Simd<Short>(listOf(42.toShort(), 42.toShort(), 42.toShort(), 42.toShort()))
     val r = i16x4.from(vld1DupS16(elem))
     check(r == e)
 }
 
 public fun testVld1qDupS16() {
     val elem: Short = 42
-    val e = i16x8.new(42, 42, 42, 42, 42, 42, 42, 42)
+    val e = Simd<Short>(listOf(42.toShort(), 42.toShort(), 42.toShort(), 42.toShort(), 42.toShort(), 42.toShort(), 42.toShort(), 42.toShort()))
     val r = i16x8.from(vld1qDupS16(elem))
     check(r == e)
 }
 
 public fun testVld1DupS32() {
     val elem: Int = 42
-    val e = i32x2.new(42, 42)
+    val e = Simd<Int>(listOf(42, 42))
     val r = i32x2.from(vld1DupS32(elem))
     check(r == e)
 }
 
 public fun testVld1qDupS32() {
     val elem: Int = 42
-    val e = i32x4.new(42, 42, 42, 42)
+    val e = Simd<Int>(listOf(42, 42, 42, 42))
     val r = i32x4.from(vld1qDupS32(elem))
     check(r == e)
 }
 
 public fun testVld1DupS64() {
     val elem: Long = 42L
-    val e = i64x1.new(42)
+    val e = Simd<Long>(listOf(42L))
     val r = i64x1.from(vld1DupS64(elem))
     check(r == e)
 }
 
 public fun testVld1qDupS64() {
     val elem: Long = 42L
-    val e = i64x2.new(42, 42)
+    val e = Simd<Long>(listOf(42L, 42L))
     val r = i64x2.from(vld1qDupS64(elem))
     check(r == e)
 }
 
 public fun testVld1DupU8() {
     val elem: UByte = 42u
-    val e = u8x8.new(42, 42, 42, 42, 42, 42, 42, 42)
+    val e = Simd<UByte>(listOf(42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte()))
     val r = u8x8.from(vld1DupU8(elem))
     check(r == e)
 }
 
 public fun testVld1qDupU8() {
     val elem: UByte = 42u
-    val e = u8x16.new(42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42)
+    val e = Simd<UByte>(listOf(42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte()))
     val r = u8x16.from(vld1qDupU8(elem))
     check(r == e)
 }
 
 public fun testVld1DupU16() {
     val elem: UShort = 42u
-    val e = u16x4.new(42, 42, 42, 42)
+    val e = Simd<UShort>(listOf(42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort()))
     val r = u16x4.from(vld1DupU16(elem))
     check(r == e)
 }
 
 public fun testVld1qDupU16() {
     val elem: UShort = 42u
-    val e = u16x8.new(42, 42, 42, 42, 42, 42, 42, 42)
+    val e = Simd<UShort>(listOf(42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort()))
     val r = u16x8.from(vld1qDupU16(elem))
     check(r == e)
 }
 
 public fun testVld1DupU32() {
     val elem: UInt = 42u
-    val e = u32x2.new(42, 42)
+    val e = Simd<UInt>(listOf(42u, 42u))
     val r = u32x2.from(vld1DupU32(elem))
     check(r == e)
 }
 
 public fun testVld1qDupU32() {
     val elem: UInt = 42u
-    val e = u32x4.new(42, 42, 42, 42)
+    val e = Simd<UInt>(listOf(42u, 42u, 42u, 42u))
     val r = u32x4.from(vld1qDupU32(elem))
     check(r == e)
 }
 
 public fun testVld1DupU64() {
     val elem: ULong = 42uL
-    val e = u64x1.new(42)
+    val e = Simd<ULong>(listOf(42uL))
     val r = u64x1.from(vld1DupU64(elem))
     check(r == e)
 }
 
 public fun testVld1qDupU64() {
     val elem: ULong = 42uL
-    val e = u64x2.new(42, 42)
+    val e = Simd<ULong>(listOf(42uL, 42uL))
     val r = u64x2.from(vld1qDupU64(elem))
     check(r == e)
 }
 
 public fun testVld1DupP8() {
     val elem: P8 = 42u
-    val e = u8x8.new(42, 42, 42, 42, 42, 42, 42, 42)
+    val e = Simd<UByte>(listOf(42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte()))
     val r = u8x8.from(vld1DupP8(elem))
     check(r == e)
 }
 
 public fun testVld1qDupP8() {
     val elem: P8 = 42u
-    val e = u8x16.new(42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42)
+    val e = Simd<UByte>(listOf(42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte()))
     val r = u8x16.from(vld1qDupP8(elem))
     check(r == e)
 }
 
 public fun testVld1DupP16() {
     val elem: P16 = 42u
-    val e = u16x4.new(42, 42, 42, 42)
+    val e = Simd<UShort>(listOf(42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort()))
     val r = u16x4.from(vld1DupP16(elem))
     check(r == e)
 }
 
 public fun testVld1qDupP16() {
     val elem: P16 = 42u
-    val e = u16x8.new(42, 42, 42, 42, 42, 42, 42, 42)
+    val e = Simd<UShort>(listOf(42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort()))
     val r = u16x8.from(vld1qDupP16(elem))
     check(r == e)
 }
 
 public fun testVld1DupP64() {
     val elem: ULong = 42uL
-    val e = u64x1.new(42)
+    val e = Simd<ULong>(listOf(42uL))
     val r = u64x1.from(vld1DupP64(elem))
     check(r == e)
 }
 
 public fun testVld1qDupP64() {
     val elem: ULong = 42uL
-    val e = u64x2.new(42, 42)
+    val e = Simd<ULong>(listOf(42uL, 42uL))
     val r = u64x2.from(vld1qDupP64(elem))
     check(r == e)
 }
 
 public fun testVld1DupF32() {
     val elem: Float = 42.0f
-    val e = f32x2.new(42.0, 42.0)
+    val e = Simd<Float>(listOf(42.0f.toFloat(), 42.0f.toFloat()))
     val r = f32x2.from(vld1DupF32(elem))
     check(r == e)
 }
 
 public fun testVld1qDupF32() {
     val elem: Float = 42.0f
-    val e = f32x4.new(42.0, 42.0, 42.0, 42.0)
+    val e = Simd<Float>(listOf(42.0f.toFloat(), 42.0f.toFloat(), 42.0f.toFloat(), 42.0f.toFloat()))
     val r = f32x4.from(vld1qDupF32(elem))
     check(r == e)
 }
 
 public fun testVextS64() {
-    val a: I64x1 = i64x1.new(0)
-    val b: I64x1 = i64x1.new(1)
-    val e: I64x1 = i64x1.new(0)
+    val a: I64x1 = Simd<Long>(listOf(0L))
+    val b: I64x1 = Simd<Long>(listOf(1L))
+    val e: I64x1 = Simd<Long>(listOf(0L))
     val r = i64x1.from(vextS64(a.into(), b.into(), 0))
     check(r == e)
 }
 
 public fun testVextU64() {
-    val a: U64x1 = u64x1.new(0)
-    val b: U64x1 = u64x1.new(1)
-    val e: U64x1 = u64x1.new(0)
+    val a: U64x1 = Simd<ULong>(listOf(0uL))
+    val b: U64x1 = Simd<ULong>(listOf(1uL))
+    val e: U64x1 = Simd<ULong>(listOf(0uL))
     val r = u64x1.from(vextU64(a.into(), b.into(), 0))
     check(r == e)
 }
 
 public fun testVdupqNS8() {
     val v: Byte = 42
-    val e = i8x16.new(42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42)
+    val e = Simd<Byte>(listOf(42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte(), 42.toByte()))
     val r = i8x16.from(vdupqNS8(v))
     check(r == e)
 }
 
 public fun testVdupqNS16() {
     val v: Short = 64
-    val e = i16x8.new(64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<Short>(listOf(64.toShort(), 64.toShort(), 64.toShort(), 64.toShort(), 64.toShort(), 64.toShort(), 64.toShort(), 64.toShort()))
     val r = i16x8.from(vdupqNS16(v))
     check(r == e)
 }
 
 public fun testVdupqNS32() {
     val v: Int = 64
-    val e = i32x4.new(64, 64, 64, 64)
+    val e = Simd<Int>(listOf(64, 64, 64, 64))
     val r = i32x4.from(vdupqNS32(v))
     check(r == e)
 }
 
 public fun testVdupqNS64() {
     val v: Long = 64L
-    val e = i64x2.new(64, 64)
+    val e = Simd<Long>(listOf(64L, 64L))
     val r = i64x2.from(vdupqNS64(v))
     check(r == e)
 }
 
 public fun testVdupqNU8() {
     val v: UByte = 64u
-    val e = u8x16.new(64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<UByte>(listOf(64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte()))
     val r = u8x16.from(vdupqNU8(v))
     check(r == e)
 }
 
 public fun testVdupqNU16() {
     val v: UShort = 64u
-    val e = u16x8.new(64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<UShort>(listOf(64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort()))
     val r = u16x8.from(vdupqNU16(v))
     check(r == e)
 }
 
 public fun testVdupqNU32() {
     val v: UInt = 64u
-    val e = u32x4.new(64, 64, 64, 64)
+    val e = Simd<UInt>(listOf(64u, 64u, 64u, 64u))
     val r = u32x4.from(vdupqNU32(v))
     check(r == e)
 }
 
 public fun testVdupqNU64() {
     val v: ULong = 64uL
-    val e = u64x2.new(64, 64)
+    val e = Simd<ULong>(listOf(64uL, 64uL))
     val r = u64x2.from(vdupqNU64(v))
     check(r == e)
 }
 
 public fun testVdupqNP8() {
     val v: P8 = 64u
-    val e = u8x16.new(64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<UByte>(listOf(64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte()))
     val r = u8x16.from(vdupqNP8(v))
     check(r == e)
 }
 
 public fun testVdupqNP16() {
     val v: P16 = 64u
-    val e = u16x8.new(64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<UShort>(listOf(64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort()))
     val r = u16x8.from(vdupqNP16(v))
     check(r == e)
 }
 
 public fun testVdupqNF32() {
     val v: Float = 64.0f
-    val e = f32x4.new(64.0, 64.0, 64.0, 64.0)
+    val e = Simd<Float>(listOf(64.0f.toFloat(), 64.0f.toFloat(), 64.0f.toFloat(), 64.0f.toFloat()))
     val r = f32x4.from(vdupqNF32(v))
     check(r == e)
 }
 
 public fun testVdupNS8() {
     val v: Byte = 64
-    val e = i8x8.new(64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<Byte>(listOf(64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte()))
     val r = i8x8.from(vdupNS8(v))
     check(r == e)
 }
 
 public fun testVdupNS16() {
     val v: Short = 64
-    val e = i16x4.new(64, 64, 64, 64)
+    val e = Simd<Short>(listOf(64.toShort(), 64.toShort(), 64.toShort(), 64.toShort()))
     val r = i16x4.from(vdupNS16(v))
     check(r == e)
 }
 
 public fun testVdupNS32() {
     val v: Int = 64
-    val e = i32x2.new(64, 64)
+    val e = Simd<Int>(listOf(64, 64))
     val r = i32x2.from(vdupNS32(v))
     check(r == e)
 }
 
 public fun testVdupNS64() {
     val v: Long = 64L
-    val e = i64x1.new(64)
+    val e = Simd<Long>(listOf(64L))
     val r = i64x1.from(vdupNS64(v))
     check(r == e)
 }
 
 public fun testVdupNU8() {
     val v: UByte = 64u
-    val e = u8x8.new(64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<UByte>(listOf(64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte()))
     val r = u8x8.from(vdupNU8(v))
     check(r == e)
 }
 
 public fun testVdupNU16() {
     val v: UShort = 64u
-    val e = u16x4.new(64, 64, 64, 64)
+    val e = Simd<UShort>(listOf(64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort()))
     val r = u16x4.from(vdupNU16(v))
     check(r == e)
 }
 
 public fun testVdupNU32() {
     val v: UInt = 64u
-    val e = u32x2.new(64, 64)
+    val e = Simd<UInt>(listOf(64u, 64u))
     val r = u32x2.from(vdupNU32(v))
     check(r == e)
 }
 
 public fun testVdupNU64() {
     val v: ULong = 64uL
-    val e = u64x1.new(64)
+    val e = Simd<ULong>(listOf(64uL))
     val r = u64x1.from(vdupNU64(v))
     check(r == e)
 }
 
 public fun testVdupNP8() {
     val v: P8 = 64u
-    val e = u8x8.new(64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<UByte>(listOf(64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte()))
     val r = u8x8.from(vdupNP8(v))
     check(r == e)
 }
 
 public fun testVdupNP16() {
     val v: P16 = 64u
-    val e = u16x4.new(64, 64, 64, 64)
+    val e = Simd<UShort>(listOf(64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort()))
     val r = u16x4.from(vdupNP16(v))
     check(r == e)
 }
 
 public fun testVdupNF32() {
     val v: Float = 64.0f
-    val e = f32x2.new(64.0, 64.0)
+    val e = Simd<Float>(listOf(64.0f.toFloat(), 64.0f.toFloat()))
     val r = f32x2.from(vdupNF32(v))
     check(r == e)
 }
@@ -568,154 +569,154 @@ public fun testVstrqP128() {
 
 public fun testVmovNS8() {
     val v: Byte = 64
-    val e = i8x8.new(64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<Byte>(listOf(64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte()))
     val r = i8x8.from(vmovNS8(v))
     check(r == e)
 }
 
 public fun testVmovNS16() {
     val v: Short = 64
-    val e = i16x4.new(64, 64, 64, 64)
+    val e = Simd<Short>(listOf(64.toShort(), 64.toShort(), 64.toShort(), 64.toShort()))
     val r = i16x4.from(vmovNS16(v))
     check(r == e)
 }
 
 public fun testVmovNS32() {
     val v: Int = 64
-    val e = i32x2.new(64, 64)
+    val e = Simd<Int>(listOf(64, 64))
     val r = i32x2.from(vmovNS32(v))
     check(r == e)
 }
 
 public fun testVmovNS64() {
     val v: Long = 64L
-    val e = i64x1.new(64)
+    val e = Simd<Long>(listOf(64L))
     val r = i64x1.from(vmovNS64(v))
     check(r == e)
 }
 
 public fun testVmovNU8() {
     val v: UByte = 64u
-    val e = u8x8.new(64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<UByte>(listOf(64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte()))
     val r = u8x8.from(vmovNU8(v))
     check(r == e)
 }
 
 public fun testVmovNU16() {
     val v: UShort = 64u
-    val e = u16x4.new(64, 64, 64, 64)
+    val e = Simd<UShort>(listOf(64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort()))
     val r = u16x4.from(vmovNU16(v))
     check(r == e)
 }
 
 public fun testVmovNU32() {
     val v: UInt = 64u
-    val e = u32x2.new(64, 64)
+    val e = Simd<UInt>(listOf(64u, 64u))
     val r = u32x2.from(vmovNU32(v))
     check(r == e)
 }
 
 public fun testVmovNU64() {
     val v: ULong = 64uL
-    val e = u64x1.new(64)
+    val e = Simd<ULong>(listOf(64uL))
     val r = u64x1.from(vmovNU64(v))
     check(r == e)
 }
 
 public fun testVmovNP8() {
     val v: P8 = 64u
-    val e = u8x8.new(64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<UByte>(listOf(64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte()))
     val r = u8x8.from(vmovNP8(v))
     check(r == e)
 }
 
 public fun testVmovNP16() {
     val v: P16 = 64u
-    val e = u16x4.new(64, 64, 64, 64)
+    val e = Simd<UShort>(listOf(64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort()))
     val r = u16x4.from(vmovNP16(v))
     check(r == e)
 }
 
 public fun testVmovNF32() {
     val v: Float = 64.0f
-    val e = f32x2.new(64.0, 64.0)
+    val e = Simd<Float>(listOf(64.0f.toFloat(), 64.0f.toFloat()))
     val r = f32x2.from(vmovNF32(v))
     check(r == e)
 }
 
 public fun testVmovqNS8() {
     val v: Byte = 64
-    val e = i8x16.new(64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<Byte>(listOf(64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte(), 64.toByte()))
     val r = i8x16.from(vmovqNS8(v))
     check(r == e)
 }
 
 public fun testVmovqNS16() {
     val v: Short = 64
-    val e = i16x8.new(64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<Short>(listOf(64.toShort(), 64.toShort(), 64.toShort(), 64.toShort(), 64.toShort(), 64.toShort(), 64.toShort(), 64.toShort()))
     val r = i16x8.from(vmovqNS16(v))
     check(r == e)
 }
 
 public fun testVmovqNS32() {
     val v: Int = 64
-    val e = i32x4.new(64, 64, 64, 64)
+    val e = Simd<Int>(listOf(64, 64, 64, 64))
     val r = i32x4.from(vmovqNS32(v))
     check(r == e)
 }
 
 public fun testVmovqNS64() {
     val v: Long = 64L
-    val e = i64x2.new(64, 64)
+    val e = Simd<Long>(listOf(64L, 64L))
     val r = i64x2.from(vmovqNS64(v))
     check(r == e)
 }
 
 public fun testVmovqNU8() {
     val v: UByte = 64u
-    val e = u8x16.new(64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<UByte>(listOf(64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte()))
     val r = u8x16.from(vmovqNU8(v))
     check(r == e)
 }
 
 public fun testVmovqNU16() {
     val v: UShort = 64u
-    val e = u16x8.new(64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<UShort>(listOf(64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort()))
     val r = u16x8.from(vmovqNU16(v))
     check(r == e)
 }
 
 public fun testVmovqNU32() {
     val v: UInt = 64u
-    val e = u32x4.new(64, 64, 64, 64)
+    val e = Simd<UInt>(listOf(64u, 64u, 64u, 64u))
     val r = u32x4.from(vmovqNU32(v))
     check(r == e)
 }
 
 public fun testVmovqNU64() {
     val v: ULong = 64uL
-    val e = u64x2.new(64, 64)
+    val e = Simd<ULong>(listOf(64uL, 64uL))
     val r = u64x2.from(vmovqNU64(v))
     check(r == e)
 }
 
 public fun testVmovqNP8() {
     val v: P8 = 64u
-    val e = u8x16.new(64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<UByte>(listOf(64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte()))
     val r = u8x16.from(vmovqNP8(v))
     check(r == e)
 }
 
 public fun testVmovqNP16() {
     val v: P16 = 64u
-    val e = u16x8.new(64, 64, 64, 64, 64, 64, 64, 64)
+    val e = Simd<UShort>(listOf(64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort()))
     val r = u16x8.from(vmovqNP16(v))
     check(r == e)
 }
 
 public fun testVmovqNF32() {
     val v: Float = 64.0f
-    val e = f32x4.new(64.0, 64.0, 64.0, 64.0)
+    val e = Simd<Float>(listOf(64.0f.toFloat(), 64.0f.toFloat(), 64.0f.toFloat(), 64.0f.toFloat()))
     val r = f32x4.from(vmovqNF32(v))
     check(r == e)
 }
@@ -806,764 +807,764 @@ public fun testVaddqF32() {
 
 public fun testVaddlS8() {
     val v = Byte.MAX_VALUE
-    val a = i8x8.new(v, v, v, v, v, v, v, v)
+    val a = Simd<Byte>(listOf(v, v, v, v, v, v, v, v))
     val v1 = 2 * (v.toShort())
-    val e = i16x8.new(v1, v1, v1, v1, v1, v1, v1, v1)
+    val e = Simd<Short>(listOf(v1, v1, v1, v1, v1, v1, v1, v1))
     val r = i16x8.from(vaddlS8(a.into(), a.into()))
     check(r == e)
 }
 
 public fun testVaddlS16() {
     val v = Short.MAX_VALUE
-    val a = i16x4.new(v, v, v, v)
+    val a = Simd<Short>(listOf(v, v, v, v))
     val v1 = 2 * (v.toInt())
-    val e = i32x4.new(v1, v1, v1, v1)
+    val e = Simd<Int>(listOf(v1, v1, v1, v1))
     val r = i32x4.from(vaddlS16(a.into(), a.into()))
     check(r == e)
 }
 
 public fun testVaddlS32() {
     val v = Int.MAX_VALUE
-    val a = i32x2.new(v, v)
+    val a = Simd<Int>(listOf(v, v))
     val v1 = 2L * (v.toLong())
-    val e = i64x2.new(v1, v1)
+    val e = Simd<Long>(listOf(v1, v1))
     val r = i64x2.from(vaddlS32(a.into(), a.into()))
     check(r == e)
 }
 
 public fun testVaddlU8() {
     val v = UByte.MAX_VALUE
-    val a = u8x8.new(v, v, v, v, v, v, v, v)
+    val a = Simd<UByte>(listOf(v, v, v, v, v, v, v, v))
     val v1 = 2u * (v.toUShort())
-    val e = u16x8.new(v1, v1, v1, v1, v1, v1, v1, v1)
+    val e = Simd<UShort>(listOf(v1, v1, v1, v1, v1, v1, v1, v1))
     val r = u16x8.from(vaddlU8(a.into(), a.into()))
     check(r == e)
 }
 
 public fun testVaddlU16() {
     val v = UShort.MAX_VALUE
-    val a = u16x4.new(v, v, v, v)
+    val a = Simd<UShort>(listOf(v, v, v, v))
     val v1 = 2u * (v.toUInt())
-    val e = u32x4.new(v1, v1, v1, v1)
+    val e = Simd<UInt>(listOf(v1, v1, v1, v1))
     val r = u32x4.from(vaddlU16(a.into(), a.into()))
     check(r == e)
 }
 
 public fun testVaddlU32() {
     val v = UInt.MAX_VALUE
-    val a = u32x2.new(v, v)
+    val a = Simd<UInt>(listOf(v, v))
     val v1 = 2uL * (v.toULong())
-    val e = u64x2.new(v1, v1)
+    val e = Simd<ULong>(listOf(v1, v1))
     val r = u64x2.from(vaddlU32(a.into(), a.into()))
     check(r == e)
 }
 
 public fun testVaddwS8() {
     val x = Short.MAX_VALUE
-    val a = i16x8.new(x, 1, 2, 3, 4, 5, 6, 7)
+    val a = Simd<Short>(listOf(x, 1.toShort(), 2.toShort(), 3.toShort(), 4.toShort(), 5.toShort(), 6.toShort(), 7.toShort()))
     val y = Byte.MAX_VALUE
-    val b = i8x8.new(y, y, y, y, y, y, y, y)
+    val b = Simd<Byte>(listOf(y, y, y, y, y, y, y, y))
     val y1 = y.toShort()
-    val e = i16x8.new((x + (y1.toShort())).toShort(), 1 + y1, 2 + y1, 3 + y1, 4 + y1, 5 + y1, 6 + y1, 7 + y1)
+    val e = Simd<Short>(listOf((x + (y1.toShort())).toShort(), (1 + y1).toShort(), (2 + y1).toShort(), (3 + y1).toShort(), (4 + y1).toShort(), (5 + y1).toShort(), (6 + y1).toShort(), (7 + y1).toShort()))
     val r = i16x8.from(vaddwS8(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVaddwS16() {
     val x = Int.MAX_VALUE
-    val a = i32x4.new(x, 1, 2, 3)
+    val a = Simd<Int>(listOf(x, 1, 2, 3))
     val y = Short.MAX_VALUE
-    val b = i16x4.new(y, y, y, y)
+    val b = Simd<Short>(listOf(y, y, y, y))
     val y1 = y.toInt()
-    val e = i32x4.new((x + (y1.toInt())), 1 + y1, 2 + y1, 3 + y1)
+    val e = Simd<Int>(listOf((x + (y1.toInt())), 1 + y1, 2 + y1, 3 + y1))
     val r = i32x4.from(vaddwS16(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVaddwS32() {
     val x = Long.MAX_VALUE
-    val a = i64x2.new(x, 1)
+    val a = Simd<Long>(listOf(x, 1L))
     val y = Int.MAX_VALUE
-    val b = i32x2.new(y, y)
+    val b = Simd<Int>(listOf(y, y))
     val y1 = y.toLong()
-    val e = i64x2.new((x + (y1.toLong())), 1L + y1)
+    val e = Simd<Long>(listOf((x + (y1.toLong())), 1L + y1))
     val r = i64x2.from(vaddwS32(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVaddwU8() {
     val x = UShort.MAX_VALUE
-    val a = u16x8.new(x, 1, 2, 3, 4, 5, 6, 7)
+    val a = Simd<UShort>(listOf(x, 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort()))
     val y = UByte.MAX_VALUE
-    val b = u8x8.new(y, y, y, y, y, y, y, y)
+    val b = Simd<UByte>(listOf(y, y, y, y, y, y, y, y))
     val y1 = y.toUShort()
-    val e = u16x8.new((x + (y1.toUShort())).toUShort(), 1u + y1, 2u + y1, 3u + y1, 4u + y1, 5u + y1, 6u + y1, 7u + y1)
+    val e = Simd<UShort>(listOf((x + (y1.toUShort())).toUShort(), (1u + y1).toUShort(), (2u + y1).toUShort(), (3u + y1).toUShort(), (4u + y1).toUShort(), (5u + y1).toUShort(), (6u + y1).toUShort(), (7u + y1).toUShort()))
     val r = u16x8.from(vaddwU8(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVaddwU16() {
     val x = UInt.MAX_VALUE
-    val a = u32x4.new(x, 1, 2, 3)
+    val a = Simd<UInt>(listOf(x, 1u, 2u, 3u))
     val y = UShort.MAX_VALUE
-    val b = u16x4.new(y, y, y, y)
+    val b = Simd<UShort>(listOf(y, y, y, y))
     val y1 = y.toUInt()
-    val e = u32x4.new((x + (y1.toUInt())), 1u + y1, 2u + y1, 3u + y1)
+    val e = Simd<UInt>(listOf((x + (y1.toUInt())), 1u + y1, 2u + y1, 3u + y1))
     val r = u32x4.from(vaddwU16(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVaddwU32() {
     val x = ULong.MAX_VALUE
-    val a = u64x2.new(x, 1)
+    val a = Simd<ULong>(listOf(x, 1uL))
     val y = UInt.MAX_VALUE
-    val b = u32x2.new(y, y)
+    val b = Simd<UInt>(listOf(y, y))
     val y1 = y.toULong()
-    val e = u64x2.new((x + (y1.toULong())), 1uL + y1)
+    val e = Simd<ULong>(listOf((x + (y1.toULong())), 1uL + y1))
     val r = u64x2.from(vaddwU32(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVmvnS8() {
-    val a = i8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val e = i8x8.new(-1, -2, -3, -4, -5, -6, -7, -8)
+    val a = Simd<Byte>(listOf(0.toByte(), 1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 7.toByte()))
+    val e = Simd<Byte>(listOf((-1).toByte(), (-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte()))
     val r = i8x8.from(vmvnS8(a.into()))
     check(r == e)
 }
 
 public fun testVmvnqS8() {
-    val a = i8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val e = i8x16.new(-1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16)
+    val a = Simd<Byte>(listOf(0.toByte(), 1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 7.toByte(), 8.toByte(), 9.toByte(), 10.toByte(), 11.toByte(), 12.toByte(), 13.toByte(), 14.toByte(), 15.toByte()))
+    val e = Simd<Byte>(listOf((-1).toByte(), (-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte(), (-16).toByte()))
     val r = i8x16.from(vmvnqS8(a.into()))
     check(r == e)
 }
 
 public fun testVmvnS16() {
-    val a = i16x4.new(0, 1, 2, 3)
-    val e = i16x4.new(-1, -2, -3, -4)
+    val a = Simd<Short>(listOf(0.toShort(), 1.toShort(), 2.toShort(), 3.toShort()))
+    val e = Simd<Short>(listOf((-1).toShort(), (-2).toShort(), (-3).toShort(), (-4).toShort()))
     val r = i16x4.from(vmvnS16(a.into()))
     check(r == e)
 }
 
 public fun testVmvnqS16() {
-    val a = i16x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val e = i16x8.new(-1, -2, -3, -4, -5, -6, -7, -8)
+    val a = Simd<Short>(listOf(0.toShort(), 1.toShort(), 2.toShort(), 3.toShort(), 4.toShort(), 5.toShort(), 6.toShort(), 7.toShort()))
+    val e = Simd<Short>(listOf((-1).toShort(), (-2).toShort(), (-3).toShort(), (-4).toShort(), (-5).toShort(), (-6).toShort(), (-7).toShort(), (-8).toShort()))
     val r = i16x8.from(vmvnqS16(a.into()))
     check(r == e)
 }
 
 public fun testVmvnS32() {
-    val a = i32x2.new(0, 1)
-    val e = i32x2.new(-1, -2)
+    val a = Simd<Int>(listOf(0, 1))
+    val e = Simd<Int>(listOf(-1, -2))
     val r = i32x2.from(vmvnS32(a.into()))
     check(r == e)
 }
 
 public fun testVmvnqS32() {
-    val a = i32x4.new(0, 1, 2, 3)
-    val e = i32x4.new(-1, -2, -3, -4)
+    val a = Simd<Int>(listOf(0, 1, 2, 3))
+    val e = Simd<Int>(listOf(-1, -2, -3, -4))
     val r = i32x4.from(vmvnqS32(a.into()))
     check(r == e)
 }
 
 public fun testVmvnU8() {
-    val a = u8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val e = u8x8.new(255, 254, 253, 252, 251, 250, 249, 248)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
+    val e = Simd<UByte>(listOf(255u.toUByte(), 254u.toUByte(), 253u.toUByte(), 252u.toUByte(), 251u.toUByte(), 250u.toUByte(), 249u.toUByte(), 248u.toUByte()))
     val r = u8x8.from(vmvnU8(a.into()))
     check(r == e)
 }
 
 public fun testVmvnqU8() {
-    val a = u8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val e = u8x16.new(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte()))
+    val e = Simd<UByte>(listOf(255u.toUByte(), 254u.toUByte(), 253u.toUByte(), 252u.toUByte(), 251u.toUByte(), 250u.toUByte(), 249u.toUByte(), 248u.toUByte(), 247u.toUByte(), 246u.toUByte(), 245u.toUByte(), 244u.toUByte(), 243u.toUByte(), 242u.toUByte(), 241u.toUByte(), 240u.toUByte()))
     val r = u8x16.from(vmvnqU8(a.into()))
     check(r == e)
 }
 
 public fun testVmvnU16() {
-    val a = u16x4.new(0, 1, 2, 3)
-    val e = u16x4.new(65535, 65534, 65533, 65532)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort()))
+    val e = Simd<UShort>(listOf(65535u.toUShort(), 65534u.toUShort(), 65533u.toUShort(), 65532u.toUShort()))
     val r = u16x4.from(vmvnU16(a.into()))
     check(r == e)
 }
 
 public fun testVmvnqU16() {
-    val a = u16x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val e = u16x8.new(65535, 65534, 65533, 65532, 65531, 65530, 65529, 65528)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort()))
+    val e = Simd<UShort>(listOf(65535u.toUShort(), 65534u.toUShort(), 65533u.toUShort(), 65532u.toUShort(), 65531u.toUShort(), 65530u.toUShort(), 65529u.toUShort(), 65528u.toUShort()))
     val r = u16x8.from(vmvnqU16(a.into()))
     check(r == e)
 }
 
 public fun testVmvnU32() {
-    val a = u32x2.new(0, 1)
-    val e = u32x2.new(4294967295, 4294967294)
+    val a = Simd<UInt>(listOf(0u, 1u))
+    val e = Simd<UInt>(listOf(4294967295u, 4294967294u))
     val r = u32x2.from(vmvnU32(a.into()))
     check(r == e)
 }
 
 public fun testVmvnqU32() {
-    val a = u32x4.new(0, 1, 2, 3)
-    val e = u32x4.new(4294967295, 4294967294, 4294967293, 4294967292)
+    val a = Simd<UInt>(listOf(0u, 1u, 2u, 3u))
+    val e = Simd<UInt>(listOf(4294967295u, 4294967294u, 4294967293u, 4294967292u))
     val r = u32x4.from(vmvnqU32(a.into()))
     check(r == e)
 }
 
 public fun testVmvnP8() {
-    val a = u8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val e = u8x8.new(255, 254, 253, 252, 251, 250, 249, 248)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
+    val e = Simd<UByte>(listOf(255u.toUByte(), 254u.toUByte(), 253u.toUByte(), 252u.toUByte(), 251u.toUByte(), 250u.toUByte(), 249u.toUByte(), 248u.toUByte()))
     val r = u8x8.from(vmvnP8(a.into()))
     check(r == e)
 }
 
 public fun testVmvnqP8() {
-    val a = u8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val e = u8x16.new(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte()))
+    val e = Simd<UByte>(listOf(255u.toUByte(), 254u.toUByte(), 253u.toUByte(), 252u.toUByte(), 251u.toUByte(), 250u.toUByte(), 249u.toUByte(), 248u.toUByte(), 247u.toUByte(), 246u.toUByte(), 245u.toUByte(), 244u.toUByte(), 243u.toUByte(), 242u.toUByte(), 241u.toUByte(), 240u.toUByte()))
     val r = u8x16.from(vmvnqP8(a.into()))
     check(r == e)
 }
 
 public fun testVbicS8() {
-    val a = i8x8.new(0, -1, -2, -3, -4, -5, -6, -7)
-    val b = i8x8.new(1, 1, 1, 1, 1, 1, 1, 1)
-    val e = i8x8.new(0, -2, -2, -4, -4, -6, -6, -8)
+    val a = Simd<Byte>(listOf(0.toByte(), (-1).toByte(), (-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte()))
+    val b = Simd<Byte>(listOf(1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte()))
+    val e = Simd<Byte>(listOf(0.toByte(), (-2).toByte(), (-2).toByte(), (-4).toByte(), (-4).toByte(), (-6).toByte(), (-6).toByte(), (-8).toByte()))
     val r = i8x8.from(vbicS8(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVbicqS8() {
-    val a = i8x16.new(0, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15)
-    val b = i8x16.new(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-    val e = i8x16.new(0, -2, -2, -4, -4, -6, -6, -8, -8, -10, -10, -12, -12, -14, -14, -16)
+    val a = Simd<Byte>(listOf(0.toByte(), (-1).toByte(), (-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte()))
+    val b = Simd<Byte>(listOf(1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte()))
+    val e = Simd<Byte>(listOf(0.toByte(), (-2).toByte(), (-2).toByte(), (-4).toByte(), (-4).toByte(), (-6).toByte(), (-6).toByte(), (-8).toByte(), (-8).toByte(), (-10).toByte(), (-10).toByte(), (-12).toByte(), (-12).toByte(), (-14).toByte(), (-14).toByte(), (-16).toByte()))
     val r = i8x16.from(vbicqS8(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVbicS16() {
-    val a = i16x4.new(0, -1, -2, -3)
-    val b = i16x4.new(1, 1, 1, 1)
-    val e = i16x4.new(0, -2, -2, -4)
+    val a = Simd<Short>(listOf(0.toShort(), (-1).toShort(), (-2).toShort(), (-3).toShort()))
+    val b = Simd<Short>(listOf(1.toShort(), 1.toShort(), 1.toShort(), 1.toShort()))
+    val e = Simd<Short>(listOf(0.toShort(), (-2).toShort(), (-2).toShort(), (-4).toShort()))
     val r = i16x4.from(vbicS16(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVbicqS16() {
-    val a = i16x8.new(0, -1, -2, -3, -4, -5, -6, -7)
-    val b = i16x8.new(1, 1, 1, 1, 1, 1, 1, 1)
-    val e = i16x8.new(0, -2, -2, -4, -4, -6, -6, -8)
+    val a = Simd<Short>(listOf(0.toShort(), (-1).toShort(), (-2).toShort(), (-3).toShort(), (-4).toShort(), (-5).toShort(), (-6).toShort(), (-7).toShort()))
+    val b = Simd<Short>(listOf(1.toShort(), 1.toShort(), 1.toShort(), 1.toShort(), 1.toShort(), 1.toShort(), 1.toShort(), 1.toShort()))
+    val e = Simd<Short>(listOf(0.toShort(), (-2).toShort(), (-2).toShort(), (-4).toShort(), (-4).toShort(), (-6).toShort(), (-6).toShort(), (-8).toShort()))
     val r = i16x8.from(vbicqS16(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVbicS32() {
-    val a = i32x2.new(0, -1)
-    val b = i32x2.new(1, 1)
-    val e = i32x2.new(0, -2)
+    val a = Simd<Int>(listOf(0, -1))
+    val b = Simd<Int>(listOf(1, 1))
+    val e = Simd<Int>(listOf(0, -2))
     val r = i32x2.from(vbicS32(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVbicqS32() {
-    val a = i32x4.new(0, -1, -2, -3)
-    val b = i32x4.new(1, 1, 1, 1)
-    val e = i32x4.new(0, -2, -2, -4)
+    val a = Simd<Int>(listOf(0, -1, -2, -3))
+    val b = Simd<Int>(listOf(1, 1, 1, 1))
+    val e = Simd<Int>(listOf(0, -2, -2, -4))
     val r = i32x4.from(vbicqS32(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVbicS64() {
-    val a = i64x1.new(-1)
-    val b = i64x1.new(1)
-    val e = i64x1.new(-2)
+    val a = Simd<Long>(listOf(-1L))
+    val b = Simd<Long>(listOf(1L))
+    val e = Simd<Long>(listOf(-2L))
     val r = i64x1.from(vbicS64(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVbicqS64() {
-    val a = i64x2.new(0, -1)
-    val b = i64x2.new(1, 1)
-    val e = i64x2.new(0, -2)
+    val a = Simd<Long>(listOf(0L, -1L))
+    val b = Simd<Long>(listOf(1L, 1L))
+    val e = Simd<Long>(listOf(0L, -2L))
     val r = i64x2.from(vbicqS64(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVbicU8() {
-    val a = u8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val b = u8x8.new(1, 1, 1, 1, 1, 1, 1, 1)
-    val e = u8x8.new(0, 0, 2, 2, 4, 4, 6, 6)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
+    val b = Simd<UByte>(listOf(1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte()))
+    val e = Simd<UByte>(listOf(0u.toUByte(), 0u.toUByte(), 2u.toUByte(), 2u.toUByte(), 4u.toUByte(), 4u.toUByte(), 6u.toUByte(), 6u.toUByte()))
     val r = u8x8.from(vbicU8(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVbicqU8() {
-    val a = u8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val b = u8x16.new(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-    val e = u8x16.new(0, 0, 2, 2, 4, 4, 6, 6, 8, 8, 10, 10, 12, 12, 14, 14)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte()))
+    val b = Simd<UByte>(listOf(1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte()))
+    val e = Simd<UByte>(listOf(0u.toUByte(), 0u.toUByte(), 2u.toUByte(), 2u.toUByte(), 4u.toUByte(), 4u.toUByte(), 6u.toUByte(), 6u.toUByte(), 8u.toUByte(), 8u.toUByte(), 10u.toUByte(), 10u.toUByte(), 12u.toUByte(), 12u.toUByte(), 14u.toUByte(), 14u.toUByte()))
     val r = u8x16.from(vbicqU8(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVbicU16() {
-    val a = u16x4.new(0, 1, 2, 3)
-    val b = u16x4.new(1, 1, 1, 1)
-    val e = u16x4.new(0, 0, 2, 2)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort()))
+    val b = Simd<UShort>(listOf(1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort()))
+    val e = Simd<UShort>(listOf(0u.toUShort(), 0u.toUShort(), 2u.toUShort(), 2u.toUShort()))
     val r = u16x4.from(vbicU16(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVbicqU16() {
-    val a = u16x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val b = u16x8.new(1, 1, 1, 1, 1, 1, 1, 1)
-    val e = u16x8.new(0, 0, 2, 2, 4, 4, 6, 6)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort()))
+    val b = Simd<UShort>(listOf(1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort()))
+    val e = Simd<UShort>(listOf(0u.toUShort(), 0u.toUShort(), 2u.toUShort(), 2u.toUShort(), 4u.toUShort(), 4u.toUShort(), 6u.toUShort(), 6u.toUShort()))
     val r = u16x8.from(vbicqU16(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVbicU32() {
-    val a = u32x2.new(0, 1)
-    val b = u32x2.new(1, 1)
-    val e = u32x2.new(0, 0)
+    val a = Simd<UInt>(listOf(0u, 1u))
+    val b = Simd<UInt>(listOf(1u, 1u))
+    val e = Simd<UInt>(listOf(0u, 0u))
     val r = u32x2.from(vbicU32(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVbicqU32() {
-    val a = u32x4.new(0, 1, 2, 3)
-    val b = u32x4.new(1, 1, 1, 1)
-    val e = u32x4.new(0, 0, 2, 2)
+    val a = Simd<UInt>(listOf(0u, 1u, 2u, 3u))
+    val b = Simd<UInt>(listOf(1u, 1u, 1u, 1u))
+    val e = Simd<UInt>(listOf(0u, 0u, 2u, 2u))
     val r = u32x4.from(vbicqU32(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVbicU64() {
-    val a = u64x1.new(1)
-    val b = u64x1.new(1)
-    val e = u64x1.new(0)
+    val a = Simd<ULong>(listOf(1uL))
+    val b = Simd<ULong>(listOf(1uL))
+    val e = Simd<ULong>(listOf(0uL))
     val r = u64x1.from(vbicU64(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVbicqU64() {
-    val a = u64x2.new(0, 1)
-    val b = u64x2.new(1, 1)
-    val e = u64x2.new(0, 0)
+    val a = Simd<ULong>(listOf(0uL, 1uL))
+    val b = Simd<ULong>(listOf(1uL, 1uL))
+    val e = Simd<ULong>(listOf(0uL, 0uL))
     val r = u64x2.from(vbicqU64(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVbslS8() {
-    val a = u8x8.new(UByte.MAX_VALUE, 1, UByte.MAX_VALUE, 2, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0)
-    val b = i8x8.new(Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE)
-    val c = i8x8.new(Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE)
-    val e = i8x8.new(Byte.MAX_VALUE, (Byte.MIN_VALUE.toInt() or (1.toByte()).toInt()).toByte(), Byte.MAX_VALUE, (Byte.MIN_VALUE.toInt() or (2.toByte()).toInt()).toByte(), Byte.MAX_VALUE, Byte.MIN_VALUE, Byte.MAX_VALUE, Byte.MIN_VALUE)
+    val a = Simd<UByte>(listOf(UByte.MAX_VALUE, 1u.toUByte(), UByte.MAX_VALUE, 2u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte()))
+    val b = Simd<Byte>(listOf(Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE))
+    val c = Simd<Byte>(listOf(Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE))
+    val e = Simd<Byte>(listOf(Byte.MAX_VALUE, (Byte.MIN_VALUE.toInt() or (1.toByte()).toInt()).toByte(), Byte.MAX_VALUE, (Byte.MIN_VALUE.toInt() or (2.toByte()).toInt()).toByte(), Byte.MAX_VALUE, Byte.MIN_VALUE, Byte.MAX_VALUE, Byte.MIN_VALUE))
     val r = i8x8.from(vbslS8(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslS16() {
-    val a = u16x4.new(UShort.MAX_VALUE, 0, 1, 2)
-    val b = i16x4.new(Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE)
-    val c = i16x4.new(Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE)
-    val e = i16x4.new(Short.MAX_VALUE, Short.MIN_VALUE, (Short.MIN_VALUE.toInt() or (1.toShort()).toInt()).toShort(), (Short.MIN_VALUE.toInt() or (2.toShort()).toInt()).toShort())
+    val a = Simd<UShort>(listOf(UShort.MAX_VALUE, 0u.toUShort(), 1u.toUShort(), 2u.toUShort()))
+    val b = Simd<Short>(listOf(Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE))
+    val c = Simd<Short>(listOf(Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE))
+    val e = Simd<Short>(listOf(Short.MAX_VALUE, Short.MIN_VALUE, (Short.MIN_VALUE.toInt() or (1.toShort()).toInt()).toShort(), (Short.MIN_VALUE.toInt() or (2.toShort()).toInt()).toShort()))
     val r = i16x4.from(vbslS16(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslS32() {
-    val a = u32x2.new(UInt.MAX_VALUE, 1)
-    val b = i32x2.new(Int.MAX_VALUE, Int.MAX_VALUE)
-    val c = i32x2.new(Int.MIN_VALUE, Int.MIN_VALUE)
-    val e = i32x2.new(Int.MAX_VALUE, Int.MIN_VALUE or 1)
+    val a = Simd<UInt>(listOf(UInt.MAX_VALUE, 1u))
+    val b = Simd<Int>(listOf(Int.MAX_VALUE, Int.MAX_VALUE))
+    val c = Simd<Int>(listOf(Int.MIN_VALUE, Int.MIN_VALUE))
+    val e = Simd<Int>(listOf(Int.MAX_VALUE, Int.MIN_VALUE or 1))
     val r = i32x2.from(vbslS32(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslS64() {
-    val a = u64x1.new(1)
-    val b = i64x1.new(Long.MAX_VALUE)
-    val c = i64x1.new(Long.MIN_VALUE)
-    val e = i64x1.new(Long.MIN_VALUE or 1L)
+    val a = Simd<ULong>(listOf(1uL))
+    val b = Simd<Long>(listOf(Long.MAX_VALUE))
+    val c = Simd<Long>(listOf(Long.MIN_VALUE))
+    val e = Simd<Long>(listOf(Long.MIN_VALUE or 1L))
     val r = i64x1.from(vbslS64(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslU8() {
-    val a = u8x8.new(UByte.MAX_VALUE, 1, UByte.MAX_VALUE, 2, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0)
-    val b = u8x8.new(UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE)
-    val c = u8x8.new(UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE)
-    val e = u8x8.new(UByte.MAX_VALUE, 1, UByte.MAX_VALUE, 2, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE)
+    val a = Simd<UByte>(listOf(UByte.MAX_VALUE, 1u.toUByte(), UByte.MAX_VALUE, 2u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte()))
+    val b = Simd<UByte>(listOf(UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE))
+    val c = Simd<UByte>(listOf(UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE))
+    val e = Simd<UByte>(listOf(UByte.MAX_VALUE, 1u.toUByte(), UByte.MAX_VALUE, 2u.toUByte(), UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE))
     val r = u8x8.from(vbslU8(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslU16() {
-    val a = u16x4.new(UShort.MAX_VALUE, 0, 1, 2)
-    val b = u16x4.new(UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE)
-    val c = u16x4.new(UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE)
-    val e = u16x4.new(UShort.MAX_VALUE, 0, 1, 2)
+    val a = Simd<UShort>(listOf(UShort.MAX_VALUE, 0u.toUShort(), 1u.toUShort(), 2u.toUShort()))
+    val b = Simd<UShort>(listOf(UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE))
+    val c = Simd<UShort>(listOf(UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE))
+    val e = Simd<UShort>(listOf(UShort.MAX_VALUE, 0u.toUShort(), 1u.toUShort(), 2u.toUShort()))
     val r = u16x4.from(vbslU16(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslU32() {
-    val a = u32x2.new(UInt.MAX_VALUE, 2)
-    val b = u32x2.new(UInt.MAX_VALUE, UInt.MAX_VALUE)
-    val c = u32x2.new(UInt.MIN_VALUE, UInt.MIN_VALUE)
-    val e = u32x2.new(UInt.MAX_VALUE, 2)
+    val a = Simd<UInt>(listOf(UInt.MAX_VALUE, 2u))
+    val b = Simd<UInt>(listOf(UInt.MAX_VALUE, UInt.MAX_VALUE))
+    val c = Simd<UInt>(listOf(UInt.MIN_VALUE, UInt.MIN_VALUE))
+    val e = Simd<UInt>(listOf(UInt.MAX_VALUE, 2u))
     val r = u32x2.from(vbslU32(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslU64() {
-    val a = u64x1.new(2)
-    val b = u64x1.new(ULong.MAX_VALUE)
-    val c = u64x1.new(ULong.MIN_VALUE)
-    val e = u64x1.new(2)
+    val a = Simd<ULong>(listOf(2uL))
+    val b = Simd<ULong>(listOf(ULong.MAX_VALUE))
+    val c = Simd<ULong>(listOf(ULong.MIN_VALUE))
+    val e = Simd<ULong>(listOf(2uL))
     val r = u64x1.from(vbslU64(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslF32() {
-    val a = u32x2.new(1, 0x80000000)
-    val b = f32x2.new(8388609.0f, -1.23f)
-    val c = f32x2.new(2097152.0f, 2.34f)
-    val e = f32x2.new(2097152.25f, -2.34f)
+    val a = Simd<UInt>(listOf(1u, 0x80000000u))
+    val b = Simd<Float>(listOf(8388609.0f.toFloat(), -1.23f))
+    val c = Simd<Float>(listOf(2097152.0f.toFloat(), 2.34f))
+    val e = Simd<Float>(listOf(2097152.25f, -2.34f))
     val r = f32x2.from(vbslF32(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslP8() {
-    val a = u8x8.new(UByte.MAX_VALUE, 1, UByte.MAX_VALUE, 2, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0)
-    val b = u8x8.new(UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE)
-    val c = u8x8.new(UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE)
-    val e = u8x8.new(UByte.MAX_VALUE, 1, UByte.MAX_VALUE, 2, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE)
+    val a = Simd<UByte>(listOf(UByte.MAX_VALUE, 1u.toUByte(), UByte.MAX_VALUE, 2u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte()))
+    val b = Simd<UByte>(listOf(UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE))
+    val c = Simd<UByte>(listOf(UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE))
+    val e = Simd<UByte>(listOf(UByte.MAX_VALUE, 1u.toUByte(), UByte.MAX_VALUE, 2u.toUByte(), UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE))
     val r = u8x8.from(vbslP8(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslP16() {
-    val a = u16x4.new(UShort.MAX_VALUE, 0, 1, 2)
-    val b = u16x4.new(UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE)
-    val c = u16x4.new(UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE)
-    val e = u16x4.new(UShort.MAX_VALUE, 0, 1, 2)
+    val a = Simd<UShort>(listOf(UShort.MAX_VALUE, 0u.toUShort(), 1u.toUShort(), 2u.toUShort()))
+    val b = Simd<UShort>(listOf(UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE))
+    val c = Simd<UShort>(listOf(UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE))
+    val e = Simd<UShort>(listOf(UShort.MAX_VALUE, 0u.toUShort(), 1u.toUShort(), 2u.toUShort()))
     val r = u16x4.from(vbslP16(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslqS8() {
-    val a = u8x16.new(UByte.MAX_VALUE, 1, UByte.MAX_VALUE, 2, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0)
-    val b = i8x16.new(Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE)
-    val c = i8x16.new(Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE)
-    val e = i8x16.new(Byte.MAX_VALUE, (Byte.MIN_VALUE.toInt() or (1.toByte()).toInt()).toByte(), Byte.MAX_VALUE, (Byte.MIN_VALUE.toInt() or (2.toByte()).toInt()).toByte(), Byte.MAX_VALUE, Byte.MIN_VALUE, Byte.MAX_VALUE, Byte.MIN_VALUE, Byte.MAX_VALUE, Byte.MIN_VALUE, Byte.MAX_VALUE, Byte.MIN_VALUE, Byte.MAX_VALUE, Byte.MIN_VALUE, Byte.MAX_VALUE, Byte.MIN_VALUE)
+    val a = Simd<UByte>(listOf(UByte.MAX_VALUE, 1u.toUByte(), UByte.MAX_VALUE, 2u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte()))
+    val b = Simd<Byte>(listOf(Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE))
+    val c = Simd<Byte>(listOf(Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE))
+    val e = Simd<Byte>(listOf(Byte.MAX_VALUE, (Byte.MIN_VALUE.toInt() or (1.toByte()).toInt()).toByte(), Byte.MAX_VALUE, (Byte.MIN_VALUE.toInt() or (2.toByte()).toInt()).toByte(), Byte.MAX_VALUE, Byte.MIN_VALUE, Byte.MAX_VALUE, Byte.MIN_VALUE, Byte.MAX_VALUE, Byte.MIN_VALUE, Byte.MAX_VALUE, Byte.MIN_VALUE, Byte.MAX_VALUE, Byte.MIN_VALUE, Byte.MAX_VALUE, Byte.MIN_VALUE))
     val r = i8x16.from(vbslqS8(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslqS16() {
-    val a = u16x8.new(UShort.MAX_VALUE, 1, UShort.MAX_VALUE, 2, UShort.MAX_VALUE, 0, UShort.MAX_VALUE, 0)
-    val b = i16x8.new(Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE)
-    val c = i16x8.new(Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE)
-    val e = i16x8.new(Short.MAX_VALUE, (Short.MIN_VALUE.toInt() or (1.toShort()).toInt()).toShort(), Short.MAX_VALUE, (Short.MIN_VALUE.toInt() or (2.toShort()).toInt()).toShort(), Short.MAX_VALUE, Short.MIN_VALUE, Short.MAX_VALUE, Short.MIN_VALUE)
+    val a = Simd<UShort>(listOf(UShort.MAX_VALUE, 1u.toUShort(), UShort.MAX_VALUE, 2u.toUShort(), UShort.MAX_VALUE, 0u.toUShort(), UShort.MAX_VALUE, 0u.toUShort()))
+    val b = Simd<Short>(listOf(Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE))
+    val c = Simd<Short>(listOf(Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE))
+    val e = Simd<Short>(listOf(Short.MAX_VALUE, (Short.MIN_VALUE.toInt() or (1.toShort()).toInt()).toShort(), Short.MAX_VALUE, (Short.MIN_VALUE.toInt() or (2.toShort()).toInt()).toShort(), Short.MAX_VALUE, Short.MIN_VALUE, Short.MAX_VALUE, Short.MIN_VALUE))
     val r = i16x8.from(vbslqS16(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslqS32() {
-    val a = u32x4.new(UInt.MAX_VALUE, 1, UInt.MAX_VALUE, 2)
-    val b = i32x4.new(Int.MAX_VALUE, Int.MAX_VALUE, Int.MAX_VALUE, Int.MAX_VALUE)
-    val c = i32x4.new(Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE)
-    val e = i32x4.new(Int.MAX_VALUE, Int.MIN_VALUE or 1, Int.MAX_VALUE, Int.MIN_VALUE or 2)
+    val a = Simd<UInt>(listOf(UInt.MAX_VALUE, 1u, UInt.MAX_VALUE, 2u))
+    val b = Simd<Int>(listOf(Int.MAX_VALUE, Int.MAX_VALUE, Int.MAX_VALUE, Int.MAX_VALUE))
+    val c = Simd<Int>(listOf(Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE))
+    val e = Simd<Int>(listOf(Int.MAX_VALUE, Int.MIN_VALUE or 1, Int.MAX_VALUE, Int.MIN_VALUE or 2))
     val r = i32x4.from(vbslqS32(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslqS64() {
-    val a = u64x2.new(ULong.MAX_VALUE, 1)
-    val b = i64x2.new(Long.MAX_VALUE, Long.MAX_VALUE)
-    val c = i64x2.new(Long.MIN_VALUE, Long.MIN_VALUE)
-    val e = i64x2.new(Long.MAX_VALUE, Long.MIN_VALUE or 1L)
+    val a = Simd<ULong>(listOf(ULong.MAX_VALUE, 1uL))
+    val b = Simd<Long>(listOf(Long.MAX_VALUE, Long.MAX_VALUE))
+    val c = Simd<Long>(listOf(Long.MIN_VALUE, Long.MIN_VALUE))
+    val e = Simd<Long>(listOf(Long.MAX_VALUE, Long.MIN_VALUE or 1L))
     val r = i64x2.from(vbslqS64(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslqU8() {
-    val a = u8x16.new(UByte.MAX_VALUE, 1, UByte.MAX_VALUE, 2, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0)
-    val b = u8x16.new(UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE)
-    val c = u8x16.new(UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE)
-    val e = u8x16.new(UByte.MAX_VALUE, 1, UByte.MAX_VALUE, 2, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE)
+    val a = Simd<UByte>(listOf(UByte.MAX_VALUE, 1u.toUByte(), UByte.MAX_VALUE, 2u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte()))
+    val b = Simd<UByte>(listOf(UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE))
+    val c = Simd<UByte>(listOf(UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE))
+    val e = Simd<UByte>(listOf(UByte.MAX_VALUE, 1u.toUByte(), UByte.MAX_VALUE, 2u.toUByte(), UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE))
     val r = u8x16.from(vbslqU8(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslqU16() {
-    val a = u16x8.new(UShort.MAX_VALUE, 1, UShort.MAX_VALUE, 2, UShort.MAX_VALUE, 0, UShort.MAX_VALUE, 0)
-    val b = u16x8.new(UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE)
-    val c = u16x8.new(UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE)
-    val e = u16x8.new(UShort.MAX_VALUE, 1, UShort.MAX_VALUE, 2, UShort.MAX_VALUE, UShort.MIN_VALUE, UShort.MAX_VALUE, UShort.MIN_VALUE)
+    val a = Simd<UShort>(listOf(UShort.MAX_VALUE, 1u.toUShort(), UShort.MAX_VALUE, 2u.toUShort(), UShort.MAX_VALUE, 0u.toUShort(), UShort.MAX_VALUE, 0u.toUShort()))
+    val b = Simd<UShort>(listOf(UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE))
+    val c = Simd<UShort>(listOf(UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE))
+    val e = Simd<UShort>(listOf(UShort.MAX_VALUE, 1u.toUShort(), UShort.MAX_VALUE, 2u.toUShort(), UShort.MAX_VALUE, UShort.MIN_VALUE, UShort.MAX_VALUE, UShort.MIN_VALUE))
     val r = u16x8.from(vbslqU16(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslqU32() {
-    val a = u32x4.new(UInt.MAX_VALUE, 1, UInt.MAX_VALUE, 2)
-    val b = u32x4.new(UInt.MAX_VALUE, UInt.MAX_VALUE, UInt.MAX_VALUE, UInt.MAX_VALUE)
-    val c = u32x4.new(UInt.MIN_VALUE, UInt.MIN_VALUE, UInt.MIN_VALUE, UInt.MIN_VALUE)
-    val e = u32x4.new(UInt.MAX_VALUE, 1, UInt.MAX_VALUE, 2)
+    val a = Simd<UInt>(listOf(UInt.MAX_VALUE, 1u, UInt.MAX_VALUE, 2u))
+    val b = Simd<UInt>(listOf(UInt.MAX_VALUE, UInt.MAX_VALUE, UInt.MAX_VALUE, UInt.MAX_VALUE))
+    val c = Simd<UInt>(listOf(UInt.MIN_VALUE, UInt.MIN_VALUE, UInt.MIN_VALUE, UInt.MIN_VALUE))
+    val e = Simd<UInt>(listOf(UInt.MAX_VALUE, 1u, UInt.MAX_VALUE, 2u))
     val r = u32x4.from(vbslqU32(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslqU64() {
-    val a = u64x2.new(ULong.MAX_VALUE, 1)
-    val b = u64x2.new(ULong.MAX_VALUE, ULong.MAX_VALUE)
-    val c = u64x2.new(ULong.MIN_VALUE, ULong.MIN_VALUE)
-    val e = u64x2.new(ULong.MAX_VALUE, 1)
+    val a = Simd<ULong>(listOf(ULong.MAX_VALUE, 1uL))
+    val b = Simd<ULong>(listOf(ULong.MAX_VALUE, ULong.MAX_VALUE))
+    val c = Simd<ULong>(listOf(ULong.MIN_VALUE, ULong.MIN_VALUE))
+    val e = Simd<ULong>(listOf(ULong.MAX_VALUE, 1uL))
     val r = u64x2.from(vbslqU64(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslqF32() {
-    val a = u32x4.new(UInt.MAX_VALUE, 0, 1, 0x80000000)
-    val b = f32x4.new(-1.23f, -1.23f, 8388609.0f, -1.23f)
-    val c = f32x4.new(2.34f, 2.34f, 2097152.0f, 2.34f)
-    val e = f32x4.new(-1.23f, 2.34f, 2097152.25f, -2.34f)
+    val a = Simd<UInt>(listOf(UInt.MAX_VALUE, 0u, 1u, 0x80000000u))
+    val b = Simd<Float>(listOf(-1.23f, -1.23f, 8388609.0f.toFloat(), -1.23f))
+    val c = Simd<Float>(listOf(2.34f, 2.34f, 2097152.0f.toFloat(), 2.34f))
+    val e = Simd<Float>(listOf(-1.23f, 2.34f, 2097152.25f, -2.34f))
     val r = f32x4.from(vbslqF32(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslqP8() {
-    val a = u8x16.new(UByte.MAX_VALUE, 1, UByte.MAX_VALUE, 2, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0, UByte.MAX_VALUE, 0)
-    val b = u8x16.new(UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE)
-    val c = u8x16.new(UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE)
-    val e = u8x16.new(UByte.MAX_VALUE, 1, UByte.MAX_VALUE, 2, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE)
+    val a = Simd<UByte>(listOf(UByte.MAX_VALUE, 1u.toUByte(), UByte.MAX_VALUE, 2u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte(), UByte.MAX_VALUE, 0u.toUByte()))
+    val b = Simd<UByte>(listOf(UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE, UByte.MAX_VALUE))
+    val c = Simd<UByte>(listOf(UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE, UByte.MIN_VALUE))
+    val e = Simd<UByte>(listOf(UByte.MAX_VALUE, 1u.toUByte(), UByte.MAX_VALUE, 2u.toUByte(), UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE, UByte.MAX_VALUE, UByte.MIN_VALUE))
     val r = u8x16.from(vbslqP8(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVbslqP16() {
-    val a = u16x8.new(UShort.MAX_VALUE, 1, UShort.MAX_VALUE, 2, UShort.MAX_VALUE, 0, UShort.MAX_VALUE, 0)
-    val b = u16x8.new(UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE)
-    val c = u16x8.new(UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE)
-    val e = u16x8.new(UShort.MAX_VALUE, 1, UShort.MAX_VALUE, 2, UShort.MAX_VALUE, UShort.MIN_VALUE, UShort.MAX_VALUE, UShort.MIN_VALUE)
+    val a = Simd<UShort>(listOf(UShort.MAX_VALUE, 1u.toUShort(), UShort.MAX_VALUE, 2u.toUShort(), UShort.MAX_VALUE, 0u.toUShort(), UShort.MAX_VALUE, 0u.toUShort()))
+    val b = Simd<UShort>(listOf(UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE, UShort.MAX_VALUE))
+    val c = Simd<UShort>(listOf(UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE, UShort.MIN_VALUE))
+    val e = Simd<UShort>(listOf(UShort.MAX_VALUE, 1u.toUShort(), UShort.MAX_VALUE, 2u.toUShort(), UShort.MAX_VALUE, UShort.MIN_VALUE, UShort.MAX_VALUE, UShort.MIN_VALUE))
     val r = u16x8.from(vbslqP16(a.into(), b.into(), c.into()))
     check(r == e)
 }
 
 public fun testVornS8() {
-    val a = i8x8.new(0, -1, -2, -3, -4, -5, -6, -7)
-    val b = i8x8.new(-2, -2, -2, -2, -2, -2, -2, -2)
-    val e = i8x8.new(1, -1, -1, -3, -3, -5, -5, -7)
+    val a = Simd<Byte>(listOf(0.toByte(), (-1).toByte(), (-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte()))
+    val b = Simd<Byte>(listOf((-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte()))
+    val e = Simd<Byte>(listOf(1.toByte(), (-1).toByte(), (-1).toByte(), (-3).toByte(), (-3).toByte(), (-5).toByte(), (-5).toByte(), (-7).toByte()))
     val r = i8x8.from(vornS8(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVornqS8() {
-    val a = i8x16.new(0, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15)
-    val b = i8x16.new(-2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2)
-    val e = i8x16.new(1, -1, -1, -3, -3, -5, -5, -7, -7, -9, -9, -11, -11, -13, -13, -15)
+    val a = Simd<Byte>(listOf(0.toByte(), (-1).toByte(), (-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte()))
+    val b = Simd<Byte>(listOf((-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte(), (-2).toByte()))
+    val e = Simd<Byte>(listOf(1.toByte(), (-1).toByte(), (-1).toByte(), (-3).toByte(), (-3).toByte(), (-5).toByte(), (-5).toByte(), (-7).toByte(), (-7).toByte(), (-9).toByte(), (-9).toByte(), (-11).toByte(), (-11).toByte(), (-13).toByte(), (-13).toByte(), (-15).toByte()))
     val r = i8x16.from(vornqS8(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVornS16() {
-    val a = i16x4.new(0, -1, -2, -3)
-    val b = i16x4.new(-2, -2, -2, -2)
-    val e = i16x4.new(1, -1, -1, -3)
+    val a = Simd<Short>(listOf(0.toShort(), (-1).toShort(), (-2).toShort(), (-3).toShort()))
+    val b = Simd<Short>(listOf((-2).toShort(), (-2).toShort(), (-2).toShort(), (-2).toShort()))
+    val e = Simd<Short>(listOf(1.toShort(), (-1).toShort(), (-1).toShort(), (-3).toShort()))
     val r = i16x4.from(vornS16(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVornqS16() {
-    val a = i16x8.new(0, -1, -2, -3, -4, -5, -6, -7)
-    val b = i16x8.new(-2, -2, -2, -2, -2, -2, -2, -2)
-    val e = i16x8.new(1, -1, -1, -3, -3, -5, -5, -7)
+    val a = Simd<Short>(listOf(0.toShort(), (-1).toShort(), (-2).toShort(), (-3).toShort(), (-4).toShort(), (-5).toShort(), (-6).toShort(), (-7).toShort()))
+    val b = Simd<Short>(listOf((-2).toShort(), (-2).toShort(), (-2).toShort(), (-2).toShort(), (-2).toShort(), (-2).toShort(), (-2).toShort(), (-2).toShort()))
+    val e = Simd<Short>(listOf(1.toShort(), (-1).toShort(), (-1).toShort(), (-3).toShort(), (-3).toShort(), (-5).toShort(), (-5).toShort(), (-7).toShort()))
     val r = i16x8.from(vornqS16(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVornS32() {
-    val a = i32x2.new(0, -1)
-    val b = i32x2.new(-2, -2)
-    val e = i32x2.new(1, -1)
+    val a = Simd<Int>(listOf(0, -1))
+    val b = Simd<Int>(listOf(-2, -2))
+    val e = Simd<Int>(listOf(1, -1))
     val r = i32x2.from(vornS32(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVornqS32() {
-    val a = i32x4.new(0, -1, -2, -3)
-    val b = i32x4.new(-2, -2, -2, -2)
-    val e = i32x4.new(1, -1, -1, -3)
+    val a = Simd<Int>(listOf(0, -1, -2, -3))
+    val b = Simd<Int>(listOf(-2, -2, -2, -2))
+    val e = Simd<Int>(listOf(1, -1, -1, -3))
     val r = i32x4.from(vornqS32(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVornS64() {
-    val a = i64x1.new(0)
-    val b = i64x1.new(-2)
-    val e = i64x1.new(1)
+    val a = Simd<Long>(listOf(0L))
+    val b = Simd<Long>(listOf(-2L))
+    val e = Simd<Long>(listOf(1L))
     val r = i64x1.from(vornS64(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVornqS64() {
-    val a = i64x2.new(0, -1)
-    val b = i64x2.new(-2, -2)
-    val e = i64x2.new(1, -1)
+    val a = Simd<Long>(listOf(0L, -1L))
+    val b = Simd<Long>(listOf(-2L, -2L))
+    val e = Simd<Long>(listOf(1L, -1L))
     val r = i64x2.from(vornqS64(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVornU8() {
-    val a = u8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
     val t = UByte.MAX_VALUE - 1u
-    val b = u8x8.new(t, t, t, t, t, t, t, t)
-    val e = u8x8.new(1, 1, 3, 3, 5, 5, 7, 7)
+    val b = Simd<UByte>(listOf(t, t, t, t, t, t, t, t))
+    val e = Simd<UByte>(listOf(1u.toUByte(), 1u.toUByte(), 3u.toUByte(), 3u.toUByte(), 5u.toUByte(), 5u.toUByte(), 7u.toUByte(), 7u.toUByte()))
     val r = u8x8.from(vornU8(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVornqU8() {
-    val a = u8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte()))
     val t = UByte.MAX_VALUE - 1u
-    val b = u8x16.new(t, t, t, t, t, t, t, t, t, t, t, t, t, t, t, t)
-    val e = u8x16.new(1, 1, 3, 3, 5, 5, 7, 7, 9, 9, 11, 11, 13, 13, 15, 15)
+    val b = Simd<UByte>(listOf(t, t, t, t, t, t, t, t, t, t, t, t, t, t, t, t))
+    val e = Simd<UByte>(listOf(1u.toUByte(), 1u.toUByte(), 3u.toUByte(), 3u.toUByte(), 5u.toUByte(), 5u.toUByte(), 7u.toUByte(), 7u.toUByte(), 9u.toUByte(), 9u.toUByte(), 11u.toUByte(), 11u.toUByte(), 13u.toUByte(), 13u.toUByte(), 15u.toUByte(), 15u.toUByte()))
     val r = u8x16.from(vornqU8(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVornU16() {
-    val a = u16x4.new(0, 1, 2, 3)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort()))
     val t = UShort.MAX_VALUE - 1u
-    val b = u16x4.new(t, t, t, t)
-    val e = u16x4.new(1, 1, 3, 3)
+    val b = Simd<UShort>(listOf(t, t, t, t))
+    val e = Simd<UShort>(listOf(1u.toUShort(), 1u.toUShort(), 3u.toUShort(), 3u.toUShort()))
     val r = u16x4.from(vornU16(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVornqU16() {
-    val a = u16x8.new(0, 1, 2, 3, 4, 5, 6, 7)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort()))
     val t = UShort.MAX_VALUE - 1u
-    val b = u16x8.new(t, t, t, t, t, t, t, t)
-    val e = u16x8.new(1, 1, 3, 3, 5, 5, 7, 7)
+    val b = Simd<UShort>(listOf(t, t, t, t, t, t, t, t))
+    val e = Simd<UShort>(listOf(1u.toUShort(), 1u.toUShort(), 3u.toUShort(), 3u.toUShort(), 5u.toUShort(), 5u.toUShort(), 7u.toUShort(), 7u.toUShort()))
     val r = u16x8.from(vornqU16(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVornU32() {
-    val a = u32x2.new(0, 1)
+    val a = Simd<UInt>(listOf(0u, 1u))
     val t = UInt.MAX_VALUE - 1u
-    val b = u32x2.new(t, t)
-    val e = u32x2.new(1, 1)
+    val b = Simd<UInt>(listOf(t, t))
+    val e = Simd<UInt>(listOf(1u, 1u))
     val r = u32x2.from(vornU32(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVornqU32() {
-    val a = u32x4.new(0, 1, 2, 3)
+    val a = Simd<UInt>(listOf(0u, 1u, 2u, 3u))
     val t = UInt.MAX_VALUE - 1u
-    val b = u32x4.new(t, t, t, t)
-    val e = u32x4.new(1, 1, 3, 3)
+    val b = Simd<UInt>(listOf(t, t, t, t))
+    val e = Simd<UInt>(listOf(1u, 1u, 3u, 3u))
     val r = u32x4.from(vornqU32(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVornU64() {
-    val a = u64x1.new(0)
+    val a = Simd<ULong>(listOf(0uL))
     val t = ULong.MAX_VALUE - 1uL
-    val b = u64x1.new(t)
-    val e = u64x1.new(1)
+    val b = Simd<ULong>(listOf(t))
+    val e = Simd<ULong>(listOf(1uL))
     val r = u64x1.from(vornU64(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVornqU64() {
-    val a = u64x2.new(0, 1)
+    val a = Simd<ULong>(listOf(0uL, 1uL))
     val t = ULong.MAX_VALUE - 1uL
-    val b = u64x2.new(t, t)
-    val e = u64x2.new(1, 1)
+    val b = Simd<ULong>(listOf(t, t))
+    val e = Simd<ULong>(listOf(1uL, 1uL))
     val r = u64x2.from(vornqU64(a.into(), b.into()))
     check(r == e)
 }
 
 public fun testVmovnS16() {
-    val a = i16x8.new(1, 2, 3, 4, 5, 6, 7, 8)
-    val e = i8x8.new(1, 2, 3, 4, 5, 6, 7, 8)
+    val a = Simd<Short>(listOf(1.toShort(), 2.toShort(), 3.toShort(), 4.toShort(), 5.toShort(), 6.toShort(), 7.toShort(), 8.toShort()))
+    val e = Simd<Byte>(listOf(1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 7.toByte(), 8.toByte()))
     val r = i8x8.from(vmovnS16(a.into()))
     check(r == e)
 }
 
 public fun testVmovnS32() {
-    val a = i32x4.new(1, 2, 3, 4)
-    val e = i16x4.new(1, 2, 3, 4)
+    val a = Simd<Int>(listOf(1, 2, 3, 4))
+    val e = Simd<Short>(listOf(1.toShort(), 2.toShort(), 3.toShort(), 4.toShort()))
     val r = i16x4.from(vmovnS32(a.into()))
     check(r == e)
 }
 
 public fun testVmovnS64() {
-    val a = i64x2.new(1, 2)
-    val e = i32x2.new(1, 2)
+    val a = Simd<Long>(listOf(1L, 2L))
+    val e = Simd<Int>(listOf(1, 2))
     val r = i32x2.from(vmovnS64(a.into()))
     check(r == e)
 }
 
 public fun testVmovnU16() {
-    val a = u16x8.new(1, 2, 3, 4, 5, 6, 7, 8)
-    val e = u8x8.new(1, 2, 3, 4, 5, 6, 7, 8)
+    val a = Simd<UShort>(listOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort(), 8u.toUShort()))
+    val e = Simd<UByte>(listOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte()))
     val r = u8x8.from(vmovnU16(a.into()))
     check(r == e)
 }
 
 public fun testVmovnU32() {
-    val a = u32x4.new(1, 2, 3, 4)
-    val e = u16x4.new(1, 2, 3, 4)
+    val a = Simd<UInt>(listOf(1u, 2u, 3u, 4u))
+    val e = Simd<UShort>(listOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort()))
     val r = u16x4.from(vmovnU32(a.into()))
     check(r == e)
 }
 
 public fun testVmovnU64() {
-    val a = u64x2.new(1, 2)
-    val e = u32x2.new(1, 2)
+    val a = Simd<ULong>(listOf(1uL, 2uL))
+    val e = Simd<UInt>(listOf(1u, 2u))
     val r = u32x2.from(vmovnU64(a.into()))
     check(r == e)
 }
 
 public fun testVmovlS8() {
-    val e = i16x8.new(1, 2, 3, 4, 5, 6, 7, 8)
-    val a = i8x8.new(1, 2, 3, 4, 5, 6, 7, 8)
+    val e = Simd<Short>(listOf(1.toShort(), 2.toShort(), 3.toShort(), 4.toShort(), 5.toShort(), 6.toShort(), 7.toShort(), 8.toShort()))
+    val a = Simd<Byte>(listOf(1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 7.toByte(), 8.toByte()))
     val r = i16x8.from(vmovlS8(a.into()))
     check(r == e)
 }
 
 public fun testVmovlS16() {
-    val e = i32x4.new(1, 2, 3, 4)
-    val a = i16x4.new(1, 2, 3, 4)
+    val e = Simd<Int>(listOf(1, 2, 3, 4))
+    val a = Simd<Short>(listOf(1.toShort(), 2.toShort(), 3.toShort(), 4.toShort()))
     val r = i32x4.from(vmovlS16(a.into()))
     check(r == e)
 }
 
 public fun testVmovlS32() {
-    val e = i64x2.new(1, 2)
-    val a = i32x2.new(1, 2)
+    val e = Simd<Long>(listOf(1L, 2L))
+    val a = Simd<Int>(listOf(1, 2))
     val r = i64x2.from(vmovlS32(a.into()))
     check(r == e)
 }
 
 public fun testVmovlU8() {
-    val e = u16x8.new(1, 2, 3, 4, 5, 6, 7, 8)
-    val a = u8x8.new(1, 2, 3, 4, 5, 6, 7, 8)
+    val e = Simd<UShort>(listOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort(), 8u.toUShort()))
+    val a = Simd<UByte>(listOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte()))
     val r = u16x8.from(vmovlU8(a.into()))
     check(r == e)
 }
 
 public fun testVmovlU16() {
-    val e = u32x4.new(1, 2, 3, 4)
-    val a = u16x4.new(1, 2, 3, 4)
+    val e = Simd<UInt>(listOf(1u, 2u, 3u, 4u))
+    val a = Simd<UShort>(listOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort()))
     val r = u32x4.from(vmovlU16(a.into()))
     check(r == e)
 }
 
 public fun testVmovlU32() {
-    val e = u64x2.new(1, 2)
-    val a = u32x2.new(1, 2)
+    val e = Simd<ULong>(listOf(1uL, 2uL))
+    val a = Simd<UInt>(listOf(1u, 2u))
     val r = u64x2.from(vmovlU32(a.into()))
     check(r == e)
 }
@@ -3085,361 +3086,361 @@ public fun testVhsubqU32() {
 }
 
 public fun testVabaS8() {
-    val a = i8x8.new(1, 2, 3, 4, 5, 6, 7, 8)
-    val b = i8x8.new(1, 1, 1, 1, 1, 1, 1, 1)
-    val c = i8x8.new(10, 9, 8, 7, 6, 5, 4, 3)
+    val a = Simd<Byte>(listOf(1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 7.toByte(), 8.toByte()))
+    val b = Simd<Byte>(listOf(1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte()))
+    val c = Simd<Byte>(listOf(10.toByte(), 9.toByte(), 8.toByte(), 7.toByte(), 6.toByte(), 5.toByte(), 4.toByte(), 3.toByte()))
     val r = i8x8.from(vabaS8(a.into(), b.into(), c.into()))
-    val e = i8x8.new(10, 10, 10, 10, 10, 10, 10, 10)
+    val e = Simd<Byte>(listOf(10.toByte(), 10.toByte(), 10.toByte(), 10.toByte(), 10.toByte(), 10.toByte(), 10.toByte(), 10.toByte()))
     check(r == e)
 }
 
 public fun testVabaS16() {
-    val a = i16x4.new(1, 2, 3, 4)
-    val b = i16x4.new(1, 1, 1, 1)
-    val c = i16x4.new(10, 9, 8, 7)
+    val a = Simd<Short>(listOf(1.toShort(), 2.toShort(), 3.toShort(), 4.toShort()))
+    val b = Simd<Short>(listOf(1.toShort(), 1.toShort(), 1.toShort(), 1.toShort()))
+    val c = Simd<Short>(listOf(10.toShort(), 9.toShort(), 8.toShort(), 7.toShort()))
     val r = i16x4.from(vabaS16(a.into(), b.into(), c.into()))
-    val e = i16x4.new(10, 10, 10, 10)
+    val e = Simd<Short>(listOf(10.toShort(), 10.toShort(), 10.toShort(), 10.toShort()))
     check(r == e)
 }
 
 public fun testVabaS32() {
-    val a = i32x2.new(1, 2)
-    val b = i32x2.new(1, 1)
-    val c = i32x2.new(10, 9)
+    val a = Simd<Int>(listOf(1, 2))
+    val b = Simd<Int>(listOf(1, 1))
+    val c = Simd<Int>(listOf(10, 9))
     val r = i32x2.from(vabaS32(a.into(), b.into(), c.into()))
-    val e = i32x2.new(10, 10)
+    val e = Simd<Int>(listOf(10, 10))
     check(r == e)
 }
 
 public fun testVabaU8() {
-    val a = u8x8.new(1, 2, 3, 4, 5, 6, 7, 8)
-    val b = u8x8.new(1, 1, 1, 1, 1, 1, 1, 1)
-    val c = u8x8.new(10, 9, 8, 7, 6, 5, 4, 3)
+    val a = Simd<UByte>(listOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte()))
+    val b = Simd<UByte>(listOf(1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte()))
+    val c = Simd<UByte>(listOf(10u.toUByte(), 9u.toUByte(), 8u.toUByte(), 7u.toUByte(), 6u.toUByte(), 5u.toUByte(), 4u.toUByte(), 3u.toUByte()))
     val r = u8x8.from(vabaU8(a.into(), b.into(), c.into()))
-    val e = u8x8.new(10, 10, 10, 10, 10, 10, 10, 10)
+    val e = Simd<UByte>(listOf(10u.toUByte(), 10u.toUByte(), 10u.toUByte(), 10u.toUByte(), 10u.toUByte(), 10u.toUByte(), 10u.toUByte(), 10u.toUByte()))
     check(r == e)
 }
 
 public fun testVabaU16() {
-    val a = u16x4.new(1, 2, 3, 4)
-    val b = u16x4.new(1, 1, 1, 1)
-    val c = u16x4.new(10, 9, 8, 7)
+    val a = Simd<UShort>(listOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort()))
+    val b = Simd<UShort>(listOf(1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort()))
+    val c = Simd<UShort>(listOf(10u.toUShort(), 9u.toUShort(), 8u.toUShort(), 7u.toUShort()))
     val r = u16x4.from(vabaU16(a.into(), b.into(), c.into()))
-    val e = u16x4.new(10, 10, 10, 10)
+    val e = Simd<UShort>(listOf(10u.toUShort(), 10u.toUShort(), 10u.toUShort(), 10u.toUShort()))
     check(r == e)
 }
 
 public fun testVabaU32() {
-    val a = u32x2.new(1, 2)
-    val b = u32x2.new(1, 1)
-    val c = u32x2.new(10, 9)
+    val a = Simd<UInt>(listOf(1u, 2u))
+    val b = Simd<UInt>(listOf(1u, 1u))
+    val c = Simd<UInt>(listOf(10u, 9u))
     val r = u32x2.from(vabaU32(a.into(), b.into(), c.into()))
-    val e = u32x2.new(10, 10)
+    val e = Simd<UInt>(listOf(10u, 10u))
     check(r == e)
 }
 
 public fun testVabaqS8() {
-    val a = i8x16.new(1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2)
-    val b = i8x16.new(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-    val c = i8x16.new(10, 9, 8, 7, 6, 5, 4, 3, 12, 13, 14, 15, 16, 17, 18, 19)
+    val a = Simd<Byte>(listOf(1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 7.toByte(), 8.toByte(), 9.toByte(), 8.toByte(), 7.toByte(), 6.toByte(), 5.toByte(), 4.toByte(), 3.toByte(), 2.toByte()))
+    val b = Simd<Byte>(listOf(1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte(), 1.toByte()))
+    val c = Simd<Byte>(listOf(10.toByte(), 9.toByte(), 8.toByte(), 7.toByte(), 6.toByte(), 5.toByte(), 4.toByte(), 3.toByte(), 12.toByte(), 13.toByte(), 14.toByte(), 15.toByte(), 16.toByte(), 17.toByte(), 18.toByte(), 19.toByte()))
     val r = i8x16.from(vabaqS8(a.into(), b.into(), c.into()))
-    val e = i8x16.new(10, 10, 10, 10, 10, 10, 10, 10, 20, 20, 20, 20, 20, 20, 20, 20)
+    val e = Simd<Byte>(listOf(10.toByte(), 10.toByte(), 10.toByte(), 10.toByte(), 10.toByte(), 10.toByte(), 10.toByte(), 10.toByte(), 20.toByte(), 20.toByte(), 20.toByte(), 20.toByte(), 20.toByte(), 20.toByte(), 20.toByte(), 20.toByte()))
     check(r == e)
 }
 
 public fun testVabaqS16() {
-    val a = i16x8.new(1, 2, 3, 4, 5, 6, 7, 8)
-    val b = i16x8.new(1, 1, 1, 1, 1, 1, 1, 1)
-    val c = i16x8.new(10, 9, 8, 7, 6, 5, 4, 3)
+    val a = Simd<Short>(listOf(1.toShort(), 2.toShort(), 3.toShort(), 4.toShort(), 5.toShort(), 6.toShort(), 7.toShort(), 8.toShort()))
+    val b = Simd<Short>(listOf(1.toShort(), 1.toShort(), 1.toShort(), 1.toShort(), 1.toShort(), 1.toShort(), 1.toShort(), 1.toShort()))
+    val c = Simd<Short>(listOf(10.toShort(), 9.toShort(), 8.toShort(), 7.toShort(), 6.toShort(), 5.toShort(), 4.toShort(), 3.toShort()))
     val r = i16x8.from(vabaqS16(a.into(), b.into(), c.into()))
-    val e = i16x8.new(10, 10, 10, 10, 10, 10, 10, 10)
+    val e = Simd<Short>(listOf(10.toShort(), 10.toShort(), 10.toShort(), 10.toShort(), 10.toShort(), 10.toShort(), 10.toShort(), 10.toShort()))
     check(r == e)
 }
 
 public fun testVabaqS32() {
-    val a = i32x4.new(1, 2, 3, 4)
-    val b = i32x4.new(1, 1, 1, 1)
-    val c = i32x4.new(10, 9, 8, 7)
+    val a = Simd<Int>(listOf(1, 2, 3, 4))
+    val b = Simd<Int>(listOf(1, 1, 1, 1))
+    val c = Simd<Int>(listOf(10, 9, 8, 7))
     val r = i32x4.from(vabaqS32(a.into(), b.into(), c.into()))
-    val e = i32x4.new(10, 10, 10, 10)
+    val e = Simd<Int>(listOf(10, 10, 10, 10))
     check(r == e)
 }
 
 public fun testVabaqU8() {
-    val a = u8x16.new(1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2)
-    val b = u8x16.new(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-    val c = u8x16.new(10, 9, 8, 7, 6, 5, 4, 3, 12, 13, 14, 15, 16, 17, 18, 19)
+    val a = Simd<UByte>(listOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 8u.toUByte(), 7u.toUByte(), 6u.toUByte(), 5u.toUByte(), 4u.toUByte(), 3u.toUByte(), 2u.toUByte()))
+    val b = Simd<UByte>(listOf(1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte()))
+    val c = Simd<UByte>(listOf(10u.toUByte(), 9u.toUByte(), 8u.toUByte(), 7u.toUByte(), 6u.toUByte(), 5u.toUByte(), 4u.toUByte(), 3u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte(), 17u.toUByte(), 18u.toUByte(), 19u.toUByte()))
     val r = u8x16.from(vabaqU8(a.into(), b.into(), c.into()))
-    val e = u8x16.new(10, 10, 10, 10, 10, 10, 10, 10, 20, 20, 20, 20, 20, 20, 20, 20)
+    val e = Simd<UByte>(listOf(10u.toUByte(), 10u.toUByte(), 10u.toUByte(), 10u.toUByte(), 10u.toUByte(), 10u.toUByte(), 10u.toUByte(), 10u.toUByte(), 20u.toUByte(), 20u.toUByte(), 20u.toUByte(), 20u.toUByte(), 20u.toUByte(), 20u.toUByte(), 20u.toUByte(), 20u.toUByte()))
     check(r == e)
 }
 
 public fun testVabaqU16() {
-    val a = u16x8.new(1, 2, 3, 4, 5, 6, 7, 8)
-    val b = u16x8.new(1, 1, 1, 1, 1, 1, 1, 1)
-    val c = u16x8.new(10, 9, 8, 7, 6, 5, 4, 3)
+    val a = Simd<UShort>(listOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort(), 8u.toUShort()))
+    val b = Simd<UShort>(listOf(1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort()))
+    val c = Simd<UShort>(listOf(10u.toUShort(), 9u.toUShort(), 8u.toUShort(), 7u.toUShort(), 6u.toUShort(), 5u.toUShort(), 4u.toUShort(), 3u.toUShort()))
     val r = u16x8.from(vabaqU16(a.into(), b.into(), c.into()))
-    val e = u16x8.new(10, 10, 10, 10, 10, 10, 10, 10)
+    val e = Simd<UShort>(listOf(10u.toUShort(), 10u.toUShort(), 10u.toUShort(), 10u.toUShort(), 10u.toUShort(), 10u.toUShort(), 10u.toUShort(), 10u.toUShort()))
     check(r == e)
 }
 
 public fun testVabaqU32() {
-    val a = u32x4.new(1, 2, 3, 4)
-    val b = u32x4.new(1, 1, 1, 1)
-    val c = u32x4.new(10, 9, 8, 7)
+    val a = Simd<UInt>(listOf(1u, 2u, 3u, 4u))
+    val b = Simd<UInt>(listOf(1u, 1u, 1u, 1u))
+    val c = Simd<UInt>(listOf(10u, 9u, 8u, 7u))
     val r = u32x4.from(vabaqU32(a.into(), b.into(), c.into()))
-    val e = u32x4.new(10, 10, 10, 10)
+    val e = Simd<UInt>(listOf(10u, 10u, 10u, 10u))
     check(r == e)
 }
 
 public fun testVrev16S8() {
-    val a = i8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = i8x8.new(1, 0, 3, 2, 5, 4, 7, 6)
+    val a = Simd<Byte>(listOf(0.toByte(), 1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 7.toByte()))
+    val r = Simd<Byte>(listOf(1.toByte(), 0.toByte(), 3.toByte(), 2.toByte(), 5.toByte(), 4.toByte(), 7.toByte(), 6.toByte()))
     val e = i8x8.from(vrev16S8(a.into()))
     check(r == e)
 }
 
 public fun testVrev16qS8() {
-    val a = i8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = i8x16.new(1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14)
+    val a = Simd<Byte>(listOf(0.toByte(), 1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 7.toByte(), 8.toByte(), 9.toByte(), 10.toByte(), 11.toByte(), 12.toByte(), 13.toByte(), 14.toByte(), 15.toByte()))
+    val r = Simd<Byte>(listOf(1.toByte(), 0.toByte(), 3.toByte(), 2.toByte(), 5.toByte(), 4.toByte(), 7.toByte(), 6.toByte(), 9.toByte(), 8.toByte(), 11.toByte(), 10.toByte(), 13.toByte(), 12.toByte(), 15.toByte(), 14.toByte()))
     val e = i8x16.from(vrev16qS8(a.into()))
     check(r == e)
 }
 
 public fun testVrev16U8() {
-    val a = u8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = u8x8.new(1, 0, 3, 2, 5, 4, 7, 6)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
+    val r = Simd<UByte>(listOf(1u.toUByte(), 0u.toUByte(), 3u.toUByte(), 2u.toUByte(), 5u.toUByte(), 4u.toUByte(), 7u.toUByte(), 6u.toUByte()))
     val e = u8x8.from(vrev16U8(a.into()))
     check(r == e)
 }
 
 public fun testVrev16qU8() {
-    val a = u8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = u8x16.new(1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte()))
+    val r = Simd<UByte>(listOf(1u.toUByte(), 0u.toUByte(), 3u.toUByte(), 2u.toUByte(), 5u.toUByte(), 4u.toUByte(), 7u.toUByte(), 6u.toUByte(), 9u.toUByte(), 8u.toUByte(), 11u.toUByte(), 10u.toUByte(), 13u.toUByte(), 12u.toUByte(), 15u.toUByte(), 14u.toUByte()))
     val e = u8x16.from(vrev16qU8(a.into()))
     check(r == e)
 }
 
 public fun testVrev16P8() {
-    val a = u8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = u8x8.new(1, 0, 3, 2, 5, 4, 7, 6)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
+    val r = Simd<UByte>(listOf(1u.toUByte(), 0u.toUByte(), 3u.toUByte(), 2u.toUByte(), 5u.toUByte(), 4u.toUByte(), 7u.toUByte(), 6u.toUByte()))
     val e = u8x8.from(vrev16P8(a.into()))
     check(r == e)
 }
 
 public fun testVrev16qP8() {
-    val a = u8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = u8x16.new(1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte()))
+    val r = Simd<UByte>(listOf(1u.toUByte(), 0u.toUByte(), 3u.toUByte(), 2u.toUByte(), 5u.toUByte(), 4u.toUByte(), 7u.toUByte(), 6u.toUByte(), 9u.toUByte(), 8u.toUByte(), 11u.toUByte(), 10u.toUByte(), 13u.toUByte(), 12u.toUByte(), 15u.toUByte(), 14u.toUByte()))
     val e = u8x16.from(vrev16qP8(a.into()))
     check(r == e)
 }
 
 public fun testVrev32S8() {
-    val a = i8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = i8x8.new(3, 2, 1, 0, 7, 6, 5, 4)
+    val a = Simd<Byte>(listOf(0.toByte(), 1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 7.toByte()))
+    val r = Simd<Byte>(listOf(3.toByte(), 2.toByte(), 1.toByte(), 0.toByte(), 7.toByte(), 6.toByte(), 5.toByte(), 4.toByte()))
     val e = i8x8.from(vrev32S8(a.into()))
     check(r == e)
 }
 
 public fun testVrev32qS8() {
-    val a = i8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = i8x16.new(3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12)
+    val a = Simd<Byte>(listOf(0.toByte(), 1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 7.toByte(), 8.toByte(), 9.toByte(), 10.toByte(), 11.toByte(), 12.toByte(), 13.toByte(), 14.toByte(), 15.toByte()))
+    val r = Simd<Byte>(listOf(3.toByte(), 2.toByte(), 1.toByte(), 0.toByte(), 7.toByte(), 6.toByte(), 5.toByte(), 4.toByte(), 11.toByte(), 10.toByte(), 9.toByte(), 8.toByte(), 15.toByte(), 14.toByte(), 13.toByte(), 12.toByte()))
     val e = i8x16.from(vrev32qS8(a.into()))
     check(r == e)
 }
 
 public fun testVrev32U8() {
-    val a = u8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = u8x8.new(3, 2, 1, 0, 7, 6, 5, 4)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
+    val r = Simd<UByte>(listOf(3u.toUByte(), 2u.toUByte(), 1u.toUByte(), 0u.toUByte(), 7u.toUByte(), 6u.toUByte(), 5u.toUByte(), 4u.toUByte()))
     val e = u8x8.from(vrev32U8(a.into()))
     check(r == e)
 }
 
 public fun testVrev32qU8() {
-    val a = u8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = u8x16.new(3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte()))
+    val r = Simd<UByte>(listOf(3u.toUByte(), 2u.toUByte(), 1u.toUByte(), 0u.toUByte(), 7u.toUByte(), 6u.toUByte(), 5u.toUByte(), 4u.toUByte(), 11u.toUByte(), 10u.toUByte(), 9u.toUByte(), 8u.toUByte(), 15u.toUByte(), 14u.toUByte(), 13u.toUByte(), 12u.toUByte()))
     val e = u8x16.from(vrev32qU8(a.into()))
     check(r == e)
 }
 
 public fun testVrev32S16() {
-    val a = i16x4.new(0, 1, 2, 3)
-    val r = i16x4.new(1, 0, 3, 2)
+    val a = Simd<Short>(listOf(0.toShort(), 1.toShort(), 2.toShort(), 3.toShort()))
+    val r = Simd<Short>(listOf(1.toShort(), 0.toShort(), 3.toShort(), 2.toShort()))
     val e = i16x4.from(vrev32S16(a.into()))
     check(r == e)
 }
 
 public fun testVrev32qS16() {
-    val a = i16x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = i16x8.new(1, 0, 3, 2, 5, 4, 7, 6)
+    val a = Simd<Short>(listOf(0.toShort(), 1.toShort(), 2.toShort(), 3.toShort(), 4.toShort(), 5.toShort(), 6.toShort(), 7.toShort()))
+    val r = Simd<Short>(listOf(1.toShort(), 0.toShort(), 3.toShort(), 2.toShort(), 5.toShort(), 4.toShort(), 7.toShort(), 6.toShort()))
     val e = i16x8.from(vrev32qS16(a.into()))
     check(r == e)
 }
 
 public fun testVrev32P16() {
-    val a = u16x4.new(0, 1, 2, 3)
-    val r = u16x4.new(1, 0, 3, 2)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort()))
+    val r = Simd<UShort>(listOf(1u.toUShort(), 0u.toUShort(), 3u.toUShort(), 2u.toUShort()))
     val e = u16x4.from(vrev32P16(a.into()))
     check(r == e)
 }
 
 public fun testVrev32qP16() {
-    val a = u16x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = u16x8.new(1, 0, 3, 2, 5, 4, 7, 6)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort()))
+    val r = Simd<UShort>(listOf(1u.toUShort(), 0u.toUShort(), 3u.toUShort(), 2u.toUShort(), 5u.toUShort(), 4u.toUShort(), 7u.toUShort(), 6u.toUShort()))
     val e = u16x8.from(vrev32qP16(a.into()))
     check(r == e)
 }
 
 public fun testVrev32U16() {
-    val a = u16x4.new(0, 1, 2, 3)
-    val r = u16x4.new(1, 0, 3, 2)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort()))
+    val r = Simd<UShort>(listOf(1u.toUShort(), 0u.toUShort(), 3u.toUShort(), 2u.toUShort()))
     val e = u16x4.from(vrev32U16(a.into()))
     check(r == e)
 }
 
 public fun testVrev32qU16() {
-    val a = u16x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = u16x8.new(1, 0, 3, 2, 5, 4, 7, 6)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort()))
+    val r = Simd<UShort>(listOf(1u.toUShort(), 0u.toUShort(), 3u.toUShort(), 2u.toUShort(), 5u.toUShort(), 4u.toUShort(), 7u.toUShort(), 6u.toUShort()))
     val e = u16x8.from(vrev32qU16(a.into()))
     check(r == e)
 }
 
 public fun testVrev32P8() {
-    val a = u8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = u8x8.new(3, 2, 1, 0, 7, 6, 5, 4)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
+    val r = Simd<UByte>(listOf(3u.toUByte(), 2u.toUByte(), 1u.toUByte(), 0u.toUByte(), 7u.toUByte(), 6u.toUByte(), 5u.toUByte(), 4u.toUByte()))
     val e = u8x8.from(vrev32P8(a.into()))
     check(r == e)
 }
 
 public fun testVrev32qP8() {
-    val a = u8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = u8x16.new(3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte()))
+    val r = Simd<UByte>(listOf(3u.toUByte(), 2u.toUByte(), 1u.toUByte(), 0u.toUByte(), 7u.toUByte(), 6u.toUByte(), 5u.toUByte(), 4u.toUByte(), 11u.toUByte(), 10u.toUByte(), 9u.toUByte(), 8u.toUByte(), 15u.toUByte(), 14u.toUByte(), 13u.toUByte(), 12u.toUByte()))
     val e = u8x16.from(vrev32qP8(a.into()))
     check(r == e)
 }
 
 public fun testVrev64S8() {
-    val a = i8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = i8x8.new(7, 6, 5, 4, 3, 2, 1, 0)
+    val a = Simd<Byte>(listOf(0.toByte(), 1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 7.toByte()))
+    val r = Simd<Byte>(listOf(7.toByte(), 6.toByte(), 5.toByte(), 4.toByte(), 3.toByte(), 2.toByte(), 1.toByte(), 0.toByte()))
     val e = i8x8.from(vrev64S8(a.into()))
     check(r == e)
 }
 
 public fun testVrev64qS8() {
-    val a = i8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = i8x16.new(7, 6, 5, 4, 3, 2, 1, 0, 15, 14, 13, 12, 11, 10, 9, 8)
+    val a = Simd<Byte>(listOf(0.toByte(), 1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 7.toByte(), 8.toByte(), 9.toByte(), 10.toByte(), 11.toByte(), 12.toByte(), 13.toByte(), 14.toByte(), 15.toByte()))
+    val r = Simd<Byte>(listOf(7.toByte(), 6.toByte(), 5.toByte(), 4.toByte(), 3.toByte(), 2.toByte(), 1.toByte(), 0.toByte(), 15.toByte(), 14.toByte(), 13.toByte(), 12.toByte(), 11.toByte(), 10.toByte(), 9.toByte(), 8.toByte()))
     val e = i8x16.from(vrev64qS8(a.into()))
     check(r == e)
 }
 
 public fun testVrev64S16() {
-    val a = i16x4.new(0, 1, 2, 3)
-    val r = i16x4.new(3, 2, 1, 0)
+    val a = Simd<Short>(listOf(0.toShort(), 1.toShort(), 2.toShort(), 3.toShort()))
+    val r = Simd<Short>(listOf(3.toShort(), 2.toShort(), 1.toShort(), 0.toShort()))
     val e = i16x4.from(vrev64S16(a.into()))
     check(r == e)
 }
 
 public fun testVrev64qS16() {
-    val a = i16x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = i16x8.new(3, 2, 1, 0, 7, 6, 5, 4)
+    val a = Simd<Short>(listOf(0.toShort(), 1.toShort(), 2.toShort(), 3.toShort(), 4.toShort(), 5.toShort(), 6.toShort(), 7.toShort()))
+    val r = Simd<Short>(listOf(3.toShort(), 2.toShort(), 1.toShort(), 0.toShort(), 7.toShort(), 6.toShort(), 5.toShort(), 4.toShort()))
     val e = i16x8.from(vrev64qS16(a.into()))
     check(r == e)
 }
 
 public fun testVrev64S32() {
-    val a = i32x2.new(0, 1)
-    val r = i32x2.new(1, 0)
+    val a = Simd<Int>(listOf(0, 1))
+    val r = Simd<Int>(listOf(1, 0))
     val e = i32x2.from(vrev64S32(a.into()))
     check(r == e)
 }
 
 public fun testVrev64qS32() {
-    val a = i32x4.new(0, 1, 2, 3)
-    val r = i32x4.new(1, 0, 3, 2)
+    val a = Simd<Int>(listOf(0, 1, 2, 3))
+    val r = Simd<Int>(listOf(1, 0, 3, 2))
     val e = i32x4.from(vrev64qS32(a.into()))
     check(r == e)
 }
 
 public fun testVrev64U8() {
-    val a = u8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = u8x8.new(7, 6, 5, 4, 3, 2, 1, 0)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
+    val r = Simd<UByte>(listOf(7u.toUByte(), 6u.toUByte(), 5u.toUByte(), 4u.toUByte(), 3u.toUByte(), 2u.toUByte(), 1u.toUByte(), 0u.toUByte()))
     val e = u8x8.from(vrev64U8(a.into()))
     check(r == e)
 }
 
 public fun testVrev64qU8() {
-    val a = u8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = u8x16.new(7, 6, 5, 4, 3, 2, 1, 0, 15, 14, 13, 12, 11, 10, 9, 8)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte()))
+    val r = Simd<UByte>(listOf(7u.toUByte(), 6u.toUByte(), 5u.toUByte(), 4u.toUByte(), 3u.toUByte(), 2u.toUByte(), 1u.toUByte(), 0u.toUByte(), 15u.toUByte(), 14u.toUByte(), 13u.toUByte(), 12u.toUByte(), 11u.toUByte(), 10u.toUByte(), 9u.toUByte(), 8u.toUByte()))
     val e = u8x16.from(vrev64qU8(a.into()))
     check(r == e)
 }
 
 public fun testVrev64U16() {
-    val a = u16x4.new(0, 1, 2, 3)
-    val r = u16x4.new(3, 2, 1, 0)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort()))
+    val r = Simd<UShort>(listOf(3u.toUShort(), 2u.toUShort(), 1u.toUShort(), 0u.toUShort()))
     val e = u16x4.from(vrev64U16(a.into()))
     check(r == e)
 }
 
 public fun testVrev64qU16() {
-    val a = u16x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = u16x8.new(3, 2, 1, 0, 7, 6, 5, 4)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort()))
+    val r = Simd<UShort>(listOf(3u.toUShort(), 2u.toUShort(), 1u.toUShort(), 0u.toUShort(), 7u.toUShort(), 6u.toUShort(), 5u.toUShort(), 4u.toUShort()))
     val e = u16x8.from(vrev64qU16(a.into()))
     check(r == e)
 }
 
 public fun testVrev64U32() {
-    val a = u32x2.new(0, 1)
-    val r = u32x2.new(1, 0)
+    val a = Simd<UInt>(listOf(0u, 1u))
+    val r = Simd<UInt>(listOf(1u, 0u))
     val e = u32x2.from(vrev64U32(a.into()))
     check(r == e)
 }
 
 public fun testVrev64qU32() {
-    val a = u32x4.new(0, 1, 2, 3)
-    val r = u32x4.new(1, 0, 3, 2)
+    val a = Simd<UInt>(listOf(0u, 1u, 2u, 3u))
+    val r = Simd<UInt>(listOf(1u, 0u, 3u, 2u))
     val e = u32x4.from(vrev64qU32(a.into()))
     check(r == e)
 }
 
 public fun testVrev64F32() {
-    val a = f32x2.new(1.0, 2.0)
-    val r = f32x2.new(2.0, 1.0)
+    val a = Simd<Float>(listOf(1.0f.toFloat(), 2.0f.toFloat()))
+    val r = Simd<Float>(listOf(2.0f.toFloat(), 1.0f.toFloat()))
     val e = f32x2.from(vrev64F32(a.into()))
     check(r == e)
 }
 
 public fun testVrev64qF32() {
-    val a = f32x4.new(1.0, 2.0, -2.0, -1.0)
-    val r = f32x4.new(2.0, 1.0, -1.0, -2.0)
+    val a = Simd<Float>(listOf(1.0f.toFloat(), 2.0f.toFloat(), (-2.0f).toFloat(), (-1.0f).toFloat()))
+    val r = Simd<Float>(listOf(2.0f.toFloat(), 1.0f.toFloat(), (-1.0f).toFloat(), (-2.0f).toFloat()))
     val e = f32x4.from(vrev64qF32(a.into()))
     check(r == e)
 }
 
 public fun testVrev64P8() {
-    val a = u8x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = u8x8.new(7, 6, 5, 4, 3, 2, 1, 0)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
+    val r = Simd<UByte>(listOf(7u.toUByte(), 6u.toUByte(), 5u.toUByte(), 4u.toUByte(), 3u.toUByte(), 2u.toUByte(), 1u.toUByte(), 0u.toUByte()))
     val e = u8x8.from(vrev64P8(a.into()))
     check(r == e)
 }
 
 public fun testVrev64qP8() {
-    val a = u8x16.new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = u8x16.new(7, 6, 5, 4, 3, 2, 1, 0, 15, 14, 13, 12, 11, 10, 9, 8)
+    val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte()))
+    val r = Simd<UByte>(listOf(7u.toUByte(), 6u.toUByte(), 5u.toUByte(), 4u.toUByte(), 3u.toUByte(), 2u.toUByte(), 1u.toUByte(), 0u.toUByte(), 15u.toUByte(), 14u.toUByte(), 13u.toUByte(), 12u.toUByte(), 11u.toUByte(), 10u.toUByte(), 9u.toUByte(), 8u.toUByte()))
     val e = u8x16.from(vrev64qP8(a.into()))
     check(r == e)
 }
 
 public fun testVrev64P16() {
-    val a = u16x4.new(0, 1, 2, 3)
-    val r = u16x4.new(3, 2, 1, 0)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort()))
+    val r = Simd<UShort>(listOf(3u.toUShort(), 2u.toUShort(), 1u.toUShort(), 0u.toUShort()))
     val e = u16x4.from(vrev64P16(a.into()))
     check(r == e)
 }
 
 public fun testVrev64qP16() {
-    val a = u16x8.new(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = u16x8.new(3, 2, 1, 0, 7, 6, 5, 4)
+    val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort()))
+    val r = Simd<UShort>(listOf(3u.toUShort(), 2u.toUShort(), 1u.toUShort(), 0u.toUShort(), 7u.toUShort(), 6u.toUShort(), 5u.toUShort(), 4u.toUShort()))
     val e = u16x8.from(vrev64qP16(a.into()))
     check(r == e)
 }
@@ -3878,31 +3879,31 @@ public fun crc32() {
 }
 
 public fun testVld1LaneF16() {
-    val a = f16x4.new(0.0, 1.0, 2.0, 3.0)
+    val a = Simd<F16>(listOf(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f)))
     val elem: F16 = F16.fromFloat(42.0f)
-    val e = f16x4.new(0.0, 1.0, 2.0, 42.0)
+    val e = Simd<F16>(listOf(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(42.0f)))
     val r = f16x4.from(vld1LaneF16(elem, a.into(), 3))
     check(r == e)
 }
 
 public fun testVld1qLaneF16() {
-    val a = f16x8.new(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0)
+    val a = Simd<F16>(listOf(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f)))
     val elem: F16 = F16.fromFloat(42.0f)
-    val e = f16x8.new(0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 42.0)
+    val e = Simd<F16>(listOf(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(42.0f)))
     val r = f16x8.from(vld1qLaneF16(elem, a.into(), 7))
     check(r == e)
 }
 
 public fun testVld1DupF16() {
     val elem: F16 = F16.fromFloat(42.0f)
-    val e = f16x4.new(42.0, 42.0, 42.0, 42.0)
+    val e = Simd<F16>(listOf(F16.fromFloat(42.0f), F16.fromFloat(42.0f), F16.fromFloat(42.0f), F16.fromFloat(42.0f)))
     val r = f16x4.from(vld1DupF16(elem))
     check(r == e)
 }
 
 public fun testVld1qDupF16() {
     val elem: F16 = F16.fromFloat(42.0f)
-    val e = f16x8.new(42.0, 42.0, 42.0, 42.0, 42.0, 42.0, 42.0, 42.0)
+    val e = Simd<F16>(listOf(F16.fromFloat(42.0f), F16.fromFloat(42.0f), F16.fromFloat(42.0f), F16.fromFloat(42.0f), F16.fromFloat(42.0f), F16.fromFloat(42.0f), F16.fromFloat(42.0f), F16.fromFloat(42.0f)))
     val r = f16x8.from(vld1qDupF16(elem))
     check(r == e)
 }

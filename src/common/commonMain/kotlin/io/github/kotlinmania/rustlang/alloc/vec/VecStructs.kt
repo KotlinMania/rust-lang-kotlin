@@ -16,9 +16,14 @@ import io.github.kotlinmania.rustlang.alloc.vec.sveretain.MIN_SVE_SIZE_8
 import io.github.kotlinmania.rustlang.alloc.vec.sveretain.PanicGuard
 import io.github.kotlinmania.rustlang.alloc.vec.sveretain.chunkedRetain
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.hint.unlikely
+import io.github.kotlinmania.rustlang.core.iter
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.zip
+import io.github.kotlinmania.rustlang.core.iter.sources.repeatwith.repeatWith
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.marker.Freeze
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -35,13 +40,14 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
 import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
-import io.github.kotlinmania.rustlang.core.option.Iter
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.dangling
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -1988,7 +1994,7 @@ public open class Vec<T, A : Allocator> internal constructor(
     public open fun append(other: Vec<T, A>) {
         // ignore-tidy-undocumented-unchecked
         run {
-            this.appendElements(((other.asSlice() as Any?) as Unit))
+            this.appendElements(other.asSlice())
             other.setLen(0)
         }
     }
@@ -2008,7 +2014,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      * Appends elements to `self` from other buffer, returning [TryReserveError] on OOM.
      */
     public open fun tryAppendElements(other: ConstPtr): Result<Unit, TryReserveError> {
-        when (val tryResult = this.tryReserve(other.len())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
+        when (val tryResult = this.tryReserve(other.len())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
         // ignore-tidy-undocumented-unchecked
         run {
             this.appendElementsUnreserved(other)
@@ -2233,7 +2239,7 @@ public open class Vec<T, A : Allocator> internal constructor(
     public open fun resizeWith(newLen: Int, f: () -> T) {
         val len = this.len()
         if (newLen > len) {
-            this.extendTrusted(Iter.repeatWith(f).take(newLen - len))
+            this.extendTrusted(repeatWith(f).take(newLen - len))
         } else {
             this.truncate(newLen)
         }
@@ -2661,30 +2667,7 @@ public open class Vec<T, A : Allocator> internal constructor(
         // SAFETY:
         // - caller guarantees that src is a valid index
         val toClone = thisRef.getUnchecked(src)
-        Iter.zip(toClone, spare).map({ (src1, dst) -> dst.write(src1.clone()) }).forEach({ len += 1 })
-    }
-
-    public open fun specExtendFromWithinExtendFromWithinSpec(src: IntRange) {
-        val count = src.len()
-        run {
-            val (init, spare) = this.splitAtSpareMut()
-            // SAFETY:
-            // - caller guarantees that `src` is a valid index
-            val source = init.getUnchecked(src)
-            // SAFETY:
-            // - Both pointers are created from unique slice references (`[_]`)
-            // so they are valid and do not overlap.
-            // - Elements implement `TrivialClone` so this is equivalent to calling
-            // `clone` on every one of them.
-            // - `count` is equal to the len of `source`, so source is valid for
-            // `count` reads
-            // - `.reserve(count)` guarantees that `spare.len() >= count` so spare
-            // is valid for `count` writes
-            copyNonoverlapping(source.asPtr(), ((spare.asMutPtr() as Any?) as Unit), count)
-        }
-        // SAFETY:
-        // - The elements were just initialized by `copyNonoverlapping`
-        this.len += count
+        zip(toClone, spare).map({ (src1, dst) -> dst.write(src1.clone()) }).forEach({ len += 1 })
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -3025,7 +3008,7 @@ public open class Vec<T, A : Allocator> internal constructor(
         // RawVec handles deallocation
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun asRef(): Vec<T, A> = this
 
@@ -3131,7 +3114,7 @@ public open class Vec<T, A : Allocator> internal constructor(
          * [will not allocate]: self#memory-layout
          */
         public fun <T, A : Allocator> tryWithCapacityIn(capacity: Int, alloc: A): Result<Vec<T, A>, TryReserveError> {
-            return Result.Ok<Vec<T, A>, TryReserveError>(Vec(buf = when (val tryResult = RawVec.tryWithCapacityIn(capacity, alloc)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Vec<T, A>, TryReserveError>(tryResult.error) }, len = 0))
+            return Result.Ok<Vec<T, A>, TryReserveError>(Vec(buf = when (val tryResult = RawVec.tryWithCapacityIn(capacity, alloc)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Vec<T, A>, TryReserveError>(tryResult.error) }, len = 0))
         }
 
         /**
@@ -3200,7 +3183,7 @@ public open class Vec<T, A : Allocator> internal constructor(
          *                     mem.cast().asPtr()
          *                 }
          *                 else -> {
-         *                     val (AllocError) = matchVal
+         *                     val (AllocError) = matchVal as Err
          *                     return
          *                 }
          *             }
@@ -3284,7 +3267,7 @@ public open class Vec<T, A : Allocator> internal constructor(
          *                     mem.cast()
          *                 }
          *                 else -> {
-         *                     val (AllocError) = matchVal
+         *                     val (AllocError) = matchVal as Err
          *                     return
          *                 }
          *             }
@@ -3739,6 +3722,29 @@ public fun <T, A : Allocator> Vec<List<T>, A>.intoFlattened(n: Int, typeLayoutT:
     // `newCap * sizeOf<T>()` == `cap * sizeOf<[T; N]>()`
     // - `len` <= `cap`, so `len * N` <= `cap * N`.
     return Vec.fromRawPartsIn(ptr.cast(), newLen, newCap, alloc)
+}
+
+public fun <T : TrivialClone, A : Allocator> Vec<T, A>.specExtendFromWithin(src: IntRange) {
+    val count = src.len()
+    run {
+        val (init, spare) = this.splitAtSpareMut()
+        // SAFETY:
+        // - caller guarantees that `src` is a valid index
+        val source = init.getUnchecked(src)
+        // SAFETY:
+        // - Both pointers are created from unique slice references (`[_]`)
+        // so they are valid and do not overlap.
+        // - Elements implement `TrivialClone` so this is equivalent to calling
+        // `clone` on every one of them.
+        // - `count` is equal to the len of `source`, so source is valid for
+        // `count` reads
+        // - `.reserve(count)` guarantees that `spare.len() >= count` so spare
+        // is valid for `count` writes
+        copyNonoverlapping(source.asPtr(), spare.asMutPtr(), count)
+    }
+    // SAFETY:
+    // - The elements were just initialized by `copyNonoverlapping`
+    this.len += count
 }
 
 /**

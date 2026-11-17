@@ -1,6 +1,7 @@
 // port-lint: source os/windows/process.rs
 package io.github.kotlinmania.rustlang.std.os.windows.process
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -12,61 +13,60 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.io.constError
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.OwnedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
-import io.github.kotlinmania.rustlang.std.sys.process.windows.Process
 import io.github.kotlinmania.rustlang.std.sys.process.windows.Stdio
 import io.github.kotlinmania.rustlang.std.sys.process.windows.childpipe.ChildPipe
 
 // Windows-specific extensions to primitives in the [std.process] module.
 
-public fun fromRawHandleStdio(handle: RawHandle): Stdio {
+public fun fromRawHandleStdio(handle: RawHandle): process.Stdio {
     val handle1 = Handle.Handle.fromRawHandle(MutPtr(handle.rawAddress, handle.rawMeta))
     val io = Stdio.Handle(handle1)
-    return Process.Stdio.fromInner(io)
+    return process.Stdio.fromInner(io)
 }
 
 /**
  * Takes ownership of a handle and returns a [`Stdio`](process.Stdio)
  * that can attach a stream to it.
  */
-public fun fromStdio(handle: OwnedHandle): Stdio {
+public fun fromStdio(handle: OwnedHandle): process.Stdio {
     val handle1 = Handle.Handle.fromInner(handle)
     val io = Stdio.Handle(handle1)
-    return Process.Stdio.fromInner(io)
+    return process.Stdio.fromInner(io)
 }
 
-public fun Child.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
+public fun process.Child.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
 
-public fun Child.asHandle(): BorrowedHandle = this.asInner().handle().asHandle()
+public fun process.Child.asHandle(): BorrowedHandle = this.asInner().handle().asHandle()
 
-public fun Child.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
+public fun process.Child.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
 
 /**
  * Takes ownership of a [`Child`](process.Child)'s process handle.
  */
-public fun fromOwnedHandle(child: Child): OwnedHandle = child.intoInner().intoHandle().intoInner()
+public fun fromOwnedHandle(child: process.Child): OwnedHandle = child.intoInner().intoHandle().intoInner()
 
-public fun ChildStdin.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
+public fun process.ChildStdin.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
 
-public fun ChildStdout.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
+public fun process.ChildStdout.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
 
-public fun ChildStderr.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
+public fun process.ChildStderr.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
 
-public fun ChildStdin.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
+public fun process.ChildStdin.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
 
-public fun ChildStdout.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
+public fun process.ChildStdout.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
 
-public fun ChildStderr.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
+public fun process.ChildStderr.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
 
 /**
  * Creates a `ChildStdin` from the provided `OwnedHandle`.
@@ -74,10 +74,10 @@ public fun ChildStderr.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.into
  * The provided handle must be asynchronous, as reading and
  * writing from and to it is implemented using asynchronous APIs.
  */
-public fun fromChildStdin(handle: OwnedHandle): ChildStdin {
+public fun fromChildStdin(handle: OwnedHandle): process.ChildStdin {
     val handle1 = Handle.Handle.fromInner(handle)
     val pipe = ChildPipe.fromInner(handle1)
-    return Process.ChildStdin.fromInner(pipe)
+    return process.ChildStdin.fromInner(pipe)
 }
 
 /**
@@ -86,10 +86,10 @@ public fun fromChildStdin(handle: OwnedHandle): ChildStdin {
  * The provided handle must be asynchronous, as reading and
  * writing from and to it is implemented using asynchronous APIs.
  */
-public fun fromChildStdout(handle: OwnedHandle): ChildStdout {
+public fun fromChildStdout(handle: OwnedHandle): process.ChildStdout {
     val handle1 = Handle.Handle.fromInner(handle)
     val pipe = ChildPipe.fromInner(handle1)
-    return Process.ChildStdout.fromInner(pipe)
+    return process.ChildStdout.fromInner(pipe)
 }
 
 /**
@@ -98,10 +98,10 @@ public fun fromChildStdout(handle: OwnedHandle): ChildStdout {
  * The provided handle must be asynchronous, as reading and
  * writing from and to it is implemented using asynchronous APIs.
  */
-public fun fromChildStderr(handle: OwnedHandle): ChildStderr {
+public fun fromChildStderr(handle: OwnedHandle): process.ChildStderr {
     val handle1 = Handle.Handle.fromInner(handle)
     val pipe = ChildPipe.fromInner(handle1)
-    return Process.ChildStderr.fromInner(pipe)
+    return process.ChildStderr.fromInner(pipe)
 }
 
 /**
@@ -115,11 +115,11 @@ public interface ExitStatusExt<T> {
     public fun fromRaw(raw: UInt): T
 
     public companion object {
-        public fun fromRaw(raw: UInt): ExitStatus = exitStatusExtFromRawExitStatus(raw)
+        public fun fromRaw(raw: UInt): process.ExitStatus = exitStatusExtFromRawExitStatus(raw)
     }
 }
 
-public fun exitStatusExtFromRawExitStatus(raw: UInt): ExitStatus = Process.ExitStatus.fromInner(From.from(raw))
+public fun exitStatusExtFromRawExitStatus(raw: UInt): process.ExitStatus = process.ExitStatus.fromInner(From.from(raw))
 
 /**
  * Windows-specific extensions to the [process.Command] builder.
@@ -132,7 +132,7 @@ public interface CommandExt {
      *
      * [1]: https://docs.microsoft.com/en-us/windows/win32/procthread/process-creation-flags
      */
-    public fun creationFlags(flags: UInt): Command
+    public fun creationFlags(flags: UInt): process.Command
 
     /**
      * Places the child process on the desktop named `desktop` by setting the
@@ -142,7 +142,7 @@ public interface CommandExt {
      *
      * [1]: <https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow>
      */
-    public fun desktop(desktop: OsStr): Command
+    public fun desktop(desktop: OsStr): process.Command
 
     /**
      * Sets the field `wShowWindow` of [STARTUPINFO][1] that is passed to `CreateProcess`.
@@ -151,7 +151,7 @@ public interface CommandExt {
      *
      * [1]: <https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow>
      */
-    public fun showWindow(cmdShow: UShort): Command
+    public fun showWindow(cmdShow: UShort): process.Command
 
     /**
      * Forces all arguments to be wrapped in quote (`"`) characters.
@@ -168,7 +168,7 @@ public interface CommandExt {
      * [1]: <https://github.com/msys2/MSYS2-packages/issues/2176>
      * [2]: <https://msdn.microsoft.com/en-us/library/17w5ykft.aspx>
      */
-    public fun forceQuotes(enabled: Boolean): Command
+    public fun forceQuotes(enabled: Boolean): process.Command
 
     /**
      * Append literal text to the command line without any quoting or escaping.
@@ -216,7 +216,7 @@ public interface CommandExt {
      * }
      * ````
      */
-    public fun rawArg(textToAppendAsIs: OsStr): Command
+    public fun rawArg(textToAppendAsIs: OsStr): process.Command
 
     /**
      * When [process.Command] creates pipes, request that our side is always async.
@@ -247,7 +247,7 @@ public interface CommandExt {
      *     .stderr(Stdio.piped());
      * ```kotlin
      */
-    public fun asyncPipes(alwaysAsync: Boolean): Command
+    public fun asyncPipes(alwaysAsync: Boolean): process.Command
 
     /**
      * Executes the command as a child process with the given
@@ -293,21 +293,21 @@ public interface CommandExt {
      * # Ok::<(), std.io.Error>(())
      * ```kotlin
      */
-    public fun spawnWithAttributes(attributeList: ProcThreadAttributeList): Result<Child, Error>
+    public fun spawnWithAttributes(attributeList: ProcThreadAttributeList): Result<process.Child, Error>
 
     /**
      * When true, sets the `STARTF_RUNFULLSCREEN` flag on the [STARTUPINFO][1] struct before passing it to `CreateProcess`.
      *
      * [1]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa
      */
-    public fun startupinfoFullscreen(enabled: Boolean): Command
+    public fun startupinfoFullscreen(enabled: Boolean): process.Command
 
     /**
      * When true, sets the `STARTF_UNTRUSTEDSOURCE` flag on the [STARTUPINFO][1] struct before passing it to `CreateProcess`.
      *
      * [1]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa
      */
-    public fun startupinfoUntrustedSource(enabled: Boolean): Command
+    public fun startupinfoUntrustedSource(enabled: Boolean): process.Command
 
     /**
      * When specified, sets the following flags on the [STARTUPINFO][1] struct before passing it to `CreateProcess`:
@@ -317,7 +317,7 @@ public interface CommandExt {
      *
      * [1]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa
      */
-    public fun startupinfoForceFeedback(enabled: Boolean?): Command
+    public fun startupinfoForceFeedback(enabled: Boolean?): process.Command
 
     /**
      * If this flag is set to `true`, each inheritable handle in the calling
@@ -332,35 +332,35 @@ public interface CommandExt {
      *
      * [1]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw#remarks
      */
-    public fun inheritHandles(inheritHandles: Boolean): Command
+    public fun inheritHandles(inheritHandles: Boolean): process.Command
 }
 
-public fun Command.creationFlags(flags: UInt): Command {
+public fun process.Command.creationFlags(flags: UInt): process.Command {
     this.asInnerMut().creationFlags(flags)
     return this
 }
 
-public fun Command.desktop(desktop: OsStr): Command {
+public fun process.Command.desktop(desktop: OsStr): process.Command {
     this.asInnerMut().desktop(desktop)
     return this
 }
 
-public fun Command.showWindow(cmdShow: UShort): Command {
+public fun process.Command.showWindow(cmdShow: UShort): process.Command {
     this.asInnerMut().showWindow(cmdShow)
     return this
 }
 
-public fun Command.forceQuotes(enabled: Boolean): Command {
+public fun process.Command.forceQuotes(enabled: Boolean): process.Command {
     this.asInnerMut().forceQuotes(enabled)
     return this
 }
 
-public fun Command.rawArg(rawText: OsStr): Command {
+public fun process.Command.rawArg(rawText: OsStr): process.Command {
     this.asInnerMut().rawArg(rawText)
     return this
 }
 
-public fun Command.asyncPipes(alwaysAsync: Boolean): Command {
+public fun process.Command.asyncPipes(alwaysAsync: Boolean): process.Command {
     // Note: This currently has an intentional no-op implementation.
     // For the time being our side of the pipes will always be async.
     // Once the ecosystem has adjusted, we may then be able to start making
@@ -368,24 +368,24 @@ public fun Command.asyncPipes(alwaysAsync: Boolean): Command {
     return this
 }
 
-public fun Command.spawnWithAttributes(attributeList: ProcThreadAttributeList): Result<Child, Error> = this.asInnerMut().spawnWithAttributes(Stdio.Inherit, true, attributeList).map(Process.Child::fromInner)
+public fun process.Command.spawnWithAttributes(attributeList: ProcThreadAttributeList): Result<process.Child, Error> = this.asInnerMut().spawnWithAttributes(Stdio.Inherit, true, attributeList).map(process.Child::fromInner)
 
-public fun Command.startupinfoFullscreen(enabled: Boolean): Command {
+public fun process.Command.startupinfoFullscreen(enabled: Boolean): process.Command {
     this.asInnerMut().startupinfoFullscreen(enabled)
     return this
 }
 
-public fun Command.startupinfoUntrustedSource(enabled: Boolean): Command {
+public fun process.Command.startupinfoUntrustedSource(enabled: Boolean): process.Command {
     this.asInnerMut().startupinfoUntrustedSource(enabled)
     return this
 }
 
-public fun Command.startupinfoForceFeedback(enabled: Boolean?): Command {
+public fun process.Command.startupinfoForceFeedback(enabled: Boolean?): process.Command {
     this.asInnerMut().startupinfoForceFeedback(enabled)
     return this
 }
 
-public fun Command.inheritHandles(inheritHandles: Boolean): Command {
+public fun process.Command.inheritHandles(inheritHandles: Boolean): process.Command {
     this.asInnerMut().inheritHandles(inheritHandles)
     return this
 }
@@ -397,7 +397,7 @@ public interface ChildExt<T> {
     public fun mainThreadHandle(): BorrowedHandle
 }
 
-public fun Child.mainThreadHandle(): BorrowedHandle = this.handle.mainThreadHandle()
+public fun process.Child.mainThreadHandle(): BorrowedHandle = this.handle.mainThreadHandle()
 
 /**
  * Windows-specific extensions to [process.ExitCode].
@@ -414,11 +414,11 @@ public interface ExitCodeExt<T> {
     public fun fromRaw(raw: UInt): T
 
     public companion object {
-        public fun fromRaw(raw: UInt): ExitCode = exitCodeExtFromRawExitCode(raw)
+        public fun fromRaw(raw: UInt): process.ExitCode = exitCodeExtFromRawExitCode(raw)
     }
 }
 
-public fun exitCodeExtFromRawExitCode(raw: UInt): ExitCode = Process.ExitCode.fromInner(From.from(raw))
+public fun exitCodeExtFromRawExitCode(raw: UInt): process.ExitCode = process.ExitCode.fromInner(From.from(raw))
 
 /**
  * A wrapper around windows [`ProcThreadAttributeList`][1].
@@ -595,18 +595,18 @@ public open class ProcThreadAttributeListBuilder(
         // with a null pointer to retrieve the required size.
         val localStorageL702C8 = AddressableLocal(0, PrimitiveLayouts.I32)
         var requiredSize by localStorageL702C8
-        val attributeCount = when (val tryResult = this.attributes.size.tryInto()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ProcThreadAttributeList, Error>(constError(ErrorKind.InvalidInput, "maximum number of ProcThreadAttributes exceeded")) }
+        val attributeCount = when (val tryResult = this.attributes.size.tryInto()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ProcThreadAttributeList, Error>(constError(ErrorKind.InvalidInput, "maximum number of ProcThreadAttributes exceeded")) }
         C.InitializeProcThreadAttributeList(MutPtr(0L), attributeCount, 0, RustMutableReference(localStorageL702C8.asMutPtr(), localStorageL702C8.layout))
         var attributeList = mutableListOf(MaybeUninit.uninit(UnresolvedTypeLayout<Result<ProcThreadAttributeList, Error>>()), requiredSize).intoBoxedSlice()
         // Once we've allocated the necessary memory, it's safe to invoke
         // `InitializeProcThreadAttributeList` to properly initialize the list.
-        when (val tryResult = cvt(C.InitializeProcThreadAttributeList(attributeList.asMutPtr().cast(), attributeCount, 0, RustMutableReference(localStorageL702C8.asMutPtr(), localStorageL702C8.layout)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ProcThreadAttributeList, Error>(tryResult.error) }
+        when (val tryResult = cvt(C.InitializeProcThreadAttributeList(attributeList.asMutPtr().cast(), attributeCount, 0, RustMutableReference(localStorageL702C8.asMutPtr(), localStorageL702C8.layout)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ProcThreadAttributeList, Error>(tryResult.error) }
         // # Add our attributes to the buffer.
         // It's theoretically possible for the attribute count to exceed a u32
         // value. Therefore, we ensure that we don't add more attributes than
         // the buffer was initialized for.
         for ((attribute, value) in this.attributes.iter().take(attributeCount.toInt())) {
-            when (val tryResult = cvt(C.UpdateProcThreadAttribute(attributeList.asMutPtr().cast(), 0, attribute, value.ptr, value.size, MutPtr(0L), MutPtr(0L)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ProcThreadAttributeList, Error>(tryResult.error) }
+            when (val tryResult = cvt(C.UpdateProcThreadAttribute(attributeList.asMutPtr().cast(), 0, attribute, value.ptr, value.size, MutPtr(0L), MutPtr(0L)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ProcThreadAttributeList, Error>(tryResult.error) }
         }
         return Result.Ok<ProcThreadAttributeList, Error>(ProcThreadAttributeList(attributeList = attributeList, lifetimeMarker = Unit))
     }

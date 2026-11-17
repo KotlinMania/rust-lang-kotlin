@@ -135,7 +135,7 @@ public open class CovariantUnsafeCell<T> internal constructor(
      */
     public open fun getMut(): T = this.value.getMut()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "CovariantUnsafeCell").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "CovariantUnsafeCell").finishNonExhaustive(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public operator fun <T> invoke(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout()): CovariantUnsafeCell<T> = CovariantUnsafeCell<T>(value, fieldLayout)

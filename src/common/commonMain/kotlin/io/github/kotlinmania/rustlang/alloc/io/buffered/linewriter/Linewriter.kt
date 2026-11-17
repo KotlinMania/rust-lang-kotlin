@@ -6,9 +6,10 @@ import io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter.BufWriter
 import io.github.kotlinmania.rustlang.alloc.io.buffered.linewritershim.LineWriterShim
 import io.github.kotlinmania.rustlang.core.fmt.Arguments
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.write.Write
-import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -170,7 +171,7 @@ public open class LineWriter<W : Write> internal constructor(
 
     public open fun writeFmt(fmt: Arguments): Result<Unit> = LineWriterShim.new(this.inner).writeFmt(fmt)
 
-    public open fun fmt(fmt: StringBuilder): Result<Unit, Error> = DebugStruct(fmt, "LineWriter").field("writer", this.getRef()).field("buffer", "${this.inner.buffer().len()}/${this.inner.capacity()}").finishNonExhaustive()
+    public open fun fmt(fmt: StringBuilder): RustResult<Unit, Error> = run { DebugStruct(fmt, "LineWriter").field("writer", this.getRef()).field("buffer", "${this.inner.buffer().len()}/${this.inner.capacity()}").finishNonExhaustive(); RustResult.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public operator fun <W : Write> invoke(

@@ -308,7 +308,7 @@ public open class Context internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Context").field("waker", this.waker).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Context").field("waker", this.waker).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public operator fun invoke(
@@ -402,7 +402,7 @@ public open class ContextBuilder(
         public fun fromWaker(waker: Waker): ContextBuilder {
             // SAFETY: LocalWaker is just Waker without thread safety
             val localWaker = transmuteWithLayouts<Waker, ContextBuilder>(waker, UnresolvedTypeLayout<Waker>(), UnresolvedTypeLayout<ContextBuilder>())
-            return ContextBuilder(waker = waker, localWaker = localWaker, ext = ExtData.None(), marker = Unit, marker2 = Unit)
+            return ContextBuilder(waker = waker, localWaker = localWaker, ext = ExtData.None(Unit), marker = Unit, marker2 = Unit)
         }
 
         /**
@@ -415,7 +415,7 @@ public open class ContextBuilder(
                         val (ext) = matchVal
                         ExtData.Some(ext)
                     }
-                    is ExtData.None -> ExtData.None()
+                    is ExtData.None -> ExtData.None(Unit)
                 }
             return ContextBuilder(waker = cx.waker, localWaker = cx.localWaker, ext = ext1, marker = Unit, marker2 = Unit)
         }
@@ -580,7 +580,7 @@ public open class Waker internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
         val vtablePtr = constPtrFromRustCast(this.waker.vtable)
-        return DebugStruct(f, "Waker").field("data", this.waker.data).field("vtable", vtablePtr).finish()
+        return run { DebugStruct(f, "Waker").field("data", this.waker.data).field("vtable", vtablePtr).finish(); Result.Ok<Unit, Unit>(Unit) }
     }
 
     public override fun asRef(): LocalWaker {
@@ -724,7 +724,7 @@ public open class Waker internal constructor(
  *                 cx.localWaker().wakeByRef()
  *                 return@closure Poll.Pending
  *             }
- *             return@closure Poll.Ready()
+ *             return@closure Poll.Ready(Unit)
  *         })
  *     }
  *     yieldNow()
@@ -835,7 +835,7 @@ public open class LocalWaker internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
         val vtablePtr = constPtrFromRustCast(this.waker.vtable)
-        return DebugStruct(f, "LocalWaker").field("data", this.waker.data).field("vtable", vtablePtr).finish()
+        return run { DebugStruct(f, "LocalWaker").field("data", this.waker.data).field("vtable", vtablePtr).finish(); Result.Ok<Unit, Unit>(Unit) }
     }
 
     public companion object {

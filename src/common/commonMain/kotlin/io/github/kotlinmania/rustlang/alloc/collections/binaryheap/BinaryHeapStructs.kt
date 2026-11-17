@@ -18,6 +18,7 @@ import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 
@@ -160,7 +161,7 @@ public open class BinaryHeap<T, A : Allocator>(
         run { this.data.clear(); this.data.addAll(source.data) }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Returns a mutable reference to the greatest item in the binary heap, or
@@ -1188,7 +1189,7 @@ public open class PeekMut<T, A : Allocator> internal constructor(
     public var originalLen: NonZero<Int, NonZeroUsizeInner>? = originalLenCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "PeekMut").field(this.heap.data[0]).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "PeekMut").field(this.heap.data[0]).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun drop() {
         when (val matchVal = this.originalLen) {
@@ -1456,7 +1457,7 @@ public open class Iter<T>(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Iter").field(this.iter.toList()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "Iter").field(this.iter.toList()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Iter<T> = Iter(iter = ArrayDeque(this.iter))
@@ -1511,7 +1512,7 @@ public open class IntoIter<T, A : Allocator>(
      */
     public open fun allocator(): A = this.iter.allocator()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "IntoIter").field(this.iter.toList()).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "IntoIter").field(this.iter.toList()).finish(); Result.Ok<Unit, Error>(Unit) }
 
     public open fun next(): T? = this.iter.removeFirstOrNull()
 

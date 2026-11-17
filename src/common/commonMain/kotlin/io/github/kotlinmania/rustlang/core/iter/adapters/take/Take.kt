@@ -2,10 +2,8 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.take
 
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.sources.repeat.Repeat
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -18,6 +16,7 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public typealias Source<I> = I.Source
@@ -34,7 +33,7 @@ public typealias Source<I> = I.Source
 public open class Take<I>(
     public var iter: I,
     public var n: Int,
-) : SourceIter<Source>, InPlaceIterable, TrustedFused, TrustedLen, SpecTake, Iterable<Item> {
+) : SpecTake, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Take.next()) {
@@ -46,7 +45,7 @@ public open class Take<I>(
 
     public open fun clone(): Take<I> = Take(iter, n)
 
-    public override fun next(): Item? =
+    public open fun next(): Item? =
         if (this.n != 0) {
             this.n -= 1
             this.iter.next()
@@ -54,7 +53,7 @@ public open class Take<I>(
             null
         }
 
-    public override fun nth(n: Int): Item? =
+    public open fun nth(n: Int): Item? =
         if (this.n > n) {
             this.n -= n + 1
             this.iter.nth(n)
@@ -66,7 +65,7 @@ public open class Take<I>(
             null
         }
 
-    public override fun count(): Int {
+    public open fun count(): Int {
         if (this.n == 0) {
             return 0
         }
@@ -74,16 +73,16 @@ public open class Take<I>(
         // while benefiting from the inner iterator's `advanceBy` fast path.
         return run {
             val matchVal = this.iter.advanceBy(this.n)
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 this.n
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 val remaining = matchVal.error
                 this.n - remaining.get()
             } }
         }
     }
 
-    public override fun sizeHint(): Pair<Int, Int?> {
+    public open fun sizeHint(): Pair<Int, Int?> {
         if (this.n == 0) {
             return Pair(0, 0)
         }
@@ -100,7 +99,7 @@ public open class Take<I>(
         return Pair(lower1, upper1)
     }
 
-    public override fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         fun <Residual, T, Acc, R : Try<R, Acc, Residual>> check(n: RustMutableReference<Int>, fold1: (Acc, T) -> R): (Acc, T) -> ControlFlow<R, Acc> {
             val n1 = n
             return { acc, x ->
@@ -121,20 +120,20 @@ public open class Take<I>(
         }
     }
 
-    public override fun <B> fold(init: B, f: (B, Item) -> B): B = Take.specFold(this, init, f)
+    public open fun <B> fold(init: B, f: (B, Item) -> B): B = Take.specFold(this, init, f)
 
-    public override fun forEach(f: (Item) -> Unit) {
+    public open fun forEach(f: (Item) -> Unit) {
         Take.specForEach(this, f)
     }
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val min = this.n.min(n)
         val rem1 =
             run {
                 val matchVal = this.iter.advanceBy(min)
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     0
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     val rem = matchVal.error
                     rem.get()
                 } }
@@ -142,11 +141,6 @@ public open class Take<I>(
         val advanced = min - rem1
         this.n -= advanced
         return ((NonZero.new<NonZeroUsizeInner, Int>(n - advanced))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
-    }
-
-    public override fun asInner(): Source {
-        // SAFETY: unchecked function forwarding to unchecked function with the same requirements
-        return this.iter.asInner()
     }
 
     public open fun nextBack(): Item? =
@@ -207,9 +201,9 @@ public open class Take<I>(
         val remainder =
             run {
                 val matchVal = this.iter.advanceBackBy(advanceBy)
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     0
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     val rem = matchVal.error
                     rem.get()
                 } }
@@ -234,26 +228,6 @@ public open class Take<I>(
         val remaining = this.n
         if (remaining > 0) {
             this.iter.tryFold(remaining - 1, check(f))
-        }
-    }
-
-    public open fun <B> specFoldSpecTake(init: B, f: (B, Item) -> B): B {
-        var acc = init
-        val end = this.n.min(this.iter.size())
-        for (i in 0 until end) {
-            // SAFETY: i < end <= self.iter.size() and we discard the iterator at the end
-            val value = this.iter.iteratorGetUnchecked(i)
-            acc = f(acc, value)
-        }
-        return acc
-    }
-
-    public open fun specForEachSpecTake(f: (Item) -> Unit) {
-        val end = this.n.min(this.iter.size())
-        for (i in 0 until end) {
-            // SAFETY: i < end <= self.iter.size() and we discard the iterator at the end
-            val value = this.iter.iteratorGetUnchecked(i)
-            f(value)
         }
     }
 
@@ -284,17 +258,42 @@ public open class Take<I>(
             }
 
         public fun <I> new(iter: I, n: Int): Take<I> = Take(iter = iter, n = n)
-
-        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
-
-        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }
+
+public fun <Source, I> Take<I>.asInner(): Source where I : SourceIter<Source> {
+    // SAFETY: unchecked function forwarding to unchecked function with the same requirements
+    return this.iter.asInner()
+}
+
+public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
+
+public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
 
 public interface SpecTake {
     public fun <B> specFold(init: B, f: (B, Item) -> B): B
 
     public fun specForEach(f: (Item) -> Unit)
+}
+
+public fun <I : TrustedRandomAccess, B> Take<I>.specFold(init: B, f: (B, Item) -> B): B {
+    var acc = init
+    val end = this.n.min(this.iter.size())
+    for (i in 0 until end) {
+        // SAFETY: i < end <= self.iter.size() and we discard the iterator at the end
+        val value = this.iter.iteratorGetUnchecked(i)
+        acc = f(acc, value)
+    }
+    return acc
+}
+
+public fun <I : TrustedRandomAccess> Take<I>.specForEach(f: (Item) -> Unit) {
+    val end = this.n.min(this.iter.size())
+    for (i in 0 until end) {
+        // SAFETY: i < end <= self.iter.size() and we discard the iterator at the end
+        val value = this.iter.iteratorGetUnchecked(i)
+        f(value)
+    }
 }
 
 public fun <T> Take<Repeat<T>>.nextBack(): Item? = this.next()

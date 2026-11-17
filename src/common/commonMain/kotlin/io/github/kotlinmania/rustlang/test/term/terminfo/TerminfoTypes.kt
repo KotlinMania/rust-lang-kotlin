@@ -24,7 +24,7 @@ public sealed class Error {
     public open fun source(): Any? =
         when (this) {
             is IoError -> {
-                val (e) = this
+                val (e) = this as IoError
                 e
             }
             else -> null
@@ -34,11 +34,11 @@ public sealed class Error {
         when (this) {
             TermUnset -> Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit)
             is MalformedTerminfo -> {
-                val (e) = this
+                val (e) = this as MalformedTerminfo
                 e.fmt(f)
             }
             is IoError -> {
-                val (e1) = this
+                val (e1) = this as IoError
                 e1.fmt(f)
             }
         }
