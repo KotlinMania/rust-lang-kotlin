@@ -24,7 +24,10 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.castMut
 import io.github.kotlinmania.rustlang.core.ptr.fromMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
 import io.github.kotlinmania.rustlang.core.ptr.nullVal
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.*
@@ -951,10 +954,10 @@ public fun AtomicBool.compareAndSwap(current: Boolean, new: Boolean, order: Orde
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             x
         }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
+            val x1 = matchVal.errValue()
             x1
         } }
     }
@@ -1044,10 +1047,10 @@ public fun AtomicBool.compareExchange(current: Boolean, new: Boolean, success: O
         run {
             val matchVal1 = atomicCompareExchange(MutPtr((this.v.get()).rawAddress), current.toUByte(), new.toUByte(), success, failure, typeLayoutT = PrimitiveLayouts.U8)
             when (matchVal1) { is Result.Ok<*, *> -> {
-                val x = matchVal1.value
+                val x = matchVal1.okValue()
                 Result.Ok<Boolean, Boolean>(x != 0)
             }; is Result.Err<*, *> -> {
-                val x1 = matchVal1.error
+                val x1 = matchVal1.errValue()
                 Result.Err<Boolean, Boolean>(x1 != 0)
             } }
         }
@@ -1117,10 +1120,10 @@ public fun AtomicBool.compareExchangeWeak(current: Boolean, new: Boolean, succes
     return run {
         val matchVal = atomicCompareExchangeWeak(MutPtr((this.v.get()).rawAddress), current.toUByte(), new.toUByte(), success, failure, typeLayoutT = PrimitiveLayouts.U8)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             Result.Ok<Boolean, Boolean>(x != 0)
         }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
+            val x1 = matchVal.errValue()
             Result.Err<Boolean, Boolean>(x1 != 0)
         } }
     }
@@ -1437,7 +1440,7 @@ public fun AtomicBool.tryUpdate(setOrder: Ordering, fetchOrder: Ordering, f: (Bo
                 return x
             }
             is Result.Err<*, *> -> {
-                val nextPrev = matchVal1.error
+                val nextPrev = matchVal1.errValue()
                 prev = nextPrev
             }
         }
@@ -1497,10 +1500,10 @@ public fun AtomicBool.update(setOrder: Ordering, fetchOrder: Ordering, f: (Boole
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
+                val x = matchVal.okValue()
                 break
             }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
+                val nextPrev = matchVal.errValue()
                 prev = nextPrev
             } }
         }
@@ -2033,10 +2036,10 @@ public fun AtomicPtr.compareAndSwap(current: MutPtr, new: MutPtr, order: Orderin
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             x
         }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
+            val x1 = matchVal.errValue()
             x1
         } }
     }
@@ -2246,7 +2249,7 @@ public fun AtomicPtr.tryUpdate(setOrder: Ordering, fetchOrder: Ordering, f: (Mut
                 return x
             }
             is Result.Err<*, *> -> {
-                val nextPrev = matchVal1.error
+                val nextPrev = matchVal1.errValue()
                 prev = nextPrev
             }
         }
@@ -2314,10 +2317,10 @@ public fun AtomicPtr.update(setOrder: Ordering, fetchOrder: Ordering, f: (MutPtr
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
+                val x = matchVal.okValue()
                 break
             }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
+                val nextPrev = matchVal.errValue()
                 prev = nextPrev
             } }
         }
@@ -3011,10 +3014,10 @@ public fun AtomicI8.compareAndSwap(current: Byte, new: Byte, order: Ordering): B
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             x
         }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
+            val x1 = matchVal.errValue()
             x1
         } }
     }
@@ -3304,7 +3307,7 @@ public fun AtomicI8.tryUpdate(setOrder: Ordering, fetchOrder: Ordering, f: (Byte
                 return x
             }
             is Result.Err<*, *> -> {
-                val nextPrev = matchVal1.error
+                val nextPrev = matchVal1.errValue()
                 prev = nextPrev
             }
         }
@@ -3357,10 +3360,10 @@ public fun AtomicI8.update(setOrder: Ordering, fetchOrder: Ordering, f: (Byte) -
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
+                val x = matchVal.okValue()
                 break
             }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
+                val nextPrev = matchVal.errValue()
                 prev = nextPrev
             } }
         }
@@ -3768,10 +3771,10 @@ public fun AtomicU8.compareAndSwap(current: UByte, new: UByte, order: Ordering):
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             x
         }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
+            val x1 = matchVal.errValue()
             x1
         } }
     }
@@ -4061,7 +4064,7 @@ public fun AtomicU8.tryUpdate(setOrder: Ordering, fetchOrder: Ordering, f: (UByt
                 return x
             }
             is Result.Err<*, *> -> {
-                val nextPrev = matchVal1.error
+                val nextPrev = matchVal1.errValue()
                 prev = nextPrev
             }
         }
@@ -4114,10 +4117,10 @@ public fun AtomicU8.update(setOrder: Ordering, fetchOrder: Ordering, f: (UByte) 
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
+                val x = matchVal.okValue()
                 break
             }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
+                val nextPrev = matchVal.errValue()
                 prev = nextPrev
             } }
         }
@@ -4525,10 +4528,10 @@ public fun AtomicI16.compareAndSwap(current: Short, new: Short, order: Ordering)
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             x
         }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
+            val x1 = matchVal.errValue()
             x1
         } }
     }
@@ -4818,7 +4821,7 @@ public fun AtomicI16.tryUpdate(setOrder: Ordering, fetchOrder: Ordering, f: (Sho
                 return x
             }
             is Result.Err<*, *> -> {
-                val nextPrev = matchVal1.error
+                val nextPrev = matchVal1.errValue()
                 prev = nextPrev
             }
         }
@@ -4871,10 +4874,10 @@ public fun AtomicI16.update(setOrder: Ordering, fetchOrder: Ordering, f: (Short)
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
+                val x = matchVal.okValue()
                 break
             }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
+                val nextPrev = matchVal.errValue()
                 prev = nextPrev
             } }
         }
@@ -5282,10 +5285,10 @@ public fun AtomicU16.compareAndSwap(current: UShort, new: UShort, order: Orderin
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             x
         }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
+            val x1 = matchVal.errValue()
             x1
         } }
     }
@@ -5575,7 +5578,7 @@ public fun AtomicU16.tryUpdate(setOrder: Ordering, fetchOrder: Ordering, f: (USh
                 return x
             }
             is Result.Err<*, *> -> {
-                val nextPrev = matchVal1.error
+                val nextPrev = matchVal1.errValue()
                 prev = nextPrev
             }
         }
@@ -5628,10 +5631,10 @@ public fun AtomicU16.update(setOrder: Ordering, fetchOrder: Ordering, f: (UShort
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
+                val x = matchVal.okValue()
                 break
             }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
+                val nextPrev = matchVal.errValue()
                 prev = nextPrev
             } }
         }
@@ -6039,10 +6042,10 @@ public fun AtomicI32.compareAndSwap(current: Int, new: Int, order: Ordering): In
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             x
         }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
+            val x1 = matchVal.errValue()
             x1
         } }
     }
@@ -6332,7 +6335,7 @@ public fun AtomicI32.tryUpdate(setOrder: Ordering, fetchOrder: Ordering, f: (Int
                 return x
             }
             is Result.Err<*, *> -> {
-                val nextPrev = matchVal1.error
+                val nextPrev = matchVal1.errValue()
                 prev = nextPrev
             }
         }
@@ -6385,10 +6388,10 @@ public fun AtomicI32.update(setOrder: Ordering, fetchOrder: Ordering, f: (Int) -
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
+                val x = matchVal.okValue()
                 break
             }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
+                val nextPrev = matchVal.errValue()
                 prev = nextPrev
             } }
         }
@@ -6796,10 +6799,10 @@ public fun AtomicU32.compareAndSwap(current: UInt, new: UInt, order: Ordering): 
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             x
         }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
+            val x1 = matchVal.errValue()
             x1
         } }
     }
@@ -7089,7 +7092,7 @@ public fun AtomicU32.tryUpdate(setOrder: Ordering, fetchOrder: Ordering, f: (UIn
                 return x
             }
             is Result.Err<*, *> -> {
-                val nextPrev = matchVal1.error
+                val nextPrev = matchVal1.errValue()
                 prev = nextPrev
             }
         }
@@ -7142,10 +7145,10 @@ public fun AtomicU32.update(setOrder: Ordering, fetchOrder: Ordering, f: (UInt) 
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
+                val x = matchVal.okValue()
                 break
             }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
+                val nextPrev = matchVal.errValue()
                 prev = nextPrev
             } }
         }
@@ -7553,10 +7556,10 @@ public fun AtomicI64.compareAndSwap(current: Long, new: Long, order: Ordering): 
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             x
         }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
+            val x1 = matchVal.errValue()
             x1
         } }
     }
@@ -7846,7 +7849,7 @@ public fun AtomicI64.tryUpdate(setOrder: Ordering, fetchOrder: Ordering, f: (Lon
                 return x
             }
             is Result.Err<*, *> -> {
-                val nextPrev = matchVal1.error
+                val nextPrev = matchVal1.errValue()
                 prev = nextPrev
             }
         }
@@ -7899,10 +7902,10 @@ public fun AtomicI64.update(setOrder: Ordering, fetchOrder: Ordering, f: (Long) 
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
+                val x = matchVal.okValue()
                 break
             }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
+                val nextPrev = matchVal.errValue()
                 prev = nextPrev
             } }
         }
@@ -8310,10 +8313,10 @@ public fun AtomicU64.compareAndSwap(current: ULong, new: ULong, order: Ordering)
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             x
         }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
+            val x1 = matchVal.errValue()
             x1
         } }
     }
@@ -8603,7 +8606,7 @@ public fun AtomicU64.tryUpdate(setOrder: Ordering, fetchOrder: Ordering, f: (ULo
                 return x
             }
             is Result.Err<*, *> -> {
-                val nextPrev = matchVal1.error
+                val nextPrev = matchVal1.errValue()
                 prev = nextPrev
             }
         }
@@ -8656,10 +8659,10 @@ public fun AtomicU64.update(setOrder: Ordering, fetchOrder: Ordering, f: (ULong)
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
+                val x = matchVal.okValue()
                 break
             }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
+                val nextPrev = matchVal.errValue()
                 prev = nextPrev
             } }
         }
@@ -9067,10 +9070,10 @@ public fun AtomicI128.compareAndSwap(current: I128, new: I128, order: Ordering):
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             x
         }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
+            val x1 = matchVal.errValue()
             x1
         } }
     }
@@ -9360,7 +9363,7 @@ public fun AtomicI128.tryUpdate(setOrder: Ordering, fetchOrder: Ordering, f: (I1
                 return x
             }
             is Result.Err<*, *> -> {
-                val nextPrev = matchVal1.error
+                val nextPrev = matchVal1.errValue()
                 prev = nextPrev
             }
         }
@@ -9413,10 +9416,10 @@ public fun AtomicI128.update(setOrder: Ordering, fetchOrder: Ordering, f: (I128)
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
+                val x = matchVal.okValue()
                 break
             }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
+                val nextPrev = matchVal.errValue()
                 prev = nextPrev
             } }
         }
@@ -9824,10 +9827,10 @@ public fun AtomicU128.compareAndSwap(current: U128, new: U128, order: Ordering):
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             x
         }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
+            val x1 = matchVal.errValue()
             x1
         } }
     }
@@ -10117,7 +10120,7 @@ public fun AtomicU128.tryUpdate(setOrder: Ordering, fetchOrder: Ordering, f: (U1
                 return x
             }
             is Result.Err<*, *> -> {
-                val nextPrev = matchVal1.error
+                val nextPrev = matchVal1.errValue()
                 prev = nextPrev
             }
         }
@@ -10170,10 +10173,10 @@ public fun AtomicU128.update(setOrder: Ordering, fetchOrder: Ordering, f: (U128)
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
+                val x = matchVal.okValue()
                 break
             }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
+                val nextPrev = matchVal.errValue()
                 prev = nextPrev
             } }
         }
@@ -10581,10 +10584,10 @@ public fun AtomicIsize.compareAndSwap(current: Int, new: Int, order: Ordering): 
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             x
         }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
+            val x1 = matchVal.errValue()
             x1
         } }
     }
@@ -10874,7 +10877,7 @@ public fun AtomicIsize.tryUpdate(setOrder: Ordering, fetchOrder: Ordering, f: (I
                 return x
             }
             is Result.Err<*, *> -> {
-                val nextPrev = matchVal1.error
+                val nextPrev = matchVal1.errValue()
                 prev = nextPrev
             }
         }
@@ -10927,10 +10930,10 @@ public fun AtomicIsize.update(setOrder: Ordering, fetchOrder: Ordering, f: (Int)
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
+                val x = matchVal.okValue()
                 break
             }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
+                val nextPrev = matchVal.errValue()
                 prev = nextPrev
             } }
         }
@@ -11338,10 +11341,10 @@ public fun AtomicUsize.compareAndSwap(current: Int, new: Int, order: Ordering): 
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             x
         }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
+            val x1 = matchVal.errValue()
             x1
         } }
     }
@@ -11631,7 +11634,7 @@ public fun AtomicUsize.tryUpdate(setOrder: Ordering, fetchOrder: Ordering, f: (I
                 return x
             }
             is Result.Err<*, *> -> {
-                val nextPrev = matchVal1.error
+                val nextPrev = matchVal1.errValue()
                 prev = nextPrev
             }
         }
@@ -11684,10 +11687,10 @@ public fun AtomicUsize.update(setOrder: Ordering, fetchOrder: Ordering, f: (Int)
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
+                val x = matchVal.okValue()
                 break
             }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
+                val nextPrev = matchVal.errValue()
                 prev = nextPrev
             } }
         }

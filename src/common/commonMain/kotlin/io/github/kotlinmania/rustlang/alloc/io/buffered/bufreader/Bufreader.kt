@@ -135,7 +135,7 @@ public open class BufReader<R>(
             if (this.buf.pos() > 0) {
                 this.buf.backshift()
             }
-            val new = when (val tryResult = this.buf.readMore(this.inner)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, Error>(tryResult.error) }
+            val new = when (val tryResult = this.buf.readMore(this.inner)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, Error>(tryResult.errValue()) }
             if (new == 0) {
                 // end of file, no more bytes to read
                 return RustResult.Ok(this.buf.buffer())
@@ -335,8 +335,8 @@ public open class BufReader<R>(
          * to retrieve the inner reader `R`.
          */
         public fun <R> tryNewWith(f: () -> Result<R>): Result<BufReader<R>> {
-            val buf = when (val tryResult = Buffer.tryWithCapacity(DEFAULT_BUF_SIZE)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<BufReader<R>, Error>(tryResult.error) }
-            val inner = when (val tryResult = f()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<BufReader<R>, Error>(tryResult.error) }
+            val buf = when (val tryResult = Buffer.tryWithCapacity(DEFAULT_BUF_SIZE)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<BufReader<R>, Error>(tryResult.errValue()) }
+            val inner = when (val tryResult = f()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<BufReader<R>, Error>(tryResult.errValue()) }
             return RustResult.Ok(BufReader(inner = inner, buf = buf))
         }
 
@@ -370,8 +370,8 @@ public fun <R : Read<R>> BufReader<R>.read(buf: MutableList<UByte>): Result<Int>
         this.discardBuffer()
         return this.inner.read(buf)
     }
-    val rem = when (val tryResult = this.fillBuf()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
-    val nread = when (val tryResult = rem.read(buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+    val rem = when (val tryResult = this.fillBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+    val nread = when (val tryResult = rem.read(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     this.consume(nread)
     return RustResult.Ok(nread)
 }
@@ -385,8 +385,8 @@ public fun <R : Read<R>> BufReader<R>.readBuf(cursor: BorrowedCursor<UByte>): Re
         return this.inner.readBuf(cursor)
     }
     val prev = cursor.written()
-    val rem = when (val tryResult = this.fillBuf()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
-    when (val tryResult = rem.readBuf(cursor.reborrow())) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+    val rem = when (val tryResult = this.fillBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+    when (val tryResult = rem.readBuf(cursor.reborrow())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
     // actually never fails
     this.consume(cursor.written() - prev)
     // slice impl of readBuf known to never unfill buf
@@ -417,8 +417,8 @@ public fun <R : Read<R>> BufReader<R>.readVectored(bufs: MutableList<IoSliceMut>
         this.discardBuffer()
         return this.inner.readVectored(bufs)
     }
-    val rem = when (val tryResult = this.fillBuf()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
-    val nread = when (val tryResult = rem.readVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+    val rem = when (val tryResult = this.fillBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+    val nread = when (val tryResult = rem.readVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     this.consume(nread)
     return RustResult.Ok(nread)
 }
@@ -429,11 +429,11 @@ public fun <R : Read<R>> BufReader<R>.isReadVectored(): Boolean = this.inner.isR
 // delegate to the inner implementation.
 public fun <R : Read<R>> BufReader<R>.readToEnd(buf: List<UByte>): Result<Int> {
     val innerBuf = this.buffer()
-    when (val tryResult = buf.tryReserve(innerBuf.size)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
-    when (val tryResult = buf.tryExtendFromSliceOfBytes(innerBuf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+    when (val tryResult = buf.tryReserve(innerBuf.size)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+    when (val tryResult = buf.tryExtendFromSliceOfBytes(innerBuf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     val nread = innerBuf.size
     this.discardBuffer()
-    return RustResult.Ok(nread + when (val tryResult = this.inner.readToEnd(buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) })
+    return RustResult.Ok(nread + when (val tryResult = this.inner.readToEnd(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) })
 }
 
 // The inner reader might have an optimized `readToEnd`. Drain our buffer and then
@@ -461,9 +461,9 @@ public fun <R : Read<R>> BufReader<R>.readToString(buf: String): Result<Int> {
         // everything into a side buffer first and then call `fromUtf8` on the complete
         // buffer.
         val bytes = mutableListOf()
-        when (val tryResult = this.readToEnd(bytes)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
-        val string = when (val tryResult = fromUtf8(bytes).mapErr({ io.github.kotlinmania.rustlang.core.io.error.Error.INVALID_UTF8 })) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
-        when (val tryResult = buf.tryPushStr(string)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+        when (val tryResult = this.readToEnd(bytes)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+        val string = when (val tryResult = fromUtf8(bytes).mapErr({ io.github.kotlinmania.rustlang.core.io.error.Error.INVALID_UTF8 })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
+        when (val tryResult = buf.tryPushStr(string)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
         RustResult.Ok(string.len())
     }
 }
@@ -511,18 +511,18 @@ public fun <R : Seek> BufReader<R>.seek(pos: SeekFrom): Result<ULong> {
         when (val matchVal = n.checkedSub(remainder)) {
             null -> {
                 // seek backwards by our remainder, and then by the offset
-                when (val tryResult = this.inner.seek(SeekFrom.Current(-remainder))) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<ULong, Error>(tryResult.error) }
+                when (val tryResult = this.inner.seek(SeekFrom.Current(-remainder))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, Error>(tryResult.errValue()) }
                 this.discardBuffer()
-                result = when (val tryResult = this.inner.seek(SeekFrom.Current(n))) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<ULong, Error>(tryResult.error) }
+                result = when (val tryResult = this.inner.seek(SeekFrom.Current(n))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, Error>(tryResult.errValue()) }
             }
             else -> {
                 val offset = matchVal
-                result = when (val tryResult = this.inner.seek(SeekFrom.Current(offset))) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<ULong, Error>(tryResult.error) }
+                result = when (val tryResult = this.inner.seek(SeekFrom.Current(offset))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, Error>(tryResult.errValue()) }
             }
         }
     } else {
         // Seeking with Start/End doesn't care about our buffer length.
-        result = when (val tryResult = this.inner.seek(pos)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<ULong, Error>(tryResult.error) }
+        result = when (val tryResult = this.inner.seek(pos)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, Error>(tryResult.errValue()) }
     }
     this.discardBuffer()
     return RustResult.Ok(result)

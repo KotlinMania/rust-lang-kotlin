@@ -27,6 +27,11 @@ import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
@@ -201,16 +206,16 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
     if (this.sawNul()) {
         return Result.Err<Pair<Process, StdioPipes>, Error>(constError(ErrorKind.InvalidInput, "nul byte found in provided data"))
     }
-    val (ours, theirs) = when (val tryResult = this.setupIo(default, needsStdin)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }
-    when (val matchVal = when (val tryResult = this.posixSpawn(theirs, envp.asRef())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }) {
+    val (ours, theirs) = when (val tryResult = this.setupIo(default, needsStdin)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) }
+    when (val matchVal = when (val tryResult = this.posixSpawn(theirs, envp.asRef())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) }) {
         null -> {}
         else -> {
             val ret = matchVal
             return Result.Ok<Pair<Process, StdioPipes>, Error>(Pair(ret, ours))
         }
     }
-    val (input, output) = when (val tryResult = Socket.newPair(AF_UNIX, SOCK_SEQPACKET)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }
-    val (input1, output1) = when (val tryResult = pipe()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }
+    val (input, output) = when (val tryResult = Socket.newPair(AF_UNIX, SOCK_SEQPACKET)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) }
+    val (input1, output1) = when (val tryResult = pipe()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) }
     // Whatever happens after the fork is almost for sure going to touch or
     // look at the environment in one way or another (PATH in `execvp` or
     // accessing the `environ` pointer ourselves). Make sure no other thread
@@ -222,7 +227,7 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
     // The child calls `mem.forget` to leak the lock, which is crucial because
     // releasing a lock is not async-signal-safe.
     val envLock = envReadLock()
-    val pid = when (val tryResult = this.doFork()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }
+    val pid = when (val tryResult = this.doFork()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) }
     if (pid == 0) {
         alwaysAbort()
         forget(envLock)
@@ -268,23 +273,23 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
         run {
             val matchVal2 = input1.read(bytes1)
             when {
-                matchVal2 is Result.Ok<*, *> && matchVal2.value == 0 -> {
-                    val valueVal = matchVal2.value
+                matchVal2 is Result.Ok<*, *> && matchVal2.okValue() == 0 -> {
+                    val okValueVal = matchVal2.okValue()
                     return Result.Ok<Pair<Process, StdioPipes>, Error>(Pair(p, ours))
                 }
-                matchVal2 is Result.Ok<*, *> && matchVal2.value == 8 -> {
-                    val valueVal1 = matchVal2.value
+                matchVal2 is Result.Ok<*, *> && matchVal2.okValue() == 8 -> {
+                    val okValueVal1 = matchVal2.okValue()
                     val (errno2, footer) = bytes1.splitAt(4)
                     check(CLOEXEC_MSG_FOOTER == footer)
                     val errno3 = run { val bytesTmp0 = errno2; ((bytesTmp0[0].toInt() shl 24) or (bytesTmp0[1].toInt() shl 16) or (bytesTmp0[2].toInt() shl 8) or bytesTmp0[3].toInt()) }
                     check(p.wait().isOk()) { "wait() should either return Ok or panic" }
                     return Result.Err<Pair<Process, StdioPipes>, Error>(Error.fromRawOsError(errno3))
                 }
-                matchVal2 is Result.Err<*, *> && matchVal2.error.isInterrupted() -> {
-                    val e = matchVal2.error
+                matchVal2 is Result.Err<*, *> && matchVal2.errValue().isInterrupted() -> {
+                    val e = matchVal2.errValue()
                 }
                 matchVal2 is Result.Err<*, *> -> {
-                    val e1 = matchVal2.error
+                    val e1 = matchVal2.errValue()
                     check(p.wait().isOk()) { "wait() should either return Ok or panic" }
                     error("the CLOEXEC pipe failed: $e")
                 }
@@ -317,7 +322,7 @@ public fun Command.exec(default: Stdio): Error {
     return run {
         val matchVal = this.setupIo(default, true)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val okVal = matchVal.value
+            val okVal = matchVal.okValue()
             val theirs = okVal.second
             run {
                 // Similar to when forking, we want to ensure that access to
@@ -327,7 +332,7 @@ public fun Command.exec(default: Stdio): Error {
                 e
             }
         }; is Result.Err<*, *> -> {
-            val e1 = matchVal.error
+            val e1 = matchVal.errValue()
             e1
         } }
     }
@@ -368,21 +373,21 @@ public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<N
         null -> {}
         else -> {
             val fd = matchVal
-            when (val tryResult = cvtR({ dup2(fd, STDIN_FILENO) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
+            when (val tryResult = cvtR({ dup2(fd, STDIN_FILENO) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.errValue()) }
         }
     }
     when (val matchVal1 = stdio.stdout.fd()) {
         null -> {}
         else -> {
             val fd1 = matchVal1
-            when (val tryResult = cvtR({ dup2(fd1, STDOUT_FILENO) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
+            when (val tryResult = cvtR({ dup2(fd1, STDOUT_FILENO) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.errValue()) }
         }
     }
     when (val matchVal2 = stdio.stderr.fd()) {
         null -> {}
         else -> {
             val fd2 = matchVal2
-            when (val tryResult = cvtR({ dup2(fd2, STDERR_FILENO) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
+            when (val tryResult = cvtR({ dup2(fd2, STDERR_FILENO) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.errValue()) }
         }
     }
     run {
@@ -391,14 +396,14 @@ public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<N
             else -> {
                 val g = matchVal3
                 // Note: Redox kernel does not support setgroups yet
-                when (val tryResult = cvt(setgroups(g.len().tryInto().unwrap(), g.asPtr()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
+                when (val tryResult = cvt(setgroups(g.len().tryInto().unwrap(), g.asPtr()))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.errValue()) }
             }
         }
         when (val matchVal4 = this.getGid()) {
             null -> {}
             else -> {
                 val u = matchVal4
-                when (val tryResult = cvt(setgid(u.toUInt()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
+                when (val tryResult = cvt(setgid(u.toUInt()))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.errValue()) }
             }
         }
         when (val matchVal5 = this.getUid()) {
@@ -415,7 +420,7 @@ public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<N
                 if (this.getGroups() == null) {
                     val res = cvt(setgroups(0, ConstPtr(0L)))
                     if (res is Result.Err<*, *>) {
-                        val e = res.error
+                        val e = res.errValue()
                         // Here we ignore the case of not having CAP_SETGID.
                         // An alternative would be to require CAP_SETGID (in
                         // addition to CAP_SETUID) for setting the UID.
@@ -424,7 +429,7 @@ public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<N
                         }
                     }
                 }
-                when (val tryResult = cvt(setuid(u1.toUInt()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
+                when (val tryResult = cvt(setuid(u1.toUInt()))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.errValue()) }
             }
         }
     }
@@ -432,36 +437,36 @@ public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<N
         null -> {}
         else -> {
             val chroot = matchVal6
-            when (val tryResult = cvt(chroot(chroot.asPtr()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
+            when (val tryResult = cvt(chroot(chroot.asPtr()))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.errValue()) }
         }
     }
     when (val matchVal7 = this.getCwd()) {
         null -> {}
         else -> {
             val cwd = matchVal7
-            when (val tryResult = cvt(chdir(cwd.asPtr()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
+            when (val tryResult = cvt(chdir(cwd.asPtr()))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.errValue()) }
         }
     }
     when (val matchVal8 = this.getPgroup()) {
         null -> {}
         else -> {
             val pgroup = matchVal8
-            when (val tryResult = cvt(setpgid(0, pgroup))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
+            when (val tryResult = cvt(setpgid(0, pgroup))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.errValue()) }
         }
     }
     if (this.getSetsid()) {
-        when (val tryResult = cvt(setsid())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
+        when (val tryResult = cvt(setsid())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.errValue()) }
     }
     // emscripten has no signal support.
-    if (!onBrokenPipeUsed()) {
+    if (onBrokenPipeUsed().inv()) {
         run {
             val action: Sigaction  = Sigaction()
             action.saSigaction = SIG_DFL
-            when (val tryResult = cvt(Sigaction(SIGPIPE, action, MutPtr(0L)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
+            when (val tryResult = cvt(Sigaction(SIGPIPE, action, MutPtr(0L)))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.errValue()) }
         }
     }
     for (callback in this.getClosures().iterMut()) {
-        when (val tryResult = callback()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.error) }
+        when (val tryResult = callback()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Nothing, Error>(tryResult.errValue()) }
     }
     // Although we're performing an exec here we may also return with an
     // error from this function (without actually exec'ing) in which case we
@@ -529,8 +534,8 @@ public fun Command.sendPidfd(sock: Socket) {
         run {
             val matchVal = cvtR({ sendmsg(sock.asRaw(), msg, MSG_EOR) })
             when {
-                matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
-                    val valueVal = matchVal.value
+                matchVal is Result.Ok<*, *> && matchVal.okValue() == 0 -> {
+                    val okValueVal = matchVal.okValue()
                 }
                 else -> {
                     val other = matchVal
@@ -648,13 +653,13 @@ public open class Process(
             null -> {}
             else -> {
                 val pidFd = matchVal1
-                val status1 = when (val tryResult = pidFd.wait()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ExitStatus, Error>(tryResult.error) }
+                val status1 = when (val tryResult = pidFd.wait()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<ExitStatus, Error>(tryResult.errValue()) }
                 this.status = status1
                 return Result.Ok<ExitStatus, Error>(status1)
             }
         }
         val status2 = 0
-        when (val tryResult = cvtR({ waitpid(this.pid, status2, 0) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ExitStatus, Error>(tryResult.error) }
+        when (val tryResult = cvtR({ waitpid(this.pid, status2, 0) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<ExitStatus, Error>(tryResult.errValue()) }
         this.status = ExitStatus.new(status2)
         return Result.Ok<ExitStatus, Error>(ExitStatus.new(status2))
     }
@@ -671,7 +676,7 @@ public open class Process(
             null -> {}
             else -> {
                 val pidFd = matchVal1
-                val status1 = when (val tryResult = pidFd.tryWait()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ExitStatus?, Error>(tryResult.error) }
+                val status1 = when (val tryResult = pidFd.tryWait()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<ExitStatus?, Error>(tryResult.errValue()) }
                 if (status1 != null) {
                     val status2 = status1
                     this.status = status2
@@ -680,7 +685,7 @@ public open class Process(
             }
         }
         val status3 = 0
-        val pid = when (val tryResult = cvt(waitpid(this.pid, status3, WNOHANG))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ExitStatus?, Error>(tryResult.error) }
+        val pid = when (val tryResult = cvt(waitpid(this.pid, status3, WNOHANG))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<ExitStatus?, Error>(tryResult.errValue()) }
         return if (pid == 0) {
             Result.Ok<ExitStatus?, Error>(null)
         } else {
@@ -733,7 +738,7 @@ public open class ExitStatus(
         return run {
             val matchVal = NonZero.tryFrom(this.value)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val failure = matchVal.value
+                val failure = matchVal.okValue()
                 Result.Err<Unit, ExitStatusError>(ExitStatusError(failure))
             }; is Result.Err<*, *> -> {
                 Result.Ok<Unit, ExitStatusError>(Unit)

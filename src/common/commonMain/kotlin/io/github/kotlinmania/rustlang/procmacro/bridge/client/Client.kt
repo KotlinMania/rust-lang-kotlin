@@ -6,13 +6,14 @@ import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.procmacro.bridge.ApiTags
 import io.github.kotlinmania.rustlang.procmacro.bridge.BridgeConfig
 import io.github.kotlinmania.rustlang.procmacro.bridge.Decode
 import io.github.kotlinmania.rustlang.procmacro.bridge.Diagnostic
-import io.github.kotlinmania.rustlang.procmacro.bridge.Encode
 import io.github.kotlinmania.rustlang.procmacro.bridge.ExpnGlobals
 import io.github.kotlinmania.rustlang.procmacro.bridge.Literal
 import io.github.kotlinmania.rustlang.procmacro.bridge.Methods
@@ -20,7 +21,6 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
 import io.github.kotlinmania.rustlang.procmacro.bridge.closure.Closure
 import io.github.kotlinmania.rustlang.procmacro.bridge.decode
-import io.github.kotlinmania.rustlang.procmacro.bridge.encode
 import io.github.kotlinmania.rustlang.procmacro.bridge.handle.Handle
 import io.github.kotlinmania.rustlang.procmacro.bridge.panicmessage.PanicMessage
 import io.github.kotlinmania.rustlang.procmacro.bridge.selflessreify.reifyToExternCFnHrtBridge
@@ -39,22 +39,24 @@ public fun interface ClientRunCallback {
 
 public open class TokenStream(
     public var handle: Handle,
-) : Encode<S>, Decode<S, TokenStream> {
+) {
     // Forward `Drop.drop` to the inherent `drop` method.
     public open fun drop() {
         Methods.tsDrop(TokenStream(handle = this.handle))
     }
 
-    public override fun encode(w: Buffer, s: S) {
-        this.handle.encode(w, s)
-    }
-
     public open fun clone(): TokenStream = Methods.tsClone(this)
-
-    public companion object {
-        public fun <S> decode(r: List<UByte>, s: S): TokenStream = TokenStream(handle = Handle.decode(r, s))
-    }
 }
+
+public fun <S> TokenStream.encode(w: Buffer, s: S) {
+    this.handle.encode(w, s)
+}
+
+public fun <S> TokenStream.encodeS(w: Buffer, s: S) {
+    this.handle.encode(w, s)
+}
+
+public fun <S> decodeTokenStream(r: List<UByte>, s: S): TokenStream = TokenStream(handle = Handle.decode(r, s))
 
 public fun TokenStream.encode(w: Buffer, s: Unit) {
     this.value.encode(w, s)
@@ -64,18 +66,12 @@ public fun decodeTokenStream(r: List<UByte>, s: Unit): TokenStream = TokenStream
 
 public open class Span(
     public var handle: Handle,
-) : Encode<S>, Decode<S, Span> {
+) {
     public open fun clone(): Span = Span(handle)
-
-    public override fun encode(w: Buffer, s: S) {
-        this.handle.encode(w, s)
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(Methods.spanDebug(this)); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
-        public fun <S> decode(r: List<UByte>, s: S): Span = Span(handle = Handle.decode(r, s))
-
         public fun defSite(): Span = Bridge.with({ bridge -> bridge.globals.defSite })
 
         public fun callSite(): Span = Bridge.with({ bridge -> bridge.globals.callSite })
@@ -83,6 +79,12 @@ public open class Span(
         public fun mixedSite(): Span = Bridge.with({ bridge -> bridge.globals.mixedSite })
     }
 }
+
+public fun <S> Span.encode(w: Buffer, s: S) {
+    this.handle.encode(w, s)
+}
+
+public fun <S> decodeSpan(r: List<UByte>, s: S): Span = Span(handle = Handle.decode(r, s))
 
 public fun Methods.Companion.trackEnvVar(variable: String, value: String?) {
     Bridge.with({ bridge ->

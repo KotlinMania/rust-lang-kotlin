@@ -21,7 +21,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.I64x8
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_2intersect_epi32&expand=0)
  */
 public fun mm2intersectEpi32(a: M128i, b: M128i, k1: MutPtr, k2: MutPtr) {
-    Pair((UnresolvedTypeLayout<Mmask8>()).readNative((k1).rawAddress), (UnresolvedTypeLayout<Mmask8>()).readNative((k2).rawAddress)) = vp2intersectd128(a.asI32x4(), b.asI32x4())
+    run { val (destructVal0, destructVal1) = vp2intersectd128(a.asI32x4(), b.asI32x4()); (UnresolvedTypeLayout<Mmask8>()).readNative((k1).rawAddress) = destructVal0; (UnresolvedTypeLayout<Mmask8>()).readNative((k2).rawAddress) = destructVal1 }
 }
 
 /**
@@ -33,7 +33,7 @@ public fun mm2intersectEpi32(a: M128i, b: M128i, k1: MutPtr, k2: MutPtr) {
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_2intersect_epi64&expand=0)
  */
 public fun mm2intersectEpi64(a: M128i, b: M128i, k1: MutPtr, k2: MutPtr) {
-    Pair((UnresolvedTypeLayout<Mmask8>()).readNative((k1).rawAddress), (UnresolvedTypeLayout<Mmask8>()).readNative((k2).rawAddress)) = vp2intersectq128(a.asI64x2(), b.asI64x2())
+    run { val (destructVal0, destructVal1) = vp2intersectq128(a.asI64x2(), b.asI64x2()); (UnresolvedTypeLayout<Mmask8>()).readNative((k1).rawAddress) = destructVal0; (UnresolvedTypeLayout<Mmask8>()).readNative((k2).rawAddress) = destructVal1 }
 }
 
 /**
@@ -45,7 +45,7 @@ public fun mm2intersectEpi64(a: M128i, b: M128i, k1: MutPtr, k2: MutPtr) {
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_2intersect_epi32&expand=0)
  */
 public fun mm2562intersectEpi32(a: M256i, b: M256i, k1: MutPtr, k2: MutPtr) {
-    Pair((UnresolvedTypeLayout<Mmask8>()).readNative((k1).rawAddress), (UnresolvedTypeLayout<Mmask8>()).readNative((k2).rawAddress)) = vp2intersectd256(a.asI32x8(), b.asI32x8())
+    run { val (destructVal0, destructVal1) = vp2intersectd256(a.asI32x8(), b.asI32x8()); (UnresolvedTypeLayout<Mmask8>()).readNative((k1).rawAddress) = destructVal0; (UnresolvedTypeLayout<Mmask8>()).readNative((k2).rawAddress) = destructVal1 }
 }
 
 /**
@@ -57,7 +57,7 @@ public fun mm2562intersectEpi32(a: M256i, b: M256i, k1: MutPtr, k2: MutPtr) {
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_2intersect_epi64&expand=0)
  */
 public fun mm2562intersectEpi64(a: M256i, b: M256i, k1: MutPtr, k2: MutPtr) {
-    Pair((UnresolvedTypeLayout<Mmask8>()).readNative((k1).rawAddress), (UnresolvedTypeLayout<Mmask8>()).readNative((k2).rawAddress)) = vp2intersectq256(a.asI64x4(), b.asI64x4())
+    run { val (destructVal0, destructVal1) = vp2intersectq256(a.asI64x4(), b.asI64x4()); (UnresolvedTypeLayout<Mmask8>()).readNative((k1).rawAddress) = destructVal0; (UnresolvedTypeLayout<Mmask8>()).readNative((k2).rawAddress) = destructVal1 }
 }
 
 /**
@@ -69,7 +69,7 @@ public fun mm2562intersectEpi64(a: M256i, b: M256i, k1: MutPtr, k2: MutPtr) {
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_2intersect_epi32&expand=0)
  */
 public fun mm5122intersectEpi32(a: M512i, b: M512i, k1: MutPtr, k2: MutPtr) {
-    Pair((UnresolvedTypeLayout<Mmask16>()).readNative((k1).rawAddress), (UnresolvedTypeLayout<Mmask16>()).readNative((k2).rawAddress)) = vp2intersectd512(a.asI32x16(), b.asI32x16())
+    run { val (destructVal0, destructVal1) = vp2intersectd512(a.asI32x16(), b.asI32x16()); (UnresolvedTypeLayout<Mmask16>()).readNative((k1).rawAddress) = destructVal0; (UnresolvedTypeLayout<Mmask16>()).readNative((k2).rawAddress) = destructVal1 }
 }
 
 /**
@@ -81,7 +81,7 @@ public fun mm5122intersectEpi32(a: M512i, b: M512i, k1: MutPtr, k2: MutPtr) {
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_2intersect_epi64&expand=0)
  */
 public fun mm5122intersectEpi64(a: M512i, b: M512i, k1: MutPtr, k2: MutPtr) {
-    Pair((UnresolvedTypeLayout<Mmask8>()).readNative((k1).rawAddress), (UnresolvedTypeLayout<Mmask8>()).readNative((k2).rawAddress)) = vp2intersectq512(a.asI64x8(), b.asI64x8())
+    run { val (destructVal0, destructVal1) = vp2intersectq512(a.asI64x8(), b.asI64x8()); (UnresolvedTypeLayout<Mmask8>()).readNative((k1).rawAddress) = destructVal0; (UnresolvedTypeLayout<Mmask8>()).readNative((k2).rawAddress) = destructVal1 }
 }
 
 public expect fun vp2intersectd128(a: I32x4, b: I32x4): Pair<UByte, UByte>

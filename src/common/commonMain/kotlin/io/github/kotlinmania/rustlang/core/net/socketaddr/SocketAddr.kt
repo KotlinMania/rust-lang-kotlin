@@ -311,16 +311,6 @@ public sealed class SocketAddr {
          * Converts a [SocketAddrV6] into a [SocketAddr.V6].
          */
         public fun from(sock6: SocketAddrV6): SocketAddr = SocketAddr.v6(sock6)
-
-        /**
-         * Converts a tuple struct (Into<[IpAddr]>, `UShort`) into a [SocketAddr].
-         *
-         * This conversion creates a [SocketAddr.V4] for an [IpAddr.V4]
-         * and creates a [SocketAddr.V6] for an [IpAddr.V6].
-         *
-         * `UShort` is treated as port of the newly created [SocketAddr].
-         */
-        public fun from(pieces: Pair<IpAddr, UShort>): SocketAddr = SocketAddr.new(pieces.first.into(), pieces.second)
     }
 }
 
@@ -694,7 +684,7 @@ public open class SocketAddrV6(
         // Otherwise, write it to a local buffer and then use `f.pad`.
         return if (f.precision() == null && f.width() == null) {
             when (val matchVal = this.scopeId()) {
-                0 -> f.writeFmt("[${this.ip()}]:${this.port()}")
+                0u -> f.writeFmt("[${this.ip()}]:${this.port()}")
                 else -> {
                     val scopeId = matchVal
                     f.writeFmt("[${this.ip()}%$scopeId]:${this.port()}")
@@ -705,7 +695,7 @@ public open class SocketAddrV6(
             val buf = DisplayBuffer.buffer(LONGEST_IPV6_SOCKET_ADDR.len())
             val buf1 = DisplayBuffer.new(buf)
             when (val matchVal1 = this.scopeId()) {
-                0 -> buf1.writeFmt("[${this.ip()}]:${this.port()}")
+                0u -> buf1.writeFmt("[${this.ip()}]:${this.port()}")
                 else -> {
                     val scopeId1 = matchVal1
                     buf1.writeFmt("[${this.ip()}%$scopeId1]:${this.port()}")
@@ -740,3 +730,13 @@ public open class SocketAddrV6(
         public fun new(ip: Ipv6Addr, port: UShort, flowinfo: UInt, scopeId: UInt): SocketAddrV6 = SocketAddrV6(ip = ip, port = port, flowinfo = flowinfo, scopeId = scopeId)
     }
 }
+
+/**
+ * Converts a tuple struct (Into<[IpAddr]>, `UShort`) into a [SocketAddr].
+ *
+ * This conversion creates a [SocketAddr.V4] for an [IpAddr.V4]
+ * and creates a [SocketAddr.V6] for an [IpAddr.V6].
+ *
+ * `UShort` is treated as port of the newly created [SocketAddr].
+ */
+public fun fromSocketAddr(pieces: Pair<IpAddr, UShort>): SocketAddr = SocketAddr.new(pieces.first.into(), pieces.second)

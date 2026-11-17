@@ -1,6 +1,9 @@
 // port-lint: source simd/ptr.rs
 package io.github.kotlinmania.rustlang.coresimd.simd.ptr
 
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.coresimd.Simd
@@ -42,7 +45,7 @@ public fun withoutProvenanceMut(addr: Simd<Int>, n: Int): Simd<MutPtr> {
  */
 public fun withExposedProvenance(addr: Simd<Int>, n: Int): Simd<ConstPtr> {
     // SAFETY: addr is a vector of Int
-    return run { val _simdArg0 = addr; _simdArg0 }
+    return run { val simdArg0 = addr; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<ConstPtr>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<ConstPtr>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<ConstPtr>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<ConstPtr>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<ConstPtr>>()).alignBytes)); res } }
 }
 
 /**
@@ -52,5 +55,5 @@ public fun withExposedProvenance(addr: Simd<Int>, n: Int): Simd<ConstPtr> {
  */
 public fun withExposedProvenanceMut(addr: Simd<Int>, n: Int): Simd<MutPtr> {
     // SAFETY: addr is a vector of Int
-    return run { val _simdArg0 = addr; _simdArg0 }
+    return run { val simdArg0 = addr; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<MutPtr>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<MutPtr>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<MutPtr>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<MutPtr>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<MutPtr>>()).alignBytes)); res } }
 }

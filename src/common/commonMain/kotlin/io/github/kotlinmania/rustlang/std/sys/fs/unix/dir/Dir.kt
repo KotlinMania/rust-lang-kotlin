@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.mkdirat
 import io.github.kotlinmania.rustlang.libc.renameat
@@ -52,7 +53,7 @@ public open class Dir(
         }
 
     public open fun duplicate(): Result<Dir, Error> {
-        return Result.Ok<Dir, Error>(Dir(when (val tryResult = this.value.tryClone()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.error) }))
+        return Result.Ok<Dir, Error>(Dir(when (val tryResult = this.value.tryClone()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.errValue()) }))
     }
 
     public open fun openFile(path: Path, opts: OpenOptions): Result<File, Error> = runPathWithCstr(path.asRef(), { path1 -> this.openFileC(path1, opts, 0) }).map(FileDesc::fromInner).map({ File(it) })
@@ -85,8 +86,8 @@ public open class Dir(
     public open fun symlinkMetadata(path: Path): Result<FileAttr, Error> = runPathWithCstr(path, { path1 -> this.metadataC(path1, true) })
 
     public open fun openFileC(path: CStr, opts: OpenOptions, extraFlags: CInt): Result<OwnedFd, Error> {
-        val flags = O_CLOEXEC or when (val tryResult = opts.getAccessMode()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OwnedFd, Error>(tryResult.error) } or when (val tryResult = opts.getCreationMode()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OwnedFd, Error>(tryResult.error) } or (opts.customFlags and O_ACCMODE.inv()) or extraFlags
-        val fd = when (val tryResult = cvtR({ openat64(this.value.asRawFd(), path.asPtr(), flags, opts.mode.toInt()) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OwnedFd, Error>(tryResult.error) }
+        val flags = O_CLOEXEC or when (val tryResult = opts.getAccessMode()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OwnedFd, Error>(tryResult.errValue()) } or when (val tryResult = opts.getCreationMode()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OwnedFd, Error>(tryResult.errValue()) } or (opts.customFlags and O_ACCMODE.inv()) or extraFlags
+        val fd = when (val tryResult = cvtR({ openat64(this.value.asRawFd(), path.asPtr(), flags, opts.mode.toInt()) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OwnedFd, Error>(tryResult.errValue()) }
         return Result.Ok<OwnedFd, Error>(OwnedFd.fromRawFd(fd))
     }
 
@@ -117,7 +118,7 @@ public open class Dir(
             }
         })
         val stat: Stat64  = MaybeUninit.zeroed(UnresolvedTypeLayout<Stat64>()).assumeInit()
-        when (val tryResult = cvt(fstatat64(fd, path.asPtr(), stat, flag))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<FileAttr, Error>(tryResult.error) }
+        when (val tryResult = cvt(fstatat64(fd, path.asPtr(), stat, flag))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<FileAttr, Error>(tryResult.errValue()) }
         return Result.Ok<FileAttr, Error>(FileAttr.fromStat64(stat))
     }
 
@@ -133,14 +134,14 @@ public open class Dir(
         public fun openForTraversal(path: Path): Result<Dir, Error> = runPathWithCstr(path, { path1 -> Dir.openTraversalC(path1) })
 
         public fun openWithC(path: CStr, opts: OpenOptions): Result<Dir, Error> {
-            val flags = O_CLOEXEC or O_DIRECTORY or when (val tryResult = opts.getAccessMode()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.error) } or when (val tryResult = opts.getCreationMode()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.error) } or (opts.customFlags and O_ACCMODE.inv())
-            val fd = when (val tryResult = cvtR({ open64(path.asPtr(), flags, opts.mode.toInt()) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.error) }
+            val flags = O_CLOEXEC or O_DIRECTORY or when (val tryResult = opts.getAccessMode()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.errValue()) } or when (val tryResult = opts.getCreationMode()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.errValue()) } or (opts.customFlags and O_ACCMODE.inv())
+            val fd = when (val tryResult = cvtR({ open64(path.asPtr(), flags, opts.mode.toInt()) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.errValue()) }
             return Result.Ok<Dir, Error>(Dir(OwnedFd.fromRawFd(fd)))
         }
 
         public fun openTraversalC(path: CStr): Result<Dir, Error> {
             val flags = O_CLOEXEC or O_DIRECTORY or TRAVERSE_DIRECTORY
-            val fd = when (val tryResult = cvtR({ open64(path.asPtr(), flags, 0) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.error) }
+            val fd = when (val tryResult = cvtR({ open64(path.asPtr(), flags, 0) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.errValue()) }
             return Result.Ok<Dir, Error>(Dir(OwnedFd.fromRawFd(fd)))
         }
     }

@@ -1,9 +1,9 @@
 // port-lint: source ascii.rs
 package io.github.kotlinmania.rustlang.std.ascii
 
-import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
-import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
+import io.github.kotlinmania.rustlang.core.char.methods.isAscii
+import io.github.kotlinmania.rustlang.core.char.methods.toAsciiLowercase
+import io.github.kotlinmania.rustlang.core.char.methods.toAsciiUppercase
 
 // Operations on ASCII strings and characters.
 //

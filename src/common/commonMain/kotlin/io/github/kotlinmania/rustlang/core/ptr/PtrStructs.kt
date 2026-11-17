@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.core.ptr
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 

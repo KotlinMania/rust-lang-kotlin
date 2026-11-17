@@ -168,7 +168,7 @@ public open class Fuse<I>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = iter.tryFold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                acc1 = when (val tryResult = iter.tryFold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
                 this.iter = null
             }
         }
@@ -202,7 +202,7 @@ public open class Fuse<I>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = iter.tryRfold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                acc1 = when (val tryResult = iter.tryRfold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
                 this.iter = null
             }
         }
@@ -244,7 +244,7 @@ public open class Fuse<I>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = iter.tryFold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                acc1 = when (val tryResult = iter.tryFold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
             }
         }
         return acc1
@@ -283,7 +283,7 @@ public open class Fuse<I>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = iter.tryRfold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                acc1 = when (val tryResult = iter.tryRfold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
             }
         }
         return acc1

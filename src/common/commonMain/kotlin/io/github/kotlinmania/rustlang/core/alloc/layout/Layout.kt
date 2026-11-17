@@ -1,6 +1,7 @@
 // port-lint: source alloc/layout.rs
 package io.github.kotlinmania.rustlang.core.alloc.layout
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOfVal
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul
@@ -238,10 +239,10 @@ public open class Layout(
             }
             else -> {
                 val k = matchVal
-                val repeated = when (val tryResult = padded.repeatPacked(k)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Layout, Int>, LayoutError>(LayoutError()) }
+                val repeated = when (val tryResult = padded.repeatPacked(k)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Layout, Int>, LayoutError>(LayoutError()) }
                 repeated.extendPacked(this)
             }
-        })) { is Result.Ok<*, *> -> tryResult1.value; is Result.Err<*, *> -> return Result.Err<Pair<Layout, Int>, LayoutError>(LayoutError()) }
+        })) { is Result.Ok<*, *> -> tryResult1.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Layout, Int>, LayoutError>(LayoutError()) }
         return Result.Ok<Pair<Layout, Int>, LayoutError>(Pair(result, padded.size()))
     }
 
@@ -294,7 +295,7 @@ public open class Layout(
         val newSize = uncheckedAdd(offset, next.size)
         return when (val matchVal = Layout.fromSizeAlignment(newSize, newAlignment)) {
             is Result.Ok<*, *> -> {
-                val layout = matchVal.value
+                val layout = matchVal.okValue()
                 Result.Ok<Pair<Layout, Int>, LayoutError>(Pair(layout, offset))
             }
             else -> {

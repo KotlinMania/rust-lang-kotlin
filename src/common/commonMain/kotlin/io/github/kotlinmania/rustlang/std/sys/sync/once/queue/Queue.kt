@@ -9,6 +9,12 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.mask
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingByteAdd
 import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -88,12 +94,12 @@ public open class Once internal constructor(
             val state = toState(current)
             when {
                 state == COMPLETE -> { return }
-                state == POISONED && !ignorePoisoning -> {
+                state == POISONED && ignorePoisoning.inv() -> {
                     // Panic to propagate the poison.
                     error("Once instance has previously been poisoned")
                 }
                 else -> {
-                    current = wait(this.stateAndQueue, current, (!ignorePoisoning).toUByte())
+                    current = wait(this.stateAndQueue, current, ignorePoisoning.inv())
                 }
             }
         }
@@ -116,7 +122,7 @@ public open class Once internal constructor(
             val state = toState(current)
             when {
                 state == COMPLETE -> { break }
-                state == POISONED && !ignorePoisoning -> {
+                state == POISONED && ignorePoisoning.inv() -> {
                     // Panic to propagate the poison.
                     error("Once instance has previously been poisoned")
                 }
@@ -124,7 +130,7 @@ public open class Once internal constructor(
                     // Try to register this thread as the one RUNNING.
                     when (val matchVal = this.stateAndQueue.compareExchangeWeak(current, current.mask(QUEUE_MASK).wrappingByteAdd(RUNNING), Acquire, Acquire)) {
                         is Result.Err<*, *> -> {
-                            val new = matchVal.error
+                            val new = matchVal.errValue()
                             current = new
                             continue
                         }
@@ -341,7 +347,7 @@ public fun wait(stateAndQueue: Atomic<MutPtr, Align8<MutPtr>>, current: StateAnd
         // that another thread didn't just replace the head of the linked list.
         when (val matchVal = stateAndQueue.compareExchangeWeak(current1, mutPtrFromRustCast(node.wrappingByteAdd(state)), Release, Acquire)) {
             is Result.Err<*, *> -> {
-                val new = matchVal.error
+                val new = matchVal.errValue()
                 current1 = new
                 continue
             }

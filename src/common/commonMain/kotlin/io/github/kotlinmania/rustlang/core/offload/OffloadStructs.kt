@@ -66,7 +66,7 @@ public open class Region<T, S : PartitioningStrategy<View, ViewMut>, View, ViewM
     public override fun offloadCheckLaunch(grid: UIntArray, block: UIntArray) {
         when (val matchVal = this.checkLaunch(grid, block)) {
             is Result.Err<*, *> -> {
-                val err = matchVal.error
+                val err = matchVal.errValue()
                 error("offload launch is not supported by the region's partitioning strategy: $err")
             }
             else -> {}

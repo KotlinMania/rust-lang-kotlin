@@ -35,9 +35,9 @@ public fun atan2f(y: kotlin.Float, x: kotlin.Float): kotlin.Float {
     // when y = 0
     if (iy == 0u) {
         return when (m) {
-            0, 1 -> y
+            0u, 1u -> y
             // atan(+-0,+anything)=+-0
-            2 -> PI
+            2u -> PI
             // atan(+0,-anything) = pi
             else -> -PI
         }
@@ -54,21 +54,21 @@ public fun atan2f(y: kotlin.Float, x: kotlin.Float): kotlin.Float {
     if (ix == 0x7f800000u) {
         return if (iy == 0x7f800000u) {
             when (m) {
-                0 -> PI / 4.0f
+                0u -> PI / 4.0f
                 // atan(+INF,+INF)
-                1 -> -PI / 4.0f
+                1u -> -PI / 4.0f
                 // atan(-INF,+INF)
-                2 -> 3.0f * PI / 4.0f
+                2u -> 3.0f * PI / 4.0f
                 // atan(+INF,-INF)
                 else -> -3.0f * PI / 4.0f
             }
         } else {
             when (m) {
-                0 -> 0.0f
+                0u -> 0.0f
                 // atan(+...,+INF)
-                1 -> -0.0f
+                1u -> -0.0f
                 // atan(-...,+INF)
-                2 -> PI
+                2u -> PI
                 // atan(+...,-INF)
                 else -> -PI
             }
@@ -91,11 +91,11 @@ public fun atan2f(y: kotlin.Float, x: kotlin.Float): kotlin.Float {
             atanf(fabsf(y / x))
         }
     return when (m) {
-        0 -> z
+        0u -> z
         // atan(+,+)
-        1 -> -z
+        1u -> -z
         // atan(-,+)
-        2 -> PI - (z - PI_LO)
+        2u -> PI - (z - PI_LO)
         // atan(+,-)
         else -> (z - PI_LO) - PI
     }

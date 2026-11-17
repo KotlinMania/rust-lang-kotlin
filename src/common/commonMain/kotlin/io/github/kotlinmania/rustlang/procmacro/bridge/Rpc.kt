@@ -78,8 +78,8 @@ public fun <S> NonZero<UInt, NonZeroU32Inner>.encode(w: Buffer, s: S) {
 public fun <S> decodeNonZeroUInt(r: List<UByte>, s: S): NonZero<UInt, NonZeroU32Inner> = (NonZero.new<NonZeroU32Inner, UInt>(UInt.Decode(r, s)))!!
 
 public fun <S, A : Encode<S>, B : Encode<S>> Pair<A, B>.encode(w: Buffer, s: S) {
-    this.value.encode(w, s)
-    this.field1.encode(w, s)
+    this.first.encode(w, s)
+    this.second.encode(w, s)
 }
 
 public fun <S, A : Decode<S, A>, B : Decode<S, B>> decodeAB(r: List<UByte>, s: S): Pair<A, B> = Pair(Decode.Decode(r, s), Decode.Decode(r, s))

@@ -9,6 +9,9 @@ import io.github.kotlinmania.rustlang.core.mem.asMutPtr
 import io.github.kotlinmania.rustlang.core.num.error.ParseIntError
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.castMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
@@ -275,23 +278,23 @@ public fun stringVersionKey(cfHandle: CFHandle, plist: CFDictionaryRef, lookupKe
 public fun parseOsVersion(version: List<UByte>): Result<OSVersion, ParseIntError> {
     return when (val matchVal = version.splitOnce({ b -> b == 46u })) {
         null -> {
-            val major = when (val tryResult = UShort.fromAsciiBytes(version)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
+            val major = when (val tryResult = UShort.fromAsciiBytes(version)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.errValue()) }
             Result.Ok<OSVersion, ParseIntError>(packOsVersion(major, 0u, 0u))
         }
         else -> {
             val major1 = matchVal.first
             val minor = matchVal.second
-            val major2 = when (val tryResult = UShort.fromAsciiBytes(major1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
+            val major2 = when (val tryResult = UShort.fromAsciiBytes(major1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.errValue()) }
             when (val matchVal1 = minor.let { s -> val d = { b -> b == 46u }; val idx = s.indexOf(d); if (idx < 0) null else Pair(s.substring(0, idx), s.substring(idx + d.length)) }) {
                 null -> {
-                    val minor1 = when (val tryResult = UByte.fromAsciiBytes(minor)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
+                    val minor1 = when (val tryResult = UByte.fromAsciiBytes(minor)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.errValue()) }
                     Result.Ok<OSVersion, ParseIntError>(packOsVersion(major2, minor1, 0u))
                 }
                 else -> {
                     val minor2 = matchVal1.first
                     val patch = matchVal1.second
-                    val minor3 = when (val tryResult = UByte.fromAsciiBytes(minor2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
-                    val patch1 = when (val tryResult = UByte.fromAsciiBytes(patch)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
+                    val minor3 = when (val tryResult = UByte.fromAsciiBytes(minor2)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.errValue()) }
+                    val patch1 = when (val tryResult = UByte.fromAsciiBytes(patch)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.errValue()) }
                     Result.Ok<OSVersion, ParseIntError>(packOsVersion(major2, minor3, patch1))
                 }
             }

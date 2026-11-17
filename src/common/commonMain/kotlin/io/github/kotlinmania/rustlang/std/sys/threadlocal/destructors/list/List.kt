@@ -18,7 +18,7 @@ public fun interface FnCallback {
 public var DTORS: RefCell<List<Pair<MutPtr, FnCallback>>> = RefCell.new(Vec.newIn(System()))
 
 public fun register(t: MutPtr, dtor: FnCallback) {
-    var dtors = when (val tryResult = DTORS.tryBorrowMut()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> run {
+    var dtors = when (val tryResult = DTORS.tryBorrowMut()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> run {
     when (val matchVal = panicOutput()) {
         null -> {}
         else -> {

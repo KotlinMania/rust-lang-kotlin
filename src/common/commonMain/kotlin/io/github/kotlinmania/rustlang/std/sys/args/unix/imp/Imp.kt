@@ -2,6 +2,8 @@
 package io.github.kotlinmania.rustlang.std.sys.args.unix.imp
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.libc.nsgetArgc
 import io.github.kotlinmania.rustlang.libc.nsgetArgv
 

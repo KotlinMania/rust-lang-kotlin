@@ -40,7 +40,7 @@ public open class Mutex(
                 when (matchVal) { is Result.Ok<*, *> -> {
                     return
                 }; is Result.Err<*, *> -> {
-                    val s = matchVal.error
+                    val s = matchVal.errValue()
                     state = s
                 } }
             }

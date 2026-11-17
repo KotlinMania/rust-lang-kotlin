@@ -74,7 +74,7 @@ public fun <Int, F : Float<F, Int>> parseLongMantissa(s: List<UByte>): BiasedFp 
                             val digit = matchVal
                             break
                         }
-                        matchVal == 0 || matchVal == 1 -> 2
+                        matchVal == 0u.toUByte() || matchVal == 1u.toUByte() -> 2
                         else -> 1
                     }
                 }

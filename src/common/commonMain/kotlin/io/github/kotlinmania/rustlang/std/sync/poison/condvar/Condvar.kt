@@ -197,7 +197,7 @@ public open class Condvar(
     public open fun <T> waitWhile(guard: MutexGuard<T>, condition: (T) -> Boolean): LockResult<MutexGuard<T>> {
         var guard1 = guard
         while (condition(guard1)) {
-            guard1 = when (val tryResult = this.wait(guard1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+            guard1 = when (val tryResult = this.wait(guard1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
         }
         return Result.Ok(guard1)
     }
@@ -327,7 +327,7 @@ public open class Condvar(
             run {
                 val lock = guardLock(guard)
                 val success = this.inner.waitTimeout(lock, dur)
-                Pair(guardPoison(guard).get(), WaitTimeoutResult(!success))
+                Pair(guardPoison(guard).get(), WaitTimeoutResult(success.inv()))
             }
         return if (poisoned) {
             Result.Err(PoisonError.new(Pair(guard, result)))
@@ -389,7 +389,7 @@ public open class Condvar(
         var guard1 = guard
         val start = Instant.now()
         while (true) {
-            if (!condition(guard1)) {
+            if (condition(guard1).inv()) {
                 return Result.Ok(Pair(guard1, WaitTimeoutResult(false)))
             }
             val timeout1 =
@@ -400,7 +400,7 @@ public open class Condvar(
                         timeout
                     }
                 }
-            guard1 = when (val tryResult = this.waitTimeout(guard1, timeout1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }.first
+            guard1 = when (val tryResult = this.waitTimeout(guard1, timeout1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }.first
         }
     }
 

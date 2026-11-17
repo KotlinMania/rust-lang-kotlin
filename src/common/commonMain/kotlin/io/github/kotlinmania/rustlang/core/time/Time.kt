@@ -1161,7 +1161,7 @@ public open class Duration(
          */
         public fun fromNanosU128(nanos: U128): Duration {
             val NANOS_PER_SEC: U128 = U128.fromUInt(NANOS_PER_SEC)
-            val secs = when (val tryResult = ULong.tryFrom(nanos / NANOS_PER_SEC)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> error("overflow in `Duration::from_nanos_u128`") }
+            val secs = when (val tryResult = ULong.tryFrom(nanos / NANOS_PER_SEC)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> error("overflow in `Duration::from_nanos_u128`") }
             val subsecNanos = (nanos % NANOS_PER_SEC).toUInt()
             // SAFETY: x % 1_000_000_000 < 1_000_000_000 also, subsecNanos >= 0 since u128 >=0 and u32 >=0
             val subsecNanos1 = Nanoseconds.newUnchecked(subsecNanos)
@@ -1311,10 +1311,10 @@ public open class Duration(
             run {
                 val matchVal = Duration.tryFromSecsF64(secs)
                 when (matchVal) { is Result.Ok<*, *> -> {
-                    val v = matchVal.value
+                    val v = matchVal.okValue()
                     v
                 }; is Result.Err<*, *> -> {
-                    val e = matchVal.error
+                    val e = matchVal.errValue()
                     error("$e")
                 } }
             }
@@ -1352,10 +1352,10 @@ public open class Duration(
             run {
                 val matchVal = Duration.tryFromSecsF32(secs)
                 when (matchVal) { is Result.Ok<*, *> -> {
-                    val v = matchVal.value
+                    val v = matchVal.okValue()
                     v
                 }; is Result.Err<*, *> -> {
-                    val e = matchVal.error
+                    val e = matchVal.errValue()
                     error("$e")
                 } }
             }
@@ -1740,9 +1740,9 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
         closure@{ f1: StringBuilder ->
             if (integerPart1 != null) {
                 val integerPart2 = integerPart1
-                when (val tryResult = f1.writeFmt("$prefix$integerPart2")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
+                when (val tryResult = f1.writeFmt("$prefix$integerPart2")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure Result.Err(tryResult.errValue()) }
             } else {
-                when (val tryResult = f1.writeFmt("${prefix}18446744073709551616")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
+                when (val tryResult = f1.writeFmt("${prefix}18446744073709551616")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure Result.Err(tryResult.errValue()) }
             }
             // Write the decimal point and the fractional part (if any).
             if (end > 0) {
@@ -1750,7 +1750,7 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
                 // it was initialized with '0's, so it contains valid UTF8.
                 val s = fromUtf8Unchecked(((buf).sliceArray(0 until end)))
                 // If the user request a precision > 9, we pad '0's at the end.
-                when (val tryResult = f1.writeFmt(".$s")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
+                when (val tryResult = f1.writeFmt(".$s")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure Result.Err(tryResult.errValue()) }
             }
             f1.writeFmt("$postfix")
         }
@@ -1797,8 +1797,8 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
             } else {
                 // We need to add padding. Use the `Formatter.padding` helper function.
                 val defaultAlign = fmt.Alignment.Left
-                val postPadding = when (val tryResult = f.padding((requestedW - actualW).toUShort(), defaultAlign)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
-                when (val tryResult = emitWithoutPadding(f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+                val postPadding = when (val tryResult = f.padding((requestedW - actualW).toUShort(), defaultAlign)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
+                when (val tryResult = emitWithoutPadding(f)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
                 postPadding.write(f)
             }
         }

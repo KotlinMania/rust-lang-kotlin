@@ -21,8 +21,8 @@ public fun <T> cvtR(f: () -> T): Result<T, Error> where T : IsMinusOne {
         run {
             val matchVal = cvt(f())
             when {
-                matchVal is Result.Err<*, *> && matchVal.error.isInterrupted() -> {
-                    val e = matchVal.error
+                matchVal is Result.Err<*, *> && matchVal.errValue().isInterrupted() -> {
+                    val e = matchVal.errValue()
                 }
                 else -> {
                     val other = matchVal

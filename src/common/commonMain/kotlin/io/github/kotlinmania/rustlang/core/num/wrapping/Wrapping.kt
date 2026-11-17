@@ -9,6 +9,10 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.sub
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingAdd
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingSub
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // Definitions of `Wrapping<T>`.
@@ -213,7 +217,7 @@ public fun Wrapping<Int>.remAssignInt(other: Int) {
     this.remAssign(other)
 }
 
-public fun Wrapping<Int>.not(): Wrapping<Int> = Wrapping(!this.value, fieldLayout = PrimitiveLayouts.USIZE64)
+public operator fun Wrapping<Int>.not(): Wrapping<Int> = Wrapping(!this.value, fieldLayout = PrimitiveLayouts.USIZE64)
 
 public fun Wrapping<Int>.bitxor(other: Wrapping<Int>): Wrapping<Int> = Wrapping(this.value xor other.value, fieldLayout = PrimitiveLayouts.USIZE64)
 

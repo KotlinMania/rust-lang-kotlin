@@ -124,10 +124,10 @@ public open class MapsEntry(
                     else -> {
                         val start = matchVal.first
                         val limit = matchVal.second
-                        Pair(when (val tryResult = hex(start)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<MapsEntry, String>(tryResult.error) }, when (val tryResult = hex(limit)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<MapsEntry, String>(tryResult.error) })
+                        Pair(when (val tryResult = hex(start)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<MapsEntry, String>(tryResult.errValue()) }, when (val tryResult = hex(limit)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<MapsEntry, String>(tryResult.errValue()) })
                     }
                 }
-            val offset = when (val tryResult = hex64(offsetStr)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<MapsEntry, String>(tryResult.error) }
+            val offset = when (val tryResult = hex64(offsetStr)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<MapsEntry, String>(tryResult.errValue()) }
             val pathname = pathnameStr.into()
             return Result.Ok<MapsEntry, String>(MapsEntry(address = address, offset = offset, pathname = pathname))
         }
@@ -145,7 +145,7 @@ public fun parseMaps(): Result<List<MapsEntry>, String> {
         // Unsafe is unfortunately necessary to get the bounds check removed (for code size).
         // SAFETY: matchIdx is the position of the newline, so it must be valid.
         val line = buf1.getUnchecked(0 until matchIdx)
-        v.add(when (val tryResult = line.parse()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<MapsEntry>, String>(tryResult.error) })
+        v.add(when (val tryResult = line.parse()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<List<MapsEntry>, String>(tryResult.errValue()) })
         // SAFETY: matchIdx is the position of the newline, so the byte after it must be valid.
         buf1 = buf1.getUnchecked((matchIdx + 1) until Int.MAX_VALUE)
     }

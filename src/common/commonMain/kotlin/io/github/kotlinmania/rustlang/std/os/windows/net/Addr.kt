@@ -13,6 +13,7 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
@@ -27,7 +28,7 @@ public fun sockaddrUn(path: Path): Result<Pair<SockaddrUn, Int>, Error> {
     val addr: SockaddrUn  = SockaddrUn()
     addr.sunFamily = AF_UNIX
     // path to UTF-8 bytes
-    val bytes = when (val tryResult = path.toStr().okOr(constError(ErrorKind.InvalidInput, "path must be valid UTF-8"))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<SockaddrUn, Int>, Error>(tryResult.error) }.asBytes()
+    val bytes = when (val tryResult = path.toStr().okOr(constError(ErrorKind.InvalidInput, "path must be valid UTF-8"))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<SockaddrUn, Int>, Error>(tryResult.errValue()) }.asBytes()
     if (bytes.size >= addr.sunPath.size) {
         return Result.Err<Pair<SockaddrUn, Int>, Error>(constError(ErrorKind.InvalidInput, "path too long"))
     }
@@ -132,7 +133,7 @@ public open class SocketAddr(
                 val addr by localStorageL60C12
                 val localStorageL61C12 = AddressableLocal(sizeOf<SockaddrUn>(typeLayoutT = UnresolvedTypeLayout<SockaddrUn>()).toInt(), PrimitiveLayouts.I32)
                 val len by localStorageL61C12
-                when (val tryResult = cvtNz(f(localStorageL60C12.asMutPtr(), RustMutableReference(localStorageL61C12.asMutPtr(), localStorageL61C12.layout)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<SocketAddr, Error>(tryResult.error) }
+                when (val tryResult = cvtNz(f(localStorageL60C12.asMutPtr(), RustMutableReference(localStorageL61C12.asMutPtr(), localStorageL61C12.layout)))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<SocketAddr, Error>(tryResult.errValue()) }
                 SocketAddr.fromParts(addr, len)
             }
         }

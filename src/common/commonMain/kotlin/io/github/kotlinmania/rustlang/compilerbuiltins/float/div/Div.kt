@@ -16,6 +16,9 @@ import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 import io.github.kotlinmania.rustlang.core.num.wrappingShl
 import io.github.kotlinmania.rustlang.core.num.wrappingShr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingAdd
+import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingSub
 
 // Floating point division routines.
 //

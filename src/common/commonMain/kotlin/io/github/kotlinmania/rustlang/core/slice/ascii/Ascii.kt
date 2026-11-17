@@ -5,7 +5,8 @@ package io.github.kotlinmania.rustlang.core.slice.ascii
 
 import io.github.kotlinmania.rustlang.core.ascii.EscapeDefault
 import io.github.kotlinmania.rustlang.core.ascii.escapeDefault
-import io.github.kotlinmania.rustlang.core.char.isAsciiWhitespace
+import io.github.kotlinmania.rustlang.core.char.methods.isAsciiWhitespace
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.iter.adapters.filter.Filter
@@ -21,6 +22,9 @@ import io.github.kotlinmania.rustlang.core.ops.function.FnMut
 import io.github.kotlinmania.rustlang.core.ops.function.FnOnce
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.alignOffset
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isAlignedTo
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr

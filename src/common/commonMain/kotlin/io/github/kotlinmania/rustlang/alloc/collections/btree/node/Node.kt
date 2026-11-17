@@ -21,6 +21,9 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -1108,7 +1111,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, Edge>.ins
         split1 = run {
             val matchVal1 = split1.left.ascend()
             when (matchVal1) { is Result.Ok<*, *> -> {
-                val parent = matchVal1.value
+                val parent = matchVal1.okValue()
                 when (val matchVal2 = parent.insert(split1.kv.first, split1.kv.second, split1.right, alloc.clone())) {
                     // SAFETY: we have finished splitting and can now re-awaken the
                     // handle to the inserted element.
@@ -1119,7 +1122,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, Edge>.ins
                     }
                 }
             }; is Result.Err<*, *> -> {
-                val root = matchVal1.error
+                val root = matchVal1.errValue()
                 splitRoot(split1.copy(left = root))
                 // SAFETY: we have finished splitting and can now re-awaken the
                 // handle to the inserted element.
@@ -1612,18 +1615,18 @@ public fun <K, V> NodeRef<Mut, K, V, LeafOrInternal>.chooseParentKv(): Result<Le
     return run {
         val matchVal = read(this).ascend()
         when (matchVal) { is Result.Ok<*, *> -> {
-            val parentEdge = matchVal.value
+            val parentEdge = matchVal.okValue()
             run {
                 val matchVal1 = parentEdge.leftKv()
                 when (matchVal1) { is Result.Ok<*, *> -> {
-                    val leftParentKv = matchVal1.value
+                    val leftParentKv = matchVal1.okValue()
                     Result.Ok<LeftOrRight<BalancingContext<K, V>>, NodeRef<Mut, K, V, LeafOrInternal>>(LeftOrRight.Left(BalancingContext(parent = read(leftParentKv), leftChild = leftParentKv.leftEdge().descend(), rightChild = this)))
                 }; is Result.Err<*, *> -> {
-                    val parentEdge1 = matchVal1.error
+                    val parentEdge1 = matchVal1.errValue()
                     run {
                         val matchVal2 = parentEdge1.rightKv()
                         when (matchVal2) { is Result.Ok<*, *> -> {
-                            val rightParentKv = matchVal2.value
+                            val rightParentKv = matchVal2.okValue()
                             Result.Ok<LeftOrRight<BalancingContext<K, V>>, NodeRef<Mut, K, V, LeafOrInternal>>(LeftOrRight.Right(BalancingContext(parent = read(rightParentKv), leftChild = this, rightChild = rightParentKv.rightEdge().descend())))
                         }; is Result.Err<*, *> -> {
                             error("empty internal node")
@@ -1632,7 +1635,7 @@ public fun <K, V> NodeRef<Mut, K, V, LeafOrInternal>.chooseParentKv(): Result<Le
                 } }
             }
         }; is Result.Err<*, *> -> {
-            val root = matchVal.error
+            val root = matchVal.errValue()
             Result.Err<LeftOrRight<BalancingContext<K, V>>, NodeRef<Mut, K, V, LeafOrInternal>>(root)
         } }
     }

@@ -47,6 +47,14 @@ import io.github.kotlinmania.rustlang.core.ptr.alignOffset
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.metadata.metadata
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.copyFromNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.splitAtMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.sub
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingSub
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.swap
 import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -4845,7 +4853,7 @@ public fun <Output, T, I> List<T>.getDisjointUncheckedMut(indices: List<I>, n: I
  * ```
  */
 public fun <Output, T, I> List<T>.getDisjointMut(indices: List<I>, n: Int): Result<List<Output>, GetDisjointMutError> where I : GetDisjointMutIndex<I>, I : SliceIndex<List<T>, Output> {
-    when (val tryResult = getDisjointCheckValid(indices, this.size, n)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<Output>, GetDisjointMutError>(tryResult.error) }
+    when (val tryResult = getDisjointCheckValid(indices, this.size, n)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<List<Output>, GetDisjointMutError>(tryResult.errValue()) }
     // SAFETY: The `getDisjointCheckValid()` call checked that all indices
     // are disjunct and in bounds.
     return Result.Ok<List<Output>, GetDisjointMutError>(this.getDisjointUncheckedMut(indices))

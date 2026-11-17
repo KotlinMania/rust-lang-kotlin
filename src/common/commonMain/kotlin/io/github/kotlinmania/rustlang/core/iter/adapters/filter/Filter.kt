@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.filter
 
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.array.iterNextChunk
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -81,10 +82,12 @@ public open class Filter<I, P>(
             })
         return when (result) {
             is ControlFlow.Break<*, *> -> {
+                val cfBreakValueVal = result.cfBreakValue()
                 // SAFETY: The loop above is only explicitly broken when the array has been fully initialized
                 Result.Ok<List<Item>, IntoIter<Item>>(MaybeUninit.arrayAssumeInit(array, n))
             }
             is ControlFlow.Continue<*, *> -> {
+                val cfContinueValueVal = result.cfContinueValue()
                 // SAFETY: The range is in bounds since the loop breaks when reaching N elements.
                 Result.Err<List<Item>, IntoIter<Item>>(IntoIter.newUnchecked(array, 0 until initialized, n))
             }

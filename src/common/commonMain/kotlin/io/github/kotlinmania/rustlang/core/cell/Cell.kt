@@ -20,6 +20,10 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.ptr.fromMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingAdd
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -502,14 +506,6 @@ public open class Cell<T> internal constructor(
      */
     public open fun take(defaultTFn: () -> T): T = this.replace(defaultTFn())
 
-    // Allow types that wrap `Cell` to also implement `DispatchFromDyn`
-    // and become dynamic-compatible method receivers.
-    // Note that currently `Cell` itself cannot be a method receiver
-    // because it does not implement Deref.
-    // In other words:
-    // `self: Cell<Self>` won't work
-    // `self: CellWrapper<Self>` becomes possible
-
     /**
      * Get a clone of the `Cell` that contains a copy of the original value.
      *
@@ -583,6 +579,14 @@ public open class Cell<T> internal constructor(
         }
     }
 }
+
+// Allow types that wrap `Cell` to also implement `DispatchFromDyn`
+// and become dynamic-compatible method receivers.
+// Note that currently `Cell` itself cannot be a method receiver
+// because it does not implement Deref.
+// In other words:
+// `self: Cell<Self>` won't work
+// `self: CellWrapper<Self>` becomes possible
 
 public fun <T> Cell<List<T>>.asRef(n: Int): List<Cell<T>> = this.asArrayOfCells(n)
 
@@ -822,10 +826,10 @@ public open class RefCell<T> internal constructor(
         run {
             val matchVal = this.tryBorrow()
             when (matchVal) { is Result.Ok<*, *> -> {
-                val b = matchVal.value
+                val b = matchVal.okValue()
                 b
             }; is Result.Err<*, *> -> {
-                val err = matchVal.error
+                val err = matchVal.errValue()
                 panicAlreadyMutablyBorrowed(err)
             } }
         }
@@ -907,10 +911,10 @@ public open class RefCell<T> internal constructor(
         run {
             val matchVal = this.tryBorrowMut()
             when (matchVal) { is Result.Ok<*, *> -> {
-                val b = matchVal.value
+                val b = matchVal.okValue()
                 b
             }; is Result.Err<*, *> -> {
-                val err = matchVal.error
+                val err = matchVal.errValue()
                 panicAlreadyBorrowed(err)
             } }
         }
@@ -1430,10 +1434,10 @@ public open class Ref<T>(
             run {
                 val matchVal = f((orig).value)
                 when (matchVal) { is Result.Ok<*, *> -> {
-                    val value = matchVal.value
+                    val value = matchVal.okValue()
                     Result.Ok<Ref<U>, Pair<Ref<T>, E>>(Ref(value = NonNull.from(value), borrow = (orig).value.borrow))
                 }; is Result.Err<*, *> -> {
-                    val e = matchVal.error
+                    val e = matchVal.errValue()
                     Result.Err<Ref<U>, Pair<Ref<T>, E>>(Pair(orig, e))
                 } }
             }
@@ -1711,10 +1715,10 @@ public open class RefMut<T>(
             return run {
                 val matchVal = f((orig).value)
                 when (matchVal) { is Result.Ok<*, *> -> {
-                    val value = matchVal.value
+                    val value = matchVal.okValue()
                     Result.Ok<RefMut<U>, Pair<RefMut<T>, E>>(RefMut(value = NonNull.from(value), borrow = (orig).value.borrow, marker = Unit))
                 }; is Result.Err<*, *> -> {
-                    val e = matchVal.error
+                    val e = matchVal.errValue()
                     Result.Err<RefMut<U>, Pair<RefMut<T>, E>>(Pair(orig, e))
                 } }
             }
@@ -2117,14 +2121,6 @@ public open class UnsafeCell<T>(
         return this.get().asMutUnchecked()
     }
 
-    // Allow types that wrap `UnsafeCell` to also implement `DispatchFromDyn`
-    // and become dynamic-compatible method receivers.
-    // Note that currently `UnsafeCell` itself cannot be a method receiver
-    // because it does not implement Deref.
-    // In other words:
-    // `self: UnsafeCell<Self>` won't work
-    // `self: UnsafeCellWrapper<Self>` becomes possible
-
     public companion object {
         /**
          * Constructs a new instance of `UnsafeCell` which will wrap the specified
@@ -2215,6 +2211,14 @@ public open class UnsafeCell<T>(
     }
 }
 
+// Allow types that wrap `UnsafeCell` to also implement `DispatchFromDyn`
+// and become dynamic-compatible method receivers.
+// Note that currently `UnsafeCell` itself cannot be a method receiver
+// because it does not implement Deref.
+// In other words:
+// `self: UnsafeCell<Self>` won't work
+// `self: UnsafeCellWrapper<Self>` becomes possible
+
 /**
  * [UnsafeCell], but [Sync].
  *
@@ -2266,17 +2270,6 @@ public open class SyncUnsafeCell<T> internal constructor(
         return this.value::value
     }
 
-    // @unstable(feature = "syncUnsafeCell", issue = "95439")
-
-    // Allow types that wrap `SyncUnsafeCell` to also implement `DispatchFromDyn`
-    // and become dynamic-compatible method receivers.
-    // Note that currently `SyncUnsafeCell` itself cannot be a method receiver
-    // because it does not implement Deref.
-    // In other words:
-    // `self: SyncUnsafeCell<Self>` won't work
-    // `self: SyncUnsafeCellWrapper<Self>` becomes possible
-    // @unstable(feature = "syncUnsafeCell", issue = "95439")
-
     public companion object {
         public operator fun <T> invoke(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout()): SyncUnsafeCell<T> = SyncUnsafeCell<T>(value, fieldLayout)
 
@@ -2310,5 +2303,16 @@ public open class SyncUnsafeCell<T> internal constructor(
         public fun <T> from(t: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()): SyncUnsafeCell<T> = SyncUnsafeCell.new(t, fieldLayout = fieldLayout)
     }
 }
+
+// @unstable(feature = "syncUnsafeCell", issue = "95439")
+
+// Allow types that wrap `SyncUnsafeCell` to also implement `DispatchFromDyn`
+// and become dynamic-compatible method receivers.
+// Note that currently `SyncUnsafeCell` itself cannot be a method receiver
+// because it does not implement Deref.
+// In other words:
+// `self: SyncUnsafeCell<Self>` won't work
+// `self: SyncUnsafeCellWrapper<Self>` becomes possible
+// @unstable(feature = "syncUnsafeCell", issue = "95439")
 
 public fun assertCoerceUnsized(a: UnsafeCell<Int>, b: SyncUnsafeCell<Int>, c: Cell<Int>, d: RefCell<Int>) {}

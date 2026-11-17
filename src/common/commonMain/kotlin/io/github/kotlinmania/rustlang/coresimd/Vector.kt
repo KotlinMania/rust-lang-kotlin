@@ -2,6 +2,10 @@
 package io.github.kotlinmania.rustlang.coresimd
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -13,6 +17,9 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingAdd
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -280,7 +287,7 @@ public open class Simd<T>(
      */
     public open fun storeSelectPtr(ptr: MutPtr, enable: Mask<Mask>) {
         // SAFETY: The safety of writing elements through `ptr` is ensured by the caller.
-        run { val _simdArg0 = enable.toSimd(); val _simdArg1 = ptr; val _simdArg2 = this; Unit }
+        run { val simdArg0 = enable.toSimd(); val simdArg1 = ptr; val simdArg2 = this; Unit }
     }
 
     /**
@@ -439,7 +446,7 @@ public open class Simd<T>(
      */
     public open fun scatterSelectPtr(dest: Simd<MutPtr>, enable: Mask<Int>) {
         // Safety: The caller is responsible for upholding all invariants
-        run { val _simdArg0 = this; val _simdArg1 = dest; val _simdArg2 = enable.toSimd(); Unit }
+        run { val simdArg0 = this; val simdArg1 = dest; val simdArg2 = enable.toSimd(); Unit }
     }
 
     public open fun clone(): Simd<T> = Simd(this.value)
@@ -448,7 +455,7 @@ public open class Simd<T>(
         // Safety: All SIMD vectors are SimdPartialEq, and the comparison produces a valid mask.
         val mask =
             run {
-                val tfvec: Simd<Mask> = run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 }
+                val tfvec: Simd<Mask> = run { val simdArg0 = this; val simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Mask>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Mask>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Mask>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Mask>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Mask>>()).alignBytes)); res } }
                 Mask.fromSimdUnchecked(tfvec, n)
             }
         // Two vectors are equal if all elements are equal when compared elementwise
@@ -459,7 +466,7 @@ public open class Simd<T>(
         // Safety: All SIMD vectors are SimdPartialEq, and the comparison produces a valid mask.
         val mask =
             run {
-                val tfvec: Simd<Mask> = run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 }
+                val tfvec: Simd<Mask> = run { val simdArg0 = this; val simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Mask>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Mask>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Mask>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Mask>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Mask>>()).alignBytes)); res } }
                 Mask.fromSimdUnchecked(tfvec, n)
             }
         // Two vectors are non-equal if any elements are non-equal when compared elementwise
@@ -536,7 +543,7 @@ public open class Simd<T>(
          */
         public fun <Mask, T> splat(value: T, n: Int): Simd<T> {
             // SAFETY: T is a SimdElement, and the item type of Self.
-            return run { val _simdArg0 = value; _simdArg0 }
+            return run { val simdArg0 = value; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<T>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); res } }
         }
 
         /**
@@ -623,7 +630,7 @@ public open class Simd<T>(
          * check(result == Simd.fromArray(listOf(10, 11, -3, -2)))
          * ```
          */
-        public fun <Mask, T> loadOr(slice: List<T>, or: Simd<T>, n: Int): Simd<T> = Simd.loadSelect(slice, splat(true, n), or, n)
+        public fun <Mask, T> loadOr(slice: List<T>, or: Simd<T>, n: Int): Simd<T> = Simd.loadSelect(slice, splat(true), or, n)
 
         /**
          * Reads contiguous elements from `slice`. Each element is read from memory if its
@@ -694,7 +701,7 @@ public open class Simd<T>(
          */
         public fun <Mask, T> loadSelectPtr(ptr: ConstPtr, enable: Mask<Mask>, or: Simd<T>, n: Int): Simd<T> {
             // SAFETY: The safety of reading elements through `ptr` is ensured by the caller.
-            return run { val _simdArg0 = enable.toSimd(); val _simdArg1 = ptr; val _simdArg2 = or; _simdArg2 }
+            return run { val simdArg0 = enable.toSimd(); val simdArg1 = ptr; val simdArg2 = or; simdArg2 }
         }
 
         /**
@@ -711,7 +718,7 @@ public open class Simd<T>(
          * check(result == Simd.fromArray(listOf(-5, 13, 10, 15)))
          * ```
          */
-        public fun <Mask, T> gatherOr(slice: List<T>, idxs: Simd<Int>, or: Simd<T>, n: Int): Simd<T> = Simd.gatherSelect(slice, splat(true, n), idxs, or, n)
+        public fun <Mask, T> gatherOr(slice: List<T>, idxs: Simd<Int>, or: Simd<T>, n: Int): Simd<T> = Simd.gatherSelect(slice, splat(true), idxs, or, n)
 
         /**
          * Reads from indices in `slice` to construct a SIMD vector.
@@ -810,7 +817,7 @@ public open class Simd<T>(
         public fun <Mask, T> gatherPtr(source: Simd<ConstPtr>, n: Int): Simd<T> {
             // Note: add an intrinsic that doesn't use a passthru vector, and remove the T: Default bound
             // Safety: The caller is responsible for upholding all invariants
-            return Simd.gatherSelectPtr(source, splat(true, n), Simd.default(n), n)
+            return Simd.gatherSelectPtr(source, splat(true), Simd.default(n), n)
         }
 
         // even without panics, this helps for Miri backtraces
@@ -839,7 +846,7 @@ public open class Simd<T>(
          */
         public fun <Mask, T> gatherSelectPtr(source: Simd<ConstPtr>, enable: Mask<Int>, or: Simd<T>, n: Int): Simd<T> {
             // Safety: The caller is responsible for upholding all invariants
-            return run { val _simdArg0 = or; val _simdArg1 = source; val _simdArg2 = enable.toSimd(); _simdArg0 }
+            return run { val simdArg0 = or; val simdArg1 = source; val simdArg2 = enable.toSimd(); simdArg0 }
         }
 
         public fun <Mask, T> default(n: Int, defaultTFn: () -> T): Simd<T> = Simd.splat(defaultTFn(), n)
@@ -848,11 +855,11 @@ public open class Simd<T>(
         public fun <Mask, T> from(array: List<T>, n: Int): Simd<T> = Simd.fromArray(array, n)
 
         public fun <Mask, T> tryFrom(slice: List<T>, n: Int): Result<Simd<T>, TryFromSliceError> {
-            return Result.Ok<Simd<T>, TryFromSliceError>(Simd.fromArray(when (val tryResult = slice.tryInto()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Simd<T>, TryFromSliceError>(tryResult.error) }, n))
+            return Result.Ok<Simd<T>, TryFromSliceError>(Simd.fromArray(when (val tryResult = slice.tryInto()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Simd<T>, TryFromSliceError>(tryResult.errValue()) }, n))
         }
 
         public fun <Mask, T> tryFrom(slice: MutableList<T>, n: Int): Result<Simd<T>, TryFromSliceError> {
-            return Result.Ok<Simd<T>, TryFromSliceError>(Simd.fromArray(when (val tryResult = slice.tryInto()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Simd<T>, TryFromSliceError>(tryResult.error) }, n))
+            return Result.Ok<Simd<T>, TryFromSliceError>(Simd.fromArray(when (val tryResult = slice.tryInto()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Simd<T>, TryFromSliceError>(tryResult.errValue()) }, n))
         }
     }
 }

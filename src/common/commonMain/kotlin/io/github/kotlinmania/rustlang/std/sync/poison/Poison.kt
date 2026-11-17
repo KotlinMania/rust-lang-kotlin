@@ -131,7 +131,7 @@ public open class Flag internal constructor(
     }
 
     public open fun done(guard: Guard) {
-        if (!guard.panicking && thread.panicking()) {
+        if (guard.panicking.inv() && thread.panicking()) {
             this.failed.store(true, Ordering.Relaxed)
         }
     }
@@ -344,12 +344,12 @@ public typealias TryLockResult<Guard> = Result<Guard, TryLockError<Guard>>
 public fun <T, U> mapResult(result: LockResult<T>, f: (T) -> U): LockResult<U> =
     when {
         result is Result.Ok<*, *> -> {
-            val t = result.value
+            val t = result.okValue()
             Result.Ok(f(t))
         }
         else -> {
-            val errorVal = (result as Result.Err<*, *>).error
-            val data = errorVal.data
+            val errValueVal = (result as Result.Err<*, *>).errValue()
+            val data = errValueVal.data
             Result.Err(PoisonError.new(f(data)))
         }
     }

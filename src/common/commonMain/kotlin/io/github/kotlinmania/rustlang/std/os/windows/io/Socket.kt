@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.Rc
 import io.github.kotlinmania.rustlang.std.net.tcp.TcpListener
@@ -83,7 +84,7 @@ public open class BorrowedSocket internal constructor(
     public open fun tryCloneToOwned(): Result<OwnedSocket, Error> {
         val info = MaybeUninit.zeroed(UnresolvedTypeLayout<Result<OwnedSocket, Error>>()).assumeInit()
         val result = C.WSADuplicateSocketW(((this.asRawSocket() as Any?) as C.Socket), C.GetCurrentProcessId(), info)
-        when (val tryResult = cvt(result)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OwnedSocket, Error>(tryResult.error) }
+        when (val tryResult = cvt(result)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OwnedSocket, Error>(tryResult.errValue()) }
         val socket = C.WSASocketW(info.iAddressFamily, info.iSocketType, info.iProtocol, info, 0, C.WSA_FLAG_OVERLAPPED or C.WSA_FLAG_NO_HANDLE_INHERIT)
         return if (socket != C.INVALID_SOCKET) {
             Result.Ok<OwnedSocket, Error>(OwnedSocket.fromRawSocket(((socket as Any?) as RawSocket), fieldLayout = UnresolvedTypeLayout<NotAllOnes<RawSocket>>()))
@@ -98,7 +99,7 @@ public open class BorrowedSocket internal constructor(
             }
             run {
                 val socket2 = OwnedSocket.fromRawSocket(((socket1 as Any?) as RawSocket), fieldLayout = UnresolvedTypeLayout<NotAllOnes<RawSocket>>())
-                when (val tryResult = socket2.setNoInherit()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OwnedSocket, Error>(tryResult.error) }
+                when (val tryResult = socket2.setNoInherit()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OwnedSocket, Error>(tryResult.errValue()) }
                 Result.Ok<OwnedSocket, Error>(socket2)
             }
         }

@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 public fun nullFd(): Result<OwnedFd, Error> {
-    val nullDev = when (val tryResult = OpenOptions.new().read(true).write(true).open("/dev/null")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OwnedFd, Error>(tryResult.error) }
+    val nullDev = when (val tryResult = OpenOptions.new().read(true).write(true).open("/dev/null")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OwnedFd, Error>(tryResult.errValue()) }
     return Result.Ok<OwnedFd, Error>(nullDev.into())
 }
 

@@ -14,6 +14,10 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.nullVal
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -289,9 +293,9 @@ public open class Command internal constructor(
         val stdin = (this.stdin ?: defaultStdin)
         val stdout = (this.stdout ?: default)
         val stderr = (this.stderr ?: default)
-        val (theirStdin, ourStdin) = when (val tryResult = stdin.toChildStdio(true)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<StdioPipes, ChildPipes>, Error>(tryResult.error) }
-        val (theirStdout, ourStdout) = when (val tryResult = stdout.toChildStdio(false)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<StdioPipes, ChildPipes>, Error>(tryResult.error) }
-        val (theirStderr, ourStderr) = when (val tryResult = stderr.toChildStdio(false)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<StdioPipes, ChildPipes>, Error>(tryResult.error) }
+        val (theirStdin, ourStdin) = when (val tryResult = stdin.toChildStdio(true)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<StdioPipes, ChildPipes>, Error>(tryResult.errValue()) }
+        val (theirStdout, ourStdout) = when (val tryResult = stdout.toChildStdio(false)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<StdioPipes, ChildPipes>, Error>(tryResult.errValue()) }
+        val (theirStderr, ourStderr) = when (val tryResult = stderr.toChildStdio(false)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<StdioPipes, ChildPipes>, Error>(tryResult.errValue()) }
         val ours = StdioPipes(stdin = ourStdin, stdout = ourStdout, stderr = ourStderr)
         val theirs = ChildPipes(stdin = theirStdin, stdout = theirStdout, stderr = theirStderr)
         return Result.Ok<Pair<StdioPipes, ChildPipes>, Error>(Pair(ours, theirs))
@@ -303,7 +307,7 @@ public open class Command internal constructor(
         if (f.alternate()) {
             val debugCommand = DebugStruct(f, "Command")
             debugCommand.field("program", this.program).field("args", this.args)
-            if (!this.env.isUnchanged()) {
+            if (this.env.isUnchanged().inv()) {
                 debugCommand.field("env", this.env)
             }
             if (this.cwd != null) {
@@ -473,18 +477,18 @@ public sealed class Stdio {
             is Stdio.Fd -> {
                 val (fd) = this as Stdio.Fd
                 if (fd.asRawFd() >= 0 && fd.asRawFd() <= STDERR_FILENO) {
-                    Result.Ok<Pair<ChildStdio, ChildPipe?>, Error>(Pair(ChildStdio.Owned(when (val tryResult = fd.duplicate()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<ChildStdio, ChildPipe?>, Error>(tryResult.error) }), null))
+                    Result.Ok<Pair<ChildStdio, ChildPipe?>, Error>(Pair(ChildStdio.Owned(when (val tryResult = fd.duplicate()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<ChildStdio, ChildPipe?>, Error>(tryResult.errValue()) }), null))
                 } else {
                     Result.Ok<Pair<ChildStdio, ChildPipe?>, Error>(Pair(ChildStdio.Explicit(fd.asRawFd()), null))
                 }
             }
             is Stdio.StaticFd -> {
                 val (fd1) = this as Stdio.StaticFd
-                val fd2 = FileDesc.fromInner(when (val tryResult = fd1.tryCloneToOwned()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<ChildStdio, ChildPipe?>, Error>(tryResult.error) })
+                val fd2 = FileDesc.fromInner(when (val tryResult = fd1.tryCloneToOwned()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<ChildStdio, ChildPipe?>, Error>(tryResult.errValue()) })
                 Result.Ok<Pair<ChildStdio, ChildPipe?>, Error>(Pair(ChildStdio.Owned(fd2), null))
             }
             Stdio.MakePipe -> {
-                val (reader, writer) = when (val tryResult = pipe()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<ChildStdio, ChildPipe?>, Error>(tryResult.error) }
+                val (reader, writer) = when (val tryResult = pipe()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<ChildStdio, ChildPipe?>, Error>(tryResult.errValue()) }
                 val (ours, theirs) =
                     if (readable) {
                         Pair(writer, reader)
@@ -496,8 +500,8 @@ public sealed class Stdio {
             Stdio.Null -> {
                 val opts = OpenOptions.new()
                 opts.read(readable)
-                opts.write(!readable)
-                val fd3 = when (val tryResult = File.openC(DEV_NULL, opts)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<ChildStdio, ChildPipe?>, Error>(tryResult.error) }
+                opts.write(readable.inv())
+                val fd3 = when (val tryResult = File.openC(DEV_NULL, opts)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<ChildStdio, ChildPipe?>, Error>(tryResult.errValue()) }
                 Result.Ok<Pair<ChildStdio, ChildPipe?>, Error>(Pair(ChildStdio.Owned(fd3.intoInner()), null))
             }
         }
@@ -574,7 +578,7 @@ public fun constructEnvp(env: MutableMap<OsString, OsString>, sawNul: RustMutabl
         // Add the new entry into the array
         when (val matchVal = CString.new(k.intoVec())) {
             is Result.Ok<*, *> -> {
-                val item = matchVal.value
+                val item = matchVal.okValue()
                 result.push(item)
             }
             else -> {
@@ -666,7 +670,7 @@ public fun readOutput(out: ChildPipe, stdout: List<UByte>, err: ChildPipe, stder
             when (matchVal) { is Result.Ok<*, *> -> {
                 Result.Ok<Boolean, Error>(true)
             }; is Result.Err<*, *> -> {
-                val e = matchVal.error
+                val e = matchVal.errValue()
                 if (e.rawOsError() == EWOULDBLOCK || e.rawOsError() == EAGAIN) {
                     Result.Ok<Boolean, Error>(false)
                 } else {
@@ -676,8 +680,8 @@ public fun readOutput(out: ChildPipe, stdout: List<UByte>, err: ChildPipe, stder
         }
     // Set both pipes into nonblocking mode as we're gonna be reading from both
     // in the `select` loop below, and we wouldn't want one to block the other!
-    when (val tryResult = out.setNonblocking(true)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
-    when (val tryResult = err.setNonblocking(true)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = out.setNonblocking(true)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
+    when (val tryResult = err.setNonblocking(true)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
     val localStorageL651C4 = AddressableArrayLocal.fromList(emptyList(), UnresolvedTypeLayout<Pollfd>())
     val fds by localStorageL651C4
     fds[0].fd = out.asRawFd()
@@ -686,13 +690,13 @@ public fun readOutput(out: ChildPipe, stdout: List<UByte>, err: ChildPipe, stder
     fds[1].events = POLLIN
     while (true) {
         // wait for either pipe to become readable using `poll`
-        when (val tryResult = cvtR({ Poll(localStorageL651C4.elementMutPtr(0), 2, -1) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
-        if (fds[0].revents != 0 && when (val tryResult = read(out, stdout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }) {
-            when (val tryResult = err.setNonblocking(false)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = cvtR({ Poll(localStorageL651C4.elementMutPtr(0), 2, -1) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
+        if (fds[0].revents != 0 && when (val tryResult = read(out, stdout)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }) {
+            when (val tryResult = err.setNonblocking(false)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
             return err.readToEnd(stderr).map({ drop(it) })
         }
-        if (fds[1].revents != 0 && when (val tryResult = read(err, stderr)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }) {
-            when (val tryResult = out.setNonblocking(false)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        if (fds[1].revents != 0 && when (val tryResult = read(err, stderr)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }) {
+            when (val tryResult = out.setNonblocking(false)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
             return out.readToEnd(stdout).map({ drop(it) })
         }
     }

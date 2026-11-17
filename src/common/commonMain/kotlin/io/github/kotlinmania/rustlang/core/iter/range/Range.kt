@@ -3,6 +3,8 @@ package io.github.kotlinmania.rustlang.core.iter.range
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedStep
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
@@ -296,7 +298,7 @@ public fun stepForwardCheckedUByte(start: UByte, n: Int): UByte? =
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.checkedAdd(n1.toUByte())
         }; is Result.Err<*, *> -> {
             null
@@ -307,7 +309,7 @@ public fun stepBackwardCheckedUByte(start: UByte, n: Int): UByte? =
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.checkedSub(n1.toUByte())
         }; is Result.Err<*, *> -> {
             null
@@ -318,7 +320,7 @@ public fun stepForwardOverflowingUByte(start: UByte, n: Int): Pair<UByte, Boolea
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.overflowingAdd(n1.toUByte())
         }; is Result.Err<*, *> -> {
             Pair((start + (n.toUByte())).toUByte(), true)
@@ -329,7 +331,7 @@ public fun stepBackwardOverflowingUByte(start: UByte, n: Int): Pair<UByte, Boole
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.overflowingSub(n1.toUByte())
         }; is Result.Err<*, *> -> {
             Pair((start - (n.toUByte())).toUByte(), true)
@@ -366,7 +368,7 @@ public fun stepForwardCheckedByte(start: Byte, n: Int): Byte? =
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             val wrapped = (start + (n1.toByte())).toByte()
             if (wrapped >= start) {
                 wrapped
@@ -382,7 +384,7 @@ public fun stepBackwardCheckedByte(start: Byte, n: Int): Byte? =
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             val wrapped = (start - (n1.toByte())).toByte()
             if (wrapped <= start) {
                 wrapped
@@ -398,7 +400,7 @@ public fun stepForwardOverflowingByte(start: Byte, n: Int): Pair<Byte, Boolean> 
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.overflowingAddUnsigned(n1)
         }; is Result.Err<*, *> -> {
             Pair(start.wrappingAddUnsigned(n.toUByte()), true)
@@ -409,7 +411,7 @@ public fun stepBackwardOverflowingByte(start: Byte, n: Int): Pair<Byte, Boolean>
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.overflowingSubUnsigned(n1)
         }; is Result.Err<*, *> -> {
             Pair(start.wrappingSubUnsigned(n.toUByte()), true)
@@ -446,7 +448,7 @@ public fun stepForwardCheckedUShort(start: UShort, n: Int): UShort? =
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.checkedAdd(n1.toUShort())
         }; is Result.Err<*, *> -> {
             null
@@ -457,7 +459,7 @@ public fun stepBackwardCheckedUShort(start: UShort, n: Int): UShort? =
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.checkedSub(n1.toUShort())
         }; is Result.Err<*, *> -> {
             null
@@ -468,7 +470,7 @@ public fun stepForwardOverflowingUShort(start: UShort, n: Int): Pair<UShort, Boo
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.overflowingAdd(n1.toUShort())
         }; is Result.Err<*, *> -> {
             Pair((start + (n.toUShort())).toUShort(), true)
@@ -479,7 +481,7 @@ public fun stepBackwardOverflowingUShort(start: UShort, n: Int): Pair<UShort, Bo
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.overflowingSub(n1.toUShort())
         }; is Result.Err<*, *> -> {
             Pair((start - (n.toUShort())).toUShort(), true)
@@ -516,7 +518,7 @@ public fun stepForwardCheckedShort(start: Short, n: Int): Short? =
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             val wrapped = (start + (n1.toShort())).toShort()
             if (wrapped >= start) {
                 wrapped
@@ -532,7 +534,7 @@ public fun stepBackwardCheckedShort(start: Short, n: Int): Short? =
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             val wrapped = (start - (n1.toShort())).toShort()
             if (wrapped <= start) {
                 wrapped
@@ -548,7 +550,7 @@ public fun stepForwardOverflowingShort(start: Short, n: Int): Pair<Short, Boolea
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.overflowingAddUnsigned(n1)
         }; is Result.Err<*, *> -> {
             Pair(start.wrappingAddUnsigned(n.toUShort()), true)
@@ -559,7 +561,7 @@ public fun stepBackwardOverflowingShort(start: Short, n: Int): Pair<Short, Boole
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.overflowingSubUnsigned(n1)
         }; is Result.Err<*, *> -> {
             Pair(start.wrappingSubUnsigned(n.toUShort()), true)
@@ -596,7 +598,7 @@ public fun stepForwardCheckedUInt(start: UInt, n: Int): UInt? =
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.checkedAdd(n1.toUInt())
         }; is Result.Err<*, *> -> {
             null
@@ -607,7 +609,7 @@ public fun stepBackwardCheckedUInt(start: UInt, n: Int): UInt? =
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.checkedSub(n1.toUInt())
         }; is Result.Err<*, *> -> {
             null
@@ -618,7 +620,7 @@ public fun stepForwardOverflowingUInt(start: UInt, n: Int): Pair<UInt, Boolean> 
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.overflowingAdd(n1.toUInt())
         }; is Result.Err<*, *> -> {
             Pair((start + (n.toUInt())), true)
@@ -629,7 +631,7 @@ public fun stepBackwardOverflowingUInt(start: UInt, n: Int): Pair<UInt, Boolean>
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.overflowingSub(n1.toUInt())
         }; is Result.Err<*, *> -> {
             Pair((start - (n.toUInt())), true)
@@ -666,7 +668,7 @@ public fun stepForwardCheckedInt(start: Int, n: Int): Int? =
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             val wrapped = (start + (n1.toInt()))
             if (wrapped >= start) {
                 wrapped
@@ -682,7 +684,7 @@ public fun stepBackwardCheckedInt(start: Int, n: Int): Int? =
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             val wrapped = (start - (n1.toInt()))
             if (wrapped <= start) {
                 wrapped
@@ -698,7 +700,7 @@ public fun stepForwardOverflowingInt(start: Int, n: Int): Pair<Int, Boolean> =
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.overflowingAddUnsigned(n1)
         }; is Result.Err<*, *> -> {
             Pair(start.wrappingAddUnsigned(n.toUInt()), true)
@@ -709,7 +711,7 @@ public fun stepBackwardOverflowingInt(start: Int, n: Int): Pair<Int, Boolean> =
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.overflowingSubUnsigned(n1)
         }; is Result.Err<*, *> -> {
             Pair(start.wrappingSubUnsigned(n.toUInt()), true)
@@ -746,7 +748,7 @@ public fun stepForwardCheckedULong(start: ULong, n: Int): ULong? =
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.checkedAdd(n1.toULong())
         }; is Result.Err<*, *> -> {
             null
@@ -757,7 +759,7 @@ public fun stepBackwardCheckedULong(start: ULong, n: Int): ULong? =
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.checkedSub(n1.toULong())
         }; is Result.Err<*, *> -> {
             null
@@ -768,7 +770,7 @@ public fun stepForwardOverflowingULong(start: ULong, n: Int): Pair<ULong, Boolea
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.overflowingAdd(n1.toULong())
         }; is Result.Err<*, *> -> {
             Pair((start + (n.toULong())), true)
@@ -779,7 +781,7 @@ public fun stepBackwardOverflowingULong(start: ULong, n: Int): Pair<ULong, Boole
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.overflowingSub(n1.toULong())
         }; is Result.Err<*, *> -> {
             Pair((start - (n.toULong())), true)
@@ -816,7 +818,7 @@ public fun stepForwardCheckedLong(start: Long, n: Int): Long? =
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             val wrapped = (start + (n1.toLong()))
             if (wrapped >= start) {
                 wrapped
@@ -832,7 +834,7 @@ public fun stepBackwardCheckedLong(start: Long, n: Int): Long? =
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             val wrapped = (start - (n1.toLong()))
             if (wrapped <= start) {
                 wrapped
@@ -848,7 +850,7 @@ public fun stepForwardOverflowingLong(start: Long, n: Int): Pair<Long, Boolean> 
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.overflowingAddUnsigned(n1)
         }; is Result.Err<*, *> -> {
             Pair(start.wrappingAddUnsigned(n.toULong()), true)
@@ -859,7 +861,7 @@ public fun stepBackwardOverflowingLong(start: Long, n: Int): Pair<Long, Boolean>
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.overflowingSubUnsigned(n1)
         }; is Result.Err<*, *> -> {
             Pair(start.wrappingSubUnsigned(n.toULong()), true)
@@ -888,7 +890,7 @@ public fun stepStepsBetweenU128(start: U128, end: U128): Pair<Int, Int?> =
     if (start <= end) {
         when (val matchVal = Int.tryFrom(end - start)) {
             is Result.Ok<*, *> -> {
-                val steps = matchVal.value
+                val steps = matchVal.okValue()
                 Pair(steps, steps)
             }
             else -> {
@@ -933,7 +935,7 @@ public fun stepStepsBetweenI128(start: I128, end: I128): Pair<Int, Int?> =
                 val result = matchVal
                 when (val matchVal1 = Int.tryFrom(result)) {
                     is Result.Ok<*, *> -> {
-                        val steps = matchVal1.value
+                        val steps = matchVal1.okValue()
                         Pair(steps, steps)
                     }
                     else -> {
@@ -998,7 +1000,7 @@ public fun stepStepsBetweenNonZeroUByte(start: NonZero<UByte, NonZeroU8Inner>, e
     if (start <= end) {
         when (val matchVal = Int.tryFrom(end.get() - start.get())) {
             is Result.Ok<*, *> -> {
-                val steps = matchVal.value
+                val steps = matchVal.okValue()
                 Pair(steps, steps)
             }
             else -> {
@@ -1013,7 +1015,7 @@ public fun stepForwardCheckedNonZeroUByte(start: NonZero<UByte, NonZeroU8Inner>,
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.checkedAdd(n1)
         }; is Result.Err<*, *> -> {
             null
@@ -1024,7 +1026,7 @@ public fun stepBackwardCheckedNonZeroUByte(start: NonZero<UByte, NonZeroU8Inner>
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.get().checkedSub(n1)?.let(NonZero::new)
         }; is Result.Err<*, *> -> {
             null
@@ -1075,7 +1077,7 @@ public fun stepStepsBetweenNonZeroUShort(start: NonZero<UShort, NonZeroU16Inner>
     if (start <= end) {
         when (val matchVal = Int.tryFrom(end.get() - start.get())) {
             is Result.Ok<*, *> -> {
-                val steps = matchVal.value
+                val steps = matchVal.okValue()
                 Pair(steps, steps)
             }
             else -> {
@@ -1090,7 +1092,7 @@ public fun stepForwardCheckedNonZeroUShort(start: NonZero<UShort, NonZeroU16Inne
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.checkedAdd(n1)
         }; is Result.Err<*, *> -> {
             null
@@ -1101,7 +1103,7 @@ public fun stepBackwardCheckedNonZeroUShort(start: NonZero<UShort, NonZeroU16Inn
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.get().checkedSub(n1)?.let(NonZero::new)
         }; is Result.Err<*, *> -> {
             null
@@ -1152,7 +1154,7 @@ public fun stepStepsBetweenNonZeroUInt(start: NonZero<UInt, NonZeroU32Inner>, en
     if (start <= end) {
         when (val matchVal = Int.tryFrom(end.get() - start.get())) {
             is Result.Ok<*, *> -> {
-                val steps = matchVal.value
+                val steps = matchVal.okValue()
                 Pair(steps, steps)
             }
             else -> {
@@ -1167,7 +1169,7 @@ public fun stepForwardCheckedNonZeroUInt(start: NonZero<UInt, NonZeroU32Inner>, 
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.checkedAdd(n1)
         }; is Result.Err<*, *> -> {
             null
@@ -1178,7 +1180,7 @@ public fun stepBackwardCheckedNonZeroUInt(start: NonZero<UInt, NonZeroU32Inner>,
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.get().checkedSub(n1)?.let(NonZero::new)
         }; is Result.Err<*, *> -> {
             null
@@ -1229,7 +1231,7 @@ public fun stepStepsBetweenNonZeroULong(start: NonZero<ULong, NonZeroU64Inner>, 
     if (start <= end) {
         when (val matchVal = Int.tryFrom(end.get() - start.get())) {
             is Result.Ok<*, *> -> {
-                val steps = matchVal.value
+                val steps = matchVal.okValue()
                 Pair(steps, steps)
             }
             else -> {
@@ -1244,7 +1246,7 @@ public fun stepForwardCheckedNonZeroULong(start: NonZero<ULong, NonZeroU64Inner>
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.checkedAdd(n1)
         }; is Result.Err<*, *> -> {
             null
@@ -1255,7 +1257,7 @@ public fun stepBackwardCheckedNonZeroULong(start: NonZero<ULong, NonZeroU64Inner
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.get().checkedSub(n1)?.let(NonZero::new)
         }; is Result.Err<*, *> -> {
             null
@@ -1306,7 +1308,7 @@ public fun stepStepsBetweenNonZeroInt(start: NonZero<Int, NonZeroUsizeInner>, en
     if (start <= end) {
         when (val matchVal = Int.tryFrom(end.get() - start.get())) {
             is Result.Ok<*, *> -> {
-                val steps = matchVal.value
+                val steps = matchVal.okValue()
                 Pair(steps, steps)
             }
             else -> {
@@ -1321,7 +1323,7 @@ public fun stepForwardCheckedNonZeroInt(start: NonZero<Int, NonZeroUsizeInner>, 
     run {
         val matchVal = Int.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.checkedAdd(n1)
         }; is Result.Err<*, *> -> {
             null
@@ -1332,7 +1334,7 @@ public fun stepBackwardCheckedNonZeroInt(start: NonZero<Int, NonZeroUsizeInner>,
     run {
         val matchVal = Int.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val n1 = matchVal.value
+            val n1 = matchVal.okValue()
             start.get().checkedSub(n1)?.let(NonZero::new)
         }; is Result.Err<*, *> -> {
             null
@@ -1383,7 +1385,7 @@ public fun stepStepsBetweenNonZeroU128(start: NonZero<U128, NonZeroU128Inner>, e
     if (start <= end) {
         when (val matchVal = Int.tryFrom(end.get() - start.get())) {
             is Result.Ok<*, *> -> {
-                val steps = matchVal.value
+                val steps = matchVal.okValue()
                 Pair(steps, steps)
             }
             else -> {
@@ -1406,7 +1408,7 @@ public fun stepStepsBetweenChar(start: Char, end: Char): Pair<Int, Int?> {
         if (start1 < 0xD800u && 0xE000u <= end1) {
             when (val matchVal = Int.tryFrom(count - 0x800u)) {
                 is Result.Ok<*, *> -> {
-                    val steps = matchVal.value
+                    val steps = matchVal.okValue()
                     Pair(steps, steps)
                 }
                 else -> {
@@ -1416,7 +1418,7 @@ public fun stepStepsBetweenChar(start: Char, end: Char): Pair<Int, Int?> {
         } else {
             when (val matchVal1 = Int.tryFrom(count)) {
                 is Result.Ok<*, *> -> {
-                    val steps1 = matchVal1.value
+                    val steps1 = matchVal1.okValue()
                     Pair(steps1, steps1)
                 }
                 else -> {
@@ -1823,11 +1825,11 @@ public fun <Residual, A : Step<A>, B, R> RangeInclusive<A>.specTryFold(init: B, 
     while (this.start < this.end) {
         val n = (Step.forwardChecked(this.start.clone(), 1) ?: error("`Step` invariants not upheld"))
         val n1 = replace(this.start, n)
-        accum = when (val tryResult = f(accum, n1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+        accum = when (val tryResult = f(accum, n1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
     }
     this.exhausted = true
     if (this.start == this.end) {
-        accum = when (val tryResult = f(accum, this.start.clone())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+        accum = when (val tryResult = f(accum, this.start.clone())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
@@ -1840,11 +1842,11 @@ public fun <Residual, A : Step<A>, B, R> RangeInclusive<A>.specTryRfold(init: B,
     while (this.start < this.end) {
         val n = (Step.backwardChecked(this.end.clone(), 1) ?: error("`Step` invariants not upheld"))
         val n1 = replace(this.end, n)
-        accum = when (val tryResult = f(accum, n1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+        accum = when (val tryResult = f(accum, n1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
     }
     this.exhausted = true
     if (this.start == this.end) {
-        accum = when (val tryResult = f(accum, this.start.clone())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+        accum = when (val tryResult = f(accum, this.start.clone())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
@@ -1858,11 +1860,11 @@ public fun <Residual, T : TrustedStep<T>, B, R> RangeInclusive<T>.specTryFold(in
         // SAFETY: just checked precondition
         val n = Step.forwardUnchecked(this.start, 1)
         val n1 = replace(this.start, n)
-        accum = when (val tryResult = f(accum, n1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+        accum = when (val tryResult = f(accum, n1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
     }
     this.exhausted = true
     if (this.start == this.end) {
-        accum = when (val tryResult = f(accum, this.start)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+        accum = when (val tryResult = f(accum, this.start)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }
@@ -1876,11 +1878,11 @@ public fun <Residual, T : TrustedStep<T>, B, R> RangeInclusive<T>.specTryRfold(i
         // SAFETY: just checked precondition
         val n = Step.backwardUnchecked(this.end, 1)
         val n1 = replace(this.end, n)
-        accum = when (val tryResult = f(accum, n1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+        accum = when (val tryResult = f(accum, n1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
     }
     this.exhausted = true
     if (this.start == this.end) {
-        accum = when (val tryResult = f(accum, this.start)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+        accum = when (val tryResult = f(accum, this.start)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }

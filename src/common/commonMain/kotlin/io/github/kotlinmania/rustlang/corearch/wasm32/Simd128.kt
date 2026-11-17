@@ -3,12 +3,14 @@
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
@@ -16,10 +18,12 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import io.github.kotlinmania.rustlang.core.ptr.writeUnaligned
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
-import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
 
 // This module implements the [WebAssembly `SIMD128` ISA].
 //
@@ -67,9 +71,9 @@ public open class V128(
     /**
      * Returns a mutable array reference containing the entire SIMD vector.
      */
-    public open fun asMutArray(): IntArray = RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), PrimitiveArrayLayouts.intArray((4).toInt()))
+    public open fun asMutArray(): IntArray = (PrimitiveArrayLayouts.intArray((4).toInt())).readNative((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v128", this.asArray())
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { val simdDbgArr = this.asArray(); (f).append("v128"); Result.Ok<Unit, Error>(Unit) }
 
     public open fun asU8x16(): simd.U8x16 = transmuteWithLayouts<V128, simd.U8x16>(this, V128.typeLayout(), UnresolvedTypeLayout<simd.U8x16>())
 
@@ -115,7 +119,7 @@ public open class V128(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Int): V128 = run { val _simdArg0 = value; _simdArg0 }
+        public fun splat(value: Int): V128 = run { val simdArg0 = value; V128() }
 
         public fun from(simd: Simd<Int>): V128 = transmuteWithLayouts<Simd<Int>, V128>(simd, UnresolvedTypeLayout<Simd<Int>>(), V128.typeLayout())
     }
@@ -231,7 +235,7 @@ public fun v128Load(m: ConstPtr): V128 = (V128.typeLayout()).readNative((m).rawA
  */
 public fun i16x8LoadExtendI8x8(m: ConstPtr): V128 {
     val m1 = (UnresolvedTypeLayout<simd.I8x8>()).readNative((ConstPtr((m).rawAddress)).rawAddress)
-    return run { val _simdArg0 = m1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
+    return run { val simdArg0 = m1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
 }
 
 /**
@@ -246,7 +250,7 @@ public fun i16x8LoadExtendI8x8(m: ConstPtr): V128 {
  */
 public fun i16x8LoadExtendU8x8(m: ConstPtr): V128 {
     val m1 = (UnresolvedTypeLayout<simd.U8x8>()).readNative((ConstPtr((m).rawAddress)).rawAddress)
-    return run { val _simdArg0 = m1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); res } }.v128()
+    return run { val simdArg0 = m1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); res } }.v128()
 }
 
 /**
@@ -261,7 +265,7 @@ public fun i16x8LoadExtendU8x8(m: ConstPtr): V128 {
  */
 public fun i32x4LoadExtendI16x4(m: ConstPtr): V128 {
     val m1 = (UnresolvedTypeLayout<simd.I16x4>()).readNative((ConstPtr((m).rawAddress)).rawAddress)
-    return run { val _simdArg0 = m1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+    return run { val simdArg0 = m1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
 }
 
 /**
@@ -276,7 +280,7 @@ public fun i32x4LoadExtendI16x4(m: ConstPtr): V128 {
  */
 public fun i32x4LoadExtendU16x4(m: ConstPtr): V128 {
     val m1 = (UnresolvedTypeLayout<simd.U16x4>()).readNative((ConstPtr((m).rawAddress)).rawAddress)
-    return run { val _simdArg0 = m1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }.v128()
+    return run { val simdArg0 = m1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }.v128()
 }
 
 /**
@@ -291,7 +295,7 @@ public fun i32x4LoadExtendU16x4(m: ConstPtr): V128 {
  */
 public fun i64x2LoadExtendI32x2(m: ConstPtr): V128 {
     val m1 = (UnresolvedTypeLayout<simd.I32x2>()).readNative((ConstPtr((m).rawAddress)).rawAddress)
-    return run { val _simdArg0 = m1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+    return run { val simdArg0 = m1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 }
 
 /**
@@ -306,7 +310,7 @@ public fun i64x2LoadExtendI32x2(m: ConstPtr): V128 {
  */
 public fun i64x2LoadExtendU32x2(m: ConstPtr): V128 {
     val m1 = (UnresolvedTypeLayout<simd.U32x2>()).readNative((ConstPtr((m).rawAddress)).rawAddress)
-    return run { val _simdArg0 = m1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); res } }.v128()
+    return run { val simdArg0 = m1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); res } }.v128()
 }
 
 /**
@@ -707,7 +711,7 @@ public fun i8x16Shuffle(a: V128, b: V128, i0: Int, i1: Int, i2: Int, i3: Int, i4
     run {
         check(i15 < 32)
     }
-    val shuf: simd.U8x16 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = b.asU8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(i0.toUInt(), i1.toUInt(), i2.toUInt(), i3.toUInt(), i4.toUInt(), i5.toUInt(), i6.toUInt(), i7.toUInt(), i8.toUInt(), i9.toUInt(), i10.toUInt(), i11.toUInt(), i12.toUInt(), i13.toUInt(), i14.toUInt(), i15.toUInt())); _simdArg0 }
+    val shuf: simd.U8x16 = run { val simdArg0 = a.asU8x16(); val simdArg1 = b.asU8x16(); val simdArg2 = SimdShuffleIdx(uintArrayOf(i0.toUInt(), i1.toUInt(), i2.toUInt(), i3.toUInt(), i4.toUInt(), i5.toUInt(), i6.toUInt(), i7.toUInt(), i8.toUInt(), i9.toUInt(), i10.toUInt(), i11.toUInt(), i12.toUInt(), i13.toUInt(), i14.toUInt(), i15.toUInt())); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U8x16>()).alignBytes)); res } }
     return shuf.v128()
 }
 
@@ -745,7 +749,7 @@ public fun i16x8Shuffle(a: V128, b: V128, i0: Int, i1: Int, i2: Int, i3: Int, i4
     run {
         check(i7 < 16)
     }
-    val shuf: simd.U16x8 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = b.asU16x8(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(i0.toUInt(), i1.toUInt(), i2.toUInt(), i3.toUInt(), i4.toUInt(), i5.toUInt(), i6.toUInt(), i7.toUInt())); _simdArg0 }
+    val shuf: simd.U16x8 = run { val simdArg0 = a.asU16x8(); val simdArg1 = b.asU16x8(); val simdArg2 = SimdShuffleIdx(uintArrayOf(i0.toUInt(), i1.toUInt(), i2.toUInt(), i3.toUInt(), i4.toUInt(), i5.toUInt(), i6.toUInt(), i7.toUInt())); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); res } }
     return shuf.v128()
 }
 
@@ -771,7 +775,7 @@ public fun i32x4Shuffle(a: V128, b: V128, i0: Int, i1: Int, i2: Int, i3: Int): V
     run {
         check(i3 < 8)
     }
-    val shuf: simd.U32x4 = run { val _simdArg0 = a.asU32x4(); val _simdArg1 = b.asU32x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(i0.toUInt(), i1.toUInt(), i2.toUInt(), i3.toUInt())); _simdArg0 }
+    val shuf: simd.U32x4 = run { val simdArg0 = a.asU32x4(); val simdArg1 = b.asU32x4(); val simdArg2 = SimdShuffleIdx(uintArrayOf(i0.toUInt(), i1.toUInt(), i2.toUInt(), i3.toUInt())); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }
     return shuf.v128()
 }
 
@@ -791,7 +795,7 @@ public fun i64x2Shuffle(a: V128, b: V128, i0: Int, i1: Int): V128 {
     run {
         check(i1 < 4)
     }
-    val shuf: simd.U64x2 = run { val _simdArg0 = a.asU64x2(); val _simdArg1 = b.asU64x2(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(i0.toUInt(), i1.toUInt())); _simdArg0 }
+    val shuf: simd.U64x2 = run { val simdArg0 = a.asU64x2(); val simdArg1 = b.asU64x2(); val simdArg2 = SimdShuffleIdx(uintArrayOf(i0.toUInt(), i1.toUInt())); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); res } }
     return shuf.v128()
 }
 
@@ -805,7 +809,7 @@ public fun i8x16ExtractLane(a: V128, n: Int): Byte {
     run {
         check(n < 16)
     }
-    return run { val _simdArg0 = a.asI8x16(); val _simdArg1 = n.toUInt(); _simdArg0 }
+    return run { val simdArg0 = a.asI8x16(); val simdArg1 = n.toUInt(); 0 }
 }
 
 /**
@@ -818,7 +822,7 @@ public fun u8x16ExtractLane(a: V128, n: Int): UByte {
     run {
         check(n < 16)
     }
-    return run { val _simdArg0 = a.asU8x16(); val _simdArg1 = n.toUInt(); _simdArg0 }
+    return run { val simdArg0 = a.asU8x16(); val simdArg1 = n.toUInt(); 0u }
 }
 
 /**
@@ -831,7 +835,7 @@ public fun i8x16ReplaceLane(a: V128, value: Byte, n: Int): V128 {
     run {
         check(n < 16)
     }
-    return run { val _simdArg0 = a.asI8x16(); val _simdArg1 = n.toUInt(); val _simdArg2 = value; _simdArg0 }.v128()
+    return run { val simdArg0 = a.asI8x16(); val simdArg1 = n.toUInt(); val simdArg2 = value; simdArg0 }.v128()
 }
 
 /**
@@ -844,7 +848,7 @@ public fun u8x16ReplaceLane(a: V128, value: UByte, n: Int): V128 {
     run {
         check(n < 16)
     }
-    return run { val _simdArg0 = a.asU8x16(); val _simdArg1 = n.toUInt(); val _simdArg2 = value; _simdArg0 }.v128()
+    return run { val simdArg0 = a.asU8x16(); val simdArg1 = n.toUInt(); val simdArg2 = value; simdArg0 }.v128()
 }
 
 /**
@@ -857,7 +861,7 @@ public fun i16x8ExtractLane(a: V128, n: Int): Short {
     run {
         check(n < 8)
     }
-    return run { val _simdArg0 = a.asI16x8(); val _simdArg1 = n.toUInt(); _simdArg0 }
+    return run { val simdArg0 = a.asI16x8(); val simdArg1 = n.toUInt(); 0 }
 }
 
 /**
@@ -870,7 +874,7 @@ public fun u16x8ExtractLane(a: V128, n: Int): UShort {
     run {
         check(n < 8)
     }
-    return run { val _simdArg0 = a.asU16x8(); val _simdArg1 = n.toUInt(); _simdArg0 }
+    return run { val simdArg0 = a.asU16x8(); val simdArg1 = n.toUInt(); 0u }
 }
 
 /**
@@ -883,7 +887,7 @@ public fun i16x8ReplaceLane(a: V128, value: Short, n: Int): V128 {
     run {
         check(n < 8)
     }
-    return run { val _simdArg0 = a.asI16x8(); val _simdArg1 = n.toUInt(); val _simdArg2 = value; _simdArg0 }.v128()
+    return run { val simdArg0 = a.asI16x8(); val simdArg1 = n.toUInt(); val simdArg2 = value; simdArg0 }.v128()
 }
 
 /**
@@ -896,7 +900,7 @@ public fun u16x8ReplaceLane(a: V128, value: UShort, n: Int): V128 {
     run {
         check(n < 8)
     }
-    return run { val _simdArg0 = a.asU16x8(); val _simdArg1 = n.toUInt(); val _simdArg2 = value; _simdArg0 }.v128()
+    return run { val simdArg0 = a.asU16x8(); val simdArg1 = n.toUInt(); val simdArg2 = value; simdArg0 }.v128()
 }
 
 /**
@@ -909,7 +913,7 @@ public fun i32x4ExtractLane(a: V128, n: Int): Int {
     run {
         check(n < 4)
     }
-    return run { val _simdArg0 = a.asI32x4(); val _simdArg1 = n.toUInt(); _simdArg0 }
+    return run { val simdArg0 = a.asI32x4(); val simdArg1 = n.toUInt(); 0 }
 }
 
 /**
@@ -930,7 +934,7 @@ public fun i32x4ReplaceLane(a: V128, value: Int, n: Int): V128 {
     run {
         check(n < 4)
     }
-    return run { val _simdArg0 = a.asI32x4(); val _simdArg1 = n.toUInt(); val _simdArg2 = value; _simdArg0 }.v128()
+    return run { val simdArg0 = a.asI32x4(); val simdArg1 = n.toUInt(); val simdArg2 = value; simdArg0 }.v128()
 }
 
 /**
@@ -951,7 +955,7 @@ public fun i64x2ExtractLane(a: V128, n: Int): Long {
     run {
         check(n < 2)
     }
-    return run { val _simdArg0 = a.asI64x2(); val _simdArg1 = n.toUInt(); _simdArg0 }
+    return run { val simdArg0 = a.asI64x2(); val simdArg1 = n.toUInt(); 0L }
 }
 
 /**
@@ -972,7 +976,7 @@ public fun i64x2ReplaceLane(a: V128, value: Long, n: Int): V128 {
     run {
         check(n < 2)
     }
-    return run { val _simdArg0 = a.asI64x2(); val _simdArg1 = n.toUInt(); val _simdArg2 = value; _simdArg0 }.v128()
+    return run { val simdArg0 = a.asI64x2(); val simdArg1 = n.toUInt(); val simdArg2 = value; simdArg0 }.v128()
 }
 
 /**
@@ -993,7 +997,7 @@ public fun f32x4ExtractLane(a: V128, n: Int): Float {
     run {
         check(n < 4)
     }
-    return run { val _simdArg0 = a.asF32x4(); val _simdArg1 = n.toUInt(); _simdArg0 }
+    return run { val simdArg0 = a.asF32x4(); val simdArg1 = n.toUInt(); 0.0f }
 }
 
 /**
@@ -1006,7 +1010,7 @@ public fun f32x4ReplaceLane(a: V128, value: Float, n: Int): V128 {
     run {
         check(n < 4)
     }
-    return run { val _simdArg0 = a.asF32x4(); val _simdArg1 = n.toUInt(); val _simdArg2 = value; _simdArg0 }.v128()
+    return run { val simdArg0 = a.asF32x4(); val simdArg1 = n.toUInt(); val simdArg2 = value; simdArg0 }.v128()
 }
 
 /**
@@ -1019,7 +1023,7 @@ public fun f64x2ExtractLane(a: V128, n: Int): Double {
     run {
         check(n < 2)
     }
-    return run { val _simdArg0 = a.asF64x2(); val _simdArg1 = n.toUInt(); _simdArg0 }
+    return run { val simdArg0 = a.asF64x2(); val simdArg1 = n.toUInt(); 0.0 }
 }
 
 /**
@@ -1032,7 +1036,7 @@ public fun f64x2ReplaceLane(a: V128, value: Double, n: Int): V128 {
     run {
         check(n < 2)
     }
-    return run { val _simdArg0 = a.asF64x2(); val _simdArg1 = n.toUInt(); val _simdArg2 = value; _simdArg0 }.v128()
+    return run { val simdArg0 = a.asF64x2(); val simdArg1 = n.toUInt(); val simdArg2 = value; simdArg0 }.v128()
 }
 
 /**
@@ -1121,7 +1125,7 @@ public fun f64x2Splat(a: Double): V128 = Simd<Double>(List(2) { a }).v128()
  * Returns a new vector where each lane is all ones if the corresponding input elements
  * were equal, or all zeros otherwise.
  */
-public fun i8x16Eq(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
+public fun i8x16Eq(a: V128, b: V128): V128 = run { val simdArg0 = a.asI8x16(); val simdArg1 = b.asI8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 16 eight-bit
@@ -1130,7 +1134,7 @@ public fun i8x16Eq(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI8x16(); 
  * Returns a new vector where each lane is all ones if the corresponding input elements
  * were not equal, or all zeros otherwise.
  */
-public fun i8x16Ne(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
+public fun i8x16Ne(a: V128, b: V128): V128 = run { val simdArg0 = a.asI8x16(); val simdArg1 = b.asI8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 16 eight-bit
@@ -1139,7 +1143,7 @@ public fun i8x16Ne(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI8x16(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is less than the right element, or all zeros otherwise.
  */
-public fun i8x16Lt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
+public fun i8x16Lt(a: V128, b: V128): V128 = run { val simdArg0 = a.asI8x16(); val simdArg1 = b.asI8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 16 eight-bit
@@ -1148,7 +1152,7 @@ public fun i8x16Lt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI8x16(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is less than the right element, or all zeros otherwise.
  */
-public fun u8x16Lt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = b.asU8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
+public fun u8x16Lt(a: V128, b: V128): V128 = run { val simdArg0 = a.asU8x16(); val simdArg1 = b.asU8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 16 eight-bit
@@ -1157,7 +1161,7 @@ public fun u8x16Lt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU8x16(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is greater than the right element, or all zeros otherwise.
  */
-public fun i8x16Gt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
+public fun i8x16Gt(a: V128, b: V128): V128 = run { val simdArg0 = a.asI8x16(); val simdArg1 = b.asI8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 16 eight-bit
@@ -1166,7 +1170,7 @@ public fun i8x16Gt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI8x16(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is greater than the right element, or all zeros otherwise.
  */
-public fun u8x16Gt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = b.asU8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
+public fun u8x16Gt(a: V128, b: V128): V128 = run { val simdArg0 = a.asU8x16(); val simdArg1 = b.asU8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 16 eight-bit
@@ -1175,7 +1179,7 @@ public fun u8x16Gt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU8x16(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is less than the right element, or all zeros otherwise.
  */
-public fun i8x16Le(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
+public fun i8x16Le(a: V128, b: V128): V128 = run { val simdArg0 = a.asI8x16(); val simdArg1 = b.asI8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 16 eight-bit
@@ -1184,7 +1188,7 @@ public fun i8x16Le(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI8x16(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is less than the right element, or all zeros otherwise.
  */
-public fun u8x16Le(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = b.asU8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
+public fun u8x16Le(a: V128, b: V128): V128 = run { val simdArg0 = a.asU8x16(); val simdArg1 = b.asU8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 16 eight-bit
@@ -1193,7 +1197,7 @@ public fun u8x16Le(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU8x16(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is greater than the right element, or all zeros otherwise.
  */
-public fun i8x16Ge(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
+public fun i8x16Ge(a: V128, b: V128): V128 = run { val simdArg0 = a.asI8x16(); val simdArg1 = b.asI8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 16 eight-bit
@@ -1202,7 +1206,7 @@ public fun i8x16Ge(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI8x16(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is greater than the right element, or all zeros otherwise.
  */
-public fun u8x16Ge(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = b.asU8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
+public fun u8x16Ge(a: V128, b: V128): V128 = run { val simdArg0 = a.asU8x16(); val simdArg1 = b.asU8x16(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 8 sixteen-bit
@@ -1211,7 +1215,7 @@ public fun u8x16Ge(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU8x16(); 
  * Returns a new vector where each lane is all ones if the corresponding input elements
  * were equal, or all zeros otherwise.
  */
-public fun i16x8Eq(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
+public fun i16x8Eq(a: V128, b: V128): V128 = run { val simdArg0 = a.asI16x8(); val simdArg1 = b.asI16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 8 sixteen-bit
@@ -1220,7 +1224,7 @@ public fun i16x8Eq(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); 
  * Returns a new vector where each lane is all ones if the corresponding input elements
  * were not equal, or all zeros otherwise.
  */
-public fun i16x8Ne(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
+public fun i16x8Ne(a: V128, b: V128): V128 = run { val simdArg0 = a.asI16x8(); val simdArg1 = b.asI16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 8 sixteen-bit
@@ -1229,7 +1233,7 @@ public fun i16x8Ne(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is less than the right element, or all zeros otherwise.
  */
-public fun i16x8Lt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
+public fun i16x8Lt(a: V128, b: V128): V128 = run { val simdArg0 = a.asI16x8(); val simdArg1 = b.asI16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 8 sixteen-bit
@@ -1238,7 +1242,7 @@ public fun i16x8Lt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is less than the right element, or all zeros otherwise.
  */
-public fun u16x8Lt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = b.asU16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
+public fun u16x8Lt(a: V128, b: V128): V128 = run { val simdArg0 = a.asU16x8(); val simdArg1 = b.asU16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 8 sixteen-bit
@@ -1247,7 +1251,7 @@ public fun u16x8Lt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU16x8(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is greater than the right element, or all zeros otherwise.
  */
-public fun i16x8Gt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
+public fun i16x8Gt(a: V128, b: V128): V128 = run { val simdArg0 = a.asI16x8(); val simdArg1 = b.asI16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 8 sixteen-bit
@@ -1256,7 +1260,7 @@ public fun i16x8Gt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is greater than the right element, or all zeros otherwise.
  */
-public fun u16x8Gt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = b.asU16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
+public fun u16x8Gt(a: V128, b: V128): V128 = run { val simdArg0 = a.asU16x8(); val simdArg1 = b.asU16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 8 sixteen-bit
@@ -1265,7 +1269,7 @@ public fun u16x8Gt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU16x8(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is less than the right element, or all zeros otherwise.
  */
-public fun i16x8Le(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
+public fun i16x8Le(a: V128, b: V128): V128 = run { val simdArg0 = a.asI16x8(); val simdArg1 = b.asI16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 8 sixteen-bit
@@ -1274,7 +1278,7 @@ public fun i16x8Le(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is less than the right element, or all zeros otherwise.
  */
-public fun u16x8Le(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = b.asU16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
+public fun u16x8Le(a: V128, b: V128): V128 = run { val simdArg0 = a.asU16x8(); val simdArg1 = b.asU16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 8 sixteen-bit
@@ -1283,7 +1287,7 @@ public fun u16x8Le(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU16x8(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is greater than the right element, or all zeros otherwise.
  */
-public fun i16x8Ge(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
+public fun i16x8Ge(a: V128, b: V128): V128 = run { val simdArg0 = a.asI16x8(); val simdArg1 = b.asI16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 8 sixteen-bit
@@ -1292,106 +1296,106 @@ public fun i16x8Ge(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is greater than the right element, or all zeros otherwise.
  */
-public fun u16x8Ge(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = b.asU16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
+public fun u16x8Ge(a: V128, b: V128): V128 = run { val simdArg0 = a.asU16x8(); val simdArg1 = b.asU16x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
- * integers.
- *
- * Returns a new vector where each lane is all ones if the corresponding input elements
- * were equal, or all zeros otherwise.
- */
-public fun i32x4Eq(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
-
-/**
- * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
- * integers.
- *
- * Returns a new vector where each lane is all ones if the corresponding input elements
- * were not equal, or all zeros otherwise.
- */
-public fun i32x4Ne(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
-
-/**
- * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
- * signed integers.
- *
- * Returns a new vector where each lane is all ones if the lane-wise left
- * element is less than the right element, or all zeros otherwise.
- */
-public fun i32x4Lt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
-
-/**
- * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
- * unsigned integers.
- *
- * Returns a new vector where each lane is all ones if the lane-wise left
- * element is less than the right element, or all zeros otherwise.
- */
-public fun u32x4Lt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU32x4(); val _simdArg1 = b.asU32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
-
-/**
- * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
- * signed integers.
- *
- * Returns a new vector where each lane is all ones if the lane-wise left
- * element is greater than the right element, or all zeros otherwise.
- */
-public fun i32x4Gt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
-
-/**
- * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
- * unsigned integers.
- *
- * Returns a new vector where each lane is all ones if the lane-wise left
- * element is greater than the right element, or all zeros otherwise.
- */
-public fun u32x4Gt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU32x4(); val _simdArg1 = b.asU32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
-
-/**
- * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
- * signed integers.
- *
- * Returns a new vector where each lane is all ones if the lane-wise left
- * element is less than the right element, or all zeros otherwise.
- */
-public fun i32x4Le(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
-
-/**
- * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
- * unsigned integers.
- *
- * Returns a new vector where each lane is all ones if the lane-wise left
- * element is less than the right element, or all zeros otherwise.
- */
-public fun u32x4Le(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU32x4(); val _simdArg1 = b.asU32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
-
-/**
- * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
- * signed integers.
- *
- * Returns a new vector where each lane is all ones if the lane-wise left
- * element is greater than the right element, or all zeros otherwise.
- */
-public fun i32x4Ge(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
-
-/**
- * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
- * unsigned integers.
- *
- * Returns a new vector where each lane is all ones if the lane-wise left
- * element is greater than the right element, or all zeros otherwise.
- */
-public fun u32x4Ge(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU32x4(); val _simdArg1 = b.asU32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
-
-/**
- * Compares two 128-bit vectors as if they were two vectors of 2 sixty-four-bit
  * integers.
  *
  * Returns a new vector where each lane is all ones if the corresponding input elements
  * were equal, or all zeros otherwise.
  */
-public fun i64x2Eq(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+public fun i32x4Eq(a: V128, b: V128): V128 = run { val simdArg0 = a.asI32x4(); val simdArg1 = b.asI32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+
+/**
+ * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
+ * integers.
+ *
+ * Returns a new vector where each lane is all ones if the corresponding input elements
+ * were not equal, or all zeros otherwise.
+ */
+public fun i32x4Ne(a: V128, b: V128): V128 = run { val simdArg0 = a.asI32x4(); val simdArg1 = b.asI32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+
+/**
+ * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
+ * signed integers.
+ *
+ * Returns a new vector where each lane is all ones if the lane-wise left
+ * element is less than the right element, or all zeros otherwise.
+ */
+public fun i32x4Lt(a: V128, b: V128): V128 = run { val simdArg0 = a.asI32x4(); val simdArg1 = b.asI32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+
+/**
+ * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
+ * unsigned integers.
+ *
+ * Returns a new vector where each lane is all ones if the lane-wise left
+ * element is less than the right element, or all zeros otherwise.
+ */
+public fun u32x4Lt(a: V128, b: V128): V128 = run { val simdArg0 = a.asU32x4(); val simdArg1 = b.asU32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+
+/**
+ * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
+ * signed integers.
+ *
+ * Returns a new vector where each lane is all ones if the lane-wise left
+ * element is greater than the right element, or all zeros otherwise.
+ */
+public fun i32x4Gt(a: V128, b: V128): V128 = run { val simdArg0 = a.asI32x4(); val simdArg1 = b.asI32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+
+/**
+ * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
+ * unsigned integers.
+ *
+ * Returns a new vector where each lane is all ones if the lane-wise left
+ * element is greater than the right element, or all zeros otherwise.
+ */
+public fun u32x4Gt(a: V128, b: V128): V128 = run { val simdArg0 = a.asU32x4(); val simdArg1 = b.asU32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+
+/**
+ * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
+ * signed integers.
+ *
+ * Returns a new vector where each lane is all ones if the lane-wise left
+ * element is less than the right element, or all zeros otherwise.
+ */
+public fun i32x4Le(a: V128, b: V128): V128 = run { val simdArg0 = a.asI32x4(); val simdArg1 = b.asI32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+
+/**
+ * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
+ * unsigned integers.
+ *
+ * Returns a new vector where each lane is all ones if the lane-wise left
+ * element is less than the right element, or all zeros otherwise.
+ */
+public fun u32x4Le(a: V128, b: V128): V128 = run { val simdArg0 = a.asU32x4(); val simdArg1 = b.asU32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+
+/**
+ * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
+ * signed integers.
+ *
+ * Returns a new vector where each lane is all ones if the lane-wise left
+ * element is greater than the right element, or all zeros otherwise.
+ */
+public fun i32x4Ge(a: V128, b: V128): V128 = run { val simdArg0 = a.asI32x4(); val simdArg1 = b.asI32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+
+/**
+ * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
+ * unsigned integers.
+ *
+ * Returns a new vector where each lane is all ones if the lane-wise left
+ * element is greater than the right element, or all zeros otherwise.
+ */
+public fun u32x4Ge(a: V128, b: V128): V128 = run { val simdArg0 = a.asU32x4(); val simdArg1 = b.asU32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+
+/**
+ * Compares two 128-bit vectors as if they were two vectors of 2 sixty-four-bit
+ * integers.
+ *
+ * Returns a new vector where each lane is all ones if the corresponding input elements
+ * were equal, or all zeros otherwise.
+ */
+public fun i64x2Eq(a: V128, b: V128): V128 = run { val simdArg0 = a.asI64x2(); val simdArg1 = b.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 2 sixty-four-bit
@@ -1400,7 +1404,7 @@ public fun i64x2Eq(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); 
  * Returns a new vector where each lane is all ones if the corresponding input elements
  * were not equal, or all zeros otherwise.
  */
-public fun i64x2Ne(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+public fun i64x2Ne(a: V128, b: V128): V128 = run { val simdArg0 = a.asI64x2(); val simdArg1 = b.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 2 sixty-four-bit
@@ -1409,7 +1413,7 @@ public fun i64x2Ne(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is less than the right element, or all zeros otherwise.
  */
-public fun i64x2Lt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+public fun i64x2Lt(a: V128, b: V128): V128 = run { val simdArg0 = a.asI64x2(); val simdArg1 = b.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 2 sixty-four-bit
@@ -1418,7 +1422,7 @@ public fun i64x2Lt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is greater than the right element, or all zeros otherwise.
  */
-public fun i64x2Gt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+public fun i64x2Gt(a: V128, b: V128): V128 = run { val simdArg0 = a.asI64x2(); val simdArg1 = b.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 2 sixty-four-bit
@@ -1427,7 +1431,7 @@ public fun i64x2Gt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is less than the right element, or all zeros otherwise.
  */
-public fun i64x2Le(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+public fun i64x2Le(a: V128, b: V128): V128 = run { val simdArg0 = a.asI64x2(); val simdArg1 = b.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 2 sixty-four-bit
@@ -1436,7 +1440,7 @@ public fun i64x2Le(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is greater than the right element, or all zeros otherwise.
  */
-public fun i64x2Ge(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+public fun i64x2Ge(a: V128, b: V128): V128 = run { val simdArg0 = a.asI64x2(); val simdArg1 = b.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
@@ -1445,7 +1449,7 @@ public fun i64x2Ge(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); 
  * Returns a new vector where each lane is all ones if the corresponding input elements
  * were equal, or all zeros otherwise.
  */
-public fun f32x4Eq(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF32x4(); val _simdArg1 = b.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+public fun f32x4Eq(a: V128, b: V128): V128 = run { val simdArg0 = a.asF32x4(); val simdArg1 = b.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
@@ -1454,7 +1458,7 @@ public fun f32x4Eq(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF32x4(); 
  * Returns a new vector where each lane is all ones if the corresponding input elements
  * were not equal, or all zeros otherwise.
  */
-public fun f32x4Ne(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF32x4(); val _simdArg1 = b.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+public fun f32x4Ne(a: V128, b: V128): V128 = run { val simdArg0 = a.asF32x4(); val simdArg1 = b.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
@@ -1463,7 +1467,7 @@ public fun f32x4Ne(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF32x4(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is less than the right element, or all zeros otherwise.
  */
-public fun f32x4Lt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF32x4(); val _simdArg1 = b.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+public fun f32x4Lt(a: V128, b: V128): V128 = run { val simdArg0 = a.asF32x4(); val simdArg1 = b.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
@@ -1472,7 +1476,7 @@ public fun f32x4Lt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF32x4(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is greater than the right element, or all zeros otherwise.
  */
-public fun f32x4Gt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF32x4(); val _simdArg1 = b.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+public fun f32x4Gt(a: V128, b: V128): V128 = run { val simdArg0 = a.asF32x4(); val simdArg1 = b.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
@@ -1481,7 +1485,7 @@ public fun f32x4Gt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF32x4(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is less than the right element, or all zeros otherwise.
  */
-public fun f32x4Le(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF32x4(); val _simdArg1 = b.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+public fun f32x4Le(a: V128, b: V128): V128 = run { val simdArg0 = a.asF32x4(); val simdArg1 = b.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 4 thirty-two-bit
@@ -1490,7 +1494,7 @@ public fun f32x4Le(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF32x4(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is greater than the right element, or all zeros otherwise.
  */
-public fun f32x4Ge(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF32x4(); val _simdArg1 = b.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+public fun f32x4Ge(a: V128, b: V128): V128 = run { val simdArg0 = a.asF32x4(); val simdArg1 = b.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 2 sixty-four-bit
@@ -1499,7 +1503,7 @@ public fun f32x4Ge(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF32x4(); 
  * Returns a new vector where each lane is all ones if the corresponding input elements
  * were equal, or all zeros otherwise.
  */
-public fun f64x2Eq(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF64x2(); val _simdArg1 = b.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+public fun f64x2Eq(a: V128, b: V128): V128 = run { val simdArg0 = a.asF64x2(); val simdArg1 = b.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 2 sixty-four-bit
@@ -1508,7 +1512,7 @@ public fun f64x2Eq(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF64x2(); 
  * Returns a new vector where each lane is all ones if the corresponding input elements
  * were not equal, or all zeros otherwise.
  */
-public fun f64x2Ne(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF64x2(); val _simdArg1 = b.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+public fun f64x2Ne(a: V128, b: V128): V128 = run { val simdArg0 = a.asF64x2(); val simdArg1 = b.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 2 sixty-four-bit
@@ -1517,7 +1521,7 @@ public fun f64x2Ne(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF64x2(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is less than the right element, or all zeros otherwise.
  */
-public fun f64x2Lt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF64x2(); val _simdArg1 = b.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+public fun f64x2Lt(a: V128, b: V128): V128 = run { val simdArg0 = a.asF64x2(); val simdArg1 = b.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 2 sixty-four-bit
@@ -1526,7 +1530,7 @@ public fun f64x2Lt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF64x2(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is greater than the right element, or all zeros otherwise.
  */
-public fun f64x2Gt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF64x2(); val _simdArg1 = b.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+public fun f64x2Gt(a: V128, b: V128): V128 = run { val simdArg0 = a.asF64x2(); val simdArg1 = b.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 2 sixty-four-bit
@@ -1535,7 +1539,7 @@ public fun f64x2Gt(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF64x2(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is less than the right element, or all zeros otherwise.
  */
-public fun f64x2Le(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF64x2(); val _simdArg1 = b.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+public fun f64x2Le(a: V128, b: V128): V128 = run { val simdArg0 = a.asF64x2(); val simdArg1 = b.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 2 sixty-four-bit
@@ -1544,37 +1548,37 @@ public fun f64x2Le(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF64x2(); 
  * Returns a new vector where each lane is all ones if the lane-wise left
  * element is greater than the right element, or all zeros otherwise.
  */
-public fun f64x2Ge(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF64x2(); val _simdArg1 = b.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+public fun f64x2Ge(a: V128, b: V128): V128 = run { val simdArg0 = a.asF64x2(); val simdArg1 = b.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Flips each bit of the 128-bit input vector.
  */
-public fun v128Not(a: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = Simd<Long>(listOf(0L.inv(), 0L.inv())); _simdArg0 }.v128()
+public fun v128Not(a: V128): V128 = run { val simdArg0 = a.asI64x2(); val simdArg1 = Simd<Long>(listOf(0L.inv(), 0L.inv())); simdArg0 }.v128()
 
 /**
  * Performs a bitwise and of the two input 128-bit vectors, returning the
  * resulting vector.
  */
-public fun v128And(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); _simdArg0 }.v128()
+public fun v128And(a: V128, b: V128): V128 = run { val simdArg0 = a.asI64x2(); val simdArg1 = b.asI64x2(); simdArg0 }.v128()
 
 /**
  * Bitwise AND of bits of `a` and the logical inverse of bits of `b`.
  *
  * This operation is equivalent to `v128.and(a, v128.not(b))`
  */
-public fun v128Andnot(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = run { val _simdArg0 = b.asI64x2(); val _simdArg1 = Simd<Long>(listOf(-1L, -1L)); _simdArg0 }; _simdArg0 }.v128()
+public fun v128Andnot(a: V128, b: V128): V128 = run { val simdArg0 = a.asI64x2(); val simdArg1 = run { val simdArg0 = b.asI64x2(); val simdArg1 = Simd<Long>(listOf(-1L, -1L)); simdArg0 }; simdArg0 }.v128()
 
 /**
  * Performs a bitwise or of the two input 128-bit vectors, returning the
  * resulting vector.
  */
-public fun v128Or(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); _simdArg0 }.v128()
+public fun v128Or(a: V128, b: V128): V128 = run { val simdArg0 = a.asI64x2(); val simdArg1 = b.asI64x2(); simdArg0 }.v128()
 
 /**
  * Performs a bitwise xor of the two input 128-bit vectors, returning the
  * resulting vector.
  */
-public fun v128Xor(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); _simdArg0 }.v128()
+public fun v128Xor(a: V128, b: V128): V128 = run { val simdArg0 = a.asI64x2(); val simdArg1 = b.asI64x2(); simdArg0 }.v128()
 
 /**
  * Use the bitmask in `c` to select bits from `v1` when 1 and `v2` when 0.
@@ -1593,18 +1597,18 @@ public fun i8x16Abs(a: V128): V128 =
     run {
         val a1 = a.asI8x16()
         val zero = Simd<Byte>(List(16) { 0.toByte() })
-        run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = zero; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = zero; val _simdArg1 = a1; _simdArg0 }; val _simdArg2 = a1; _simdArg1 }.v128()
+        run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = zero; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.M8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.M8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.M8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.M8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.M8x16>()).alignBytes)); res } }; val simdArg1 = run { val simdArg0 = zero; val simdArg1 = a1; simdArg0 }; val simdArg2 = a1; simdArg1 }.v128()
     }
 
 /**
  * Negates a 128-bit vectors interpreted as sixteen 8-bit signed integers
  */
-public fun i8x16Neg(a: V128): V128 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = Simd<Byte>(List(16) { (-1).toByte() }); _simdArg0 }.v128()
+public fun i8x16Neg(a: V128): V128 = run { val simdArg0 = a.asI8x16(); val simdArg1 = Simd<Byte>(List(16) { (-1).toByte() }); simdArg0 }.v128()
 
 /**
  * Count the number of bits set to one within each lane.
  */
-public fun i8x16Popcnt(v: V128): V128 = run { val _simdArg0 = v.asI8x16(); _simdArg0 }.v128()
+public fun i8x16Popcnt(v: V128): V128 = run { val simdArg0 = v.asI8x16(); simdArg0 }.v128()
 
 /**
  * Returns true if all lanes are non-zero, false otherwise.
@@ -1626,12 +1630,12 @@ public fun i8x16Bitmask(a: V128): UShort = llvmBitmaskI8x16(a.asI8x16()).toUShor
  */
 public fun i8x16NarrowI16x8(a: V128, b: V128): V128 =
     run {
-        val v: simd.I16x16 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
-        val max = run { val _simdArg0 = Short.from(Byte.MAX_VALUE); _simdArg0 }
-        val min = run { val _simdArg0 = Short.from(Byte.MIN_VALUE); _simdArg0 }
-        val v1 = run { val _simdArg0 = run { val _simdArg0 = v; val _simdArg1 = max; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); res } }; val _simdArg1 = max; val _simdArg2 = v; _simdArg1 }
-        val v2 = run { val _simdArg0 = run { val _simdArg0 = v1; val _simdArg1 = min; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); res } }; val _simdArg1 = min; val _simdArg2 = v1; _simdArg1 }
-        val v3: simd.I8x16 = run { val _simdArg0 = v2; _simdArg0 }
+        val v: simd.I16x16 = run { val simdArg0 = a.asI16x8(); val simdArg1 = b.asI16x8(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); res } }
+        val max = run { val simdArg0 = Short.from(Byte.MAX_VALUE); V128() }
+        val min = run { val simdArg0 = Short.from(Byte.MIN_VALUE); V128() }
+        val v1 = run { val simdArg0 = run { val simdArg0 = v; val simdArg1 = max; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); res } }; val simdArg1 = max; val simdArg2 = v; simdArg1 }
+        val v2 = run { val simdArg0 = run { val simdArg0 = v1; val simdArg1 = min; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); res } }; val simdArg1 = min; val simdArg2 = v1; simdArg1 }
+        val v3: simd.I8x16 = run { val simdArg0 = v2; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }
         v3.v128()
     }
 
@@ -1644,12 +1648,12 @@ public fun i8x16NarrowI16x8(a: V128, b: V128): V128 =
  */
 public fun u8x16NarrowI16x8(a: V128, b: V128): V128 =
     run {
-        val v: simd.I16x16 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
-        val max = run { val _simdArg0 = Short.from(UByte.MAX_VALUE); _simdArg0 }
-        val min = run { val _simdArg0 = Short.from(UByte.MIN_VALUE); _simdArg0 }
-        val v1 = run { val _simdArg0 = run { val _simdArg0 = v; val _simdArg1 = max; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); res } }; val _simdArg1 = max; val _simdArg2 = v; _simdArg1 }
-        val v2 = run { val _simdArg0 = run { val _simdArg0 = v1; val _simdArg1 = min; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); res } }; val _simdArg1 = min; val _simdArg2 = v1; _simdArg1 }
-        val v3: simd.U8x16 = run { val _simdArg0 = v2; _simdArg0 }
+        val v: simd.I16x16 = run { val simdArg0 = a.asI16x8(); val simdArg1 = b.asI16x8(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); res } }
+        val max = run { val simdArg0 = Short.from(UByte.MAX_VALUE); V128() }
+        val min = run { val simdArg0 = Short.from(UByte.MIN_VALUE); V128() }
+        val v1 = run { val simdArg0 = run { val simdArg0 = v; val simdArg1 = max; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); res } }; val simdArg1 = max; val simdArg2 = v; simdArg1 }
+        val v2 = run { val simdArg0 = run { val simdArg0 = v1; val simdArg1 = min; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x16>()).alignBytes)); res } }; val simdArg1 = min; val simdArg2 = v1; simdArg1 }
+        val v3: simd.U8x16 = run { val simdArg0 = v2; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U8x16>()).alignBytes)); res } }
         v3.v128()
     }
 
@@ -1678,7 +1682,7 @@ public fun i8x16Shl(a: V128, amt: UInt): V128 {
     // Basically the extra mask here is required as a bridge from the documented
     // semantics through LLVM back out to WebAssembly. Both ends have the
     // documented semantics, and the mask is required by LLVM in the middle.
-    return run { val _simdArg0 = a.asI8x16(); val _simdArg1 = Simd<Byte>(List(16) { (amt and 0x7u).toByte() }); _simdArg0 }.v128()
+    return run { val simdArg0 = a.asI8x16(); val simdArg1 = Simd<Byte>(List(16) { (amt and 0x7u).toByte() }); simdArg0 }.v128()
 }
 
 /**
@@ -1691,7 +1695,7 @@ public fun i8x16Shl(a: V128, amt: UInt): V128 {
 public fun i8x16Shr(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asI8x16(); val _simdArg1 = Simd<Byte>(List(16) { (amt and 0x7u).toByte() }); _simdArg0 }.v128()
+    return run { val simdArg0 = a.asI8x16(); val simdArg1 = Simd<Byte>(List(16) { (amt and 0x7u).toByte() }); simdArg0 }.v128()
 }
 
 /**
@@ -1704,42 +1708,42 @@ public fun i8x16Shr(a: V128, amt: UInt): V128 {
 public fun u8x16Shr(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asU8x16(); val _simdArg1 = Simd<UByte>(List(16) { (amt and 0x7u).toUByte() }); _simdArg0 }.v128()
+    return run { val simdArg0 = a.asU8x16(); val simdArg1 = Simd<UByte>(List(16) { (amt and 0x7u).toUByte() }); simdArg0 }.v128()
 }
 
 /**
  * Adds two 128-bit vectors as if they were two packed sixteen 8-bit integers.
  */
-public fun i8x16Add(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); _simdArg0 }.v128()
+public fun i8x16Add(a: V128, b: V128): V128 = run { val simdArg0 = a.asI8x16(); val simdArg1 = b.asI8x16(); simdArg0 }.v128()
 
 /**
  * Adds two 128-bit vectors as if they were two packed sixteen 8-bit signed
  * integers, saturating on overflow to `Byte.MAX`.
  */
-public fun i8x16AddSat(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); _simdArg0 }.v128()
+public fun i8x16AddSat(a: V128, b: V128): V128 = run { val simdArg0 = a.asI8x16(); val simdArg1 = b.asI8x16(); simdArg0 }.v128()
 
 /**
  * Adds two 128-bit vectors as if they were two packed sixteen 8-bit unsigned
  * integers, saturating on overflow to `UByte.MAX`.
  */
-public fun u8x16AddSat(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = b.asU8x16(); _simdArg0 }.v128()
+public fun u8x16AddSat(a: V128, b: V128): V128 = run { val simdArg0 = a.asU8x16(); val simdArg1 = b.asU8x16(); simdArg0 }.v128()
 
 /**
  * Subtracts two 128-bit vectors as if they were two packed sixteen 8-bit integers.
  */
-public fun i8x16Sub(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); _simdArg0 }.v128()
+public fun i8x16Sub(a: V128, b: V128): V128 = run { val simdArg0 = a.asI8x16(); val simdArg1 = b.asI8x16(); simdArg0 }.v128()
 
 /**
  * Subtracts two 128-bit vectors as if they were two packed sixteen 8-bit
  * signed integers, saturating on overflow to `Byte.MIN`.
  */
-public fun i8x16SubSat(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); _simdArg0 }.v128()
+public fun i8x16SubSat(a: V128, b: V128): V128 = run { val simdArg0 = a.asI8x16(); val simdArg1 = b.asI8x16(); simdArg0 }.v128()
 
 /**
  * Subtracts two 128-bit vectors as if they were two packed sixteen 8-bit
  * unsigned integers, saturating on overflow to 0.
  */
-public fun u8x16SubSat(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = b.asU8x16(); _simdArg0 }.v128()
+public fun u8x16SubSat(a: V128, b: V128): V128 = run { val simdArg0 = a.asU8x16(); val simdArg1 = b.asU8x16(); simdArg0 }.v128()
 
 /**
  * Compares lane-wise signed integers, and returns the minimum of
@@ -1748,7 +1752,7 @@ public fun u8x16SubSat(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU8x16
 public fun i8x16Min(a: V128, b: V128): V128 {
     val a1 = a.asI8x16()
     val b1 = b.asI8x16()
-    return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; val _simdArg2 = b1; _simdArg1 }.v128()
+    return run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = b1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }; val simdArg1 = a1; val simdArg2 = b1; simdArg1 }.v128()
 }
 
 /**
@@ -1758,7 +1762,7 @@ public fun i8x16Min(a: V128, b: V128): V128 {
 public fun u8x16Min(a: V128, b: V128): V128 {
     val a1 = a.asU8x16()
     val b1 = b.asU8x16()
-    return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; val _simdArg2 = b1; _simdArg1 }.v128()
+    return run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = b1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }; val simdArg1 = a1; val simdArg2 = b1; simdArg1 }.v128()
 }
 
 /**
@@ -1768,7 +1772,7 @@ public fun u8x16Min(a: V128, b: V128): V128 {
 public fun i8x16Max(a: V128, b: V128): V128 {
     val a1 = a.asI8x16()
     val b1 = b.asI8x16()
-    return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; val _simdArg2 = b1; _simdArg1 }.v128()
+    return run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = b1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }; val simdArg1 = a1; val simdArg2 = b1; simdArg1 }.v128()
 }
 
 /**
@@ -1778,7 +1782,7 @@ public fun i8x16Max(a: V128, b: V128): V128 {
 public fun u8x16Max(a: V128, b: V128): V128 {
     val a1 = a.asU8x16()
     val b1 = b.asU8x16()
-    return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; val _simdArg2 = b1; _simdArg1 }.v128()
+    return run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = b1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x16>()).alignBytes)); res } }; val simdArg1 = a1; val simdArg2 = b1; simdArg1 }.v128()
 }
 
 /**
@@ -1804,13 +1808,13 @@ public fun i16x8ExtaddPairwiseU8x16(a: V128): V128 = llvmI16x8ExtaddPairwiseI8x1
 public fun i16x8Abs(a: V128): V128 {
     val a1 = a.asI16x8()
     val zero = Simd<Short>(List(8) { 0.toShort() })
-    return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = zero; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = zero; val _simdArg1 = a1; _simdArg0 }; val _simdArg2 = a1; _simdArg1 }.v128()
+    return run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = zero; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.M16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.M16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.M16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.M16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.M16x8>()).alignBytes)); res } }; val simdArg1 = run { val simdArg0 = zero; val simdArg1 = a1; simdArg0 }; val simdArg2 = a1; simdArg1 }.v128()
 }
 
 /**
  * Negates a 128-bit vectors interpreted as eight 16-bit signed integers
  */
-public fun i16x8Neg(a: V128): V128 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = Simd<Short>(List(8) { (-1).toShort() }); _simdArg0 }.v128()
+public fun i16x8Neg(a: V128): V128 = run { val simdArg0 = a.asI16x8(); val simdArg1 = Simd<Short>(List(8) { (-1).toShort() }); simdArg0 }.v128()
 
 /**
  * Lane-wise saturating rounding multiplication in Q15 format.
@@ -1837,12 +1841,12 @@ public fun i16x8Bitmask(a: V128): UByte = llvmBitmaskI16x8(a.asI16x8()).toUByte(
  */
 public fun i16x8NarrowI32x4(a: V128, b: V128): V128 =
     run {
-        val v: simd.I32x8 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
-        val max = run { val _simdArg0 = Int.from(Short.MAX_VALUE); _simdArg0 }
-        val min = run { val _simdArg0 = Int.from(Short.MIN_VALUE); _simdArg0 }
-        val v1 = run { val _simdArg0 = run { val _simdArg0 = v; val _simdArg1 = max; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); res } }; val _simdArg1 = max; val _simdArg2 = v; _simdArg1 }
-        val v2 = run { val _simdArg0 = run { val _simdArg0 = v1; val _simdArg1 = min; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); res } }; val _simdArg1 = min; val _simdArg2 = v1; _simdArg1 }
-        val v3: simd.I16x8 = run { val _simdArg0 = v2; _simdArg0 }
+        val v: simd.I32x8 = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); res } }
+        val max = run { val simdArg0 = Int.from(Short.MAX_VALUE); V128() }
+        val min = run { val simdArg0 = Int.from(Short.MIN_VALUE); V128() }
+        val v1 = run { val simdArg0 = run { val simdArg0 = v; val simdArg1 = max; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); res } }; val simdArg1 = max; val simdArg2 = v; simdArg1 }
+        val v2 = run { val simdArg0 = run { val simdArg0 = v1; val simdArg1 = min; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); res } }; val simdArg1 = min; val simdArg2 = v1; simdArg1 }
+        val v3: simd.I16x8 = run { val simdArg0 = v2; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }
         v3.v128()
     }
 
@@ -1855,12 +1859,12 @@ public fun i16x8NarrowI32x4(a: V128, b: V128): V128 =
  */
 public fun u16x8NarrowI32x4(a: V128, b: V128): V128 =
     run {
-        val v: simd.I32x8 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
-        val max = run { val _simdArg0 = Int.from(UShort.MAX_VALUE); _simdArg0 }
-        val min = run { val _simdArg0 = Int.from(UShort.MIN_VALUE); _simdArg0 }
-        val v1 = run { val _simdArg0 = run { val _simdArg0 = v; val _simdArg1 = max; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); res } }; val _simdArg1 = max; val _simdArg2 = v; _simdArg1 }
-        val v2 = run { val _simdArg0 = run { val _simdArg0 = v1; val _simdArg1 = min; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); res } }; val _simdArg1 = min; val _simdArg2 = v1; _simdArg1 }
-        val v3: simd.U16x8 = run { val _simdArg0 = v2; _simdArg0 }
+        val v: simd.I32x8 = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); res } }
+        val max = run { val simdArg0 = Int.from(UShort.MAX_VALUE); V128() }
+        val min = run { val simdArg0 = Int.from(UShort.MIN_VALUE); V128() }
+        val v1 = run { val simdArg0 = run { val simdArg0 = v; val simdArg1 = max; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); res } }; val simdArg1 = max; val simdArg2 = v; simdArg1 }
+        val v2 = run { val simdArg0 = run { val simdArg0 = v1; val simdArg1 = min; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x8>()).alignBytes)); res } }; val simdArg1 = min; val simdArg2 = v1; simdArg1 }
+        val v3: simd.U16x8 = run { val simdArg0 = v2; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); res } }
         v3.v128()
     }
 
@@ -1868,25 +1872,25 @@ public fun u16x8NarrowI32x4(a: V128, b: V128): V128 =
  * Converts low half of the smaller lane vector to a larger lane
  * vector, sign extended.
  */
-public fun i16x8ExtendLowI8x16(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = a.asI8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
+public fun i16x8ExtendLowI8x16(a: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asI8x16(); val simdArg1 = a.asI8x16(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
 
 /**
  * Converts high half of the smaller lane vector to a larger lane
  * vector, sign extended.
  */
-public fun i16x8ExtendHighI8x16(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = a.asI8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
+public fun i16x8ExtendHighI8x16(a: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asI8x16(); val simdArg1 = a.asI8x16(); val simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }.v128()
 
 /**
  * Converts low half of the smaller lane vector to a larger lane
  * vector, zero extended.
  */
-public fun i16x8ExtendLowU8x16(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = a.asU8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); res } }.v128()
+public fun i16x8ExtendLowU8x16(a: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asU8x16(); val simdArg1 = a.asU8x16(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); res } }.v128()
 
 /**
  * Converts high half of the smaller lane vector to a larger lane
  * vector, zero extended.
  */
-public fun i16x8ExtendHighU8x16(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = a.asU8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); res } }.v128()
+public fun i16x8ExtendHighU8x16(a: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asU8x16(); val simdArg1 = a.asU8x16(); val simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); res } }.v128()
 
 /**
  * Shifts each lane to the left by the specified number of bits.
@@ -1897,7 +1901,7 @@ public fun i16x8ExtendHighU8x16(a: V128): V128 = run { val _simdArg0 = run { val
 public fun i16x8Shl(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asI16x8(); val _simdArg1 = Simd<Short>(List(8) { (amt and 0xfu).toShort() }); _simdArg0 }.v128()
+    return run { val simdArg0 = a.asI16x8(); val simdArg1 = Simd<Short>(List(8) { (amt and 0xfu).toShort() }); simdArg0 }.v128()
 }
 
 /**
@@ -1910,7 +1914,7 @@ public fun i16x8Shl(a: V128, amt: UInt): V128 {
 public fun i16x8Shr(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asI16x8(); val _simdArg1 = Simd<Short>(List(8) { (amt and 0xfu).toShort() }); _simdArg0 }.v128()
+    return run { val simdArg0 = a.asI16x8(); val simdArg1 = Simd<Short>(List(8) { (amt and 0xfu).toShort() }); simdArg0 }.v128()
 }
 
 /**
@@ -1923,48 +1927,48 @@ public fun i16x8Shr(a: V128, amt: UInt): V128 {
 public fun u16x8Shr(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asU16x8(); val _simdArg1 = Simd<UShort>(List(8) { (amt and 0xfu).toUShort() }); _simdArg0 }.v128()
+    return run { val simdArg0 = a.asU16x8(); val simdArg1 = Simd<UShort>(List(8) { (amt and 0xfu).toUShort() }); simdArg0 }.v128()
 }
 
 /**
  * Adds two 128-bit vectors as if they were two packed eight 16-bit integers.
  */
-public fun i16x8Add(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 }.v128()
+public fun i16x8Add(a: V128, b: V128): V128 = run { val simdArg0 = a.asI16x8(); val simdArg1 = b.asI16x8(); simdArg0 }.v128()
 
 /**
  * Adds two 128-bit vectors as if they were two packed eight 16-bit signed
  * integers, saturating on overflow to `Short.MAX`.
  */
-public fun i16x8AddSat(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 }.v128()
+public fun i16x8AddSat(a: V128, b: V128): V128 = run { val simdArg0 = a.asI16x8(); val simdArg1 = b.asI16x8(); simdArg0 }.v128()
 
 /**
  * Adds two 128-bit vectors as if they were two packed eight 16-bit unsigned
  * integers, saturating on overflow to `UShort.MAX`.
  */
-public fun u16x8AddSat(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = b.asU16x8(); _simdArg0 }.v128()
+public fun u16x8AddSat(a: V128, b: V128): V128 = run { val simdArg0 = a.asU16x8(); val simdArg1 = b.asU16x8(); simdArg0 }.v128()
 
 /**
  * Subtracts two 128-bit vectors as if they were two packed eight 16-bit integers.
  */
-public fun i16x8Sub(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 }.v128()
+public fun i16x8Sub(a: V128, b: V128): V128 = run { val simdArg0 = a.asI16x8(); val simdArg1 = b.asI16x8(); simdArg0 }.v128()
 
 /**
  * Subtracts two 128-bit vectors as if they were two packed eight 16-bit
  * signed integers, saturating on overflow to `Short.MIN`.
  */
-public fun i16x8SubSat(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 }.v128()
+public fun i16x8SubSat(a: V128, b: V128): V128 = run { val simdArg0 = a.asI16x8(); val simdArg1 = b.asI16x8(); simdArg0 }.v128()
 
 /**
  * Subtracts two 128-bit vectors as if they were two packed eight 16-bit
  * unsigned integers, saturating on overflow to 0.
  */
-public fun u16x8SubSat(a: V128, b: V128): V128 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = b.asU16x8(); _simdArg0 }.v128()
+public fun u16x8SubSat(a: V128, b: V128): V128 = run { val simdArg0 = a.asU16x8(); val simdArg1 = b.asU16x8(); simdArg0 }.v128()
 
 /**
  * Multiplies two 128-bit vectors as if they were two packed eight 16-bit
  * signed integers.
  */
-public fun i16x8Mul(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 }.v128()
+public fun i16x8Mul(a: V128, b: V128): V128 = run { val simdArg0 = a.asI16x8(); val simdArg1 = b.asI16x8(); simdArg0 }.v128()
 
 /**
  * Compares lane-wise signed integers, and returns the minimum of
@@ -1973,7 +1977,7 @@ public fun i16x8Mul(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI16x8();
 public fun i16x8Min(a: V128, b: V128): V128 {
     val a1 = a.asI16x8()
     val b1 = b.asI16x8()
-    return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; val _simdArg2 = b1; _simdArg1 }.v128()
+    return run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = b1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }; val simdArg1 = a1; val simdArg2 = b1; simdArg1 }.v128()
 }
 
 /**
@@ -1983,7 +1987,7 @@ public fun i16x8Min(a: V128, b: V128): V128 {
 public fun u16x8Min(a: V128, b: V128): V128 {
     val a1 = a.asU16x8()
     val b1 = b.asU16x8()
-    return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; val _simdArg2 = b1; _simdArg1 }.v128()
+    return run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = b1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }; val simdArg1 = a1; val simdArg2 = b1; simdArg1 }.v128()
 }
 
 /**
@@ -1993,7 +1997,7 @@ public fun u16x8Min(a: V128, b: V128): V128 {
 public fun i16x8Max(a: V128, b: V128): V128 {
     val a1 = a.asI16x8()
     val b1 = b.asI16x8()
-    return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; val _simdArg2 = b1; _simdArg1 }.v128()
+    return run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = b1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }; val simdArg1 = a1; val simdArg2 = b1; simdArg1 }.v128()
 }
 
 /**
@@ -2003,7 +2007,7 @@ public fun i16x8Max(a: V128, b: V128): V128 {
 public fun u16x8Max(a: V128, b: V128): V128 {
     val a1 = a.asU16x8()
     val b1 = b.asU16x8()
-    return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; val _simdArg2 = b1; _simdArg1 }.v128()
+    return run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = b1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }; val simdArg1 = a1; val simdArg2 = b1; simdArg1 }.v128()
 }
 
 /**
@@ -2019,9 +2023,9 @@ public fun u16x8Avgr(a: V128, b: V128): V128 = llvmAvgrUI16x8(a.asI16x8(), b.asI
  */
 public fun i16x8ExtmulLowI8x16(a: V128, b: V128): V128 =
     run {
-        val lhs = run { val _simdArg0 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = a.asI8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }
-        val rhs = run { val _simdArg0 = run { val _simdArg0 = b.asI8x16(); val _simdArg1 = b.asI8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }
-        run { val _simdArg0 = lhs; val _simdArg1 = rhs; _simdArg0 }.v128()
+        val lhs = run { val simdArg0 = run { val simdArg0 = a.asI8x16(); val simdArg1 = a.asI8x16(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }
+        val rhs = run { val simdArg0 = run { val simdArg0 = b.asI8x16(); val simdArg1 = b.asI8x16(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }
+        run { val simdArg0 = lhs; val simdArg1 = rhs; simdArg0 }.v128()
     }
 
 /**
@@ -2032,9 +2036,9 @@ public fun i16x8ExtmulLowI8x16(a: V128, b: V128): V128 =
  */
 public fun i16x8ExtmulHighI8x16(a: V128, b: V128): V128 =
     run {
-        val lhs = run { val _simdArg0 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = a.asI8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }
-        val rhs = run { val _simdArg0 = run { val _simdArg0 = b.asI8x16(); val _simdArg1 = b.asI8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }
-        run { val _simdArg0 = lhs; val _simdArg1 = rhs; _simdArg0 }.v128()
+        val lhs = run { val simdArg0 = run { val simdArg0 = a.asI8x16(); val simdArg1 = a.asI8x16(); val simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }
+        val rhs = run { val simdArg0 = run { val simdArg0 = b.asI8x16(); val simdArg1 = b.asI8x16(); val simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I8x8>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x8>()).alignBytes)); res } }
+        run { val simdArg0 = lhs; val simdArg1 = rhs; simdArg0 }.v128()
     }
 
 /**
@@ -2045,9 +2049,9 @@ public fun i16x8ExtmulHighI8x16(a: V128, b: V128): V128 =
  */
 public fun i16x8ExtmulLowU8x16(a: V128, b: V128): V128 =
     run {
-        val lhs = run { val _simdArg0 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = a.asU8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); res } }
-        val rhs = run { val _simdArg0 = run { val _simdArg0 = b.asU8x16(); val _simdArg1 = b.asU8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); res } }
-        run { val _simdArg0 = lhs; val _simdArg1 = rhs; _simdArg0 }.v128()
+        val lhs = run { val simdArg0 = run { val simdArg0 = a.asU8x16(); val simdArg1 = a.asU8x16(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); res } }
+        val rhs = run { val simdArg0 = run { val simdArg0 = b.asU8x16(); val simdArg1 = b.asU8x16(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); res } }
+        run { val simdArg0 = lhs; val simdArg1 = rhs; simdArg0 }.v128()
     }
 
 /**
@@ -2058,9 +2062,9 @@ public fun i16x8ExtmulLowU8x16(a: V128, b: V128): V128 =
  */
 public fun i16x8ExtmulHighU8x16(a: V128, b: V128): V128 =
     run {
-        val lhs = run { val _simdArg0 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = a.asU8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); res } }
-        val rhs = run { val _simdArg0 = run { val _simdArg0 = b.asU8x16(); val _simdArg1 = b.asU8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); res } }
-        run { val _simdArg0 = lhs; val _simdArg1 = rhs; _simdArg0 }.v128()
+        val lhs = run { val simdArg0 = run { val simdArg0 = a.asU8x16(); val simdArg1 = a.asU8x16(); val simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); res } }
+        val rhs = run { val simdArg0 = run { val simdArg0 = b.asU8x16(); val simdArg1 = b.asU8x16(); val simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U8x8>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x8>()).alignBytes)); res } }
+        run { val simdArg0 = lhs; val simdArg1 = rhs; simdArg0 }.v128()
     }
 
 /**
@@ -2081,13 +2085,13 @@ public fun i32x4ExtaddPairwiseU16x8(a: V128): V128 = llvmI32x4ExtaddPairwiseI16x
 public fun i32x4Abs(a: V128): V128 {
     val a1 = a.asI32x4()
     val zero = Simd<Int>(List(4) { 0 })
-    return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = zero; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = zero; val _simdArg1 = a1; _simdArg0 }; val _simdArg2 = a1; _simdArg1 }.v128()
+    return run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = zero; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.M32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.M32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.M32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.M32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.M32x4>()).alignBytes)); res } }; val simdArg1 = run { val simdArg0 = zero; val simdArg1 = a1; simdArg0 }; val simdArg2 = a1; simdArg1 }.v128()
 }
 
 /**
  * Negates a 128-bit vectors interpreted as four 32-bit signed integers
  */
-public fun i32x4Neg(a: V128): V128 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = Simd<Int>(List(4) { -1 }); _simdArg0 }.v128()
+public fun i32x4Neg(a: V128): V128 = run { val simdArg0 = a.asI32x4(); val simdArg1 = Simd<Int>(List(4) { -1 }); simdArg0 }.v128()
 
 /**
  * Returns true if all lanes are non-zero, false otherwise.
@@ -2104,25 +2108,25 @@ public fun i32x4Bitmask(a: V128): UByte = llvmBitmaskI32x4(a.asI32x4()).toUByte(
  * Converts low half of the smaller lane vector to a larger lane
  * vector, sign extended.
  */
-public fun i32x4ExtendLowI16x8(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = a.asI16x8(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+public fun i32x4ExtendLowI16x8(a: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asI16x8(); val simdArg1 = a.asI16x8(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
 
 /**
  * Converts high half of the smaller lane vector to a larger lane
  * vector, sign extended.
  */
-public fun i32x4ExtendHighI16x8(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = a.asI16x8(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+public fun i32x4ExtendHighI16x8(a: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asI16x8(); val simdArg1 = a.asI16x8(); val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
 
 /**
  * Converts low half of the smaller lane vector to a larger lane
  * vector, zero extended.
  */
-public fun i32x4ExtendLowU16x8(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = a.asU16x8(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }.v128()
+public fun i32x4ExtendLowU16x8(a: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asU16x8(); val simdArg1 = a.asU16x8(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }.v128()
 
 /**
  * Converts high half of the smaller lane vector to a larger lane
  * vector, zero extended.
  */
-public fun i32x4ExtendHighU16x8(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = a.asU16x8(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }.v128()
+public fun i32x4ExtendHighU16x8(a: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asU16x8(); val simdArg1 = a.asU16x8(); val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }.v128()
 
 /**
  * Shifts each lane to the left by the specified number of bits.
@@ -2133,7 +2137,7 @@ public fun i32x4ExtendHighU16x8(a: V128): V128 = run { val _simdArg0 = run { val
 public fun i32x4Shl(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asI32x4(); val _simdArg1 = Simd<Int>(List(4) { (amt and 0x1fu).toInt() }); _simdArg0 }.v128()
+    return run { val simdArg0 = a.asI32x4(); val simdArg1 = Simd<Int>(List(4) { (amt and 0x1fu).toInt() }); simdArg0 }.v128()
 }
 
 /**
@@ -2146,7 +2150,7 @@ public fun i32x4Shl(a: V128, amt: UInt): V128 {
 public fun i32x4Shr(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asI32x4(); val _simdArg1 = Simd<Int>(List(4) { (amt and 0x1fu).toInt() }); _simdArg0 }.v128()
+    return run { val simdArg0 = a.asI32x4(); val simdArg1 = Simd<Int>(List(4) { (amt and 0x1fu).toInt() }); simdArg0 }.v128()
 }
 
 /**
@@ -2159,24 +2163,24 @@ public fun i32x4Shr(a: V128, amt: UInt): V128 {
 public fun u32x4Shr(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asU32x4(); val _simdArg1 = Simd<UInt>(List(4) { amt and 0x1fu }); _simdArg0 }.v128()
+    return run { val simdArg0 = a.asU32x4(); val simdArg1 = Simd<UInt>(List(4) { amt and 0x1fu }); simdArg0 }.v128()
 }
 
 /**
  * Adds two 128-bit vectors as if they were two packed four 32-bit integers.
  */
-public fun i32x4Add(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); _simdArg0 }.v128()
+public fun i32x4Add(a: V128, b: V128): V128 = run { val simdArg0 = a.asI32x4(); val simdArg1 = b.asI32x4(); simdArg0 }.v128()
 
 /**
  * Subtracts two 128-bit vectors as if they were two packed four 32-bit integers.
  */
-public fun i32x4Sub(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); _simdArg0 }.v128()
+public fun i32x4Sub(a: V128, b: V128): V128 = run { val simdArg0 = a.asI32x4(); val simdArg1 = b.asI32x4(); simdArg0 }.v128()
 
 /**
  * Multiplies two 128-bit vectors as if they were two packed four 32-bit
  * signed integers.
  */
-public fun i32x4Mul(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); _simdArg0 }.v128()
+public fun i32x4Mul(a: V128, b: V128): V128 = run { val simdArg0 = a.asI32x4(); val simdArg1 = b.asI32x4(); simdArg0 }.v128()
 
 /**
  * Compares lane-wise signed integers, and returns the minimum of
@@ -2185,7 +2189,7 @@ public fun i32x4Mul(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI32x4();
 public fun i32x4Min(a: V128, b: V128): V128 {
     val a1 = a.asI32x4()
     val b1 = b.asI32x4()
-    return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; val _simdArg2 = b1; _simdArg1 }.v128()
+    return run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = b1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }; val simdArg1 = a1; val simdArg2 = b1; simdArg1 }.v128()
 }
 
 /**
@@ -2195,7 +2199,7 @@ public fun i32x4Min(a: V128, b: V128): V128 {
 public fun u32x4Min(a: V128, b: V128): V128 {
     val a1 = a.asU32x4()
     val b1 = b.asU32x4()
-    return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; val _simdArg2 = b1; _simdArg1 }.v128()
+    return run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = b1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }; val simdArg1 = a1; val simdArg2 = b1; simdArg1 }.v128()
 }
 
 /**
@@ -2205,7 +2209,7 @@ public fun u32x4Min(a: V128, b: V128): V128 {
 public fun i32x4Max(a: V128, b: V128): V128 {
     val a1 = a.asI32x4()
     val b1 = b.asI32x4()
-    return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; val _simdArg2 = b1; _simdArg1 }.v128()
+    return run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = b1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }; val simdArg1 = a1; val simdArg2 = b1; simdArg1 }.v128()
 }
 
 /**
@@ -2215,7 +2219,7 @@ public fun i32x4Max(a: V128, b: V128): V128 {
 public fun u32x4Max(a: V128, b: V128): V128 {
     val a1 = a.asU32x4()
     val b1 = b.asU32x4()
-    return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; val _simdArg2 = b1; _simdArg1 }.v128()
+    return run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = b1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }; val simdArg1 = a1; val simdArg2 = b1; simdArg1 }.v128()
 }
 
 /**
@@ -2232,9 +2236,9 @@ public fun i32x4DotI16x8(a: V128, b: V128): V128 = llvmI32x4DotI16x8S(a.asI16x8(
  */
 public fun i32x4ExtmulLowI16x8(a: V128, b: V128): V128 =
     run {
-        val lhs = run { val _simdArg0 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = a.asI16x8(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }
-        val rhs = run { val _simdArg0 = run { val _simdArg0 = b.asI16x8(); val _simdArg1 = b.asI16x8(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }
-        run { val _simdArg0 = lhs; val _simdArg1 = rhs; _simdArg0 }.v128()
+        val lhs = run { val simdArg0 = run { val simdArg0 = a.asI16x8(); val simdArg1 = a.asI16x8(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }
+        val rhs = run { val simdArg0 = run { val simdArg0 = b.asI16x8(); val simdArg1 = b.asI16x8(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }
+        run { val simdArg0 = lhs; val simdArg1 = rhs; simdArg0 }.v128()
     }
 
 /**
@@ -2245,9 +2249,9 @@ public fun i32x4ExtmulLowI16x8(a: V128, b: V128): V128 =
  */
 public fun i32x4ExtmulHighI16x8(a: V128, b: V128): V128 =
     run {
-        val lhs = run { val _simdArg0 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = a.asI16x8(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }
-        val rhs = run { val _simdArg0 = run { val _simdArg0 = b.asI16x8(); val _simdArg1 = b.asI16x8(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }
-        run { val _simdArg0 = lhs; val _simdArg1 = rhs; _simdArg0 }.v128()
+        val lhs = run { val simdArg0 = run { val simdArg0 = a.asI16x8(); val simdArg1 = a.asI16x8(); val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }
+        val rhs = run { val simdArg0 = run { val simdArg0 = b.asI16x8(); val simdArg1 = b.asI16x8(); val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I16x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }
+        run { val simdArg0 = lhs; val simdArg1 = rhs; simdArg0 }.v128()
     }
 
 /**
@@ -2258,9 +2262,9 @@ public fun i32x4ExtmulHighI16x8(a: V128, b: V128): V128 =
  */
 public fun i32x4ExtmulLowU16x8(a: V128, b: V128): V128 =
     run {
-        val lhs = run { val _simdArg0 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = a.asU16x8(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }
-        val rhs = run { val _simdArg0 = run { val _simdArg0 = b.asU16x8(); val _simdArg1 = b.asU16x8(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }
-        run { val _simdArg0 = lhs; val _simdArg1 = rhs; _simdArg0 }.v128()
+        val lhs = run { val simdArg0 = run { val simdArg0 = a.asU16x8(); val simdArg1 = a.asU16x8(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }
+        val rhs = run { val simdArg0 = run { val simdArg0 = b.asU16x8(); val simdArg1 = b.asU16x8(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }
+        run { val simdArg0 = lhs; val simdArg1 = rhs; simdArg0 }.v128()
     }
 
 /**
@@ -2271,9 +2275,9 @@ public fun i32x4ExtmulLowU16x8(a: V128, b: V128): V128 =
  */
 public fun i32x4ExtmulHighU16x8(a: V128, b: V128): V128 =
     run {
-        val lhs = run { val _simdArg0 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = a.asU16x8(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }
-        val rhs = run { val _simdArg0 = run { val _simdArg0 = b.asU16x8(); val _simdArg1 = b.asU16x8(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }
-        run { val _simdArg0 = lhs; val _simdArg1 = rhs; _simdArg0 }.v128()
+        val lhs = run { val simdArg0 = run { val simdArg0 = a.asU16x8(); val simdArg1 = a.asU16x8(); val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }
+        val rhs = run { val simdArg0 = run { val simdArg0 = b.asU16x8(); val simdArg1 = b.asU16x8(); val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U16x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }
+        run { val simdArg0 = lhs; val simdArg1 = rhs; simdArg0 }.v128()
     }
 
 /**
@@ -2282,13 +2286,13 @@ public fun i32x4ExtmulHighU16x8(a: V128, b: V128): V128 =
 public fun i64x2Abs(a: V128): V128 {
     val a1 = a.asI64x2()
     val zero = Simd<Long>(List(2) { 0L })
-    return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = zero; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = zero; val _simdArg1 = a1; _simdArg0 }; val _simdArg2 = a1; _simdArg1 }.v128()
+    return run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = zero; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.M64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.M64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.M64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.M64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.M64x2>()).alignBytes)); res } }; val simdArg1 = run { val simdArg0 = zero; val simdArg1 = a1; simdArg0 }; val simdArg2 = a1; simdArg1 }.v128()
 }
 
 /**
  * Negates a 128-bit vectors interpreted as two 64-bit signed integers
  */
-public fun i64x2Neg(a: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = Simd<Long>(List(2) { -1L }); _simdArg0 }.v128()
+public fun i64x2Neg(a: V128): V128 = run { val simdArg0 = a.asI64x2(); val simdArg1 = Simd<Long>(List(2) { -1L }); simdArg0 }.v128()
 
 /**
  * Returns true if all lanes are non-zero, false otherwise.
@@ -2305,25 +2309,25 @@ public fun i64x2Bitmask(a: V128): UByte = llvmBitmaskI64x2(a.asI64x2()).toUByte(
  * Converts low half of the smaller lane vector to a larger lane
  * vector, sign extended.
  */
-public fun i64x2ExtendLowI32x4(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = a.asI32x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+public fun i64x2ExtendLowI32x4(a: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asI32x4(); val simdArg1 = a.asI32x4(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Converts high half of the smaller lane vector to a larger lane
  * vector, sign extended.
  */
-public fun i64x2ExtendHighI32x4(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = a.asI32x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+public fun i64x2ExtendHighI32x4(a: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asI32x4(); val simdArg1 = a.asI32x4(); val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Converts low half of the smaller lane vector to a larger lane
  * vector, zero extended.
  */
-public fun i64x2ExtendLowU32x4(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asU32x4(); val _simdArg1 = a.asU32x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+public fun i64x2ExtendLowU32x4(a: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asU32x4(); val simdArg1 = a.asU32x4(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Converts high half of the smaller lane vector to a larger lane
  * vector, zero extended.
  */
-public fun i64x2ExtendHighU32x4(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asU32x4(); val _simdArg1 = a.asU32x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
+public fun i64x2ExtendHighU32x4(a: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asU32x4(); val simdArg1 = a.asU32x4(); val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Shifts each lane to the left by the specified number of bits.
@@ -2334,7 +2338,7 @@ public fun i64x2ExtendHighU32x4(a: V128): V128 = run { val _simdArg0 = run { val
 public fun i64x2Shl(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asI64x2(); val _simdArg1 = Simd<Long>(List(2) { (amt and 0x3fu).toLong() }); _simdArg0 }.v128()
+    return run { val simdArg0 = a.asI64x2(); val simdArg1 = Simd<Long>(List(2) { (amt and 0x3fu).toLong() }); simdArg0 }.v128()
 }
 
 /**
@@ -2347,7 +2351,7 @@ public fun i64x2Shl(a: V128, amt: UInt): V128 {
 public fun i64x2Shr(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asI64x2(); val _simdArg1 = Simd<Long>(List(2) { (amt and 0x3fu).toLong() }); _simdArg0 }.v128()
+    return run { val simdArg0 = a.asI64x2(); val simdArg1 = Simd<Long>(List(2) { (amt and 0x3fu).toLong() }); simdArg0 }.v128()
 }
 
 /**
@@ -2360,23 +2364,23 @@ public fun i64x2Shr(a: V128, amt: UInt): V128 {
 public fun u64x2Shr(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asU64x2(); val _simdArg1 = Simd<ULong>(List(2) { (amt and 0x3fu).toULong() }); _simdArg0 }.v128()
+    return run { val simdArg0 = a.asU64x2(); val simdArg1 = Simd<ULong>(List(2) { (amt and 0x3fu).toULong() }); simdArg0 }.v128()
 }
 
 /**
  * Adds two 128-bit vectors as if they were two packed two 64-bit integers.
  */
-public fun i64x2Add(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); _simdArg0 }.v128()
+public fun i64x2Add(a: V128, b: V128): V128 = run { val simdArg0 = a.asI64x2(); val simdArg1 = b.asI64x2(); simdArg0 }.v128()
 
 /**
  * Subtracts two 128-bit vectors as if they were two packed two 64-bit integers.
  */
-public fun i64x2Sub(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); _simdArg0 }.v128()
+public fun i64x2Sub(a: V128, b: V128): V128 = run { val simdArg0 = a.asI64x2(); val simdArg1 = b.asI64x2(); simdArg0 }.v128()
 
 /**
  * Multiplies two 128-bit vectors as if they were two packed two 64-bit integers.
  */
-public fun i64x2Mul(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); _simdArg0 }.v128()
+public fun i64x2Mul(a: V128, b: V128): V128 = run { val simdArg0 = a.asI64x2(); val simdArg1 = b.asI64x2(); simdArg0 }.v128()
 
 /**
  * Lane-wise integer extended multiplication producing twice wider result than
@@ -2386,9 +2390,9 @@ public fun i64x2Mul(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2();
  */
 public fun i64x2ExtmulLowI32x4(a: V128, b: V128): V128 =
     run {
-        val lhs = run { val _simdArg0 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = a.asI32x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }
-        val rhs = run { val _simdArg0 = run { val _simdArg0 = b.asI32x4(); val _simdArg1 = b.asI32x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }
-        run { val _simdArg0 = lhs; val _simdArg1 = rhs; _simdArg0 }.v128()
+        val lhs = run { val simdArg0 = run { val simdArg0 = a.asI32x4(); val simdArg1 = a.asI32x4(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }
+        val rhs = run { val simdArg0 = run { val simdArg0 = b.asI32x4(); val simdArg1 = b.asI32x4(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }
+        run { val simdArg0 = lhs; val simdArg1 = rhs; simdArg0 }.v128()
     }
 
 /**
@@ -2399,9 +2403,9 @@ public fun i64x2ExtmulLowI32x4(a: V128, b: V128): V128 =
  */
 public fun i64x2ExtmulHighI32x4(a: V128, b: V128): V128 =
     run {
-        val lhs = run { val _simdArg0 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = a.asI32x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }
-        val rhs = run { val _simdArg0 = run { val _simdArg0 = b.asI32x4(); val _simdArg1 = b.asI32x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }
-        run { val _simdArg0 = lhs; val _simdArg1 = rhs; _simdArg0 }.v128()
+        val lhs = run { val simdArg0 = run { val simdArg0 = a.asI32x4(); val simdArg1 = a.asI32x4(); val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }
+        val rhs = run { val simdArg0 = run { val simdArg0 = b.asI32x4(); val simdArg1 = b.asI32x4(); val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I64x2>()).alignBytes)); res } }
+        run { val simdArg0 = lhs; val simdArg1 = rhs; simdArg0 }.v128()
     }
 
 /**
@@ -2412,9 +2416,9 @@ public fun i64x2ExtmulHighI32x4(a: V128, b: V128): V128 =
  */
 public fun i64x2ExtmulLowU32x4(a: V128, b: V128): V128 =
     run {
-        val lhs = run { val _simdArg0 = run { val _simdArg0 = a.asU32x4(); val _simdArg1 = a.asU32x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); res } }
-        val rhs = run { val _simdArg0 = run { val _simdArg0 = b.asU32x4(); val _simdArg1 = b.asU32x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); res } }
-        run { val _simdArg0 = lhs; val _simdArg1 = rhs; _simdArg0 }.v128()
+        val lhs = run { val simdArg0 = run { val simdArg0 = a.asU32x4(); val simdArg1 = a.asU32x4(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); res } }
+        val rhs = run { val simdArg0 = run { val simdArg0 = b.asU32x4(); val simdArg1 = b.asU32x4(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); res } }
+        run { val simdArg0 = lhs; val simdArg1 = rhs; simdArg0 }.v128()
     }
 
 /**
@@ -2425,26 +2429,26 @@ public fun i64x2ExtmulLowU32x4(a: V128, b: V128): V128 =
  */
 public fun i64x2ExtmulHighU32x4(a: V128, b: V128): V128 =
     run {
-        val lhs = run { val _simdArg0 = run { val _simdArg0 = a.asU32x4(); val _simdArg1 = a.asU32x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); res } }
-        val rhs = run { val _simdArg0 = run { val _simdArg0 = b.asU32x4(); val _simdArg1 = b.asU32x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); res } }
-        run { val _simdArg0 = lhs; val _simdArg1 = rhs; _simdArg0 }.v128()
+        val lhs = run { val simdArg0 = run { val simdArg0 = a.asU32x4(); val simdArg1 = a.asU32x4(); val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); res } }
+        val rhs = run { val simdArg0 = run { val simdArg0 = b.asU32x4(); val simdArg1 = b.asU32x4(); val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U64x2>()).alignBytes)); res } }
+        run { val simdArg0 = lhs; val simdArg1 = rhs; simdArg0 }.v128()
     }
 
 /**
  * Lane-wise rounding to the nearest integral value not smaller than the input.
  */
-public fun f32x4Ceil(a: V128): V128 = run { val _simdArg0 = a.asF32x4(); _simdArg0 }.v128()
+public fun f32x4Ceil(a: V128): V128 = run { val simdArg0 = a.asF32x4(); simdArg0 }.v128()
 
 /**
  * Lane-wise rounding to the nearest integral value not greater than the input.
  */
-public fun f32x4Floor(a: V128): V128 = run { val _simdArg0 = a.asF32x4(); _simdArg0 }.v128()
+public fun f32x4Floor(a: V128): V128 = run { val simdArg0 = a.asF32x4(); simdArg0 }.v128()
 
 /**
  * Lane-wise rounding to the nearest integral value with the magnitude not
  * larger than the input.
  */
-public fun f32x4Trunc(a: V128): V128 = run { val _simdArg0 = a.asF32x4(); _simdArg0 }.v128()
+public fun f32x4Trunc(a: V128): V128 = run { val simdArg0 = a.asF32x4(); simdArg0 }.v128()
 
 /**
  * Lane-wise rounding to the nearest integral value; if two values are equally
@@ -2456,43 +2460,43 @@ public fun f32x4Nearest(a: V128): V128 = llvmF32x4Nearest(a.asF32x4()).v128()
  * Calculates the absolute value of each lane of a 128-bit vector interpreted
  * as four 32-bit floating point numbers.
  */
-public fun f32x4Abs(a: V128): V128 = run { val _simdArg0 = a.asF32x4(); _simdArg0 }.v128()
+public fun f32x4Abs(a: V128): V128 = run { val simdArg0 = a.asF32x4(); simdArg0 }.v128()
 
 /**
  * Negates each lane of a 128-bit vector interpreted as four 32-bit floating
  * point numbers.
  */
-public fun f32x4Neg(a: V128): V128 = run { val _simdArg0 = a.asF32x4(); _simdArg0 }.v128()
+public fun f32x4Neg(a: V128): V128 = run { val simdArg0 = a.asF32x4(); simdArg0 }.v128()
 
 /**
  * Calculates the square root of each lane of a 128-bit vector interpreted as
  * four 32-bit floating point numbers.
  */
-public fun f32x4Sqrt(a: V128): V128 = run { val _simdArg0 = a.asF32x4(); _simdArg0 }.v128()
+public fun f32x4Sqrt(a: V128): V128 = run { val simdArg0 = a.asF32x4(); simdArg0 }.v128()
 
 /**
  * Lane-wise addition of two 128-bit vectors interpreted as four 32-bit
  * floating point numbers.
  */
-public fun f32x4Add(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF32x4(); val _simdArg1 = b.asF32x4(); _simdArg0 }.v128()
+public fun f32x4Add(a: V128, b: V128): V128 = run { val simdArg0 = a.asF32x4(); val simdArg1 = b.asF32x4(); simdArg0 }.v128()
 
 /**
  * Lane-wise subtraction of two 128-bit vectors interpreted as four 32-bit
  * floating point numbers.
  */
-public fun f32x4Sub(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF32x4(); val _simdArg1 = b.asF32x4(); _simdArg0 }.v128()
+public fun f32x4Sub(a: V128, b: V128): V128 = run { val simdArg0 = a.asF32x4(); val simdArg1 = b.asF32x4(); simdArg0 }.v128()
 
 /**
  * Lane-wise multiplication of two 128-bit vectors interpreted as four 32-bit
  * floating point numbers.
  */
-public fun f32x4Mul(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF32x4(); val _simdArg1 = b.asF32x4(); _simdArg0 }.v128()
+public fun f32x4Mul(a: V128, b: V128): V128 = run { val simdArg0 = a.asF32x4(); val simdArg1 = b.asF32x4(); simdArg0 }.v128()
 
 /**
  * Lane-wise division of two 128-bit vectors interpreted as four 32-bit
  * floating point numbers.
  */
-public fun f32x4Div(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF32x4(); val _simdArg1 = b.asF32x4(); _simdArg0 }.v128()
+public fun f32x4Div(a: V128, b: V128): V128 = run { val simdArg0 = a.asF32x4(); val simdArg1 = b.asF32x4(); simdArg0 }.v128()
 
 /**
  * Calculates the lane-wise minimum of two 128-bit vectors interpreted
@@ -2509,28 +2513,28 @@ public fun f32x4Max(a: V128, b: V128): V128 = llvmF32x4Max(a.asF32x4(), b.asF32x
 /**
  * Lane-wise minimum value, defined as `b<a b: a`
  */
-public fun f32x4Pmin(a: V128, b: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = b.asF32x4(); val _simdArg1 = a.asF32x4(); _simdArg0 }; val _simdArg1 = b.asF32x4(); val _simdArg2 = a.asF32x4(); _simdArg1 }.v128()
+public fun f32x4Pmin(a: V128, b: V128): V128 = run { val simdArg0 = run { val simdArg0 = b.asF32x4(); val simdArg1 = a.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.M32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.M32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.M32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.M32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.M32x4>()).alignBytes)); res } }; val simdArg1 = b.asF32x4(); val simdArg2 = a.asF32x4(); simdArg1 }.v128()
 
 /**
  * Lane-wise maximum value, defined as `a<b b: a`
  */
-public fun f32x4Pmax(a: V128, b: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asF32x4(); val _simdArg1 = b.asF32x4(); _simdArg0 }; val _simdArg1 = b.asF32x4(); val _simdArg2 = a.asF32x4(); _simdArg1 }.v128()
+public fun f32x4Pmax(a: V128, b: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asF32x4(); val simdArg1 = b.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.M32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.M32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.M32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.M32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.M32x4>()).alignBytes)); res } }; val simdArg1 = b.asF32x4(); val simdArg2 = a.asF32x4(); simdArg1 }.v128()
 
 /**
  * Lane-wise rounding to the nearest integral value not smaller than the input.
  */
-public fun f64x2Ceil(a: V128): V128 = run { val _simdArg0 = a.asF64x2(); _simdArg0 }.v128()
+public fun f64x2Ceil(a: V128): V128 = run { val simdArg0 = a.asF64x2(); simdArg0 }.v128()
 
 /**
  * Lane-wise rounding to the nearest integral value not greater than the input.
  */
-public fun f64x2Floor(a: V128): V128 = run { val _simdArg0 = a.asF64x2(); _simdArg0 }.v128()
+public fun f64x2Floor(a: V128): V128 = run { val simdArg0 = a.asF64x2(); simdArg0 }.v128()
 
 /**
  * Lane-wise rounding to the nearest integral value with the magnitude not
  * larger than the input.
  */
-public fun f64x2Trunc(a: V128): V128 = run { val _simdArg0 = a.asF64x2(); _simdArg0 }.v128()
+public fun f64x2Trunc(a: V128): V128 = run { val simdArg0 = a.asF64x2(); simdArg0 }.v128()
 
 /**
  * Lane-wise rounding to the nearest integral value; if two values are equally
@@ -2542,43 +2546,43 @@ public fun f64x2Nearest(a: V128): V128 = llvmF64x2Nearest(a.asF64x2()).v128()
  * Calculates the absolute value of each lane of a 128-bit vector interpreted
  * as two 64-bit floating point numbers.
  */
-public fun f64x2Abs(a: V128): V128 = run { val _simdArg0 = a.asF64x2(); _simdArg0 }.v128()
+public fun f64x2Abs(a: V128): V128 = run { val simdArg0 = a.asF64x2(); simdArg0 }.v128()
 
 /**
  * Negates each lane of a 128-bit vector interpreted as two 64-bit floating
  * point numbers.
  */
-public fun f64x2Neg(a: V128): V128 = run { val _simdArg0 = a.asF64x2(); _simdArg0 }.v128()
+public fun f64x2Neg(a: V128): V128 = run { val simdArg0 = a.asF64x2(); simdArg0 }.v128()
 
 /**
  * Calculates the square root of each lane of a 128-bit vector interpreted as
  * two 64-bit floating point numbers.
  */
-public fun f64x2Sqrt(a: V128): V128 = run { val _simdArg0 = a.asF64x2(); _simdArg0 }.v128()
+public fun f64x2Sqrt(a: V128): V128 = run { val simdArg0 = a.asF64x2(); simdArg0 }.v128()
 
 /**
  * Lane-wise add of two 128-bit vectors interpreted as two 64-bit
  * floating point numbers.
  */
-public fun f64x2Add(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF64x2(); val _simdArg1 = b.asF64x2(); _simdArg0 }.v128()
+public fun f64x2Add(a: V128, b: V128): V128 = run { val simdArg0 = a.asF64x2(); val simdArg1 = b.asF64x2(); simdArg0 }.v128()
 
 /**
  * Lane-wise subtract of two 128-bit vectors interpreted as two 64-bit
  * floating point numbers.
  */
-public fun f64x2Sub(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF64x2(); val _simdArg1 = b.asF64x2(); _simdArg0 }.v128()
+public fun f64x2Sub(a: V128, b: V128): V128 = run { val simdArg0 = a.asF64x2(); val simdArg1 = b.asF64x2(); simdArg0 }.v128()
 
 /**
  * Lane-wise multiply of two 128-bit vectors interpreted as two 64-bit
  * floating point numbers.
  */
-public fun f64x2Mul(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF64x2(); val _simdArg1 = b.asF64x2(); _simdArg0 }.v128()
+public fun f64x2Mul(a: V128, b: V128): V128 = run { val simdArg0 = a.asF64x2(); val simdArg1 = b.asF64x2(); simdArg0 }.v128()
 
 /**
  * Lane-wise divide of two 128-bit vectors interpreted as two 64-bit
  * floating point numbers.
  */
-public fun f64x2Div(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF64x2(); val _simdArg1 = b.asF64x2(); _simdArg0 }.v128()
+public fun f64x2Div(a: V128, b: V128): V128 = run { val simdArg0 = a.asF64x2(); val simdArg1 = b.asF64x2(); simdArg0 }.v128()
 
 /**
  * Calculates the lane-wise minimum of two 128-bit vectors interpreted
@@ -2595,12 +2599,12 @@ public fun f64x2Max(a: V128, b: V128): V128 = llvmF64x2Max(a.asF64x2(), b.asF64x
 /**
  * Lane-wise minimum value, defined as `b<a b: a`
  */
-public fun f64x2Pmin(a: V128, b: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = b.asF64x2(); val _simdArg1 = a.asF64x2(); _simdArg0 }; val _simdArg1 = b.asF64x2(); val _simdArg2 = a.asF64x2(); _simdArg1 }.v128()
+public fun f64x2Pmin(a: V128, b: V128): V128 = run { val simdArg0 = run { val simdArg0 = b.asF64x2(); val simdArg1 = a.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.M64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.M64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.M64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.M64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.M64x2>()).alignBytes)); res } }; val simdArg1 = b.asF64x2(); val simdArg2 = a.asF64x2(); simdArg1 }.v128()
 
 /**
  * Lane-wise maximum value, defined as `a<b b: a`
  */
-public fun f64x2Pmax(a: V128, b: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asF64x2(); val _simdArg1 = b.asF64x2(); _simdArg0 }; val _simdArg1 = b.asF64x2(); val _simdArg2 = a.asF64x2(); _simdArg1 }.v128()
+public fun f64x2Pmax(a: V128, b: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asF64x2(); val simdArg1 = b.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.M64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.M64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.M64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.M64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.M64x2>()).alignBytes)); res } }; val simdArg1 = b.asF64x2(); val simdArg2 = a.asF64x2(); simdArg1 }.v128()
 
 /**
  * Converts a 128-bit vector interpreted as four 32-bit floating point numbers
@@ -2609,7 +2613,7 @@ public fun f64x2Pmax(a: V128, b: V128): V128 = run { val _simdArg0 = run { val _
  * NaN is converted to 0 and if it's out of bounds it becomes the nearest
  * representable intger.
  */
-public fun i32x4TruncSatF32x4(a: V128): V128 = run { val _simdArg0 = a.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
+public fun i32x4TruncSatF32x4(a: V128): V128 = run { val simdArg0 = a.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }.v128()
 
 /**
  * Converts a 128-bit vector interpreted as four 32-bit floating point numbers
@@ -2618,19 +2622,19 @@ public fun i32x4TruncSatF32x4(a: V128): V128 = run { val _simdArg0 = a.asF32x4()
  * NaN is converted to 0 and if it's out of bounds it becomes the nearest
  * representable intger.
  */
-public fun u32x4TruncSatF32x4(a: V128): V128 = run { val _simdArg0 = a.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }.v128()
+public fun u32x4TruncSatF32x4(a: V128): V128 = run { val simdArg0 = a.asF32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }.v128()
 
 /**
  * Converts a 128-bit vector interpreted as four 32-bit signed integers into a
  * 128-bit vector of four 32-bit floating point numbers.
  */
-public fun f32x4ConvertI32x4(a: V128): V128 = run { val _simdArg0 = a.asI32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.F32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).alignBytes)); res } }.v128()
+public fun f32x4ConvertI32x4(a: V128): V128 = run { val simdArg0 = a.asI32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.F32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).alignBytes)); res } }.v128()
 
 /**
  * Converts a 128-bit vector interpreted as four 32-bit unsigned integers into a
  * 128-bit vector of four 32-bit floating point numbers.
  */
-public fun f32x4ConvertU32x4(a: V128): V128 = run { val _simdArg0 = a.asU32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.F32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).alignBytes)); res } }.v128()
+public fun f32x4ConvertU32x4(a: V128): V128 = run { val simdArg0 = a.asU32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.F32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).alignBytes)); res } }.v128()
 
 /**
  * Saturating conversion of the two double-precision floating point lanes to
@@ -2643,7 +2647,7 @@ public fun f32x4ConvertU32x4(a: V128): V128 = run { val _simdArg0 = a.asU32x4();
  * to the nearest representable integer value.
  */
 public fun i32x4TruncSatF64x2Zero(a: V128): V128 {
-    val ret: simd.I32x4 = run { val _simdArg0 = run { val _simdArg0 = a.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); res } }; val _simdArg1 = Simd<Int>(List(2) { 0 }); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }
+    val ret: simd.I32x4 = run { val simdArg0 = run { val simdArg0 = a.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); res } }; val simdArg1 = Simd<Int>(List(2) { 0 }); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x4>()).alignBytes)); res } }
     return ret.v128()
 }
 
@@ -2658,19 +2662,19 @@ public fun i32x4TruncSatF64x2Zero(a: V128): V128 {
  * to the nearest representable integer value.
  */
 public fun u32x4TruncSatF64x2Zero(a: V128): V128 {
-    val ret: simd.U32x4 = run { val _simdArg0 = run { val _simdArg0 = a.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); res } }; val _simdArg1 = Simd<UInt>(List(2) { 0u }); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }
+    val ret: simd.U32x4 = run { val simdArg0 = run { val simdArg0 = a.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); res } }; val simdArg1 = Simd<UInt>(List(2) { 0u }); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x4>()).alignBytes)); res } }
     return ret.v128()
 }
 
 /**
  * Lane-wise conversion from integer to floating point.
  */
-public fun f64x2ConvertLowI32x4(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = a.asI32x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.F64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).alignBytes)); res } }.v128()
+public fun f64x2ConvertLowI32x4(a: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asI32x4(); val simdArg1 = a.asI32x4(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.I32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.F64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Lane-wise conversion from integer to floating point.
  */
-public fun f64x2ConvertLowU32x4(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asU32x4(); val _simdArg1 = a.asU32x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.F64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).alignBytes)); res } }.v128()
+public fun f64x2ConvertLowU32x4(a: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asU32x4(); val simdArg1 = a.asU32x4(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.U32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.F64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).alignBytes)); res } }.v128()
 
 /**
  * Conversion of the two double-precision floating point lanes to two lower
@@ -2679,10 +2683,10 @@ public fun f64x2ConvertLowU32x4(a: V128): V128 = run { val _simdArg0 = run { val
  * single-precision floating point number, it is rounded to the nearest-even
  * representable number.
  */
-public fun f32x4DemoteF64x2Zero(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asF64x2(); val _simdArg1 = Simd<Double>(List(2) { 0.0 }); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.F32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).alignBytes)); res } }.v128()
+public fun f32x4DemoteF64x2Zero(a: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asF64x2(); val simdArg1 = Simd<Double>(List(2) { 0.0 }); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.F64x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F64x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.F64x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.F64x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F64x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.F32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F32x4>()).alignBytes)); res } }.v128()
 
 /**
  * Conversion of the two lower single-precision floating point lanes to the two
  * double-precision lanes of the result.
  */
-public fun f64x2PromoteLowF32x4(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asF32x4(); val _simdArg1 = a.asF32x4(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.F64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).alignBytes)); res } }.v128()
+public fun f64x2PromoteLowF32x4(a: V128): V128 = run { val simdArg0 = run { val simdArg0 = a.asF32x4(); val simdArg1 = a.asF32x4(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.F32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.F32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.F32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<simd.F64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<simd.F64x2>()).alignBytes)); res } }.v128()

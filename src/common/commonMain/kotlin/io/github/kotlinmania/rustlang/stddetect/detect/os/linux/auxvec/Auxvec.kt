@@ -115,7 +115,7 @@ public fun auxv(): Result<AuxVec, Unit> {
     // Try to call a getauxval function.
     when (val matchVal = getauxval(AT_HWCAP)) {
         is Result.Ok<*, *> -> {
-            val hwcap = matchVal.value
+            val hwcap = matchVal.okValue()
             // Targets with only AT_HWCAP:
             if (hwcap != 0) {
                 return Result.Ok<AuxVec, Unit>(AuxVec(hwcap = hwcap))
@@ -123,7 +123,7 @@ public fun auxv(): Result<AuxVec, Unit> {
             // Targets with AT_HWCAP and AT_HWCAP2:
             when (val matchVal1 = getauxval(AT_HWCAP2)) {
                 is Result.Ok<*, *> -> {
-                    val hwcap2 = matchVal1.value
+                    val hwcap2 = matchVal1.okValue()
                     // Zero could indicate that no features were detected, but it's also used to indicate
                     // an error. In particular, on many platforms AT_HWCAP2 will be legitimately zero,
                     // since it contains the most recent feature flags. Use the fallback only if no
@@ -157,7 +157,7 @@ public fun getauxval(key: Int): Result<Int, Unit> {
  * function returns `Err`.
  */
 public fun auxvFromFile(file: CStr): Result<AuxVec, String> {
-    val file1 = when (val tryResult = readFile(file)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<AuxVec, String>(tryResult.error) }
+    val file1 = when (val tryResult = readFile(file)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<AuxVec, String>(tryResult.errValue()) }
     return auxvFromFileBytes(file1)
 }
 

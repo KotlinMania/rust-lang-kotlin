@@ -10,8 +10,42 @@ import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.fromMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.offsetFromUnsigned
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
+
+/**
+ * This function returns a function that lets you index the given array in const.
+ * As implemented it can optimize better than iterators, and can be constified.
+ * It acts like a sort of guard (owns the array) and iterator combined, which can be implemented
+ * as it is a struct that implements const fn.
+ * The only method you're really allowed to call is `next()`,
+ * anything else is more or less UB, hence this function being unchecked.
+ * Moved elements will not be dropped.
+ * This will also not actually store the array.
+ *
+ * SAFETY: must only be called `N` times. Thou shalt not drop the array either.
+ */
+public fun <T, U> Drain.Companion.new(array: List<T>, f: (T) -> U, n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Drain<T, F> {
+    // dont drop the array, transfers "ownership" to Self
+    val ptr: NonNull = NonNull.fromMut(array).cast()
+    // SAFETY:
+    // Adding `slice.len()` to the starting pointer gives a pointer
+    // at the end of `slice`. `end` will never be dereferenced, only checked
+    // for direct pointer equality with `ptr` to check if the drainer is done.
+    return run {
+        val endOrLen =
+            if (((typeLayoutT).sizeBytes == 0L)) {
+                withoutProvenanceMut(n)
+            } else {
+                ptr.asPtr().add(n)
+            }
+        Drain(ptr = ptr, endOrLen = endOrLen, f = f, l = Unit)
+    }
+}
 
 /**
  * See [Drain.new]; this is our fake iterator.
@@ -44,38 +78,6 @@ public open class Drain<T, F>(
             }
         // SAFETY: By the type invariant, we're allowed to drop all these. (we own it, after all)
         dropInPlace(slice)
-    }
-
-    public companion object {
-        /**
-         * This function returns a function that lets you index the given array in const.
-         * As implemented it can optimize better than iterators, and can be constified.
-         * It acts like a sort of guard (owns the array) and iterator combined, which can be implemented
-         * as it is a struct that implements const fn.
-         * The only method you're really allowed to call is `next()`,
-         * anything else is more or less UB, hence this function being unchecked.
-         * Moved elements will not be dropped.
-         * This will also not actually store the array.
-         *
-         * SAFETY: must only be called `N` times. Thou shalt not drop the array either.
-         */
-        public fun <T, U> new(array: List<T>, f: (T) -> U, n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Drain<T, F> {
-            // dont drop the array, transfers "ownership" to Self
-            val ptr: NonNull = NonNull.fromMut(array).cast()
-            // SAFETY:
-            // Adding `slice.len()` to the starting pointer gives a pointer
-            // at the end of `slice`. `end` will never be dereferenced, only checked
-            // for direct pointer equality with `ptr` to check if the drainer is done.
-            return run {
-                val endOrLen =
-                    if (((typeLayoutT).sizeBytes == 0L)) {
-                        withoutProvenanceMut(n)
-                    } else {
-                        ptr.asPtr().add(n)
-                    }
-                Drain(ptr = ptr, endOrLen = endOrLen, f = f, l = Unit)
-            }
-        }
     }
 }
 

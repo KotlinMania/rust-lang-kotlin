@@ -84,7 +84,7 @@ public fun mmCvtsi64xSi128(a: Long): M128i = mmCvtsi64Si128(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtsi128_si64)
  */
-public fun mmCvtsi128Si64(a: M128i): Long = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = 0L; _simdArg0 }
+public fun mmCvtsi128Si64(a: M128i): Long = run { val simdArg0 = a.asI64x2(); val simdArg1 = 0L; 0L }
 
 /**
  * Returns the lowest element of `a`.
@@ -99,7 +99,7 @@ public fun mmCvtsi128Si64x(a: M128i): Long = mmCvtsi128Si64(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtsi64_sd)
  */
-public fun mmCvtsi64Sd(a: M128d, b: Long): M128d = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = b.toDouble(); _simdArg0 }
+public fun mmCvtsi64Sd(a: M128d, b: Long): M128d = run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = b.toDouble(); simdArg0 }
 
 /**
  * Returns `a` with its lower element replaced by `b` after converting it to

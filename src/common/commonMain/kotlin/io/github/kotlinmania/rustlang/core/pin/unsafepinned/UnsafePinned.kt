@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -124,18 +125,6 @@ public open class UnsafePinned<T> internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "UnsafePinned").finishNonExhaustive(); Result.Ok<Unit, Unit>(Unit) }
 
-    // @unstable(feature = "unsafePinned", issue = "125735")
-
-    // Allow types that wrap `UnsafePinned` to also implement `DispatchFromDyn`
-    // and become dynamic-compatible method receivers.
-    // Note that currently `UnsafePinned` itself cannot be a method receiver
-    // because it does not implement Deref.
-    // In other words:
-    // `self: UnsafePinned<Self>` won't work
-    // `self: UnsafePinned<Self>` becomes possible
-    // Note(unsafePinned) this logic is copied from UnsafeCell, is it still sound?
-    // @unstable(feature = "unsafePinned", issue = "125735")
-
     public companion object {
         public operator fun <T> invoke(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout()): UnsafePinned<T> = UnsafePinned<T>(value, fieldLayout)
 
@@ -181,3 +170,15 @@ public open class UnsafePinned<T> internal constructor(
         public fun <T> from(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()): UnsafePinned<T> = UnsafePinned.new(value, fieldLayout = fieldLayout)
     }
 }
+
+// @unstable(feature = "unsafePinned", issue = "125735")
+
+// Allow types that wrap `UnsafePinned` to also implement `DispatchFromDyn`
+// and become dynamic-compatible method receivers.
+// Note that currently `UnsafePinned` itself cannot be a method receiver
+// because it does not implement Deref.
+// In other words:
+// `self: UnsafePinned<Self>` won't work
+// `self: UnsafePinned<Self>` becomes possible
+// Note(unsafePinned) this logic is copied from UnsafeCell, is it still sound?
+// @unstable(feature = "unsafePinned", issue = "125735")

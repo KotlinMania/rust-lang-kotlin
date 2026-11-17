@@ -9,6 +9,8 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.sub
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // Definitions of `Saturating<T>`.
@@ -197,7 +199,7 @@ public fun Saturating<Int>.remAssignInt(other: Int) {
     this.remAssign(other)
 }
 
-public fun Saturating<Int>.not(): Saturating<Int> = Saturating(!this.value, fieldLayout = PrimitiveLayouts.USIZE64)
+public operator fun Saturating<Int>.not(): Saturating<Int> = Saturating(!this.value, fieldLayout = PrimitiveLayouts.USIZE64)
 
 public fun Saturating<Int>.bitxor(other: Saturating<Int>): Saturating<Int> = Saturating(this.value xor other.value, fieldLayout = PrimitiveLayouts.USIZE64)
 

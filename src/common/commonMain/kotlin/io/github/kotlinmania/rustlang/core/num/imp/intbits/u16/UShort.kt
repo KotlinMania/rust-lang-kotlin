@@ -6,7 +6,7 @@ package io.github.kotlinmania.rustlang.core.num.imp.intbits.u16
 public val STAGES: Int = 16u.ilog2().toInt()
 
 public fun prepare(sparse: UShort): UShortArray {
-    var zeros = !sparse
+    var zeros = sparse.inv()
     val masks = MutableList(STAGES) { 0 }
     var stage = 0
     while (stage < STAGES) {
@@ -14,12 +14,12 @@ public fun prepare(sparse: UShort): UShortArray {
         var parity = zeros
         var len = n
         while (len < 16u) {
-            parity = parity xor (parity shl len.toInt())
+            parity = parity xor ((parity.toUInt() shl (len.toInt())).toUShort())
             len = len shl 1
         }
         masks[stage] = parity
         zeros = zeros and parity.inv()
-        zeros = zeros xor (zeros shr n.toInt())
+        zeros = zeros xor ((zeros.toUInt() shr (n.toInt())).toUShort())
         stage += 1
     }
     return masks

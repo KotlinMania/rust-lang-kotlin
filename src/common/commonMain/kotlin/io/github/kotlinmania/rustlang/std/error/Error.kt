@@ -1,6 +1,7 @@
 // port-lint: source error.rs
 package io.github.kotlinmania.rustlang.std.error
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.error.requestRef
 import io.github.kotlinmania.rustlang.core.fmt.Write

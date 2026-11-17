@@ -13,6 +13,7 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -595,18 +596,18 @@ public open class ProcThreadAttributeListBuilder(
         // with a null pointer to retrieve the required size.
         val localStorageL702C8 = AddressableLocal(0, PrimitiveLayouts.I32)
         var requiredSize by localStorageL702C8
-        val attributeCount = when (val tryResult = this.attributes.size.tryInto()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ProcThreadAttributeList, Error>(constError(ErrorKind.InvalidInput, "maximum number of ProcThreadAttributes exceeded")) }
+        val attributeCount = when (val tryResult = this.attributes.size.tryInto()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<ProcThreadAttributeList, Error>(constError(ErrorKind.InvalidInput, "maximum number of ProcThreadAttributes exceeded")) }
         C.InitializeProcThreadAttributeList(MutPtr(0L), attributeCount, 0, RustMutableReference(localStorageL702C8.asMutPtr(), localStorageL702C8.layout))
         var attributeList = mutableListOf(MaybeUninit.uninit(UnresolvedTypeLayout<Result<ProcThreadAttributeList, Error>>()), requiredSize).intoBoxedSlice()
         // Once we've allocated the necessary memory, it's safe to invoke
         // `InitializeProcThreadAttributeList` to properly initialize the list.
-        when (val tryResult = cvt(C.InitializeProcThreadAttributeList(attributeList.asMutPtr().cast(), attributeCount, 0, RustMutableReference(localStorageL702C8.asMutPtr(), localStorageL702C8.layout)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ProcThreadAttributeList, Error>(tryResult.error) }
+        when (val tryResult = cvt(C.InitializeProcThreadAttributeList(attributeList.asMutPtr().cast(), attributeCount, 0, RustMutableReference(localStorageL702C8.asMutPtr(), localStorageL702C8.layout)))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<ProcThreadAttributeList, Error>(tryResult.errValue()) }
         // # Add our attributes to the buffer.
         // It's theoretically possible for the attribute count to exceed a u32
         // value. Therefore, we ensure that we don't add more attributes than
         // the buffer was initialized for.
         for ((attribute, value) in this.attributes.iter().take(attributeCount.toInt())) {
-            when (val tryResult = cvt(C.UpdateProcThreadAttribute(attributeList.asMutPtr().cast(), 0, attribute, value.ptr, value.size, MutPtr(0L), MutPtr(0L)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ProcThreadAttributeList, Error>(tryResult.error) }
+            when (val tryResult = cvt(C.UpdateProcThreadAttribute(attributeList.asMutPtr().cast(), 0, attribute, value.ptr, value.size, MutPtr(0L), MutPtr(0L)))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<ProcThreadAttributeList, Error>(tryResult.errValue()) }
         }
         return Result.Ok<ProcThreadAttributeList, Error>(ProcThreadAttributeList(attributeList = attributeList, lifetimeMarker = Unit))
     }

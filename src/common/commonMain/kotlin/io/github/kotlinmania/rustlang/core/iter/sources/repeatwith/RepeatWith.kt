@@ -1,6 +1,7 @@
 // port-lint: source iter/sources/repeat_with.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.repeatwith
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
@@ -138,6 +139,6 @@ public fun <Residual, A, Acc, R> RepeatWith<F>.tryFold(init: Acc, fold: (Acc, A)
     // is the only way to exit the loop.
     while (true) {
         val item = (this.repeater)()
-        init1 = when (val tryResult = fold(init1, item)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+        init1 = when (val tryResult = fold(init1, item)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
     }
 }

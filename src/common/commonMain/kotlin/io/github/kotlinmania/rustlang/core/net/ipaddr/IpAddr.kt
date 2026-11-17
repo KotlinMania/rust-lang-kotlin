@@ -1033,10 +1033,10 @@ public open class Ipv4Addr(
 
     public open fun cmp(other: Ipv4Addr): Ordering = this.octets.cmp(other.octets)
 
-    public override fun not(): Ipv4Addr {
+    public override operator fun not(): Ipv4Addr {
         var idx = 0
         while (idx < 4) {
-            this.octets[idx] = (!this.octets[idx]).toUByte()
+            this.octets[idx] = this.octets[idx].inv()
             idx += 1
         }
         return this
@@ -1745,22 +1745,22 @@ public open class Ipv6Addr(
     public open fun multicastScope(): Ipv6MulticastScope? =
         if (this.isMulticast()) {
             when (this.segments()[0] and 0x000fu.toUShort()) {
-                0x0 -> Ipv6MulticastScope.Reserved0
-                0x1 -> Ipv6MulticastScope.InterfaceLocal
-                0x2 -> Ipv6MulticastScope.LinkLocal
-                0x3 -> Ipv6MulticastScope.RealmLocal
-                0x4 -> Ipv6MulticastScope.AdminLocal
-                0x5 -> Ipv6MulticastScope.SiteLocal
-                0x6 -> Ipv6MulticastScope.Unassigned6
-                0x7 -> Ipv6MulticastScope.Unassigned7
-                0x8 -> Ipv6MulticastScope.OrganizationLocal
-                0x9 -> Ipv6MulticastScope.Unassigned9
-                0xA -> Ipv6MulticastScope.UnassignedA
-                0xB -> Ipv6MulticastScope.UnassignedB
-                0xC -> Ipv6MulticastScope.UnassignedC
-                0xD -> Ipv6MulticastScope.UnassignedD
-                0xE -> Ipv6MulticastScope.Global
-                0xF -> Ipv6MulticastScope.ReservedF
+                0x0u.toUShort() -> Ipv6MulticastScope.Reserved0
+                0x1u.toUShort() -> Ipv6MulticastScope.InterfaceLocal
+                0x2u.toUShort() -> Ipv6MulticastScope.LinkLocal
+                0x3u.toUShort() -> Ipv6MulticastScope.RealmLocal
+                0x4u.toUShort() -> Ipv6MulticastScope.AdminLocal
+                0x5u.toUShort() -> Ipv6MulticastScope.SiteLocal
+                0x6u.toUShort() -> Ipv6MulticastScope.Unassigned6
+                0x7u.toUShort() -> Ipv6MulticastScope.Unassigned7
+                0x8u.toUShort() -> Ipv6MulticastScope.OrganizationLocal
+                0x9u.toUShort() -> Ipv6MulticastScope.Unassigned9
+                0xAu.toUShort() -> Ipv6MulticastScope.UnassignedA
+                0xBu.toUShort() -> Ipv6MulticastScope.UnassignedB
+                0xCu.toUShort() -> Ipv6MulticastScope.UnassignedC
+                0xDu.toUShort() -> Ipv6MulticastScope.UnassignedD
+                0xEu.toUShort() -> Ipv6MulticastScope.Global
+                0xFu.toUShort() -> Ipv6MulticastScope.ReservedF
                 else -> error("unreachable")
             }
         } else {
@@ -1969,10 +1969,10 @@ public open class Ipv6Addr(
                             else -> {
                                 val first = matchVal.first
                                 val tail = matchVal.second
-                                when (val tryResult = f1.writeFmt("$first")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+                                when (val tryResult = f1.writeFmt("$first")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
                                 for (segment in tail) {
                                     f1.append(':')
-                                    when (val tryResult = f1.writeFmt("$segment")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+                                    when (val tryResult = f1.writeFmt("$segment")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
                                 }
                             }
                         }
@@ -1998,7 +1998,7 @@ public open class Ipv6Addr(
                         longest
                     }
                     if (zeroes.len > 1) {
-                        when (val tryResult = fmtSubslice(f, ((segments).sliceArray(0 until zeroes.start)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+                        when (val tryResult = fmtSubslice(f, ((segments).sliceArray(0 until zeroes.start)))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
                         f.append("::")
                         fmtSubslice(f, ((segments).sliceArray(zeroes.start + zeroes.len until segments.size)))
                     } else {
@@ -2043,10 +2043,10 @@ public open class Ipv6Addr(
 
     public open fun cmp(other: Ipv6Addr): Ordering = this.segments().cmp(other.segments())
 
-    public override fun not(): Ipv6Addr {
+    public override operator fun not(): Ipv6Addr {
         var idx = 0
         while (idx < 16) {
-            this.octets[idx] = (!this.octets[idx]).toUByte()
+            this.octets[idx] = this.octets[idx].inv()
             idx += 1
         }
         return this

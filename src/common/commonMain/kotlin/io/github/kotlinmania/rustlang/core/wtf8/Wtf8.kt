@@ -1,9 +1,9 @@
 // port-lint: source wtf8.rs
 package io.github.kotlinmania.rustlang.core.wtf8
 
-import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.methods.EscapeDebugExtArgs
 import io.github.kotlinmania.rustlang.core.char.methods.encodeUtf16Raw
+import io.github.kotlinmania.rustlang.core.char.methods.isAscii
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.clone.cloneToUninit
 import io.github.kotlinmania.rustlang.core.convert.AsRef
@@ -25,6 +25,8 @@ import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
 import io.github.kotlinmania.rustlang.core.ops.range.RangeTo
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -100,7 +102,7 @@ public open class CodePoint(
      */
     public open fun toLeadSurrogate(): UShort? =
         when (val matchVal = this.toU32()) {
-            in 0xD800..0xDBFF -> {
+            in 0xD800u..0xDBFFu -> {
                 val lead = matchVal
                 lead.toUShort()
             }
@@ -112,7 +114,7 @@ public open class CodePoint(
      */
     public open fun toTrailSurrogate(): UShort? =
         when (val matchVal = this.toU32()) {
-            in 0xDC00..0xDFFF -> {
+            in 0xDC00u..0xDFFFu -> {
                 val trail = matchVal
                 trail.toUShort()
             }
@@ -126,7 +128,7 @@ public open class CodePoint(
      */
     public open fun toChar(): Char? =
         when (val matchVal = this.toU32()) {
-            in 0xD800..0xDFFF -> null
+            in 0xD800u..0xDFFFu -> null
             // SAFETY: We explicitly check that the char is valid.
             else -> {
                 val valid = matchVal
@@ -224,12 +226,12 @@ public open class Wtf8 internal constructor(
             val surrogatePos = matchVal.first
             val surrogate = matchVal.second
             // SAFETY: nextSurrogate provides an index for a range of valid UTF-8 bytes.
-            when (val tryResult = writeStrEscaped(formatter, String.fromUtf8Unchecked(((this.bytes).subList(pos, surrogatePos))))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
-            when (val tryResult = formatter.writeFmt("\\u{$surrogate}")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+            when (val tryResult = writeStrEscaped(formatter, String.fromUtf8Unchecked(((this.bytes).subList(pos, surrogatePos))))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+            when (val tryResult = formatter.writeFmt("\\u{$surrogate}")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
             pos = surrogatePos + 3
         }
         // SAFETY: after nextSurrogate returns None, the remainder is valid UTF-8.
-        when (val tryResult = writeStrEscaped(formatter, String.fromUtf8Unchecked(((this.bytes).subList(pos, (this.bytes).size))))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = writeStrEscaped(formatter, String.fromUtf8Unchecked(((this.bytes).subList(pos, (this.bytes).size))))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         return run { formatter.append('"'); Result.Ok<Unit, Unit>(Unit) }
     }
 
@@ -279,7 +281,7 @@ public open class Wtf8 internal constructor(
      */
     public open fun asciiByteAt(position: Int): UByte =
         when (val matchVal = this.bytes[position]) {
-            in 0x00..0x7F -> {
+            in 0x00u.toUByte()..0x7Fu.toUByte() -> {
                 val asciiByte = matchVal
                 asciiByte
             }
@@ -464,7 +466,7 @@ public open class Wtf8 internal constructor(
      * implementation detail.
      */
     public open fun checkUtf8Boundary(index: Int) {
-        val err = when (val tryResult = this.tryCheckUtf8Boundary(index)) { is Result.Err<*, *> -> tryResult.error; is Result.Ok<*, *> -> return }
+        val err = when (val tryResult = this.tryCheckUtf8Boundary(index)) { is Result.Err<*, *> -> tryResult.errValue(); is Result.Ok<*, *> -> return }
         when (err) {
             Utf8BoundaryError.NotABoundary -> {
                 error("byte index $index is not a codepoint boundary")
@@ -699,9 +701,9 @@ public open class EncodeWide(
                 }
             }
         }
-        when (val tryResult = f.writeFmt("EncodeWide(")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = f.writeFmt("EncodeWide(")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone().map({ CodeUnit(it) })).finish()
-        when (val tryResult = f.writeFmt(")")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = f.writeFmt(")")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 }

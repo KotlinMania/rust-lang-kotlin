@@ -44,9 +44,9 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.remov
             run {
                 val matchVal = pos.intoNode().forgetType().chooseParentKv()
                 when {
-                    matchVal is Result.Ok<*, *> && matchVal.value is Left<*> -> {
-                        val valueVal = matchVal.value
-                        val (leftParentKv) = valueVal as Left<*>
+                    matchVal is Result.Ok<*, *> && matchVal.okValue() is Left<*> -> {
+                        val okValueVal = matchVal.okValue()
+                        val (leftParentKv) = okValueVal as Left<*>
                         check(leftParentKv.rightChildLen() == MIN_LEN - 1)
                         if (leftParentKv.canMerge()) {
                             leftParentKv.mergeTrackingChildEdge(Right(idx), alloc.clone())
@@ -55,9 +55,9 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.remov
                             leftParentKv.stealLeft(idx)
                         }
                     }
-                    matchVal is Result.Ok<*, *> && matchVal.value is Right<*> -> {
-                        val valueVal1 = matchVal.value
-                        val (rightParentKv) = valueVal1 as Right<*>
+                    matchVal is Result.Ok<*, *> && matchVal.okValue() is Right<*> -> {
+                        val okValueVal1 = matchVal.okValue()
+                        val (rightParentKv) = okValueVal1 as Right<*>
                         check(rightParentKv.leftChildLen() == MIN_LEN - 1)
                         if (rightParentKv.canMerge()) {
                             rightParentKv.mergeTrackingChildEdge(Left(idx), alloc.clone())
@@ -68,7 +68,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.remov
                     }
                     // ignore-tidy-undocumented-unchecked
                     else -> {
-                        val pos1 = (matchVal as Result.Err<*, *>).error
+                        val pos1 = (matchVal as Result.Err<*, *>).errValue()
                         Handle.newEdge(pos1, idx)
                     }
                 }
@@ -84,7 +84,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.remov
         // link to the parent inside the leaf.
         when (val matchVal1 = pos.reborrowMut().intoNode().ascend()) {
             is Result.Ok<*, *> -> {
-                val parent = matchVal1.value
+                val parent = matchVal1.okValue()
                 if (!parent.intoNode().forgetType().fixNodeAndAffectedAncestors(alloc)) {
                     handleEmptiedInternalRoot()
                 }

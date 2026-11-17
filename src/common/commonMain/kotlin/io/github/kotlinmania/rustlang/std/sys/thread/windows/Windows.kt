@@ -80,7 +80,7 @@ public open class Thread internal constructor(
                 }
             return when (val matchVal = ret1.tryInto()) {
                 is Result.Ok<*, *> -> {
-                    val handle = matchVal.value
+                    val handle = matchVal.okValue()
                     Result.Ok<Thread, Error>(Thread(handle = Handle.fromInner(handle)))
                 }
                 else -> {
@@ -124,10 +124,10 @@ public fun currentOsId(): ULong? {
 public fun setName(name: CStr) {
     when (val matchVal = name.toStr()) {
         is Result.Ok<*, *> -> {
-            val utf8 = matchVal.value
+            val utf8 = matchVal.okValue()
             when (val matchVal1 = toU16s(utf8)) {
                 is Result.Ok<*, *> -> {
-                    val utf16 = matchVal1.value
+                    val utf16 = matchVal1.okValue()
                     setNameWide(utf16)
                 }
                 else -> {}
@@ -148,8 +148,8 @@ public fun setNameWide(name: List<UShort>) {
 
 public fun sleep(dur: Duration) {
     fun highPrecisionSleep(dur1: Duration): Result<Unit, Unit> {
-        val timer = when (val tryResult = WaitableTimer.highResolution()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = timer.set(dur1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        val timer = when (val tryResult = WaitableTimer.highResolution()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        when (val tryResult = timer.set(dur1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         return timer.wait()
     }
     // Directly forward to `Sleep` for its zero duration behavior when indeed

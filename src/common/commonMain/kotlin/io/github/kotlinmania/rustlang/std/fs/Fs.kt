@@ -626,7 +626,7 @@ public open class File(
      * ```
      */
     public open fun tryClone(): Result<File, Error> {
-        return Result.Ok<File, Error>(File(inner = when (val tryResult = this.inner.duplicate()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<File, Error>(tryResult.error) }))
+        return Result.Ok<File, Error>(File(inner = when (val tryResult = this.inner.duplicate()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<File, Error>(tryResult.errValue()) }))
     }
 
     /**
@@ -773,14 +773,14 @@ public open class File(
     // Reserves space in the buffer based on the file size when available.
     public open fun readToEnd(buf: List<UByte>): Result<Int, Error> {
         val size = bufferCapacityRequired(this)
-        when (val tryResult = buf.tryReserve((size ?: 0))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.error) }
+        when (val tryResult = buf.tryReserve((size ?: 0))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.errValue()) }
         return defaultReadToEnd(this, buf, size)
     }
 
     // Reserves space in the buffer based on the file size when available.
     public open fun readToString(buf: String): Result<Int, Error> {
         val size = bufferCapacityRequired(this)
-        when (val tryResult = buf.tryReserve((size ?: 0))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.error) }
+        when (val tryResult = buf.tryReserve((size ?: 0))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.errValue()) }
         return defaultReadToString(this, buf, size)
     }
 
@@ -1465,7 +1465,7 @@ public open class Dir(
      * ```
      */
     public open fun tryClone(): Result<Dir, Error> {
-        return Result.Ok<Dir, Error>(Dir(inner = when (val tryResult = this.inner.duplicate()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.error) }))
+        return Result.Ok<Dir, Error>(Dir(inner = when (val tryResult = this.inner.duplicate()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.errValue()) }))
     }
 
     /**
@@ -1873,21 +1873,21 @@ public open class Metadata(
         debug.field("len", this.len())
         when (val matchVal = this.modified()) {
             is Result.Ok<*, *> -> {
-                val modified = matchVal.value
+                val modified = matchVal.okValue()
                 debug.field("modified", modified)
             }
             else -> {}
         }
         when (val matchVal1 = this.accessed()) {
             is Result.Ok<*, *> -> {
-                val accessed = matchVal1.value
+                val accessed = matchVal1.okValue()
                 debug.field("accessed", accessed)
             }
             else -> {}
         }
         when (val matchVal2 = this.created()) {
             is Result.Ok<*, *> -> {
-                val created = matchVal2.value
+                val created = matchVal2.okValue()
                 debug.field("created", created)
             }
             else -> {}
@@ -2787,23 +2787,23 @@ public open class DirBuilder(
                 val matchVal = this.inner.mkdir(ancestor)
                 when {
                     matchVal is Result.Ok<*, *> -> {
-                        val valueVal = matchVal.value
+                        val okValueVal = matchVal.okValue()
                         break
                     }
-                    matchVal is Result.Err<*, *> && matchVal.error.kind() == ErrorKind.NotFound -> {
-                        val e = matchVal.error
+                    matchVal is Result.Err<*, *> && matchVal.errValue().kind() == ErrorKind.NotFound -> {
+                        val e = matchVal.errValue()
                         uncreatedDirs += 1
                     }
                     // we check if the err is AlreadyExists for two reasons
                     // - in case the path exists as a *file*
                     // - and to avoid calls to .isDir() in case of other errs
                     // (i.e. PermissionDenied)
-                    matchVal is Result.Err<*, *> && matchVal.error.kind() == ErrorKind.AlreadyExists && ancestor.isDir() -> {
-                        val e1 = matchVal.error
+                    matchVal is Result.Err<*, *> && matchVal.errValue().kind() == ErrorKind.AlreadyExists && ancestor.isDir() -> {
+                        val e1 = matchVal.errValue()
                         break
                     }
                     else -> {
-                        val e2 = (matchVal as Result.Err<*, *>).error
+                        val e2 = (matchVal as Result.Err<*, *>).errValue()
                         return Result.Err<Unit, Error>(e2)
                     }
                 }
@@ -2815,7 +2815,7 @@ public open class DirBuilder(
         for (uncreatedDir in ArrayDeque(uncreatedDirsVec).rev()) {
             when (val matchVal1 = this.inner.mkdir(uncreatedDir)) {
                 is Result.Err<*, *> -> {
-                    val e3 = matchVal1.error
+                    val e3 = matchVal1.errValue()
                     if (e3.kind() != ErrorKind.AlreadyExists || !uncreatedDir.isDir()) {
                         return Result.Err<Unit, Error>(e3)
                     }
@@ -2875,10 +2875,10 @@ public open class DirBuilder(
  */
 public fun read(path: Path): Result<List<UByte>, Error> {
     fun inner(path1: Path): Result<List<UByte>, Error> {
-        val file = when (val tryResult = File.open(path1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UByte>, Error>(tryResult.error) }
+        val file = when (val tryResult = File.open(path1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<List<UByte>, Error>(tryResult.errValue()) }
         val size = file.metadata().map({ m -> Int.tryFrom(m.len()).unwrapOr(Int.MAX_VALUE) }).ok()
-        val bytes = when (val tryResult = Vec.tryWithCapacity(size.unwrapOr(0))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UByte>, Error>(tryResult.error) }
-        when (val tryResult = defaultReadToEnd(file, bytes, size)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UByte>, Error>(tryResult.error) }
+        val bytes = when (val tryResult = Vec.tryWithCapacity(size.unwrapOr(0))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<List<UByte>, Error>(tryResult.errValue()) }
+        when (val tryResult = defaultReadToEnd(file, bytes, size)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<List<UByte>, Error>(tryResult.errValue()) }
         return Result.Ok<List<UByte>, Error>(bytes)
     }
     return inner(path)
@@ -2918,11 +2918,11 @@ public fun read(path: Path): Result<List<UByte>, Error> {
  */
 public fun readToString(path: Path): Result<String, Error> {
     fun inner(path1: Path): Result<String, Error> {
-        val file = when (val tryResult = File.open(path1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<String, Error>(tryResult.error) }
+        val file = when (val tryResult = File.open(path1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<String, Error>(tryResult.errValue()) }
         val size = file.metadata().map({ m -> Int.tryFrom(m.len()).unwrapOr(Int.MAX_VALUE) }).ok()
         val string = ""
-        when (val tryResult = string.tryReserveExact(size.unwrapOr(0))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<String, Error>(tryResult.error) }
-        when (val tryResult = defaultReadToString(file, string, size)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<String, Error>(tryResult.error) }
+        when (val tryResult = string.tryReserveExact(size.unwrapOr(0))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<String, Error>(tryResult.errValue()) }
+        when (val tryResult = defaultReadToString(file, string, size)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<String, Error>(tryResult.errValue()) }
         return Result.Ok<String, Error>(string)
     }
     return inner(path)
@@ -2956,7 +2956,7 @@ public fun readToString(path: Path): Result<String, Error> {
  */
 public fun write(path: Path, contents: List<UByte>): Result<Unit, Error> {
     fun inner(path1: Path, contents1: List<UByte>): Result<Unit, Error> {
-        return when (val tryResult = File.create(path1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }.writeAll(contents1)
+        return when (val tryResult = File.create(path1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }.writeAll(contents1)
     }
     return inner(path, contents)
 }

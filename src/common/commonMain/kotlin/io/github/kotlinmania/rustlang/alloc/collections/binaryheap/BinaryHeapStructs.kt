@@ -18,6 +18,7 @@ import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -1545,7 +1546,7 @@ public fun <I> IntoIter<I, Global>.asIntoIter(): ArrayDeque<I> = this.iter
 
 public open class IntoIterSorted<T, A : Allocator> internal constructor(
     innerCtorArg: BinaryHeap<T, A>,
-) : TrustedLen, Iterable<T> {
+) : TrustedLen<Any>, Iterable<T> {
     public var inner: BinaryHeap<T, A> = innerCtorArg
         internal set
 
@@ -1636,7 +1637,7 @@ public open class Drain<T, A : Allocator> internal constructor(
  */
 public open class DrainSorted<T, A : Allocator> internal constructor(
     innerCtorArg: BinaryHeap<T, A>,
-) : TrustedLen, Iterable<T> {
+) : TrustedLen<Any>, Iterable<T> {
     public var inner: BinaryHeap<T, A> = innerCtorArg
         internal set
 

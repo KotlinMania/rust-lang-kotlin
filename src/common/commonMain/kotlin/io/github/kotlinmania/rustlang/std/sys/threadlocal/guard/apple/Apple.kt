@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.apple
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.replace
 import io.github.kotlinmania.rustlang.std.rt.threadCleanup
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.tests.destructors
 

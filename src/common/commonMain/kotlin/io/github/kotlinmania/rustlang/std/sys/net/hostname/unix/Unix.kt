@@ -1,7 +1,9 @@
 // port-lint: source sys/net/hostname/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.net.hostname.unix
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -27,7 +29,7 @@ public fun hostname(): Result<OsString, Error> {
             }
         }
     // Reserve space for the nul terminator too.
-    val buf = when (val tryResult = Vec.tryWithCapacity(hostNameMax + 1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OsString, Error>(tryResult.error) }
+    val buf = when (val tryResult = Vec.tryWithCapacity(hostNameMax + 1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OsString, Error>(tryResult.errValue()) }
     while (true) {
         // SAFETY: `buf.capacity()` bytes of `buf` are writable.
         val r = gethostname(buf.asMutPtr().cast(), buf.capacity())
@@ -73,6 +75,6 @@ public fun hostname(): Result<OsString, Error> {
             }
         }
         // Resize the buffer (according to `List`s resizing rules) and try again.
-        when (val tryResult = buf.tryReserve(buf.capacity() + 1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OsString, Error>(tryResult.error) }
+        when (val tryResult = buf.tryReserve(buf.capacity() + 1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OsString, Error>(tryResult.errValue()) }
     }
 }

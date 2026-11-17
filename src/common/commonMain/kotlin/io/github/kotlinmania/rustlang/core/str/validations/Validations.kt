@@ -6,6 +6,8 @@ package io.github.kotlinmania.rustlang.core.str.validations
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.alignOffset
+import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingSub
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.USIZE_BYTES

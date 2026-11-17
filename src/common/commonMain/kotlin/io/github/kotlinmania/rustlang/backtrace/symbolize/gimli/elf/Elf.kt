@@ -31,7 +31,7 @@ public typealias Elf = FileHeader64<NativeEndian>
 public fun Mapping.Companion.new(path: Path): Mapping? {
     val map = (mmap(path) ?: return null)
     return Mapping.mkOrOther(map, closure@{ map1, stash ->
-        val obj = when (val tryResult = Object.parse(map1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+        val obj = when (val tryResult = Object.parse(map1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
         // Try to locate an external debug file using the build ID.
         when (val matchVal = obj.buildId()?.let(::locateBuildId)) {
             null -> {}
@@ -90,7 +90,7 @@ public fun Mapping.Companion.newAndroid(path: Path, zipOffset: ULong?): Mapping?
         // NOTE: mmap will fail if `zipOffset` is not page-aligned
         val map = (Mmap.map(file, (Int.tryFrom(len - zipOffset1.toInt()).ok() ?: return null), zipOffset1) ?: return null)
         return Mapping.mk(map, closure1@{ map1, stash ->
-            Context.new(stash, when (val tryResult = Object.parse(map1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }, null, null)
+            Context.new(stash, when (val tryResult = Object.parse(map1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }, null, null)
         })
     }
     // if ZIP offset is given, try mapping as a ZIP-embedded library
@@ -109,7 +109,7 @@ public fun Mapping.Companion.newAndroid(path: Path, zipOffset: ULong?): Mapping?
 public fun Mapping.Companion.newDebug(originalPath: Path, path: PathBuf, crc: UInt?): Mapping? {
     val map = (mmap(path) ?: return null)
     return Mapping.mk(map, closure2@{ map1, stash ->
-        val obj = when (val tryResult = Object.parse(map1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+        val obj = when (val tryResult = Object.parse(map1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
         if (crc != null) {
             // Note: check crc
         }
@@ -271,7 +271,7 @@ public open class Object internal constructor(
         val debugName = name.substring(7).encodeToByteArray().map { it.toUByte() }
         val compressedSection =
             (this.sections.iter().mapNotNull(closure3@{ header1 ->
-                val name1 = when (val tryResult = this.sections.sectionName(this.endian, header1).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
+                val name1 = when (val tryResult = this.sections.sectionName(this.endian, header1).ok()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.errValue()) }
                 if (name1.startsWith(".zdebug_".encodeToByteArray()) && name1[8 until name1.size] == debugName) {
                     header1
                 } else {
@@ -296,10 +296,10 @@ public open class Object internal constructor(
             run {
                 val matchVal = this.syms.binarySearchByKey(addr, { sym -> sym.address })
                 when (matchVal) { is Result.Ok<*, *> -> {
-                    val i = matchVal.value
+                    val i = matchVal.okValue()
                     i
                 }; is Result.Err<*, *> -> {
-                    val i1 = matchVal.error
+                    val i1 = matchVal.errValue()
                     (i1.checkedSub(1) ?: return null)
                 } }
             }
@@ -317,14 +317,14 @@ public open class Object internal constructor(
         for (section in this.sections.iter()) {
             run {
                 val matchVal = section.notes(this.endian, this.data)
-                if (matchVal is Result.Ok<*, *> && matchVal.value != null) {
-                    val valueVal = matchVal.value
-                    val notes = valueVal
+                if (matchVal is Result.Ok<*, *> && matchVal.okValue() != null) {
+                    val okValueVal = matchVal.okValue()
+                    val notes = okValueVal
                     while (true) {
                         val matchVal1 = notes.next()
-                        if (!(matchVal1 is Result.Ok<*, *> && matchVal1.value != null)) break
-                        val valueVal1 = (matchVal1 as Result.Ok<*, *>).value
-                        val note = valueVal1
+                        if (!(matchVal1 is Result.Ok<*, *> && matchVal1.okValue() != null)) break
+                        val okValueVal1 = (matchVal1 as Result.Ok<*, *>).okValue()
+                        val note = okValueVal1
                         if (note.name() == ELF_NOTE_GNU && note.nType(this.endian) == NT_GNU_BUILD_ID) {
                             return note.desc()
                         }
@@ -416,12 +416,12 @@ public fun decompressZstd(input: List<UByte>, output: MutableList<UByte>): Unit?
                 val matchVal = StreamingDecoder.new(input1)
                 when {
                     matchVal is Result.Ok<*, *> -> {
-                        val decoder = matchVal.value
+                        val decoder = matchVal.okValue()
                         decoder
                     }
-                    matchVal is Result.Err<*, *> && matchVal.error is FrameDecoderError.ReadFrameHeaderError && (matchVal.error as FrameDecoderError.ReadFrameHeaderError).value is ReadFrameHeaderError.SkipFrame -> {
-                        val errorVal = matchVal.error
-                        val length = ((errorVal as FrameDecoderError.ReadFrameHeaderError).value as ReadFrameHeaderError.SkipFrame).length
+                    matchVal is Result.Err<*, *> && matchVal.errValue() is FrameDecoderError.ReadFrameHeaderError && (matchVal.errValue() as FrameDecoderError.ReadFrameHeaderError).value is ReadFrameHeaderError.SkipFrame -> {
+                        val errValueVal = matchVal.errValue()
+                        val length = ((errValueVal as FrameDecoderError.ReadFrameHeaderError).value as ReadFrameHeaderError.SkipFrame).length
                         input1 = (input1.get(length.toInt() until Int.MAX_VALUE) ?: return null)
                         continue
                     }
@@ -571,9 +571,9 @@ public fun handleSplitDwarf(pkg: gimli.DwarfPackage<EndianSlice<Endian>>?, stash
             val dwp = matchVal
             run {
                 val matchVal1 = dwp.findCu(load.dwoId, load.parent)
-                if (matchVal1 is Result.Ok<*, *> && matchVal1.value != null) {
-                    val valueVal = matchVal1.value
-                    val cu = valueVal
+                if (matchVal1 is Result.Ok<*, *> && matchVal1.okValue() != null) {
+                    val okValueVal = matchVal1.okValue()
+                    val cu = okValueVal
                     return cu
                 }
             }

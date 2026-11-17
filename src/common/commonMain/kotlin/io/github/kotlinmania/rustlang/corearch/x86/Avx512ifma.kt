@@ -22,7 +22,7 @@ public fun mm512Madd52hiEpu64(a: M512i, b: M512i, c: M512i): M512i = vpmadd52huq
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#avx512techs=AVX512IFMA52&text=_mm512_mask_madd52hi_epu64)
  */
-public fun mm512MaskMadd52hiEpu64(a: M512i, k: Mmask8, b: M512i, c: M512i): M512i = run { val _simdArg0 = k; val _simdArg1 = vpmadd52huq512(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mm512MaskMadd52hiEpu64(a: M512i, k: Mmask8, b: M512i, c: M512i): M512i = run { val simdArg0 = k; val simdArg1 = vpmadd52huq512(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed unsigned 52-bit integers in each 64-bit element of
@@ -34,7 +34,7 @@ public fun mm512MaskMadd52hiEpu64(a: M512i, k: Mmask8, b: M512i, c: M512i): M512
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#avx512techs=AVX512IFMA52&text=_mm512_maskz_madd52hi_epu64)
  */
-public fun mm512MaskzMadd52hiEpu64(k: Mmask8, a: M512i, b: M512i, c: M512i): M512i = run { val _simdArg0 = k; val _simdArg1 = vpmadd52huq512(a, b, c); val _simdArg2 = mm512SetzeroSi512(); _simdArg1 }
+public fun mm512MaskzMadd52hiEpu64(k: Mmask8, a: M512i, b: M512i, c: M512i): M512i = run { val simdArg0 = k; val simdArg1 = vpmadd52huq512(a, b, c); val simdArg2 = mm512SetzeroSi512(); simdArg1 }
 
 /**
  * Multiply packed unsigned 52-bit integers in each 64-bit element of
@@ -57,7 +57,7 @@ public fun mm512Madd52loEpu64(a: M512i, b: M512i, c: M512i): M512i = vpmadd52luq
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#avx512techs=AVX512IFMA52&text=_mm512_mask_madd52lo_epu64)
  */
-public fun mm512MaskMadd52loEpu64(a: M512i, k: Mmask8, b: M512i, c: M512i): M512i = run { val _simdArg0 = k; val _simdArg1 = vpmadd52luq512(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mm512MaskMadd52loEpu64(a: M512i, k: Mmask8, b: M512i, c: M512i): M512i = run { val simdArg0 = k; val simdArg1 = vpmadd52luq512(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed unsigned 52-bit integers in each 64-bit element of
@@ -69,7 +69,7 @@ public fun mm512MaskMadd52loEpu64(a: M512i, k: Mmask8, b: M512i, c: M512i): M512
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#avx512techs=AVX512IFMA52&text=_mm512_maskz_madd52lo_epu64)
  */
-public fun mm512MaskzMadd52loEpu64(k: Mmask8, a: M512i, b: M512i, c: M512i): M512i = run { val _simdArg0 = k; val _simdArg1 = vpmadd52luq512(a, b, c); val _simdArg2 = mm512SetzeroSi512(); _simdArg1 }
+public fun mm512MaskzMadd52loEpu64(k: Mmask8, a: M512i, b: M512i, c: M512i): M512i = run { val simdArg0 = k; val simdArg1 = vpmadd52luq512(a, b, c); val simdArg2 = mm512SetzeroSi512(); simdArg1 }
 
 /**
  * Multiply packed unsigned 52-bit integers in each 64-bit element of
@@ -103,7 +103,7 @@ public fun mm256Madd52hiEpu64(a: M256i, b: M256i, c: M256i): M256i = vpmadd52huq
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#avx512techs=AVX512IFMA52&text=_mm256_mask_madd52hi_epu64)
  */
-public fun mm256MaskMadd52hiEpu64(a: M256i, k: Mmask8, b: M256i, c: M256i): M256i = run { val _simdArg0 = k; val _simdArg1 = vpmadd52huq256(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mm256MaskMadd52hiEpu64(a: M256i, k: Mmask8, b: M256i, c: M256i): M256i = run { val simdArg0 = k; val simdArg1 = vpmadd52huq256(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed unsigned 52-bit integers in each 64-bit element of
@@ -115,7 +115,7 @@ public fun mm256MaskMadd52hiEpu64(a: M256i, k: Mmask8, b: M256i, c: M256i): M256
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#avx512techs=AVX512IFMA52&text=_mm256_maskz_madd52hi_epu64)
  */
-public fun mm256MaskzMadd52hiEpu64(k: Mmask8, a: M256i, b: M256i, c: M256i): M256i = run { val _simdArg0 = k; val _simdArg1 = vpmadd52huq256(a, b, c); val _simdArg2 = mm256SetzeroSi256(); _simdArg1 }
+public fun mm256MaskzMadd52hiEpu64(k: Mmask8, a: M256i, b: M256i, c: M256i): M256i = run { val simdArg0 = k; val simdArg1 = vpmadd52huq256(a, b, c); val simdArg2 = mm256SetzeroSi256(); simdArg1 }
 
 /**
  * Multiply packed unsigned 52-bit integers in each 64-bit element of
@@ -149,7 +149,7 @@ public fun mm256Madd52loEpu64(a: M256i, b: M256i, c: M256i): M256i = vpmadd52luq
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#avx512techs=AVX512IFMA52&text=_mm256_mask_madd52lo_epu64)
  */
-public fun mm256MaskMadd52loEpu64(a: M256i, k: Mmask8, b: M256i, c: M256i): M256i = run { val _simdArg0 = k; val _simdArg1 = vpmadd52luq256(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mm256MaskMadd52loEpu64(a: M256i, k: Mmask8, b: M256i, c: M256i): M256i = run { val simdArg0 = k; val simdArg1 = vpmadd52luq256(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed unsigned 52-bit integers in each 64-bit element of
@@ -161,7 +161,7 @@ public fun mm256MaskMadd52loEpu64(a: M256i, k: Mmask8, b: M256i, c: M256i): M256
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#avx512techs=AVX512IFMA52&text=_mm256_maskz_madd52lo_epu64)
  */
-public fun mm256MaskzMadd52loEpu64(k: Mmask8, a: M256i, b: M256i, c: M256i): M256i = run { val _simdArg0 = k; val _simdArg1 = vpmadd52luq256(a, b, c); val _simdArg2 = mm256SetzeroSi256(); _simdArg1 }
+public fun mm256MaskzMadd52loEpu64(k: Mmask8, a: M256i, b: M256i, c: M256i): M256i = run { val simdArg0 = k; val simdArg1 = vpmadd52luq256(a, b, c); val simdArg2 = mm256SetzeroSi256(); simdArg1 }
 
 /**
  * Multiply packed unsigned 52-bit integers in each 64-bit element of
@@ -195,7 +195,7 @@ public fun mmMadd52hiEpu64(a: M128i, b: M128i, c: M128i): M128i = vpmadd52huq128
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#avx512techs=AVX512IFMA52&text=_mm_mask_madd52hi_epu64)
  */
-public fun mmMaskMadd52hiEpu64(a: M128i, k: Mmask8, b: M128i, c: M128i): M128i = run { val _simdArg0 = k; val _simdArg1 = vpmadd52huq128(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mmMaskMadd52hiEpu64(a: M128i, k: Mmask8, b: M128i, c: M128i): M128i = run { val simdArg0 = k; val simdArg1 = vpmadd52huq128(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed unsigned 52-bit integers in each 64-bit element of
@@ -207,7 +207,7 @@ public fun mmMaskMadd52hiEpu64(a: M128i, k: Mmask8, b: M128i, c: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#avx512techs=AVX512IFMA52&text=_mm_maskz_madd52hi_epu64)
  */
-public fun mmMaskzMadd52hiEpu64(k: Mmask8, a: M128i, b: M128i, c: M128i): M128i = run { val _simdArg0 = k; val _simdArg1 = vpmadd52huq128(a, b, c); val _simdArg2 = mmSetzeroSi128(); _simdArg1 }
+public fun mmMaskzMadd52hiEpu64(k: Mmask8, a: M128i, b: M128i, c: M128i): M128i = run { val simdArg0 = k; val simdArg1 = vpmadd52huq128(a, b, c); val simdArg2 = mmSetzeroSi128(); simdArg1 }
 
 /**
  * Multiply packed unsigned 52-bit integers in each 64-bit element of
@@ -241,7 +241,7 @@ public fun mmMadd52loEpu64(a: M128i, b: M128i, c: M128i): M128i = vpmadd52luq128
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#avx512techs=AVX512IFMA52&text=_mm_mask_madd52lo_epu64)
  */
-public fun mmMaskMadd52loEpu64(a: M128i, k: Mmask8, b: M128i, c: M128i): M128i = run { val _simdArg0 = k; val _simdArg1 = vpmadd52luq128(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mmMaskMadd52loEpu64(a: M128i, k: Mmask8, b: M128i, c: M128i): M128i = run { val simdArg0 = k; val simdArg1 = vpmadd52luq128(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed unsigned 52-bit integers in each 64-bit element of
@@ -253,7 +253,7 @@ public fun mmMaskMadd52loEpu64(a: M128i, k: Mmask8, b: M128i, c: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#avx512techs=AVX512IFMA52&text=_mm_maskz_madd52lo_epu64)
  */
-public fun mmMaskzMadd52loEpu64(k: Mmask8, a: M128i, b: M128i, c: M128i): M128i = run { val _simdArg0 = k; val _simdArg1 = vpmadd52luq128(a, b, c); val _simdArg2 = mmSetzeroSi128(); _simdArg1 }
+public fun mmMaskzMadd52loEpu64(k: Mmask8, a: M128i, b: M128i, c: M128i): M128i = run { val simdArg0 = k; val simdArg1 = vpmadd52luq128(a, b, c); val simdArg2 = mmSetzeroSi128(); simdArg1 }
 
 public expect fun vpmadd52luq128(z: M128i, x: M128i, y: M128i): M128i
 

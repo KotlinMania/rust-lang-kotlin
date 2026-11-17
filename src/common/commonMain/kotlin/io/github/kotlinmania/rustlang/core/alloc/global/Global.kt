@@ -8,6 +8,8 @@ import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -363,11 +365,11 @@ public fun <A> A.alloc(layout: Layout): MutPtr where A : GlobalAllocator {
         val matchVal = this.allocate(layout)
         when {
             matchVal is Result.Ok<*, *> -> {
-                val ptr = matchVal.value
+                val ptr = matchVal.okValue()
                 ptr.cast().asPtr()
             }
             else -> {
-                val AllocError = (matchVal as Result.Err<*, *>).error
+                val AllocError = (matchVal as Result.Err<*, *>).errValue()
                 MutPtr(0L)
             }
         }
@@ -390,11 +392,11 @@ public fun <A> A.allocZeroed(layout: Layout): MutPtr where A : GlobalAllocator {
         val matchVal = this.allocateZeroed(layout)
         when {
             matchVal is Result.Ok<*, *> -> {
-                val ptr = matchVal.value
+                val ptr = matchVal.okValue()
                 ptr.cast().asPtr()
             }
             else -> {
-                val AllocError = (matchVal as Result.Err<*, *>).error
+                val AllocError = (matchVal as Result.Err<*, *>).errValue()
                 MutPtr(0L)
             }
         }
@@ -426,11 +428,11 @@ public fun <A> A.realloc(ptr: MutPtr, layout: Layout, newSize: Int): MutPtr wher
         }
     return when {
         ptr2 is Result.Ok<*, *> -> {
-            val ptr3 = ptr2.value
+            val ptr3 = ptr2.okValue()
             ptr3.cast().asPtr()
         }
         else -> {
-            val AllocError = (ptr2 as Result.Err<*, *>).error
+            val AllocError = (ptr2 as Result.Err<*, *>).errValue()
             MutPtr(0L)
         }
     }

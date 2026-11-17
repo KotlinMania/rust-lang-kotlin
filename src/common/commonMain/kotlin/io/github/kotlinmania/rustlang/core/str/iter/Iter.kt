@@ -203,9 +203,9 @@ public open class Chars(
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = f.writeFmt("Chars(")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = f.writeFmt("Chars(")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-        when (val tryResult = f.writeFmt(")")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = f.writeFmt(")")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -341,7 +341,7 @@ public open class CharIndices(
  */
 public open class Bytes internal constructor(
     valueCtorArg: Copied<ArrayDeque<UByte>>,
-) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<UByte> {
+) : TrustedLen<Any>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<UByte> {
     public var value: Copied<ArrayDeque<UByte>> = valueCtorArg
         internal set
 

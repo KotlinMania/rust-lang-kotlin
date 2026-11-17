@@ -1,6 +1,7 @@
 // port-lint: source iter/adapters/scan.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.scan
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes

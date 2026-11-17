@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.offsetFromUnsigned
 import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawParts
 import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawPartsMut
 

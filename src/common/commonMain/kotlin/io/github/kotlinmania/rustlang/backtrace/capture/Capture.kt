@@ -14,6 +14,8 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.path.Path
@@ -118,10 +120,10 @@ public open class Backtrace(
                 val path1 = path.intoPathBuf()
                 if (style != PrintFmt.Full) {
                     if (cwd is Result.Ok<*, *>) {
-                        val cwd1 = cwd.value
+                        val cwd1 = cwd.okValue()
                         when (val matchVal = path1.takeIf { it.startsWith(cwd1) }?.removePrefix(cwd1)) {
                             is Result.Ok<*, *> -> {
-                                val suffix = matchVal.value
+                                val suffix = matchVal.okValue()
                                 return@closure fmt1.append((suffix.display()).toString())
                             }
                             else -> {}
@@ -131,11 +133,11 @@ public open class Backtrace(
                 fmt1.append((path1.display()).toString())
             }
         val f = BacktraceFmt.new(fmt, style, printPath)
-        when (val tryResult = f.addContext()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = f.addContext()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
         for (frame in this.frames) {
-            when (val tryResult = f.frame().backtraceFrame(frame)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = f.frame().backtraceFrame(frame)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
         }
-        when (val tryResult = f.finish()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = f.finish()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
         return Result.Ok<Unit, Error>(Unit)
     }
 
@@ -552,6 +554,6 @@ public fun <S> BacktraceFrame.serialize(s: S): Result<Ok, Error> where S : Seria
 }
 
 public fun <D> deserializeBacktraceFrame(d: D): Result<BacktraceFrame, Error> where D : Deserializer {
-    val frame: SerializedFrame = when (val tryResult = SerializedFrame.deserialize(d)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<BacktraceFrame, Error>(tryResult.error) }
+    val frame: SerializedFrame = when (val tryResult = SerializedFrame.deserialize(d)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<BacktraceFrame, Error>(tryResult.errValue()) }
     return Result.Ok<BacktraceFrame, Error>(BacktraceFrame(frame = Frame.Deserialized(ip = TracePtr.fromAddr(frame.ip), symbolAddress = TracePtr.fromAddr(frame.symbolAddress), moduleBaseAddress = frame.moduleBaseAddress?.let(TracePtr::fromAddr)), symbols = frame.symbols))
 }

@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sync.mpsc
 
 import io.github.kotlinmania.rustlang.core.clone.Share
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes

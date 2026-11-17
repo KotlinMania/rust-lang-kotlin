@@ -39,7 +39,7 @@ public fun absolute(path: Path): Result<PathBuf, Error> {
                 PathBuf.new()
             }
         } else {
-            when (val tryResult = env.currentDir()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<PathBuf, Error>(tryResult.error) }
+            when (val tryResult = env.currentDir()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<PathBuf, Error>(tryResult.errValue()) }
         }
     normalized.extend(components)
     // "Interfaces using pathname resolution may specify additional constraints

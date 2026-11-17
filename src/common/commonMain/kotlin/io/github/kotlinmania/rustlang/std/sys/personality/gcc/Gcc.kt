@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingSub
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sys.personality.dwarf.eh.EHAction
 import io.github.kotlinmania.rustlang.std.sys.personality.dwarf.eh.EHContext
@@ -118,7 +119,7 @@ public fun rustEhPersonalityImpl(version: CInt, actions: UnwindAction, exception
             run {
                 val matchVal = findEhAction(context)
                 when (matchVal) { is Result.Ok<*, *> -> {
-                    val action = matchVal.value
+                    val action = matchVal.okValue()
                     action
                 }; is Result.Err<*, *> -> {
                     return URC_FATAL_PHASE1_ERROR

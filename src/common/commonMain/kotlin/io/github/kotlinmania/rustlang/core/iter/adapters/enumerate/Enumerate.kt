@@ -1,6 +1,7 @@
 // port-lint: source iter/adapters/enumerate.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.enumerate
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -126,7 +127,7 @@ public open class Enumerate<I>(
             when (remaining) { is Result.Ok<*, *> -> {
                 n
             }; is Result.Err<*, *> -> {
-                val rem = remaining.error
+                val rem = remaining.errValue()
                 n - rem.get()
             } }
         this.count += advanced

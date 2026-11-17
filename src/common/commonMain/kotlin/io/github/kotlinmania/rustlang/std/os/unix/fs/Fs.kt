@@ -129,21 +129,21 @@ public interface FileExt {
             run {
                 val matchVal = this.readAt(buf1, offset1)
                 when {
-                    matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
-                        val valueVal = matchVal.value
+                    matchVal is Result.Ok<*, *> && matchVal.okValue() == 0 -> {
+                        val okValueVal = matchVal.okValue()
                         break
                     }
                     matchVal is Result.Ok<*, *> -> {
-                        val n = matchVal.value
+                        val n = matchVal.okValue()
                         val tmp = buf1
                         buf1 = tmp.subList(n, tmp.size)
                         offset1 += n.toULong()
                     }
-                    matchVal is Result.Err<*, *> && matchVal.error.isInterrupted() -> {
-                        val e = matchVal.error
+                    matchVal is Result.Err<*, *> && matchVal.errValue().isInterrupted() -> {
+                        val e = matchVal.errValue()
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*, *>).error
+                        val e1 = (matchVal as Result.Err<*, *>).errValue()
                         return Result.Err<Unit, Error>(e1)
                     }
                 }
@@ -230,14 +230,14 @@ public interface FileExt {
                 val matchVal = this.readBufAt(buf.reborrow(), offset1)
                 when {
                     matchVal is Result.Ok<*, *> -> {
-                        val valueVal = matchVal.value
+                        val okValueVal = matchVal.okValue()
                     }
-                    matchVal is Result.Err<*, *> && matchVal.error.isInterrupted() -> {
-                        val e = matchVal.error
+                    matchVal is Result.Err<*, *> && matchVal.errValue().isInterrupted() -> {
+                        val e = matchVal.errValue()
                         continue
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*, *>).error
+                        val e1 = (matchVal as Result.Err<*, *>).errValue()
                         return Result.Err<Unit, Error>(e1)
                     }
                 }
@@ -364,20 +364,20 @@ public interface FileExt {
             run {
                 val matchVal = this.writeAt(buf1, offset1)
                 when {
-                    matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
-                        val valueVal = matchVal.value
+                    matchVal is Result.Ok<*, *> && matchVal.okValue() == 0 -> {
+                        val okValueVal = matchVal.okValue()
                         return Result.Err<Unit, Error>(Error.WRITE_ALL_EOF)
                     }
                     matchVal is Result.Ok<*, *> -> {
-                        val n = matchVal.value
+                        val n = matchVal.okValue()
                         buf1 = ((buf1).subList(n, (buf1).size))
                         offset1 += n.toULong()
                     }
-                    matchVal is Result.Err<*, *> && matchVal.error.isInterrupted() -> {
-                        val e = matchVal.error
+                    matchVal is Result.Err<*, *> && matchVal.errValue().isInterrupted() -> {
+                        val e = matchVal.errValue()
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*, *>).error
+                        val e1 = (matchVal as Result.Err<*, *>).errValue()
                         return Result.Err<Unit, Error>(e1)
                     }
                 }

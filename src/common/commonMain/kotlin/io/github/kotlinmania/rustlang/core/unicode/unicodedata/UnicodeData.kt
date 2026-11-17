@@ -52,7 +52,7 @@ public fun bitsetSearch(needle: UInt, chunkIdxMap: UByteArray, bitsetChunkIdx: L
             var word = bitsetCanonical[realIdx.toInt()]
             val shouldInvert = mapping and (1 shl 6) != 0
             if (shouldInvert) {
-                word = !word
+                word = word.inv()
             }
             // Lower 6 bits
             val quantity = mapping and ((1 shl 6) - 1)
@@ -114,10 +114,10 @@ public fun skipSearch(needle: Char, shortOffsetRuns: List<ShortOffsetRunHeader>,
         run {
             val matchVal = shortOffsetRuns.binarySearchByKey((needle1 shl 11), { header -> header.first shl 11 })
             when (matchVal) { is Result.Ok<*, *> -> {
-                val idx = matchVal.value
+                val idx = matchVal.okValue()
                 idx + 1
             }; is Result.Err<*, *> -> {
-                val idx1 = matchVal.error
+                val idx1 = matchVal.errValue()
                 idx1
             } }
         }

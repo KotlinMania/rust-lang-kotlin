@@ -1,6 +1,8 @@
 // port-lint: source range/iter.rs
 package io.github.kotlinmania.rustlang.core.range.iter
 
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.iter.range.Step
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout

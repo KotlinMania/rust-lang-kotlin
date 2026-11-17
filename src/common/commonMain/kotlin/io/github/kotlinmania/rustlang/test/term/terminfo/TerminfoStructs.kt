@@ -44,7 +44,7 @@ public open class TermInfo(
                 run {
                     val matchVal = Env.variable("TERM")
                     when (matchVal) { is Result.Ok<*, *> -> {
-                        val name = matchVal.value
+                        val name = matchVal.okValue()
                         TermInfo.fromName(name)
                     }; is Result.Err<*, *> -> {
                         return Result.Err<TermInfo, Error>(Error.TermUnset)
@@ -101,10 +101,10 @@ public open class TerminfoTerminal<T>(
                 run {
                     val matchVal1 = expand(cmd1, params, Variables.new())
                     when (matchVal1) { is RustResult.Ok<*, *> -> {
-                        val s = matchVal1.value
+                        val s = matchVal1.okValue()
                         this.out.writeAll(s).and(RustResult.Ok(true))
                     }; is RustResult.Err<*, *> -> {
-                        val e = matchVal1.error
+                        val e = matchVal1.errValue()
                         RustResult.Err(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidData, e))
                     } }
                 }
@@ -162,10 +162,10 @@ public fun <T : Write> TerminfoTerminal<T>.reset(): Result<Boolean> {
                 run {
                     val matchVal1 = expand(op, listOf(), Variables.new())
                     when (matchVal1) { is RustResult.Ok<*, *> -> {
-                        val cmd = matchVal1.value
+                        val cmd = matchVal1.okValue()
                         cmd
                     }; is RustResult.Err<*, *> -> {
-                        val e = matchVal1.error
+                        val e = matchVal1.errValue()
                         return RustResult.Err(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidData, e))
                     } }
                 }

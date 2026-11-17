@@ -1,6 +1,7 @@
 // port-lint: source iter/sources/from_coroutine.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.fromcoroutine
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ops.coroutine.Coroutine

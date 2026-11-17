@@ -6,7 +6,7 @@ package io.github.kotlinmania.rustlang.core.num.imp.intbits.u64
 public val STAGES: Int = 64u.ilog2().toInt()
 
 public fun prepare(sparse: ULong): ULongArray {
-    var zeros = !sparse
+    var zeros = sparse.inv()
     val masks = MutableList(STAGES) { 0 }
     var stage = 0
     while (stage < STAGES) {

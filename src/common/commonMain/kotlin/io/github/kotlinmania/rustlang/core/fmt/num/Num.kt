@@ -5,10 +5,12 @@ package io.github.kotlinmania.rustlang.core.fmt.num
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
+import io.github.kotlinmania.rustlang.core.char.methods.isAscii
+import io.github.kotlinmania.rustlang.core.char.methods.isAsciiAlphabetic
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.fmt.numbuffer.NumBuffer
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.checkedPow

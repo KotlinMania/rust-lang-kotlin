@@ -3,6 +3,8 @@
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCeilf32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCeilf64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf32
@@ -34,6 +36,8 @@ import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.num.wrappingAbs
 import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.sub
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 
 // This module implements the [WebAssembly `SIMD128` ISA].

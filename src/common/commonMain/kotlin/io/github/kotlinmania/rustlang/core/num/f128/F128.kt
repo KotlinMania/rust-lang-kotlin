@@ -6,7 +6,10 @@ package io.github.kotlinmania.rustlang.core.num.f128
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.clamp
 import io.github.kotlinmania.rustlang.core.cmp.clamp.ClampBounds
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.intrinsics.copysignf128
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopysignf64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf64

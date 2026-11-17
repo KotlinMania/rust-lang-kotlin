@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.core.future
 
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
 import io.github.kotlinmania.rustlang.core.task.wake.Context
 
 public fun getContext(cx: ResumeTy): Context {

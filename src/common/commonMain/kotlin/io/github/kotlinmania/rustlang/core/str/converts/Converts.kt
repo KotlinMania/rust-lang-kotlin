@@ -94,7 +94,7 @@ public fun fromUtf8(v: List<UByte>): Result<String, Utf8Error> {
             // SAFETY: validation succeeded.
             Result.Ok<String, Utf8Error>(fromUtf8Unchecked(v))
         }; is Result.Err<*, *> -> {
-            val err = matchVal.error
+            val err = matchVal.errValue()
             Result.Err<String, Utf8Error>(err)
         } }
     }
@@ -139,7 +139,7 @@ public fun fromUtf8Mut(v: MutableList<UByte>): Result<String, Utf8Error> {
             // SAFETY: validation succeeded.
             Result.Ok<String, Utf8Error>(fromUtf8UncheckedMut(v))
         }; is Result.Err<*, *> -> {
-            val err = matchVal.error
+            val err = matchVal.errValue()
             Result.Err<String, Utf8Error>(err)
         } }
     }

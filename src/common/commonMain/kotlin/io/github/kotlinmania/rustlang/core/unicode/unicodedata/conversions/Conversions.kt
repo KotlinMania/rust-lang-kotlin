@@ -3,8 +3,8 @@
 
 package io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions
 
-import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
-import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
+import io.github.kotlinmania.rustlang.core.char.methods.toAsciiLowercase
+import io.github.kotlinmania.rustlang.core.char.methods.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
@@ -112,7 +112,7 @@ public fun lookup(input: Char, l1Lut: L1Lut): List<Char>? {
             }
         })
     if (idx is Result.Ok<*, *>) {
-        val idx1 = idx.value
+        val idx1 = idx.okValue()
         // SAFETY: binary search guarantees that the index is in bounds.
         val (range, outputDelta) = l2Lut.singles.getUnchecked(idx1)
         val mask = range.parity.toUShort()
@@ -125,7 +125,7 @@ public fun lookup(input: Char, l1Lut: L1Lut): List<Char>? {
     }
     when (val matchVal = l2Lut.multis.binarySearchByKey(inputLow, { (p, _) -> p })) {
         is Result.Ok<*, *> -> {
-            val idx2 = matchVal.value
+            val idx2 = matchVal.okValue()
             // SAFETY: binary search guarantees that the index is in bounds.
             val (_, outputLows) = l2Lut.multis.getUnchecked(idx2)
             // SAFETY: Table data are guaranteed to be valid Unicode.

@@ -1,7 +1,7 @@
 // port-lint: source bridge/symbol.rs
 package io.github.kotlinmania.rustlang.procmacro.bridge.symbol
 
-import io.github.kotlinmania.rustlang.core.char.isAscii
+import io.github.kotlinmania.rustlang.core.char.methods.isAscii
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
@@ -9,14 +9,10 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.procmacro.bridge.Decode
-import io.github.kotlinmania.rustlang.procmacro.bridge.Encode
 import io.github.kotlinmania.rustlang.procmacro.bridge.Mark
 import io.github.kotlinmania.rustlang.procmacro.bridge.arena.Arena
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
 import io.github.kotlinmania.rustlang.procmacro.bridge.client.Methods
-import io.github.kotlinmania.rustlang.procmacro.bridge.decode
-import io.github.kotlinmania.rustlang.procmacro.bridge.encode
 import io.github.kotlinmania.rustlang.procmacro.bridge.fxhash.FxHashMap
 import io.github.kotlinmania.rustlang.procmacro.bridge.mark
 import io.github.kotlinmania.rustlang.procmacro.bridge.server.HandleStore
@@ -39,7 +35,7 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.server.Server
  */
 public open class Symbol internal constructor(
     valueCtorArg: NonZero<UInt, NonZeroU32Inner>,
-) : Encode<S>, Decode<S, Symbol> {
+) {
     public var value: NonZero<UInt, NonZeroU32Inner> = valueCtorArg
         internal set
 
@@ -59,10 +55,6 @@ public open class Symbol internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.with({ s -> f.append((s).toString()) })
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.with({ s -> f.append((s).toString()) })
-
-    public override fun encode(w: Buffer, s: S) {
-        this.with({ sym -> sym.encode(w, s) })
-    }
 
     public companion object {
         public operator fun invoke(
@@ -132,9 +124,11 @@ public open class Symbol internal constructor(
                 "_", "super", "self", "Self", "crate", "\$crate" -> true
                 else -> false
             }
-
-        public fun <S> decode(r: List<UByte>, s: S): Symbol = Symbol.new(String.decode(r, s))
     }
+}
+
+public fun <S> Symbol.encode(w: Buffer, s: S) {
+    this.with({ sym -> sym.encode(w, s) })
 }
 
 public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> decodeMarkedSymbolS(r: List<UByte>, s: HandleStore<S>, internSymbolSFn: (String) -> Symbol): MarkedSymbol<S> = Mark.mark(internSymbolSFn(String.decode(r, s)))
@@ -142,6 +136,8 @@ public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> de
 public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> MarkedSymbol<S>.encode(w: Buffer, s: HandleStore<S>, withSymbolStringSFn: (Symbol, (String) -> Unit) -> Unit) {
     withSymbolStringSFn(this.unmark(), { sym -> sym.encode(w, s) })
 }
+
+public fun <S> decodeSymbol(r: List<UByte>, s: S): Symbol = Symbol.new(String.decode(r, s))
 
 /**
  * Basic interner for a `Symbol`, inspired by the one in `rustcSpan`.

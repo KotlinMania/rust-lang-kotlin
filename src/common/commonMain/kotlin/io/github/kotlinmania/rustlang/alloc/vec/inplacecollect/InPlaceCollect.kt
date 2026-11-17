@@ -23,6 +23,9 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.offsetFromUnsigned
 import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -293,7 +296,7 @@ public fun <Src, Item, I, T> fromIterInPlace(iterator: I, typeLayoutT: TypeLayou
             val dstSize = sizeOf<T>(typeLayoutT = typeLayoutT).uncheckedMul(dstCap)
             val newLayout = Layout.fromSizeAlignUnchecked(dstSize, dstAlign)
             val result = alloc.shrink(dstBuf.cast(), oldLayout, newLayout)
-            val reallocated = when (val tryResult = result) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> handleAllocError(newLayout) }
+            val reallocated = when (val tryResult = result) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> handleAllocError(newLayout) }
             dstBuf = reallocated.cast()
         }
     } else {

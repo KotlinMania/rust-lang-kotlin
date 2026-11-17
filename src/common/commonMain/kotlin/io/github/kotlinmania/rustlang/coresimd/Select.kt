@@ -1,6 +1,10 @@
 // port-lint: source select.rs
 package io.github.kotlinmania.rustlang.coresimd
 
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+
 /**
  * Choose elements from two vectors using a mask.
  *
@@ -51,8 +55,8 @@ public fun <Mask, Unsigned, T, U> Mask<U>.select(trueValues: Simd<T>, falseValue
     // simdAs between masks is always safe (they're vectors of ints).
     // simdSelect uses a mask that matches the width and number of elements
     return run {
-        val mask: Simd<Mask> = run { val _simdArg0 = this.toSimd(); _simdArg0 }
-        run { val _simdArg0 = mask; val _simdArg1 = trueValues; val _simdArg2 = falseValues; _simdArg1 }
+        val mask: Simd<Mask> = run { val simdArg0 = this.toSimd(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Mask>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Mask>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Mask>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Mask>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Mask>>()).alignBytes)); res } }
+        run { val simdArg0 = mask; val simdArg1 = trueValues; val simdArg2 = falseValues; simdArg1 }
     }
 }
 
@@ -64,7 +68,7 @@ public fun <Mask, T> ULong.select(trueValues: Simd<T>, falseValues: Simd<T>, n: 
         // LLVM assumes bit order should match endianness
         val bitmask1 = bitmask.fixEndianness()
         // Safety: the caller guarantees that the size of U matches M
-        val selected = run { val _simdArg0 = bitmask1; val _simdArg1 = trueValues2; val _simdArg2 = falseValues2; _simdArg1 }
+        val selected = run { val simdArg0 = bitmask1; val simdArg1 = trueValues2; val simdArg2 = falseValues2; simdArg1 }
         return selected.resize(default)
     }
     run {

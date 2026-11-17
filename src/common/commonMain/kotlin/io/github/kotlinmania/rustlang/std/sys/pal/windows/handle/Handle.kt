@@ -17,6 +17,11 @@ import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -83,19 +88,19 @@ public open class Handle(
         val res = this.synchronousRead(buf.asMutPtr(), buf.size, null)
         return when {
             res is Result.Ok<*, *> -> {
-                val read = res.value
+                val read = res.okValue()
                 Result.Ok<Int, Error>(read)
             }
             // The special treatment of BrokenPipe is to deal with Windows
             // pipe semantics, which yields this error when *reading* from
             // a pipe after the other end has closed; we interpret that as
             // EOF on the pipe.
-            res is Result.Err<*, *> && res.error.kind() == ErrorKind.BrokenPipe -> {
-                val e = res.error
+            res is Result.Err<*, *> && res.errValue().kind() == ErrorKind.BrokenPipe -> {
+                val e = res.errValue()
                 Result.Ok<Int, Error>(0)
             }
             else -> {
-                val e1 = (res as Result.Err<*, *>).error
+                val e1 = (res as Result.Err<*, *>).errValue()
                 Result.Err<Int, Error>(e1)
             }
         }
@@ -109,15 +114,15 @@ public open class Handle(
         val res = this.synchronousRead(buf.asMutPtr(), buf.size, offset)
         return when {
             res is Result.Ok<*, *> -> {
-                val read = res.value
+                val read = res.okValue()
                 Result.Ok<Int, Error>(read)
             }
-            res is Result.Err<*, *> && res.error.rawOsError() == ERROR_HANDLE_EOF.toInt() -> {
-                val e = res.error
+            res is Result.Err<*, *> && res.errValue().rawOsError() == ERROR_HANDLE_EOF.toInt() -> {
+                val e = res.errValue()
                 Result.Ok<Int, Error>(0)
             }
             else -> {
-                val e1 = (res as Result.Err<*, *>).error
+                val e1 = (res as Result.Err<*, *>).errValue()
                 Result.Err<Int, Error>(e1)
             }
         }
@@ -127,7 +132,7 @@ public open class Handle(
         val res = this.synchronousRead(cursor.asMut().asMutPtr(), cursor.capacity(), null)
         return when {
             res is Result.Ok<*, *> -> {
-                val read = res.value
+                val read = res.okValue()
                 // Safety: `read` bytes were written to the initialized portion of the buffer
                 run {
                     cursor.advance(read)
@@ -138,12 +143,12 @@ public open class Handle(
             // pipe semantics, which yields this error when *reading* from
             // a pipe after the other end has closed; we interpret that as
             // EOF on the pipe.
-            res is Result.Err<*, *> && res.error.kind() == ErrorKind.BrokenPipe -> {
-                val e = res.error
+            res is Result.Err<*, *> && res.errValue().kind() == ErrorKind.BrokenPipe -> {
+                val e = res.errValue()
                 Result.Ok<Unit, Error>(Unit)
             }
             else -> {
-                val e1 = (res as Result.Err<*, *>).error
+                val e1 = (res as Result.Err<*, *>).errValue()
                 Result.Err<Unit, Error>(e1)
             }
         }
@@ -151,7 +156,7 @@ public open class Handle(
 
     public open fun readBufAt(cursor: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> {
         // SAFETY: `cursor.asMut()` starts with `cursor.capacity()` writable bytes
-        val read = when (val tryResult = this.synchronousRead(cursor.asMut().asMutPtr(), cursor.capacity(), offset)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        val read = when (val tryResult = this.synchronousRead(cursor.asMut().asMutPtr(), cursor.capacity(), offset)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
         // SAFETY: `read` bytes were written to the initialized portion of the buffer
         run {
             cursor.advance(read)
@@ -178,7 +183,7 @@ public open class Handle(
         return when (res1) { is Result.Ok<*, *> -> {
             Result.Ok<Int?, Error>(amt1.toInt())
         }; is Result.Err<*, *> -> {
-            val e = res1.error
+            val e = res1.errValue()
             if (e.rawOsError() == ERROR_IO_PENDING.toInt()) {
                 Result.Ok<Int?, Error>(null)
             } else if (e.rawOsError() == ERROR_BROKEN_PIPE.toInt()) {
@@ -203,7 +208,7 @@ public open class Handle(
             when (res) { is Result.Ok<*, *> -> {
                 Result.Ok<Int, Error>(bytes)
             }; is Result.Err<*, *> -> {
-                val e = res.error
+                val e = res.errValue()
                 if (e.rawOsError() == ERROR_HANDLE_EOF.toInt() || e.rawOsError() == ERROR_BROKEN_PIPE.toInt()) {
                     Result.Ok<Int, Error>(0)
                 } else {
@@ -223,11 +228,11 @@ public open class Handle(
     public open fun writeAt(buf: List<UByte>, offset: ULong): Result<Int, Error> = this.synchronousWrite(buf, offset)
 
     public open fun tryClone(): Result<Handle, Error> {
-        return Result.Ok<Handle, Error>(Handle(when (val tryResult = this.value.tryClone()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Handle, Error>(tryResult.error) }))
+        return Result.Ok<Handle, Error>(Handle(when (val tryResult = this.value.tryClone()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Handle, Error>(tryResult.errValue()) }))
     }
 
     public open fun duplicate(access: UInt, inherit: Boolean, options: UInt): Result<Handle, Error> {
-        return Result.Ok<Handle, Error>(Handle(when (val tryResult = this.value.asHandle().duplicate(access, inherit, options)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Handle, Error>(tryResult.error) }))
+        return Result.Ok<Handle, Error>(Handle(when (val tryResult = this.value.asHandle().duplicate(access, inherit, options)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Handle, Error>(tryResult.errValue()) }))
     }
 
     /**

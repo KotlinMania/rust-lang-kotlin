@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.os
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -13,6 +14,10 @@ import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
@@ -154,7 +159,7 @@ public open class AlignedSystemBox<T> internal constructor(
         val layout =
             when (val matchVal = Layout.new<Value<T>>(typeLayoutT = Value.typeLayout<T>(typeLayoutT = typeLayoutT)).alignTo(ALIGN)) {
                 is Result.Ok<*, *> -> {
-                    val v = matchVal.value
+                    val v = matchVal.okValue()
                     v
                 }
                 else -> {
@@ -179,7 +184,7 @@ public open class AlignedSystemBox<T> internal constructor(
             val unwindResult = catchUnwind(AssertUnwindSafe({ this.ptr.dropInPlace() }))
             System().dealloc(this.ptr.asPtr().cast(), layout)
             if (unwindResult is Result.Err<*, *>) {
-                val payload = unwindResult.error
+                val payload = unwindResult.errValue()
                 resumeUnwind(payload)
             }
         }
@@ -196,7 +201,7 @@ public open class AlignedSystemBox<T> internal constructor(
             val layout =
                 when (val matchVal = Layout.new<Value<T>>(typeLayoutT = Value.typeLayout<T>(typeLayoutT = typeLayoutT)).alignTo(align)) {
                     is Result.Ok<*, *> -> {
-                        val v1 = matchVal.value
+                        val v1 = matchVal.okValue()
                         v1
                     }
                     else -> {

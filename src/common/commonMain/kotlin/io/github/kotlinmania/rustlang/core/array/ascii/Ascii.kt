@@ -3,7 +3,7 @@
 
 package io.github.kotlinmania.rustlang.core.array.ascii
 
-import io.github.kotlinmania.rustlang.core.char.isAscii
+import io.github.kotlinmania.rustlang.core.char.methods.isAscii
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 

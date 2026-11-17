@@ -241,7 +241,7 @@ public open class Once(
      * if this behavior is not desired.
      */
     public open fun wait() {
-        if (!this.inner.isCompleted()) {
+        if (this.inner.isCompleted().inv()) {
             this.inner.wait(false)
         }
     }
@@ -254,7 +254,7 @@ public open class Once(
      * becomes completed, unlike [Once.wait], which panics in this case.
      */
     public open fun waitForce() {
-        if (!this.inner.isCompleted()) {
+        if (this.inner.isCompleted().inv()) {
             this.inner.wait(true)
         }
     }

@@ -67,7 +67,7 @@ public fun escapeAscii(byte: UByte, n: Int): Pair<List<io.github.kotlinmania.rus
         92u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.ReverseSolidus, n)
         39u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.Apostrophe, n)
         34u -> { backslash(io.github.kotlinmania.rustlang.core.ascii.Char.QuotationMark, n) }
-        in 0x00..0x1F, 0x7F -> hexEscape(byte, n)
+        in 0x00u.toUByte()..0x1Fu.toUByte(), 0x7Fu.toUByte() -> hexEscape(byte, n)
         else -> when (val matchVal = io.github.kotlinmania.rustlang.core.ascii.Char.fromU8(byte)) {
             null -> hexEscape(byte, n)
             else -> {

@@ -44,11 +44,11 @@ public open class GenericShunt<I, R>(
     public open fun <Residual, B, T> tryFold(init: B, f: (B, Output) -> T): T where T : Try<T, B, Residual> =
         this.iter.tryFold(init, { acc, x -> when (val matchVal = x.branch()) {
             is ControlFlow.Continue<*, *> -> {
-                val (x1) = matchVal
+                val x1 = matchVal.cfContinueValue()
                 ControlFlow.fromTry(f(acc, x1))
             }
             is ControlFlow.Break<*, *> -> {
-                val (r) = matchVal
+                val r = matchVal.cfBreakValue()
                 this.residual = r
                 ControlFlow.Break(acc)
             }

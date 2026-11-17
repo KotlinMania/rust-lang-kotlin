@@ -77,7 +77,7 @@ public fun List<UByte>.bufferPriority(): BufferPriority = IN_MEMORY
 public fun List<UByte>.copyTo(to: Write): Result<ULong> {
     var selfMut = this
     val len = selfMut.size
-    when (val tryResult = to.writeAll(selfMut)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+    when (val tryResult = to.writeAll(selfMut)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
     selfMut = ((selfMut).subList(len, (selfMut).size))
     return RustResult.Ok(len.toULong())
 }
@@ -88,7 +88,7 @@ public fun <A : Allocator> VecDeque<UByte, A>.copyTo(to: Write): Result<ULong> {
     val len = this.len()
     val (front, back) = this.asSlices()
     val bufs = listOf(IoSlice.new(front), IoSlice.new(back))
-    when (val tryResult = to.writeAllVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+    when (val tryResult = to.writeAllVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
     this.clear()
     return RustResult.Ok(len.toULong())
 }
@@ -106,12 +106,12 @@ public fun <I> BufReader<I>.copyTo(to: Write): Result<ULong> {
             val matchVal = this.read(listOf())
             when {
                 matchVal is RustResult.Ok<*, *> -> {}
-                matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
-                    val e = matchVal.error
+                matchVal is RustResult.Err<*, *> && matchVal.errValue().isInterrupted() -> {
+                    val e = matchVal.errValue()
                     continue
                 }
                 else -> {
-                    val e1 = (matchVal as RustResult.Err<*, *>).error
+                    val e1 = (matchVal as RustResult.Err<*, *>).errValue()
                     return RustResult.Err(e1)
                 }
             }
@@ -125,7 +125,7 @@ public fun <I> BufReader<I>.copyTo(to: Write): Result<ULong> {
         // buffers to the underlying writer. That code path is @cold
         // but we're still avoiding redundant memcopies when doing
         // a copy between buffered inputs and outputs.
-        when (val tryResult = to.writeAll(buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+        when (val tryResult = to.writeAll(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
         len += buf.len().toULong()
         this.discardBuffer()
     }
@@ -173,7 +173,7 @@ public fun <I : Write, R : Read<R>> BufWriter<I>.copyFrom(reader: R): Result<ULo
                 val matchVal = reader.readBuf(cursor.reborrow())
                 when {
                     matchVal is RustResult.Ok<*, *> -> {
-                        val valueVal = matchVal.value
+                        val okValueVal = matchVal.okValue()
                         val bytesRead = cursor.written()
                         if (bytesRead == 0) {
                             return RustResult.Ok(len)
@@ -183,11 +183,11 @@ public fun <I : Write, R : Read<R>> BufWriter<I>.copyFrom(reader: R): Result<ULo
                         // SAFETY: BorrowedBuf guarantees all of its filled bytes are init
                         buf.setLen(buf.len() + bytesRead)
                     }
-                    matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
-                        val e = matchVal.error
+                    matchVal is RustResult.Err<*, *> && matchVal.errValue().isInterrupted() -> {
+                        val e = matchVal.errValue()
                     }
                     else -> {
-                        val e1 = (matchVal as RustResult.Err<*, *>).error
+                        val e1 = (matchVal as RustResult.Err<*, *>).errValue()
                         return RustResult.Err(e1)
                     }
                 }
@@ -195,7 +195,7 @@ public fun <I : Write, R : Read<R>> BufWriter<I>.copyFrom(reader: R): Result<ULo
         } else {
             // SAFETY: `flushBuf` will not de-initialize any elements of
             // the spare capacity so we can remember `init` across this.
-            when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+            when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
         }
     }
 }
@@ -214,14 +214,14 @@ public fun <R : Read<R>, W : Write> stackBufferCopy(reader: R, writer: W): Resul
             val matchVal = reader.readBuf(buf1.unfilled())
             when {
                 matchVal is RustResult.Ok<*, *> -> {
-                    val valueVal = matchVal.value
+                    val okValueVal = matchVal.okValue()
                 }
-                matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
-                    val e = matchVal.error
+                matchVal is RustResult.Err<*, *> && matchVal.errValue().isInterrupted() -> {
+                    val e = matchVal.errValue()
                     continue
                 }
                 else -> {
-                    val e1 = (matchVal as RustResult.Err<*, *>).error
+                    val e1 = (matchVal as RustResult.Err<*, *>).errValue()
                     return RustResult.Err(e1)
                 }
             }
@@ -230,7 +230,7 @@ public fun <R : Read<R>, W : Write> stackBufferCopy(reader: R, writer: W): Resul
             break
         }
         len += buf1.filled().len().toULong()
-        when (val tryResult = writer.writeAll(buf1.filled())) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+        when (val tryResult = writer.writeAll(buf1.filled())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
         buf1.clear()
     }
     return RustResult.Ok(len)

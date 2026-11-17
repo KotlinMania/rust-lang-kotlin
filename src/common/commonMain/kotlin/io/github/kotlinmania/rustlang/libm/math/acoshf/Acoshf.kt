@@ -18,7 +18,7 @@ public val LN2: kotlin.Float = 0.693147180559945309417232121458176568f
 public fun acoshf(x: kotlin.Float): kotlin.Float {
     val ux = x.toRawBits().toUInt()
     // x < 1 domain error is handled in the called functions
-    return if ((ux.toULong() and (kotlin.Float.SIGN_MASK.inv()).toULong()) < 2.0f.toBits().toUInt()) {
+    return if ((ux and kotlin.Float.SIGN_MASK.inv()) < 2.0f.toBits().toUInt()) {
         // |x| < 2, invalid if x < 1
         // up to 2ulp error in [1,1.125]
         val x1 = x - 1.0f

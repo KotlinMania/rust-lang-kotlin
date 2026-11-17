@@ -45,7 +45,7 @@ public fun mmCvtsdU64(a: M128d): ULong = vcvtsd2usi64(a.asF64x2(), MM_FROUND_CUR
 public fun mmCvti64Ss(a: M128, b: Long): M128 =
     run {
         val b1 = b.toFloat()
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = b1; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = b1; simdArg0 }
     }
 
 /**
@@ -56,7 +56,7 @@ public fun mmCvti64Ss(a: M128, b: Long): M128 =
 public fun mmCvti64Sd(a: M128d, b: Long): M128d =
     run {
         val b1 = b.toDouble()
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = b1; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = b1; simdArg0 }
     }
 
 /**
@@ -67,7 +67,7 @@ public fun mmCvti64Sd(a: M128d, b: Long): M128d =
 public fun mmCvtu64Ss(a: M128, b: ULong): M128 =
     run {
         val b1 = b.toFloat()
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = b1; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = b1; simdArg0 }
     }
 
 /**
@@ -78,7 +78,7 @@ public fun mmCvtu64Ss(a: M128, b: ULong): M128 =
 public fun mmCvtu64Sd(a: M128d, b: ULong): M128d =
     run {
         val b1 = b.toDouble()
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = b1; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = b1; simdArg0 }
     }
 
 /**

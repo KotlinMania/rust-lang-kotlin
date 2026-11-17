@@ -1,6 +1,7 @@
 // port-lint: source iter/adapters/zip.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.zip
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
@@ -563,7 +564,7 @@ public interface SpecFold {
     public fun <B> specFold(init: B, f: (B, Item) -> B): B
 }
 
-public fun <A : TrustedLen, B : TrustedLen, Acc> Zip<A, B>.specFold(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc {
+public fun <Item, A : TrustedLen<Item>, B : TrustedLen<Item>, Acc> Zip<A, B>.specFold(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc {
     var accum = init
     while (true) {
         val (upper1, more) =

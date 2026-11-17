@@ -4,6 +4,8 @@
 package io.github.kotlinmania.rustlang.hashbrown
 
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -312,10 +314,10 @@ public open class HashTable<T, A> internal constructor(
         run {
             val matchVal = this.raw.findOrFindInsertIndex(hash, eq, hasher)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val bucket = matchVal.value
+                val bucket = matchVal.okValue()
                 Entry.Occupied(OccupiedEntry(bucket = bucket, table = this))
             }; is Result.Err<*, *> -> {
-                val insertIndex = matchVal.error
+                val insertIndex = matchVal.errValue()
                 Entry.Vacant(VacantEntry(tag = Tag.full(hash), index = insertIndex, table = this))
             } }
         }

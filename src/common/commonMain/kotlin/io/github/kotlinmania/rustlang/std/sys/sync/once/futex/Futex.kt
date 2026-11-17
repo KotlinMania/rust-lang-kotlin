@@ -122,17 +122,17 @@ public open class Once(
             val queued = stateAndQueued and QUEUED != 0u
             when {
                 state == COMPLETE -> { return }
-                state == POISONED && !ignorePoisoning -> {
+                state == POISONED && ignorePoisoning.inv() -> {
                     // Panic to propagate the poison.
                     error("Once instance has previously been poisoned")
                 }
                 else -> {
                     // Set the QUEUED bit if it has not already been set.
-                    if (!queued) {
+                    if (queued.inv()) {
                         stateAndQueued += QUEUED
                         when (val matchVal = this.stateAndQueued.compareExchangeWeak(state, stateAndQueued, Relaxed, Acquire)) {
                             is Result.Err<*, *> -> {
-                                val new = matchVal.error
+                                val new = matchVal.errValue()
                                 stateAndQueued = new
                                 continue
                             }
@@ -153,7 +153,7 @@ public open class Once(
             val queued = stateAndQueued and QUEUED != 0u
             when {
                 state == COMPLETE -> { return }
-                state == POISONED && !ignorePoisoning -> {
+                state == POISONED && ignorePoisoning.inv() -> {
                     // Panic to propagate the poison.
                     error("Once instance has previously been poisoned")
                 }
@@ -168,7 +168,7 @@ public open class Once(
                             }
                     when (val matchVal = this.stateAndQueued.compareExchangeWeak(stateAndQueued, next, Acquire, Acquire)) {
                         is Result.Err<*, *> -> {
-                            val new = matchVal.error
+                            val new = matchVal.errValue()
                             stateAndQueued = new
                             continue
                         }
@@ -187,11 +187,11 @@ public open class Once(
                     // All other values must be RUNNING.
                     check(state == RUNNING)
                     // Set the QUEUED bit if it is not already set.
-                    if (!queued) {
+                    if (queued.inv()) {
                         stateAndQueued += QUEUED
                         when (val matchVal1 = this.stateAndQueued.compareExchangeWeak(state, stateAndQueued, Relaxed, Acquire)) {
                             is Result.Err<*, *> -> {
-                                val new1 = matchVal1.error
+                                val new1 = matchVal1.errValue()
                                 stateAndQueued = new1
                                 continue
                             }

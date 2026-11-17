@@ -1,6 +1,7 @@
 // port-lint: source iter/sources/repeat.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.repeat
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
@@ -71,7 +72,7 @@ public fun <T> repeat(elt: T): Repeat<T> = Repeat(element = elt)
  */
 public open class Repeat<A>(
     public var element: A,
-) : TrustedLen, Iterable<A> {
+) : TrustedLen<Any>, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@Repeat.next()) {

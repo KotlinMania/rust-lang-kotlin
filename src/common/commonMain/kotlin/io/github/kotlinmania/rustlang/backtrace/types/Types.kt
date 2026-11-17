@@ -71,7 +71,7 @@ public sealed class BytesOrWideString {
             val (b) = this
             when (val matchVal = String.fromUtf8(b)) {
                 is Result.Ok<*, *> -> {
-                    val s = matchVal.value
+                    val s = matchVal.okValue()
                     return PathBuf.from(s)
                 }
                 else -> {}

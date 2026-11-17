@@ -4,6 +4,10 @@ package io.github.kotlinmania.rustlang.std.backtrace
 import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
@@ -165,10 +169,10 @@ public open class Backtrace(
                 outputFilename(fmt1, path, style, cwd.asRef().ok())
             }
         val f = BacktraceFmt.new(fmt, style, printPath)
-        when (val tryResult = f.addContext()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = f.addContext()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
         for (frame in frames) {
             if (frame.symbols.isEmpty()) {
-                when (val tryResult = f.frame().printRaw(frame.frame.ip(), null, null, null)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = f.frame().printRaw(frame.frame.ip(), null, null, null)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
             } else {
                 for (symbol in frame.symbols.iter()) {
                     when (val tryResult = f.frame().printRawWithColumn(frame.frame.ip(), symbol.name.asRef().map({ b -> SymbolName.new(b) }), symbol.filename.asRef().map({ b -> when (b) {
@@ -180,11 +184,11 @@ public open class Backtrace(
                             val (w1) = b
                             BytesOrWideString.Wide(w1)
                         }
-                    } }), symbol.lineno, symbol.colno)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+                    } }), symbol.lineno, symbol.colno)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
                 }
             }
         }
-        when (val tryResult = f.finish()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = f.finish()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
         return Result.Ok<Unit, Error>(Unit)
     }
 
@@ -207,13 +211,13 @@ public open class Backtrace(
                 run {
                     val matchVal = env.variable("RUST_LIB_BACKTRACE")
                     when (matchVal) { is Result.Ok<*, *> -> {
-                        val s = matchVal.value
+                        val s = matchVal.okValue()
                         s != "0"
                     }; is Result.Err<*, *> -> {
                         run {
                             val matchVal1 = env.variable("RUST_BACKTRACE")
                             when (matchVal1) { is Result.Ok<*, *> -> {
-                                val s1 = matchVal1.value
+                                val s1 = matchVal1.okValue()
                                 s1 != "0"
                             }; is Result.Err<*, *> -> {
                                 false
@@ -246,7 +250,7 @@ public open class Backtrace(
          * the `Backtrace.forceCapture` function.
          */
         public fun capture(): Backtrace {
-            if (!Backtrace.enabled()) {
+            if (Backtrace.enabled().inv()) {
                 return Backtrace(inner = Inner.Disabled)
             }
             return Backtrace.create((((Backtrace::capture as Any?) as FnCallback)).toInt())

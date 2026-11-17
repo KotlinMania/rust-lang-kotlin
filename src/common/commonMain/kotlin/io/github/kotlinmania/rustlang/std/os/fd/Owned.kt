@@ -10,6 +10,8 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.close
 import io.github.kotlinmania.rustlang.libc.fcntl
@@ -123,7 +125,7 @@ public open class BorrowedFd internal constructor(
         // is a POSIX flag that was added to Linux in 2.6.24.
         val cmd = F_DUPFD_CLOEXEC
         // Avoid using file descriptors below 3 as they are used for stdio
-        val fd = when (val tryResult = cvt(fcntl(this.asRawFd(), cmd, 3))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OwnedFd, Error>(tryResult.error) }
+        val fd = when (val tryResult = cvt(fcntl(this.asRawFd(), cmd, 3))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OwnedFd, Error>(tryResult.errValue()) }
         return Result.Ok<OwnedFd, Error>(OwnedFd.fromRawFd(fd, fieldLayout = UnresolvedTypeLayout<NotAllOnes<RawFd>>()))
     }
 

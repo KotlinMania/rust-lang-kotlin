@@ -151,7 +151,7 @@ public fun <A, B, C> chainingImpl(left: List<A>, right: List<A>, elemChain: (A, 
     val lhs = ((left).subList(0, l))
     val rhs = ((right).subList(0, l))
     for (i in 0 until l) {
-        when (val tryResult = elemChain(lhs[i], rhs[i])) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, C>(tryResult.value) }
+        when (val tryResult = elemChain(lhs[i], rhs[i])) { is ControlFlow.Continue<*, *> -> tryResult.cfContinueValue(); is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, C>(tryResult.cfBreakValue()) }
     }
     return lenChain(left.size, right.size)
 }

@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.alignOffset
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
@@ -131,7 +132,7 @@ public open class Group(
         // !1000_0000 + 1 = 0111_1111 + 1 = 1000_0000 (no carry)
         // !0000_0000 + 0 = 1111_1111 + 0 = 1111_1111 (no carry)
         val full = this.value.inv() and repeat(Tag.DELETED)
-        return Group(!full + (full shr 7))
+        return Group(full.inv() + (full shr 7))
     }
 
     public companion object {

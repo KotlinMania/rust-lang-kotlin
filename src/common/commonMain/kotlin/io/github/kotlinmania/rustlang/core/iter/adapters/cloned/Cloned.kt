@@ -1,6 +1,7 @@
 // port-lint: source iter/adapters/cloned.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.cloned
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -23,41 +24,8 @@ public typealias Source<I> = I.Source
  */
 public open class Cloned<I>(
     public var it: I,
-) : Iterable<T> {
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@Cloned.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
+) {
     public open fun clone(): Cloned<I> = Cloned(it)
-
-    public open fun next(): T? = this.it.next()
-
-    public open fun sizeHint(): Pair<Int, Int?> = this.it.sizeHint()
-
-    public open fun <Residual, B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> = this.it.tryFold(init, cloneTryFold(f))
-
-    public open fun <Acc> fold(init: Acc, f: (Acc, T) -> Acc, cloneTFn: (T) -> T = { it }): Acc = this.it.map(cloneTFn).fold(init, f)
-
-    public open fun iteratorGetUnchecked(idx: Int): T {
-        // SAFETY: the caller must uphold the contract for
-        // `Iterator.__iterator_get_unchecked`.
-        return tryGetUnchecked(this.it, idx).clone()
-    }
-
-    public open fun nextBack(): T? = this.it.nextBack()
-
-    public open fun <Residual, B, R> tryRfold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> = this.it.tryRfold(init, cloneTryFold(f))
-
-    public open fun <Acc> rfold(init: Acc, f: (Acc, T) -> Acc, cloneTFn: (T) -> T = { it }): Acc = this.it.map(cloneTFn).rfold(init, f)
-
-    public open fun len(): Int = this.it.len()
-
-    public open fun isEmpty(): Boolean = this.it.isEmpty()
 
     public companion object {
         public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<Cloned<I>> =
@@ -94,6 +62,30 @@ public open class Cloned<I>(
 }
 
 public fun <T, Acc, R> cloneTryFold(f: (Acc, T) -> R): (Acc, T) -> R = { acc, elt -> f(acc, elt.clone()) }
+
+public fun <I, T> Cloned<I>.next(): T? where I : Iterator<T> = this.it.next()
+
+public fun <I, T> Cloned<I>.sizeHint(): Pair<Int, Int?> where I : Iterator<T> = this.it.sizeHint()
+
+public fun <Residual, I, T, B, R> Cloned<I>.tryFold(init: B, f: (B, T) -> R): R where I : Iterator<T>, R : Try<R, B, Residual> = this.it.tryFold(init, cloneTryFold(f))
+
+public fun <I, T, Acc> Cloned<I>.fold(init: Acc, f: (Acc, T) -> Acc, cloneTFn: (T) -> T = { it }): Acc where I : Iterator<T> = this.it.map(cloneTFn).fold(init, f)
+
+public fun <I, T> Cloned<I>.iteratorGetUnchecked(idx: Int): T where I : Iterator<T> {
+    // SAFETY: the caller must uphold the contract for
+    // `Iterator.__iterator_get_unchecked`.
+    return tryGetUnchecked(this.it, idx).clone()
+}
+
+public fun <I, T> Cloned<I>.nextBack(): T? = this.it.nextBack()
+
+public fun <Residual, I, T, B, R> Cloned<I>.tryRfold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> = this.it.tryRfold(init, cloneTryFold(f))
+
+public fun <I, T, Acc> Cloned<I>.rfold(init: Acc, f: (Acc, T) -> Acc, cloneTFn: (T) -> T = { it }): Acc = this.it.map(cloneTFn).rfold(init, f)
+
+public fun <I, T> Cloned<I>.len(): Int = this.it.len()
+
+public fun <I, T> Cloned<I>.isEmpty(): Boolean = this.it.isEmpty()
 
 public val MAY_HAVE_SIDE_EFFECT: Boolean = true
 

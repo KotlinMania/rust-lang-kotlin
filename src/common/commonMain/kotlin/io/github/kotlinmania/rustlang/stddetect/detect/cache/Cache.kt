@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -175,7 +176,7 @@ public open class Cache(
 public fun disableFeatures(disable: List<UByte>, value: Initializer) {
     when (val matchVal = String.fromUtf8(disable)) {
         is Result.Ok<*, *> -> {
-            val disable1 = matchVal.value
+            val disable1 = matchVal.okValue()
             for (v in disable1.split(" ")) {
                 Feature.fromStr(v).map({ v1 -> value.unset(v1.toUInt()) })
             }

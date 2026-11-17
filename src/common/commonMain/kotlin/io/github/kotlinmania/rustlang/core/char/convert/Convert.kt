@@ -21,7 +21,7 @@ public fun fromU32(i: UInt): Char? {
     return run {
         val matchVal = charTryFromU32(i)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val c = matchVal.value
+            val c = matchVal.okValue()
             c
         }; is Result.Err<*, *> -> {
             null
@@ -112,7 +112,7 @@ public fun tryFromUByte(c: Char): Result<UByte, TryFromCharError> {
     return run {
         val matchVal = UByte.tryFrom(UInt.from(c))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val b = matchVal.value
+            val b = matchVal.okValue()
             Result.Ok<UByte, TryFromCharError>(b)
         }; is Result.Err<*, *> -> {
             Result.Err<UByte, TryFromCharError>(TryFromCharError(Unit))
@@ -145,7 +145,7 @@ public fun tryFromUShort(c: Char): Result<UShort, TryFromCharError> {
     return run {
         val matchVal = UShort.tryFrom(UInt.from(c))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             Result.Ok<UShort, TryFromCharError>(x)
         }; is Result.Err<*, *> -> {
             Result.Err<UShort, TryFromCharError>(TryFromCharError(Unit))
@@ -189,7 +189,7 @@ public fun tryFromInt(c: Char): Result<Int, TryFromCharError> {
     return run {
         val matchVal = Int.tryFrom(UInt.from(c))
         when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
+            val x = matchVal.okValue()
             Result.Ok<Int, TryFromCharError>(x)
         }; is Result.Err<*, *> -> {
             Result.Err<Int, TryFromCharError>(TryFromCharError(Unit))

@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.ubchecks
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.panicking.panicNounwind
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isAlignedTo
 
 // Provides the [assertUnsafePrecondition] macro as well as some utility functions that cover
 // common preconditions.

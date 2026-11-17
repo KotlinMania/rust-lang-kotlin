@@ -903,14 +903,14 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
             val matchVal = this.base.rustcTryInsert(key, value)
             when {
                 matchVal is Result.Ok<*, *> -> {
-                    val value1 = matchVal.value
+                    val value1 = matchVal.okValue()
                     Result.Ok<V, OccupiedError<K, V, A>>(value1)
                 }
                 else -> {
-                    val errorVal = (matchVal as Result.Err<*, *>).error
-                    val entry = errorVal.entry
-                    val key1 = errorVal.key
-                    val value2 = errorVal.value
+                    val errValueVal = (matchVal as Result.Err<*, *>).errValue()
+                    val entry = errValueVal.entry
+                    val key1 = errValueVal.key
+                    val value2 = errValueVal.value
                     Result.Err<V, OccupiedError<K, V, A>>(OccupiedError(entry = OccupiedEntry(base = entry), key = key1, value = value2))
                 }
             }
@@ -1834,7 +1834,7 @@ public sealed class Entry<K, V, A : Allocator> {
             }
             is Vacant<*, *, *> -> {
                 val (entry1) = this as Vacant<K, V, A>
-                Result.Ok<V, E>(entry1.insert(when (val tryResult = default()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<V, E>(tryResult.error) }))
+                Result.Ok<V, E>(entry1.insert(when (val tryResult = default()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<V, E>(tryResult.errValue()) }))
             }
         }
     }
@@ -1887,7 +1887,7 @@ public sealed class Entry<K, V, A : Allocator> {
             }
             is Vacant<*, *, *> -> {
                 val (entry1) = this as Vacant<K, V, A>
-                val value = when (val tryResult = default(entry1.key())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<V, E>(tryResult.error) }
+                val value = when (val tryResult = default(entry1.key())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<V, E>(tryResult.errValue()) }
                 Result.Ok<V, E>(entry1.insert(value))
             }
         }

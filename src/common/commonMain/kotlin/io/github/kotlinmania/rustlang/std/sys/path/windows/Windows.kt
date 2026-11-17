@@ -74,7 +74,7 @@ public open class WCStr internal constructor(
 }
 
 public fun <T> withNativePath(path: Path, f: (WCStr) -> Result<T, Error>): Result<T, Error> {
-    val path1 = when (val tryResult = maybeVerbatim(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<T, Error>(tryResult.error) }
+    val path1 = when (val tryResult = maybeVerbatim(path)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<T, Error>(tryResult.errValue()) }
     // SAFETY: maybeVerbatim returns null-terminated strings
     val path2 = WCStr.fromWcharsWithNullUnchecked(path1)
     return f(path2)
@@ -125,7 +125,7 @@ public fun appendSuffix(path: PathBuf, suffix: OsStr): PathBuf {
  * This path may or may not have a verbatim prefix.
  */
 public fun maybeVerbatim(path: Path): Result<List<UShort>, Error> {
-    val path1 = when (val tryResult = toU16s(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.error) }
+    val path1 = when (val tryResult = toU16s(path)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.errValue()) }
     return getLongPath(path1, true)
 }
 
@@ -222,7 +222,7 @@ public fun getLongPath(path: List<UShort>, preferVerbatim: Boolean): Result<List
         }
         path.extendFromSlice(absolute)
         path.push(0)
-    })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.error) }
+    })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.errValue()) }
     return Result.Ok<List<UShort>, Error>(path)
 }
 
@@ -240,7 +240,7 @@ public fun absolute(path: Path): Result<PathBuf, Error> {
         }
         return Result.Ok<PathBuf, Error>(path1.toOwned().into())
     }
-    val path2 = when (val tryResult = toU16s(path1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<PathBuf, Error>(tryResult.error) }
+    val path2 = when (val tryResult = toU16s(path1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<PathBuf, Error>(tryResult.errValue()) }
     val lpfilename = path2.asPtr()
     return fillUtf16Buf({ buffer, size -> getFullPathNameW(lpfilename, size, buffer, MutPtr(0L)) }, os2path)
 }

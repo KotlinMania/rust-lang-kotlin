@@ -87,7 +87,7 @@ public open class Demangle(
                                         val c1 = Pair(allLowerHex, c).second
                                         // Note(eddyb) do we need to filter out control codepoints?
                                         if (!c1.isControl()) {
-                                            when (val tryResult = c1.fmt(f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+                                            when (val tryResult = c1.fmt(f)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
                                             rest = afterEscape
                                             continue
                                         }
@@ -178,7 +178,7 @@ public fun demangle(s: String): Result<Pair<Demangle, String>, Unit> {
     }
     var elements = 0
     val chars = inner.chars()
-    var c = when (val tryResult = (chars.next()?.let { Result.Ok<Char, Unit>(it) } ?: Result.Err<Char, Unit>(Unit))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.error) }
+    var c = when (val tryResult = (chars.next()?.let { Result.Ok<Char, Unit>(it) } ?: Result.Err<Char, Unit>(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.errValue()) }
     while (c != 'E') {
         // Decode an identifier element's length.
         if (!c.isDigit(10)) {
@@ -189,13 +189,13 @@ public fun demangle(s: String): Result<Pair<Demangle, String>, Unit> {
             val matchVal = c.toDigit(10u)
             if (matchVal == null) break
             val d = matchVal
-            len = when (val tryResult = (len.checkedMul(10)?.let({ len1 -> len1.checkedAdd(d.toInt()) })?.let { Result.Ok(it) } ?: Result.Err(Unit))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.error) }
-            c = when (val tryResult = (chars.next()?.let { Result.Ok(it) } ?: Result.Err(Unit))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.error) }
+            len = when (val tryResult = (len.checkedMul(10)?.let({ len1 -> len1.checkedAdd(d.toInt()) })?.let { Result.Ok(it) } ?: Result.Err(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.errValue()) }
+            c = when (val tryResult = (chars.next()?.let { Result.Ok(it) } ?: Result.Err(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.errValue()) }
         }
         // `c` already contains the first character of this identifier, skip it and
         // all the other characters of this identifier, to reach the next element.
         for (unused in 0 until len) {
-            c = when (val tryResult = (chars.next()?.let { Result.Ok(it) } ?: Result.Err(Unit))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.error) }
+            c = when (val tryResult = (chars.next()?.let { Result.Ok(it) } ?: Result.Err(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.errValue()) }
         }
         elements += 1
     }

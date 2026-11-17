@@ -192,7 +192,7 @@ public open class PanicHookInfo(
 
     public open fun fmt(formatter: StringBuilder): RustResult<Unit, Error> {
         formatter.append("panicked at ")
-        when (val tryResult = this.location.fmt(formatter)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = this.location.fmt(formatter)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
         when (val matchVal = this.payloadAsStr()) {
             null -> {}
             else -> {
@@ -401,9 +401,9 @@ public sealed class BacktraceStyle {
 
         public fun fromU8(s: UByte): BacktraceStyle? =
             when (s) {
-                1 -> BacktraceStyle.Short
-                2 -> BacktraceStyle.Full
-                3 -> BacktraceStyle.Off
+                1u.toUByte() -> BacktraceStyle.Short
+                2u.toUByte() -> BacktraceStyle.Full
+                3u.toUByte() -> BacktraceStyle.Off
                 else -> null
             }
     }
@@ -489,7 +489,7 @@ public fun getBacktraceStyle(): BacktraceStyle? {
         when (matchVal2) { is RustResult.Ok<*, *> -> {
             format
         }; is RustResult.Err<*, *> -> {
-            val new = matchVal2.error
+            val new = matchVal2.errValue()
             BacktraceStyle.fromU8(new)
         } }
     }

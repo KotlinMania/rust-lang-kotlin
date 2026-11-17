@@ -1,6 +1,8 @@
 // port-lint: source iter/adapters/take.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.take
 
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.sources.repeat.Repeat
@@ -76,7 +78,7 @@ public open class Take<I>(
             when (matchVal) { is Result.Ok<*, *> -> {
                 this.n
             }; is Result.Err<*, *> -> {
-                val remaining = matchVal.error
+                val remaining = matchVal.errValue()
                 this.n - remaining.get()
             } }
         }
@@ -134,7 +136,7 @@ public open class Take<I>(
                 when (matchVal) { is Result.Ok<*, *> -> {
                     0
                 }; is Result.Err<*, *> -> {
-                    val rem = matchVal.error
+                    val rem = matchVal.errValue()
                     rem.get()
                 } }
             }
@@ -204,7 +206,7 @@ public open class Take<I>(
                 when (matchVal) { is Result.Ok<*, *> -> {
                     0
                 }; is Result.Err<*, *> -> {
-                    val rem = matchVal.error
+                    val rem = matchVal.errValue()
                     rem.get()
                 } }
             }

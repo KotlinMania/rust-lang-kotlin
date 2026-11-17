@@ -4,7 +4,10 @@
 package io.github.kotlinmania.rustlang.core.num.f32
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.clamp
 import io.github.kotlinmania.rustlang.core.cmp.clamp.ClampBounds
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCeilf32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopysignf32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf32

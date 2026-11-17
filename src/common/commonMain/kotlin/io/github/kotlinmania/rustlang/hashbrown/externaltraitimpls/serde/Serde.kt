@@ -29,7 +29,7 @@ public fun <K, V, S, A, D> deserializeHashMapKVSA(deserializer: D, defaultSFn: (
     fun <K, V, S, A, M> MapVisitor<K, V, S, A>.visitMap(map: M, defaultSFn: () -> S, defaultAFn: () -> A): Result<MutableMap<K, V>, Error> where K : Deserialize, V : Deserialize, S : BuildHasher, A : Allocator, M : MapAccess {
         val values = HashMap.withCapacityAndHasherIn(sizehint.cautious(map.sizeHint()), defaultSFn(), defaultAFn())
         while (true) {
-            val matchVal = when (val tryResult = map.nextEntry()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<MutableMap<K, V>, Error>(tryResult.error) }
+            val matchVal = when (val tryResult = map.nextEntry()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<MutableMap<K, V>, Error>(tryResult.errValue()) }
             if (matchVal == null) break
             val key = matchVal.first
             val value = matchVal.second
@@ -52,7 +52,7 @@ public fun <T, S, A, D> deserializeHashSetTSA(deserializer: D, defaultSFn: () ->
     fun <T, S, A, M> SeqVisitor<T, S, A>.visitSeq(seq: M, defaultSFn: () -> S, defaultAFn: () -> A): Result<MutableSet<T>, Error> where T : Deserialize, S : BuildHasher, A : Allocator, M : SeqAccess {
         val values = HashSet.withCapacityAndHasherIn(sizehint.cautious(seq.sizeHint()), defaultSFn(), defaultAFn())
         while (true) {
-            val matchVal = when (val tryResult = seq.nextElement()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<MutableSet<T>, Error>(tryResult.error) }
+            val matchVal = when (val tryResult = seq.nextElement()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<MutableSet<T>, Error>(tryResult.errValue()) }
             if (matchVal == null) break
             val value = matchVal
             values.insert(value)
@@ -79,7 +79,7 @@ public fun <T, S, A, D> deserializeDeserializeInPlaceHashSetTSA(deserializer: D,
         this.value.clear()
         this.value.reserve(sizehint.cautious(seq.sizeHint()))
         while (true) {
-            val matchVal = when (val tryResult = seq.nextElement()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+            val matchVal = when (val tryResult = seq.nextElement()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
             if (matchVal == null) break
             val value = matchVal
             this.value.add(value)

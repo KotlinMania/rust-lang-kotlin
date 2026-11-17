@@ -116,8 +116,8 @@ public fun <R> withCurrentInfo(f: (ThreadInfo?) -> R): R {
                 val matchVal1 = SPIN_LOCK.compareExchange(0, thisRef, Ordering.Acquire, Ordering.Relaxed)
                 when {
                     matchVal1 is Result.Ok<*, *> -> { break }
-                    matchVal1 is Result.Err<*, *> && matchVal1.error == thisRef -> {
-                        val owner = matchVal1.error
+                    matchVal1 is Result.Err<*, *> && matchVal1.errValue() == thisRef -> {
+                        val owner = matchVal1.errValue()
                         run {
                             when (val matchVal2 = panicOutput()) {
                                 null -> {}
@@ -153,8 +153,8 @@ public fun spinLockInSetup(thisRef: Int): UnlockOnDrop {
             val matchVal = SPIN_LOCK.compareExchange(0, thisRef, Ordering.Acquire, Ordering.Relaxed)
             when {
                 matchVal is Result.Ok<*, *> -> { return UnlockOnDrop() }
-                matchVal is Result.Err<*, *> && matchVal.error == thisRef -> {
-                    val owner = matchVal.error
+                matchVal is Result.Err<*, *> && matchVal.errValue() == thisRef -> {
+                    val owner = matchVal.errValue()
                     error("the thread info setup logic isn't recursive")
                 }
                 // This function is always called with the outer lock held,

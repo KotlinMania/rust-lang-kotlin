@@ -25,7 +25,7 @@ import io.github.kotlinmania.rustlang.core.U128
  *
  *         public fun rustEquals(other: Answer): Boolean = this == other
  *
- *         public open fun not(): Answer {
+ *         public open operator fun not(): Answer {
  *             return when (this) {
  *                 Answer.Yes -> Answer.No
  *                 Answer.No -> Answer.Yes
@@ -56,32 +56,32 @@ public interface Not<out Output> {
      * check((0x0u.toUByte()).inv() == 0xFFu.toUByte())
      * ```
      */
-    public fun not(): Output
+    public operator fun not(): Output
 }
 
 public fun Boolean.not(): Boolean = !this
 
-public fun Int.not(): Int = !this
+public operator fun Int.not(): Int = this.inv()
 
-public fun UByte.not(): UByte = (!this).toUByte()
+public operator fun UByte.not(): UByte = this.inv()
 
-public fun UShort.not(): UShort = (!this).toUShort()
+public operator fun UShort.not(): UShort = this.inv()
 
-public fun UInt.not(): UInt = !this
+public operator fun UInt.not(): UInt = this.inv()
 
-public fun ULong.not(): ULong = !this
+public operator fun ULong.not(): ULong = this.inv()
 
-public fun U128.not(): U128 = !this
+public operator fun U128.not(): U128 = this.inv()
 
-public fun Byte.not(): Byte = (!this).toByte()
+public operator fun Byte.not(): Byte = (this.toInt().inv()).toByte()
 
-public fun Short.not(): Short = (!this).toShort()
+public operator fun Short.not(): Short = (this.toInt().inv()).toShort()
 
-public fun Long.not(): Long = !this
+public operator fun Long.not(): Long = this.inv()
 
-public fun I128.not(): I128 = !this
+public operator fun I128.not(): I128 = this.inv()
 
-public fun Nothing.not(): Nothing = when (this) {}
+public operator fun Nothing.not(): Nothing = when (this) {}
 
 /**
  * The bitwise AND operator .

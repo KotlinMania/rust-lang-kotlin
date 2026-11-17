@@ -6,6 +6,10 @@ import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.castMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingSub
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
@@ -166,7 +170,7 @@ public open class LazyKey internal constructor(
                 when (matchVal2) { is Result.Ok<*, *> -> {
                     key1
                 }; is Result.Err<*, *> -> {
-                    val new = matchVal2.error
+                    val new = matchVal2.errValue()
                     run {
                         // Some other thread completed initialization first, so destroy
                         // our key and use theirs.
@@ -240,7 +244,7 @@ public fun registerDtor(key: LazyKey) {
             when (matchVal) { is Result.Ok<*, *> -> {
                 break
             }; is Result.Err<*, *> -> {
-                val new = matchVal.error
+                val new = matchVal.errValue()
                 head = new
             } }
         }

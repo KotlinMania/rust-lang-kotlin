@@ -2,6 +2,7 @@
 
 package io.github.kotlinmania.rustlang.core.fmt
 
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugList
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugMap
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugSet
@@ -23,6 +24,9 @@ import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.offset
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.str.asPtr
@@ -500,23 +504,23 @@ public open class Formatter(
         val min = this.options.width
         return if (width >= Int.from(min)) {
             // We're over the minimum width, so then we can just write the bytes.
-            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
             this.buf.append(buf)
         } else if (this.signAwareZeroPad()) {
             // The sign and prefix goes before the padding if the fill character
             // is zero
             val oldOptions = this.options
             this.options.fill('0').align(Alignment.Right)
-            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
-            val postPadding = when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+            val postPadding = when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
             this.buf.append(buf)
-            when (val tryResult = postPadding.write(this)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = postPadding.write(this)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
             this.options = oldOptions
             RustResult.Ok(Unit)
         } else {
             // Otherwise, the sign and prefix goes after the padding
-            val postPadding1 = when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
-            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            val postPadding1 = when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
             this.buf.append(buf)
             postPadding1.write(this)
         }
@@ -572,7 +576,7 @@ public open class Formatter(
                             when (matchVal1) { is RustResult.Ok<*, *> -> {
                                 0
                             }; is RustResult.Err<*, *> -> {
-                                val remaining = matchVal1.error
+                                val remaining = matchVal1.errValue()
                                 remaining.get()
                             } }
                         }
@@ -586,7 +590,7 @@ public open class Formatter(
         return if (charCount < Int.from(this.options.width)) {
             // If we're under the minimum width, then fill up the minimum width
             // with the specified string + some alignment.
-            val postPadding = when (val tryResult = this.padding(this.options.width - charCount.toUShort(), Alignment.Left)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            val postPadding = when (val tryResult = this.padding(this.options.width - charCount.toUShort(), Alignment.Left)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
             this.buf.append(s1)
             postPadding.write(this)
         } else {
@@ -661,16 +665,16 @@ public open class Formatter(
                         run {
                             val matchVal = UShort.tryFrom(len)
                             when (matchVal) { is RustResult.Ok<*, *> -> {
-                                val len1 = matchVal.value
+                                val len1 = matchVal.okValue()
                                 len1
                             }; is RustResult.Err<*, *> -> {
                                 error("unreachable")
                             } }
                         }
-                    val postPadding = when (val tryResult = this.padding(width - len2, Alignment.Right)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                    val postPadding = when (val tryResult = this.padding(width - len2, Alignment.Right)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
                     // SAFETY: Per the precondition.
                     run {
-                        when (val tryResult = this.writeFormattedParts(formatted1)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                        when (val tryResult = this.writeFormattedParts(formatted1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
                     }
                     postPadding.write(this)
                 }
@@ -718,14 +722,14 @@ public open class Formatter(
                     }
                     // SAFETY: Per the precondition.
                     run {
-                        when (val tryResult = writeBytes(this.buf, s[0 until len])) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                        when (val tryResult = writeBytes(this.buf, s[0 until len])) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
                     }
                 }
                 // SAFETY: Per the precondition.
                 is numfmt.Part.Copy -> {
                     val (buf) = part
                     run {
-                        when (val tryResult = writeBytes(this.buf, buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                        when (val tryResult = writeBytes(this.buf, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
                     }
                 }
             }

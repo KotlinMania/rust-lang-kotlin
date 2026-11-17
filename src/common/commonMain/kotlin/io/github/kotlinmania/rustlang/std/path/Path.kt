@@ -3,11 +3,13 @@ package io.github.kotlinmania.rustlang.std.path
 
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
+import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
-import io.github.kotlinmania.rustlang.core.char.isAscii
+import io.github.kotlinmania.rustlang.core.char.methods.isAscii
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -22,6 +24,10 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.num.rotateRight
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.and
@@ -304,7 +310,7 @@ public sealed class Prefix {
             else -> false
         }
 
-    public open fun hasImplicitRoot(): Boolean = (!this.isDrive()).toUByte()
+    public open fun hasImplicitRoot(): Boolean = this.isDrive().inv()
 }
 
 // ///////////////////////////////////////////////////////////////////////////
@@ -889,7 +895,7 @@ public open class Components(
     public open fun asRefOsStr(): OsStr = this.asPath().asOsStr()
 
     public open fun next(): Component? {
-        while (!this.finished()) {
+        while (this.finished().inv()) {
             run {
                 val matchVal = this.front
                 when {
@@ -939,7 +945,7 @@ public open class Components(
     }
 
     public open fun nextBack(): Component? {
-        while (!this.finished()) {
+        while (this.finished().inv()) {
             run {
                 val matchVal = this.back
                 when {
@@ -1687,29 +1693,6 @@ public open class PathBuf(
         this.inner = source.inner
     }
 
-    /**
-     * Extends `self` with [Path] elements from `iter`.
-     *
-     * This uses [`push`](Self.push) to add each element, so can be used to adjoin multiple path
-     * [components](Components).
-     *
-     * # Examples
-     * ```kotlin
-     * var path = PathBuf.from("/tmp")
-     * path.extend(listOf("foo", "bar", "file.txt"))
-     * check(path == PathBuf.from("/tmp/foo/bar/file.txt"))
-     * ```
-     *
-     * See documentation for [`push`](Self.push) for more details on how the path is constructed.
-     */
-    public open fun <I : Iterable<Path>> extend(iter: I) {
-        iter.iterator().forEach({ p -> this.push(p.asRef()) })
-    }
-
-    public open fun extendOne(p: Path) {
-        this.push(p)
-    }
-
     public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun deref(): Path = Path.new(this.inner)
@@ -1804,13 +1787,6 @@ public open class PathBuf(
         public fun from(boxed: Path): PathBuf = boxed.intoPathBuf()
 
         /**
-         * Converts a borrowed [OsStr] to a [PathBuf].
-         *
-         * Allocates a [PathBuf] and copies the data into it.
-         */
-        public fun from(s: OsStr): PathBuf = PathBuf.from(s.asRef().toOsString())
-
-        /**
          * Converts an [OsString] into a [PathBuf].
          *
          * This conversion does not allocate or copy memory.
@@ -1826,26 +1802,6 @@ public open class PathBuf(
 
         public fun fromStr(s: String): Result<PathBuf, Nothing> = Result.Ok<PathBuf, Nothing>(PathBuf.from(s))
 
-        /**
-         * Creates a new `PathBuf` from the [Path] elements of an iterator.
-         *
-         * This uses [`push`](Self.push) to add each element, so can be used to adjoin multiple path
-         * [components](Components).
-         *
-         * # Examples
-         * ```kotlin
-         * val path = PathBuf.fromIter(listOf("/tmp", "foo", "bar"))
-         * check(path == PathBuf.from("/tmp/foo/bar"))
-         * ```
-         *
-         * See documentation for [`push`](Self.push) for more details on how the path is constructed.
-         */
-        public fun <I : Iterable<Path>> fromIter(iter: I): PathBuf {
-            val buf = PathBuf.new()
-            buf.extend(iter)
-            return buf
-        }
-
         public fun default(): PathBuf = PathBuf.new()
 
         /**
@@ -1857,12 +1813,64 @@ public open class PathBuf(
     }
 }
 
+public fun <A : Allocator> Path.clone(): Path = Box.cloneFromRefIn(Path(this.inner), Path.allocator(this).clone())
+
+/**
+ * Converts a borrowed [OsStr] to a [PathBuf].
+ *
+ * Allocates a [PathBuf] and copies the data into it.
+ */
+public fun fromPathBuf(s: OsStr): PathBuf = PathBuf.from(s.asRef().toOsString())
+
 /**
  * Converts a [PathBuf] into an [OsString]
  *
  * This conversion does not allocate or copy memory.
  */
 public fun fromOsString(pathBuf: PathBuf): OsString = pathBuf.inner
+
+/**
+ * Creates a new `PathBuf` from the [Path] elements of an iterator.
+ *
+ * This uses [`push`](Self.push) to add each element, so can be used to adjoin multiple path
+ * [components](Components).
+ *
+ * # Examples
+ * ```kotlin
+ * val path = PathBuf.fromIter(listOf("/tmp", "foo", "bar"))
+ * check(path == PathBuf.from("/tmp/foo/bar"))
+ * ```
+ *
+ * See documentation for [`push`](Self.push) for more details on how the path is constructed.
+ */
+public fun <I : Iterable<Path>> fromIteratorFromIterPathBuf(iter: I): PathBuf {
+    val buf = PathBuf.new()
+    buf.extend(iter)
+    return buf
+}
+
+/**
+ * Extends `self` with [Path] elements from `iter`.
+ *
+ * This uses [`push`](Self.push) to add each element, so can be used to adjoin multiple path
+ * [components](Components).
+ *
+ * # Examples
+ * ```kotlin
+ * var path = PathBuf.from("/tmp")
+ * path.extend(listOf("foo", "bar", "file.txt"))
+ * check(path == PathBuf.from("/tmp/foo/bar/file.txt"))
+ * ```
+ *
+ * See documentation for [`push`](Self.push) for more details on how the path is constructed.
+ */
+public fun <I : Iterable<Path>> PathBuf.extend(iter: I) {
+    iter.iterator().forEach({ p -> this.push(p.asRef()) })
+}
+
+public fun PathBuf.extendOne(p: Path) {
+    this.push(p)
+}
 
 /**
  * Creates a clone-on-write pointer from a reference to
@@ -1974,8 +1982,6 @@ public open class Path internal constructor(
     internal constructor(inner: OsStr, fieldLayout: TypeLayout<OsStr> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Path> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Path(ptr, layout) }, { it.inner })
-
-    public open fun clone(): Path = Box.cloneFromRefIn(Path(this.inner), Path.allocator(this).clone())
 
     public open fun toOwned(): PathBuf = this.toPathBuf()
 
@@ -2115,7 +2121,7 @@ public open class Path internal constructor(
      *
      * [isAbsolute]: Path.isAbsolute
      */
-    public open fun isRelative(): Boolean = (!this.isAbsolute()).toUByte()
+    public open fun isRelative(): Boolean = this.isAbsolute().inv()
 
     public open fun prefix(): Prefix? = this.components().prefix
 
@@ -2536,7 +2542,7 @@ public open class Path internal constructor(
      */
     public open fun trimTrailingSep(): Path {
         val comps = this.components()
-        return if (this.hasTrailingSep() && (!this.hasRoot() || this.parent() != null)) {
+        return if (this.hasTrailingSep() && (this.hasRoot().inv() || this.parent() != null)) {
             var bytes = this.inner.asEncodedBytes()
             while (bytes.splitLast() != null && comps.isSepByte(last)) {
                 bytes = init

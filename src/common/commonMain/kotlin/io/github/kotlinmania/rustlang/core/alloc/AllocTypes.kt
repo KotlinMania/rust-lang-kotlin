@@ -254,7 +254,7 @@ public interface Allocator {
      * [handleAllocError]: ../../alloc/alloc/fn.handleAllocError.html
      */
     public fun allocateZeroed(layout: Layout): Result<NonNull, AllocError> {
-        val ptr = when (val tryResult = this.allocate(layout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+        val ptr = when (val tryResult = this.allocate(layout)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
         // SAFETY: `alloc` returns a valid memory block
         ptr.asNonNullPtr().asPtr().writeBytes(0, ptr.len())
         return Result.Ok<NonNull, AllocError>(ptr)
@@ -325,7 +325,7 @@ public interface Allocator {
         if (false) {
             check(newLayout.size() >= oldLayout.size()) { "`new_layout.size()` must be greater than or equal to `old_layout.size()`" }
         }
-        val newPtr = when (val tryResult = this.allocate(newLayout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+        val newPtr = when (val tryResult = this.allocate(newLayout)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
         // SAFETY: because `newLayout.size()` must be greater than or equal to
         // `oldLayout.size()`, both the old and new memory allocation are valid for reads and
         // writes for `oldLayout.size()` bytes. Also, because the old allocation wasn't yet
@@ -378,7 +378,7 @@ public interface Allocator {
         if (false) {
             check(newLayout.size() >= oldLayout.size()) { "`new_layout.size()` must be greater than or equal to `old_layout.size()`" }
         }
-        val newPtr = when (val tryResult = this.allocateZeroed(newLayout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+        val newPtr = when (val tryResult = this.allocateZeroed(newLayout)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
         // SAFETY: because `newLayout.size()` must be greater than or equal to
         // `oldLayout.size()`, both the old and new memory allocation are valid for reads and
         // writes for `oldLayout.size()` bytes. Also, because the old allocation wasn't yet
@@ -436,7 +436,7 @@ public interface Allocator {
         if (false) {
             check(newLayout.size() <= oldLayout.size()) { "`new_layout.size()` must be smaller than or equal to `old_layout.size()`" }
         }
-        val newPtr = when (val tryResult = this.allocate(newLayout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+        val newPtr = when (val tryResult = this.allocate(newLayout)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
         // SAFETY: because `newLayout.size()` must be lower than or equal to
         // `oldLayout.size()`, both the old and new memory allocation are valid for reads and
         // writes for `newLayout.size()` bytes. Also, because the old allocation wasn't yet

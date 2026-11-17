@@ -137,11 +137,11 @@ public open class TokenStream(
      * considered errors, is unspecified and may change in the future.
      */
     public open fun expandExpr(): Result<TokenStream, ExpandError> {
-        val stream = when (val tryResult = (this.value?.let { Result.Ok<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, ExpandError>(it) } ?: Result.Err<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, ExpandError>(ExpandError()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<TokenStream, ExpandError>(tryResult.error) }
+        val stream = when (val tryResult = (this.value?.let { Result.Ok<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, ExpandError>(it) } ?: Result.Err<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, ExpandError>(ExpandError()))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<TokenStream, ExpandError>(tryResult.errValue()) }
         return run {
             val matchVal = BridgeMethods.tsExpandExpr(stream)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val stream1 = matchVal.value
+                val stream1 = matchVal.okValue()
                 Result.Ok<TokenStream, ExpandError>(TokenStream(stream1))
             }; is Result.Err<*, *> -> {
                 Result.Err<TokenStream, ExpandError>(ExpandError())
@@ -225,7 +225,7 @@ public open class TokenStream(
          * change these errors into `LexError`s later.
          */
         public fun fromStr(src: String): Result<TokenStream, LexError> {
-            return Result.Ok<TokenStream, LexError>(TokenStream(when (val tryResult = BridgeMethods.tsFromStr(src).mapErr({ LexError(it) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<TokenStream, LexError>(tryResult.error) }))
+            return Result.Ok<TokenStream, LexError>(TokenStream(when (val tryResult = BridgeMethods.tsFromStr(src).mapErr({ LexError(it) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<TokenStream, LexError>(tryResult.errValue()) }))
         }
 
         public fun default(): TokenStream = TokenStream.new()
@@ -954,10 +954,10 @@ public open class Literal internal constructor(
                     // called on every char in the string, so it can be hot in
                     // programs with many long strings containing escapes.
                     unescapeStr(symbol, { c -> when (c) { is Result.Ok<*, *> -> {
-                        val c1 = c.value
+                        val c1 = c.okValue()
                         buf += c1
                     }; is Result.Err<*, *> -> {
-                        val err = c.error
+                        val err = c.errValue()
                         if (err.isFatal()) {
                             error = ConversionErrorKind.FailedToUnescape(err.into())
                         }
@@ -986,18 +986,18 @@ public open class Literal internal constructor(
                 var error = null
                 val buf = ArrayList(symbol.len())
                 unescapeCStr(symbol, { span, res -> when {
-                    res is Result.Ok<*, *> && res.value is MixedUnit.Char -> {
-                        val valueVal = res.value
-                        val (c) = valueVal as MixedUnit.Char
+                    res is Result.Ok<*, *> && res.okValue() is MixedUnit.Char -> {
+                        val okValueVal = res.okValue()
+                        val (c) = okValueVal as MixedUnit.Char
                         buf.addAll(c.get().encodeUtf8(List(4) { 0 }).encodeToByteArray().map { it.toUByte() })
                     }
-                    res is Result.Ok<*, *> && res.value is MixedUnit.HighByte -> {
-                        val valueVal1 = res.value
-                        val (b) = valueVal1 as MixedUnit.HighByte
+                    res is Result.Ok<*, *> && res.okValue() is MixedUnit.HighByte -> {
+                        val okValueVal1 = res.okValue()
+                        val (b) = okValueVal1 as MixedUnit.HighByte
                         buf.add(b.get())
                     }
                     else -> {
-                        val err = (res as Result.Err<*, *>).error
+                        val err = (res as Result.Err<*, *>).errValue()
                         if (err.isFatal()) {
                             error = ConversionErrorKind.FailedToUnescape(err.into())
                         }
@@ -1032,10 +1032,10 @@ public open class Literal internal constructor(
                 val buf = ArrayList(symbol.len())
                 var error = null
                 unescapeByteStr(symbol, { res -> when (res) { is Result.Ok<*, *> -> {
-                    val b = res.value
+                    val b = res.okValue()
                     buf.add(b)
                 }; is Result.Err<*, *> -> {
-                    val err = res.error
+                    val err = res.errValue()
                     if (err.isFatal()) {
                         error = ConversionErrorKind.FailedToUnescape(err.into())
                     }
@@ -1822,10 +1822,10 @@ public open class Literal internal constructor(
             run {
                 val matchVal = BridgeMethods.literalFromStr(src)
                 when (matchVal) { is Result.Ok<*, *> -> {
-                    val literal = matchVal.value
+                    val literal = matchVal.okValue()
                     Result.Ok<Literal, LexError>(Literal(literal))
                 }; is Result.Err<*, *> -> {
-                    val msg = matchVal.error
+                    val msg = matchVal.errValue()
                     Result.Err<Literal, LexError>(LexError(msg))
                 } }
             }

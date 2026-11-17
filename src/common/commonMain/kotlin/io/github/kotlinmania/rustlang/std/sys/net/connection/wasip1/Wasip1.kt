@@ -156,7 +156,7 @@ public open class TcpStream(
     public open fun takeError(): Result<Error?, Error> = unsupported()
 
     public open fun setNonblocking(state: Boolean): Result<Unit, Error> {
-        val fdstat = when (val tryResult = fdFdstatGet(((this.socket().asInner().asRawFd() as Any?) as Fd)).mapErr(err2io)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        val fdstat = when (val tryResult = fdFdstatGet(((this.socket().asInner().asRawFd() as Any?) as Fd)).mapErr(err2io)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
         var flags = fdstat.fsFlags
         if (state) {
             flags = flags or FDFLAGS_NONBLOCK
@@ -187,7 +187,7 @@ public open class TcpListener(
     public open fun socketAddr(): Result<SocketAddr, Error> = unsupported()
 
     public open fun accept(): Result<Pair<TcpStream, SocketAddr>, Error> {
-        val fd = when (val tryResult = sockAccept(this.asInner().asInner().asRawFd(), 0).mapErr(err2io)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<TcpStream, SocketAddr>, Error>(tryResult.error) }
+        val fd = when (val tryResult = sockAccept(this.asInner().asInner().asRawFd(), 0).mapErr(err2io)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<TcpStream, SocketAddr>, Error>(tryResult.errValue()) }
         return Result.Ok<Pair<TcpStream, SocketAddr>, Error>(Pair(TcpStream.fromInner(Socket.fromRawFd(fd.toInt())), SocketAddr.new(Ipv4Addr.UNSPECIFIED.into(), 0)))
     }
 
@@ -208,7 +208,7 @@ public open class TcpListener(
     public open fun takeError(): Result<Error?, Error> = unsupported()
 
     public open fun setNonblocking(state: Boolean): Result<Unit, Error> {
-        val fdstat = when (val tryResult = fdFdstatGet(((this.socket().asInner().asRawFd() as Any?) as Fd)).mapErr(err2io)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        val fdstat = when (val tryResult = fdFdstatGet(((this.socket().asInner().asRawFd() as Any?) as Fd)).mapErr(err2io)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
         var flags = fdstat.fsFlags
         if (state) {
             flags = flags or FDFLAGS_NONBLOCK

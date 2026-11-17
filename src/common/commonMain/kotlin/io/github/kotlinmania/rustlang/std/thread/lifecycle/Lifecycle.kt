@@ -99,7 +99,7 @@ public fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean, 
             Box.fromRaw(ptr1)
         }
     val init = ThreadInit(handle = thread.clone(), rustStart = rustStart1)
-    return RustResult.Ok<JoinInner<T>, Error>(JoinInner(native = when (val tryResult = io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread.new(stackSize1, init)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<JoinInner<T>, Error>((tryResult.error as Error)); else -> error("Unexpected RustResult variant: $tryResult") }, thread = thread, packet = myPacket))
+    return RustResult.Ok<JoinInner<T>, Error>(JoinInner(native = when (val tryResult = io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread.new(stackSize1, init)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<JoinInner<T>, Error>((tryResult.errValue() as Error)); else -> error("Unexpected RustResult variant: $tryResult") }, thread = thread, packet = myPacket))
 }
 
 /**

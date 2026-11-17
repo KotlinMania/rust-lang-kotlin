@@ -1,6 +1,7 @@
 // port-lint: source dlmalloc.rs
 package io.github.kotlinmania.rustlang.dlmalloc.dlmalloc
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
@@ -13,6 +14,11 @@ import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.num.trailingZeros
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.alignOffset
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isAligned
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingAdd
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.dlmalloc.Allocator
@@ -144,7 +150,7 @@ public open class Dlmalloc<A> internal constructor(
             if (smallbits and 0x3u != 0u) {
                 // If our the lowest bit, our `idx`, is unset then bump up the
                 // index as we'll be using the next bucket up.
-                idx += smallbits.inv() and 1
+                idx += smallbits.inv() and 1u
                 val b = this.smallbinAt(idx)
                 val p = b.prev
                 this.unlinkFirstSmallChunk(b, p, idx)
@@ -460,7 +466,7 @@ public open class Dlmalloc<A> internal constructor(
             // if the first calculation places us at a spot with less than
             // `minChunkSize` leader we can move to the next aligned spot.
             // we've allocated enough total room so that this is always possible
-            val br = Chunk.fromMem(MutPtr(((mem.toInt() + alignment1 - 1) and (!alignment1 + 1)).toLong()))
+            val br = Chunk.fromMem(MutPtr(((mem.toInt() + alignment1 - 1) and (alignment1.inv() + 1)).toLong()))
             val pos =
                 if ((br.rawAddress.toInt() - p.rawAddress.toInt()) > this.minChunkSize()) {
                     MutPtr((br).rawAddress)
@@ -737,7 +743,7 @@ public open class Dlmalloc<A> internal constructor(
 
     public open fun tmallocLarge(size: Int): MutPtr {
         var v = MutPtr(0L)
-        var rsize = !size + 1
+        var rsize = size.inv() + 1
         val idx = this.computeTreeIndex(size)
         var t = this.treebinAt(idx)
         if (!t.isNull()) {
@@ -2075,7 +2081,7 @@ public fun alignUp(a: Int, alignment: Int): Int {
 
 public fun leftBits(x: UInt): UInt = (x shl 1) or (((x shl 1).inv()) + 1u)
 
-public fun leastBit(x: UInt): UInt = x and (!x + 1u)
+public fun leastBit(x: UInt): UInt = x and (x.inv() + 1u)
 
 public fun leftshiftForTreeIndex(x: UInt): UInt {
     val x1 = Int.tryFrom(x).unwrap()

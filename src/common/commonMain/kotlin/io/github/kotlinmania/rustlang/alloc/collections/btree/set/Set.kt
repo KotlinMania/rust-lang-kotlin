@@ -14,6 +14,8 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.setval.SetValZST
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.adapters.peekable.Peekable
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
@@ -1133,7 +1135,7 @@ public open class BTreeSet<T, A : AllocatorClone>(
  */
 public open class Iter<T> internal constructor(
     iterCtorArg: Keys<T, SetValZST>,
-) : TrustedLen, Iterable<T> {
+) : TrustedLen<Any>, Iterable<T> {
     public var iter: Keys<T, SetValZST> = iterCtorArg
         internal set
 
@@ -1195,7 +1197,7 @@ public open class Iter<T> internal constructor(
  */
 public open class IntoIter<T, A : AllocatorClone> internal constructor(
     iterCtorArg: io.github.kotlinmania.rustlang.alloc.collections.btree.map.IntoIter<T, SetValZST, A>,
-) : TrustedLen, Iterable<T> {
+) : TrustedLen<Any>, Iterable<T> {
     public var iter: io.github.kotlinmania.rustlang.alloc.collections.btree.map.IntoIter<T, SetValZST, A> = iterCtorArg
         internal set
 

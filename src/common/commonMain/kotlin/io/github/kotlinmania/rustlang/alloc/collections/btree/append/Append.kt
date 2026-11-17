@@ -28,7 +28,7 @@ public fun <K, V, I, A : AllocatorClone> Root<K, V>.bulkPush(iter: I, length: Ru
                 run {
                     val matchVal = testNode.ascend()
                     when (matchVal) { is Result.Ok<*, *> -> {
-                        val parent = matchVal.value
+                        val parent = matchVal.okValue()
                         val parent1 = parent.intoNode()
                         if (parent1.len() < CAPACITY) {
                             // Found a node with space left, push here.

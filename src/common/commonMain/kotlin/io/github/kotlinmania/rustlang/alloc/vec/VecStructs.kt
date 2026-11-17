@@ -18,7 +18,9 @@ import io.github.kotlinmania.rustlang.alloc.vec.sveretain.chunkedRetain
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.hint.unlikely
 import io.github.kotlinmania.rustlang.core.iter
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.zip
@@ -46,12 +48,18 @@ import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dangling
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.castSlice
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.castUninit
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingByteAdd
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 import io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts
 
 /**
@@ -2014,7 +2022,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      * Appends elements to `self` from other buffer, returning [TryReserveError] on OOM.
      */
     public open fun tryAppendElements(other: ConstPtr): Result<Unit, TryReserveError> {
-        when (val tryResult = this.tryReserve(other.len())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
+        when (val tryResult = this.tryReserve(other.len())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, TryReserveError>(tryResult.errValue()) }
         // ignore-tidy-undocumented-unchecked
         run {
             this.appendElementsUnreserved(other)
@@ -2735,10 +2743,6 @@ public open class Vec<T, A : Allocator> internal constructor(
         return state
     }
 
-    public open fun index(index: I): Output = Index.index(this, index)
-
-    public open fun indexMut(index: I): Output = IndexMut.indexMut(this, index)
-
     /**
      * Creates a consuming iterator, that is, one that moves each value out of
      * the vector (from start to end). The vector cannot be used after calling
@@ -3114,7 +3118,7 @@ public open class Vec<T, A : Allocator> internal constructor(
          * [will not allocate]: self#memory-layout
          */
         public fun <T, A : Allocator> tryWithCapacityIn(capacity: Int, alloc: A): Result<Vec<T, A>, TryReserveError> {
-            return Result.Ok<Vec<T, A>, TryReserveError>(Vec(buf = when (val tryResult = RawVec.tryWithCapacityIn(capacity, alloc)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Vec<T, A>, TryReserveError>(tryResult.error) }, len = 0))
+            return Result.Ok<Vec<T, A>, TryReserveError>(Vec(buf = when (val tryResult = RawVec.tryWithCapacityIn(capacity, alloc)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Vec<T, A>, TryReserveError>(tryResult.errValue()) }, len = 0))
         }
 
         /**
@@ -3746,6 +3750,10 @@ public fun <T : TrivialClone, A : Allocator> Vec<T, A>.specExtendFromWithin(src:
     // - The elements were just initialized by `copyNonoverlapping`
     this.len += count
 }
+
+public fun <Output, T, I : SliceIndex<List<T>, Output>, A : Allocator> Vec<T, A>.index(index: I): Output = indexT(this, index)
+
+public fun <Output, T, I : SliceIndex<List<T>, Output>, A : Allocator> Vec<T, A>.indexMut(index: I): Output = indexMutT(this, index)
 
 /**
  * Collects an iterator into a Vec, commonly called via [Iterator.collect]

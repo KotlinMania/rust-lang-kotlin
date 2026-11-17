@@ -25,6 +25,7 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -352,13 +353,13 @@ public open class Socket(
         val errorfds = fds1
         val count = run {
             val result = select(1, MutPtr(0L), writefds, errorfds, timeout1)
-            when (val tryResult = cvt(result)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = cvt(result)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
         }
         return when (count) {
             0 -> Result.Err<Unit, Error>(constError(ErrorKind.TimedOut, "connection timed out"))
             else -> {
                 if (writefds.fdCount != 1) {
-                    when (val matchVal = when (val tryResult = this.takeError()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }) {
+                    when (val matchVal = when (val tryResult = this.takeError()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }) {
                         null -> {}
                         else -> {
                             val e = matchVal
@@ -380,7 +381,7 @@ public open class Socket(
     }
 
     public open fun duplicate(): Result<Socket, Error> {
-        return Result.Ok<Socket, Error>(Socket(when (val tryResult = this.value.tryClone()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Socket, Error>(tryResult.error) }))
+        return Result.Ok<Socket, Error>(Socket(when (val tryResult = this.value.tryClone()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Socket, Error>(tryResult.errValue()) }))
     }
 
     public open fun recvWithFlags(buf: BorrowedCursor<UByte>, flags: CInt): Result<Unit, Error> {
@@ -406,7 +407,7 @@ public open class Socket(
 
     public open fun read(buf: MutableList<UByte>): Result<Int, Error> {
         val buf1 = BorrowedBuf.from(buf)
-        when (val tryResult = this.recvWithFlags(buf1.unfilled(), 0)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.error) }
+        when (val tryResult = this.recvWithFlags(buf1.unfilled(), 0)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.errValue()) }
         return Result.Ok<Int, Error>(buf1.len())
     }
 
@@ -437,7 +438,7 @@ public open class Socket(
 
     public open fun peek(buf: MutableList<UByte>): Result<Int, Error> {
         val buf1 = BorrowedBuf.from(buf)
-        when (val tryResult = this.recvWithFlags(buf1.unfilled(), MSG_PEEK)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.error) }
+        when (val tryResult = this.recvWithFlags(buf1.unfilled(), MSG_PEEK)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.errValue()) }
         return Result.Ok<Int, Error>(buf1.len())
     }
 
@@ -453,12 +454,12 @@ public open class Socket(
             SOCKET_ERROR -> {
                 val error = wSAGetLastError()
                 if (error == WSAESHUTDOWN) {
-                    Result.Ok<Pair<Int, SocketAddr>, Error>(Pair(0, when (val tryResult = socketAddrFromC(storage, addrlen)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Int, SocketAddr>, Error>(tryResult.error) }))
+                    Result.Ok<Pair<Int, SocketAddr>, Error>(Pair(0, when (val tryResult = socketAddrFromC(storage, addrlen)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Int, SocketAddr>, Error>(tryResult.errValue()) }))
                 } else {
                     Result.Err<Pair<Int, SocketAddr>, Error>(Error.fromRawOsError(error))
                 }
             }
-            else -> Result.Ok<Pair<Int, SocketAddr>, Error>(Pair(result, when (val tryResult = socketAddrFromC(storage, addrlen)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Int, SocketAddr>, Error>(tryResult.error) }))
+            else -> Result.Ok<Pair<Int, SocketAddr>, Error>(Pair(result, when (val tryResult = socketAddrFromC(storage, addrlen)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Int, SocketAddr>, Error>(tryResult.errValue()) }))
         }
     }
 
@@ -493,7 +494,7 @@ public open class Socket(
     }
 
     public open fun timeout(kind: CInt): Result<Duration?, Error> {
-        val raw: UInt = when (val tryResult = getsockopt(this, SOL_SOCKET, kind)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Duration?, Error>(tryResult.error) }
+        val raw: UInt = when (val tryResult = getsockopt(this, SOL_SOCKET, kind)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Duration?, Error>(tryResult.errValue()) }
         return if (raw == 0u) {
             Result.Ok<Duration?, Error>(null)
         } else {
@@ -526,26 +527,26 @@ public open class Socket(
     }
 
     public open fun linger(): Result<Duration?, Error> {
-        val value: Linger = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_LINGER)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Duration?, Error>(tryResult.error) }
+        val value: Linger = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_LINGER)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Duration?, Error>(tryResult.errValue()) }
         return Result.Ok<Duration?, Error>((value.lOnoff != 0u.toUShort()).then({ Duration.fromSecs(value.lLinger.toULong()) }))
     }
 
     public open fun setKeepalive(keepalive: Boolean): Result<Unit, Error> = setsockopt(this, SOL_SOCKET, SO_KEEPALIVE, keepalive.toInt())
 
     public open fun keepalive(): Result<Boolean, Error> {
-        val raw: Bool = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_KEEPALIVE)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Boolean, Error>(tryResult.error) }
+        val raw: Bool = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_KEEPALIVE)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Boolean, Error>(tryResult.errValue()) }
         return Result.Ok<Boolean, Error>((raw != 0).toUByte())
     }
 
     public open fun setNodelay(nodelay: Boolean): Result<Unit, Error> = setsockopt(this, IPPROTO_TCP, TCP_NODELAY, nodelay.toInt())
 
     public open fun nodelay(): Result<Boolean, Error> {
-        val raw: Bool = when (val tryResult = getsockopt(this, IPPROTO_TCP, TCP_NODELAY)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Boolean, Error>(tryResult.error) }
+        val raw: Bool = when (val tryResult = getsockopt(this, IPPROTO_TCP, TCP_NODELAY)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Boolean, Error>(tryResult.errValue()) }
         return Result.Ok<Boolean, Error>((raw != 0).toUByte())
     }
 
     public open fun takeError(): Result<Error?, Error> {
-        val raw: CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_ERROR)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Error?, Error>(tryResult.error) }
+        val raw: CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_ERROR)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Error?, Error>(tryResult.errValue()) }
         return if (raw == 0) {
             Result.Ok<Error?, Error>(null)
         } else {
@@ -585,7 +586,7 @@ public open class Socket(
                 }
                 run {
                     val socket2 = Socket.fromRaw(socket1)
-                    when (val tryResult = socket2.value.setNoInherit()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Socket, Error>(tryResult.error) }
+                    when (val tryResult = socket2.value.setNoInherit()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Socket, Error>(tryResult.errValue()) }
                     Result.Ok<Socket, Error>(socket2)
                 }
             }

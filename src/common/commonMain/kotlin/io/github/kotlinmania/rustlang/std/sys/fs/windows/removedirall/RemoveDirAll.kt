@@ -2,6 +2,8 @@
 package io.github.kotlinmania.rustlang.std.sys.fs.windows.removedirall
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.castMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align4
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
@@ -109,8 +111,8 @@ public fun openLinkNoReparse(parent: File, path: UnicodeStrRef, access: UInt, op
             val result = ntOpenFile(access, obj, share, options1)
             // Retry without OBJ_DONT_REPARSE if it's not supported.
             if (when {
-                result is Result.Err<*, *> && result.error == WinError.INVALID_PARAMETER -> {
-                    val errorVal = result.error
+                result is Result.Err<*, *> && result.errValue() == WinError.INVALID_PARAMETER -> {
+                    val errValueVal = result.errValue()
                     true
                 }
                 else -> false
@@ -125,15 +127,15 @@ public fun openLinkNoReparse(parent: File, path: UnicodeStrRef, access: UInt, op
     // Ignore not found errors
     return when {
         result1 is Result.Ok<*, *> -> {
-            val f = result1.value
+            val f = result1.okValue()
             Result.Ok<File?, WinError>(f)
         }
-        result1 is Result.Err<*, *> && (result1.error == WinError.FILE_NOT_FOUND || result1.error == WinError.PATH_NOT_FOUND || result1.error == WinError.BAD_NETPATH || result1.error == WinError.BAD_NET_NAME || result1.error == WinError.DELETE_PENDING) -> {
-            val errorVal1 = (result1 as Result.Err<*, *>).error
+        result1 is Result.Err<*, *> && (result1.errValue() == WinError.FILE_NOT_FOUND || result1.errValue() == WinError.PATH_NOT_FOUND || result1.errValue() == WinError.BAD_NETPATH || result1.errValue() == WinError.BAD_NET_NAME || result1.errValue() == WinError.DELETE_PENDING) -> {
+            val errValueVal1 = (result1 as Result.Err<*, *>).errValue()
             Result.Ok<File?, WinError>(null)
         }
         else -> {
-            val e = (result1 as Result.Err<*, *>).error
+            val e = (result1 as Result.Err<*, *>).errValue()
             Result.Err<File?, WinError>(e)
         }
     }
@@ -150,17 +152,17 @@ public fun delete(parent: File, name: UnicodeStrRef): Result<Unit, WinError> {
     return run {
         val matchVal = openLinkNoReparse(parent, name, DELETE, 0u)
         when {
-            matchVal is Result.Ok<*, *> && matchVal.value != null -> {
-                val valueVal = matchVal.value
-                val f = valueVal
+            matchVal is Result.Ok<*, *> && matchVal.okValue() != null -> {
+                val okValueVal = matchVal.okValue()
+                val f = okValueVal
                 f.delete()
             }
-            matchVal is Result.Ok<*, *> && matchVal.value == null -> {
-                val None = matchVal.value
+            matchVal is Result.Ok<*, *> && matchVal.okValue() == null -> {
+                val None = matchVal.okValue()
                 Result.Ok<Unit, WinError>(Unit)
             }
             else -> {
-                val e = (matchVal as Result.Err<*, *>).error
+                val e = (matchVal as Result.Err<*, *>).errValue()
                 Result.Err<Unit, WinError>(e)
             }
         }
@@ -197,13 +199,13 @@ public fun removeDirAllIterative(dir: File): Result<Unit, WinError> {
         val dir2 = matchVal
         val restart = false
         // we never have to restart, we iterate every directory only once
-        val moreData = when (val tryResult = dir2.fillDirBuff(buffer, restart)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, WinError>(tryResult.error) }
+        val moreData = when (val tryResult = dir2.fillDirBuff(buffer, restart)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, WinError>(tryResult.errValue()) }
         if (!moreData) {
             // This directory is done!
             // Attempt to delete, retrying on not empty errors because we may
             // need to wait some time for files to be removed from the filesystem.
             val name = unicodeStr("")
-            when (val tryResult = retry({ delete(dir2, name) }, WinError.DIR_NOT_EMPTY)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, WinError>(tryResult.error) }
+            when (val tryResult = retry({ delete(dir2, name) }, WinError.DIR_NOT_EMPTY)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, WinError>(tryResult.errValue()) }
             continue
         }
         // There is more data, so we have to re-insert `dir` so it gets visited again. We need to
@@ -217,7 +219,7 @@ public fun removeDirAllIterative(dir: File): Result<Unit, WinError> {
         for ((name1, isDirectory) in buffer.iter()) {
             val name2 = unicodeStr(name1)
             if (isDirectory) {
-                val subdir = when (val tryResult = openDir(dir3, name2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, WinError>(tryResult.error) } ?: continue
+                val subdir = when (val tryResult = openDir(dir3, name2)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, WinError>(tryResult.errValue()) } ?: continue
                 dirlist.add(subdir)
                 // We need to re-create the borrow.
                 dir3 = dirlist[dirIdx]
@@ -225,7 +227,7 @@ public fun removeDirAllIterative(dir: File): Result<Unit, WinError> {
                 // Attempt to delete, retrying on sharing violation errors as these
                 // can often be very temporary. E.g. if something takes just a
                 // bit longer than expected to release a file handle.
-                when (val tryResult = retry({ delete(dir3, name2) }, WinError.SHARING_VIOLATION)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, WinError>(tryResult.error) }
+                when (val tryResult = retry({ delete(dir3, name2) }, WinError.SHARING_VIOLATION)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, WinError>(tryResult.errValue()) }
             }
         }
     }

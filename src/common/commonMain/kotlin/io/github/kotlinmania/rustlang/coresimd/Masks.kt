@@ -5,6 +5,9 @@ package io.github.kotlinmania.rustlang.coresimd
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -19,6 +22,8 @@ import io.github.kotlinmania.rustlang.core.ops.BitXor
 import io.github.kotlinmania.rustlang.core.ops.BitXorAssign
 import io.github.kotlinmania.rustlang.core.ops.Not
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // Types and traits associated with masking elements of vectors.
@@ -88,10 +93,10 @@ public interface MaskElement<T, out Mask, out Unsigned> : SimdElement<T>, SimdCa
 
 public fun privateMethodsValidByte(value: Simd<Byte>, n: Int): Boolean =
     run {
-        val falses: Simd<Byte> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(0, n); _simdArg0 }
-        val trues: Simd<Byte> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(-1, n); _simdArg0 }
-        val valid: Simd<Byte> = run { val _simdArg0 = falses; val _simdArg1 = trues; _simdArg0 }
-        run { val _simdArg0 = valid; false }
+        val falses: Simd<Byte> = run { val simdArg0 = value; val simdArg1 = Simd.splat(0, n); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Byte>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).alignBytes)); res } }
+        val trues: Simd<Byte> = run { val simdArg0 = value; val simdArg1 = Simd.splat(-1, n); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Byte>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).alignBytes)); res } }
+        val valid: Simd<Byte> = run { val simdArg0 = falses; val simdArg1 = trues; simdArg0 }
+        run { val simdArg0 = valid; false }
     }
 
 public fun Byte.eq(other: Byte): Boolean = this == other
@@ -106,10 +111,10 @@ public val FALSE: Byte = 0
 
 public fun privateMethodsValidShort(value: Simd<Short>, n: Int): Boolean =
     run {
-        val falses: Simd<Short> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(0, n); _simdArg0 }
-        val trues: Simd<Short> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(-1, n); _simdArg0 }
-        val valid: Simd<Short> = run { val _simdArg0 = falses; val _simdArg1 = trues; _simdArg0 }
-        run { val _simdArg0 = valid; false }
+        val falses: Simd<Short> = run { val simdArg0 = value; val simdArg1 = Simd.splat(0, n); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Short>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Short>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Short>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Short>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Short>>()).alignBytes)); res } }
+        val trues: Simd<Short> = run { val simdArg0 = value; val simdArg1 = Simd.splat(-1, n); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Short>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Short>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Short>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Short>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Short>>()).alignBytes)); res } }
+        val valid: Simd<Short> = run { val simdArg0 = falses; val simdArg1 = trues; simdArg0 }
+        run { val simdArg0 = valid; false }
     }
 
 public fun Short.eq(other: Short): Boolean = this == other
@@ -124,10 +129,10 @@ public val FALSE1: Short = 0
 
 public fun privateMethodsValidInt(value: Simd<Int>, n: Int): Boolean =
     run {
-        val falses: Simd<Int> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(0, n); _simdArg0 }
-        val trues: Simd<Int> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(-1, n); _simdArg0 }
-        val valid: Simd<Int> = run { val _simdArg0 = falses; val _simdArg1 = trues; _simdArg0 }
-        run { val _simdArg0 = valid; false }
+        val falses: Simd<Int> = run { val simdArg0 = value; val simdArg1 = Simd.splat(0, n); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Int>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Int>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Int>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Int>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Int>>()).alignBytes)); res } }
+        val trues: Simd<Int> = run { val simdArg0 = value; val simdArg1 = Simd.splat(-1, n); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Int>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Int>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Int>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Int>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Int>>()).alignBytes)); res } }
+        val valid: Simd<Int> = run { val simdArg0 = falses; val simdArg1 = trues; simdArg0 }
+        run { val simdArg0 = valid; false }
     }
 
 public fun Int.eq(other: Int): Boolean = this == other
@@ -142,10 +147,10 @@ public val FALSE2: Int = 0
 
 public fun privateMethodsValidLong(value: Simd<Long>, n: Int): Boolean =
     run {
-        val falses: Simd<Long> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(0, n); _simdArg0 }
-        val trues: Simd<Long> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(-1, n); _simdArg0 }
-        val valid: Simd<Long> = run { val _simdArg0 = falses; val _simdArg1 = trues; _simdArg0 }
-        run { val _simdArg0 = valid; false }
+        val falses: Simd<Long> = run { val simdArg0 = value; val simdArg1 = Simd.splat(0, n); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Long>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); res } }
+        val trues: Simd<Long> = run { val simdArg0 = value; val simdArg1 = Simd.splat(-1, n); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Long>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); res } }
+        val valid: Simd<Long> = run { val simdArg0 = falses; val simdArg1 = trues; simdArg0 }
+        run { val simdArg0 = valid; false }
     }
 
 public fun Long.eq(other: Long): Boolean = this == other
@@ -209,7 +214,7 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
         // This would be hypothetically valid as an "in-place" reinterpret,
         // but these are "dependently-sized" types, so copy elision it is!
         return run {
-            var bytes: Simd<Byte> = run { val _simdArg0 = this.toSimd(); _simdArg0 }
+            var bytes: Simd<Byte> = run { val simdArg0 = this.toSimd(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Byte>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).alignBytes)); res } }
             bytes = bytes and Simd.splat(1, n)
             transmuteCopy(bytes)
         }
@@ -226,7 +231,7 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
      */
     public open fun <Mask, Unsigned, U> cast(): Mask<U, Mask, Unsigned> {
         // Safety: mask elements are integers
-        return Mask(run { val _simdArg0 = this.value; _simdArg0 }, fieldLayout = this.fieldLayout)
+        return Mask(run { val simdArg0 = this.value; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask<U, Mask, Unsigned>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask<U, Mask, Unsigned>>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask<U, Mask, Unsigned>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask<U, Mask, Unsigned>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask<U, Mask, Unsigned>>()).alignBytes)); res } }, fieldLayout = this.fieldLayout)
     }
 
     /**
@@ -282,7 +287,7 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
      */
     public open fun any(): Boolean {
         // Safety: `self` is a mask vector
-        return run { val _simdArg0 = this.value; false }
+        return run { val simdArg0 = this.value; false }
     }
 
     /**
@@ -290,7 +295,7 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
      */
     public open fun all(): Boolean {
         // Safety: `self` is a mask vector
-        return run { val _simdArg0 = this.value; false }
+        return run { val simdArg0 = this.value; false }
     }
 
     /**
@@ -302,7 +307,7 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
         fun <Mask, Unsigned, T, U : FixEndianness<U>> toBitmaskImpl(mask: Mask<T, Mask, Unsigned>, m: Int, n: Int): U {
             val resized = mask.resize(false)
             // Safety: `resized` is an integer vector with length M, which must match T
-            val bitmask: U = run { val _simdArg0 = resized.first; _simdArg0 }
+            val bitmask: U = run { val simdArg0 = resized.first; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U>()).alignBytes)); val res = (UnresolvedTypeLayout<U>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U>()).alignBytes)); res } }
             // LLVM assumes bit order should match endianness
             return bitmask.fixEndianness()
         }
@@ -354,14 +359,14 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
                     i += 1
                 }
                 // Safety: the input and output are integer vectors
-                run { val _simdArg0 = Simd.fromArray(index, n); _simdArg0 }
+                run { val simdArg0 = Simd.fromArray(index, n); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<T>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); res } }
             }
         // Safety: the input and output are integer vectors
-        val maskedIndex: Simd<T> = run { val _simdArg0 = (!this).toSimd(); val _simdArg1 = index1; _simdArg0 }
+        val maskedIndex: Simd<T> = run { val simdArg0 = (!this).toSimd(); val simdArg1 = index1; simdArg0 }
         // Safety: the input and output are integer vectors
-        val maskedIndex1: Simd<Unsigned> = run { val _simdArg0 = maskedIndex; _simdArg0 }
+        val maskedIndex1: Simd<Unsigned> = run { val simdArg0 = maskedIndex; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Unsigned>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Unsigned>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Unsigned>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Unsigned>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Unsigned>>()).alignBytes)); res } }
         // Safety: the input is an integer vector
-        val minIndex: Unsigned = run { val _simdArg0 = maskedIndex1; _simdArg0 }
+        val minIndex: Unsigned = run { val simdArg0 = maskedIndex1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Unsigned>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Unsigned>()).alignBytes)); val res = (UnresolvedTypeLayout<Unsigned>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Unsigned>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Unsigned>()).alignBytes)); res } }
         // Safety: the return value is the unsigned version of T
         val minIndex1: T = transmuteCopy(minIndex)
         return if (minIndex1.eq(T.TRUE)) {
@@ -406,12 +411,12 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
                     i += 1
                 }
                 // Safety: the input and output are integer vectors
-                run { val _simdArg0 = Simd.fromArray(index, n); _simdArg0 }
+                run { val simdArg0 = Simd.fromArray(index, n); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<T>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); res } }
             }
         // Safety: the input and output are integer vectors
-        val maskedIndex: Simd<T> = run { val _simdArg0 = (!this).toSimd(); val _simdArg1 = index1; _simdArg0 }
+        val maskedIndex: Simd<T> = run { val simdArg0 = (!this).toSimd(); val simdArg1 = index1; simdArg0 }
         // Safety: the input is an integer vector
-        val maxIndex: T = run { val _simdArg0 = maskedIndex; _simdArg0 }
+        val maxIndex: T = run { val simdArg0 = maskedIndex; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<T>()).alignBytes)); val res = (UnresolvedTypeLayout<T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<T>()).alignBytes)); res } }
         return if (maxIndex.eq(T.TRUE)) {
             null
         } else {
@@ -433,26 +438,26 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
 
     public open fun bitand(rhs: Mask<T, Mask, Unsigned>): Mask<T, Mask, Unsigned> {
         // Safety: `self` is an integer vector
-        return Mask(run { val _simdArg0 = this.value; val _simdArg1 = rhs.value; _simdArg0 }, fieldLayout = this.fieldLayout)
+        return Mask(run { val simdArg0 = this.value; val simdArg1 = rhs.value; simdArg0 }, fieldLayout = this.fieldLayout)
     }
 
     public open fun bitand(rhs: Boolean): Mask<T, Mask, Unsigned> = this and Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
 
     public open fun bitor(rhs: Mask<T, Mask, Unsigned>): Mask<T, Mask, Unsigned> {
         // Safety: `self` is an integer vector
-        return Mask(run { val _simdArg0 = this.value; val _simdArg1 = rhs.value; _simdArg0 }, fieldLayout = this.fieldLayout)
+        return Mask(run { val simdArg0 = this.value; val simdArg1 = rhs.value; simdArg0 }, fieldLayout = this.fieldLayout)
     }
 
     public open fun bitor(rhs: Boolean): Mask<T, Mask, Unsigned> = this or Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
 
     public open fun bitxor(rhs: Mask<T, Mask, Unsigned>): Mask<T, Mask, Unsigned> {
         // Safety: `self` is an integer vector
-        return Mask(run { val _simdArg0 = this.value; val _simdArg1 = rhs.value; _simdArg0 }, fieldLayout = this.fieldLayout)
+        return Mask(run { val simdArg0 = this.value; val simdArg1 = rhs.value; simdArg0 }, fieldLayout = this.fieldLayout)
     }
 
     public open fun bitxor(rhs: Boolean): Mask<T, Mask, Unsigned> = this xor Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
 
-    public open fun not(): Mask<T, Mask, Unsigned> = Mask.splat(true, n, fieldLayout = this.fieldLayout) xor this
+    public open operator fun not(): Mask<T, Mask, Unsigned> = Mask.splat(true, n, fieldLayout = this.fieldLayout) xor this
 
     public open fun bitandAssign(rhs: Mask<T, Mask, Unsigned>) {
         var selfMut = this
@@ -508,8 +513,8 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
             // but these are "dependently-sized" types, so copy elision it is!
             return run {
                 val bytes: UByteArray = transmuteCopy(array)
-                val bools: Simd<Byte> = run { val _simdArg0 = Simd.fromArray(bytes, n); val _simdArg1 = Simd.splat(0u.toUByte(), n); _simdArg0 }
-                fromSimdUnchecked(run { val _simdArg0 = bools; _simdArg0 })
+                val bools: Simd<Byte> = run { val simdArg0 = Simd.fromArray(bytes, n); val simdArg1 = Simd.splat(0u.toUByte(), n); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Byte>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).alignBytes)); res } }
+                fromSimdUnchecked(run { val simdArg0 = bools; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask<T, Mask, Unsigned>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask<T, Mask, Unsigned>>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask<T, Mask, Unsigned>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask<T, Mask, Unsigned>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask<T, Mask, Unsigned>>()).alignBytes)); res } })
             }
         }
 
@@ -548,19 +553,19 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
         public fun <Mask, Unsigned, T> fromBitmask(bitmask: ULong, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T, Mask, Unsigned> = Mask(bitmask.select(Simd.splat(T.TRUE, n), Simd.splat(T.FALSE, n)), fieldLayout = fieldLayout)
 
         // vector/array conversion
-        public fun <Mask, Unsigned, T> from(array: BooleanArray, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T, Mask, Unsigned> = fromArray(array, n)
+        public fun <Mask, Unsigned, T> from(array: BooleanArray, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T, Mask, Unsigned> = fromArray(array)
 
-        public fun <Mask, Unsigned, T> default(fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T, Mask, Unsigned> = splat(false, n)
+        public fun <Mask, Unsigned, T> default(fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T, Mask, Unsigned> = splat(false)
     }
 }
 
 public fun <Mask, Unsigned, T> fromBooleanArrayn(vector: Mask<T, Mask, Unsigned>, n: Int): BooleanArray = vector.toArray()
 
-public fun <Mask, Unsigned, T> Boolean.bitand(rhs: Mask<T, Mask, Unsigned>, n: Int): Mask<T, Mask, Unsigned> = splat(this, n) and rhs
+public fun <Mask, Unsigned, T> Boolean.bitand(rhs: Mask<T, Mask, Unsigned>, n: Int): Mask<T, Mask, Unsigned> = splat(this) and rhs
 
-public fun <Mask, Unsigned, T> Boolean.bitor(rhs: Mask<T, Mask, Unsigned>, n: Int): Mask<T, Mask, Unsigned> = splat(this, n) or rhs
+public fun <Mask, Unsigned, T> Boolean.bitor(rhs: Mask<T, Mask, Unsigned>, n: Int): Mask<T, Mask, Unsigned> = splat(this) or rhs
 
-public fun <Mask, Unsigned, T> Boolean.bitxor(rhs: Mask<T, Mask, Unsigned>, n: Int): Mask<T, Mask, Unsigned> = splat(this, n) xor rhs
+public fun <Mask, Unsigned, T> Boolean.bitxor(rhs: Mask<T, Mask, Unsigned>, n: Int): Mask<T, Mask, Unsigned> = splat(this) xor rhs
 
 public fun fromMaskShortN(value: Mask<Byte, Mask, Unsigned>, n: Int): Mask<Short, Mask, Unsigned> = value.cast()
 

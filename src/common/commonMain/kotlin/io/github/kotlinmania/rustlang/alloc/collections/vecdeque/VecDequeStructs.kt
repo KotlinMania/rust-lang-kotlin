@@ -17,7 +17,9 @@ import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.iter.adapters.byrefsized.ByRefSized
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatn.repeatN
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatwith.repeatWith
@@ -35,6 +37,10 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.castSlice
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.sub
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawPartsMut
 import io.github.kotlinmania.rustlang.core.ptr.write
@@ -841,10 +847,10 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun tryReserveExact(additional: Int): Result<Unit, TryReserveError> {
-        val newCap = when (val tryResult = (this.len.checkedAdd(additional)?.let { Result.Ok<Int, TryReserveError>(it) } ?: Result.Err<Int, TryReserveError>(TryReserveErrorKind.CapacityOverflow))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
+        val newCap = when (val tryResult = (this.len.checkedAdd(additional)?.let { Result.Ok<Int, TryReserveError>(it) } ?: Result.Err<Int, TryReserveError>(TryReserveErrorKind.CapacityOverflow))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, TryReserveError>(tryResult.errValue()) }
         val oldCap = this.capacity()
         if (newCap > oldCap) {
-            when (val tryResult = this.buf.tryReserveExact(this.len, additional)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
+            when (val tryResult = this.buf.tryReserveExact(this.len, additional)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, TryReserveError>(tryResult.errValue()) }
             // ignore-tidy-undocumented-unchecked
             run {
                 this.handleCapacityIncrease(oldCap)
@@ -884,10 +890,10 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun tryReserve(additional: Int): Result<Unit, TryReserveError> {
-        val newCap = when (val tryResult = (this.len.checkedAdd(additional)?.let { Result.Ok<Int, TryReserveError>(it) } ?: Result.Err<Int, TryReserveError>(TryReserveErrorKind.CapacityOverflow))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
+        val newCap = when (val tryResult = (this.len.checkedAdd(additional)?.let { Result.Ok<Int, TryReserveError>(it) } ?: Result.Err<Int, TryReserveError>(TryReserveErrorKind.CapacityOverflow))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, TryReserveError>(tryResult.errValue()) }
         val oldCap = this.capacity()
         if (newCap > oldCap) {
-            when (val tryResult = this.buf.tryReserve(this.len, additional)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
+            when (val tryResult = this.buf.tryReserve(this.len, additional)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, TryReserveError>(tryResult.errValue()) }
             // ignore-tidy-undocumented-unchecked
             run {
                 this.handleCapacityIncrease(oldCap)
@@ -3091,51 +3097,6 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         }
     }
 
-    public open fun eq(other: List<U>): Boolean {
-        if (this.len() != other.size) {
-            return false
-        }
-        val (sa, sb) = this.asSlices()
-        val (oa, ob) = other.splitAt(sa.len())
-        return sa == oa && sb == ob
-    }
-
-    public open fun eqUSlice(other: List<U>): Boolean {
-        if (this.len() != other.size) {
-            return false
-        }
-        val (sa, sb) = this.asSlices()
-        val (oa, ob) = other.splitAt(sa.len())
-        return sa == oa && sb == ob
-    }
-
-    public open fun eq(other: MutableList<U>): Boolean {
-        if (this.len() != other.size) {
-            return false
-        }
-        val (sa, sb) = this.asSlices()
-        val (oa, ob) = other.splitAt(sa.len())
-        return sa == oa && sb == ob
-    }
-
-    public open fun eqUArrayN(other: List<U>): Boolean {
-        if (this.len() != other.size) {
-            return false
-        }
-        val (sa, sb) = this.asSlices()
-        val (oa, ob) = other.splitAt(sa.len())
-        return sa == oa && sb == ob
-    }
-
-    public open fun eqUArrayNUArrayN(other: List<U>): Boolean {
-        if (this.len() != other.size) {
-            return false
-        }
-        val (sa, sb) = this.asSlices()
-        val (oa, ob) = other.splitAt(sa.len())
-        return sa == oa && sb == ob
-    }
-
     public open fun partialCmp(other: VecDeque<T, A>): Ordering? = this.iter().partialCmp(other.iter())
 
     public open fun cmp(other: VecDeque<T, A>): Ordering = this.iter().cmp(other.iter())
@@ -3331,7 +3292,7 @@ public fun <T> VecDeque.Companion.withCapacity(capacity: Int): VecDeque<T, Globa
  * ```
  */
 public fun <T> VecDeque.Companion.tryWithCapacity(capacity: Int): Result<VecDeque<T, Global>, TryReserveError> {
-    return Result.Ok<VecDeque<T, Global>, TryReserveError>(VecDeque(head = WrappedIndex.zero(), len = 0, buf = when (val tryResult = RawVec.tryWithCapacityIn(capacity, Global())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<VecDeque<T, Global>, TryReserveError>(tryResult.error) }))
+    return Result.Ok<VecDeque<T, Global>, TryReserveError>(VecDeque(head = WrappedIndex.zero(), len = 0, buf = when (val tryResult = RawVec.tryWithCapacityIn(capacity, Global())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<VecDeque<T, Global>, TryReserveError>(tryResult.errValue()) }))
 }
 
 public fun <T : TrivialClone, A : Allocator> VecDeque<T, A>.specExtendFromWithin(src: IntRange) {
@@ -3368,6 +3329,51 @@ public fun <T : TrivialClone, A : Allocator> VecDeque<T, A>.specPrependFromWithi
     // - The elements were just initialized by `copyNonoverlapping`
     this.head = newHead
     this.len += count
+}
+
+public fun <T, U, A : Allocator> VecDeque<T, A>.eq(other: List<U>): Boolean {
+    if (this.len() != other.size) {
+        return false
+    }
+    val (sa, sb) = this.asSlices()
+    val (oa, ob) = other.splitAt(sa.len())
+    return sa == oa && sb == ob
+}
+
+public fun <T, U, A : Allocator> VecDeque<T, A>.eqUSlice(other: List<U>): Boolean {
+    if (this.len() != other.size) {
+        return false
+    }
+    val (sa, sb) = this.asSlices()
+    val (oa, ob) = other.splitAt(sa.len())
+    return sa == oa && sb == ob
+}
+
+public fun <T, U, A : Allocator> VecDeque<T, A>.eq(other: MutableList<U>): Boolean {
+    if (this.len() != other.size) {
+        return false
+    }
+    val (sa, sb) = this.asSlices()
+    val (oa, ob) = other.splitAt(sa.len())
+    return sa == oa && sb == ob
+}
+
+public fun <T, U, A : Allocator> VecDeque<T, A>.eq(other: List<U>, n: Int): Boolean {
+    if (this.len() != other.size) {
+        return false
+    }
+    val (sa, sb) = this.asSlices()
+    val (oa, ob) = other.splitAt(sa.len())
+    return sa == oa && sb == ob
+}
+
+public fun <T, U, A : Allocator> VecDeque<T, A>.eqUArrayn(other: List<U>, n: Int): Boolean {
+    if (this.len() != other.size) {
+        return false
+    }
+    val (sa, sb) = this.asSlices()
+    val (oa, ob) = other.splitAt(sa.len())
+    return sa == oa && sb == ob
 }
 
 public fun <T, I : Iterable<T>> fromIteratorFromIterVecDequeT(iter: I): VecDeque<T, Global> = SpecFromIter.specFromIter(iter.iterator())

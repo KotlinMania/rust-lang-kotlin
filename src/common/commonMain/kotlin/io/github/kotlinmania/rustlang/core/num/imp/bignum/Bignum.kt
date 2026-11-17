@@ -387,9 +387,9 @@ public open class Big64x20(
             } else {
                 this.size
             }
-        when (val tryResult = f.writeFmt("${this.base[sz - 1]}")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+        when (val tryResult = f.writeFmt("${this.base[sz - 1]}")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
         for (v in ((this.base).sliceArray(0 until sz - 1)).iter().rev()) {
-            when (val tryResult = f.writeFmt("_$v")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+            when (val tryResult = f.writeFmt("_$v")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
         }
         return io.github.kotlinmania.rustlang.core.result.Result.Ok(Unit)
     }
@@ -718,9 +718,9 @@ public open class Big8x3(
             } else {
                 this.size
             }
-        when (val tryResult = f.writeFmt("${this.base[sz - 1]}")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+        when (val tryResult = f.writeFmt("${this.base[sz - 1]}")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
         for (v in ((this.base).sliceArray(0 until sz - 1)).iter().rev()) {
-            when (val tryResult = f.writeFmt("_$v")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+            when (val tryResult = f.writeFmt("_$v")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
         }
         return io.github.kotlinmania.rustlang.core.result.Result.Ok(Unit)
     }

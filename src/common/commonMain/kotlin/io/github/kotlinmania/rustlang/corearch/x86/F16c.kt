@@ -3,6 +3,8 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
@@ -31,8 +33,8 @@ public expect fun llvmVcvtps2ph256(a: F32x8, rounding: Int): I16x8
 public fun mmCvtphPs(a: M128i): M128 =
     run {
         val a1: F16x8 = transmuteWithLayouts<M128i, F16x8>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<F16x8>())
-        val a2: F16x4 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); _simdArg0 }
-        run { val _simdArg0 = a2; _simdArg0 }
+        val a2: F16x4 = run { val simdArg0 = a1; val simdArg1 = a1; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<F16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<F16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<F16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<F16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<F16x4>()).alignBytes)); res } }
+        run { val simdArg0 = a2; M128() }
     }
 
 /**
@@ -44,7 +46,7 @@ public fun mmCvtphPs(a: M128i): M128 =
 public fun mm256CvtphPs(a: M128i): M256 =
     run {
         val a1: F16x8 = transmuteWithLayouts<M128i, F16x8>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<F16x8>())
-        run { val _simdArg0 = a1; _simdArg0 }
+        run { val simdArg0 = a1; M256() }
     }
 
 /**

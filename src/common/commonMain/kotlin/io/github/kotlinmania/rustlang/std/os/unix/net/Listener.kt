@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.bind
 import io.github.kotlinmania.rustlang.libc.getsockname
@@ -103,7 +104,7 @@ public open class UnixListener(
         builder.field("fd", this.value.asInner())
         when (val matchVal = this.localAddr()) {
             is Result.Ok<*, *> -> {
-                val addr = matchVal.value
+                val addr = matchVal.okValue()
                 builder.field("local", addr)
             }
             else -> {}
@@ -138,8 +139,8 @@ public open class UnixListener(
         val storage by localStorageL184C8
         val localStorageL185C8 = AddressableLocal(sizeOfVal(storage, typeLayoutT = UnresolvedTypeLayout<SockaddrUn>()).toInt(), UnresolvedTypeLayout<SocklenT>())
         val len by localStorageL185C8
-        val sock = when (val tryResult = this.value.accept((localStorageL184C8.asMutPtr()), RustMutableReference(localStorageL185C8.asMutPtr(), localStorageL185C8.layout))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<UnixStream, SocketAddr>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
-        val addr = when (val tryResult = SocketAddr.fromParts(storage, len)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<UnixStream, SocketAddr>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+        val sock = when (val tryResult = this.value.accept((localStorageL184C8.asMutPtr()), RustMutableReference(localStorageL185C8.asMutPtr(), localStorageL185C8.layout))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<UnixStream, SocketAddr>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+        val addr = when (val tryResult = SocketAddr.fromParts(storage, len)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<UnixStream, SocketAddr>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         return Result.Ok<Pair<UnixStream, SocketAddr>, io.github.kotlinmania.rustlang.core.io.error.Error>(Pair(UnixStream(sock), addr))
     }
 
@@ -284,10 +285,10 @@ public open class UnixListener(
          */
         public fun bind(path: Path): Result<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error> {
             return run {
-                val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
-                val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
-                when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.bind(inner.asInner().asRawFd(), constPtrFromRustCast((addrOf(addr))), len))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
-                when (val tryResult = cvt(listen(inner.asInner().asRawFd(), backlog))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+                val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+                val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+                when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.bind(inner.asInner().asRawFd(), constPtrFromRustCast((addrOf(addr))), len))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+                when (val tryResult = cvt(listen(inner.asInner().asRawFd(), backlog))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
                 Result.Ok<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(UnixListener(inner))
             }
         }
@@ -315,9 +316,9 @@ public open class UnixListener(
          */
         public fun bindAddr(socketAddr: SocketAddr): Result<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error> {
             return run {
-                val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
-                when (val tryResult = cvt(bind(inner.asRawFd(), (addrOf(socketAddr.addr)), socketAddr.len))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
-                when (val tryResult = cvt(listen(inner.asRawFd(), backlog))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+                val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+                when (val tryResult = cvt(bind(inner.asRawFd(), (addrOf(socketAddr.addr)), socketAddr.len))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+                when (val tryResult = cvt(listen(inner.asRawFd(), backlog))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
                 Result.Ok<UnixListener, io.github.kotlinmania.rustlang.core.io.error.Error>(UnixListener(inner))
             }
         }

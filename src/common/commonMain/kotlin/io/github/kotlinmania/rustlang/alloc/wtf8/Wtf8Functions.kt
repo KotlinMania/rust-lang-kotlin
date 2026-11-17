@@ -2,8 +2,8 @@ package io.github.kotlinmania.rustlang.alloc.wtf8
 
 import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
 import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
-import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
-import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
+import io.github.kotlinmania.rustlang.core.char.methods.toAsciiLowercase
+import io.github.kotlinmania.rustlang.core.char.methods.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts

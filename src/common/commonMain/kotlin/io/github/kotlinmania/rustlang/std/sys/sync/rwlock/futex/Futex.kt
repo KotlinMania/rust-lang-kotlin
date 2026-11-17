@@ -29,7 +29,7 @@ public open class RwLock(
 
     public open fun read() {
         val state = this.state.load(Relaxed)
-        if (!isReadLockable(state.toUInt()) || this.state.compareExchangeWeak(state, state + READ_LOCKED.toInt(), Acquire, Relaxed).isErr()) {
+        if (isReadLockable(state.toUInt()).inv() || this.state.compareExchangeWeak(state, state + READ_LOCKED.toInt(), Acquire, Relaxed).isErr()) {
             this.readContended()
         }
     }
@@ -43,7 +43,7 @@ public open class RwLock(
         val state = this.state.fetchSub(READ_LOCKED, Release) - READ_LOCKED
         // It's impossible for a reader to be waiting on a read-locked RwLock,
         // except if there is also a writer waiting.
-        check(!hasReadersWaiting(state) || hasWritersWaiting(state))
+        check(hasReadersWaiting(state).inv() || hasWritersWaiting(state))
         // Wake up a writer if we were the last reader and there's a writer waiting.
         if (isUnlocked(state) && hasWritersWaiting(state)) {
             this.wakeWriterOrReaders(state)
@@ -62,19 +62,19 @@ public open class RwLock(
                     when (matchVal) { is Result.Ok<*, *> -> {
                         return
                     }; is Result.Err<*, *> -> {
-                        val s = matchVal.error
+                        val s = matchVal.errValue()
                         state = s
                         continue
                     } }
                 }
             }
             // Check for overflow.
-            check(!hasReachedMaxReaders(state)) { "too many active read locks on RwLock" }
+            check(hasReachedMaxReaders(state).inv()) { "too many active read locks on RwLock" }
             // Make sure the readers waiting bit is set before we go to sleep.
-            if (!hasReadersWaiting(state)) {
+            if (hasReadersWaiting(state).inv()) {
                 when (val matchVal1 = this.state.compareExchange(state, state or READERS_WAITING, Relaxed, Relaxed)) {
                     is Result.Err<*, *> -> {
-                        val s1 = matchVal1.error
+                        val s1 = matchVal1.errValue()
                         state = s1
                         continue
                     }
@@ -137,17 +137,17 @@ public open class RwLock(
                     when (matchVal) { is Result.Ok<*, *> -> {
                         return
                     }; is Result.Err<*, *> -> {
-                        val s = matchVal.error
+                        val s = matchVal.errValue()
                         state = s
                         continue
                     } }
                 }
             }
             // Set the waiting bit indicating that we're waiting on it.
-            if (!hasWritersWaiting(state)) {
+            if (hasWritersWaiting(state).inv()) {
                 when (val matchVal1 = this.state.compareExchange(state, state or WRITERS_WAITING, Relaxed, Relaxed)) {
                     is Result.Err<*, *> -> {
-                        val s1 = matchVal1.error
+                        val s1 = matchVal1.errValue()
                         state = s1
                         continue
                     }
@@ -163,7 +163,7 @@ public open class RwLock(
             // Don't go to sleep if the lock has become available,
             // or if the writers waiting bit is no longer set.
             state = this.state.load(Relaxed)
-            if (isUnlocked(state) || !hasWritersWaiting(state)) {
+            if (isUnlocked(state) || hasWritersWaiting(state).inv()) {
                 continue
             }
             // Wait for the state to change.
@@ -198,7 +198,7 @@ public open class RwLock(
                     this.wakeWriter()
                     return
                 }; is Result.Err<*, *> -> {
-                    val s = matchVal.error
+                    val s = matchVal.errValue()
                     // Maybe some readers are now waiting too. So, continue to the next `if`.
                     state1 = s
                 } }
@@ -266,7 +266,7 @@ public open class RwLock(
     public open fun spinRead(): Primitive {
         // Stop spinning when it's unlocked or read locked, or when there's waiting threads.
         return this.spinUntil({ state ->
-            !isWriteLocked(state.toUInt()) || hasReadersWaiting(state.toUInt()) || hasWritersWaiting(state.toUInt())
+            isWriteLocked(state.toUInt()).inv() || hasReadersWaiting(state.toUInt()) || hasWritersWaiting(state.toUInt())
         })
     }
 
@@ -305,7 +305,7 @@ public fun isReadLockable(state: Primitive): Boolean {
     // and there's no writers waiting. The only situation when this happens is after unlocking,
     // at which point the unlocking thread might be waking up writers, which have priority over readers.
     // The unlocking thread will clear the readers waiting bit and wake up readers, if necessary.
-    return (state and MASK < MAX_READERS && !hasReadersWaiting(state) && !hasWritersWaiting(state)).toUByte()
+    return (state and MASK < MAX_READERS && hasReadersWaiting(state).inv() && hasWritersWaiting(state).inv()).toUByte()
 }
 
 public fun isReadLockableAfterWakeup(state: Primitive): Boolean {
@@ -319,7 +319,7 @@ public fun isReadLockableAfterWakeup(state: Primitive): Boolean {
     // implies that the caller wants other readers to read the value protected by the lock. If we
     // did not allow readers to acquire the lock before writers after a `downgrade`, then only the
     // original writer would be able to read the value, thus defeating the purpose of `downgrade`.
-    return (state and MASK < MAX_READERS && !hasReadersWaiting(state) && !isWriteLocked(state) && !isUnlocked(state)).toUByte()
+    return (state and MASK < MAX_READERS && hasReadersWaiting(state).inv() && isWriteLocked(state).inv() && isUnlocked(state).inv()).toUByte()
 }
 
 public fun hasReachedMaxReaders(state: Primitive): Boolean = (state and MASK == MAX_READERS).toUByte()

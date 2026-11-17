@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.compilerbuiltins.mem.impls.setBytes
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 
 public fun memcpy(dest: MutPtr, src: ConstPtr, n: Int): MutPtr {
     copyForward(dest, src, n)

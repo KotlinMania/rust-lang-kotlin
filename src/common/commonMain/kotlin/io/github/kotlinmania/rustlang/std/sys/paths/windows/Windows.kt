@@ -5,6 +5,8 @@ import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -69,7 +71,7 @@ public open class SplitPaths(
                 inProgress.add(b)
             }
         }
-        return if (!mustYield && inProgress.isEmpty()) {
+        return if (mustYield.inv() && inProgress.isEmpty()) {
             null
         } else {
             os2path(inProgress)

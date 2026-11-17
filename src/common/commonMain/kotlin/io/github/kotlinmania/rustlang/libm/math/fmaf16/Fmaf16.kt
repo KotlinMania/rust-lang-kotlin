@@ -19,9 +19,9 @@ public val FIXED_FRAC_BITS: UInt = 43u
  * Computes `(x * y) + z`, rounded as one ternary operation (i.e. calculated with infinite precision).
  */
 public fun fmaf16(x: F16, y: F16, z: F16): F16 {
-    val ix = x.toBits() and (F16.SIGN_MASK.inv()).toUShort()
-    val iy = y.toBits() and (F16.SIGN_MASK.inv()).toUShort()
-    val iz = z.toBits() and (F16.SIGN_MASK.inv()).toUShort()
+    val ix = x.toBits() and F16.SIGN_MASK.inv()
+    val iy = y.toBits() and F16.SIGN_MASK.inv()
+    val iz = z.toBits() and F16.SIGN_MASK.inv()
     val xneg = x.isSignNegative()
     val yneg = y.isSignNegative()
     val zneg = z.isSignNegative()

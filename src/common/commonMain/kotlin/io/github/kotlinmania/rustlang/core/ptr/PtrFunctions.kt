@@ -37,6 +37,7 @@ import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawParts
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr

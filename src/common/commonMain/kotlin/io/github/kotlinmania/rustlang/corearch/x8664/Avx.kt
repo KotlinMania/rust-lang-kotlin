@@ -31,7 +31,7 @@ public fun mm256InsertEpi64(a: M256i, i: Long, index: Int): M256i {
     run {
         check(0 <= index && index < (1 shl 2)) { "INDEX doesn't fit in 2 bits (unsigned)" }
     }
-    return transmute(run { val _simdArg0 = a.asI64x4(); val _simdArg1 = index.toUInt(); val _simdArg2 = i; _simdArg0 })
+    return transmute(run { val simdArg0 = a.asI64x4(); val simdArg1 = index.toUInt(); val simdArg2 = i; simdArg0 })
 }
 
 // This intrinsic has no corresponding instruction.
@@ -45,5 +45,5 @@ public fun mm256ExtractEpi64(a: M256i, index: Int): Long {
     run {
         check(0 <= index && index < (1 shl 2)) { "INDEX doesn't fit in 2 bits (unsigned)" }
     }
-    return run { val _simdArg0 = a.asI64x4(); val _simdArg1 = index.toUInt(); _simdArg0 }
+    return run { val simdArg0 = a.asI64x4(); val simdArg1 = index.toUInt(); 0L }
 }

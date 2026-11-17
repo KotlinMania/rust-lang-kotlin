@@ -23,7 +23,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 public open class IndexRange(
     public var start: Int,
     public var end: Int,
-) : TrustedLen, Iterable<Int> {
+) : TrustedLen<Any>, Iterable<Int> {
     override fun iterator(): Iterator<Int> = object : AbstractIterator<Int>() {
         override fun computeNext() {
             when (val v = this@IndexRange.next()) {
@@ -150,7 +150,7 @@ public open class IndexRange(
         while (this.start != this.end) {
             // SAFETY: We just checked that the range is non-empty
             val i = this.nextUnchecked()
-            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
         }
         return accum1
     }
@@ -178,7 +178,7 @@ public open class IndexRange(
         while (this.start != this.end) {
             // SAFETY: We just checked that the range is non-empty
             val i = this.nextBackUnchecked()
-            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
         }
         return accum1
     }

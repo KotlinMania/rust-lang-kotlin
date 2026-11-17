@@ -25,7 +25,7 @@ public fun detectFeatures(): cache.Initializer {
     // [hwcap]: https://github.com/torvalds/linux/blob/master/arch/mips/include/uapi/asm/hwcap.h
     when (val matchVal = auxv()) {
         is Result.Ok<*, *> -> {
-            val auxv = matchVal.value
+            val auxv = matchVal.okValue()
             enableFeature(value, Feature::msa, test(auxv.hwcap, 1u))
             return value
         }

@@ -83,7 +83,7 @@ public open class ThreadId internal constructor(
                     when (matchVal) { is Result.Ok<*, *> -> {
                         return ThreadId(NonZero.new(id)!!)
                     }; is Result.Err<*, *> -> {
-                        val id1 = matchVal.error
+                        val id1 = matchVal.errValue()
                         last = id1
                     } }
                 }

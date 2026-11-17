@@ -4,8 +4,6 @@ package io.github.kotlinmania.rustlang.core.sync.syncview
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.convert.AsMut
 import io.github.kotlinmania.rustlang.core.convert.AsRef
-import io.github.kotlinmania.rustlang.core.convert.asMut
-import io.github.kotlinmania.rustlang.core.convert.asRef
 import io.github.kotlinmania.rustlang.core.future.future.Future
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -24,6 +22,9 @@ import io.github.kotlinmania.rustlang.core.ops.function.FnOnce
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.fromMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.task.poll.Poll
 import io.github.kotlinmania.rustlang.core.task.wake.Context
@@ -209,15 +210,11 @@ public open class SyncView<T>(
 
     public open fun clone(): SyncView<T> = SyncView(inner = this.inner.clone(), fieldLayout = this.fieldLayout)
 
-    public open fun eq(other: SyncView<U>): Boolean = this.inner == other.inner
-
     public override fun hashCode(): Int {
         var state = 0
         this.inner.hash(state)
         return state
     }
-
-    public open fun partialCmp(other: SyncView<U>): Ordering? = this.inner.partialCmp(other.inner)
 
     public open fun cmp(other: SyncView<T>): Ordering = this.inner.cmp(other.inner)
 
@@ -270,3 +267,7 @@ public fun <Output, T> SyncView<T>.poll(cx: Context): Poll<Output> where T : Fut
 
 // also #98407
 public fun <Yield, Return, R, G> SyncView<G>.resume(arg: R, resumeGFn: (G, R) -> CoroutineState<Yield, Return>): CoroutineState<Yield, Return> where G : Coroutine<R, Yield, Return> = resumeGFn(this.asPinMut(), arg)
+
+public fun <T, U> SyncView<T>.eq(other: SyncView<U>): Boolean = this.inner == other.inner
+
+public fun <T, U> SyncView<T>.partialCmp(other: SyncView<U>): Ordering? = this.inner.partialCmp(other.inner)

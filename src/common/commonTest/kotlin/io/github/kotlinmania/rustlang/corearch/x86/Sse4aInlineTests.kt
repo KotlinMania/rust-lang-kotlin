@@ -13,7 +13,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 // `i686`s Streaming SIMD Extensions 4a (`SSE4a`)
 
 // Normally this requires SSE2, but for tests it does not matter whether we use the instruction.
-public fun mmCvtsi128Si64(a: M128i): Long = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = 0L; _simdArg0 }
+public fun mmCvtsi128Si64(a: M128i): Long = run { val simdArg0 = a.asI64x2(); val simdArg1 = 0L; 0L }
 
 public fun testMmExtractSi64() {
     val b = 0x600L

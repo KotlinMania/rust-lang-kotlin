@@ -41,7 +41,7 @@ public fun detectFeatures(): cache.Initializer {
     // [hwcap]: https://github.com/torvalds/linux/blob/master/arch/loongarch/include/uapi/asm/hwcap.h
     when (val matchVal = auxv()) {
         is Result.Ok<*, *> -> {
-            val auxv = matchVal.value
+            val auxv = matchVal.okValue()
             enableFeature(value, Feature::f, test(cpucfg2, 1u) && test(auxv.hwcap, 3u))
             enableFeature(value, Feature::d, test(cpucfg2, 2u) && test(auxv.hwcap, 3u))
             enableFeature(value, Feature::lsx, test(auxv.hwcap, 4u))

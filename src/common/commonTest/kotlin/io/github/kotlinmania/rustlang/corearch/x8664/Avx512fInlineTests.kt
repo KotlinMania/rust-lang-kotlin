@@ -6293,7 +6293,7 @@ public fun testMm512MaskCmpltPdMask() {
 public fun testMm512CmpnltPdMask() {
     val a = mm512SetPd(0.0, 1.0, -1.0, Double.MAX_VALUE, Double.NaN, (-Double.MAX_VALUE), 100.0, -100.0)
     val b = mm512Set1Pd(-1.0)
-    check(mm512CmpnltPdMask(a, b) == !mm512CmpltPdMask(a, b))
+    check(mm512CmpnltPdMask(a, b) == mm512CmpltPdMask(a, b).inv())
 }
 
 public fun testMm512MaskCmpnltPdMask() {
@@ -6544,7 +6544,7 @@ public fun testMmMaskCmpgtEpu64Mask() {
 public fun testMm512CmpleEpu64Mask() {
     val a = mm512SetEpi64(0L, 1L, -1L, ULong.MAX_VALUE.toLong(), Long.MAX_VALUE, Long.MIN_VALUE, 100L, -100L)
     val b = mm512Set1Epi64(-1L)
-    check(mm512CmpleEpu64Mask(a, b) == !mm512CmpgtEpu64Mask(a, b))
+    check(mm512CmpleEpu64Mask(a, b) == mm512CmpgtEpu64Mask(a, b).inv())
 }
 
 public fun testMm512MaskCmpleEpu64Mask() {
@@ -6587,7 +6587,7 @@ public fun testMmMaskCmpleEpu64Mask() {
 public fun testMm512CmpgeEpu64Mask() {
     val a = mm512SetEpi64(0L, 1L, -1L, ULong.MAX_VALUE.toLong(), Long.MAX_VALUE, Long.MIN_VALUE, 100L, -100L)
     val b = mm512Set1Epi64(-1L)
-    check(mm512CmpgeEpu64Mask(a, b) == !mm512CmpltEpu64Mask(a, b))
+    check(mm512CmpgeEpu64Mask(a, b) == mm512CmpltEpu64Mask(a, b).inv())
 }
 
 public fun testMm512MaskCmpgeEpu64Mask() {
@@ -6677,7 +6677,7 @@ public fun testMm512CmpneqEpu64Mask() {
     val a = mm512SetEpi64(0L, 1L, -1L, ULong.MAX_VALUE.toLong(), Long.MAX_VALUE, Long.MIN_VALUE, 100L, -100L)
     val b = mm512SetEpi64(0L, 1L, 13L, 42L, Long.MAX_VALUE, Long.MIN_VALUE, 100L, -100L)
     val m = mm512CmpneqEpu64Mask(b, a)
-    check(m == !mm512CmpeqEpu64Mask(b, a))
+    check(m == mm512CmpeqEpu64Mask(b, a).inv())
 }
 
 public fun testMm512MaskCmpneqEpu64Mask() {
@@ -6856,7 +6856,7 @@ public fun testMmMaskCmpgtEpi64Mask() {
 public fun testMm512CmpleEpi64Mask() {
     val a = mm512SetEpi64(0L, 1L, -1L, ULong.MAX_VALUE.toLong(), Long.MAX_VALUE, Long.MIN_VALUE, 100L, -100L)
     val b = mm512Set1Epi64(-1L)
-    check(mm512CmpleEpi64Mask(a, b) == !mm512CmpgtEpi64Mask(a, b))
+    check(mm512CmpleEpi64Mask(a, b) == mm512CmpgtEpi64Mask(a, b).inv())
 }
 
 public fun testMm512MaskCmpleEpi64Mask() {
@@ -6899,7 +6899,7 @@ public fun testMmMaskCmpleEpi64Mask() {
 public fun testMm512CmpgeEpi64Mask() {
     val a = mm512SetEpi64(0L, 1L, -1L, ULong.MAX_VALUE.toLong(), Long.MAX_VALUE, Long.MIN_VALUE, 100L, -100L)
     val b = mm512Set1Epi64(-1L)
-    check(mm512CmpgeEpi64Mask(a, b) == !mm512CmpltEpi64Mask(a, b))
+    check(mm512CmpgeEpi64Mask(a, b) == mm512CmpltEpi64Mask(a, b).inv())
 }
 
 public fun testMm512MaskCmpgeEpi64Mask() {
@@ -6999,7 +6999,7 @@ public fun testMm512CmpneqEpi64Mask() {
     val a = mm512SetEpi64(0L, 1L, -1L, 13L, Long.MAX_VALUE, Long.MIN_VALUE, 100L, -100L)
     val b = mm512SetEpi64(0L, 1L, 13L, 42L, Long.MAX_VALUE, Long.MIN_VALUE, 100L, -100L)
     val m = mm512CmpneqEpi64Mask(b, a)
-    check(m == !mm512CmpeqEpi64Mask(b, a))
+    check(m == mm512CmpeqEpi64Mask(b, a).inv())
 }
 
 public fun testMm512MaskCmpneqEpi64Mask() {

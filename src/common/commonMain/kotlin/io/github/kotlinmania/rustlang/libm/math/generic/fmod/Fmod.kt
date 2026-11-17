@@ -1,6 +1,7 @@
 // port-lint: source math/generic/fmod.rs
 package io.github.kotlinmania.rustlang.libm.math.generic.fmod
 
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int

@@ -1,6 +1,7 @@
 // port-lint: source ops/try_trait.rs
 package io.github.kotlinmania.rustlang.core.ops.trytrait
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -278,7 +279,11 @@ public open class NeverShortCircuit<T>(
     }
 }
 
-public object NeverShortCircuitResidual : Residual<T, NeverShortCircuit<T>>
+public open class NeverShortCircuitResidual(
+    public val handle: Long = -1L,
+) {
+    public val ptr: Long get() = handle
+}
 
 /**
  * Implement `FromResidual<Yeet<T>>` on your type to enable

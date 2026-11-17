@@ -1165,7 +1165,7 @@ public fun <UInt, T : FloatPrimitive<T, UInt>> fabs(x: T, fromBitsTFn: (UInt) ->
  * The stabilized version of this intrinsic is
  * [`f16.copysign`](../../std/primitive.f16.html#method.copysign)
  */
-public fun copysignf16(x: F16, y: F16): F16 = F16.fromBits((x.toBits() and (F16.SIGN_MASK.inv()).toUShort()) or (y.toBits() and F16.SIGN_MASK.toUShort()))
+public fun copysignf16(x: F16, y: F16): F16 = F16.fromBits((x.toBits() and F16.SIGN_MASK.inv()) or (y.toBits() and F16.SIGN_MASK.toUShort()))
 
 /**
  * Copies the sign from `y` to `x` for `Float` values.
@@ -1173,7 +1173,7 @@ public fun copysignf16(x: F16, y: F16): F16 = F16.fromBits((x.toBits() and (F16.
  * The stabilized version of this intrinsic is
  * [`f32.copysign`](../../std/primitive.f32.html#method.copysign)
  */
-public fun copysignf32(x: kotlin.Float, y: kotlin.Float): kotlin.Float = kotlin.Float.fromBits(((x.toRawBits().toUInt() and (kotlin.Float.SIGN_MASK.inv()).toUInt()) or (y.toRawBits().toUInt() and kotlin.Float.SIGN_MASK.toUInt())).toInt())
+public fun copysignf32(x: kotlin.Float, y: kotlin.Float): kotlin.Float = kotlin.Float.fromBits(((x.toRawBits().toUInt() and kotlin.Float.SIGN_MASK.inv()) or (y.toRawBits().toUInt() and kotlin.Float.SIGN_MASK.toUInt())).toInt())
 
 /**
  * Copies the sign from `y` to `x` for `Double` values.
@@ -1181,7 +1181,7 @@ public fun copysignf32(x: kotlin.Float, y: kotlin.Float): kotlin.Float = kotlin.
  * The stabilized version of this intrinsic is
  * [`f64.copysign`](../../std/primitive.f64.html#method.copysign)
  */
-public fun copysignf64(x: Double, y: Double): Double = Double.fromBits(((x.toRawBits().toULong() and (Double.SIGN_MASK.inv()).toULong()) or (y.toRawBits().toULong() and Double.SIGN_MASK.toULong())).toLong())
+public fun copysignf64(x: Double, y: Double): Double = Double.fromBits(((x.toRawBits().toULong() and Double.SIGN_MASK.inv()) or (y.toRawBits().toULong() and Double.SIGN_MASK.toULong())).toLong())
 
 /**
  * Copies the sign from `y` to `x` for `f128` values.

@@ -397,15 +397,15 @@ public fun <R : BufRead<R>> defaultReadUntil(r: R, delim: UByte, buf: List<UByte
                     val matchVal = r.fillBuf()
                     when {
                         matchVal is RustResult.Ok<*, *> -> {
-                            val n = matchVal.value
+                            val n = matchVal.okValue()
                             n
                         }
-                        matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
-                            val e = matchVal.error
+                        matchVal is RustResult.Err<*, *> && matchVal.errValue().isInterrupted() -> {
+                            val e = matchVal.errValue()
                             continue
                         }
                         else -> {
-                            val e1 = (matchVal as RustResult.Err<*, *>).error
+                            val e1 = (matchVal as RustResult.Err<*, *>).errValue()
                             return RustResult.Err(e1)
                         }
                     }
@@ -420,7 +420,7 @@ public fun <R : BufRead<R>> defaultReadUntil(r: R, delim: UByte, buf: List<UByte
                 }
             run {
                 val count = available1.len()
-                when (val tryResult = buf.tryReserve(count)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+                when (val tryResult = buf.tryReserve(count)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
                 // SAFETY:
                 // * self and buf are non-overlapping
                 // * buf[..len] is already initialized
@@ -452,15 +452,15 @@ public fun <R : BufRead<R>> defaultSkipUntil(r: R, delim: UByte): Result<Int> {
                     val matchVal = r.fillBuf()
                     when {
                         matchVal is RustResult.Ok<*, *> -> {
-                            val n = matchVal.value
+                            val n = matchVal.okValue()
                             n
                         }
-                        matchVal is RustResult.Err<*, *> && matchVal.error.kind() == ErrorKind.Interrupted -> {
-                            val e = matchVal.error
+                        matchVal is RustResult.Err<*, *> && matchVal.errValue().kind() == ErrorKind.Interrupted -> {
+                            val e = matchVal.errValue()
                             continue
                         }
                         else -> {
-                            val e1 = (matchVal as RustResult.Err<*, *>).error
+                            val e1 = (matchVal as RustResult.Err<*, *>).errValue()
                             return RustResult.Err(e1)
                         }
                     }

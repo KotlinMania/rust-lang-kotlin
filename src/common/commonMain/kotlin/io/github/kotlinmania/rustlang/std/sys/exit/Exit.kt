@@ -47,8 +47,8 @@ public fun uniqueThreadExit() {
                 // This is the first thread to call `uniqueThreadExit`,
                 // and this is the first time it is called. Continue exiting.
             }
-            matchVal is Result.Err<*, *> && ((matchVal.error).rawAddress.toULong() == (thisThreadId).rawAddress.toULong()) -> {
-                val exitingThreadId = matchVal.error
+            matchVal is Result.Err<*, *> && ((matchVal.errValue()).rawAddress.toULong() == (thisThreadId).rawAddress.toULong()) -> {
+                val exitingThreadId = matchVal.errValue()
                 // This is the first thread to call `uniqueThreadExit`,
                 // but this is the second time it is called.
                 // Abort the process.

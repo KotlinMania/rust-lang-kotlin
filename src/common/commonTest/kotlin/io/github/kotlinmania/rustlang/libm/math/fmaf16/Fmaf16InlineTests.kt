@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.libm.math.fmaf16
 
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.num.f16.nextDown
 import io.github.kotlinmania.rustlang.core.num.f16.nextUp
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq

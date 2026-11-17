@@ -15,7 +15,7 @@ public fun pipe(): Result<Pair<Pipe, Pipe>, Error> {
     val localStorageL9C4 = AddressableArrayLocal.fromIntArray(IntArray(2) { 0 })
     val fds by localStorageL9C4
     return run {
-        when (val tryResult = cvt(pipe2(localStorageL9C4.elementMutPtr(0), O_CLOEXEC))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Pair<Pipe, Pipe>, Error>(tryResult.error) }
+        when (val tryResult = cvt(pipe2(localStorageL9C4.elementMutPtr(0), O_CLOEXEC))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Pipe, Pipe>, Error>(tryResult.errValue()) }
         Result.Ok<Pair<Pipe, Pipe>, Error>(Pair(FileDesc.fromRawFd(fds[0]), FileDesc.fromRawFd(fds[1])))
     }
 }

@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.backtrace.windowssys.MemoryMappedViewAddre
 import io.github.kotlinmania.rustlang.backtrace.windowssys.PAGE_READONLY
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 
 public open class Mmap internal constructor(
     // keep the file alive to prevent it from being deleted which would cause

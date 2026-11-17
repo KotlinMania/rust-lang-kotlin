@@ -110,7 +110,7 @@ public open class PidFd internal constructor(
      * [Child.tryWait]: process.Child.tryWait
      */
     public open fun tryWait(): Result<ExitStatus?> {
-        return RustResult.Ok(when (val tryResult = this.inner.tryWait()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }.map(FromInner::fromInner))
+        return RustResult.Ok(when (val tryResult = this.inner.tryWait()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }.map(FromInner::fromInner))
     }
 
     public override fun asInner(): InnerPidFd = this.inner

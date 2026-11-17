@@ -7,6 +7,9 @@ import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
@@ -58,7 +61,7 @@ public fun getcwd(): Result<PathBuf, Error> {
 }
 
 public fun chdir(p: path.Path): Result<Unit, Error> {
-    val result = when (val tryResult = runPathWithCstr(p, { p1 -> Result.Ok(io.github.kotlinmania.rustlang.libc.chdir(p1.asPtr())) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+    val result = when (val tryResult = runPathWithCstr(p, { p1 -> Result.Ok(io.github.kotlinmania.rustlang.libc.chdir(p1.asPtr())) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
     return if (result == 0) {
         Result.Ok<Unit, Error>(Unit)
     } else {
@@ -126,8 +129,8 @@ public fun currentExe(): Result<PathBuf, Error> =
     run {
         val matchVal = readLink("/proc/self/exe")
         when {
-            matchVal is Result.Err<*, *> && matchVal.error.kind() == ErrorKind.NotFound -> {
-                val e = matchVal.error
+            matchVal is Result.Err<*, *> && matchVal.errValue().kind() == ErrorKind.NotFound -> {
+                val e = matchVal.errValue()
                 Result.Err<PathBuf, Error>(constError(ErrorKind.Uncategorized, "no /proc/self/exe available. Is /proc mounted?"))
             }
             else -> {

@@ -749,10 +749,10 @@ public fun intoSliceRange(len: Int, bounds: Pair<Bound<Int>, Bound<Int>>): Range
     run {
         val matchVal = tryIntoSliceRange(len, bounds)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val range = matchVal.value
+            val range = matchVal.okValue()
             range
         }; is Result.Err<*, *> -> {
-            val e = matchVal.error
+            val e = matchVal.errValue()
             e.report(len)
         } }
     }

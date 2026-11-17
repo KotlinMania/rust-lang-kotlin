@@ -40,12 +40,12 @@ public open class Demangle(
                 run {
                     val matchVal1 = Pair(fmtResult, sizeLimitResult)
                     when {
-                        matchVal1.first is Result.Err<*, *> && matchVal1.second is Result.Err<*, *> && (matchVal1.second as Result.Err<*, *>).error is SizeLimitExhausted -> {
-                            val SizeLimitExhausted = (matchVal1.second as Result.Err<*, *>).error
+                        matchVal1.first is Result.Err<*, *> && matchVal1.second is Result.Err<*, *> && (matchVal1.second as Result.Err<*, *>).errValue() is SizeLimitExhausted -> {
+                            val SizeLimitExhausted = (matchVal1.second as Result.Err<*, *>).errValue()
                             f.append("{size limit reached}")
                         }
                         else -> {
-                            when (val tryResult = fmtResult) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+                            when (val tryResult = fmtResult) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
                             sizeLimitResult.expect("`fmt::Error` from `SizeLimitedFmtAdapter` was discarded")
                         }
                     }
@@ -134,7 +134,7 @@ public fun <F : Appendable> SizeLimitedFmtAdapter<F>.writeStr(s: String): Result
         when {
             matchVal is Result.Ok<*, *> -> run { this.inner.append(s); Result.Ok<Unit, Error>(Unit) }
             else -> {
-                val SizeLimitExhausted = (matchVal as Result.Err<*, *>).error
+                val SizeLimitExhausted = (matchVal as Result.Err<*, *>).errValue()
                 Result.Err<Unit, Error>(Error())
             }
         }

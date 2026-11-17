@@ -210,19 +210,19 @@ public interface Write<T> {
             run {
                 val matchVal = this.write(buf1)
                 when {
-                    matchVal is RustResult.Ok<*, *> && matchVal.value == 0 -> {
-                        val valueVal = matchVal.value
+                    matchVal is RustResult.Ok<*, *> && matchVal.okValue() == 0 -> {
+                        val okValueVal = matchVal.okValue()
                         return RustResult.Err(Error.WRITE_ALL_EOF)
                     }
                     matchVal is RustResult.Ok<*, *> -> {
-                        val n = matchVal.value
+                        val n = matchVal.okValue()
                         buf1 = ((buf1).subList(n, (buf1).size))
                     }
-                    matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
-                        val e = matchVal.error
+                    matchVal is RustResult.Err<*, *> && matchVal.errValue().isInterrupted() -> {
+                        val e = matchVal.errValue()
                     }
                     else -> {
-                        val e1 = (matchVal as RustResult.Err<*, *>).error
+                        val e1 = (matchVal as RustResult.Err<*, *>).errValue()
                         return RustResult.Err(e1)
                     }
                 }
@@ -283,19 +283,19 @@ public interface Write<T> {
             run {
                 val matchVal = this.writeVectored(bufs)
                 when {
-                    matchVal is RustResult.Ok<*, *> && matchVal.value == 0 -> {
-                        val valueVal = matchVal.value
+                    matchVal is RustResult.Ok<*, *> && matchVal.okValue() == 0 -> {
+                        val okValueVal = matchVal.okValue()
                         return RustResult.Err(Error.WRITE_ALL_EOF)
                     }
                     matchVal is RustResult.Ok<*, *> -> {
-                        val n = matchVal.value
+                        val n = matchVal.okValue()
                         IoSlice.advanceSlices(bufs, n)
                     }
-                    matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
-                        val e = matchVal.error
+                    matchVal is RustResult.Err<*, *> && matchVal.errValue().isInterrupted() -> {
+                        val e = matchVal.errValue()
                     }
                     else -> {
-                        val e1 = (matchVal as RustResult.Err<*, *>).error
+                        val e1 = (matchVal as RustResult.Err<*, *>).errValue()
                         return RustResult.Err(e1)
                     }
                 }
@@ -397,7 +397,7 @@ public fun <W : Write<W>> defaultWriteFmt(thisRef: W, args: fmt.Arguments): Resu
             when (matchVal) { is RustResult.Ok<*, *> -> {
                 RustResult.Ok<Unit, Error>(Unit)
             }; is RustResult.Err<*, *> -> {
-                val e = matchVal.error
+                val e = matchVal.errValue()
                 this.error = RustResult.Err<Unit, Error>(e)
                 RustResult.Err<Unit, Error>(fmt.Error)
             } }

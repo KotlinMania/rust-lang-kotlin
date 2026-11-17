@@ -1026,7 +1026,7 @@ public fun testVecSel() {
     val b = VectorSignedInt(listOf(5, 6, 7, 8))
     val e = VectorUnsignedInt(listOf(9, 10, 11, 12))
     val f = VectorUnsignedInt(listOf(9, 9, 11, 11))
-    val c: VectorBoolInt = run { val _simdArg0 = e; val _simdArg1 = f; VectorBoolInt() }
+    val c: VectorBoolInt = run { val simdArg0 = e; val simdArg1 = f; VectorBoolInt() }
     check(c.asArray() == listOf(0.inv(), 0, 0.inv(), 0))
     val d: VectorSignedInt = vecSel(a, b, c)
     check((d.asArray()).contentEquals(listOf(5, 2, 7, 4)))

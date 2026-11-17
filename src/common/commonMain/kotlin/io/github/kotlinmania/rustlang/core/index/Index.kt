@@ -1,6 +1,7 @@
 // port-lint: source index.rs
 package io.github.kotlinmania.rustlang.core.index
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.intrinsics.sliceGetUnchecked
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
@@ -8,7 +9,6 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.range.Range
-import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 
 // Helper types for indexing slices.
 
@@ -82,31 +82,7 @@ public open class Clamp<Idx>(
  * }
  * ```
  */
-public open class Last : SliceIndex<List<T>, T> {
-    public override fun get(slice: List<T>): T? = slice.last()
-
-    public override fun getMut(slice: MutableList<T>): T? = slice.lastOrNull()
-
-    public override fun getUnchecked(slice: ConstPtr): ConstPtr {
-        // SAFETY: the caller ensures that the slice isn't empty
-        return sliceGetUnchecked(slice, slice.len() - 1)
-    }
-
-    public override fun getUncheckedMut(slice: MutPtr): MutPtr {
-        // SAFETY: the caller ensures that the slice isn't empty
-        return sliceGetUnchecked(slice, slice.len() - 1)
-    }
-
-    public override fun index(slice: List<T>): T {
-        // N.B., use intrinsic indexing
-        return slice[slice.size - 1]
-    }
-
-    public override fun indexMut(slice: MutableList<T>): T {
-        // N.B., use intrinsic indexing
-        return slice[slice.size - 1]
-    }
-
+public open class Last {
     public companion object {
         public fun typeLayout(): TypeLayout<Last> =
             object : TypeLayout<Last> {
@@ -178,4 +154,28 @@ public fun <T> Clamp<range.Range<Int>>.indexMutTSlice(slice: MutableList<T>): Li
     val start = minOf(this.value.start, slice.size)
     val end = minOf(this.value.end, slice.size)
     return (start until end).indexMut(slice)
+}
+
+public fun <T> Last.get(slice: List<T>): T? = slice.last()
+
+public fun <T> Last.getMut(slice: MutableList<T>): T? = slice.lastOrNull()
+
+public fun Last.getUnchecked(slice: ConstPtr): ConstPtr {
+    // SAFETY: the caller ensures that the slice isn't empty
+    return sliceGetUnchecked(slice, slice.len() - 1)
+}
+
+public fun Last.getUncheckedMut(slice: MutPtr): MutPtr {
+    // SAFETY: the caller ensures that the slice isn't empty
+    return sliceGetUnchecked(slice, slice.len() - 1)
+}
+
+public fun <T> Last.index(slice: List<T>): T {
+    // N.B., use intrinsic indexing
+    return slice[slice.size - 1]
+}
+
+public fun <T> Last.indexMut(slice: MutableList<T>): T {
+    // N.B., use intrinsic indexing
+    return slice[slice.size - 1]
 }

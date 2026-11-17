@@ -106,7 +106,7 @@ public open class Command(
         if (f.alternate()) {
             val debugCommand = DebugStruct(f, "Command")
             debugCommand.field("program", this.program).field("args", this.args)
-            if (!this.env.isUnchanged()) {
+            if (this.env.isUnchanged().inv()) {
                 debugCommand.field("env", this.env)
             }
             if (this.cwd != null) {
