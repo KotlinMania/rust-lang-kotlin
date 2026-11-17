@@ -26,7 +26,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * }
  * ```
  */
-public open class DropGuard<T, F>(
+public open class DropGuard<T, F, Output>(
     public var inner: T,
     public var f: F,
 ) {
@@ -57,7 +57,7 @@ public open class DropGuard<T, F>(
          * val guard = DropGuard.new(value, { s -> println("$s") })
          * ```
          */
-        public fun <T> new(inner: T, f: (T) -> Unit): DropGuard<T, F> = DropGuard(inner = inner, f = f)
+        public fun <T> new(inner: T, f: (T) -> Unit): DropGuard<T, F, Output> = DropGuard(inner = inner, f = f)
 
         /**
          * Consumes the `DropGuard`, returning the wrapped value.
@@ -77,7 +77,7 @@ public open class DropGuard<T, F>(
          * check(DropGuard.dismiss(guard) == "Nori likes chicken")
          * ```
          */
-        public fun <T> dismiss(guard: DropGuard<T, F>): T {
+        public fun <T> dismiss(guard: DropGuard<T, F, Output>): T {
             // First we ensure that dropping the guard will not trigger
             // its destructor
             val guard1 = guard

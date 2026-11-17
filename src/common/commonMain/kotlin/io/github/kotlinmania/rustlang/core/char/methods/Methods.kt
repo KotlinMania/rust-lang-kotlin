@@ -1964,7 +1964,8 @@ public fun Char.eqIgnoreAsciiCase(other: Char): Boolean = this.toAsciiLowercase(
  * [toAsciiUppercase]: #method.toAsciiUppercase
  */
 public fun Char.makeAsciiUppercase() {
-    this = this.toAsciiUppercase()
+    var selfMut = this
+    selfMut = selfMut.toAsciiUppercase()
 }
 
 /**
@@ -1987,7 +1988,8 @@ public fun Char.makeAsciiUppercase() {
  * [toAsciiLowercase]: #method.toAsciiLowercase
  */
 public fun Char.makeAsciiLowercase() {
-    this = this.toAsciiLowercase()
+    var selfMut = this
+    selfMut = selfMut.toAsciiLowercase()
 }
 
 /**

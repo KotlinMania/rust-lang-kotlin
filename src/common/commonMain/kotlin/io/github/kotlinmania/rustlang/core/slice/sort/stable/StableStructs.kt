@@ -32,5 +32,5 @@ public fun <T> AlignedStorage.Companion.new(n: Int): AlignedStorage<T> = Aligned
 public fun <T> AlignedStorage<T>.asUninitSliceMut(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutableList<MaybeUninit<T>> {
     val len = n / sizeOf<T>(typeLayoutT = typeLayoutT)
     // SAFETY: `_align` ensures we are correctly aligned.
-    return linearMutSliceView(MutPtr((this.storage.asMutPtr()).rawAddress), len.toInt(), PrimitiveLayouts.U8)
+    return linearMutSliceView(MutPtr((this.storage.asMutPtr()).rawAddress), len.toInt(), UnresolvedTypeLayout<MaybeUninit<UByte>>())
 }

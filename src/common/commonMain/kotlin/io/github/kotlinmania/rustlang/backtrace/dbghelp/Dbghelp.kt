@@ -20,10 +20,11 @@ import io.github.kotlinmania.rustlang.backtrace.windowssys.SYMOPT_DEFERRED_LOADS
 import io.github.kotlinmania.rustlang.backtrace.windowssys.TRUE
 import io.github.kotlinmania.rustlang.backtrace.windowssys.lstrlenW
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.asPtr
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -166,7 +167,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetOptions\u0000"
                 this.symGetOptions = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute(this.symGetOptions)
+            transmuteWithLayouts<Int, SymGetOptions>(this.symGetOptions, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<FnCallback>())
         }
     }
 
@@ -176,7 +177,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymSetOptions\u0000"
                 this.symSetOptions = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute(this.symSetOptions)
+            transmuteWithLayouts<Int, SymSetOptions>(this.symSetOptions, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<FnCallback1>())
         }
     }
 
@@ -186,7 +187,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymInitializeW\u0000"
                 this.symInitializeW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute(this.symInitializeW)
+            transmuteWithLayouts<Int, SymInitializeW>(this.symInitializeW, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<FnCallback2>())
         }
     }
 
@@ -196,7 +197,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetSearchPathW\u0000"
                 this.symGetSearchPathW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute(this.symGetSearchPathW)
+            transmuteWithLayouts<Int, SymGetSearchPathW>(this.symGetSearchPathW, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<FnCallback3>())
         }
     }
 
@@ -206,7 +207,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymSetSearchPathW\u0000"
                 this.symSetSearchPathW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute(this.symSetSearchPathW)
+            transmuteWithLayouts<Int, SymSetSearchPathW>(this.symSetSearchPathW, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<FnCallback4>())
         }
     }
 
@@ -216,7 +217,7 @@ public open class Dbghelp internal constructor(
                 val name = "EnumerateLoadedModulesW64\u0000"
                 this.enumerateLoadedModulesW64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute(this.enumerateLoadedModulesW64)
+            transmuteWithLayouts<Int, EnumerateLoadedModulesW64>(this.enumerateLoadedModulesW64, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<FnCallback5>())
         }
     }
 
@@ -226,7 +227,7 @@ public open class Dbghelp internal constructor(
                 val name = "StackWalk64\u0000"
                 this.stackWalk64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute(this.stackWalk64)
+            transmuteWithLayouts<Int, StackWalk64>(this.stackWalk64, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<FnCallback6>())
         }
     }
 
@@ -236,7 +237,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymFunctionTableAccess64\u0000"
                 this.symFunctionTableAccess64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute(this.symFunctionTableAccess64)
+            transmuteWithLayouts<Int, SymFunctionTableAccess64>(this.symFunctionTableAccess64, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<FnCallback7>())
         }
     }
 
@@ -246,7 +247,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetModuleBase64\u0000"
                 this.symGetModuleBase64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute(this.symGetModuleBase64)
+            transmuteWithLayouts<Int, SymGetModuleBase64>(this.symGetModuleBase64, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<FnCallback8>())
         }
     }
 
@@ -256,7 +257,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymFromAddrW\u0000"
                 this.symFromAddrW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute(this.symFromAddrW)
+            transmuteWithLayouts<Int, SymFromAddrW>(this.symFromAddrW, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<FnCallback9>())
         }
     }
 
@@ -266,7 +267,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetLineFromAddrW64\u0000"
                 this.symGetLineFromAddrW64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute(this.symGetLineFromAddrW64)
+            transmuteWithLayouts<Int, SymGetLineFromAddrW64>(this.symGetLineFromAddrW64, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<FnCallback10>())
         }
     }
 
@@ -276,7 +277,7 @@ public open class Dbghelp internal constructor(
                 val name = "StackWalkEx\u0000"
                 this.stackWalkEx = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute(this.stackWalkEx)
+            transmuteWithLayouts<Int, StackWalkEx>(this.stackWalkEx, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<FnCallback11>())
         }
     }
 
@@ -286,7 +287,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymFromInlineContextW\u0000"
                 this.symFromInlineContextW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute(this.symFromInlineContextW)
+            transmuteWithLayouts<Int, SymFromInlineContextW>(this.symFromInlineContextW, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<FnCallback12>())
         }
     }
 
@@ -296,7 +297,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetLineFromInlineContextW\u0000"
                 this.symGetLineFromInlineContextW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute(this.symGetLineFromInlineContextW)
+            transmuteWithLayouts<Int, SymGetLineFromInlineContextW>(this.symGetLineFromInlineContextW, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<FnCallback13>())
         }
     }
 
@@ -306,7 +307,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymAddrIncludeInlineTrace\u0000"
                 this.symAddrIncludeInlineTrace = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute(this.symAddrIncludeInlineTrace)
+            transmuteWithLayouts<Int, SymAddrIncludeInlineTrace>(this.symAddrIncludeInlineTrace, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<FnCallback14>())
         }
     }
 
@@ -316,7 +317,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymQueryInlineTrace\u0000"
                 this.symQueryInlineTrace = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute(this.symQueryInlineTrace)
+            transmuteWithLayouts<Int, SymQueryInlineTrace>(this.symQueryInlineTrace, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<FnCallback15>())
         }
     }
 

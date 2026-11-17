@@ -136,7 +136,7 @@ public fun <Int, SignedInt, ISet1, ISet2, D, OtherSign, Unsigned, F> sqrtRound(x
             }
         }
     // Extract the top 6 bits of the significand with the lowest bit of the exponent.
-    val i = Int.castFrom(ix shr (F.SIG_BITS - 6).toInt()) and 0x7F
+    val i = castFrom(ix shr (F.SIG_BITS - 6).toInt()) and 0x7F
     // Start with an initial guess for `r = 1 / sqrt(m)` from the table, and shift `m` as an
     // initial value for `s = sqrt(m)`. See the module documentation for details.
     val r1U0: ISet1 = F.ISet1.castFrom(RSQRT_TAB[i]) shl (F.ISet1.BITS - 16).toInt()

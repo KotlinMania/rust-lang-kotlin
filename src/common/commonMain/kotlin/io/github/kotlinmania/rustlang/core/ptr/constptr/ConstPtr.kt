@@ -14,7 +14,7 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -156,7 +156,7 @@ public fun ConstPtr.addr(): Int {
     // reinterpret semantics, it relies on sysroot crates having special status.
     // SAFETY: Pointer-to-integer transmutes are valid (if you are okay with losing the
     // provenance).
-    return transmute(ConstPtr((this).rawAddress))
+    return transmuteWithLayouts<MutPtr, Int>(ConstPtr((this).rawAddress), PrimitiveLayouts.mutPtrLayout(64L), PrimitiveLayouts.USIZE64)
 }
 
 /**

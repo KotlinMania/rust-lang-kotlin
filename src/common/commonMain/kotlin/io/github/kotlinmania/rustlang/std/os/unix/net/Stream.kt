@@ -1,22 +1,22 @@
 // port-lint: source os/unix/net/stream.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net
 
-import io.github.kotlinmania.libc.fuchsia.AF_UNIX
-import io.github.kotlinmania.libc.fuchsia.SOCK_STREAM
-import io.github.kotlinmania.libc.fuchsia.SO_RCVTIMEO
-import io.github.kotlinmania.libc.fuchsia.SO_SNDTIMEO
+import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.libc.connect
 import io.github.kotlinmania.rustlang.libc.getpeername
 import io.github.kotlinmania.rustlang.libc.getsockname
-import io.github.kotlinmania.rustlang.std.io.BorrowedCursor
-import io.github.kotlinmania.rustlang.std.io.Read
-import io.github.kotlinmania.rustlang.std.io.Write
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SOCK_STREAM
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_RCVTIMEO
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_SNDTIMEO
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AF_UNIX
 import io.github.kotlinmania.rustlang.std.net.Shutdown
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
 import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
@@ -357,7 +357,7 @@ public open class UnixStream(
      * On Redox this always returns `None`.
      * ```
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.takeError()
 
     /**
      * Shuts down the read, write, or both halves of this connection.

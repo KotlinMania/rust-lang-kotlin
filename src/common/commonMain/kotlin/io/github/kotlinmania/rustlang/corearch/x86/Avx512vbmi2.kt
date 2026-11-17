@@ -2,7 +2,9 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.simd.I16x16
@@ -17,7 +19,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.I8x64
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_expandloadu_epi16)
  */
-public fun mm512MaskExpandloaduEpi16(src: M512i, k: Mmask32, memAddr: ConstPtr): M512i = transmute(expandloadw512(memAddr, src.asI16x32(), k))
+public fun mm512MaskExpandloaduEpi16(src: M512i, k: Mmask32, memAddr: ConstPtr): M512i = transmuteWithLayouts<I16x32, M512i>(expandloadw512(memAddr, src.asI16x32(), k), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Load contiguous active 16-bit integers from unaligned memory at memAddr (those with their respective bit set in mask k), and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
@@ -31,7 +33,7 @@ public fun mm512MaskzExpandloaduEpi16(k: Mmask32, memAddr: ConstPtr): M512i = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_expandloadu_epi16)
  */
-public fun mm256MaskExpandloaduEpi16(src: M256i, k: Mmask16, memAddr: ConstPtr): M256i = transmute(expandloadw256(memAddr, src.asI16x16(), k))
+public fun mm256MaskExpandloaduEpi16(src: M256i, k: Mmask16, memAddr: ConstPtr): M256i = transmuteWithLayouts<I16x16, M256i>(expandloadw256(memAddr, src.asI16x16(), k), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Load contiguous active 16-bit integers from unaligned memory at memAddr (those with their respective bit set in mask k), and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
@@ -45,7 +47,7 @@ public fun mm256MaskzExpandloaduEpi16(k: Mmask16, memAddr: ConstPtr): M256i = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_expandloadu_epi16)
  */
-public fun mmMaskExpandloaduEpi16(src: M128i, k: Mmask8, memAddr: ConstPtr): M128i = transmute(expandloadw128(memAddr, src.asI16x8(), k))
+public fun mmMaskExpandloaduEpi16(src: M128i, k: Mmask8, memAddr: ConstPtr): M128i = transmuteWithLayouts<I16x8, M128i>(expandloadw128(memAddr, src.asI16x8(), k), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Load contiguous active 16-bit integers from unaligned memory at memAddr (those with their respective bit set in mask k), and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
@@ -59,7 +61,7 @@ public fun mmMaskzExpandloaduEpi16(k: Mmask8, memAddr: ConstPtr): M128i = mmMask
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_expandloadu_epi8)
  */
-public fun mm512MaskExpandloaduEpi8(src: M512i, k: Mmask64, memAddr: ConstPtr): M512i = transmute(expandloadb512(memAddr, src.asI8x64(), k))
+public fun mm512MaskExpandloaduEpi8(src: M512i, k: Mmask64, memAddr: ConstPtr): M512i = transmuteWithLayouts<I8x64, M512i>(expandloadb512(memAddr, src.asI8x64(), k), UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Load contiguous active 8-bit integers from unaligned memory at memAddr (those with their respective bit set in mask k), and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
@@ -73,7 +75,7 @@ public fun mm512MaskzExpandloaduEpi8(k: Mmask64, memAddr: ConstPtr): M512i = mm5
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_expandloadu_epi8)
  */
-public fun mm256MaskExpandloaduEpi8(src: M256i, k: Mmask32, memAddr: ConstPtr): M256i = transmute(expandloadb256(memAddr, src.asI8x32(), k))
+public fun mm256MaskExpandloaduEpi8(src: M256i, k: Mmask32, memAddr: ConstPtr): M256i = transmuteWithLayouts<I8x32, M256i>(expandloadb256(memAddr, src.asI8x32(), k), UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Load contiguous active 8-bit integers from unaligned memory at memAddr (those with their respective bit set in mask k), and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
@@ -87,7 +89,7 @@ public fun mm256MaskzExpandloaduEpi8(k: Mmask32, memAddr: ConstPtr): M256i = mm2
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_expandloadu_epi8)
  */
-public fun mmMaskExpandloaduEpi8(src: M128i, k: Mmask16, memAddr: ConstPtr): M128i = transmute(expandloadb128(memAddr, src.asI8x16(), k))
+public fun mmMaskExpandloaduEpi8(src: M128i, k: Mmask16, memAddr: ConstPtr): M128i = transmuteWithLayouts<I8x16, M128i>(expandloadb128(memAddr, src.asI8x16(), k), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Load contiguous active 8-bit integers from unaligned memory at memAddr (those with their respective bit set in mask k), and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
@@ -155,168 +157,168 @@ public fun mmMaskCompressstoreuEpi8(baseAddr: MutPtr, k: Mmask16, a: M128i) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_compress_epi16&expand=1192)
  */
-public fun mm512MaskCompressEpi16(src: M512i, k: Mmask32, a: M512i): M512i = transmute(vpcompressw(a.asI16x32(), src.asI16x32(), k))
+public fun mm512MaskCompressEpi16(src: M512i, k: Mmask32, a: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpcompressw(a.asI16x32(), src.asI16x32(), k), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Contiguously store the active 16-bit integers in a (those with their respective bit set in zeromask k) to dst, and set the remaining elements to zero.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_compress_epi16&expand=1193)
  */
-public fun mm512MaskzCompressEpi16(k: Mmask32, a: M512i): M512i = transmute(vpcompressw(a.asI16x32(), i16x32.ZERO, k))
+public fun mm512MaskzCompressEpi16(k: Mmask32, a: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpcompressw(a.asI16x32(), i16x32.ZERO, k), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Contiguously store the active 16-bit integers in a (those with their respective bit set in writemask k) to dst, and pass through the remaining elements from src.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_compress_epi16&expand=1190)
  */
-public fun mm256MaskCompressEpi16(src: M256i, k: Mmask16, a: M256i): M256i = transmute(vpcompressw256(a.asI16x16(), src.asI16x16(), k))
+public fun mm256MaskCompressEpi16(src: M256i, k: Mmask16, a: M256i): M256i = transmuteWithLayouts<I16x16, M256i>(vpcompressw256(a.asI16x16(), src.asI16x16(), k), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Contiguously store the active 16-bit integers in a (those with their respective bit set in zeromask k) to dst, and set the remaining elements to zero.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_compress_epi16&expand=1191)
  */
-public fun mm256MaskzCompressEpi16(k: Mmask16, a: M256i): M256i = transmute(vpcompressw256(a.asI16x16(), i16x16.ZERO, k))
+public fun mm256MaskzCompressEpi16(k: Mmask16, a: M256i): M256i = transmuteWithLayouts<I16x16, M256i>(vpcompressw256(a.asI16x16(), i16x16.ZERO, k), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Contiguously store the active 16-bit integers in a (those with their respective bit set in writemask k) to dst, and pass through the remaining elements from src.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_compress_epi16&expand=1188)
  */
-public fun mmMaskCompressEpi16(src: M128i, k: Mmask8, a: M128i): M128i = transmute(vpcompressw128(a.asI16x8(), src.asI16x8(), k))
+public fun mmMaskCompressEpi16(src: M128i, k: Mmask8, a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpcompressw128(a.asI16x8(), src.asI16x8(), k), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Contiguously store the active 16-bit integers in a (those with their respective bit set in zeromask k) to dst, and set the remaining elements to zero.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_compress_epi16&expand=1189)
  */
-public fun mmMaskzCompressEpi16(k: Mmask8, a: M128i): M128i = transmute(vpcompressw128(a.asI16x8(), i16x8.ZERO, k))
+public fun mmMaskzCompressEpi16(k: Mmask8, a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpcompressw128(a.asI16x8(), i16x8.ZERO, k), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Contiguously store the active 8-bit integers in a (those with their respective bit set in writemask k) to dst, and pass through the remaining elements from src.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_compress_epi8&expand=1210)
  */
-public fun mm512MaskCompressEpi8(src: M512i, k: Mmask64, a: M512i): M512i = transmute(vpcompressb(a.asI8x64(), src.asI8x64(), k))
+public fun mm512MaskCompressEpi8(src: M512i, k: Mmask64, a: M512i): M512i = transmuteWithLayouts<I8x64, M512i>(vpcompressb(a.asI8x64(), src.asI8x64(), k), UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Contiguously store the active 8-bit integers in a (those with their respective bit set in zeromask k) to dst, and set the remaining elements to zero.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_compress_epi8&expand=1211)
  */
-public fun mm512MaskzCompressEpi8(k: Mmask64, a: M512i): M512i = transmute(vpcompressb(a.asI8x64(), i8x64.ZERO, k))
+public fun mm512MaskzCompressEpi8(k: Mmask64, a: M512i): M512i = transmuteWithLayouts<I8x64, M512i>(vpcompressb(a.asI8x64(), i8x64.ZERO, k), UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Contiguously store the active 8-bit integers in a (those with their respective bit set in writemask k) to dst, and pass through the remaining elements from src.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_compress_epi8&expand=1208)
  */
-public fun mm256MaskCompressEpi8(src: M256i, k: Mmask32, a: M256i): M256i = transmute(vpcompressb256(a.asI8x32(), src.asI8x32(), k))
+public fun mm256MaskCompressEpi8(src: M256i, k: Mmask32, a: M256i): M256i = transmuteWithLayouts<I8x32, M256i>(vpcompressb256(a.asI8x32(), src.asI8x32(), k), UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Contiguously store the active 8-bit integers in a (those with their respective bit set in zeromask k) to dst, and set the remaining elements to zero.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_compress_epi8&expand=1209)
  */
-public fun mm256MaskzCompressEpi8(k: Mmask32, a: M256i): M256i = transmute(vpcompressb256(a.asI8x32(), i8x32.ZERO, k))
+public fun mm256MaskzCompressEpi8(k: Mmask32, a: M256i): M256i = transmuteWithLayouts<I8x32, M256i>(vpcompressb256(a.asI8x32(), i8x32.ZERO, k), UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Contiguously store the active 8-bit integers in a (those with their respective bit set in writemask k) to dst, and pass through the remaining elements from src.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_compress_epi8&expand=1206)
  */
-public fun mmMaskCompressEpi8(src: M128i, k: Mmask16, a: M128i): M128i = transmute(vpcompressb128(a.asI8x16(), src.asI8x16(), k))
+public fun mmMaskCompressEpi8(src: M128i, k: Mmask16, a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpcompressb128(a.asI8x16(), src.asI8x16(), k), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Contiguously store the active 8-bit integers in a (those with their respective bit set in zeromask k) to dst, and set the remaining elements to zero.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_compress_epi8&expand=1207)
  */
-public fun mmMaskzCompressEpi8(k: Mmask16, a: M128i): M128i = transmute(vpcompressb128(a.asI8x16(), i8x16.ZERO, k))
+public fun mmMaskzCompressEpi8(k: Mmask16, a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpcompressb128(a.asI8x16(), i8x16.ZERO, k), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Load contiguous active 16-bit integers from a (those with their respective bit set in mask k), and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_expand_epi16&expand=2310)
  */
-public fun mm512MaskExpandEpi16(src: M512i, k: Mmask32, a: M512i): M512i = transmute(vpexpandw(a.asI16x32(), src.asI16x32(), k))
+public fun mm512MaskExpandEpi16(src: M512i, k: Mmask32, a: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpexpandw(a.asI16x32(), src.asI16x32(), k), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Load contiguous active 16-bit integers from a (those with their respective bit set in mask k), and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_expand_epi16&expand=2311)
  */
-public fun mm512MaskzExpandEpi16(k: Mmask32, a: M512i): M512i = transmute(vpexpandw(a.asI16x32(), i16x32.ZERO, k))
+public fun mm512MaskzExpandEpi16(k: Mmask32, a: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpexpandw(a.asI16x32(), i16x32.ZERO, k), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Load contiguous active 16-bit integers from a (those with their respective bit set in mask k), and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_expand_epi16&expand=2308)
  */
-public fun mm256MaskExpandEpi16(src: M256i, k: Mmask16, a: M256i): M256i = transmute(vpexpandw256(a.asI16x16(), src.asI16x16(), k))
+public fun mm256MaskExpandEpi16(src: M256i, k: Mmask16, a: M256i): M256i = transmuteWithLayouts<I16x16, M256i>(vpexpandw256(a.asI16x16(), src.asI16x16(), k), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Load contiguous active 16-bit integers from a (those with their respective bit set in mask k), and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_expand_epi16&expand=2309)
  */
-public fun mm256MaskzExpandEpi16(k: Mmask16, a: M256i): M256i = transmute(vpexpandw256(a.asI16x16(), i16x16.ZERO, k))
+public fun mm256MaskzExpandEpi16(k: Mmask16, a: M256i): M256i = transmuteWithLayouts<I16x16, M256i>(vpexpandw256(a.asI16x16(), i16x16.ZERO, k), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Load contiguous active 16-bit integers from a (those with their respective bit set in mask k), and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_expand_epi16&expand=2306)
  */
-public fun mmMaskExpandEpi16(src: M128i, k: Mmask8, a: M128i): M128i = transmute(vpexpandw128(a.asI16x8(), src.asI16x8(), k))
+public fun mmMaskExpandEpi16(src: M128i, k: Mmask8, a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpexpandw128(a.asI16x8(), src.asI16x8(), k), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Load contiguous active 16-bit integers from a (those with their respective bit set in mask k), and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_expand_epi16&expand=2307)
  */
-public fun mmMaskzExpandEpi16(k: Mmask8, a: M128i): M128i = transmute(vpexpandw128(a.asI16x8(), i16x8.ZERO, k))
+public fun mmMaskzExpandEpi16(k: Mmask8, a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpexpandw128(a.asI16x8(), i16x8.ZERO, k), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Load contiguous active 8-bit integers from a (those with their respective bit set in mask k), and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_expand_epi8&expand=2328)
  */
-public fun mm512MaskExpandEpi8(src: M512i, k: Mmask64, a: M512i): M512i = transmute(vpexpandb(a.asI8x64(), src.asI8x64(), k))
+public fun mm512MaskExpandEpi8(src: M512i, k: Mmask64, a: M512i): M512i = transmuteWithLayouts<I8x64, M512i>(vpexpandb(a.asI8x64(), src.asI8x64(), k), UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Load contiguous active 8-bit integers from a (those with their respective bit set in mask k), and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_expand_epi8&expand=2329)
  */
-public fun mm512MaskzExpandEpi8(k: Mmask64, a: M512i): M512i = transmute(vpexpandb(a.asI8x64(), i8x64.ZERO, k))
+public fun mm512MaskzExpandEpi8(k: Mmask64, a: M512i): M512i = transmuteWithLayouts<I8x64, M512i>(vpexpandb(a.asI8x64(), i8x64.ZERO, k), UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Load contiguous active 8-bit integers from a (those with their respective bit set in mask k), and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_expand_epi8&expand=2326)
  */
-public fun mm256MaskExpandEpi8(src: M256i, k: Mmask32, a: M256i): M256i = transmute(vpexpandb256(a.asI8x32(), src.asI8x32(), k))
+public fun mm256MaskExpandEpi8(src: M256i, k: Mmask32, a: M256i): M256i = transmuteWithLayouts<I8x32, M256i>(vpexpandb256(a.asI8x32(), src.asI8x32(), k), UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Load contiguous active 8-bit integers from a (those with their respective bit set in mask k), and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_expand_epi8&expand=2327)
  */
-public fun mm256MaskzExpandEpi8(k: Mmask32, a: M256i): M256i = transmute(vpexpandb256(a.asI8x32(), i8x32.ZERO, k))
+public fun mm256MaskzExpandEpi8(k: Mmask32, a: M256i): M256i = transmuteWithLayouts<I8x32, M256i>(vpexpandb256(a.asI8x32(), i8x32.ZERO, k), UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Load contiguous active 8-bit integers from a (those with their respective bit set in mask k), and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_expand_epi8&expand=2324)
  */
-public fun mmMaskExpandEpi8(src: M128i, k: Mmask16, a: M128i): M128i = transmute(vpexpandb128(a.asI8x16(), src.asI8x16(), k))
+public fun mmMaskExpandEpi8(src: M128i, k: Mmask16, a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpexpandb128(a.asI8x16(), src.asI8x16(), k), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Load contiguous active 8-bit integers from a (those with their respective bit set in mask k), and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_expand_epi8&expand=2325)
  */
-public fun mmMaskzExpandEpi8(k: Mmask16, a: M128i): M128i = transmute(vpexpandb128(a.asI8x16(), i8x16.ZERO, k))
+public fun mmMaskzExpandEpi8(k: Mmask16, a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpexpandb128(a.asI8x16(), i8x16.ZERO, k), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Concatenate packed 64-bit integers in a and b producing an intermediate 128-bit result. Shift the result left by the amount specified in the corresponding element of c, and store the upper 64-bits in dst.

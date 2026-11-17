@@ -316,7 +316,7 @@ public fun sliceWrite(posMut: RustMutableReference<ULong>, slice: MutableList<UB
 public fun sliceWriteVectored(posMut: RustMutableReference<ULong>, slice: MutableList<UByte>, bufs: List<IoSlice>): Result<Int> {
     var nwritten = 0
     for (buf in bufs) {
-        val n = when (val tryResult = sliceWrite(posMut, slice, buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        val n = when (val tryResult = sliceWrite(posMut, slice, buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }
         nwritten += n
         if (n < buf.len()) {
             break
@@ -330,7 +330,7 @@ public fun sliceWriteVectored(posMut: RustMutableReference<ULong>, slice: Mutabl
  * Exported for `Cursor<Holder<[UByte], A>>`s implementation of [Write].
  */
 public fun sliceWriteAll(posMut: RustMutableReference<ULong>, slice: MutableList<UByte>, buf: List<UByte>): Result<Unit> {
-    val n = when (val tryResult = sliceWrite(posMut, slice, buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+    val n = when (val tryResult = sliceWrite(posMut, slice, buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
     return if (n < buf.size) {
         Result.Err(WRITE_ALL_EOF)
     } else {
@@ -344,7 +344,7 @@ public fun sliceWriteAll(posMut: RustMutableReference<ULong>, slice: MutableList
  */
 public fun sliceWriteAllVectored(posMut: RustMutableReference<ULong>, slice: MutableList<UByte>, bufs: List<IoSlice>): Result<Unit> {
     for (buf in bufs) {
-        val n = when (val tryResult = sliceWrite(posMut, slice, buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        val n = when (val tryResult = sliceWrite(posMut, slice, buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         if (n < buf.len()) {
             return Result.Err(WRITE_ALL_EOF)
         }

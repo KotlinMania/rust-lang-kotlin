@@ -19,6 +19,7 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.error.Request
 import io.github.kotlinmania.rustlang.core.future.future.Future
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
@@ -26,8 +27,7 @@ import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.transmute
-import io.github.kotlinmania.rustlang.core.mem.transmuteUnchecked
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ops.asyncfunction.AsyncFn
 import io.github.kotlinmania.rustlang.core.ops.asyncfunction.AsyncFnMut
 import io.github.kotlinmania.rustlang.core.ops.asyncfunction.AsyncFnOnce
@@ -1509,7 +1509,7 @@ public fun <T> Box.Companion.new(x: T, typeLayoutT: TypeLayout<T> = UnresolvedTy
     // SAFETY: we just allocated the box to store `x`.
     (typeLayoutT).writeNative(ptr.rawAddress, x)
     // SAFETY: we just initialized the memory `ptr` points to.
-    return transmute(ptr)
+    return transmuteWithLayouts<MutPtr, Box<T, Global>>(ptr, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Box<T, Global>>())
 }
 
 // even without panics, this helps for Miri backtraces
@@ -1532,7 +1532,7 @@ public fun <T> Box.Companion.newUninit(typeLayoutT: TypeLayout<T> = UnresolvedTy
     // `Holder.new`).
     // SAFETY:
     // - If `allocate` succeeds, the returned pointer exactly matches what `Holder` needs.
-    return transmute(boxNewUninit(Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt())))
+    return transmuteWithLayouts<MutPtr, Box<MaybeUninit<T>, Global>>(boxNewUninit(Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt())), UnresolvedTypeLayout<MutPtr>(), UnresolvedTypeLayout<Box<MaybeUninit<T>, Global>>())
 }
 
 /**
@@ -2003,7 +2003,7 @@ public fun <T, A : Allocator> Box<MaybeUninit<T>, A>.assumeInit(typeLayoutT: Typ
     // This is used in the `vec` macro, so we optimize for minimal IR generation
     // even in debug builds.
     // SAFETY: `Holder<T>` and `Holder<MaybeUninit<T>>` have the same layout.
-    return transmuteUnchecked(this)
+    return transmuteWithLayouts<Box<MaybeUninit<T>, A>, Box<T, A>>(this, UnresolvedTypeLayout<Box<MaybeUninit<T>, A>>(), UnresolvedTypeLayout<Box<T, A>>())
 }
 
 /**
@@ -2393,10 +2393,11 @@ public fun <T, A : Allocator> Box<List<T>, A>.clone(): Box<List<T>, A> {
  * ```
  */
 public fun <T, A : Allocator> Box<List<T>, A>.cloneFrom(source: Box<List<T>, A>) {
-    if (this.len() == source.len()) {
-        this.cloneFromSlice(source)
+    var selfMut = this
+    if (selfMut.len() == source.len()) {
+        selfMut.cloneFromSlice(source)
     } else {
-        this = source.clone()
+        selfMut = source.clone()
     }
 }
 

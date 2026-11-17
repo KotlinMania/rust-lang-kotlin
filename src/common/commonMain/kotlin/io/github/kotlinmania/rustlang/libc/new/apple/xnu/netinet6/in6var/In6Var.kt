@@ -28,7 +28,7 @@ public open class In6Aliasreq(
     public open fun clone(): In6Aliasreq = In6Aliasreq(ifraName, ifraAddr, ifraDstaddr, ifraPrefixmask, ifraFlags, ifraLifetime, nonExhaustive)
 
     public companion object {
-        public fun default(): In6Aliasreq = In6Aliasreq(ifraName = Default.default(), ifraAddr = Default.default(), ifraDstaddr = Default.default(), ifraPrefixmask = Default.default(), ifraFlags = Default.default(), ifraLifetime = Default.default(), nonExhaustive = Unit)
+        public fun default(): In6Aliasreq = In6Aliasreq(ifraName = Default.default(), ifraAddr = SockaddrIn6.default(), ifraDstaddr = SockaddrIn6.default(), ifraPrefixmask = SockaddrIn6.default(), ifraFlags = 0, ifraLifetime = In6Addrlifetime.default(), nonExhaustive = Unit)
     }
 }
 

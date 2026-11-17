@@ -34,7 +34,7 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> specTest(f: (F) -> F) 
     check(f(F.NAN).isNan())
     // Not spec rewquired but we expect it
     check(f(F.NAN).isSignPositive())
-    check(f(F.fromBits(F.NAN.toBits() or F.SIGN_MASK)).isSignPositive())
+    check(f(fromBits(F.NAN.toBits() or F.SIGN_MASK)).isSignPositive())
 }
 
 public class FabsInlineTests {

@@ -2,7 +2,8 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
@@ -98,7 +99,7 @@ public fun mmHsubPs(a: M128, b: M128): M128 =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_lddqu_si128)
  */
-public fun mmLddquSi128(memAddr: ConstPtr): M128i = transmute(lddqu(memAddr))
+public fun mmLddquSi128(memAddr: ConstPtr): M128i = transmuteWithLayouts<I8x16, M128i>(lddqu(memAddr), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Duplicate the low double-precision (64-bit) floating-point element

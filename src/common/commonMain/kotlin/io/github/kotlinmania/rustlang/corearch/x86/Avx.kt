@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
@@ -61,8 +62,8 @@ public fun mm256AddPs(a: M256, b: M256): M256 = run { val _simdArg0 = a; val _si
  */
 public fun mm256AndPd(a: M256d, b: M256d): M256d =
     run {
-        val a1: U64x4 = transmute(a)
-        val b1: U64x4 = transmute(b)
+        val a1: U64x4 = transmuteWithLayouts<M256d, U64x4>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<U64x4>())
+        val b1: U64x4 = transmuteWithLayouts<M256d, U64x4>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<U64x4>())
         transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
     }
 
@@ -74,8 +75,8 @@ public fun mm256AndPd(a: M256d, b: M256d): M256d =
  */
 public fun mm256AndPs(a: M256, b: M256): M256 =
     run {
-        val a1: U32x8 = transmute(a)
-        val b1: U32x8 = transmute(b)
+        val a1: U32x8 = transmuteWithLayouts<M256, U32x8>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<U32x8>())
+        val b1: U32x8 = transmuteWithLayouts<M256, U32x8>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<U32x8>())
         transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
     }
 
@@ -89,8 +90,8 @@ public fun mm256AndPs(a: M256, b: M256): M256 =
  */
 public fun mm256OrPd(a: M256d, b: M256d): M256d =
     run {
-        val a1: U64x4 = transmute(a)
-        val b1: U64x4 = transmute(b)
+        val a1: U64x4 = transmuteWithLayouts<M256d, U64x4>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<U64x4>())
+        val b1: U64x4 = transmuteWithLayouts<M256d, U64x4>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<U64x4>())
         transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
     }
 
@@ -102,8 +103,8 @@ public fun mm256OrPd(a: M256d, b: M256d): M256d =
  */
 public fun mm256OrPs(a: M256, b: M256): M256 =
     run {
-        val a1: U32x8 = transmute(a)
-        val b1: U32x8 = transmute(b)
+        val a1: U32x8 = transmuteWithLayouts<M256, U32x8>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<U32x8>())
+        val b1: U32x8 = transmuteWithLayouts<M256, U32x8>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<U32x8>())
         transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
     }
 
@@ -141,8 +142,8 @@ public fun mm256ShufflePs(a: M256, b: M256, mask: Int): M256 {
  */
 public fun mm256AndnotPd(a: M256d, b: M256d): M256d =
     run {
-        val a1: U64x4 = transmute(a)
-        val b1: U64x4 = transmute(b)
+        val a1: U64x4 = transmuteWithLayouts<M256d, U64x4>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<U64x4>())
+        val b1: U64x4 = transmuteWithLayouts<M256d, U64x4>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<U64x4>())
         transmute(run { val _simdArg0 = run { val _simdArg0 = u64x4.splat((0uL).inv()); val _simdArg1 = a1; _simdArg0 }; val _simdArg1 = b1; _simdArg0 })
     }
 
@@ -155,8 +156,8 @@ public fun mm256AndnotPd(a: M256d, b: M256d): M256d =
  */
 public fun mm256AndnotPs(a: M256, b: M256): M256 =
     run {
-        val a1: U32x8 = transmute(a)
-        val b1: U32x8 = transmute(b)
+        val a1: U32x8 = transmuteWithLayouts<M256, U32x8>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<U32x8>())
+        val b1: U32x8 = transmuteWithLayouts<M256, U32x8>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<U32x8>())
         transmute(run { val _simdArg0 = run { val _simdArg0 = u32x8.splat((0u).inv()); val _simdArg1 = a1; _simdArg0 }; val _simdArg1 = b1; _simdArg0 })
     }
 
@@ -400,7 +401,7 @@ public fun mm256BlendPs(a: M256, b: M256, imm8: Int): M256 {
  */
 public fun mm256BlendvPd(a: M256d, b: M256d, c: M256d): M256d =
     run {
-        val mask: I64x4 = run { val _simdArg0 = transmute(c); val _simdArg1 = i64x4.ZERO; _simdArg0 }
+        val mask: I64x4 = run { val _simdArg0 = transmuteWithLayouts<M256d, I64x4>(c, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<I64x4>()); val _simdArg1 = i64x4.ZERO; _simdArg0 }
         transmute(run { val _simdArg0 = mask; val _simdArg1 = b.asF64x4(); val _simdArg2 = a.asF64x4(); _simdArg1 })
     }
 
@@ -412,7 +413,7 @@ public fun mm256BlendvPd(a: M256d, b: M256d, c: M256d): M256d =
  */
 public fun mm256BlendvPs(a: M256, b: M256, c: M256): M256 =
     run {
-        val mask: I32x8 = run { val _simdArg0 = transmute(c); val _simdArg1 = i32x8.ZERO; _simdArg0 }
+        val mask: I32x8 = run { val _simdArg0 = transmuteWithLayouts<M256, I32x8>(c, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<I32x8>()); val _simdArg1 = i32x8.ZERO; _simdArg0 }
         transmute(run { val _simdArg0 = mask; val _simdArg1 = b.asF32x8(); val _simdArg2 = a.asF32x8(); _simdArg1 })
     }
 
@@ -501,8 +502,8 @@ public fun mm256HsubPs(a: M256, b: M256): M256 =
  */
 public fun mm256XorPd(a: M256d, b: M256d): M256d =
     run {
-        val a1: U64x4 = transmute(a)
-        val b1: U64x4 = transmute(b)
+        val a1: U64x4 = transmuteWithLayouts<M256d, U64x4>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<U64x4>())
+        val b1: U64x4 = transmuteWithLayouts<M256d, U64x4>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<U64x4>())
         transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
     }
 
@@ -514,8 +515,8 @@ public fun mm256XorPd(a: M256d, b: M256d): M256d =
  */
 public fun mm256XorPs(a: M256, b: M256): M256 =
     run {
-        val a1: U32x8 = transmute(a)
-        val b1: U32x8 = transmute(b)
+        val a1: U32x8 = transmuteWithLayouts<M256, U32x8>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<U32x8>())
+        val b1: U32x8 = transmuteWithLayouts<M256, U32x8>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<U32x8>())
         transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
     }
 
@@ -809,7 +810,7 @@ public fun mm256CvtpdPs(a: M256d): M128 = run { val _simdArg0 = a; _simdArg0 }
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtps_epi32)
  */
-public fun mm256CvtpsEpi32(a: M256): M256i = transmute(vcvtps2dq(a))
+public fun mm256CvtpsEpi32(a: M256): M256i = transmuteWithLayouts<I32x8, M256i>(vcvtps2dq(a), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Converts packed single-precision (32-bit) floating-point elements in `a`
@@ -834,7 +835,7 @@ public fun mm256CvtsdF64(a: M256d): Double = run { val _simdArg0 = a; val _simdA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvttpd_epi32)
  */
-public fun mm256CvttpdEpi32(a: M256d): M128i = transmute(vcvttpd2dq(a))
+public fun mm256CvttpdEpi32(a: M256d): M128i = transmuteWithLayouts<I32x4, M128i>(vcvttpd2dq(a), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Converts packed double-precision (64-bit) floating-point elements in `a`
@@ -842,7 +843,7 @@ public fun mm256CvttpdEpi32(a: M256d): M128i = transmute(vcvttpd2dq(a))
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtpd_epi32)
  */
-public fun mm256CvtpdEpi32(a: M256d): M128i = transmute(vcvtpd2dq(a))
+public fun mm256CvtpdEpi32(a: M256d): M128i = transmuteWithLayouts<I32x4, M128i>(vcvtpd2dq(a), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Converts packed single-precision (32-bit) floating-point elements in `a`
@@ -850,7 +851,7 @@ public fun mm256CvtpdEpi32(a: M256d): M128i = transmute(vcvtpd2dq(a))
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvttps_epi32)
  */
-public fun mm256CvttpsEpi32(a: M256): M256i = transmute(vcvttps2dq(a))
+public fun mm256CvttpsEpi32(a: M256): M256i = transmuteWithLayouts<I32x8, M256i>(vcvttps2dq(a), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Extracts 128 bits (composed of 4 packed single-precision (32-bit)
@@ -889,7 +890,7 @@ public fun mm256Extractf128Si256(a: M256i, imm1: Int): M128i {
     }
     return run {
         val dst: I64x2 = run { val _simdArg0 = a.asI64x4(); val _simdArg1 = i64x4.ZERO; val _simdArg2 = SimdShuffleIdx(listOf(listOf(0, 1), listOf(2, 3))[imm1]); _simdArg0 }
-        transmute(dst)
+        transmuteWithLayouts<I64x2, M128i>(dst, UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
     }
 }
 
@@ -1168,7 +1169,7 @@ public fun mm256Insertf128Si256(a: M256i, b: M128i, imm1: Int): M256i {
     }
     return run {
         val dst: I64x4 = run { val _simdArg0 = a.asI64x4(); val _simdArg1 = mm256Castsi128Si256(b).asI64x4(); val _simdArg2 = SimdShuffleIdx(listOf(listOf(4, 5, 2, 3), listOf(0, 1, 4, 5))[imm1]); _simdArg0 }
-        transmute(dst)
+        transmuteWithLayouts<I64x4, M256i>(dst, UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
     }
 }
 
@@ -1483,7 +1484,7 @@ public fun mm256MovedupPd(a: M256d): M256d = run { val _simdArg0 = a; val _simdA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_lddqu_si256)
  */
-public fun mm256LddquSi256(memAddr: ConstPtr): M256i = transmute(vlddqu(ConstPtr(memAddr.rawAddress, memAddr.rawMeta)))
+public fun mm256LddquSi256(memAddr: ConstPtr): M256i = transmuteWithLayouts<I8x32, M256i>(vlddqu(ConstPtr(memAddr.rawAddress, memAddr.rawMeta)), UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Moves integer data from a 256-bit integer vector to a 32-byte
@@ -1691,7 +1692,7 @@ public fun mm256TestnzcPd(a: M256d, b: M256d): Int = vtestnzcpd256(a, b)
  */
 public fun mmTestzPd(a: M128d, b: M128d): Int =
     run {
-        val r: I64x2 = run { val _simdArg0 = transmute(mmAndPd(a, b)); val _simdArg1 = i64x2.ZERO; _simdArg0 }
+        val r: I64x2 = run { val _simdArg0 = transmuteWithLayouts<M128d, I64x2>(mmAndPd(a, b), UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<I64x2>()); val _simdArg1 = i64x2.ZERO; _simdArg0 }
         (if (0L == run { val _simdArg0 = r; _simdArg0 }) 1 else 0)
     }
 
@@ -1708,7 +1709,7 @@ public fun mmTestzPd(a: M128d, b: M128d): Int =
  */
 public fun mmTestcPd(a: M128d, b: M128d): Int =
     run {
-        val r: I64x2 = run { val _simdArg0 = transmute(mmAndnotPd(a, b)); val _simdArg1 = i64x2.ZERO; _simdArg0 }
+        val r: I64x2 = run { val _simdArg0 = transmuteWithLayouts<M128d, I64x2>(mmAndnotPd(a, b), UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<I64x2>()); val _simdArg1 = i64x2.ZERO; _simdArg0 }
         (if (0L == run { val _simdArg0 = r; _simdArg0 }) 1 else 0)
     }
 
@@ -1779,7 +1780,7 @@ public fun mm256TestnzcPs(a: M256, b: M256): Int = vtestnzcps256(a, b)
  */
 public fun mmTestzPs(a: M128, b: M128): Int =
     run {
-        val r: I32x4 = run { val _simdArg0 = transmute(mmAndPs(a, b)); val _simdArg1 = i32x4.ZERO; _simdArg0 }
+        val r: I32x4 = run { val _simdArg0 = transmuteWithLayouts<M128, I32x4>(mmAndPs(a, b), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<I32x4>()); val _simdArg1 = i32x4.ZERO; _simdArg0 }
         (if (0 == run { val _simdArg0 = r; _simdArg0 }) 1 else 0)
     }
 
@@ -1796,7 +1797,7 @@ public fun mmTestzPs(a: M128, b: M128): Int =
  */
 public fun mmTestcPs(a: M128, b: M128): Int =
     run {
-        val r: I32x4 = run { val _simdArg0 = transmute(mmAndnotPs(a, b)); val _simdArg1 = i32x4.ZERO; _simdArg0 }
+        val r: I32x4 = run { val _simdArg0 = transmuteWithLayouts<M128, I32x4>(mmAndnotPs(a, b), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<I32x4>()); val _simdArg1 = i32x4.ZERO; _simdArg0 }
         (if (0 == run { val _simdArg0 = r; _simdArg0 }) 1 else 0)
     }
 
@@ -1825,7 +1826,7 @@ public fun mm256MovemaskPd(a: M256d): Int {
     // Propagate the highest bit to the rest, because simdBitmask
     // requires all-1 or all-0.
     return run {
-        val mask: I64x4 = run { val _simdArg0 = transmute(a); val _simdArg1 = i64x4.ZERO; _simdArg0 }
+        val mask: I64x4 = run { val _simdArg0 = transmuteWithLayouts<M256d, I64x4>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<I64x4>()); val _simdArg1 = i64x4.ZERO; _simdArg0 }
         (run { val _simdArg0 = mask; 0u }).toInt()
     }
 }
@@ -1841,7 +1842,7 @@ public fun mm256MovemaskPs(a: M256): Int {
     // Propagate the highest bit to the rest, because simdBitmask
     // requires all-1 or all-0.
     return run {
-        val mask: I32x8 = run { val _simdArg0 = transmute(a); val _simdArg1 = i32x8.ZERO; _simdArg0 }
+        val mask: I32x8 = run { val _simdArg0 = transmuteWithLayouts<M256, I32x8>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<I32x8>()); val _simdArg1 = i32x8.ZERO; _simdArg0 }
         (run { val _simdArg0 = mask; 0u }).toInt()
     }
 }
@@ -2052,7 +2053,7 @@ public fun mm256Set1Epi64x(a: Long): M256i = i64x4.splat(a).asM256i()
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_castpd_ps)
  */
-public fun mm256CastpdPs(a: M256d): M256 = transmute(a)
+public fun mm256CastpdPs(a: M256d): M256 = transmuteWithLayouts<M256d, M256>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256>())
 
 // This intrinsic is only used for compilation and does not generate any
 // instructions, thus it has zero latency.
@@ -2062,7 +2063,7 @@ public fun mm256CastpdPs(a: M256d): M256 = transmute(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_castps_pd)
  */
-public fun mm256CastpsPd(a: M256): M256d = transmute(a)
+public fun mm256CastpsPd(a: M256): M256d = transmuteWithLayouts<M256, M256d>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256d>())
 
 // This intrinsic is only used for compilation and does not generate any
 // instructions, thus it has zero latency.
@@ -2072,7 +2073,7 @@ public fun mm256CastpsPd(a: M256): M256d = transmute(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_castps_si256)
  */
-public fun mm256CastpsSi256(a: M256): M256i = transmute(a)
+public fun mm256CastpsSi256(a: M256): M256i = transmuteWithLayouts<M256, M256i>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())
 
 // This intrinsic is only used for compilation and does not generate any
 // instructions, thus it has zero latency.
@@ -2082,7 +2083,7 @@ public fun mm256CastpsSi256(a: M256): M256i = transmute(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_castsi256_ps)
  */
-public fun mm256Castsi256Ps(a: M256i): M256 = transmute(a)
+public fun mm256Castsi256Ps(a: M256i): M256 = transmuteWithLayouts<M256i, M256>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M256>())
 
 // This intrinsic is only used for compilation and does not generate any
 // instructions, thus it has zero latency.
@@ -2092,7 +2093,7 @@ public fun mm256Castsi256Ps(a: M256i): M256 = transmute(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_castpd_si256)
  */
-public fun mm256CastpdSi256(a: M256d): M256i = transmute(a)
+public fun mm256CastpdSi256(a: M256d): M256i = transmuteWithLayouts<M256d, M256i>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256i>())
 
 // This intrinsic is only used for compilation and does not generate any
 // instructions, thus it has zero latency.
@@ -2102,7 +2103,7 @@ public fun mm256CastpdSi256(a: M256d): M256i = transmute(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_castsi256_pd)
  */
-public fun mm256Castsi256Pd(a: M256i): M256d = transmute(a)
+public fun mm256Castsi256Pd(a: M256i): M256d = transmuteWithLayouts<M256i, M256d>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M256d>())
 
 // This intrinsic is only used for compilation and does not generate any
 // instructions, thus it has zero latency.
@@ -2136,7 +2137,7 @@ public fun mm256Castsi256Si128(a: M256i): M128i =
     run {
         val a1 = a.asI64x4()
         val dst: I64x2 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }
-        transmute(dst)
+        transmuteWithLayouts<I64x2, M128i>(dst, UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
     }
 
 // This intrinsic is only used for compilation and does not generate any
@@ -2187,7 +2188,7 @@ public fun mm256Castsi128Si256(a: M128i): M256i =
         val a1 = a.asI64x2()
         val undefined = i64x2.ZERO
         val dst: I64x4 = run { val _simdArg0 = a1; val _simdArg1 = undefined; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 2)); _simdArg0 }
-        transmute(dst)
+        transmuteWithLayouts<I64x4, M256i>(dst, UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
     }
 
 // This intrinsic is only used for compilation and does not generate any
@@ -2216,7 +2217,7 @@ public fun mm256Zextsi128Si256(a: M128i): M256i =
     run {
         val b = i64x2.ZERO
         val dst: I64x4 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
-        transmute(dst)
+        transmuteWithLayouts<I64x4, M256i>(dst, UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
     }
 
 // This intrinsic is only used for compilation and does not generate any
@@ -2282,9 +2283,9 @@ public fun mm256SetM128(hi: M128, lo: M128): M256 = run { val _simdArg0 = lo; va
  */
 public fun mm256SetM128d(hi: M128d, lo: M128d): M256d =
     run {
-        val hi1: M128 = transmute(hi)
-        val lo1: M128 = transmute(lo)
-        transmute(mm256SetM128(hi1, lo1))
+        val hi1: M128 = transmuteWithLayouts<M128d, M128>(hi, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128>())
+        val lo1: M128 = transmuteWithLayouts<M128d, M128>(lo, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128>())
+        transmuteWithLayouts<M256, M256d>(mm256SetM128(hi1, lo1), UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256d>())
     }
 
 /**
@@ -2294,9 +2295,9 @@ public fun mm256SetM128d(hi: M128d, lo: M128d): M256d =
  */
 public fun mm256SetM128i(hi: M128i, lo: M128i): M256i =
     run {
-        val hi1: M128 = transmute(hi)
-        val lo1: M128 = transmute(lo)
-        transmute(mm256SetM128(hi1, lo1))
+        val hi1: M128 = transmuteWithLayouts<M128i, M128>(hi, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())
+        val lo1: M128 = transmuteWithLayouts<M128i, M128>(lo, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())
+        transmuteWithLayouts<M256, M256i>(mm256SetM128(hi1, lo1), UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**

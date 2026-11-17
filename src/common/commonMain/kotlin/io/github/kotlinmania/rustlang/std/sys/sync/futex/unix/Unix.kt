@@ -1,19 +1,19 @@
 // port-lint: source sys/sync/futex/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.sync.futex.unix
 
-import io.github.kotlinmania.libc.fuchsia.CLOCK_MONOTONIC
-import io.github.kotlinmania.libc.fuchsia.EINTR
-import io.github.kotlinmania.libc.fuchsia.ETIMEDOUT
-import io.github.kotlinmania.libc.unix.linuxlike.android.FUTEX_PRIVATE_FLAG
-import io.github.kotlinmania.libc.unix.linuxlike.android.FUTEX_WAIT_BITSET
-import io.github.kotlinmania.libc.unix.linuxlike.android.FUTEX_WAKE
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align4
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.libc.SysFutex
-import io.github.kotlinmania.rustlang.libc.syscall
+import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.syscall
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_PRIVATE_FLAG
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_WAIT_BITSET
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_WAKE
+import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_MONOTONIC
+import io.github.kotlinmania.rustlang.libc.wasi.EINTR
+import io.github.kotlinmania.rustlang.libc.wasi.ETIMEDOUT
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sys.io.Errno
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.Timespec

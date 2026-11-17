@@ -216,7 +216,7 @@ public open class UnixListener(
      * )
      * ```kotlin
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.takeError()
 
     /**
      * Returns an iterator over incoming connections.

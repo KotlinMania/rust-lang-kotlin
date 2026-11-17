@@ -6,9 +6,11 @@ import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.intrinsics.aggregateRawPtr
 import io.github.kotlinmania.rustlang.core.intrinsics.ptrMetadata
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
@@ -187,7 +189,7 @@ public open class DynMetadata<Dyn> internal constructor(
     public open fun vtablePtr(): ConstPtr {
         // SAFETY: this layout assumption is hard-coded into the compiler.
         // If it's somehow not a size match, the reinterpret will error.
-        return transmute(this)
+        return transmuteWithLayouts<DynMetadata<Dyn>, ConstPtr>(this, UnresolvedTypeLayout<DynMetadata<Dyn>>(), PrimitiveLayouts.constPtrLayout(64L))
     }
 
     /**

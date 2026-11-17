@@ -35,7 +35,7 @@ import io.github.kotlinmania.rustlang.core.ascii.Char as AsciiChar
  *
  * ```kotlin
  * fun main() {
- *     val options = Default.default().copy(foo = 42)
+ *     val options = Unit.copy(foo = 42)
  * }
  * ```
  *
@@ -97,7 +97,7 @@ public interface Default<T> {
      * Using built-in default values:
      *
      * ```kotlin
-     * val i: Byte = Default.default()
+     * val i: Byte = 0
      * val (x: String?, y: Double) = Default.default()
      * val (a, b, c, d) = Default.default()
      * ```

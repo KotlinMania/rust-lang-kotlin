@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.path.Iter
 import io.github.kotlinmania.rustlang.std.sync.mpmc.IntoIter
+import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 import io.github.kotlinmania.rustlang.std.sys.process.windows.EnvKey
 
 public class DebugStruct(
@@ -54,7 +55,7 @@ public open class CommandEnv(
     public open fun capture(): MutableMap<EnvKey, OsString> {
         val result = mutableMapOf()
         if (!this.clear) {
-            for ((k, v) in env.varsOs()) {
+            for ((k, v) in Env.varsOs()) {
                 result.put(k.into(), v)
             }
         }

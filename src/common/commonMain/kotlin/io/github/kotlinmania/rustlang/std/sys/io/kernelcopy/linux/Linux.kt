@@ -1,14 +1,6 @@
 // port-lint: source sys/io/kernel_copy/linux.rs
 package io.github.kotlinmania.rustlang.std.sys.io.kernelcopy.linux
 
-import io.github.kotlinmania.libc.fuchsia.EBADF
-import io.github.kotlinmania.libc.fuchsia.EINVAL
-import io.github.kotlinmania.libc.fuchsia.ENOSYS
-import io.github.kotlinmania.libc.fuchsia.EOPNOTSUPP
-import io.github.kotlinmania.libc.fuchsia.EOVERFLOW
-import io.github.kotlinmania.libc.fuchsia.EPERM
-import io.github.kotlinmania.libc.fuchsia.EXDEV
-import io.github.kotlinmania.libc.unix.bsd.freebsdlike.freebsd.Splice
 import io.github.kotlinmania.rustlang.alloc.io.buffered.bufreader.BufReader
 import io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter.BufWriter
 import io.github.kotlinmania.rustlang.alloc.io.copy.CopyState
@@ -24,6 +16,14 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.libc.Splice
+import io.github.kotlinmania.rustlang.libc.wasi.EBADF
+import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
+import io.github.kotlinmania.rustlang.libc.wasi.ENOSYS
+import io.github.kotlinmania.rustlang.libc.wasi.EOPNOTSUPP
+import io.github.kotlinmania.rustlang.libc.wasi.EOVERFLOW
+import io.github.kotlinmania.rustlang.libc.wasi.EPERM
+import io.github.kotlinmania.rustlang.libc.wasi.EXDEV
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
@@ -488,8 +488,14 @@ public fun copyRegularFiles(reader: RawFd, writer: RawFd, maxLen: ULong): CopyRe
         return run {
             val matchVal = cvt(copyFileRange(INVALID_FD, MutPtr(0L), INVALID_FD, MutPtr(0L), 1, 0)).mapErr({ e -> e.rawOsError() })
             when {
-                matchVal is Result.Err && (matchVal.error != null && (matchVal.error == EPERM || matchVal.error == ENOSYS)) -> UNAVAILABLE
-                matchVal is Result.Err && matchVal.error != null && matchVal.error == EBADF -> AVAILABLE
+                matchVal is Result.Err && (matchVal.error != null && (matchVal.error == EPERM || matchVal.error == ENOSYS)) -> {
+                    val errorVal = (matchVal as Result.Err).error
+                    UNAVAILABLE
+                }
+                matchVal is Result.Err && matchVal.error != null && matchVal.error == EBADF -> {
+                    val errorVal1 = matchVal.error
+                    AVAILABLE
+                }
                 matchVal is Result.Ok -> error("unexpected copy_file_range probe success")
                 // Treat other errors as the syscall
                 // being unavailable.
@@ -518,6 +524,7 @@ public fun copyRegularFiles(reader: RawFd, writer: RawFd, maxLen: ULong): CopyRe
         }
         when {
             copyResult is Result.Ok && copyResult.value == 0 && written == 0uL -> {
+                val valueVal = copyResult.value
                 // fallback to work around several kernel bugs where copyFileRange will fail to
                 // copy any bytes and return 0 instead of an error if
                 // - reading virtual files from the proc filesystem which appear to have 0 size
@@ -525,7 +532,10 @@ public fun copyRegularFiles(reader: RawFd, writer: RawFd, maxLen: ULong): CopyRe
                 // - copying from an overlay filesystem in docker. reported to occur on fedora 32.
                 return CopyResult.Fallback(0)
             }
-            copyResult is Result.Ok && copyResult.value == 0 -> { return CopyResult.Ended(written) }
+            copyResult is Result.Ok && copyResult.value == 0 -> {
+                val valueVal1 = copyResult.value
+                return CopyResult.Ended(written)
+            }
             // reached EOF
             copyResult is Result.Ok -> {
                 val ret = copyResult.value
@@ -626,7 +636,10 @@ public fun sendfileSplice(mode: SpliceMode, reader: RawFd, writer: RawFd, len: U
                 SpliceMode.Splice -> cvt(Splice(reader, MutPtr(0L), writer, MutPtr(0L), chunkSize, 0))
             }
         when {
-            result is Result.Ok && result.value == 0 -> { break }
+            result is Result.Ok && result.value == 0 -> {
+                val valueVal = result.value
+                break
+            }
             // EOF
             result is Result.Ok -> {
                 val ret = result.value

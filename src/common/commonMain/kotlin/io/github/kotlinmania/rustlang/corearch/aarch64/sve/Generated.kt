@@ -3,11 +3,10 @@ package io.github.kotlinmania.rustlang.corearch.aarch64.sve
 
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmute
-import io.github.kotlinmania.rustlang.core.mem.transmuteUnchecked
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -4486,7 +4485,7 @@ public fun svcntF32M(inactive: Svuint32T, pg: SvboolT, op: Svfloat32T): Svuint32
  * Count nonzero bits
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnt[_f32]_x)
  */
-public fun svcntF32X(pg: SvboolT, op: Svfloat32T): Svuint32T = svcntF32M(transmuteUnchecked(op), pg, op)
+public fun svcntF32X(pg: SvboolT, op: Svfloat32T): Svuint32T = svcntF32M(transmuteWithLayouts<Svfloat32T, Svuint32T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svuint32T>()), pg, op)
 
 /**
  * Count nonzero bits
@@ -4507,7 +4506,7 @@ public fun svcntF64M(inactive: Svuint64T, pg: SvboolT, op: Svfloat64T): Svuint64
  * Count nonzero bits
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnt[_f64]_x)
  */
-public fun svcntF64X(pg: SvboolT, op: Svfloat64T): Svuint64T = svcntF64M(transmuteUnchecked(op), pg, op)
+public fun svcntF64X(pg: SvboolT, op: Svfloat64T): Svuint64T = svcntF64M(transmuteWithLayouts<Svfloat64T, Svuint64T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svuint64T>()), pg, op)
 
 /**
  * Count nonzero bits
@@ -5008,7 +5007,7 @@ public fun svcvtF32F64M(inactive: Svfloat32T, pg: SvboolT, op: Svfloat64T): Svfl
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF32[_f64]_x)
  */
-public fun svcvtF32F64X(pg: SvboolT, op: Svfloat64T): Svfloat32T = svcvtF32F64M(transmuteUnchecked(op), pg, op)
+public fun svcvtF32F64X(pg: SvboolT, op: Svfloat64T): Svfloat32T = svcvtF32F64M(transmuteWithLayouts<Svfloat64T, Svfloat32T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svfloat32T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5029,7 +5028,7 @@ public fun svcvtF64F32M(inactive: Svfloat64T, pg: SvboolT, op: Svfloat32T): Svfl
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF64[_f32]_x)
  */
-public fun svcvtF64F32X(pg: SvboolT, op: Svfloat32T): Svfloat64T = svcvtF64F32M(transmuteUnchecked(op), pg, op)
+public fun svcvtF64F32X(pg: SvboolT, op: Svfloat32T): Svfloat64T = svcvtF64F32M(transmuteWithLayouts<Svfloat32T, Svfloat64T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svfloat64T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5050,7 +5049,7 @@ public fun svcvtF32S32M(inactive: Svfloat32T, pg: SvboolT, op: Svint32T): Svfloa
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF32[_s32]_x)
  */
-public fun svcvtF32S32X(pg: SvboolT, op: Svint32T): Svfloat32T = svcvtF32S32M(transmuteUnchecked(op), pg, op)
+public fun svcvtF32S32X(pg: SvboolT, op: Svint32T): Svfloat32T = svcvtF32S32M(transmuteWithLayouts<Svint32T, Svfloat32T>(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svfloat32T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5071,7 +5070,7 @@ public fun svcvtF32U32M(inactive: Svfloat32T, pg: SvboolT, op: Svuint32T): Svflo
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF32[_u32]_x)
  */
-public fun svcvtF32U32X(pg: SvboolT, op: Svuint32T): Svfloat32T = svcvtF32U32M(transmuteUnchecked(op), pg, op)
+public fun svcvtF32U32X(pg: SvboolT, op: Svuint32T): Svfloat32T = svcvtF32U32M(transmuteWithLayouts<Svuint32T, Svfloat32T>(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svfloat32T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5092,7 +5091,7 @@ public fun svcvtF64S64M(inactive: Svfloat64T, pg: SvboolT, op: Svint64T): Svfloa
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF64[_s64]_x)
  */
-public fun svcvtF64S64X(pg: SvboolT, op: Svint64T): Svfloat64T = svcvtF64S64M(transmuteUnchecked(op), pg, op)
+public fun svcvtF64S64X(pg: SvboolT, op: Svint64T): Svfloat64T = svcvtF64S64M(transmuteWithLayouts<Svint64T, Svfloat64T>(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svfloat64T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5113,7 +5112,7 @@ public fun svcvtF64U64M(inactive: Svfloat64T, pg: SvboolT, op: Svuint64T): Svflo
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF64[_u64]_x)
  */
-public fun svcvtF64U64X(pg: SvboolT, op: Svuint64T): Svfloat64T = svcvtF64U64M(transmuteUnchecked(op), pg, op)
+public fun svcvtF64U64X(pg: SvboolT, op: Svuint64T): Svfloat64T = svcvtF64U64M(transmuteWithLayouts<Svuint64T, Svfloat64T>(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svfloat64T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5134,7 +5133,7 @@ public fun svcvtF32S64M(inactive: Svfloat32T, pg: SvboolT, op: Svint64T): Svfloa
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF32[_s64]_x)
  */
-public fun svcvtF32S64X(pg: SvboolT, op: Svint64T): Svfloat32T = svcvtF32S64M(transmuteUnchecked(op), pg, op)
+public fun svcvtF32S64X(pg: SvboolT, op: Svint64T): Svfloat32T = svcvtF32S64M(transmuteWithLayouts<Svint64T, Svfloat32T>(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svfloat32T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5155,7 +5154,7 @@ public fun svcvtF32U64M(inactive: Svfloat32T, pg: SvboolT, op: Svuint64T): Svflo
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF32[_u64]_x)
  */
-public fun svcvtF32U64X(pg: SvboolT, op: Svuint64T): Svfloat32T = svcvtF32U64M(transmuteUnchecked(op), pg, op)
+public fun svcvtF32U64X(pg: SvboolT, op: Svuint64T): Svfloat32T = svcvtF32U64M(transmuteWithLayouts<Svuint64T, Svfloat32T>(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svfloat32T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5176,7 +5175,7 @@ public fun svcvtF64S32M(inactive: Svfloat64T, pg: SvboolT, op: Svint32T): Svfloa
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF64[_s32]_x)
  */
-public fun svcvtF64S32X(pg: SvboolT, op: Svint32T): Svfloat64T = svcvtF64S32M(transmuteUnchecked(op), pg, op)
+public fun svcvtF64S32X(pg: SvboolT, op: Svint32T): Svfloat64T = svcvtF64S32M(transmuteWithLayouts<Svint32T, Svfloat64T>(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svfloat64T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5197,7 +5196,7 @@ public fun svcvtF64U32M(inactive: Svfloat64T, pg: SvboolT, op: Svuint32T): Svflo
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF64[_u32]_x)
  */
-public fun svcvtF64U32X(pg: SvboolT, op: Svuint32T): Svfloat64T = svcvtF64U32M(transmuteUnchecked(op), pg, op)
+public fun svcvtF64U32X(pg: SvboolT, op: Svuint32T): Svfloat64T = svcvtF64U32M(transmuteWithLayouts<Svuint32T, Svfloat64T>(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svfloat64T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5218,7 +5217,7 @@ public fun svcvtS32F32M(inactive: Svint32T, pg: SvboolT, op: Svfloat32T): Svint3
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtS32[_f32]_x)
  */
-public fun svcvtS32F32X(pg: SvboolT, op: Svfloat32T): Svint32T = svcvtS32F32M(transmuteUnchecked(op), pg, op)
+public fun svcvtS32F32X(pg: SvboolT, op: Svfloat32T): Svint32T = svcvtS32F32M(transmuteWithLayouts<Svfloat32T, Svint32T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svint32T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5239,7 +5238,7 @@ public fun svcvtS64F64M(inactive: Svint64T, pg: SvboolT, op: Svfloat64T): Svint6
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtS64[_f64]_x)
  */
-public fun svcvtS64F64X(pg: SvboolT, op: Svfloat64T): Svint64T = svcvtS64F64M(transmuteUnchecked(op), pg, op)
+public fun svcvtS64F64X(pg: SvboolT, op: Svfloat64T): Svint64T = svcvtS64F64M(transmuteWithLayouts<Svfloat64T, Svint64T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svint64T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5260,7 +5259,7 @@ public fun svcvtU32F32M(inactive: Svuint32T, pg: SvboolT, op: Svfloat32T): Svuin
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtU32[_f32]_x)
  */
-public fun svcvtU32F32X(pg: SvboolT, op: Svfloat32T): Svuint32T = svcvtU32F32M(transmuteUnchecked(op), pg, op)
+public fun svcvtU32F32X(pg: SvboolT, op: Svfloat32T): Svuint32T = svcvtU32F32M(transmuteWithLayouts<Svfloat32T, Svuint32T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svuint32T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5281,7 +5280,7 @@ public fun svcvtU64F64M(inactive: Svuint64T, pg: SvboolT, op: Svfloat64T): Svuin
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtU64[_f64]_x)
  */
-public fun svcvtU64F64X(pg: SvboolT, op: Svfloat64T): Svuint64T = svcvtU64F64M(transmuteUnchecked(op), pg, op)
+public fun svcvtU64F64X(pg: SvboolT, op: Svfloat64T): Svuint64T = svcvtU64F64M(transmuteWithLayouts<Svfloat64T, Svuint64T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svuint64T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5302,7 +5301,7 @@ public fun svcvtS32F64M(inactive: Svint32T, pg: SvboolT, op: Svfloat64T): Svint3
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtS32[_f64]_x)
  */
-public fun svcvtS32F64X(pg: SvboolT, op: Svfloat64T): Svint32T = svcvtS32F64M(transmuteUnchecked(op), pg, op)
+public fun svcvtS32F64X(pg: SvboolT, op: Svfloat64T): Svint32T = svcvtS32F64M(transmuteWithLayouts<Svfloat64T, Svint32T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svint32T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5323,7 +5322,7 @@ public fun svcvtS64F32M(inactive: Svint64T, pg: SvboolT, op: Svfloat32T): Svint6
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtS64[_f32]_x)
  */
-public fun svcvtS64F32X(pg: SvboolT, op: Svfloat32T): Svint64T = svcvtS64F32M(transmuteUnchecked(op), pg, op)
+public fun svcvtS64F32X(pg: SvboolT, op: Svfloat32T): Svint64T = svcvtS64F32M(transmuteWithLayouts<Svfloat32T, Svint64T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svint64T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5344,7 +5343,7 @@ public fun svcvtU32F64M(inactive: Svuint32T, pg: SvboolT, op: Svfloat64T): Svuin
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtU32[_f64]_x)
  */
-public fun svcvtU32F64X(pg: SvboolT, op: Svfloat64T): Svuint32T = svcvtU32F64M(transmuteUnchecked(op), pg, op)
+public fun svcvtU32F64X(pg: SvboolT, op: Svfloat64T): Svuint32T = svcvtU32F64M(transmuteWithLayouts<Svfloat64T, Svuint32T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svuint32T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -5365,7 +5364,7 @@ public fun svcvtU64F32M(inactive: Svuint64T, pg: SvboolT, op: Svfloat32T): Svuin
  * Floating-point convert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtU64[_f32]_x)
  */
-public fun svcvtU64F32X(pg: SvboolT, op: Svfloat32T): Svuint64T = svcvtU64F32M(transmuteUnchecked(op), pg, op)
+public fun svcvtU64F32X(pg: SvboolT, op: Svfloat32T): Svuint64T = svcvtU64F32M(transmuteWithLayouts<Svfloat32T, Svuint64T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svuint64T>()), pg, op)
 
 /**
  * Floating-point convert
@@ -6442,7 +6441,7 @@ public fun svdupqNB8(x0: Boolean, x1: Boolean, x2: Boolean, x3: Boolean, x4: Boo
 public fun svdupqNF32(x0: Float, x1: Float, x2: Float, x3: Float): Svfloat32T {
     fun svdupqNF32(op0: Svfloat32T, op1: Float32x4T, idx: Long): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res }
     return run {
-        val op = svdupqNF32(svundefF32(), transmute(floatArrayOf(x0, x1, x2, x3)), 0)
+        val op = svdupqNF32(svundefF32(), transmuteWithLayouts<FloatArray, Svfloat32T>(floatArrayOf(x0, x1, x2, x3), PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<Svfloat32T>()), 0)
         svdupqLaneF32(op, 0uL)
     }
 }
@@ -6454,7 +6453,7 @@ public fun svdupqNF32(x0: Float, x1: Float, x2: Float, x3: Float): Svfloat32T {
 public fun svdupqNS32(x0: Int, x1: Int, x2: Int, x3: Int): Svint32T {
     fun svdupqNS32(op0: Svint32T, op1: Int32x4T, idx: Long): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return run {
-        val op = svdupqNS32(svundefS32(), transmute(intArrayOf(x0, x1, x2, x3)), 0)
+        val op = svdupqNS32(svundefS32(), transmuteWithLayouts<IntArray, Svint32T>(intArrayOf(x0, x1, x2, x3), PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<Svint32T>()), 0)
         svdupqLaneS32(op, 0uL)
     }
 }
@@ -6472,7 +6471,7 @@ public fun svdupqNU32(x0: UInt, x1: UInt, x2: UInt, x3: UInt): Svuint32T = svdup
 public fun svdupqNF64(x0: Double, x1: Double): Svfloat64T {
     fun svdupqNF64(op0: Svfloat64T, op1: Float64x2T, idx: Long): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res }
     return run {
-        val op = svdupqNF64(svundefF64(), transmute(doubleArrayOf(x0, x1)), 0)
+        val op = svdupqNF64(svundefF64(), transmuteWithLayouts<DoubleArray, Svfloat64T>(doubleArrayOf(x0, x1), PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<Svfloat64T>()), 0)
         svdupqLaneF64(op, 0uL)
     }
 }
@@ -6484,7 +6483,7 @@ public fun svdupqNF64(x0: Double, x1: Double): Svfloat64T {
 public fun svdupqNS64(x0: Long, x1: Long): Svint64T {
     fun svdupqNS64(op0: Svint64T, op1: Int64x2T, idx: Long): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return run {
-        val op = svdupqNS64(svundefS64(), transmute(longArrayOf(x0, x1)), 0)
+        val op = svdupqNS64(svundefS64(), transmuteWithLayouts<LongArray, Svint64T>(longArrayOf(x0, x1), PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<Svint64T>()), 0)
         svdupqLaneS64(op, 0uL)
     }
 }
@@ -6502,7 +6501,7 @@ public fun svdupqNU64(x0: ULong, x1: ULong): Svuint64T = svdupqNS64(x0.asSigned(
 public fun svdupqNS16(x0: Short, x1: Short, x2: Short, x3: Short, x4: Short, x5: Short, x6: Short, x7: Short): Svint16T {
     fun svdupqNS16(op0: Svint16T, op1: Int16x8T, idx: Long): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return run {
-        val op = svdupqNS16(svundefS16(), transmute(shortArrayOf(x0, x1, x2, x3, x4, x5, x6, x7)), 0)
+        val op = svdupqNS16(svundefS16(), transmuteWithLayouts<ShortArray, Svint16T>(shortArrayOf(x0, x1, x2, x3, x4, x5, x6, x7), PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<Svint16T>()), 0)
         svdupqLaneS16(op, 0uL)
     }
 }
@@ -6520,7 +6519,7 @@ public fun svdupqNU16(x0: UShort, x1: UShort, x2: UShort, x3: UShort, x4: UShort
 public fun svdupqNS8(x0: Byte, x1: Byte, x2: Byte, x3: Byte, x4: Byte, x5: Byte, x6: Byte, x7: Byte, x8: Byte, x9: Byte, x10: Byte, x11: Byte, x12: Byte, x13: Byte, x14: Byte, x15: Byte): Svint8T {
     fun svdupqNS8(op0: Svint8T, op1: Int8x16T, idx: Long): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return run {
-        val op = svdupqNS8(svundefS8(), transmute(byteArrayOf(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15)), 0)
+        val op = svdupqNS8(svundefS8(), transmuteWithLayouts<ByteArray, Svint8T>(byteArrayOf(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15), PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<Svint8T>()), 0)
         svdupqLaneS8(op, 0uL)
     }
 }
@@ -22145,601 +22144,601 @@ public fun svrecpxF64Z(pg: SvboolT, op: Svfloat64T): Svfloat64T = svrecpxF64M(sv
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF32[_f32])
  */
-public fun svreinterpretF32F32(op: Svfloat32T): Svfloat32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svfloat32T>())
+public fun svreinterpretF32F32(op: Svfloat32T): Svfloat32T = op
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF32[_f64])
  */
-public fun svreinterpretF32F64(op: Svfloat64T): Svfloat32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svfloat32T>())
+public fun svreinterpretF32F64(op: Svfloat64T): Svfloat32T = transmuteWithLayouts<Svfloat64T, Svfloat32T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svfloat32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF32[_s8])
  */
-public fun svreinterpretF32S8(op: Svint8T): Svfloat32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svfloat32T>())
+public fun svreinterpretF32S8(op: Svint8T): Svfloat32T = transmuteWithLayouts<Svint8T, Svfloat32T>(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svfloat32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF32[_s16])
  */
-public fun svreinterpretF32S16(op: Svint16T): Svfloat32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svfloat32T>())
+public fun svreinterpretF32S16(op: Svint16T): Svfloat32T = transmuteWithLayouts<Svint16T, Svfloat32T>(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svfloat32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF32[_s32])
  */
-public fun svreinterpretF32S32(op: Svint32T): Svfloat32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svfloat32T>())
+public fun svreinterpretF32S32(op: Svint32T): Svfloat32T = transmuteWithLayouts<Svint32T, Svfloat32T>(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svfloat32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF32[_s64])
  */
-public fun svreinterpretF32S64(op: Svint64T): Svfloat32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svfloat32T>())
+public fun svreinterpretF32S64(op: Svint64T): Svfloat32T = transmuteWithLayouts<Svint64T, Svfloat32T>(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svfloat32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF32[_u8])
  */
-public fun svreinterpretF32U8(op: Svuint8T): Svfloat32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svfloat32T>())
+public fun svreinterpretF32U8(op: Svuint8T): Svfloat32T = transmuteWithLayouts<Svuint8T, Svfloat32T>(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svfloat32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF32[_u16])
  */
-public fun svreinterpretF32U16(op: Svuint16T): Svfloat32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svfloat32T>())
+public fun svreinterpretF32U16(op: Svuint16T): Svfloat32T = transmuteWithLayouts<Svuint16T, Svfloat32T>(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svfloat32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF32[_u32])
  */
-public fun svreinterpretF32U32(op: Svuint32T): Svfloat32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svfloat32T>())
+public fun svreinterpretF32U32(op: Svuint32T): Svfloat32T = transmuteWithLayouts<Svuint32T, Svfloat32T>(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svfloat32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF32[_u64])
  */
-public fun svreinterpretF32U64(op: Svuint64T): Svfloat32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svfloat32T>())
+public fun svreinterpretF32U64(op: Svuint64T): Svfloat32T = transmuteWithLayouts<Svuint64T, Svfloat32T>(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svfloat32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF64[_f32])
  */
-public fun svreinterpretF64F32(op: Svfloat32T): Svfloat64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svfloat64T>())
+public fun svreinterpretF64F32(op: Svfloat32T): Svfloat64T = transmuteWithLayouts<Svfloat32T, Svfloat64T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svfloat64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF64[_f64])
  */
-public fun svreinterpretF64F64(op: Svfloat64T): Svfloat64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svfloat64T>())
+public fun svreinterpretF64F64(op: Svfloat64T): Svfloat64T = op
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF64[_s8])
  */
-public fun svreinterpretF64S8(op: Svint8T): Svfloat64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svfloat64T>())
+public fun svreinterpretF64S8(op: Svint8T): Svfloat64T = transmuteWithLayouts<Svint8T, Svfloat64T>(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svfloat64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF64[_s16])
  */
-public fun svreinterpretF64S16(op: Svint16T): Svfloat64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svfloat64T>())
+public fun svreinterpretF64S16(op: Svint16T): Svfloat64T = transmuteWithLayouts<Svint16T, Svfloat64T>(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svfloat64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF64[_s32])
  */
-public fun svreinterpretF64S32(op: Svint32T): Svfloat64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svfloat64T>())
+public fun svreinterpretF64S32(op: Svint32T): Svfloat64T = transmuteWithLayouts<Svint32T, Svfloat64T>(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svfloat64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF64[_s64])
  */
-public fun svreinterpretF64S64(op: Svint64T): Svfloat64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svfloat64T>())
+public fun svreinterpretF64S64(op: Svint64T): Svfloat64T = transmuteWithLayouts<Svint64T, Svfloat64T>(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svfloat64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF64[_u8])
  */
-public fun svreinterpretF64U8(op: Svuint8T): Svfloat64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svfloat64T>())
+public fun svreinterpretF64U8(op: Svuint8T): Svfloat64T = transmuteWithLayouts<Svuint8T, Svfloat64T>(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svfloat64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF64[_u16])
  */
-public fun svreinterpretF64U16(op: Svuint16T): Svfloat64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svfloat64T>())
+public fun svreinterpretF64U16(op: Svuint16T): Svfloat64T = transmuteWithLayouts<Svuint16T, Svfloat64T>(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svfloat64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF64[_u32])
  */
-public fun svreinterpretF64U32(op: Svuint32T): Svfloat64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svfloat64T>())
+public fun svreinterpretF64U32(op: Svuint32T): Svfloat64T = transmuteWithLayouts<Svuint32T, Svfloat64T>(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svfloat64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretF64[_u64])
  */
-public fun svreinterpretF64U64(op: Svuint64T): Svfloat64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svfloat64T>())
+public fun svreinterpretF64U64(op: Svuint64T): Svfloat64T = transmuteWithLayouts<Svuint64T, Svfloat64T>(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svfloat64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS8[_f32])
  */
-public fun svreinterpretS8F32(op: Svfloat32T): Svint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svint8T>())
+public fun svreinterpretS8F32(op: Svfloat32T): Svint8T = transmuteWithLayouts<Svfloat32T, Svint8T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS8[_f64])
  */
-public fun svreinterpretS8F64(op: Svfloat64T): Svint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svint8T>())
+public fun svreinterpretS8F64(op: Svfloat64T): Svint8T = transmuteWithLayouts<Svfloat64T, Svint8T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS8[_s8])
  */
-public fun svreinterpretS8S8(op: Svint8T): Svint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svint8T>())
+public fun svreinterpretS8S8(op: Svint8T): Svint8T = op
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS8[_s16])
  */
-public fun svreinterpretS8S16(op: Svint16T): Svint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svint8T>())
+public fun svreinterpretS8S16(op: Svint16T): Svint8T = transmuteWithLayouts<Svint16T, Svint8T>(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS8[_s32])
  */
-public fun svreinterpretS8S32(op: Svint32T): Svint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svint8T>())
+public fun svreinterpretS8S32(op: Svint32T): Svint8T = transmuteWithLayouts<Svint32T, Svint8T>(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS8[_s64])
  */
-public fun svreinterpretS8S64(op: Svint64T): Svint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svint8T>())
+public fun svreinterpretS8S64(op: Svint64T): Svint8T = transmuteWithLayouts<Svint64T, Svint8T>(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS8[_u8])
  */
-public fun svreinterpretS8U8(op: Svuint8T): Svint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svint8T>())
+public fun svreinterpretS8U8(op: Svuint8T): Svint8T = transmuteWithLayouts<Svuint8T, Svint8T>(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS8[_u16])
  */
-public fun svreinterpretS8U16(op: Svuint16T): Svint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svint8T>())
+public fun svreinterpretS8U16(op: Svuint16T): Svint8T = transmuteWithLayouts<Svuint16T, Svint8T>(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS8[_u32])
  */
-public fun svreinterpretS8U32(op: Svuint32T): Svint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svint8T>())
+public fun svreinterpretS8U32(op: Svuint32T): Svint8T = transmuteWithLayouts<Svuint32T, Svint8T>(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS8[_u64])
  */
-public fun svreinterpretS8U64(op: Svuint64T): Svint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svint8T>())
+public fun svreinterpretS8U64(op: Svuint64T): Svint8T = transmuteWithLayouts<Svuint64T, Svint8T>(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS16[_f32])
  */
-public fun svreinterpretS16F32(op: Svfloat32T): Svint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svint16T>())
+public fun svreinterpretS16F32(op: Svfloat32T): Svint16T = transmuteWithLayouts<Svfloat32T, Svint16T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS16[_f64])
  */
-public fun svreinterpretS16F64(op: Svfloat64T): Svint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svint16T>())
+public fun svreinterpretS16F64(op: Svfloat64T): Svint16T = transmuteWithLayouts<Svfloat64T, Svint16T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS16[_s8])
  */
-public fun svreinterpretS16S8(op: Svint8T): Svint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svint16T>())
+public fun svreinterpretS16S8(op: Svint8T): Svint16T = transmuteWithLayouts<Svint8T, Svint16T>(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS16[_s16])
  */
-public fun svreinterpretS16S16(op: Svint16T): Svint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svint16T>())
+public fun svreinterpretS16S16(op: Svint16T): Svint16T = op
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS16[_s32])
  */
-public fun svreinterpretS16S32(op: Svint32T): Svint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svint16T>())
+public fun svreinterpretS16S32(op: Svint32T): Svint16T = transmuteWithLayouts<Svint32T, Svint16T>(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS16[_s64])
  */
-public fun svreinterpretS16S64(op: Svint64T): Svint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svint16T>())
+public fun svreinterpretS16S64(op: Svint64T): Svint16T = transmuteWithLayouts<Svint64T, Svint16T>(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS16[_u8])
  */
-public fun svreinterpretS16U8(op: Svuint8T): Svint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svint16T>())
+public fun svreinterpretS16U8(op: Svuint8T): Svint16T = transmuteWithLayouts<Svuint8T, Svint16T>(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS16[_u16])
  */
-public fun svreinterpretS16U16(op: Svuint16T): Svint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svint16T>())
+public fun svreinterpretS16U16(op: Svuint16T): Svint16T = transmuteWithLayouts<Svuint16T, Svint16T>(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS16[_u32])
  */
-public fun svreinterpretS16U32(op: Svuint32T): Svint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svint16T>())
+public fun svreinterpretS16U32(op: Svuint32T): Svint16T = transmuteWithLayouts<Svuint32T, Svint16T>(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS16[_u64])
  */
-public fun svreinterpretS16U64(op: Svuint64T): Svint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svint16T>())
+public fun svreinterpretS16U64(op: Svuint64T): Svint16T = transmuteWithLayouts<Svuint64T, Svint16T>(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS32[_f32])
  */
-public fun svreinterpretS32F32(op: Svfloat32T): Svint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svint32T>())
+public fun svreinterpretS32F32(op: Svfloat32T): Svint32T = transmuteWithLayouts<Svfloat32T, Svint32T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS32[_f64])
  */
-public fun svreinterpretS32F64(op: Svfloat64T): Svint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svint32T>())
+public fun svreinterpretS32F64(op: Svfloat64T): Svint32T = transmuteWithLayouts<Svfloat64T, Svint32T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS32[_s8])
  */
-public fun svreinterpretS32S8(op: Svint8T): Svint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svint32T>())
+public fun svreinterpretS32S8(op: Svint8T): Svint32T = transmuteWithLayouts<Svint8T, Svint32T>(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS32[_s16])
  */
-public fun svreinterpretS32S16(op: Svint16T): Svint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svint32T>())
+public fun svreinterpretS32S16(op: Svint16T): Svint32T = transmuteWithLayouts<Svint16T, Svint32T>(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS32[_s32])
  */
-public fun svreinterpretS32S32(op: Svint32T): Svint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svint32T>())
+public fun svreinterpretS32S32(op: Svint32T): Svint32T = op
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS32[_s64])
  */
-public fun svreinterpretS32S64(op: Svint64T): Svint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svint32T>())
+public fun svreinterpretS32S64(op: Svint64T): Svint32T = transmuteWithLayouts<Svint64T, Svint32T>(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS32[_u8])
  */
-public fun svreinterpretS32U8(op: Svuint8T): Svint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svint32T>())
+public fun svreinterpretS32U8(op: Svuint8T): Svint32T = transmuteWithLayouts<Svuint8T, Svint32T>(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS32[_u16])
  */
-public fun svreinterpretS32U16(op: Svuint16T): Svint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svint32T>())
+public fun svreinterpretS32U16(op: Svuint16T): Svint32T = transmuteWithLayouts<Svuint16T, Svint32T>(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS32[_u32])
  */
-public fun svreinterpretS32U32(op: Svuint32T): Svint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svint32T>())
+public fun svreinterpretS32U32(op: Svuint32T): Svint32T = transmuteWithLayouts<Svuint32T, Svint32T>(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS32[_u64])
  */
-public fun svreinterpretS32U64(op: Svuint64T): Svint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svint32T>())
+public fun svreinterpretS32U64(op: Svuint64T): Svint32T = transmuteWithLayouts<Svuint64T, Svint32T>(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS64[_f32])
  */
-public fun svreinterpretS64F32(op: Svfloat32T): Svint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svint64T>())
+public fun svreinterpretS64F32(op: Svfloat32T): Svint64T = transmuteWithLayouts<Svfloat32T, Svint64T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS64[_f64])
  */
-public fun svreinterpretS64F64(op: Svfloat64T): Svint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svint64T>())
+public fun svreinterpretS64F64(op: Svfloat64T): Svint64T = transmuteWithLayouts<Svfloat64T, Svint64T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS64[_s8])
  */
-public fun svreinterpretS64S8(op: Svint8T): Svint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svint64T>())
+public fun svreinterpretS64S8(op: Svint8T): Svint64T = transmuteWithLayouts<Svint8T, Svint64T>(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS64[_s16])
  */
-public fun svreinterpretS64S16(op: Svint16T): Svint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svint64T>())
+public fun svreinterpretS64S16(op: Svint16T): Svint64T = transmuteWithLayouts<Svint16T, Svint64T>(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS64[_s32])
  */
-public fun svreinterpretS64S32(op: Svint32T): Svint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svint64T>())
+public fun svreinterpretS64S32(op: Svint32T): Svint64T = transmuteWithLayouts<Svint32T, Svint64T>(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS64[_s64])
  */
-public fun svreinterpretS64S64(op: Svint64T): Svint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svint64T>())
+public fun svreinterpretS64S64(op: Svint64T): Svint64T = op
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS64[_u8])
  */
-public fun svreinterpretS64U8(op: Svuint8T): Svint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svint64T>())
+public fun svreinterpretS64U8(op: Svuint8T): Svint64T = transmuteWithLayouts<Svuint8T, Svint64T>(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS64[_u16])
  */
-public fun svreinterpretS64U16(op: Svuint16T): Svint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svint64T>())
+public fun svreinterpretS64U16(op: Svuint16T): Svint64T = transmuteWithLayouts<Svuint16T, Svint64T>(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS64[_u32])
  */
-public fun svreinterpretS64U32(op: Svuint32T): Svint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svint64T>())
+public fun svreinterpretS64U32(op: Svuint32T): Svint64T = transmuteWithLayouts<Svuint32T, Svint64T>(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretS64[_u64])
  */
-public fun svreinterpretS64U64(op: Svuint64T): Svint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svint64T>())
+public fun svreinterpretS64U64(op: Svuint64T): Svint64T = transmuteWithLayouts<Svuint64T, Svint64T>(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU8[_f32])
  */
-public fun svreinterpretU8F32(op: Svfloat32T): Svuint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svuint8T>())
+public fun svreinterpretU8F32(op: Svfloat32T): Svuint8T = transmuteWithLayouts<Svfloat32T, Svuint8T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svuint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU8[_f64])
  */
-public fun svreinterpretU8F64(op: Svfloat64T): Svuint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svuint8T>())
+public fun svreinterpretU8F64(op: Svfloat64T): Svuint8T = transmuteWithLayouts<Svfloat64T, Svuint8T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svuint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU8[_s8])
  */
-public fun svreinterpretU8S8(op: Svint8T): Svuint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svuint8T>())
+public fun svreinterpretU8S8(op: Svint8T): Svuint8T = transmuteWithLayouts<Svint8T, Svuint8T>(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svuint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU8[_s16])
  */
-public fun svreinterpretU8S16(op: Svint16T): Svuint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svuint8T>())
+public fun svreinterpretU8S16(op: Svint16T): Svuint8T = transmuteWithLayouts<Svint16T, Svuint8T>(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svuint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU8[_s32])
  */
-public fun svreinterpretU8S32(op: Svint32T): Svuint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svuint8T>())
+public fun svreinterpretU8S32(op: Svint32T): Svuint8T = transmuteWithLayouts<Svint32T, Svuint8T>(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svuint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU8[_s64])
  */
-public fun svreinterpretU8S64(op: Svint64T): Svuint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svuint8T>())
+public fun svreinterpretU8S64(op: Svint64T): Svuint8T = transmuteWithLayouts<Svint64T, Svuint8T>(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svuint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU8[_u8])
  */
-public fun svreinterpretU8U8(op: Svuint8T): Svuint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svuint8T>())
+public fun svreinterpretU8U8(op: Svuint8T): Svuint8T = op
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU8[_u16])
  */
-public fun svreinterpretU8U16(op: Svuint16T): Svuint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svuint8T>())
+public fun svreinterpretU8U16(op: Svuint16T): Svuint8T = transmuteWithLayouts<Svuint16T, Svuint8T>(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svuint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU8[_u32])
  */
-public fun svreinterpretU8U32(op: Svuint32T): Svuint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svuint8T>())
+public fun svreinterpretU8U32(op: Svuint32T): Svuint8T = transmuteWithLayouts<Svuint32T, Svuint8T>(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svuint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU8[_u64])
  */
-public fun svreinterpretU8U64(op: Svuint64T): Svuint8T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svuint8T>())
+public fun svreinterpretU8U64(op: Svuint64T): Svuint8T = transmuteWithLayouts<Svuint64T, Svuint8T>(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svuint8T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU16[_f32])
  */
-public fun svreinterpretU16F32(op: Svfloat32T): Svuint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svuint16T>())
+public fun svreinterpretU16F32(op: Svfloat32T): Svuint16T = transmuteWithLayouts<Svfloat32T, Svuint16T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svuint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU16[_f64])
  */
-public fun svreinterpretU16F64(op: Svfloat64T): Svuint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svuint16T>())
+public fun svreinterpretU16F64(op: Svfloat64T): Svuint16T = transmuteWithLayouts<Svfloat64T, Svuint16T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svuint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU16[_s8])
  */
-public fun svreinterpretU16S8(op: Svint8T): Svuint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svuint16T>())
+public fun svreinterpretU16S8(op: Svint8T): Svuint16T = transmuteWithLayouts<Svint8T, Svuint16T>(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svuint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU16[_s16])
  */
-public fun svreinterpretU16S16(op: Svint16T): Svuint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svuint16T>())
+public fun svreinterpretU16S16(op: Svint16T): Svuint16T = transmuteWithLayouts<Svint16T, Svuint16T>(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svuint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU16[_s32])
  */
-public fun svreinterpretU16S32(op: Svint32T): Svuint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svuint16T>())
+public fun svreinterpretU16S32(op: Svint32T): Svuint16T = transmuteWithLayouts<Svint32T, Svuint16T>(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svuint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU16[_s64])
  */
-public fun svreinterpretU16S64(op: Svint64T): Svuint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svuint16T>())
+public fun svreinterpretU16S64(op: Svint64T): Svuint16T = transmuteWithLayouts<Svint64T, Svuint16T>(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svuint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU16[_u8])
  */
-public fun svreinterpretU16U8(op: Svuint8T): Svuint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svuint16T>())
+public fun svreinterpretU16U8(op: Svuint8T): Svuint16T = transmuteWithLayouts<Svuint8T, Svuint16T>(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svuint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU16[_u16])
  */
-public fun svreinterpretU16U16(op: Svuint16T): Svuint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svuint16T>())
+public fun svreinterpretU16U16(op: Svuint16T): Svuint16T = op
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU16[_u32])
  */
-public fun svreinterpretU16U32(op: Svuint32T): Svuint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svuint16T>())
+public fun svreinterpretU16U32(op: Svuint32T): Svuint16T = transmuteWithLayouts<Svuint32T, Svuint16T>(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svuint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU16[_u64])
  */
-public fun svreinterpretU16U64(op: Svuint64T): Svuint16T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svuint16T>())
+public fun svreinterpretU16U64(op: Svuint64T): Svuint16T = transmuteWithLayouts<Svuint64T, Svuint16T>(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svuint16T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU32[_f32])
  */
-public fun svreinterpretU32F32(op: Svfloat32T): Svuint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svuint32T>())
+public fun svreinterpretU32F32(op: Svfloat32T): Svuint32T = transmuteWithLayouts<Svfloat32T, Svuint32T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svuint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU32[_f64])
  */
-public fun svreinterpretU32F64(op: Svfloat64T): Svuint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svuint32T>())
+public fun svreinterpretU32F64(op: Svfloat64T): Svuint32T = transmuteWithLayouts<Svfloat64T, Svuint32T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svuint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU32[_s8])
  */
-public fun svreinterpretU32S8(op: Svint8T): Svuint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svuint32T>())
+public fun svreinterpretU32S8(op: Svint8T): Svuint32T = transmuteWithLayouts<Svint8T, Svuint32T>(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svuint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU32[_s16])
  */
-public fun svreinterpretU32S16(op: Svint16T): Svuint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svuint32T>())
+public fun svreinterpretU32S16(op: Svint16T): Svuint32T = transmuteWithLayouts<Svint16T, Svuint32T>(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svuint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU32[_s32])
  */
-public fun svreinterpretU32S32(op: Svint32T): Svuint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svuint32T>())
+public fun svreinterpretU32S32(op: Svint32T): Svuint32T = transmuteWithLayouts<Svint32T, Svuint32T>(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svuint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU32[_s64])
  */
-public fun svreinterpretU32S64(op: Svint64T): Svuint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svuint32T>())
+public fun svreinterpretU32S64(op: Svint64T): Svuint32T = transmuteWithLayouts<Svint64T, Svuint32T>(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svuint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU32[_u8])
  */
-public fun svreinterpretU32U8(op: Svuint8T): Svuint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svuint32T>())
+public fun svreinterpretU32U8(op: Svuint8T): Svuint32T = transmuteWithLayouts<Svuint8T, Svuint32T>(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svuint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU32[_u16])
  */
-public fun svreinterpretU32U16(op: Svuint16T): Svuint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svuint32T>())
+public fun svreinterpretU32U16(op: Svuint16T): Svuint32T = transmuteWithLayouts<Svuint16T, Svuint32T>(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svuint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU32[_u32])
  */
-public fun svreinterpretU32U32(op: Svuint32T): Svuint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svuint32T>())
+public fun svreinterpretU32U32(op: Svuint32T): Svuint32T = op
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU32[_u64])
  */
-public fun svreinterpretU32U64(op: Svuint64T): Svuint32T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svuint32T>())
+public fun svreinterpretU32U64(op: Svuint64T): Svuint32T = transmuteWithLayouts<Svuint64T, Svuint32T>(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svuint32T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU64[_f32])
  */
-public fun svreinterpretU64F32(op: Svfloat32T): Svuint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svuint64T>())
+public fun svreinterpretU64F32(op: Svfloat32T): Svuint64T = transmuteWithLayouts<Svfloat32T, Svuint64T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svuint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU64[_f64])
  */
-public fun svreinterpretU64F64(op: Svfloat64T): Svuint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svuint64T>())
+public fun svreinterpretU64F64(op: Svfloat64T): Svuint64T = transmuteWithLayouts<Svfloat64T, Svuint64T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svuint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU64[_s8])
  */
-public fun svreinterpretU64S8(op: Svint8T): Svuint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svuint64T>())
+public fun svreinterpretU64S8(op: Svint8T): Svuint64T = transmuteWithLayouts<Svint8T, Svuint64T>(op, UnresolvedTypeLayout<Svint8T>(), UnresolvedTypeLayout<Svuint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU64[_s16])
  */
-public fun svreinterpretU64S16(op: Svint16T): Svuint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svuint64T>())
+public fun svreinterpretU64S16(op: Svint16T): Svuint64T = transmuteWithLayouts<Svint16T, Svuint64T>(op, UnresolvedTypeLayout<Svint16T>(), UnresolvedTypeLayout<Svuint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU64[_s32])
  */
-public fun svreinterpretU64S32(op: Svint32T): Svuint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svuint64T>())
+public fun svreinterpretU64S32(op: Svint32T): Svuint64T = transmuteWithLayouts<Svint32T, Svuint64T>(op, UnresolvedTypeLayout<Svint32T>(), UnresolvedTypeLayout<Svuint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU64[_s64])
  */
-public fun svreinterpretU64S64(op: Svint64T): Svuint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svuint64T>())
+public fun svreinterpretU64S64(op: Svint64T): Svuint64T = transmuteWithLayouts<Svint64T, Svuint64T>(op, UnresolvedTypeLayout<Svint64T>(), UnresolvedTypeLayout<Svuint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU64[_u8])
  */
-public fun svreinterpretU64U8(op: Svuint8T): Svuint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svuint64T>())
+public fun svreinterpretU64U8(op: Svuint8T): Svuint64T = transmuteWithLayouts<Svuint8T, Svuint64T>(op, UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svuint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU64[_u16])
  */
-public fun svreinterpretU64U16(op: Svuint16T): Svuint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svuint64T>())
+public fun svreinterpretU64U16(op: Svuint16T): Svuint64T = transmuteWithLayouts<Svuint16T, Svuint64T>(op, UnresolvedTypeLayout<Svuint16T>(), UnresolvedTypeLayout<Svuint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU64[_u32])
  */
-public fun svreinterpretU64U32(op: Svuint32T): Svuint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svuint64T>())
+public fun svreinterpretU64U32(op: Svuint32T): Svuint64T = transmuteWithLayouts<Svuint32T, Svuint64T>(op, UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svuint64T>())
 
 /**
  * Reinterpret vector contents
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svreinterpretU64[_u64])
  */
-public fun svreinterpretU64U64(op: Svuint64T): Svuint64T = transmuteWithLayouts(op, UnresolvedTypeLayout<Svuint64T>(), UnresolvedTypeLayout<Svuint64T>())
+public fun svreinterpretU64U64(op: Svuint64T): Svuint64T = op
 
 /**
  * Reverse all elements

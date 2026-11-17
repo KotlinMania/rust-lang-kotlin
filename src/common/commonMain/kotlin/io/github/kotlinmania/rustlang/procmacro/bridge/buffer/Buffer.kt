@@ -42,38 +42,41 @@ public open class Buffer internal constructor(
     // (avoiding a memmove call). With extendFromSlice, LLVM at least
     // currently is not able to make that optimization.
     public open fun extendFromArray(xs: UByteArray, n: Int) {
-        if (xs.size > (this.capacity - this.len)) {
-            val b = this.also { this = null }
-            this = (b.reserve)(b, xs.size)
+        var selfMut = this
+        if (xs.size > (selfMut.capacity - selfMut.len)) {
+            val b = selfMut.also { selfMut = null }
+            selfMut = (b.reserve)(b, xs.size)
         }
         run {
-            kmCopyNonoverlapping((xs.asPtr()).rawAddress, (MutPtr((this.data).rawAddress + ((this.len).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress, (xs.size).toLong() * (PrimitiveLayouts.U8).sizeBytes)
-            this.len += xs.size
+            kmCopyNonoverlapping((xs.asPtr()).rawAddress, (MutPtr((selfMut.data).rawAddress + ((selfMut.len).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress, (xs.size).toLong() * (PrimitiveLayouts.U8).sizeBytes)
+            selfMut.len += xs.size
         }
     }
 
     public open fun extendFromSlice(xs: List<UByte>) {
-        if (xs.size > (this.capacity - this.len)) {
-            val b = this.also { this = null }
-            this = (b.reserve)(b, xs.size)
+        var selfMut = this
+        if (xs.size > (selfMut.capacity - selfMut.len)) {
+            val b = selfMut.also { selfMut = null }
+            selfMut = (b.reserve)(b, xs.size)
         }
         run {
-            kmCopyNonoverlapping((xs.asPtr()).rawAddress, (MutPtr((this.data).rawAddress + ((this.len).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress, (xs.size).toLong() * (PrimitiveLayouts.U8).sizeBytes)
-            this.len += xs.size
+            kmCopyNonoverlapping((xs.asPtr()).rawAddress, (MutPtr((selfMut.data).rawAddress + ((selfMut.len).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress, (xs.size).toLong() * (PrimitiveLayouts.U8).sizeBytes)
+            selfMut.len += xs.size
         }
     }
 
     public open fun push(v: UByte) {
+        var selfMut = this
         // The code here is taken from Vec.push, and we know that reserve()
         // will panic if we're exceeding isize.Max bytes and so there's no need
         // to check for overflow.
-        if (this.len == this.capacity) {
-            val b = this.also { this = null }
-            this = (b.reserve)(b, 1)
+        if (selfMut.len == selfMut.capacity) {
+            val b = selfMut.also { selfMut = null }
+            selfMut = (b.reserve)(b, 1)
         }
         run {
-            (PrimitiveLayouts.U8).writeNative((MutPtr((this.data).rawAddress + ((this.len).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress, v)
-            this.len += 1
+            (PrimitiveLayouts.U8).writeNative((MutPtr((selfMut.data).rawAddress + ((selfMut.len).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress, v)
+            selfMut.len += 1
         }
     }
 

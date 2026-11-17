@@ -4,8 +4,9 @@ import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
 import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.wtf8.Wtf8
 
 /**
@@ -71,14 +72,14 @@ public fun Wtf8.intoBox(): Wtf8 {
     val boxed: List<UByte> = this.asBytes().into()
     // SAFETY: `Wtf8` is a transparent wrapper around `[UByte]`, and `boxed` is
     // a `Holder<[UByte]>`. Therefore, transmuting `Holder<[UByte]>` to `Holder<Wtf8>` is safe.
-    return transmute(boxed)
+    return transmuteWithLayouts<List<UByte>, Wtf8>(boxed, UnresolvedTypeLayout<List<UByte>>(), UnresolvedTypeLayout<Wtf8>())
 }
 
 public fun Wtf8.Companion.emptyBox(): Wtf8 {
-    val boxed: List<UByte> = Default.default()
+    val boxed: List<UByte> = emptyList()
     // SAFETY: `Wtf8` is a transparent wrapper around `[UByte]`, and `boxed` is
     // an empty `Holder<[UByte]>`. Therefore, transmuting it to `Holder<Wtf8>` is safe.
-    return transmute(boxed)
+    return transmuteWithLayouts<List<UByte>, Wtf8>(boxed, UnresolvedTypeLayout<List<UByte>>(), UnresolvedTypeLayout<Wtf8>())
 }
 
 public fun Wtf8.intoArc(): Wtf8 {

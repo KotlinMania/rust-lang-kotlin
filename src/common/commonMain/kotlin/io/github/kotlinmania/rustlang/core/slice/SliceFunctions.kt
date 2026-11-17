@@ -126,7 +126,7 @@ public fun <T> copyFromSliceImpl(dest: MutableList<T>, src: List<T>) {
     // checked to have the same length. The slices cannot overlap because
     // mutable references are exclusive.
     run {
-        copyNonoverlapping(src.asPtr(), dest.asMutPtr(), dest.size)
+        copyNonoverlapping(src.asPtr(), dest.asMutPtr(), dest.size, typeLayoutT = UnresolvedTypeLayout<T>())
     }
 }
 
@@ -4535,18 +4535,19 @@ public fun <T> List<T>.partitionPoint(pred: (T) -> Boolean): Int =
  * ```
  */
 public fun <T, R : OneSidedRange<Int<R>>> List<T>.splitOff(range: R): List<T>? {
+    var selfMut = this
     val (direction, splitIndex) = (splitPointOf(range) ?: return null)
-    if (splitIndex > this.size) {
+    if (splitIndex > selfMut.size) {
         return null
     }
-    val (front, back) = this.splitAt(splitIndex)
+    val (front, back) = selfMut.splitAt(splitIndex)
     return when (direction) {
         Direction.Front -> {
-            this = back
+            selfMut = back
             front
         }
         Direction.Back -> {
-            this = front
+            selfMut = front
             back
         }
     }
@@ -4600,18 +4601,19 @@ public fun <T, R : OneSidedRange<Int<R>>> List<T>.splitOff(range: R): List<T>? {
  * ```
  */
 public fun <T, R : OneSidedRange<Int<R>>> List<T>.splitOffMut(range: R): List<T>? {
+    var selfMut = this
     val (direction, splitIndex) = (splitPointOf(range) ?: return null)
-    if (splitIndex > this.size) {
+    if (splitIndex > selfMut.size) {
         return null
     }
-    val (front, back) = take(this).splitAtMut(splitIndex)
+    val (front, back) = take(selfMut).splitAtMut(splitIndex)
     return when (direction) {
         Direction.Front -> {
-            this = back
+            selfMut = back
             front
         }
         Direction.Back -> {
-            this = front
+            selfMut = front
             back
         }
     }
@@ -4635,9 +4637,10 @@ public fun <T, R : OneSidedRange<Int<R>>> List<T>.splitOffMut(range: R): List<T>
  * ```
  */
 public fun <T> List<T>.splitOffFirst(): T? {
+    var selfMut = this
     // Note(const-Note): Use `?` when available in const instead of `val - else`.
-    val (first, rem) = this.splitFirst() ?: return null
-    this = rem
+    val (first, rem) = selfMut.splitFirst() ?: return null
+    selfMut = rem
     return first
 }
 
@@ -4660,10 +4663,11 @@ public fun <T> List<T>.splitOffFirst(): T? {
  * ```
  */
 public fun <T> List<T>.splitOffFirstMut(): T? {
+    var selfMut = this
     // Note(const-Note): Use `mem.take` and `?` when available in const.
     // Original: `mem.take(self).splitFirstMut()`
-    val (first, rem) = replace(this, listOf()).splitFirstMut() ?: return null
-    this = rem
+    val (first, rem) = replace(selfMut, listOf()).splitFirstMut() ?: return null
+    selfMut = rem
     return first
 }
 
@@ -4685,9 +4689,10 @@ public fun <T> List<T>.splitOffFirstMut(): T? {
  * ```
  */
 public fun <T> List<T>.splitOffLast(): T? {
+    var selfMut = this
     // Note(const-Note): Use `?` when available in const instead of `val - else`.
-    val (last, rem) = this.splitLast() ?: return null
-    this = rem
+    val (last, rem) = selfMut.splitLast() ?: return null
+    selfMut = rem
     return last
 }
 
@@ -4710,10 +4715,11 @@ public fun <T> List<T>.splitOffLast(): T? {
  * ```
  */
 public fun <T> List<T>.splitOffLastMut(): T? {
+    var selfMut = this
     // Note(const-Note): Use `mem.take` and `?` when available in const.
     // Original: `mem.take(self).splitLastMut()`
-    val (last, rem) = replace(this, listOf()).splitLastMut() ?: return null
-    this = rem
+    val (last, rem) = replace(selfMut, listOf()).splitLastMut() ?: return null
+    selfMut = rem
     return last
 }
 

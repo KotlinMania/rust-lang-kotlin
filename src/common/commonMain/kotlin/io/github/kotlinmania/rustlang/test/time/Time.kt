@@ -122,7 +122,7 @@ public open class TimeThreshold(
          * value.
          */
         public fun fromEnvVar(envVarName: String): TimeThreshold? {
-            val durationsStr = (variable(envVarName).ok() ?: return null)
+            val durationsStr = (Env.variable(envVarName).ok() ?: return null)
             val (warnStr, criticalStr) = (durationsStr.let { s -> val idx = s.indexOf(','); if (idx < 0) null else Pair(s.substring(0, idx), s.substring(idx + 1)) } ?: error("Duration variable $envVarName expected to have 2 numbers separated by comma, but got $durationsStr"))
             val parseU64 =
                 { v ->

@@ -1239,7 +1239,7 @@ public open class Iter<T> internal constructor(
          * check(iter.len() == 0)
          * ```
          */
-        public fun <T> default(): Iter<T> = Iter(head = null, tail = null, len = 0, marker = Default.default())
+        public fun <T> default(): Iter<T> = Iter(head = null, tail = null, len = 0, marker = Unit)
     }
 }
 
@@ -1321,7 +1321,7 @@ public open class IterMut<T> internal constructor(
             marker = marker,
         )
 
-        public fun <T> default(): IterMut<T> = IterMut(head = null, tail = null, len = 0, marker = Default.default())
+        public fun <T> default(): IterMut<T> = IterMut(head = null, tail = null, len = 0, marker = Unit)
     }
 }
 

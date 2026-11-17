@@ -1,89 +1,6 @@
 // port-lint: source sys/fs/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.fs.unix
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.fuchsia.AT_EMPTY_PATH
-import io.github.kotlinmania.libc.fuchsia.AT_FDCWD
-import io.github.kotlinmania.libc.fuchsia.AT_REMOVEDIR
-import io.github.kotlinmania.libc.fuchsia.AT_SYMLINK_NOFOLLOW
-import io.github.kotlinmania.libc.fuchsia.Blkcnt64T
-import io.github.kotlinmania.libc.fuchsia.DT_BLK
-import io.github.kotlinmania.libc.fuchsia.DT_CHR
-import io.github.kotlinmania.libc.fuchsia.DT_DIR
-import io.github.kotlinmania.libc.fuchsia.DT_FIFO
-import io.github.kotlinmania.libc.fuchsia.DT_LNK
-import io.github.kotlinmania.libc.fuchsia.DT_REG
-import io.github.kotlinmania.libc.fuchsia.DT_SOCK
-import io.github.kotlinmania.libc.fuchsia.DT_UNKNOWN
-import io.github.kotlinmania.libc.fuchsia.EBADF
-import io.github.kotlinmania.libc.fuchsia.EEXIST
-import io.github.kotlinmania.libc.fuchsia.EFAULT
-import io.github.kotlinmania.libc.fuchsia.EINVAL
-import io.github.kotlinmania.libc.fuchsia.ELOOP
-import io.github.kotlinmania.libc.fuchsia.ENOENT
-import io.github.kotlinmania.libc.fuchsia.ENOSYS
-import io.github.kotlinmania.libc.fuchsia.ENOTDIR
-import io.github.kotlinmania.libc.fuchsia.F_GETFD
-import io.github.kotlinmania.libc.fuchsia.F_GETFL
-import io.github.kotlinmania.libc.fuchsia.Flock
-import io.github.kotlinmania.libc.fuchsia.Ino64T
-import io.github.kotlinmania.libc.fuchsia.LOCK_EX
-import io.github.kotlinmania.libc.fuchsia.LOCK_NB
-import io.github.kotlinmania.libc.fuchsia.LOCK_SH
-import io.github.kotlinmania.libc.fuchsia.LOCK_UN
-import io.github.kotlinmania.libc.fuchsia.ModeT
-import io.github.kotlinmania.libc.fuchsia.O_ACCMODE
-import io.github.kotlinmania.libc.fuchsia.O_APPEND
-import io.github.kotlinmania.libc.fuchsia.O_CLOEXEC
-import io.github.kotlinmania.libc.fuchsia.O_CREAT
-import io.github.kotlinmania.libc.fuchsia.O_DIRECTORY
-import io.github.kotlinmania.libc.fuchsia.O_EXCL
-import io.github.kotlinmania.libc.fuchsia.O_NOFOLLOW
-import io.github.kotlinmania.libc.fuchsia.O_RDONLY
-import io.github.kotlinmania.libc.fuchsia.O_RDWR
-import io.github.kotlinmania.libc.fuchsia.O_TRUNC
-import io.github.kotlinmania.libc.fuchsia.O_WRONLY
-import io.github.kotlinmania.libc.fuchsia.RENAME_NOREPLACE
-import io.github.kotlinmania.libc.fuchsia.SEEK_CUR
-import io.github.kotlinmania.libc.fuchsia.SEEK_END
-import io.github.kotlinmania.libc.fuchsia.SEEK_SET
-import io.github.kotlinmania.libc.fuchsia.S_IFBLK
-import io.github.kotlinmania.libc.fuchsia.S_IFCHR
-import io.github.kotlinmania.libc.fuchsia.S_IFDIR
-import io.github.kotlinmania.libc.fuchsia.S_IFIFO
-import io.github.kotlinmania.libc.fuchsia.S_IFLNK
-import io.github.kotlinmania.libc.fuchsia.S_IFMT
-import io.github.kotlinmania.libc.fuchsia.S_IFREG
-import io.github.kotlinmania.libc.fuchsia.S_IFSOCK
-import io.github.kotlinmania.libc.fuchsia.S_IRGRP
-import io.github.kotlinmania.libc.fuchsia.S_IROTH
-import io.github.kotlinmania.libc.fuchsia.S_IRUSR
-import io.github.kotlinmania.libc.fuchsia.S_ISGID
-import io.github.kotlinmania.libc.fuchsia.S_ISUID
-import io.github.kotlinmania.libc.fuchsia.S_ISVTX
-import io.github.kotlinmania.libc.fuchsia.S_IWGRP
-import io.github.kotlinmania.libc.fuchsia.S_IWOTH
-import io.github.kotlinmania.libc.fuchsia.S_IWUSR
-import io.github.kotlinmania.libc.fuchsia.S_IXGRP
-import io.github.kotlinmania.libc.fuchsia.S_IXOTH
-import io.github.kotlinmania.libc.fuchsia.S_IXUSR
-import io.github.kotlinmania.libc.fuchsia.Timespec
-import io.github.kotlinmania.libc.fuchsia.UTIME_OMIT
-import io.github.kotlinmania.libc.fuchsia.makedev
-import io.github.kotlinmania.libc.psp.free
-import io.github.kotlinmania.libc.unix.bsd.apple.ATTR_BIT_MAP_COUNT
-import io.github.kotlinmania.libc.unix.bsd.apple.ATTR_CMN_ACCTIME
-import io.github.kotlinmania.libc.unix.bsd.apple.ATTR_CMN_CRTIME
-import io.github.kotlinmania.libc.unix.bsd.apple.ATTR_CMN_MODTIME
-import io.github.kotlinmania.libc.unix.bsd.apple.Attrlist
-import io.github.kotlinmania.libc.unix.bsd.apple.FSOPT_NOFOLLOW
-import io.github.kotlinmania.libc.unix.bsd.apple.F_FULLFSYNC
-import io.github.kotlinmania.libc.unix.bsd.netbsdlike.netbsd.dirfd
-import io.github.kotlinmania.libc.unix.hurd.AT_STATX_SYNC_AS_STAT
-import io.github.kotlinmania.libc.unix.hurd.STATX_BASIC_STATS
-import io.github.kotlinmania.libc.unix.hurd.STATX_BTIME
-import io.github.kotlinmania.libc.unix.hurd.Statx
-import io.github.kotlinmania.libc.unix.hurd.StatxTimestamp
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
@@ -92,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CSsizeT
 import io.github.kotlinmania.rustlang.core.fmt.Write
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
@@ -114,25 +32,107 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.chmod
 import io.github.kotlinmania.rustlang.libc.closedir
+import io.github.kotlinmania.rustlang.libc.dirfd
 import io.github.kotlinmania.rustlang.libc.fchmod
 import io.github.kotlinmania.rustlang.libc.fchmodat
 import io.github.kotlinmania.rustlang.libc.fcntl
 import io.github.kotlinmania.rustlang.libc.fdopendir
+import io.github.kotlinmania.rustlang.libc.free
 import io.github.kotlinmania.rustlang.libc.fsetattrlist
 import io.github.kotlinmania.rustlang.libc.openat
 import io.github.kotlinmania.rustlang.libc.opendir
 import io.github.kotlinmania.rustlang.libc.realpath
 import io.github.kotlinmania.rustlang.libc.setattrlist
 import io.github.kotlinmania.rustlang.libc.timespec.default
+import io.github.kotlinmania.rustlang.libc.unix.DT_BLK
+import io.github.kotlinmania.rustlang.libc.unix.DT_CHR
+import io.github.kotlinmania.rustlang.libc.unix.DT_DIR
+import io.github.kotlinmania.rustlang.libc.unix.DT_FIFO
+import io.github.kotlinmania.rustlang.libc.unix.DT_LNK
+import io.github.kotlinmania.rustlang.libc.unix.DT_REG
+import io.github.kotlinmania.rustlang.libc.unix.DT_SOCK
+import io.github.kotlinmania.rustlang.libc.unix.DT_UNKNOWN
+import io.github.kotlinmania.rustlang.libc.unix.S_ISGID
+import io.github.kotlinmania.rustlang.libc.unix.S_ISUID
+import io.github.kotlinmania.rustlang.libc.unix.S_ISVTX
+import io.github.kotlinmania.rustlang.libc.unix.Timespec
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.ATTR_BIT_MAP_COUNT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.ATTR_CMN_ACCTIME
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.ATTR_CMN_CRTIME
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.ATTR_CMN_MODTIME
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.Attrlist
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.FSOPT_NOFOLLOW
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.F_FULLFSYNC
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.Flock
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AT_EMPTY_PATH
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AT_STATX_SYNC_AS_STAT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.LOCK_EX
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.LOCK_NB
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.LOCK_SH
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.LOCK_UN
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.STATX_BASIC_STATS
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.STATX_BTIME
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Statx
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.StatxTimestamp
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.Ino64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.RENAME_NOREPLACE
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.Blkcnt64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.makedev
 import io.github.kotlinmania.rustlang.libc.unlinkat
+import io.github.kotlinmania.rustlang.libc.wasi.AT_FDCWD
+import io.github.kotlinmania.rustlang.libc.wasi.AT_REMOVEDIR
+import io.github.kotlinmania.rustlang.libc.wasi.AT_SYMLINK_NOFOLLOW
+import io.github.kotlinmania.rustlang.libc.wasi.EBADF
+import io.github.kotlinmania.rustlang.libc.wasi.EEXIST
+import io.github.kotlinmania.rustlang.libc.wasi.EFAULT
+import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
+import io.github.kotlinmania.rustlang.libc.wasi.ELOOP
+import io.github.kotlinmania.rustlang.libc.wasi.ENOENT
+import io.github.kotlinmania.rustlang.libc.wasi.ENOSYS
+import io.github.kotlinmania.rustlang.libc.wasi.ENOTDIR
+import io.github.kotlinmania.rustlang.libc.wasi.F_GETFD
+import io.github.kotlinmania.rustlang.libc.wasi.F_GETFL
+import io.github.kotlinmania.rustlang.libc.wasi.ModeT
+import io.github.kotlinmania.rustlang.libc.wasi.O_ACCMODE
+import io.github.kotlinmania.rustlang.libc.wasi.O_APPEND
+import io.github.kotlinmania.rustlang.libc.wasi.O_CLOEXEC
+import io.github.kotlinmania.rustlang.libc.wasi.O_CREAT
+import io.github.kotlinmania.rustlang.libc.wasi.O_DIRECTORY
+import io.github.kotlinmania.rustlang.libc.wasi.O_EXCL
+import io.github.kotlinmania.rustlang.libc.wasi.O_NOFOLLOW
+import io.github.kotlinmania.rustlang.libc.wasi.O_RDONLY
+import io.github.kotlinmania.rustlang.libc.wasi.O_RDWR
+import io.github.kotlinmania.rustlang.libc.wasi.O_TRUNC
+import io.github.kotlinmania.rustlang.libc.wasi.O_WRONLY
+import io.github.kotlinmania.rustlang.libc.wasi.SEEK_CUR
+import io.github.kotlinmania.rustlang.libc.wasi.SEEK_END
+import io.github.kotlinmania.rustlang.libc.wasi.SEEK_SET
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFBLK
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFCHR
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFDIR
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFIFO
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFLNK
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFMT
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFREG
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFSOCK
+import io.github.kotlinmania.rustlang.libc.wasi.S_IRGRP
+import io.github.kotlinmania.rustlang.libc.wasi.S_IROTH
+import io.github.kotlinmania.rustlang.libc.wasi.S_IRUSR
+import io.github.kotlinmania.rustlang.libc.wasi.S_IWGRP
+import io.github.kotlinmania.rustlang.libc.wasi.S_IWOTH
+import io.github.kotlinmania.rustlang.libc.wasi.S_IWUSR
+import io.github.kotlinmania.rustlang.libc.wasi.S_IXGRP
+import io.github.kotlinmania.rustlang.libc.wasi.S_IXOTH
+import io.github.kotlinmania.rustlang.libc.wasi.S_IXUSR
+import io.github.kotlinmania.rustlang.libc.wasi.UTIME_OMIT
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.Permissions
 import io.github.kotlinmania.rustlang.std.fs.TryLockError
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
 import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
@@ -164,15 +164,15 @@ import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.time.unix.SystemTime
 import io.github.kotlinmania.rustlang.std.sys.time.unix.UNIX_EPOCH
 import io.github.kotlinmania.rustlang.std.sys.weak.syscall
-import io.github.kotlinmania.libc.fuchsia.Dirent as Dirent64
-import io.github.kotlinmania.libc.fuchsia.OffT as Off64T
-import io.github.kotlinmania.libc.hermit.Stat as Stat64
-import io.github.kotlinmania.libc.unix.bsd.netbsdlike.netbsd.open as open64
 import io.github.kotlinmania.rustlang.libc.fstat as fstat64
 import io.github.kotlinmania.rustlang.libc.ftruncate as ftruncate64
 import io.github.kotlinmania.rustlang.libc.lseek as lseek64
 import io.github.kotlinmania.rustlang.libc.lstat as lstat64
+import io.github.kotlinmania.rustlang.libc.open as open64
 import io.github.kotlinmania.rustlang.libc.readdir as readdir64
+import io.github.kotlinmania.rustlang.libc.wasi.Dirent as Dirent64
+import io.github.kotlinmania.rustlang.libc.wasi.OffT as Off64T
+import io.github.kotlinmania.rustlang.libc.wasi.Stat as Stat64
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -286,7 +286,7 @@ public open class File(
     }
 
     public open fun truncate(size: ULong): Result<Unit, Error> {
-        val size1: Off64T = when (val tryResult = size.tryInto().mapErr({ e -> io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, e) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        val size1: Off64T = when (val tryResult = size.tryInto().mapErr({ e -> io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidInput, e) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         return cvtR({ ftruncate64(this.asRawFd(), size1) }).map({ Unit })
     }
 
@@ -344,7 +344,10 @@ public open class File(
             when {
                 // Fall back to default implementation if the returned size is 0,
                 // we might be in a proc mount.
-                matchVal is Result.Ok && matchVal.value == 0 -> null
+                matchVal is Result.Ok && matchVal.value == 0 -> {
+                    val valueVal = matchVal.value
+                    null
+                }
                 else -> {
                     val result = matchVal
                     result
@@ -850,9 +853,9 @@ public open class OpenOptions(
                     // If no access mode is set, check if any creation flags are set
                     // to provide a more descriptive error message
                     if (this.create || this.createNew || this.truncate) {
-                        Result.Err<CInt, Error>(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
+                        Result.Err<CInt, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
                     } else {
-                        Result.Err<CInt, Error>(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "must specify at least one of read, write, or append access"))
+                        Result.Err<CInt, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidInput, "must specify at least one of read, write, or append access"))
                     }
                 }
             }
@@ -865,12 +868,12 @@ public open class OpenOptions(
                 matchVal.first == true && matchVal.second == false -> {}
                 matchVal.first == false && matchVal.second == false -> {
                     if (this.truncate || this.create || this.createNew) {
-                        return Result.Err<CInt, Error>(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
+                        return Result.Err<CInt, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
                     }
                 }
                 else -> {
                     if (this.truncate && !this.createNew) {
-                        return Result.Err<CInt, Error>(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "append and truncate cannot both be enabled"))
+                        return Result.Err<CInt, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidInput, "append and truncate cannot both be enabled"))
                     }
                 }
             }
@@ -1417,7 +1420,7 @@ public fun setPermNofollow(p: CStr, perm: FilePermissions): Result<Unit, Error> 
         return when (val tryResult = options.open(Path.new(osStr))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }.setPermissions(Permissions.fromInner(perm1))
     }
     // This res value is modified for platforms that support the `fchmodat` syscall.
-    var res: Result<Unit, Error> = Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.ErrorKind.Unsupported.into())
+    var res: Result<Unit, Error> = Result.Err<Unit, Error>(ErrorKind.Unsupported.into())
     // These platforms support `fchmodat`, so utilize this syscall over `open` + `fchmod`.
     // We can *not* use this on Android due to <https://github.com/android/ndk/issues/1258>.
     run {
@@ -1430,14 +1433,14 @@ public fun setPermNofollow(p: CStr, perm: FilePermissions): Result<Unit, Error> 
         Result.Ok<Unit, Error>(Unit)
     }; is Result.Err -> {
         val err = res.error
-        if (err.kind() == io.github.kotlinmania.rustlang.core.io.error.ErrorKind.Unsupported) {
+        if (err.kind() == ErrorKind.Unsupported) {
             run {
                 val matchVal = openAndSetPermissions(p, perm)
                 when (matchVal) { is Result.Ok -> {
                     return Result.Ok<Unit, Error>(Unit)
                 }; is Result.Err -> {
                     val e = matchVal.error
-                    if (e.kind() == io.github.kotlinmania.rustlang.core.io.error.ErrorKind.FilesystemLoop) {
+                    if (e.kind() == ErrorKind.FilesystemLoop) {
                         // When open is used with O_NOFOLLOW flag, if the trailing component of
                         // a path is a symbolic link, it should fail with ELOOP error. Instead of
                         // returning `FilesystemLoop`, this returns `Unsupported` to keep it consistent
@@ -1476,7 +1479,7 @@ public fun readlink(cPath: CStr): Result<PathBuf, Error> {
 public fun symlink(original: CStr, link: CStr): Result<Unit, Error> = cvt(io.github.kotlinmania.rustlang.libc.symlink(original.asPtr(), link.asPtr())).map({ Unit })
 
 public fun link(original: CStr, link: CStr): Result<Unit, Error> {
-    when (val tryResult = cvt(io.github.kotlinmania.libc.unix.linuxlike.linux.gnu.b64.powerpc64.link(original.asPtr(), link.asPtr()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.powerpc64.link(original.asPtr(), link.asPtr()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
     return Result.Ok<Unit, Error>(Unit)
 }
 
@@ -1509,7 +1512,7 @@ public fun lstat(p: CStr): Result<FileAttr, Error> {
 public fun canonicalize(path: CStr): Result<PathBuf, Error> {
     val r = realpath(path.asPtr(), MutPtr(0L))
     if (r.isNull()) {
-        return Result.Err<PathBuf, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        return Result.Err<PathBuf, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
     }
     return Result.Ok<PathBuf, Error>(PathBuf.from(OsString.fromVec(run {
         val buf = CStr.fromPtr(r).toBytes().toMutableList()
@@ -1583,7 +1586,7 @@ public open class CachedFileMetadata(
 public fun copy(from: Path, to: Path): Result<ULong, Error> {
     val (reader, readerMetadata) = when (val tryResult = openFrom(from)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, Error>(tryResult.error) }
     val (writer, writerMetadata) = when (val tryResult = openToAndSetPermissions(to, readerMetadata)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, Error>(tryResult.error) }
-    return io.github.kotlinmania.rustlang.std.io.copy(CachedFileMetadata(reader, readerMetadata), CachedFileMetadata(writer, writerMetadata))
+    return io.github.kotlinmania.rustlang.alloc.io.copy.copy(CachedFileMetadata(reader, readerMetadata), CachedFileMetadata(writer, writerMetadata))
 }
 
 public fun chown(path: Path, uid: UInt, gid: UInt): Result<Unit, Error> =
@@ -1616,7 +1619,7 @@ public fun openatNofollowDironly(parentFd: RawFd?, p: CStr): Result<OwnedFd, Err
 public fun fdreaddir(dirFd: OwnedFd): Result<Pair<ReadDir, RawFd>, Error> {
     val ptr = fdopendir(dirFd.asRawFd())
     if (ptr.isNull()) {
-        return Result.Err<Pair<ReadDir, RawFd>, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        return Result.Err<Pair<ReadDir, RawFd>, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
     }
     val dirp = DirStream(ptr)
     // file descriptor is automatically closed by libc.closedir() now, so give up ownership

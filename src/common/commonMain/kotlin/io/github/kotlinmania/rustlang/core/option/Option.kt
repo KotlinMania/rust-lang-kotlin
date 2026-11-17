@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
@@ -842,7 +842,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         // Here we assume that `offsetOf` always returns an offset to an
         // in-bounds and correctly aligned position for a `T` (even if in the
         // `None` case it's just padding).
-        return linearSliceView(ConstPtr((ConstPtr(((constPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), PrimitiveLayouts.U8)
+        return linearSliceView(ConstPtr((ConstPtr(((constPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), UnresolvedTypeLayout<Option<T>>())
     }
 
     /**
@@ -893,7 +893,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         // here. As with `asSlice`, the intrinsic always returns a pointer to
         // an in-bounds and correctly aligned position for a `T` (even if in
         // the `None` case it's just padding).
-        return linearMutSliceView(MutPtr((MutPtr(((mutPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(MutPtr((MutPtr(((mutPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), UnresolvedTypeLayout<Option<T>>())
     }
 
     // ////////////////////////////////////////////////////////////////////
@@ -1604,9 +1604,10 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * ```
      */
     public open fun insert(value: T): T {
-        this = Some(value)
+        var selfMut = this
+        selfMut = Some(value)
         // SAFETY: the code above just filled the option
-        return this.asMut().unwrapUnchecked()
+        return selfMut.asMut().unwrapUnchecked()
     }
 
     /**
@@ -1721,12 +1722,13 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * ```
      */
     public open fun <Residual, R> getOrTryInsertWith(f: () -> R): TryType where R : Try<R, T, Residual> {
-        if (this == null) {
-            this = Some(when (val tryResult = f()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) })
+        var selfMut = this
+        if (selfMut == null) {
+            selfMut = Some(when (val tryResult = f()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) })
         }
         // SAFETY: a `None` variant for `self` would have been replaced by a `Some`
         // variant in the code above.
-        return Try.fromOutput(this.asMut().unwrapUnchecked())
+        return Try.fromOutput(selfMut.asMut().unwrapUnchecked())
     }
 
     // ////////////////////////////////////////////////////////////////////

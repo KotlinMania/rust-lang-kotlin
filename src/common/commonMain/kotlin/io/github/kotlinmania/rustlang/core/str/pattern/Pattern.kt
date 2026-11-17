@@ -1026,7 +1026,7 @@ public fun List<Char>.stripSuffixOf(haystack: String): String? = (MultiCharEqPat
 /**
  * Associated type for `<F as Pattern>.Searcher<>`.
  */
-public open class CharPredicateSearcher<F>(
+public open class CharPredicateSearcher<F, Output>(
     public var value: Searcher,
 ) : Searcher, ReverseSearcher, DoubleEndedSearcher {
     public var field0: Searcher
@@ -1035,7 +1035,7 @@ public open class CharPredicateSearcher<F>(
             value = v
         }
 
-    public open fun clone(): CharPredicateSearcher<F> = CharPredicateSearcher(value)
+    public open fun clone(): CharPredicateSearcher<F, Output> = CharPredicateSearcher(value)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "CharPredicateSearcher").field("haystack", this.value.haystack).field("char_indices", this.value.charIndices).finish()
 
@@ -1064,7 +1064,7 @@ public open class CharPredicateSearcher<F>(
  * check("Hello world".indexOf({ c -> "aeiou".contains(c) }).takeIf { it >= 0 } == 1)
  * ```
  */
-public fun ((Char) -> Boolean).intoSearcher(haystack: String): CharPredicateSearcher<(Char) -> Boolean> = (CharPredicateSearcher)((MultiCharEqPattern)(this).intoSearcher(haystack))
+public fun ((Char) -> Boolean).intoSearcher(haystack: String): CharPredicateSearcher<(Char) -> Boolean, Output> = (CharPredicateSearcher)((MultiCharEqPattern)(this).intoSearcher(haystack))
 
 public fun ((Char) -> Boolean).isContainedIn(haystack: String): Boolean = (MultiCharEqPattern)(this).isContainedIn(haystack)
 

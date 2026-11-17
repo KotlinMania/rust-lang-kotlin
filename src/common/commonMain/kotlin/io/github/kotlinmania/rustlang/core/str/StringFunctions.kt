@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -430,7 +430,7 @@ public fun String.ceilCharBoundary(index: Int): Int =
  */
 public fun String.asBytes(): List<UByte> {
     // SAFETY: const sound because we reinterpret two types with the same layout
-    return transmute(this)
+    return transmuteWithLayouts<String, List<UByte>>(this, UnresolvedTypeLayout<String>(), UnresolvedTypeLayout<List<UByte>>())
 }
 
 /**

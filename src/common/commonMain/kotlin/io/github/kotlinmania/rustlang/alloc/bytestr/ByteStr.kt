@@ -219,7 +219,7 @@ public open class ByteString internal constructor(
 
         public fun <I : Iterable<Char>> fromIter(iter: I, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString = ByteString(iter.iterator().joinToString("").intoBytes(), fieldLayout = fieldLayout)
 
-        public fun <I : Iterable<UByte>> fromIterUByte(iter: I, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString = ByteString(iter.iterator().collect(), fieldLayout = fieldLayout)
+        public fun <I : Iterable<UByte>> fromIterUByte(iter: I, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString = ByteString(iter.iterator().toMutableList(), fieldLayout = fieldLayout)
 
         public fun <I : Iterable<String>> fromIterString(iter: I, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString = ByteString(iter.iterator().joinToString("").intoBytes(), fieldLayout = fieldLayout)
 

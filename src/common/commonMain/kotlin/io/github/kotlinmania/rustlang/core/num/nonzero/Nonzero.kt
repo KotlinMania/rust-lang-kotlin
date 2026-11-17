@@ -17,7 +17,6 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
-import io.github.kotlinmania.rustlang.core.mem.transmuteUnchecked
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.checkedAbs
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
@@ -213,11 +212,13 @@ public open class NonZero<T, NonZeroInner> internal constructor(
     }
 
     public override fun bitorAssign(rhs: NonZero<T, NonZeroInner>) {
-        this = this or rhs
+        var selfMut = this
+        selfMut = selfMut or rhs
     }
 
     public override fun bitorAssign(rhs: T) {
-        this = this or rhs
+        var selfMut = this
+        selfMut = selfMut or rhs
     }
 
     /**
@@ -250,7 +251,7 @@ public open class NonZero<T, NonZeroInner> internal constructor(
         //
         // SAFETY: `ZeroablePrimitive` guarantees that the size and bit validity
         // of `.0` is such that this reinterpret is sound.
-        return transmuteUnchecked(this)
+        return transmuteWithLayouts<NonZero<T, NonZeroInner>, T>(this, UnresolvedTypeLayout<NonZero<T, NonZeroInner>>(), UnresolvedTypeLayout<T>())
     }
 
     public companion object {
@@ -264,7 +265,7 @@ public open class NonZero<T, NonZeroInner> internal constructor(
         public fun <NonZeroInner, T> new(n: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): NonZero<T, NonZeroInner>? {
             // SAFETY: Memory layout optimization guarantees that `Option<NonZero<T>>` has
             // the same layout and size as `T`, with `0` representing `None`.
-            return transmuteWithLayouts(n, typeLayoutT, UnresolvedTypeLayout<NonZero<T, NonZeroInner>?>())
+            return transmuteWithLayouts<T, NonZero<T, NonZeroInner>?>(n, typeLayoutT, UnresolvedTypeLayout<NonZero<T, NonZeroInner>?>())
         }
 
         /**
@@ -1284,7 +1285,8 @@ public fun UByte.div(other: NonZero<UByte, NonZeroU8Inner>): UByte = (((this) / 
  * part of the exact result, and cannot panic.
  */
 public fun UByte.divAssign(other: NonZero<UByte, NonZeroU8Inner>) {
-    this = (this / other).toUByte()
+    var selfMut = this
+    selfMut = (selfMut / other).toUByte()
 }
 
 /**
@@ -1296,7 +1298,8 @@ public fun UByte.rem(other: NonZero<UByte, NonZeroU8Inner>): UByte = (((this) % 
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
 public fun UByte.remAssign(other: NonZero<UByte, NonZeroU8Inner>) {
-    this = (this % other).toUByte()
+    var selfMut = this
+    selfMut = (selfMut % other).toUByte()
 }
 
 /**
@@ -1491,7 +1494,8 @@ public fun UShort.div(other: NonZero<UShort, NonZeroU16Inner>): UShort = (((this
  * part of the exact result, and cannot panic.
  */
 public fun UShort.divAssign(other: NonZero<UShort, NonZeroU16Inner>) {
-    this = (this / other).toUShort()
+    var selfMut = this
+    selfMut = (selfMut / other).toUShort()
 }
 
 /**
@@ -1503,7 +1507,8 @@ public fun UShort.rem(other: NonZero<UShort, NonZeroU16Inner>): UShort = (((this
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
 public fun UShort.remAssign(other: NonZero<UShort, NonZeroU16Inner>) {
-    this = (this % other).toUShort()
+    var selfMut = this
+    selfMut = (selfMut % other).toUShort()
 }
 
 /**
@@ -1698,7 +1703,8 @@ public fun UInt.div(other: NonZero<UInt, NonZeroU32Inner>): UInt = ((this) / (ot
  * part of the exact result, and cannot panic.
  */
 public fun UInt.divAssign(other: NonZero<UInt, NonZeroU32Inner>) {
-    this = this / other
+    var selfMut = this
+    selfMut = selfMut / other
 }
 
 /**
@@ -1710,7 +1716,8 @@ public fun UInt.rem(other: NonZero<UInt, NonZeroU32Inner>): UInt = ((this) % (ot
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
 public fun UInt.remAssign(other: NonZero<UInt, NonZeroU32Inner>) {
-    this = this % other
+    var selfMut = this
+    selfMut = selfMut % other
 }
 
 /**
@@ -1905,7 +1912,8 @@ public fun ULong.div(other: NonZero<ULong, NonZeroU64Inner>): ULong = ((this) / 
  * part of the exact result, and cannot panic.
  */
 public fun ULong.divAssign(other: NonZero<ULong, NonZeroU64Inner>) {
-    this = this / other
+    var selfMut = this
+    selfMut = selfMut / other
 }
 
 /**
@@ -1917,7 +1925,8 @@ public fun ULong.rem(other: NonZero<ULong, NonZeroU64Inner>): ULong = ((this) % 
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
 public fun ULong.remAssign(other: NonZero<ULong, NonZeroU64Inner>) {
-    this = this % other
+    var selfMut = this
+    selfMut = selfMut % other
 }
 
 /**
@@ -2112,7 +2121,8 @@ public fun U128.div(other: NonZero<U128, NonZeroU128Inner>): U128 = ((this) / (o
  * part of the exact result, and cannot panic.
  */
 public fun U128.divAssign(other: NonZero<U128, NonZeroU128Inner>) {
-    this = this / other
+    var selfMut = this
+    selfMut = selfMut / other
 }
 
 /**
@@ -2124,7 +2134,8 @@ public fun U128.rem(other: NonZero<U128, NonZeroU128Inner>): U128 = ((this) % (o
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
 public fun U128.remAssign(other: NonZero<U128, NonZeroU128Inner>) {
-    this = this % other
+    var selfMut = this
+    selfMut = selfMut % other
 }
 
 /**
@@ -2319,7 +2330,8 @@ public fun Int.div(other: NonZero<Int, NonZeroUsizeInner>): Int = ((this) / (oth
  * part of the exact result, and cannot panic.
  */
 public fun Int.divAssign(other: NonZero<Int, NonZeroUsizeInner>) {
-    this = this / other
+    var selfMut = this
+    selfMut = selfMut / other
 }
 
 /**
@@ -2331,7 +2343,8 @@ public fun Int.rem(other: NonZero<Int, NonZeroUsizeInner>): Int = ((this) % (oth
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
 public fun Int.remAssign(other: NonZero<Int, NonZeroUsizeInner>) {
-    this = this % other
+    var selfMut = this
+    selfMut = selfMut % other
 }
 
 /**

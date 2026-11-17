@@ -1,6 +1,7 @@
 // port-lint: source os/windows/fs.rs
 package io.github.kotlinmania.rustlang.std.os.windows.fs
 
+import io.github.kotlinmania.rustlang.alloc.io.read.defaultReadBuf
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.fs.File
@@ -9,7 +10,6 @@ import io.github.kotlinmania.rustlang.std.fs.FileType
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.OpenOptions
 import io.github.kotlinmania.rustlang.std.fs.Permissions
-import io.github.kotlinmania.rustlang.std.io.defaultReadBuf
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.FromInner
@@ -107,7 +107,10 @@ public interface FileExt {
             run {
                 val matchVal = this.seekRead(buf1, offset1)
                 when {
-                    matchVal is Result.Ok && matchVal.value == 0 -> { break }
+                    matchVal is Result.Ok && matchVal.value == 0 -> {
+                        val valueVal = matchVal.value
+                        break
+                    }
                     matchVal is Result.Ok -> {
                         val n = matchVal.value
                         buf1 = buf1.subList(n, buf1.size)
@@ -121,7 +124,7 @@ public interface FileExt {
             }
         }
         return if (!buf1.isEmpty()) {
-            Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
+            Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.READ_EXACT_EOF)
         } else {
             Result.Ok<Unit, Error>(Unit)
         }
@@ -211,7 +214,7 @@ public interface FileExt {
             val n = buf.written() - prevWritten
             offset1 += n.toULong()
             if (n == 0) {
-                return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
+                return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.READ_EXACT_EOF)
             }
         }
         return Result.Ok<Unit, Error>(Unit)
@@ -295,7 +298,8 @@ public interface FileExt {
                 val matchVal = this.seekWrite(buf1, offset1)
                 when {
                     matchVal is Result.Ok && matchVal.value == 0 -> {
-                        return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.WRITE_ALL_EOF)
+                        val valueVal = matchVal.value
+                        return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.WRITE_ALL_EOF)
                     }
                     matchVal is Result.Ok -> {
                         val n = matchVal.value
@@ -598,7 +602,8 @@ public interface PermissionsExt<T> {
 public fun Permissions.fileAttributes(): UInt = this.asInner().fileAttributes()
 
 public fun Permissions.setFileAttributes(mask: UInt) {
-    this = Permissions.fromInner(FromInner.fromInner(mask))
+    var selfMut = this
+    selfMut = Permissions.fromInner(FromInner.fromInner(mask))
 }
 
 public fun permissionsExtFromFileAttributesPermissions(mask: UInt): Permissions = Permissions.fromInner(FromInner.fromInner(mask))

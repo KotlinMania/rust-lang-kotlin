@@ -1,23 +1,23 @@
 // port-lint: source sys/fs/unix/dir.rs
 package io.github.kotlinmania.rustlang.std.sys.fs.unix.dir
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.fuchsia.AT_REMOVEDIR
-import io.github.kotlinmania.libc.fuchsia.AT_SYMLINK_NOFOLLOW
-import io.github.kotlinmania.libc.fuchsia.O_ACCMODE
-import io.github.kotlinmania.libc.fuchsia.O_CLOEXEC
-import io.github.kotlinmania.libc.fuchsia.O_DIRECTORY
-import io.github.kotlinmania.libc.fuchsia.O_PATH
-import io.github.kotlinmania.libc.unix.hurd.AT_STATX_SYNC_AS_STAT
-import io.github.kotlinmania.libc.unix.hurd.STATX_BASIC_STATS
-import io.github.kotlinmania.libc.unix.hurd.STATX_BTIME
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.mkdirat
 import io.github.kotlinmania.rustlang.libc.renameat
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AT_STATX_SYNC_AS_STAT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.STATX_BASIC_STATS
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.STATX_BTIME
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.O_PATH
 import io.github.kotlinmania.rustlang.libc.unlinkat
+import io.github.kotlinmania.rustlang.libc.wasi.AT_REMOVEDIR
+import io.github.kotlinmania.rustlang.libc.wasi.AT_SYMLINK_NOFOLLOW
+import io.github.kotlinmania.rustlang.libc.wasi.O_ACCMODE
+import io.github.kotlinmania.rustlang.libc.wasi.O_CLOEXEC
+import io.github.kotlinmania.rustlang.libc.wasi.O_DIRECTORY
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
 import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd

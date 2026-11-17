@@ -1,13 +1,6 @@
 // port-lint: source sys/fd/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.fd.unix
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.fuchsia.FIOCLEX
-import io.github.kotlinmania.libc.fuchsia.FIONBIO
-import io.github.kotlinmania.libc.unix.aix.IOV_MAX
-import io.github.kotlinmania.libc.unix.linuxlike.android.Ioctl
-import io.github.kotlinmania.libc.unix.linuxlike.emscripten.pread64
-import io.github.kotlinmania.libc.unix.linuxlike.emscripten.pwrite64
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
@@ -17,10 +10,17 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.preadv
 import io.github.kotlinmania.rustlang.libc.pwritev
 import io.github.kotlinmania.rustlang.libc.read
 import io.github.kotlinmania.rustlang.libc.readv
+import io.github.kotlinmania.rustlang.libc.unix.bsd.FIOCLEX
+import io.github.kotlinmania.rustlang.libc.unix.bsd.IOV_MAX
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.Ioctl
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.pread64
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.pwrite64
+import io.github.kotlinmania.rustlang.libc.wasi.FIONBIO
 import io.github.kotlinmania.rustlang.libc.writev
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd

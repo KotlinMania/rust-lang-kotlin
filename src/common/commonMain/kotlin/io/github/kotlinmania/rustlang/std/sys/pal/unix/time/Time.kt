@@ -1,8 +1,8 @@
 // port-lint: source sys/pal/unix/time.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.time
 
-import io.github.kotlinmania.libc.fuchsia.ClockidT
-import io.github.kotlinmania.libc.fuchsia.TimeT
+import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
@@ -13,8 +13,8 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.libc.clockGettime
 import io.github.kotlinmania.rustlang.libc.timespec.default
-import io.github.kotlinmania.rustlang.std.io.Error
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.libc.wasi.ClockidT
+import io.github.kotlinmania.rustlang.libc.wasi.TimeT
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
@@ -22,10 +22,10 @@ public val NSEC_PER_SEC: ULong = 1000000000uL
 
 // This additional constant is only used when calling
 // `libc.pthreadCondTimedwait`.
-public val TIMESPEC_MAX_CAPPED: io.github.kotlinmania.libc.fuchsia.Timespec = io.github.kotlinmania.libc.fuchsia.Timespec(tvSec = (ULong.MAX_VALUE / NSEC_PER_SEC).toLong(), tvNsec = (ULong.MAX_VALUE % NSEC_PER_SEC).toLong())
+public val TIMESPEC_MAX_CAPPED: io.github.kotlinmania.rustlang.libc.unix.Timespec = io.github.kotlinmania.rustlang.libc.unix.Timespec(tvSec = (ULong.MAX_VALUE / NSEC_PER_SEC).toLong(), tvNsec = (ULong.MAX_VALUE % NSEC_PER_SEC).toLong())
 
 // Used for pthread condvar timeouts
-public val TIMESPEC_MAX: io.github.kotlinmania.libc.fuchsia.Timespec =
+public val TIMESPEC_MAX: io.github.kotlinmania.rustlang.libc.unix.Timespec =
     run {
         val ts = null
         ts.tvSec = TimeT.MAX
@@ -94,7 +94,7 @@ public open class Timespec(
         return Timespec.newUnchecked(secs, nsec.into())
     }
 
-    public open fun toTimespec(): io.github.kotlinmania.libc.fuchsia.Timespec? {
+    public open fun toTimespec(): io.github.kotlinmania.rustlang.libc.unix.Timespec? {
         return run {
             val ts = default()
             ts.tvSec = (this.tvSec.tryInto().ok() ?: return null)
@@ -105,7 +105,7 @@ public open class Timespec(
 
     // On QNX, the maximum timespec for e.g. pthreadCondTimedwait
     // is 2^64 nanoseconds
-    public open fun toTimespecCapped(): io.github.kotlinmania.libc.fuchsia.Timespec? {
+    public open fun toTimespecCapped(): io.github.kotlinmania.rustlang.libc.unix.Timespec? {
         // Check if timeout in nanoseconds would fit into an u64
         if ((this.tvNsec.asInner().toULong()).checkedAdd((((this.tvSec.toULong()).checkedMul(NSEC_PER_SEC) ?: return null)).toULong()) == null) {
             return null

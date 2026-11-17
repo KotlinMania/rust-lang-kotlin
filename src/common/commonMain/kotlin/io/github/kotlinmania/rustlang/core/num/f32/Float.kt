@@ -18,8 +18,8 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundf32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmTruncf32
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.floatBinaryWithLayout
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.FpCategory
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cbrtf
@@ -954,7 +954,7 @@ public inline fun <reified Int> kotlin.Float.toIntStrict(): Int = (this.toIntChe
  */
 public fun kotlin.Float.toBits(): UInt {
     // SAFETY: `UInt` is a plain old datatype so we can always reinterpret to it.
-    return transmute(this)
+    return transmuteWithLayouts<kotlin.Float, UInt>(this, UnresolvedTypeLayout<kotlin.Float>(), PrimitiveLayouts.U32)
 }
 
 /**
@@ -998,7 +998,7 @@ public fun kotlin.Float.toBits(): UInt {
 public fun kotlin.Float.Companion.fromBits(v: UInt): kotlin.Float {
     // It turns out the safety issues with sNaN were overblown! Hooray!
     // SAFETY: `UInt` is a plain old datatype so we can always reinterpret from it.
-    return transmuteWithLayouts(v, PrimitiveLayouts.U32, PrimitiveLayouts.F32)
+    return transmuteWithLayouts<UInt, kotlin.Float>(v, PrimitiveLayouts.U32, PrimitiveLayouts.F32)
 }
 
 /**
@@ -1242,14 +1242,15 @@ public fun kotlin.Float.totalCmp(other: kotlin.Float): Ordering {
  * ```
  */
 public fun kotlin.Float.clamp(min: kotlin.Float, max: kotlin.Float): kotlin.Float {
+    var selfMut = this
     constAssert(min <= max, "min > max, or either was NaN", "min > max, or either was NaN. min = {min:?}, max = {max:?}", min, max)
-    if (this < min) {
-        this = min
+    if (selfMut < min) {
+        selfMut = min
     }
-    if (this > max) {
-        this = max
+    if (selfMut > max) {
+        selfMut = max
     }
-    return this
+    return selfMut
 }
 
 /**

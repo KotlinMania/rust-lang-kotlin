@@ -161,7 +161,7 @@ public fun <T, A : Allocator> tryFromBoxTArraynA(boxedSlice: List<T>, n: Int): R
 public fun <T, A : Allocator, Dst> downcastAny(thisRef: T, typeIdTFn: (T) -> Any?): Result<Dst, T> =
     if (typeIdTFn(thisRef) == RustTypeId.of<Dst>()) {
         // SAFETY: The type is correct
-        Result.Ok<Dst, T>(T.castUnchecked(thisRef))
+        Result.Ok<Dst, T>(castUnchecked(thisRef))
     } else {
         Result.Err<Dst, T>(thisRef)
     }
@@ -288,7 +288,7 @@ public fun fromBoxAny(err: String): Any {
 public fun <T, A : Allocator, Dst> downcastError(thisRef: T): Result<Dst, T> =
     if (errorTypeId<T>(thisRef) == RustTypeId.of<Dst>()) {
         // SAFETY: The type is correct
-        Result.Ok<Dst, T>(T.castUnchecked(thisRef))
+        Result.Ok<Dst, T>(castUnchecked(thisRef))
     } else {
         Result.Err<Dst, T>(thisRef)
     }

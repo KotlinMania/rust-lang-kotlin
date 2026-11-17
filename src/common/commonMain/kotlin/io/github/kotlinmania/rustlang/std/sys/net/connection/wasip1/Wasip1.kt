@@ -147,7 +147,7 @@ public open class TcpStream(
 
     public open fun hopLimitV6(): Result<UByte, Error> = unsupported()
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = unsupported()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = unsupported()
 
     public open fun setNonblocking(state: Boolean): Result<Unit, Error> {
         val fdstat = when (val tryResult = fdFdstatGet(((this.socket().asInner().asRawFd() as Any?) as Fd)).mapErr(err2io)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
@@ -199,7 +199,7 @@ public open class TcpListener(
 
     public open fun onlyV6(): Result<Boolean, Error> = unsupported()
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = unsupported()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = unsupported()
 
     public open fun setNonblocking(state: Boolean): Result<Unit, Error> {
         val fdstat = when (val tryResult = fdFdstatGet(((this.socket().asInner().asRawFd() as Any?) as Fd)).mapErr(err2io)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
@@ -288,7 +288,7 @@ public open class UdpSocket(
 
     public open fun multicastHopLimitV6(): Result<UByte, Error> = unsupported()
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = unsupported()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = unsupported()
 
     public open fun setNonblocking(arg0: Boolean): Result<Unit, Error> = unsupported()
 

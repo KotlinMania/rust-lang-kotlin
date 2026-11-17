@@ -180,7 +180,7 @@ public fun env(): Env =
     run {
         val ch = c.GetEnvironmentStringsW()
         if (ch.isNull()) {
-            error("failure getting env string from OS: ${io.github.kotlinmania.rustlang.std.io.Error.lastOsError()}")
+            error("failure getting env string from OS: ${io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError()}")
         }
         Env(base = ch, iter = EnvIterator(ch))
     }

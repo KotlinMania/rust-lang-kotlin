@@ -384,7 +384,7 @@ public open class Bucket<T>(
             // this can not be UB
             this.ptr.asPtr().toInt() - 1
         } else {
-            offsetFrom((base.asPtr()).asConstPtr(), (this.ptr.asPtr()).asConstPtr())
+            offsetFrom((base.asPtr()).asConstPtr(), (this.ptr.asPtr()).asConstPtr(), typeLayoutT = UnresolvedTypeLayout<T>())
         }
     }
 
@@ -3729,7 +3729,7 @@ public open class RawIntoIter<T, A : Allocator> internal constructor(
             marker = marker,
         )
 
-        public fun <T, A : Allocator> default(): RawIntoIter<T, A> = RawIntoIter(iter = Default.default(), allocation = null, marker = Unit)
+        public fun <T, A : Allocator> default(): RawIntoIter<T, A> = RawIntoIter(iter = RawIter.default(), allocation = null, marker = Unit)
     }
 }
 

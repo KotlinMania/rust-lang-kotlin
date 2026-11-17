@@ -111,7 +111,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                     val oldSize1 = matchVal
                     run {
                         val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
-                        copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), oldSize1)
+                        copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asPtr(), oldSize1, typeLayoutT = PrimitiveLayouts.U8)
                         this.deallocate(ptr, oldLayout)
                         Result.Ok<NonNull, AllocError>(newPtr)
                     }
@@ -152,7 +152,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                     val newSize1 = matchVal
                     run {
                         val newPtr = when (val tryResult = this.allocate(newLayout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
-                        copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), newSize1)
+                        copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asPtr(), newSize1, typeLayoutT = PrimitiveLayouts.U8)
                         this.deallocate(ptr, oldLayout)
                         Result.Ok<NonNull, AllocError>(newPtr)
                     }
@@ -184,7 +184,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
         val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
         // SAFETY: both pointers are valid and this operations is in bounds.
         run {
-            copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), minOf(oldLayout.size(), newLayout.size()))
+            copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asPtr(), minOf(oldLayout.size(), newLayout.size()), typeLayoutT = PrimitiveLayouts.U8)
         }
         // SAFETY: Caller ensures the ptr & layout are correct.
         run {
@@ -372,7 +372,7 @@ public fun alloc(layout: Layout): MutPtr {
         // Make sure we don't accidentally allow omitting the allocator shim in
         // stable code until it is actually stabilized.
         rustNoAllocShimIsUnstableV2()
-        MutPtr(kmAlloc((layout.size()).toLong(), (layout.alignment()).toLong()))
+        MutPtr(kmAlloc((layout.size()).toLong(), (layout.alignment()).asUsize().toLong()))
     }
 }
 
@@ -422,7 +422,7 @@ public fun dealloc(ptr: MutPtr, layout: Layout) {
  */
 public fun deallocNonnull(ptr: NonNull, layout: Layout) {
     // SAFETY: Upheld by caller.
-    kmDealloc((ptr).rawAddress, (layout.size()).toLong(), (layout.alignment()).toLong())
+    kmDealloc((ptr).rawAddress, (layout.size()).toLong(), (layout.alignment()).asUsize().toLong())
 }
 
 // even without panics, this helps for Miri backtraces
@@ -479,7 +479,7 @@ public fun realloc(ptr: MutPtr, layout: Layout, newSize: Int): MutPtr {
  */
 public fun reallocNonnull(ptr: NonNull, layout: Layout, newSize: Int): MutPtr {
     // SAFETY: Upheld by caller.
-    return MutPtr(kmRealloc((ptr).rawAddress, (layout.size()).toLong(), (layout.alignment()).toLong(), (newSize).toLong()))
+    return MutPtr(kmRealloc((ptr).rawAddress, (layout.size()).toLong(), (layout.alignment()).asUsize().toLong(), (newSize).toLong()))
 }
 
 // even without panics, this helps for Miri backtraces
@@ -544,7 +544,7 @@ public fun allocZeroed(layout: Layout): MutPtr {
         // Make sure we don't accidentally allow omitting the allocator shim in
         // stable code until it is actually stabilized.
         rustNoAllocShimIsUnstableV2()
-        MutPtr(kmAllocZeroed((layout.size()).toLong(), (layout.alignment()).toLong()))
+        MutPtr(kmAllocZeroed((layout.size()).toLong(), (layout.alignment()).asUsize().toLong()))
     }
 }
 

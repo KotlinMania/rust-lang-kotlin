@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.char.TryFromCharError
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.chars
@@ -35,7 +35,7 @@ public fun fromU32Unchecked(i: UInt): Char {
     // SAFETY: the caller must guarantee that `i` is a valid char value.
     return run {
         Unit
-        transmuteWithLayouts(i, PrimitiveLayouts.U32, PrimitiveLayouts.CHAR)
+        transmuteWithLayouts<UInt, Char>(i, PrimitiveLayouts.U32, PrimitiveLayouts.CHAR)
     }
 }
 
@@ -286,7 +286,7 @@ public fun charTryFromU32(i: UInt): Result<Char, CharTryFromError> {
         Result.Err<Char, CharTryFromError>(CharTryFromError())
     } else {
         // SAFETY: checked that it's a legal unicode value
-        Result.Ok<Char, CharTryFromError>(transmute(i))
+        Result.Ok<Char, CharTryFromError>(transmuteWithLayouts<UInt, Char>(i, PrimitiveLayouts.U32, UnresolvedTypeLayout<Char>()))
     }
 }
 

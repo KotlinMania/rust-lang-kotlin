@@ -1,16 +1,16 @@
 // port-lint: source sys/pal/unix/conf.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.conf
 
-import io.github.kotlinmania.libc.fuchsia.SC_PAGESIZE
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.libc.sysconf
+import io.github.kotlinmania.rustlang.libc.wasi.SC_PAGESIZE
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
 
 public fun pageSize(): Int = sysconf(SC_PAGESIZE).toInt()
 
@@ -46,7 +46,7 @@ public fun confstr(key: CInt, sizeHint: Int?): Result<OsString, Error> {
     }
     // `confstr` returns 0 in the case of an error.
     if (bytesNeededIncludingNul == 0) {
-        return Result.Err<OsString, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        return Result.Err<OsString, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
     }
     // Safety: `confstr(..., buf.asMutPtr(), buf.capacity())` returned a
     // non-zero value, meaning `bytesNeededIncludingNul` bytes were

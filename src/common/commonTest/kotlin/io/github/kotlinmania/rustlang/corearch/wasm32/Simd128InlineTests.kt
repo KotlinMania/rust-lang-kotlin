@@ -22,10 +22,13 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmTruncf64
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.num.wrappingAbs
@@ -59,8 +62,8 @@ public val C9: V128 = f32x4(0.0f, 1.0f, 2.0f, 3.0f)
 public val C10: V128 = f64x2(0.0, 1.0)
 
 public fun compareBytes(a: V128, b: V128) {
-    val a1: UByteArray = transmute(a)
-    val b1: UByteArray = transmute(b)
+    val a1: UByteArray = transmuteWithLayouts<V128, UByteArray>(a, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
+    val b1: UByteArray = transmuteWithLayouts<V128, UByteArray>(b, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
     check((a1).contentEquals(b1))
 }
 
@@ -173,9 +176,9 @@ public class Simd128InlineTests {
     public fun testI8x16() {
         val A: V128 = I8x16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
         compareBytes(A, A)
-        val bytes: ShortArray = transmute(i16x8((-1).toShort(), (-2).toShort(), (-3).toShort(), (-4).toShort(), (-5).toShort(), (-6).toShort(), (-7).toShort(), (-8).toShort()))
+        val bytes: ShortArray = transmuteWithLayouts<V128, ShortArray>(i16x8((-1).toShort(), (-2).toShort(), (-3).toShort(), (-4).toShort(), (-5).toShort(), (-6).toShort(), (-7).toShort(), (-8).toShort()), UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
         check(bytes == shortArrayOf((-1).toShort(), (-2).toShort(), (-3).toShort(), (-4).toShort(), (-5).toShort(), (-6).toShort(), (-7).toShort(), (-8).toShort()))
-        val bytes1: ByteArray = transmute(i8x16((-1).toByte(), (-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte(), (-16).toByte()))
+        val bytes1: ByteArray = transmuteWithLayouts<V128, ByteArray>(i8x16((-1).toByte(), (-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte(), (-16).toByte()), UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
         check(bytes1 == byteArrayOf((-1).toByte(), (-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte(), (-16).toByte()))
     }
 
@@ -207,7 +210,7 @@ public class Simd128InlineTests {
     public fun testI8x16ExtractReplace() {
         run {
             val arr: ByteArray = ByteArray(16) { 123.toByte() }
-            val vec: V128 = transmute(arr)
+            val vec: V128 = transmuteWithLayouts<ByteArray, V128>(arr, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
             check(i8x16ExtractLane(vec, 0) == 123.toByte())
             check(i8x16ExtractLane(vec, 1) == 123.toByte())
             check(i8x16ExtractLane(vec, 2) == 123.toByte())
@@ -225,7 +228,7 @@ public class Simd128InlineTests {
             check(i8x16ExtractLane(vec, 14) == 123.toByte())
             check(i8x16ExtractLane(vec, 15) == 123.toByte())
             val arr1: ByteArray = byteArrayOf(0.toByte(), 1.toByte(), 2.toByte(), 3.toByte(), 4.toByte(), 5.toByte(), 6.toByte(), 7.toByte(), 8.toByte(), 9.toByte(), 10.toByte(), 11.toByte(), 12.toByte(), 13.toByte(), 14.toByte(), 15.toByte())
-            val vec1: V128 = transmute(arr1)
+            val vec1: V128 = transmuteWithLayouts<ByteArray, V128>(arr1, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
             check(i8x16ExtractLane(vec1, 0) == 0.toByte())
             val tmp = i8x16ReplaceLane(vec1, 124.toByte(), 0)
             check(i8x16ExtractLane(tmp, 0) == 124.toByte())
@@ -281,7 +284,7 @@ public class Simd128InlineTests {
     public fun testI16x8ExtractReplace() {
         run {
             val arr: ShortArray = ShortArray(8) { 123.toShort() }
-            val vec: V128 = transmute(arr)
+            val vec: V128 = transmuteWithLayouts<ShortArray, V128>(arr, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
             check(i16x8ExtractLane(vec, 0) == 123.toShort())
             check(i16x8ExtractLane(vec, 1) == 123.toShort())
             check(i16x8ExtractLane(vec, 2) == 123.toShort())
@@ -291,7 +294,7 @@ public class Simd128InlineTests {
             check(i16x8ExtractLane(vec, 6) == 123.toShort())
             check(i16x8ExtractLane(vec, 7) == 123.toShort())
             val arr1: ShortArray = shortArrayOf(0.toShort(), 1.toShort(), 2.toShort(), 3.toShort(), 4.toShort(), 5.toShort(), 6.toShort(), 7.toShort())
-            val vec1: V128 = transmute(arr1)
+            val vec1: V128 = transmuteWithLayouts<ShortArray, V128>(arr1, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
             check(i16x8ExtractLane(vec1, 0) == 0.toShort())
             val tmp = i16x8ReplaceLane(vec1, 124.toShort(), 0)
             check(i16x8ExtractLane(tmp, 0) == 124.toShort())
@@ -323,13 +326,13 @@ public class Simd128InlineTests {
     public fun testI32x4ExtractReplace() {
         run {
             val arr: IntArray = IntArray(4) { 123 }
-            val vec: V128 = transmute(arr)
+            val vec: V128 = transmuteWithLayouts<IntArray, V128>(arr, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             check(i32x4ExtractLane(vec, 0) == 123)
             check(i32x4ExtractLane(vec, 1) == 123)
             check(i32x4ExtractLane(vec, 2) == 123)
             check(i32x4ExtractLane(vec, 3) == 123)
             val arr1: IntArray = intArrayOf(0, 1, 2, 3)
-            val vec1: V128 = transmute(arr1)
+            val vec1: V128 = transmuteWithLayouts<IntArray, V128>(arr1, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             check(i32x4ExtractLane(vec1, 0) == 0)
             val tmp = i32x4ReplaceLane(vec1, 124, 0)
             check(i32x4ExtractLane(tmp, 0) == 124)
@@ -349,11 +352,11 @@ public class Simd128InlineTests {
     public fun testI64x2ExtractReplace() {
         run {
             val arr: LongArray = LongArray(2) { 123.toLong() }
-            val vec: V128 = transmute(arr)
+            val vec: V128 = transmuteWithLayouts<LongArray, V128>(arr, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
             check(i64x2ExtractLane(vec, 0) == 123.toLong())
             check(i64x2ExtractLane(vec, 1) == 123.toLong())
             val arr1: LongArray = longArrayOf(0.toLong(), 1.toLong())
-            val vec1: V128 = transmute(arr1)
+            val vec1: V128 = transmuteWithLayouts<LongArray, V128>(arr1, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
             check(i64x2ExtractLane(vec1, 0) == 0.toLong())
             val tmp = i64x2ReplaceLane(vec1, 124.toLong(), 0)
             check(i64x2ExtractLane(tmp, 0) == 124.toLong())
@@ -367,13 +370,13 @@ public class Simd128InlineTests {
     public fun testF32x4ExtractReplace() {
         run {
             val arr: FloatArray = FloatArray(4) { 123.toFloat() }
-            val vec: V128 = transmute(arr)
+            val vec: V128 = transmuteWithLayouts<FloatArray, V128>(arr, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             check(f32x4ExtractLane(vec, 0) == 123.toFloat())
             check(f32x4ExtractLane(vec, 1) == 123.toFloat())
             check(f32x4ExtractLane(vec, 2) == 123.toFloat())
             check(f32x4ExtractLane(vec, 3) == 123.toFloat())
             val arr1: FloatArray = floatArrayOf(0.toFloat(), 1.toFloat(), 2.toFloat(), 3.toFloat())
-            val vec1: V128 = transmute(arr1)
+            val vec1: V128 = transmuteWithLayouts<FloatArray, V128>(arr1, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             check(f32x4ExtractLane(vec1, 0) == 0.toFloat())
             val tmp = f32x4ReplaceLane(vec1, 124.toFloat(), 0)
             check(f32x4ExtractLane(tmp, 0) == 124.toFloat())
@@ -393,11 +396,11 @@ public class Simd128InlineTests {
     public fun testF64x2ExtractReplace() {
         run {
             val arr: DoubleArray = DoubleArray(2) { 123.toDouble() }
-            val vec: V128 = transmute(arr)
+            val vec: V128 = transmuteWithLayouts<DoubleArray, V128>(arr, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             check(f64x2ExtractLane(vec, 0) == 123.toDouble())
             check(f64x2ExtractLane(vec, 1) == 123.toDouble())
             val arr1: DoubleArray = doubleArrayOf(0.toDouble(), 1.toDouble())
-            val vec1: V128 = transmute(arr1)
+            val vec1: V128 = transmuteWithLayouts<DoubleArray, V128>(arr1, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             check(f64x2ExtractLane(vec1, 0) == 0.toDouble())
             val tmp = f64x2ReplaceLane(vec1, 124.toDouble(), 0)
             check(f64x2ExtractLane(tmp, 0) == 124.toDouble())
@@ -503,33 +506,33 @@ public class Simd128InlineTests {
         run {
             val v1 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             val v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<ByteArray, V128>(v1, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<ByteArray, V128>(v2, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = i8x16Add(v1V128, v2V128)
             var v3 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, ByteArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = (v1[i] + v2[i].toByte()).toByte()
                 check(actual == expected)
             }
             val v11 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             val v21 = listOf(-2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -18)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ByteArray, V128>(v11, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = i8x16Add(v1V1281, v2V1281)
             var v31 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, ByteArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = (v11[i1] + v21[i1].toByte()).toByte()
                 check(actual1 == expected1)
             }
             val v12 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             val v22 = listOf(127, -44, 43, 126, 4, 2, 9, -3, -59, -43, 39, -69, 79, -3, 9, -24)
-            val v1V1282: V128 = transmute(v12)
+            val v1V1282: V128 = transmuteWithLayouts<ByteArray, V128>(v12, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1282: V128 = transmute(v22)
             val v3V1282 = i8x16Add(v1V1282, v2V1282)
             var v32 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-            v32 = transmute(v3V1282)
+            v32 = transmuteWithLayouts<V128, ByteArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = (v12[i2] + v22[i2].toByte()).toByte()
                 check(actual2 == expected2)
@@ -542,33 +545,33 @@ public class Simd128InlineTests {
         run {
             val v1 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             val v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<ByteArray, V128>(v1, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<ByteArray, V128>(v2, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = i8x16AddSat(v1V128, v2V128)
             var v3 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, ByteArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].saturatingAdd(v2[i])
                 check(actual == expected)
             }
             val v11 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             val v21 = listOf(-2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -18)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ByteArray, V128>(v11, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = i8x16AddSat(v1V1281, v2V1281)
             var v31 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, ByteArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].saturatingAdd(v21[i1].toByte())
                 check(actual1 == expected1)
             }
             val v12 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             val v22 = listOf(127, -44, 43, 126, 4, 2, 9, -3, -59, -43, 39, -69, 79, -3, 9, -24)
-            val v1V1282: V128 = transmute(v12)
+            val v1V1282: V128 = transmuteWithLayouts<ByteArray, V128>(v12, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1282: V128 = transmute(v22)
             val v3V1282 = i8x16AddSat(v1V1282, v2V1282)
             var v32 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-            v32 = transmute(v3V1282)
+            v32 = transmuteWithLayouts<V128, ByteArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = v12[i2].saturatingAdd(v22[i2].toByte())
                 check(actual2 == expected2)
@@ -581,33 +584,33 @@ public class Simd128InlineTests {
         run {
             val v1 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             val v2 = ubyteArrayOf(1u.toUByte(), 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<UByteArray, V128>(v1, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<UByteArray, V128>(v2, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u8x16AddSat(v1V128, v2V128)
             var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, UByteArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].saturatingAdd(v2[i])
                 check(actual == expected)
             }
             val v11 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             val v21 = listOf(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<UByteArray, V128>(v11, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<IntArray, V128>(v21, PrimitiveArrayLayouts.intArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val v3V1281 = u8x16AddSat(v1V1281, v2V1281)
             var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, UByteArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].saturatingAdd(v21[i1].toUByte())
                 check(actual1 == expected1)
             }
             val v12 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             val v22 = ubyteArrayOf(127u, (-44).toUByte(), 43u, 126u, 4u, 2u, 9u, (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u, (-69).toUByte(), 79u, (-3).toUByte(), 9u, (-24).toUByte())
-            val v1V1282: V128 = transmute(v12)
-            val v2V1282: V128 = transmute(v22)
+            val v1V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v12, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v22, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V1282 = u8x16AddSat(v1V1282, v2V1282)
             var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
-            v32 = transmute(v3V1282)
+            v32 = transmuteWithLayouts<V128, UByteArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = v12[i2].saturatingAdd(v22[i2])
                 check(actual2 == expected2)
@@ -620,33 +623,33 @@ public class Simd128InlineTests {
         run {
             val v1 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             val v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<ByteArray, V128>(v1, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<ByteArray, V128>(v2, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = i8x16Sub(v1V128, v2V128)
             var v3 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, ByteArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = (v1[i] - v2[i].toByte()).toByte()
                 check(actual == expected)
             }
             val v11 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             val v21 = listOf(-2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -18)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ByteArray, V128>(v11, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = i8x16Sub(v1V1281, v2V1281)
             var v31 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, ByteArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = (v11[i1] - v21[i1].toByte()).toByte()
                 check(actual1 == expected1)
             }
             val v12 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             val v22 = listOf(-127, -44, 43, 126, 4, 2, 9, -3, -59, -43, 39, -69, 79, -3, 4, 8)
-            val v1V1282: V128 = transmute(v12)
+            val v1V1282: V128 = transmuteWithLayouts<ByteArray, V128>(v12, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1282: V128 = transmute(v22)
             val v3V1282 = i8x16Sub(v1V1282, v2V1282)
             var v32 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-            v32 = transmute(v3V1282)
+            v32 = transmuteWithLayouts<V128, ByteArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = (v12[i2] - v22[i2].toByte()).toByte()
                 check(actual2 == expected2)
@@ -659,33 +662,33 @@ public class Simd128InlineTests {
         run {
             val v1 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             val v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<ByteArray, V128>(v1, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<ByteArray, V128>(v2, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = i8x16SubSat(v1V128, v2V128)
             var v3 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, ByteArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].saturatingSub(v2[i])
                 check(actual == expected)
             }
             val v11 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             val v21 = listOf(-2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -18)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ByteArray, V128>(v11, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = i8x16SubSat(v1V1281, v2V1281)
             var v31 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, ByteArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].saturatingSub(v21[i1].toByte())
                 check(actual1 == expected1)
             }
             val v12 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             val v22 = listOf(-127, -44, 43, 126, 4, 2, 9, -3, -59, -43, 39, -69, 79, -3, 4, 8)
-            val v1V1282: V128 = transmute(v12)
+            val v1V1282: V128 = transmuteWithLayouts<ByteArray, V128>(v12, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1282: V128 = transmute(v22)
             val v3V1282 = i8x16SubSat(v1V1282, v2V1282)
             var v32 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-            v32 = transmute(v3V1282)
+            v32 = transmuteWithLayouts<V128, ByteArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = v12[i2].saturatingSub(v22[i2].toByte())
                 check(actual2 == expected2)
@@ -698,33 +701,33 @@ public class Simd128InlineTests {
         run {
             val v1 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             val v2 = ubyteArrayOf(1u.toUByte(), 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<UByteArray, V128>(v1, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<UByteArray, V128>(v2, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u8x16SubSat(v1V128, v2V128)
             var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, UByteArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].saturatingSub(v2[i])
                 check(actual == expected)
             }
             val v11 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             val v21 = listOf(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<UByteArray, V128>(v11, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<IntArray, V128>(v21, PrimitiveArrayLayouts.intArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val v3V1281 = u8x16SubSat(v1V1281, v2V1281)
             var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, UByteArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].saturatingSub(v21[i1].toUByte())
                 check(actual1 == expected1)
             }
             val v12 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             val v22 = ubyteArrayOf(127u, (-44).toUByte(), 43u, 126u, 4u, 2u, 9u, (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u, (-69).toUByte(), 79u, (-3).toUByte(), 9u, (-24).toUByte())
-            val v1V1282: V128 = transmute(v12)
-            val v2V1282: V128 = transmute(v22)
+            val v1V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v12, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v22, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V1282 = u8x16SubSat(v1V1282, v2V1282)
             var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
-            v32 = transmute(v3V1282)
+            v32 = transmuteWithLayouts<V128, UByteArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = v12[i2].saturatingSub(v22[i2])
                 check(actual2 == expected2)
@@ -737,33 +740,33 @@ public class Simd128InlineTests {
         run {
             val v1 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             val v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<ByteArray, V128>(v1, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<ByteArray, V128>(v2, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = i8x16Min(v1V128, v2V128)
             var v3 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, ByteArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].min(v2[i])
                 check(actual == expected)
             }
             val v11 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             val v21 = listOf(-2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -18)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ByteArray, V128>(v11, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = i8x16Min(v1V1281, v2V1281)
             var v31 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, ByteArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].min(v21[i1])
                 check(actual1 == expected1)
             }
             val v12 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             val v22 = listOf(-127, -44, 43, 126, 4, 2, 9, -3, -59, -43, 39, -69, 79, -3, 4, 8)
-            val v1V1282: V128 = transmute(v12)
+            val v1V1282: V128 = transmuteWithLayouts<ByteArray, V128>(v12, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1282: V128 = transmute(v22)
             val v3V1282 = i8x16Min(v1V1282, v2V1282)
             var v32 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-            v32 = transmute(v3V1282)
+            v32 = transmuteWithLayouts<V128, ByteArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = v12[i2].min(v22[i2])
                 check(actual2 == expected2)
@@ -776,33 +779,33 @@ public class Simd128InlineTests {
         run {
             val v1 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             val v2 = ubyteArrayOf(1u.toUByte(), 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<UByteArray, V128>(v1, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<UByteArray, V128>(v2, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u8x16Min(v1V128, v2V128)
             var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, UByteArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].min(v2[i])
                 check(actual == expected)
             }
             val v11 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             val v21 = listOf(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<UByteArray, V128>(v11, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<IntArray, V128>(v21, PrimitiveArrayLayouts.intArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val v3V1281 = u8x16Min(v1V1281, v2V1281)
             var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, UByteArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].min(v21[i1])
                 check(actual1 == expected1)
             }
             val v12 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             val v22 = ubyteArrayOf(127u, (-44).toUByte(), 43u, 126u, 4u, 2u, 9u, (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u, (-69).toUByte(), 79u, (-3).toUByte(), 9u, (-24).toUByte())
-            val v1V1282: V128 = transmute(v12)
-            val v2V1282: V128 = transmute(v22)
+            val v1V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v12, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v22, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V1282 = u8x16Min(v1V1282, v2V1282)
             var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
-            v32 = transmute(v3V1282)
+            v32 = transmuteWithLayouts<V128, UByteArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = v12[i2].min(v22[i2])
                 check(actual2 == expected2)
@@ -815,33 +818,33 @@ public class Simd128InlineTests {
         run {
             val v1 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             val v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<ByteArray, V128>(v1, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<ByteArray, V128>(v2, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = i8x16Max(v1V128, v2V128)
             var v3 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, ByteArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].max(v2[i])
                 check(actual == expected)
             }
             val v11 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             val v21 = listOf(-2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -18)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ByteArray, V128>(v11, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = i8x16Max(v1V1281, v2V1281)
             var v31 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, ByteArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].max(v21[i1])
                 check(actual1 == expected1)
             }
             val v12 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             val v22 = listOf(-127, -44, 43, 126, 4, 2, 9, -3, -59, -43, 39, -69, 79, -3, 4, 8)
-            val v1V1282: V128 = transmute(v12)
+            val v1V1282: V128 = transmuteWithLayouts<ByteArray, V128>(v12, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1282: V128 = transmute(v22)
             val v3V1282 = i8x16Max(v1V1282, v2V1282)
             var v32 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-            v32 = transmute(v3V1282)
+            v32 = transmuteWithLayouts<V128, ByteArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = v12[i2].max(v22[i2])
                 check(actual2 == expected2)
@@ -854,33 +857,33 @@ public class Simd128InlineTests {
         run {
             val v1 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             val v2 = ubyteArrayOf(1u.toUByte(), 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<UByteArray, V128>(v1, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<UByteArray, V128>(v2, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u8x16Max(v1V128, v2V128)
             var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, UByteArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].max(v2[i])
                 check(actual == expected)
             }
             val v11 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             val v21 = listOf(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<UByteArray, V128>(v11, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<IntArray, V128>(v21, PrimitiveArrayLayouts.intArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val v3V1281 = u8x16Max(v1V1281, v2V1281)
             var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, UByteArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].max(v21[i1])
                 check(actual1 == expected1)
             }
             val v12 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             val v22 = ubyteArrayOf(127u, (-44).toUByte(), 43u, 126u, 4u, 2u, 9u, (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u, (-69).toUByte(), 79u, (-3).toUByte(), 9u, (-24).toUByte())
-            val v1V1282: V128 = transmute(v12)
-            val v2V1282: V128 = transmute(v22)
+            val v1V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v12, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v22, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V1282 = u8x16Max(v1V1282, v2V1282)
             var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
-            v32 = transmute(v3V1282)
+            v32 = transmuteWithLayouts<V128, UByteArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = v12[i2].max(v22[i2])
                 check(actual2 == expected2)
@@ -893,33 +896,33 @@ public class Simd128InlineTests {
         run {
             val v1 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             val v2 = ubyteArrayOf(1u.toUByte(), 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<UByteArray, V128>(v1, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<UByteArray, V128>(v2, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u8x16Avgr(v1V128, v2V128)
             var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, UByteArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].avgr(v2[i])
                 check(actual == expected)
             }
             val v11 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             val v21 = listOf(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<UByteArray, V128>(v11, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<IntArray, V128>(v21, PrimitiveArrayLayouts.intArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val v3V1281 = u8x16Avgr(v1V1281, v2V1281)
             var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, UByteArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].avgr(v21[i1])
                 check(actual1 == expected1)
             }
             val v12 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             val v22 = ubyteArrayOf(127u, (-44).toUByte(), 43u, 126u, 4u, 2u, 9u, (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u, (-69).toUByte(), 79u, (-3).toUByte(), 9u, (-24).toUByte())
-            val v1V1282: V128 = transmute(v12)
-            val v2V1282: V128 = transmute(v22)
+            val v1V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v12, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v22, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V1282 = u8x16Avgr(v1V1282, v2V1282)
             var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
-            v32 = transmute(v3V1282)
+            v32 = transmuteWithLayouts<V128, UByteArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = v12[i2].avgr(v22[i2])
                 check(actual2 == expected2)
@@ -932,22 +935,22 @@ public class Simd128InlineTests {
         run {
             val v1 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             val v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<ShortArray, V128>(v1, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<ShortArray, V128>(v2, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = i16x8Add(v1V128, v2V128)
             var v3 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, ShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = (v1[i] + v2[i].toShort()).toShort()
                 check(actual == expected)
             }
             val v11 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
             val v21 = listOf(32767, 8, -2494, -4, 4882, -4, 848, 3830)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ShortArray, V128>(v11, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = i16x8Add(v1V1281, v2V1281)
             var v31 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, ShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = (v11[i1] + v21[i1].toShort()).toShort()
                 check(actual1 == expected1)
@@ -960,22 +963,22 @@ public class Simd128InlineTests {
         run {
             val v1 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             val v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<ShortArray, V128>(v1, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<ShortArray, V128>(v2, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = i16x8AddSat(v1V128, v2V128)
             var v3 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, ShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].saturatingAdd(v2[i])
                 check(actual == expected)
             }
             val v11 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
             val v21 = listOf(32767, 8, -2494, -4, 4882, -4, 848, 3830)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ShortArray, V128>(v11, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = i16x8AddSat(v1V1281, v2V1281)
             var v31 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, ShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].saturatingAdd(v21[i1].toShort())
                 check(actual1 == expected1)
@@ -988,22 +991,22 @@ public class Simd128InlineTests {
         run {
             val v1 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             val v2 = ushortArrayOf(1u.toUShort(), 1u, 1u, 1u, 1u, 1u, 1u, 1u)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<UShortArray, V128>(v1, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<UShortArray, V128>(v2, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u16x8AddSat(v1V128, v2V128)
             var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, UShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].saturatingAdd(v2[i])
                 check(actual == expected)
             }
             val v11 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
             val v21 = ushortArrayOf(32767u, 8u, (-2494).toUShort(), (-4).toUShort(), 4882u, (-4).toUShort(), 848u, 3830u)
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v11, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v21, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = u16x8AddSat(v1V1281, v2V1281)
             var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, UShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].saturatingAdd(v21[i1])
                 check(actual1 == expected1)
@@ -1016,22 +1019,22 @@ public class Simd128InlineTests {
         run {
             val v1 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             val v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<ShortArray, V128>(v1, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<ShortArray, V128>(v2, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = i16x8Sub(v1V128, v2V128)
             var v3 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, ShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = (v1[i] - v2[i].toShort()).toShort()
                 check(actual == expected)
             }
             val v11 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
             val v21 = listOf(32767, 8, -2494, -4, 4882, -4, 848, 3830)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ShortArray, V128>(v11, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = i16x8Sub(v1V1281, v2V1281)
             var v31 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, ShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = (v11[i1] - v21[i1].toShort()).toShort()
                 check(actual1 == expected1)
@@ -1044,22 +1047,22 @@ public class Simd128InlineTests {
         run {
             val v1 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             val v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<ShortArray, V128>(v1, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<ShortArray, V128>(v2, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = i16x8SubSat(v1V128, v2V128)
             var v3 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, ShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].saturatingSub(v2[i])
                 check(actual == expected)
             }
             val v11 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
             val v21 = listOf(32767, 8, -2494, -4, 4882, -4, 848, 3830)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ShortArray, V128>(v11, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = i16x8SubSat(v1V1281, v2V1281)
             var v31 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, ShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].saturatingSub(v21[i1].toShort())
                 check(actual1 == expected1)
@@ -1072,22 +1075,22 @@ public class Simd128InlineTests {
         run {
             val v1 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             val v2 = ushortArrayOf(1u.toUShort(), 1u, 1u, 1u, 1u, 1u, 1u, 1u)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<UShortArray, V128>(v1, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<UShortArray, V128>(v2, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u16x8SubSat(v1V128, v2V128)
             var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, UShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].saturatingSub(v2[i])
                 check(actual == expected)
             }
             val v11 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
             val v21 = ushortArrayOf(32767u, 8u, (-2494).toUShort(), (-4).toUShort(), 4882u, (-4).toUShort(), 848u, 3830u)
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v11, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v21, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = u16x8SubSat(v1V1281, v2V1281)
             var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, UShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].saturatingSub(v21[i1])
                 check(actual1 == expected1)
@@ -1100,22 +1103,22 @@ public class Simd128InlineTests {
         run {
             val v1 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             val v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<ShortArray, V128>(v1, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<ShortArray, V128>(v2, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = i16x8Mul(v1V128, v2V128)
             var v3 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, ShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = (v1[i] * v2[i].toShort()).toShort()
                 check(actual == expected)
             }
             val v11 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
             val v21 = listOf(32767, 8, -2494, -4, 4882, -4, 848, 3830)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ShortArray, V128>(v11, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = i16x8Mul(v1V1281, v2V1281)
             var v31 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, ShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = (v11[i1] * v21[i1].toShort()).toShort()
                 check(actual1 == expected1)
@@ -1128,22 +1131,22 @@ public class Simd128InlineTests {
         run {
             val v1 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             val v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<ShortArray, V128>(v1, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<ShortArray, V128>(v2, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = i16x8Min(v1V128, v2V128)
             var v3 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, ShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].min(v2[i])
                 check(actual == expected)
             }
             val v11 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
             val v21 = listOf(32767, 8, -2494, -4, 4882, -4, 848, 3830)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ShortArray, V128>(v11, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = i16x8Min(v1V1281, v2V1281)
             var v31 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, ShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].min(v21[i1])
                 check(actual1 == expected1)
@@ -1156,22 +1159,22 @@ public class Simd128InlineTests {
         run {
             val v1 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             val v2 = ushortArrayOf(1u.toUShort(), 1u, 1u, 1u, 1u, 1u, 1u, 1u)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<UShortArray, V128>(v1, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<UShortArray, V128>(v2, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u16x8Min(v1V128, v2V128)
             var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, UShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].min(v2[i])
                 check(actual == expected)
             }
             val v11 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
             val v21 = ushortArrayOf(32767u, 8u, (-2494).toUShort(), (-4).toUShort(), 4882u, (-4).toUShort(), 848u, 3830u)
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v11, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v21, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = u16x8Min(v1V1281, v2V1281)
             var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, UShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].min(v21[i1])
                 check(actual1 == expected1)
@@ -1184,22 +1187,22 @@ public class Simd128InlineTests {
         run {
             val v1 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             val v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<ShortArray, V128>(v1, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<ShortArray, V128>(v2, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = i16x8Max(v1V128, v2V128)
             var v3 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, ShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].max(v2[i])
                 check(actual == expected)
             }
             val v11 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
             val v21 = listOf(32767, 8, -2494, -4, 4882, -4, 848, 3830)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ShortArray, V128>(v11, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = i16x8Max(v1V1281, v2V1281)
             var v31 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, ShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].max(v21[i1])
                 check(actual1 == expected1)
@@ -1212,22 +1215,22 @@ public class Simd128InlineTests {
         run {
             val v1 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             val v2 = ushortArrayOf(1u.toUShort(), 1u, 1u, 1u, 1u, 1u, 1u, 1u)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<UShortArray, V128>(v1, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<UShortArray, V128>(v2, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u16x8Max(v1V128, v2V128)
             var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, UShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].max(v2[i])
                 check(actual == expected)
             }
             val v11 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
             val v21 = ushortArrayOf(32767u, 8u, (-2494).toUShort(), (-4).toUShort(), 4882u, (-4).toUShort(), 848u, 3830u)
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v11, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v21, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = u16x8Max(v1V1281, v2V1281)
             var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, UShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].max(v21[i1])
                 check(actual1 == expected1)
@@ -1240,22 +1243,22 @@ public class Simd128InlineTests {
         run {
             val v1 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             val v2 = ushortArrayOf(1u.toUShort(), 1u, 1u, 1u, 1u, 1u, 1u, 1u)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<UShortArray, V128>(v1, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<UShortArray, V128>(v2, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u16x8Avgr(v1V128, v2V128)
             var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, UShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].avgr(v2[i])
                 check(actual == expected)
             }
             val v11 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
             val v21 = ushortArrayOf(32767u, 8u, (-2494).toUShort(), (-4).toUShort(), 4882u, (-4).toUShort(), 848u, 3830u)
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v11, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v21, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = u16x8Avgr(v1V1281, v2V1281)
             var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, UShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].avgr(v21[i1])
                 check(actual1 == expected1)
@@ -1268,22 +1271,22 @@ public class Simd128InlineTests {
         run {
             val v1 = intArrayOf(0, 0, 0, 0)
             val v2 = listOf(1, 2, 3, 4)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<IntArray, V128>(v1, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<IntArray, V128>(v2, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val v3V128 = i32x4Add(v1V128, v2V128)
             var v3 = intArrayOf(0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, IntArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = (v1[i] + v2[i].toInt())
                 check(actual == expected)
             }
             val v11 = intArrayOf(1, 1283, Int.MAX_VALUE, Int.MIN_VALUE)
             val v21 = IntArray(4) { Int.MAX_VALUE }
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<IntArray, V128>(v11, UnresolvedTypeLayout<IntArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<IntArray, V128>(v21, UnresolvedTypeLayout<IntArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = i32x4Add(v1V1281, v2V1281)
             var v31 = intArrayOf(1, 1283, Int.MAX_VALUE, Int.MIN_VALUE)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, IntArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = (v11[i1] + v21[i1].toInt())
                 check(actual1 == expected1)
@@ -1296,22 +1299,22 @@ public class Simd128InlineTests {
         run {
             val v1 = intArrayOf(0, 0, 0, 0)
             val v2 = listOf(1, 2, 3, 4)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<IntArray, V128>(v1, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<IntArray, V128>(v2, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val v3V128 = i32x4Sub(v1V128, v2V128)
             var v3 = intArrayOf(0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, IntArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = (v1[i] - v2[i].toInt())
                 check(actual == expected)
             }
             val v11 = intArrayOf(1, 1283, Int.MAX_VALUE, Int.MIN_VALUE)
             val v21 = IntArray(4) { Int.MAX_VALUE }
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<IntArray, V128>(v11, UnresolvedTypeLayout<IntArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<IntArray, V128>(v21, UnresolvedTypeLayout<IntArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = i32x4Sub(v1V1281, v2V1281)
             var v31 = intArrayOf(1, 1283, Int.MAX_VALUE, Int.MIN_VALUE)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, IntArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = (v11[i1] - v21[i1].toInt())
                 check(actual1 == expected1)
@@ -1324,22 +1327,22 @@ public class Simd128InlineTests {
         run {
             val v1 = intArrayOf(0, 0, 0, 0)
             val v2 = listOf(1, 2, 3, 4)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<IntArray, V128>(v1, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<IntArray, V128>(v2, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val v3V128 = i32x4Mul(v1V128, v2V128)
             var v3 = intArrayOf(0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, IntArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = (v1[i] * v2[i].toInt())
                 check(actual == expected)
             }
             val v11 = intArrayOf(1, 1283, Int.MAX_VALUE, Int.MIN_VALUE)
             val v21 = IntArray(4) { Int.MAX_VALUE }
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<IntArray, V128>(v11, UnresolvedTypeLayout<IntArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<IntArray, V128>(v21, UnresolvedTypeLayout<IntArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = i32x4Mul(v1V1281, v2V1281)
             var v31 = intArrayOf(1, 1283, Int.MAX_VALUE, Int.MIN_VALUE)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, IntArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = (v11[i1] * v21[i1].toInt())
                 check(actual1 == expected1)
@@ -1352,22 +1355,22 @@ public class Simd128InlineTests {
         run {
             val v1 = intArrayOf(0, 0, 0, 0)
             val v2 = listOf(1, 2, 3, 4)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<IntArray, V128>(v1, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<IntArray, V128>(v2, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val v3V128 = i32x4Min(v1V128, v2V128)
             var v3 = intArrayOf(0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, IntArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].min(v2[i])
                 check(actual == expected)
             }
             val v11 = intArrayOf(1, 1283, Int.MAX_VALUE, Int.MIN_VALUE)
             val v21 = IntArray(4) { Int.MAX_VALUE }
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<IntArray, V128>(v11, UnresolvedTypeLayout<IntArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<IntArray, V128>(v21, UnresolvedTypeLayout<IntArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = i32x4Min(v1V1281, v2V1281)
             var v31 = intArrayOf(1, 1283, Int.MAX_VALUE, Int.MIN_VALUE)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, IntArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].min(v21[i1])
                 check(actual1 == expected1)
@@ -1380,22 +1383,22 @@ public class Simd128InlineTests {
         run {
             val v1 = uintArrayOf(0u, 0u, 0u, 0u)
             val v2 = listOf(1, 2, 3, 4)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<UIntArray, V128>(v1, UnresolvedTypeLayout<UIntArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<IntArray, V128>(v2, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val v3V128 = u32x4Min(v1V128, v2V128)
             var v3 = uintArrayOf(0u, 0u, 0u, 0u)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, UIntArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UIntArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].min(v2[i])
                 check(actual == expected)
             }
             val v11 = uintArrayOf(1u, 1283u, Int.MAX_VALUE.toUInt(), Int.MIN_VALUE.toUInt())
             val v21 = UIntArray(4) { Int.MAX_VALUE.toUInt() }
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<UIntArray, V128>(v11, UnresolvedTypeLayout<UIntArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<UIntArray, V128>(v21, PrimitiveArrayLayouts.uIntArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val v3V1281 = u32x4Min(v1V1281, v2V1281)
             var v31 = uintArrayOf(1u, 1283u, Int.MAX_VALUE.toUInt(), Int.MIN_VALUE.toUInt())
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, UIntArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UIntArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].min(v21[i1])
                 check(actual1 == expected1)
@@ -1408,22 +1411,22 @@ public class Simd128InlineTests {
         run {
             val v1 = intArrayOf(0, 0, 0, 0)
             val v2 = listOf(1, 2, 3, 4)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<IntArray, V128>(v1, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<IntArray, V128>(v2, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val v3V128 = i32x4Max(v1V128, v2V128)
             var v3 = intArrayOf(0, 0, 0, 0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, IntArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].max(v2[i])
                 check(actual == expected)
             }
             val v11 = intArrayOf(1, 1283, Int.MAX_VALUE, Int.MIN_VALUE)
             val v21 = IntArray(4) { Int.MAX_VALUE }
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<IntArray, V128>(v11, UnresolvedTypeLayout<IntArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<IntArray, V128>(v21, UnresolvedTypeLayout<IntArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = i32x4Max(v1V1281, v2V1281)
             var v31 = intArrayOf(1, 1283, Int.MAX_VALUE, Int.MIN_VALUE)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, IntArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].max(v21[i1])
                 check(actual1 == expected1)
@@ -1436,22 +1439,22 @@ public class Simd128InlineTests {
         run {
             val v1 = uintArrayOf(0u, 0u, 0u, 0u)
             val v2 = listOf(1, 2, 3, 4)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<UIntArray, V128>(v1, UnresolvedTypeLayout<UIntArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<IntArray, V128>(v2, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val v3V128 = u32x4Max(v1V128, v2V128)
             var v3 = uintArrayOf(0u, 0u, 0u, 0u)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, UIntArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UIntArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].max(v2[i])
                 check(actual == expected)
             }
             val v11 = uintArrayOf(1u, 1283u, Int.MAX_VALUE.toUInt(), Int.MIN_VALUE.toUInt())
             val v21 = UIntArray(4) { Int.MAX_VALUE.toUInt() }
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<UIntArray, V128>(v11, UnresolvedTypeLayout<UIntArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<UIntArray, V128>(v21, PrimitiveArrayLayouts.uIntArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val v3V1281 = u32x4Max(v1V1281, v2V1281)
             var v31 = uintArrayOf(1u, 1283u, Int.MAX_VALUE.toUInt(), Int.MIN_VALUE.toUInt())
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, UIntArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UIntArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].max(v21[i1])
                 check(actual1 == expected1)
@@ -1464,44 +1467,44 @@ public class Simd128InlineTests {
         run {
             val v1 = longArrayOf(0L, 0L)
             val v2 = listOf(1, 2)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<LongArray, V128>(v1, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<IntArray, V128>(v2, PrimitiveArrayLayouts.intArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val v3V128 = i64x2Add(v1V128, v2V128)
             var v3 = longArrayOf(0L, 0L)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, LongArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = (v1[i] + v2[i].toLong())
                 check(actual == expected)
             }
             val v11 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
             val v21 = longArrayOf(Long.MAX_VALUE, Long.MIN_VALUE)
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<LongArray, V128>(v11, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<LongArray, V128>(v21, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = i64x2Add(v1V1281, v2V1281)
             var v31 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, LongArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = (v11[i1] + v21[i1].toLong())
                 check(actual1 == expected1)
             }
             val v12 = LongArray(2) { Long.MAX_VALUE }
             val v22 = LongArray(2) { Long.MAX_VALUE }
-            val v1V1282: V128 = transmute(v12)
-            val v2V1282: V128 = transmute(v22)
+            val v1V1282: V128 = transmuteWithLayouts<LongArray, V128>(v12, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1282: V128 = transmuteWithLayouts<LongArray, V128>(v22, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
             val v3V1282 = i64x2Add(v1V1282, v2V1282)
             var v32 = LongArray(2) { Long.MAX_VALUE }
-            v32 = transmute(v3V1282)
+            v32 = transmuteWithLayouts<V128, LongArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = (v12[i2] + v22[i2].toLong())
                 check(actual2 == expected2)
             }
             val v13 = longArrayOf(-4L, -4L)
             val v23 = listOf(800, 939)
-            val v1V1283: V128 = transmute(v13)
-            val v2V1283: V128 = transmute(v23)
+            val v1V1283: V128 = transmuteWithLayouts<LongArray, V128>(v13, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1283: V128 = transmuteWithLayouts<IntArray, V128>(v23, PrimitiveArrayLayouts.intArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val v3V1283 = i64x2Add(v1V1283, v2V1283)
             var v33 = longArrayOf(-4L, -4L)
-            v33 = transmute(v3V1283)
+            v33 = transmuteWithLayouts<V128, LongArray>(v3V1283, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             for ((i3, actual3) in v33.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected3 = (v13[i3] + v23[i3].toLong())
                 check(actual3 == expected3)
@@ -1514,44 +1517,44 @@ public class Simd128InlineTests {
         run {
             val v1 = longArrayOf(0L, 0L)
             val v2 = listOf(1, 2)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<LongArray, V128>(v1, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<IntArray, V128>(v2, PrimitiveArrayLayouts.intArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val v3V128 = i64x2Sub(v1V128, v2V128)
             var v3 = longArrayOf(0L, 0L)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, LongArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = (v1[i] - v2[i].toLong())
                 check(actual == expected)
             }
             val v11 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
             val v21 = longArrayOf(Long.MAX_VALUE, Long.MIN_VALUE)
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<LongArray, V128>(v11, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<LongArray, V128>(v21, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = i64x2Sub(v1V1281, v2V1281)
             var v31 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, LongArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = (v11[i1] - v21[i1].toLong())
                 check(actual1 == expected1)
             }
             val v12 = LongArray(2) { Long.MAX_VALUE }
             val v22 = LongArray(2) { Long.MAX_VALUE }
-            val v1V1282: V128 = transmute(v12)
-            val v2V1282: V128 = transmute(v22)
+            val v1V1282: V128 = transmuteWithLayouts<LongArray, V128>(v12, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1282: V128 = transmuteWithLayouts<LongArray, V128>(v22, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
             val v3V1282 = i64x2Sub(v1V1282, v2V1282)
             var v32 = LongArray(2) { Long.MAX_VALUE }
-            v32 = transmute(v3V1282)
+            v32 = transmuteWithLayouts<V128, LongArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = (v12[i2] - v22[i2].toLong())
                 check(actual2 == expected2)
             }
             val v13 = longArrayOf(-4L, -4L)
             val v23 = listOf(800, 939)
-            val v1V1283: V128 = transmute(v13)
-            val v2V1283: V128 = transmute(v23)
+            val v1V1283: V128 = transmuteWithLayouts<LongArray, V128>(v13, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1283: V128 = transmuteWithLayouts<IntArray, V128>(v23, PrimitiveArrayLayouts.intArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val v3V1283 = i64x2Sub(v1V1283, v2V1283)
             var v33 = longArrayOf(-4L, -4L)
-            v33 = transmute(v3V1283)
+            v33 = transmuteWithLayouts<V128, LongArray>(v3V1283, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             for ((i3, actual3) in v33.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected3 = (v13[i3] - v23[i3].toLong())
                 check(actual3 == expected3)
@@ -1564,44 +1567,44 @@ public class Simd128InlineTests {
         run {
             val v1 = longArrayOf(0L, 0L)
             val v2 = listOf(1, 2)
-            val v1V128: V128 = transmute(v1)
-            val v2V128: V128 = transmute(v2)
+            val v1V128: V128 = transmuteWithLayouts<LongArray, V128>(v1, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
+            val v2V128: V128 = transmuteWithLayouts<IntArray, V128>(v2, PrimitiveArrayLayouts.intArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val v3V128 = i64x2Mul(v1V128, v2V128)
             var v3 = longArrayOf(0L, 0L)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, LongArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = (v1[i] * v2[i].toLong())
                 check(actual == expected)
             }
             val v11 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
             val v21 = longArrayOf(Long.MAX_VALUE, Long.MIN_VALUE)
-            val v1V1281: V128 = transmute(v11)
-            val v2V1281: V128 = transmute(v21)
+            val v1V1281: V128 = transmuteWithLayouts<LongArray, V128>(v11, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1281: V128 = transmuteWithLayouts<LongArray, V128>(v21, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = i64x2Mul(v1V1281, v2V1281)
             var v31 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, LongArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = (v11[i1] * v21[i1].toLong())
                 check(actual1 == expected1)
             }
             val v12 = LongArray(2) { Long.MAX_VALUE }
             val v22 = LongArray(2) { Long.MAX_VALUE }
-            val v1V1282: V128 = transmute(v12)
-            val v2V1282: V128 = transmute(v22)
+            val v1V1282: V128 = transmuteWithLayouts<LongArray, V128>(v12, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1282: V128 = transmuteWithLayouts<LongArray, V128>(v22, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
             val v3V1282 = i64x2Mul(v1V1282, v2V1282)
             var v32 = LongArray(2) { Long.MAX_VALUE }
-            v32 = transmute(v3V1282)
+            v32 = transmuteWithLayouts<V128, LongArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = (v12[i2] * v22[i2].toLong())
                 check(actual2 == expected2)
             }
             val v13 = longArrayOf(-4L, -4L)
             val v23 = listOf(800, 939)
-            val v1V1283: V128 = transmute(v13)
-            val v2V1283: V128 = transmute(v23)
+            val v1V1283: V128 = transmuteWithLayouts<LongArray, V128>(v13, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
+            val v2V1283: V128 = transmuteWithLayouts<IntArray, V128>(v23, PrimitiveArrayLayouts.intArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val v3V1283 = i64x2Mul(v1V1283, v2V1283)
             var v33 = longArrayOf(-4L, -4L)
-            v33 = transmute(v3V1283)
+            v33 = transmuteWithLayouts<V128, LongArray>(v3V1283, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             for ((i3, actual3) in v33.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected3 = (v13[i3] * v23[i3].toLong())
                 check(actual3 == expected3)
@@ -1614,22 +1617,22 @@ public class Simd128InlineTests {
         run {
             val v1 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             val v2 = listOf(1.0, 2.0, 0.0, 0.0)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<FloatArray, V128>(v1, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmute(v2)
             val v3V128 = f32x4Add(v1V128, v2V128)
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, FloatArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].add(v2[i])
                 check(actual == expected)
             }
             val v11 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             val v21 = listOf(1.0, 2.0, 0.0, 0.0)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<FloatArray, V128>(v11, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = f32x4Add(v1V1281, v2V1281)
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, FloatArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].add(v21[i1])
                 check(actual1 == expected1)
@@ -1642,22 +1645,22 @@ public class Simd128InlineTests {
         run {
             val v1 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             val v2 = listOf(1.0, 2.0, 0.0, 0.0)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<FloatArray, V128>(v1, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmute(v2)
             val v3V128 = f32x4Sub(v1V128, v2V128)
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, FloatArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].sub(v2[i])
                 check(actual == expected)
             }
             val v11 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             val v21 = listOf(1.0, 2.0, 0.0, 0.0)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<FloatArray, V128>(v11, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = f32x4Sub(v1V1281, v2V1281)
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, FloatArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].sub(v21[i1])
                 check(actual1 == expected1)
@@ -1670,22 +1673,22 @@ public class Simd128InlineTests {
         run {
             val v1 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             val v2 = listOf(1.0, 2.0, 0.0, 0.0)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<FloatArray, V128>(v1, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmute(v2)
             val v3V128 = f32x4Mul(v1V128, v2V128)
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, FloatArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].mul(v2[i])
                 check(actual == expected)
             }
             val v11 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             val v21 = listOf(1.0, 2.0, 1.0, 0.0)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<FloatArray, V128>(v11, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = f32x4Mul(v1V1281, v2V1281)
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, FloatArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].mul(v21[i1])
                 check(actual1 == expected1)
@@ -1698,22 +1701,22 @@ public class Simd128InlineTests {
         run {
             val v1 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             val v2 = listOf(1.0, 2.0, 0.0, 0.0)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<FloatArray, V128>(v1, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmute(v2)
             val v3V128 = f32x4Div(v1V128, v2V128)
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, FloatArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].div(v2[i])
                 check(actual == expected)
             }
             val v11 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             val v21 = listOf(1.0, 2.0, 0.0, 0.0)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<FloatArray, V128>(v11, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = f32x4Div(v1V1281, v2V1281)
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, FloatArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].div(v21[i1])
                 check(actual1 == expected1)
@@ -1726,22 +1729,22 @@ public class Simd128InlineTests {
         run {
             val v1 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             val v2 = listOf(1.0, 2.0, 0.0, 0.0)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<FloatArray, V128>(v1, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmute(v2)
             val v3V128 = f32x4Min(v1V128, v2V128)
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, FloatArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmMinnumf32(v1[i], v2[i].toFloat())
                 check(actual == expected)
             }
             val v11 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             val v21 = listOf(1.0, 2.0, 0.0, 0.0)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<FloatArray, V128>(v11, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = f32x4Min(v1V1281, v2V1281)
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, FloatArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmMinnumf32(v11[i1], v21[i1].toFloat())
                 check(actual1 == expected1)
@@ -1754,22 +1757,22 @@ public class Simd128InlineTests {
         run {
             val v1 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             val v2 = listOf(1.0, 2.0, 0.0, 0.0)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<FloatArray, V128>(v1, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmute(v2)
             val v3V128 = f32x4Max(v1V128, v2V128)
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, FloatArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmMaxnumf32(v1[i], v2[i].toFloat())
                 check(actual == expected)
             }
             val v11 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             val v21 = listOf(1.0, 2.0, 0.0, 0.0)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<FloatArray, V128>(v11, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = f32x4Max(v1V1281, v2V1281)
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, FloatArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmMaxnumf32(v11[i1], v21[i1].toFloat())
                 check(actual1 == expected1)
@@ -1782,22 +1785,22 @@ public class Simd128InlineTests {
         run {
             val v1 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             val v2 = listOf(1.0, 2.0, 0.0, 0.0)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<FloatArray, V128>(v1, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmute(v2)
             val v3V128 = f32x4Pmin(v1V128, v2V128)
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, FloatArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmMinnumf32(v1[i], v2[i].toFloat())
                 check(actual == expected)
             }
             val v11 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             val v21 = listOf(1.0, 2.0, 0.0, 0.0)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<FloatArray, V128>(v11, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = f32x4Pmin(v1V1281, v2V1281)
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, FloatArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmMinnumf32(v11[i1], v21[i1].toFloat())
                 check(actual1 == expected1)
@@ -1810,22 +1813,22 @@ public class Simd128InlineTests {
         run {
             val v1 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             val v2 = listOf(1.0, 2.0, 0.0, 0.0)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<FloatArray, V128>(v1, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmute(v2)
             val v3V128 = f32x4Pmax(v1V128, v2V128)
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, FloatArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmMaxnumf32(v1[i], v2[i].toFloat())
                 check(actual == expected)
             }
             val v11 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             val v21 = listOf(1.0, 2.0, 0.0, 0.0)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<FloatArray, V128>(v11, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = f32x4Pmax(v1V1281, v2V1281)
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, FloatArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmMaxnumf32(v11[i1], v21[i1].toFloat())
                 check(actual1 == expected1)
@@ -1838,22 +1841,22 @@ public class Simd128InlineTests {
         run {
             val v1 = doubleArrayOf(-1.0, 2.0)
             val v2 = listOf(1.0, 2.0)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<DoubleArray, V128>(v1, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmute(v2)
             val v3V128 = f64x2Add(v1V128, v2V128)
             var v3 = doubleArrayOf(-1.0, 2.0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, DoubleArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].add(v2[i])
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             val v21 = listOf(1.0, 2.0)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<DoubleArray, V128>(v11, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = f64x2Add(v1V1281, v2V1281)
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, DoubleArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].add(v21[i1])
                 check(actual1 == expected1)
@@ -1866,22 +1869,22 @@ public class Simd128InlineTests {
         run {
             val v1 = doubleArrayOf(-1.0, 2.0)
             val v2 = listOf(1.0, 2.0)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<DoubleArray, V128>(v1, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmute(v2)
             val v3V128 = f64x2Sub(v1V128, v2V128)
             var v3 = doubleArrayOf(-1.0, 2.0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, DoubleArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].sub(v2[i])
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             val v21 = listOf(1.0, 2.0)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<DoubleArray, V128>(v11, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = f64x2Sub(v1V1281, v2V1281)
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, DoubleArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].sub(v21[i1])
                 check(actual1 == expected1)
@@ -1894,22 +1897,22 @@ public class Simd128InlineTests {
         run {
             val v1 = doubleArrayOf(-1.0, 2.0)
             val v2 = listOf(1.0, 2.0)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<DoubleArray, V128>(v1, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmute(v2)
             val v3V128 = f64x2Mul(v1V128, v2V128)
             var v3 = doubleArrayOf(-1.0, 2.0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, DoubleArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].mul(v2[i])
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             val v21 = listOf(1.0, 2.0)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<DoubleArray, V128>(v11, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = f64x2Mul(v1V1281, v2V1281)
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, DoubleArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].mul(v21[i1])
                 check(actual1 == expected1)
@@ -1922,22 +1925,22 @@ public class Simd128InlineTests {
         run {
             val v1 = doubleArrayOf(-1.0, 2.0)
             val v2 = listOf(1.0, 2.0)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<DoubleArray, V128>(v1, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmute(v2)
             val v3V128 = f64x2Div(v1V128, v2V128)
             var v3 = doubleArrayOf(-1.0, 2.0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, DoubleArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].div(v2[i])
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             val v21 = listOf(1.0, 2.0)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<DoubleArray, V128>(v11, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = f64x2Div(v1V1281, v2V1281)
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, DoubleArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].div(v21[i1])
                 check(actual1 == expected1)
@@ -1950,22 +1953,22 @@ public class Simd128InlineTests {
         run {
             val v1 = doubleArrayOf(-1.0, 2.0)
             val v2 = listOf(1.0, 2.0)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<DoubleArray, V128>(v1, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmute(v2)
             val v3V128 = f64x2Min(v1V128, v2V128)
             var v3 = doubleArrayOf(-1.0, 2.0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, DoubleArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmMinnumf64(v1[i], v2[i].toDouble())
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             val v21 = listOf(1.0, 2.0)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<DoubleArray, V128>(v11, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = f64x2Min(v1V1281, v2V1281)
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, DoubleArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmMinnumf64(v11[i1], v21[i1].toDouble())
                 check(actual1 == expected1)
@@ -1978,22 +1981,22 @@ public class Simd128InlineTests {
         run {
             val v1 = doubleArrayOf(-1.0, 2.0)
             val v2 = listOf(1.0, 2.0)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<DoubleArray, V128>(v1, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmute(v2)
             val v3V128 = f64x2Max(v1V128, v2V128)
             var v3 = doubleArrayOf(-1.0, 2.0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, DoubleArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmMaxnumf64(v1[i], v2[i].toDouble())
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             val v21 = listOf(1.0, 2.0)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<DoubleArray, V128>(v11, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = f64x2Max(v1V1281, v2V1281)
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, DoubleArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmMaxnumf64(v11[i1], v21[i1].toDouble())
                 check(actual1 == expected1)
@@ -2006,22 +2009,22 @@ public class Simd128InlineTests {
         run {
             val v1 = doubleArrayOf(-1.0, 2.0)
             val v2 = listOf(1.0, 2.0)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<DoubleArray, V128>(v1, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmute(v2)
             val v3V128 = f64x2Pmin(v1V128, v2V128)
             var v3 = doubleArrayOf(-1.0, 2.0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, DoubleArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmMinnumf64(v1[i], v2[i].toDouble())
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             val v21 = listOf(1.0, 2.0)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<DoubleArray, V128>(v11, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = f64x2Pmin(v1V1281, v2V1281)
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, DoubleArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmMinnumf64(v11[i1], v21[i1].toDouble())
                 check(actual1 == expected1)
@@ -2034,22 +2037,22 @@ public class Simd128InlineTests {
         run {
             val v1 = doubleArrayOf(-1.0, 2.0)
             val v2 = listOf(1.0, 2.0)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<DoubleArray, V128>(v1, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmute(v2)
             val v3V128 = f64x2Pmax(v1V128, v2V128)
             var v3 = doubleArrayOf(-1.0, 2.0)
-            v3 = transmute(v3V128)
+            v3 = transmuteWithLayouts<V128, DoubleArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmMaxnumf64(v1[i], v2[i].toDouble())
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             val v21 = listOf(1.0, 2.0)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<DoubleArray, V128>(v11, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmute(v21)
             val v3V1281 = f64x2Pmax(v1V1281, v2V1281)
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
-            v31 = transmute(v3V1281)
+            v31 = transmuteWithLayouts<V128, DoubleArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmMaxnumf64(v11[i1], v21[i1].toDouble())
                 check(actual1 == expected1)
@@ -2061,28 +2064,28 @@ public class Simd128InlineTests {
     public fun testI8x16Abs() {
         run {
             val v1 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<ByteArray, V128>(v1, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = i8x16Abs(v1V128)
             var v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, ByteArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].wrappingAbs()
                 check(actual == expected)
             }
             val v11 = byteArrayOf((-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte(), (-16).toByte(), (-18).toByte())
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ByteArray, V128>(v11, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = i8x16Abs(v1V1281)
             var v21 = byteArrayOf((-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte(), (-16).toByte(), (-18).toByte())
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, ByteArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].wrappingAbs()
                 check(actual1 == expected1)
             }
             val v12 = byteArrayOf((-127).toByte(), (-44).toByte(), 43, 126, 4, (-128).toByte(), 127, (-59).toByte(), (-43).toByte(), 39, (-69).toByte(), 79, (-3).toByte(), 35, 83, 13)
-            val v1V1282: V128 = transmute(v12)
+            val v1V1282: V128 = transmuteWithLayouts<ByteArray, V128>(v12, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1282 = i8x16Abs(v1V1282)
             var v22 = byteArrayOf((-127).toByte(), (-44).toByte(), 43, 126, 4, (-128).toByte(), 127, (-59).toByte(), (-43).toByte(), 39, (-69).toByte(), 79, (-3).toByte(), 35, 83, 13)
-            v22 = transmute(v2V1282)
+            v22 = transmuteWithLayouts<V128, ByteArray>(v2V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i2, actual2) in v22.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = v12[i2].wrappingAbs()
                 check(actual2 == expected2)
@@ -2094,28 +2097,28 @@ public class Simd128InlineTests {
     public fun testI8x16Neg() {
         run {
             val v1 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<ByteArray, V128>(v1, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = i8x16Neg(v1V128)
             var v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, ByteArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].wrappingNeg()
                 check(actual == expected)
             }
             val v11 = byteArrayOf((-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte(), (-16).toByte(), (-18).toByte())
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ByteArray, V128>(v11, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = i8x16Neg(v1V1281)
             var v21 = byteArrayOf((-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte(), (-16).toByte(), (-18).toByte())
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, ByteArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].wrappingNeg()
                 check(actual1 == expected1)
             }
             val v12 = byteArrayOf((-127).toByte(), (-44).toByte(), 43, 126, 4, (-128).toByte(), 127, (-59).toByte(), (-43).toByte(), 39, (-69).toByte(), 79, (-3).toByte(), 35, 83, 13)
-            val v1V1282: V128 = transmute(v12)
+            val v1V1282: V128 = transmuteWithLayouts<ByteArray, V128>(v12, UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1282 = i8x16Neg(v1V1282)
             var v22 = byteArrayOf((-127).toByte(), (-44).toByte(), 43, 126, 4, (-128).toByte(), 127, (-59).toByte(), (-43).toByte(), 39, (-69).toByte(), 79, (-3).toByte(), 35, 83, 13)
-            v22 = transmute(v2V1282)
+            v22 = transmuteWithLayouts<V128, ByteArray>(v2V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             for ((i2, actual2) in v22.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = v12[i2].wrappingNeg()
                 check(actual2 == expected2)
@@ -2127,19 +2130,19 @@ public class Simd128InlineTests {
     public fun testI16x8Abs() {
         run {
             val v1 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<ShortArray, V128>(v1, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = i16x8Abs(v1V128)
             var v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, ShortArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].wrappingAbs()
                 check(actual == expected)
             }
             val v11 = shortArrayOf(2, 0x7fff, (0.inv()).toShort(), 4, 42, (-5).toShort(), 33, (-4847).toShort())
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ShortArray, V128>(v11, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = i16x8Abs(v1V1281)
             var v21 = shortArrayOf(2, 0x7fff, (0.inv()).toShort(), 4, 42, (-5).toShort(), 33, (-4847).toShort())
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, ShortArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].wrappingAbs()
                 check(actual1 == expected1)
@@ -2151,19 +2154,19 @@ public class Simd128InlineTests {
     public fun testI16x8Neg() {
         run {
             val v1 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<ShortArray, V128>(v1, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = i16x8Neg(v1V128)
             var v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, ShortArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].wrappingNeg()
                 check(actual == expected)
             }
             val v11 = shortArrayOf(2, 0x7fff, (0.inv()).toShort(), 4, 42, (-5).toShort(), 33, (-4847).toShort())
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<ShortArray, V128>(v11, UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = i16x8Neg(v1V1281)
             var v21 = shortArrayOf(2, 0x7fff, (0.inv()).toShort(), 4, 42, (-5).toShort(), 33, (-4847).toShort())
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, ShortArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].wrappingNeg()
                 check(actual1 == expected1)
@@ -2175,19 +2178,19 @@ public class Simd128InlineTests {
     public fun testI32x4Abs() {
         run {
             val v1 = intArrayOf(1, 2, 3, 4)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<IntArray, V128>(v1, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val v2V128 = i32x4Abs(v1V128)
             var v2 = intArrayOf(1, 2, 3, 4)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, IntArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].wrappingAbs()
                 check(actual == expected)
             }
             val v11 = intArrayOf(Int.MIN_VALUE, Int.MAX_VALUE, 0, 4)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<IntArray, V128>(v11, UnresolvedTypeLayout<IntArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = i32x4Abs(v1V1281)
             var v21 = intArrayOf(Int.MIN_VALUE, Int.MAX_VALUE, 0, 4)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, IntArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].wrappingAbs()
                 check(actual1 == expected1)
@@ -2199,19 +2202,19 @@ public class Simd128InlineTests {
     public fun testI32x4Neg() {
         run {
             val v1 = intArrayOf(1, 2, 3, 4)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<IntArray, V128>(v1, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val v2V128 = i32x4Neg(v1V128)
             var v2 = intArrayOf(1, 2, 3, 4)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, IntArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].wrappingNeg()
                 check(actual == expected)
             }
             val v11 = intArrayOf(Int.MIN_VALUE, Int.MAX_VALUE, 0, 4)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<IntArray, V128>(v11, UnresolvedTypeLayout<IntArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = i32x4Neg(v1V1281)
             var v21 = intArrayOf(Int.MIN_VALUE, Int.MAX_VALUE, 0, 4)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, IntArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].wrappingNeg()
                 check(actual1 == expected1)
@@ -2223,19 +2226,19 @@ public class Simd128InlineTests {
     public fun testI64x2Abs() {
         run {
             val v1 = longArrayOf(1L, 2L)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<LongArray, V128>(v1, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = i64x2Abs(v1V128)
             var v2 = longArrayOf(1L, 2L)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, LongArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].wrappingAbs()
                 check(actual == expected)
             }
             val v11 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<LongArray, V128>(v11, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = i64x2Abs(v1V1281)
             var v21 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, LongArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].wrappingAbs()
                 check(actual1 == expected1)
@@ -2247,19 +2250,19 @@ public class Simd128InlineTests {
     public fun testI64x2Neg() {
         run {
             val v1 = longArrayOf(1L, 2L)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<LongArray, V128>(v1, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = i64x2Neg(v1V128)
             var v2 = longArrayOf(1L, 2L)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, LongArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].wrappingNeg()
                 check(actual == expected)
             }
             val v11 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<LongArray, V128>(v11, UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = i64x2Neg(v1V1281)
             var v21 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, LongArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].wrappingNeg()
                 check(actual1 == expected1)
@@ -2271,19 +2274,19 @@ public class Simd128InlineTests {
     public fun testF32x4Ceil() {
         run {
             val v1 = floatArrayOf(1.0f, 2.0f, 2.5f, 3.3f)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<FloatArray, V128>(v1, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = f32x4Ceil(v1V128)
             var v2 = floatArrayOf(1.0f, 2.0f, 2.5f, 3.3f)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, FloatArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmCeilf32(v1[i])
                 check(actual == expected)
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<FloatArray, V128>(v11, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = f32x4Ceil(v1V1281)
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, FloatArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmCeilf32(v11[i1])
                 check(actual1 == expected1)
@@ -2295,19 +2298,19 @@ public class Simd128InlineTests {
     public fun testF32x4Floor() {
         run {
             val v1 = floatArrayOf(1.0f, 2.0f, 2.5f, 3.3f)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<FloatArray, V128>(v1, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = f32x4Floor(v1V128)
             var v2 = floatArrayOf(1.0f, 2.0f, 2.5f, 3.3f)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, FloatArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmFloorf32(v1[i])
                 check(actual == expected)
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<FloatArray, V128>(v11, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = f32x4Floor(v1V1281)
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, FloatArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmFloorf32(v11[i1])
                 check(actual1 == expected1)
@@ -2319,19 +2322,19 @@ public class Simd128InlineTests {
     public fun testF32x4Trunc() {
         run {
             val v1 = floatArrayOf(1.0f, 2.0f, 2.5f, 3.3f)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<FloatArray, V128>(v1, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = f32x4Trunc(v1V128)
             var v2 = floatArrayOf(1.0f, 2.0f, 2.5f, 3.3f)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, FloatArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmTruncf32(v1[i])
                 check(actual == expected)
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<FloatArray, V128>(v11, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = f32x4Trunc(v1V1281)
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, FloatArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmTruncf32(v11[i1])
                 check(actual1 == expected1)
@@ -2343,19 +2346,19 @@ public class Simd128InlineTests {
     public fun testF32x4Nearest() {
         run {
             val v1 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<FloatArray, V128>(v1, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = f32x4Nearest(v1V128)
             var v2 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, FloatArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmRoundf32(v1[i])
                 check(actual == expected)
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<FloatArray, V128>(v11, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = f32x4Nearest(v1V1281)
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, FloatArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmRoundf32(v11[i1])
                 check(actual1 == expected1)
@@ -2367,19 +2370,19 @@ public class Simd128InlineTests {
     public fun testF32x4Abs() {
         run {
             val v1 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<FloatArray, V128>(v1, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = f32x4Abs(v1V128)
             var v2 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, FloatArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmFabsf32(v1[i])
                 check(actual == expected)
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<FloatArray, V128>(v11, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = f32x4Abs(v1V1281)
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, FloatArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmFabsf32(v11[i1])
                 check(actual1 == expected1)
@@ -2391,19 +2394,19 @@ public class Simd128InlineTests {
     public fun testF32x4Neg() {
         run {
             val v1 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<FloatArray, V128>(v1, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = f32x4Neg(v1V128)
             var v2 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, FloatArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].neg()
                 check(actual == expected)
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<FloatArray, V128>(v11, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = f32x4Neg(v1V1281)
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, FloatArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].neg()
                 check(actual1 == expected1)
@@ -2415,19 +2418,19 @@ public class Simd128InlineTests {
     public fun testF32x4Sqrt() {
         run {
             val v1 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<FloatArray, V128>(v1, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = f32x4Sqrt(v1V128)
             var v2 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, FloatArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmSqrtf32(v1[i])
                 check(actual == expected)
             }
             val v11 = floatArrayOf(0.0f, 0.3f, Float.POSITIVE_INFINITY, 0.1f)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<FloatArray, V128>(v11, UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = f32x4Sqrt(v1V1281)
             var v21 = floatArrayOf(0.0f, 0.3f, Float.POSITIVE_INFINITY, 0.1f)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, FloatArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmSqrtf32(v11[i1])
                 check(actual1 == expected1)
@@ -2439,19 +2442,19 @@ public class Simd128InlineTests {
     public fun testF64x2Ceil() {
         run {
             val v1 = doubleArrayOf(1.0, 2.3)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<DoubleArray, V128>(v1, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = f64x2Ceil(v1V128)
             var v2 = doubleArrayOf(1.0, 2.3)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, DoubleArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmCeilf64(v1[i])
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<DoubleArray, V128>(v11, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = f64x2Ceil(v1V1281)
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, DoubleArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmCeilf64(v11[i1])
                 check(actual1 == expected1)
@@ -2463,19 +2466,19 @@ public class Simd128InlineTests {
     public fun testF64x2Floor() {
         run {
             val v1 = doubleArrayOf(1.0, 2.3)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<DoubleArray, V128>(v1, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = f64x2Floor(v1V128)
             var v2 = doubleArrayOf(1.0, 2.3)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, DoubleArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmFloorf64(v1[i])
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<DoubleArray, V128>(v11, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = f64x2Floor(v1V1281)
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, DoubleArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmFloorf64(v11[i1])
                 check(actual1 == expected1)
@@ -2487,19 +2490,19 @@ public class Simd128InlineTests {
     public fun testF64x2Trunc() {
         run {
             val v1 = doubleArrayOf(1.0, 2.3)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<DoubleArray, V128>(v1, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = f64x2Trunc(v1V128)
             var v2 = doubleArrayOf(1.0, 2.3)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, DoubleArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmTruncf64(v1[i])
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<DoubleArray, V128>(v11, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = f64x2Trunc(v1V1281)
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, DoubleArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmTruncf64(v11[i1])
                 check(actual1 == expected1)
@@ -2511,19 +2514,19 @@ public class Simd128InlineTests {
     public fun testF64x2Nearest() {
         run {
             val v1 = doubleArrayOf(1.0, 2.3)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<DoubleArray, V128>(v1, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = f64x2Nearest(v1V128)
             var v2 = doubleArrayOf(1.0, 2.3)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, DoubleArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmRoundf64(v1[i])
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<DoubleArray, V128>(v11, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = f64x2Nearest(v1V1281)
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, DoubleArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmRoundf64(v11[i1])
                 check(actual1 == expected1)
@@ -2535,19 +2538,19 @@ public class Simd128InlineTests {
     public fun testF64x2Abs() {
         run {
             val v1 = doubleArrayOf(1.0, 2.3)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<DoubleArray, V128>(v1, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = f64x2Abs(v1V128)
             var v2 = doubleArrayOf(1.0, 2.3)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, DoubleArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmFabsf64(v1[i])
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<DoubleArray, V128>(v11, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = f64x2Abs(v1V1281)
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, DoubleArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmFabsf64(v11[i1])
                 check(actual1 == expected1)
@@ -2559,19 +2562,19 @@ public class Simd128InlineTests {
     public fun testF64x2Neg() {
         run {
             val v1 = doubleArrayOf(1.0, 2.3)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<DoubleArray, V128>(v1, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = f64x2Neg(v1V128)
             var v2 = doubleArrayOf(1.0, 2.3)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, DoubleArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].neg()
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<DoubleArray, V128>(v11, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = f64x2Neg(v1V1281)
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, DoubleArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].neg()
                 check(actual1 == expected1)
@@ -2583,19 +2586,19 @@ public class Simd128InlineTests {
     public fun testF64x2Sqrt() {
         run {
             val v1 = doubleArrayOf(1.0, 2.3)
-            val v1V128: V128 = transmute(v1)
+            val v1V128: V128 = transmuteWithLayouts<DoubleArray, V128>(v1, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V128 = f64x2Sqrt(v1V128)
             var v2 = doubleArrayOf(1.0, 2.3)
-            v2 = transmute(v2V128)
+            v2 = transmuteWithLayouts<V128, DoubleArray>(v2V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = kmSqrtf64(v1[i])
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, 0.1)
-            val v1V1281: V128 = transmute(v11)
+            val v1V1281: V128 = transmuteWithLayouts<DoubleArray, V128>(v11, UnresolvedTypeLayout<DoubleArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281 = f64x2Sqrt(v1V1281)
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, 0.1)
-            v21 = transmute(v2V1281)
+            v21 = transmuteWithLayouts<V128, DoubleArray>(v2V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = kmSqrtf64(v11[i1])
                 check(actual1 == expected1)
@@ -2608,9 +2611,9 @@ public class Simd128InlineTests {
         run {
             val aInput: ByteArray = byteArrayOf(0, (-1).toByte(), 2, 3, 4, 5, 6, Byte.MAX_VALUE, 1, 1, 1, 1, 1, 1, 1, 1)
             val output: ByteArray = byteArrayOf(0, (-2).toByte(), 4, 6, 8, 10, 12, (-2).toByte(), 2, 2, 2, 2, 2, 2, 2, 2)
-            val aVecIn: V128 = transmute(aInput)
+            val aVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(aInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i8x16Shl(aVecIn, 1u)
-            val res: ByteArray = transmute(vecRes)
+            val res: ByteArray = transmuteWithLayouts<V128, ByteArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             check((res).contentEquals(output))
         }
     }
@@ -2620,9 +2623,9 @@ public class Simd128InlineTests {
         run {
             val aInput: ShortArray = shortArrayOf(0, (-1).toShort(), 2, 3, 4, 5, 6, Short.MAX_VALUE)
             val output: ShortArray = shortArrayOf(0, (-2).toShort(), 4, 6, 8, 10, 12, (-2).toShort())
-            val aVecIn: V128 = transmute(aInput)
+            val aVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(aInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i16x8Shl(aVecIn, 1u)
-            val res: ShortArray = transmute(vecRes)
+            val res: ShortArray = transmuteWithLayouts<V128, ShortArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             check((res).contentEquals(output))
         }
     }
@@ -2632,9 +2635,9 @@ public class Simd128InlineTests {
         run {
             val aInput: IntArray = intArrayOf(0, -1, 2, 3)
             val output: IntArray = intArrayOf(0, -2, 4, 6)
-            val aVecIn: V128 = transmute(aInput)
+            val aVecIn: V128 = transmuteWithLayouts<IntArray, V128>(aInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i32x4Shl(aVecIn, 1u)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             check((res).contentEquals(output))
         }
     }
@@ -2644,9 +2647,9 @@ public class Simd128InlineTests {
         run {
             val aInput: LongArray = longArrayOf(0L, -1L)
             val output: LongArray = longArrayOf(0L, -2L)
-            val aVecIn: V128 = transmute(aInput)
+            val aVecIn: V128 = transmuteWithLayouts<LongArray, V128>(aInput, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i64x2Shl(aVecIn, 1u)
-            val res: LongArray = transmute(vecRes)
+            val res: LongArray = transmuteWithLayouts<V128, LongArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             check((res).contentEquals(output))
         }
     }
@@ -2656,9 +2659,9 @@ public class Simd128InlineTests {
         run {
             val aInput: ByteArray = byteArrayOf(0, (-1).toByte(), 2, 3, 4, 5, 6, Byte.MAX_VALUE, 1, 1, 1, 1, 1, 1, 1, 1)
             val output: ByteArray = byteArrayOf(0, (-1).toByte(), 1, 1, 2, 2, 3, 63, 0, 0, 0, 0, 0, 0, 0, 0)
-            val aVecIn: V128 = transmute(aInput)
+            val aVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(aInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i8x16Shr(aVecIn, 1u)
-            val res: ByteArray = transmute(vecRes)
+            val res: ByteArray = transmuteWithLayouts<V128, ByteArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             check((res).contentEquals(output))
         }
     }
@@ -2668,9 +2671,9 @@ public class Simd128InlineTests {
         run {
             val aInput: ShortArray = shortArrayOf(0, (-1).toShort(), 2, 3, 4, 5, 6, Short.MAX_VALUE)
             val output: ShortArray = shortArrayOf(0, (-1).toShort(), 1, 1, 2, 2, 3, (Short.MAX_VALUE / 2).toShort())
-            val aVecIn: V128 = transmute(aInput)
+            val aVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(aInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i16x8Shr(aVecIn, 1u)
-            val res: ShortArray = transmute(vecRes)
+            val res: ShortArray = transmuteWithLayouts<V128, ShortArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             check((res).contentEquals(output))
         }
     }
@@ -2680,9 +2683,9 @@ public class Simd128InlineTests {
         run {
             val aInput: IntArray = intArrayOf(0, -1, 2, 3)
             val output: IntArray = intArrayOf(0, -1, 1, 1)
-            val aVecIn: V128 = transmute(aInput)
+            val aVecIn: V128 = transmuteWithLayouts<IntArray, V128>(aInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i32x4Shr(aVecIn, 1u)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             check((res).contentEquals(output))
         }
     }
@@ -2692,9 +2695,9 @@ public class Simd128InlineTests {
         run {
             val aInput: LongArray = longArrayOf(0L, -1L)
             val output: LongArray = longArrayOf(0L, -1L)
-            val aVecIn: V128 = transmute(aInput)
+            val aVecIn: V128 = transmuteWithLayouts<LongArray, V128>(aInput, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i64x2Shr(aVecIn, 1u)
-            val res: LongArray = transmute(vecRes)
+            val res: LongArray = transmuteWithLayouts<V128, LongArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             check((res).contentEquals(output))
         }
     }
@@ -2704,9 +2707,9 @@ public class Simd128InlineTests {
         run {
             val aInput: ByteArray = byteArrayOf(0, (-1).toByte(), 2, 3, 4, 5, 6, Byte.MAX_VALUE, 1, 1, 1, 1, 1, 1, 1, 1)
             val output: ByteArray = byteArrayOf(0, Byte.MAX_VALUE, 1, 1, 2, 2, 3, 63, 0, 0, 0, 0, 0, 0, 0, 0)
-            val aVecIn: V128 = transmute(aInput)
+            val aVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(aInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = u8x16Shr(aVecIn, 1u)
-            val res: ByteArray = transmute(vecRes)
+            val res: ByteArray = transmuteWithLayouts<V128, ByteArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             check((res).contentEquals(output))
         }
     }
@@ -2716,9 +2719,9 @@ public class Simd128InlineTests {
         run {
             val aInput: ShortArray = shortArrayOf(0, (-1).toShort(), 2, 3, 4, 5, 6, Short.MAX_VALUE)
             val output: ShortArray = shortArrayOf(0, Short.MAX_VALUE, 1, 1, 2, 2, 3, (Short.MAX_VALUE / 2).toShort())
-            val aVecIn: V128 = transmute(aInput)
+            val aVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(aInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = u16x8Shr(aVecIn, 1u)
-            val res: ShortArray = transmute(vecRes)
+            val res: ShortArray = transmuteWithLayouts<V128, ShortArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             check((res).contentEquals(output))
         }
     }
@@ -2728,9 +2731,9 @@ public class Simd128InlineTests {
         run {
             val aInput: IntArray = intArrayOf(0, -1, 2, 3)
             val output: IntArray = intArrayOf(0, Int.MAX_VALUE, 1, 1)
-            val aVecIn: V128 = transmute(aInput)
+            val aVecIn: V128 = transmuteWithLayouts<IntArray, V128>(aInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = u32x4Shr(aVecIn, 1u)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             check((res).contentEquals(output))
         }
     }
@@ -2740,9 +2743,9 @@ public class Simd128InlineTests {
         run {
             val aInput: LongArray = longArrayOf(0L, -1L)
             val output: LongArray = longArrayOf(0L, Long.MAX_VALUE)
-            val aVecIn: V128 = transmute(aInput)
+            val aVecIn: V128 = transmuteWithLayouts<LongArray, V128>(aInput, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = u64x2Shr(aVecIn, 1u)
-            val res: LongArray = transmute(vecRes)
+            val res: LongArray = transmuteWithLayouts<V128, LongArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             check((res).contentEquals(output))
         }
     }
@@ -2753,9 +2756,9 @@ public class Simd128InlineTests {
             val a: UIntArray = uintArrayOf(UInt.MAX_VALUE, 0u, UInt.MAX_VALUE, 0u)
             val b: UIntArray = UIntArray(4) { UInt.MAX_VALUE }
             val c: UIntArray = UIntArray(4) { 0u }
-            val vecA: V128 = transmute(a)
-            val vecB: V128 = transmute(b)
-            val vecC: V128 = transmute(c)
+            val vecA: V128 = transmuteWithLayouts<UIntArray, V128>(a, PrimitiveArrayLayouts.uIntArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val vecB: V128 = transmuteWithLayouts<UIntArray, V128>(b, PrimitiveArrayLayouts.uIntArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val vecC: V128 = transmuteWithLayouts<UIntArray, V128>(c, PrimitiveArrayLayouts.uIntArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val r: V128 = v128And(vecA, vecA)
             compareBytes(r, vecA)
             val r1: V128 = v128And(vecA, vecB)
@@ -2784,9 +2787,9 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun i8x16BooleanReductions() {
         run {
-            val vecA: V128 = transmute(byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1))
-            val vecB: V128 = transmute(byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-            val vecC: V128 = transmute(byteArrayOf(1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0))
+            val vecA: V128 = transmuteWithLayouts<ByteArray, V128>(byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1), UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
+            val vecB: V128 = transmuteWithLayouts<ByteArray, V128>(byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
+            val vecC: V128 = transmuteWithLayouts<ByteArray, V128>(byteArrayOf(1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0), UnresolvedTypeLayout<ByteArray>(), UnresolvedTypeLayout<V128>())
             check(i8x16AllTrue(vecA) == true)
             check(i8x16AllTrue(vecB) == false)
             check(i8x16AllTrue(vecC) == false)
@@ -2796,9 +2799,9 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun i16x8BooleanReductions() {
         run {
-            val vecA: V128 = transmute(shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1))
-            val vecB: V128 = transmute(shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0))
-            val vecC: V128 = transmute(shortArrayOf(1, 0, 1, 0, 1, 0, 1, 0))
+            val vecA: V128 = transmuteWithLayouts<ShortArray, V128>(shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1), UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
+            val vecB: V128 = transmuteWithLayouts<ShortArray, V128>(shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0), UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
+            val vecC: V128 = transmuteWithLayouts<ShortArray, V128>(shortArrayOf(1, 0, 1, 0, 1, 0, 1, 0), UnresolvedTypeLayout<ShortArray>(), UnresolvedTypeLayout<V128>())
             check(i16x8AllTrue(vecA) == true)
             check(i16x8AllTrue(vecB) == false)
             check(i16x8AllTrue(vecC) == false)
@@ -2808,9 +2811,9 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun i32x4BooleanReductions() {
         run {
-            val vecA: V128 = transmute(intArrayOf(1, 1, 1, 1))
-            val vecB: V128 = transmute(intArrayOf(0, 0, 0, 0))
-            val vecC: V128 = transmute(intArrayOf(1, 0, 1, 0))
+            val vecA: V128 = transmuteWithLayouts<IntArray, V128>(intArrayOf(1, 1, 1, 1), PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val vecB: V128 = transmuteWithLayouts<IntArray, V128>(intArrayOf(0, 0, 0, 0), PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val vecC: V128 = transmuteWithLayouts<IntArray, V128>(intArrayOf(1, 0, 1, 0), PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             check(i32x4AllTrue(vecA) == true)
             check(i32x4AllTrue(vecB) == false)
             check(i32x4AllTrue(vecC) == false)
@@ -2820,9 +2823,9 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun i64x2BooleanReductions() {
         run {
-            val vecA: V128 = transmute(longArrayOf(1L, 1L))
-            val vecB: V128 = transmute(longArrayOf(0L, 0L))
-            val vecC: V128 = transmute(longArrayOf(1L, 0L))
+            val vecA: V128 = transmuteWithLayouts<LongArray, V128>(longArrayOf(1L, 1L), UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
+            val vecB: V128 = transmuteWithLayouts<LongArray, V128>(longArrayOf(0L, 0L), UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
+            val vecC: V128 = transmuteWithLayouts<LongArray, V128>(longArrayOf(1L, 0L), UnresolvedTypeLayout<LongArray>(), UnresolvedTypeLayout<V128>())
             check(i64x2AllTrue(vecA) == true)
             check(i64x2AllTrue(vecB) == false)
             check(i64x2AllTrue(vecC) == false)
@@ -2835,10 +2838,10 @@ public class Simd128InlineTests {
             val aInput: ByteArray = byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
             val bInput: ByteArray = byteArrayOf(0, 2, 2, 4, 4, 6, 6, 7, 8, 10, 10, 12, 12, 14, 14, 15)
             val output: ByteArray = byteArrayOf((-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), (-1).toByte(), (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), (-1).toByte())
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(aInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(bInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i8x16Eq(aVecIn, bVecIn)
-            val res: ByteArray = transmute(vecRes)
+            val res: ByteArray = transmuteWithLayouts<V128, ByteArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -2860,10 +2863,10 @@ public class Simd128InlineTests {
             val aInput: ShortArray = shortArrayOf(0, 1, 2, 3, 4, 5, 6, 7)
             val bInput: ShortArray = shortArrayOf(0, 2, 2, 4, 4, 6, 6, 7)
             val output: ShortArray = shortArrayOf((-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort(), (-1).toShort())
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(aInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(bInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i16x8Eq(aVecIn, bVecIn)
-            val res: ShortArray = transmute(vecRes)
+            val res: ShortArray = transmuteWithLayouts<V128, ShortArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -2885,10 +2888,10 @@ public class Simd128InlineTests {
             val aInput: IntArray = intArrayOf(0, 1, 2, 3)
             val bInput: IntArray = intArrayOf(0, 2, 2, 4)
             val output: IntArray = intArrayOf(-1, 0, -1, 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<IntArray, V128>(aInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<IntArray, V128>(bInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i32x4Eq(aVecIn, bVecIn)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -2910,10 +2913,10 @@ public class Simd128InlineTests {
             val aInput: LongArray = longArrayOf(0L, 1L)
             val bInput: LongArray = longArrayOf(0L, 2L)
             val output: LongArray = longArrayOf(-1L, 0L)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<LongArray, V128>(aInput, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<LongArray, V128>(bInput, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i64x2Eq(aVecIn, bVecIn)
-            val res: LongArray = transmute(vecRes)
+            val res: LongArray = transmuteWithLayouts<V128, LongArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -2935,10 +2938,10 @@ public class Simd128InlineTests {
             val aInput: FloatArray = floatArrayOf(0.0f, 1.0f, 2.0f, 3.0f)
             val bInput: FloatArray = floatArrayOf(0.0f, 2.0f, 2.0f, 4.0f)
             val output: IntArray = intArrayOf(-1, 0, -1, 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(aInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(bInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f32x4Eq(aVecIn, bVecIn)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -2960,10 +2963,10 @@ public class Simd128InlineTests {
             val aInput: DoubleArray = doubleArrayOf(0.0, 1.0)
             val bInput: DoubleArray = doubleArrayOf(0.0, 2.0)
             val output: LongArray = longArrayOf(-1L, 0L)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(aInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(bInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f64x2Eq(aVecIn, bVecIn)
-            val res: LongArray = transmute(vecRes)
+            val res: LongArray = transmuteWithLayouts<V128, LongArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -2985,10 +2988,10 @@ public class Simd128InlineTests {
             val aInput: ByteArray = byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
             val bInput: ByteArray = byteArrayOf(0, 2, 2, 4, 4, 6, 6, 7, 8, 10, 10, 12, 12, 14, 14, 15)
             val output: ByteArray = byteArrayOf(0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, 0, 0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(aInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(bInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i8x16Ne(aVecIn, bVecIn)
-            val res: ByteArray = transmute(vecRes)
+            val res: ByteArray = transmuteWithLayouts<V128, ByteArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3010,10 +3013,10 @@ public class Simd128InlineTests {
             val aInput: ShortArray = shortArrayOf(0, 1, 2, 3, 4, 5, 6, 7)
             val bInput: ShortArray = shortArrayOf(0, 2, 2, 4, 4, 6, 6, 7)
             val output: ShortArray = shortArrayOf(0, (-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort(), 0, 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(aInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(bInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i16x8Ne(aVecIn, bVecIn)
-            val res: ShortArray = transmute(vecRes)
+            val res: ShortArray = transmuteWithLayouts<V128, ShortArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3035,10 +3038,10 @@ public class Simd128InlineTests {
             val aInput: IntArray = intArrayOf(0, 1, 2, 3)
             val bInput: IntArray = intArrayOf(0, 2, 2, 4)
             val output: IntArray = intArrayOf(0, -1, 0, -1)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<IntArray, V128>(aInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<IntArray, V128>(bInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i32x4Ne(aVecIn, bVecIn)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3060,10 +3063,10 @@ public class Simd128InlineTests {
             val aInput: LongArray = longArrayOf(0L, 1L)
             val bInput: LongArray = longArrayOf(0L, 2L)
             val output: LongArray = longArrayOf(0L, -1L)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<LongArray, V128>(aInput, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<LongArray, V128>(bInput, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i64x2Ne(aVecIn, bVecIn)
-            val res: LongArray = transmute(vecRes)
+            val res: LongArray = transmuteWithLayouts<V128, LongArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3085,10 +3088,10 @@ public class Simd128InlineTests {
             val aInput: FloatArray = floatArrayOf(0.0f, 1.0f, 2.0f, 3.0f)
             val bInput: FloatArray = floatArrayOf(0.0f, 2.0f, 2.0f, 4.0f)
             val output: IntArray = intArrayOf(0, -1, 0, -1)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(aInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(bInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f32x4Ne(aVecIn, bVecIn)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -3110,10 +3113,10 @@ public class Simd128InlineTests {
             val aInput: DoubleArray = doubleArrayOf(0.0, 1.0)
             val bInput: DoubleArray = doubleArrayOf(0.0, 2.0)
             val output: LongArray = longArrayOf(0L, -1L)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(aInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(bInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f64x2Ne(aVecIn, bVecIn)
-            val res: LongArray = transmute(vecRes)
+            val res: LongArray = transmuteWithLayouts<V128, LongArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -3135,10 +3138,10 @@ public class Simd128InlineTests {
             val aInput: ByteArray = byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, (-12).toByte(), 13, 14, 15)
             val bInput: ByteArray = byteArrayOf(0, 2, 2, 4, 4, 6, 6, 7, 8, 10, 10, 12, 12, 14, 14, 15)
             val output: ByteArray = byteArrayOf(0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, 0, 0, (-1).toByte(), 0, (-1).toByte(), (-1).toByte(), (-1).toByte(), 0, 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(aInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(bInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i8x16Lt(aVecIn, bVecIn)
-            val res: ByteArray = transmute(vecRes)
+            val res: ByteArray = transmuteWithLayouts<V128, ByteArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3160,10 +3163,10 @@ public class Simd128InlineTests {
             val aInput: ByteArray = byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, (-12).toByte(), 13, 14, 15)
             val bInput: ByteArray = byteArrayOf(0, 2, 2, 4, 4, 6, 6, 7, 8, 10, 10, 12, 12, 14, 14, 15)
             val output: ByteArray = byteArrayOf(0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, 0, 0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(aInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(bInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = u8x16Lt(aVecIn, bVecIn)
-            val res: ByteArray = transmute(vecRes)
+            val res: ByteArray = transmuteWithLayouts<V128, ByteArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3185,10 +3188,10 @@ public class Simd128InlineTests {
             val aInput: ShortArray = shortArrayOf(0, 1, 2, 3, 4, 5, 6, (-7).toShort())
             val bInput: ShortArray = shortArrayOf(0, 2, 2, 4, 4, 6, 6, 7)
             val output: ShortArray = shortArrayOf(0, (-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort())
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(aInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(bInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i16x8Lt(aVecIn, bVecIn)
-            val res: ShortArray = transmute(vecRes)
+            val res: ShortArray = transmuteWithLayouts<V128, ShortArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3210,10 +3213,10 @@ public class Simd128InlineTests {
             val aInput: ShortArray = shortArrayOf(0, 1, 2, 3, 4, 5, 6, (-7).toShort())
             val bInput: ShortArray = shortArrayOf(0, 2, 2, 4, 4, 6, 6, 7)
             val output: ShortArray = shortArrayOf(0, (-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort(), 0, 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(aInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(bInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = u16x8Lt(aVecIn, bVecIn)
-            val res: ShortArray = transmute(vecRes)
+            val res: ShortArray = transmuteWithLayouts<V128, ShortArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3235,10 +3238,10 @@ public class Simd128InlineTests {
             val aInput: IntArray = intArrayOf(-1, 1, 2, 3)
             val bInput: IntArray = intArrayOf(0, 2, 2, 4)
             val output: IntArray = intArrayOf(-1, -1, 0, -1)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<IntArray, V128>(aInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<IntArray, V128>(bInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i32x4Lt(aVecIn, bVecIn)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3260,10 +3263,10 @@ public class Simd128InlineTests {
             val aInput: IntArray = intArrayOf(-1, 1, 2, 3)
             val bInput: IntArray = intArrayOf(0, 2, 2, 4)
             val output: IntArray = intArrayOf(0, -1, 0, -1)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<IntArray, V128>(aInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<IntArray, V128>(bInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = u32x4Lt(aVecIn, bVecIn)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3285,10 +3288,10 @@ public class Simd128InlineTests {
             val aInput: LongArray = longArrayOf(-1L, 3L)
             val bInput: LongArray = longArrayOf(0L, 2L)
             val output: LongArray = longArrayOf(-1L, 0L)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<LongArray, V128>(aInput, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<LongArray, V128>(bInput, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i64x2Lt(aVecIn, bVecIn)
-            val res: LongArray = transmute(vecRes)
+            val res: LongArray = transmuteWithLayouts<V128, LongArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3310,10 +3313,10 @@ public class Simd128InlineTests {
             val aInput: FloatArray = floatArrayOf(0.0f, 1.0f, 2.0f, 3.0f)
             val bInput: FloatArray = floatArrayOf(0.0f, 2.0f, 2.0f, 4.0f)
             val output: IntArray = intArrayOf(0, -1, 0, -1)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(aInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(bInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f32x4Lt(aVecIn, bVecIn)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -3335,10 +3338,10 @@ public class Simd128InlineTests {
             val aInput: DoubleArray = doubleArrayOf(0.0, 1.0)
             val bInput: DoubleArray = doubleArrayOf(0.0, 2.0)
             val output: LongArray = longArrayOf(0L, -1L)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(aInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(bInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f64x2Lt(aVecIn, bVecIn)
-            val res: LongArray = transmute(vecRes)
+            val res: LongArray = transmuteWithLayouts<V128, LongArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -3360,10 +3363,10 @@ public class Simd128InlineTests {
             val aInput: ByteArray = byteArrayOf(0, 2, 2, 4, 4, 6, 6, 7, 8, 10, 10, 12, 12, 14, 14, (-15).toByte())
             val bInput: ByteArray = byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
             val output: ByteArray = byteArrayOf(0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, 0, 0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(aInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(bInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i8x16Gt(aVecIn, bVecIn)
-            val res: ByteArray = transmute(vecRes)
+            val res: ByteArray = transmuteWithLayouts<V128, ByteArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3385,10 +3388,10 @@ public class Simd128InlineTests {
             val aInput: ByteArray = byteArrayOf(0, 2, 2, 4, 4, 6, 6, 7, 8, 10, 10, 12, 12, 14, 14, (-15).toByte())
             val bInput: ByteArray = byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
             val output: ByteArray = byteArrayOf(0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, 0, 0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte())
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(aInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(bInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = u8x16Gt(aVecIn, bVecIn)
-            val res: ByteArray = transmute(vecRes)
+            val res: ByteArray = transmuteWithLayouts<V128, ByteArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3410,10 +3413,10 @@ public class Simd128InlineTests {
             val aInput: ShortArray = shortArrayOf(0, 2, 2, 4, 4, 6, 6, (-7).toShort())
             val bInput: ShortArray = shortArrayOf(0, 1, 2, 3, 4, 5, 6, 7)
             val output: ShortArray = shortArrayOf(0, (-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort(), 0, 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(aInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(bInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i16x8Gt(aVecIn, bVecIn)
-            val res: ShortArray = transmute(vecRes)
+            val res: ShortArray = transmuteWithLayouts<V128, ShortArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3435,10 +3438,10 @@ public class Simd128InlineTests {
             val aInput: ShortArray = shortArrayOf(0, 2, 2, 4, 4, 6, 6, (-7).toShort())
             val bInput: ShortArray = shortArrayOf(0, 1, 2, 3, 4, 5, 6, 7)
             val output: ShortArray = shortArrayOf(0, (-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort())
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(aInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(bInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = u16x8Gt(aVecIn, bVecIn)
-            val res: ShortArray = transmute(vecRes)
+            val res: ShortArray = transmuteWithLayouts<V128, ShortArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3460,10 +3463,10 @@ public class Simd128InlineTests {
             val aInput: IntArray = intArrayOf(0, 2, 2, -4)
             val bInput: IntArray = intArrayOf(0, 1, 2, 3)
             val output: IntArray = intArrayOf(0, -1, 0, 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<IntArray, V128>(aInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<IntArray, V128>(bInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i32x4Gt(aVecIn, bVecIn)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3485,10 +3488,10 @@ public class Simd128InlineTests {
             val aInput: IntArray = intArrayOf(0, 2, 2, -4)
             val bInput: IntArray = intArrayOf(0, 1, 2, 3)
             val output: IntArray = intArrayOf(0, -1, 0, -1)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<IntArray, V128>(aInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<IntArray, V128>(bInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = u32x4Gt(aVecIn, bVecIn)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3510,10 +3513,10 @@ public class Simd128InlineTests {
             val aInput: LongArray = longArrayOf(-1L, 2L)
             val bInput: LongArray = longArrayOf(0L, 1L)
             val output: LongArray = longArrayOf(0L, -1L)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<LongArray, V128>(aInput, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<LongArray, V128>(bInput, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i64x2Gt(aVecIn, bVecIn)
-            val res: LongArray = transmute(vecRes)
+            val res: LongArray = transmuteWithLayouts<V128, LongArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3535,10 +3538,10 @@ public class Simd128InlineTests {
             val aInput: FloatArray = floatArrayOf(0.0f, 2.0f, 2.0f, 4.0f)
             val bInput: FloatArray = floatArrayOf(0.0f, 1.0f, 2.0f, 3.0f)
             val output: IntArray = intArrayOf(0, -1, 0, -1)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(aInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(bInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f32x4Gt(aVecIn, bVecIn)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -3560,10 +3563,10 @@ public class Simd128InlineTests {
             val aInput: DoubleArray = doubleArrayOf(0.0, 2.0)
             val bInput: DoubleArray = doubleArrayOf(0.0, 1.0)
             val output: LongArray = longArrayOf(0L, -1L)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(aInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(bInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f64x2Gt(aVecIn, bVecIn)
-            val res: LongArray = transmute(vecRes)
+            val res: LongArray = transmuteWithLayouts<V128, LongArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -3585,10 +3588,10 @@ public class Simd128InlineTests {
             val aInput: ByteArray = byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, (-15).toByte())
             val bInput: ByteArray = byteArrayOf(0, 2, 2, 4, 4, 6, 6, 7, 8, 10, 10, 12, 12, 14, 14, 15)
             val output: ByteArray = byteArrayOf((-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), (-1).toByte(), (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(aInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(bInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i8x16Ge(aVecIn, bVecIn)
-            val res: ByteArray = transmute(vecRes)
+            val res: ByteArray = transmuteWithLayouts<V128, ByteArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3610,10 +3613,10 @@ public class Simd128InlineTests {
             val aInput: ByteArray = byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, (-15).toByte())
             val bInput: ByteArray = byteArrayOf(0, 2, 2, 4, 4, 6, 6, 7, 8, 10, 10, 12, 12, 14, 14, 15)
             val output: ByteArray = byteArrayOf((-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), (-1).toByte(), (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), (-1).toByte())
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(aInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(bInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = u8x16Ge(aVecIn, bVecIn)
-            val res: ByteArray = transmute(vecRes)
+            val res: ByteArray = transmuteWithLayouts<V128, ByteArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3635,10 +3638,10 @@ public class Simd128InlineTests {
             val aInput: ShortArray = shortArrayOf(0, 1, 2, 3, 4, 5, 6, (-7).toShort())
             val bInput: ShortArray = shortArrayOf(0, 2, 2, 4, 4, 6, 6, 7)
             val output: ShortArray = shortArrayOf((-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort(), 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(aInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(bInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i16x8Ge(aVecIn, bVecIn)
-            val res: ShortArray = transmute(vecRes)
+            val res: ShortArray = transmuteWithLayouts<V128, ShortArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3660,10 +3663,10 @@ public class Simd128InlineTests {
             val aInput: ShortArray = shortArrayOf(0, 1, 2, 3, 4, 5, 6, (-7).toShort())
             val bInput: ShortArray = shortArrayOf(0, 2, 2, 4, 4, 6, 6, 7)
             val output: ShortArray = shortArrayOf((-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort(), (-1).toShort())
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(aInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(bInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = u16x8Ge(aVecIn, bVecIn)
-            val res: ShortArray = transmute(vecRes)
+            val res: ShortArray = transmuteWithLayouts<V128, ShortArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3685,10 +3688,10 @@ public class Simd128InlineTests {
             val aInput: IntArray = intArrayOf(0, 1, 2, -3)
             val bInput: IntArray = intArrayOf(0, 2, 2, 4)
             val output: IntArray = intArrayOf(-1, 0, -1, 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<IntArray, V128>(aInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<IntArray, V128>(bInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i32x4Ge(aVecIn, bVecIn)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3710,10 +3713,10 @@ public class Simd128InlineTests {
             val aInput: IntArray = intArrayOf(0, 1, 2, -3)
             val bInput: IntArray = intArrayOf(0, 2, 2, 4)
             val output: IntArray = intArrayOf(-1, 0, -1, -1)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<IntArray, V128>(aInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<IntArray, V128>(bInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = u32x4Ge(aVecIn, bVecIn)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3735,10 +3738,10 @@ public class Simd128InlineTests {
             val aInput: LongArray = longArrayOf(0L, 1L)
             val bInput: LongArray = longArrayOf(-1L, 2L)
             val output: LongArray = longArrayOf(-1L, 0L)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<LongArray, V128>(aInput, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<LongArray, V128>(bInput, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i64x2Ge(aVecIn, bVecIn)
-            val res: LongArray = transmute(vecRes)
+            val res: LongArray = transmuteWithLayouts<V128, LongArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3760,10 +3763,10 @@ public class Simd128InlineTests {
             val aInput: FloatArray = floatArrayOf(0.0f, 1.0f, 2.0f, 3.0f)
             val bInput: FloatArray = floatArrayOf(0.0f, 2.0f, 2.0f, 4.0f)
             val output: IntArray = intArrayOf(-1, 0, -1, 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(aInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(bInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f32x4Ge(aVecIn, bVecIn)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -3785,10 +3788,10 @@ public class Simd128InlineTests {
             val aInput: DoubleArray = doubleArrayOf(0.0, 1.0)
             val bInput: DoubleArray = doubleArrayOf(0.0, 2.0)
             val output: LongArray = longArrayOf(-1L, 0L)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(aInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(bInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f64x2Ge(aVecIn, bVecIn)
-            val res: LongArray = transmute(vecRes)
+            val res: LongArray = transmuteWithLayouts<V128, LongArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -3810,10 +3813,10 @@ public class Simd128InlineTests {
             val aInput: ByteArray = byteArrayOf(0, 2, 2, 4, 4, 6, 6, 7, 8, 10, 10, 12, 12, 14, 14, (-15).toByte())
             val bInput: ByteArray = byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
             val output: ByteArray = byteArrayOf((-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), (-1).toByte(), (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), (-1).toByte())
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(aInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(bInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i8x16Le(aVecIn, bVecIn)
-            val res: ByteArray = transmute(vecRes)
+            val res: ByteArray = transmuteWithLayouts<V128, ByteArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3835,10 +3838,10 @@ public class Simd128InlineTests {
             val aInput: ByteArray = byteArrayOf(0, 2, 2, 4, 4, 6, 6, 7, 8, 10, 10, 12, 12, 14, 14, (-15).toByte())
             val bInput: ByteArray = byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
             val output: ByteArray = byteArrayOf((-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), (-1).toByte(), (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0, (-1).toByte(), 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(aInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ByteArray, V128>(bInput, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = u8x16Le(aVecIn, bVecIn)
-            val res: ByteArray = transmute(vecRes)
+            val res: ByteArray = transmuteWithLayouts<V128, ByteArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ByteArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3860,10 +3863,10 @@ public class Simd128InlineTests {
             val aInput: ShortArray = shortArrayOf(0, 2, 2, 4, 4, 6, 6, (-7).toShort())
             val bInput: ShortArray = shortArrayOf(0, 1, 2, 3, 4, 5, 6, 7)
             val output: ShortArray = shortArrayOf((-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort(), (-1).toShort())
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(aInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(bInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i16x8Le(aVecIn, bVecIn)
-            val res: ShortArray = transmute(vecRes)
+            val res: ShortArray = transmuteWithLayouts<V128, ShortArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3885,10 +3888,10 @@ public class Simd128InlineTests {
             val aInput: ShortArray = shortArrayOf(0, 2, 2, 4, 4, 6, 6, (-7).toShort())
             val bInput: ShortArray = shortArrayOf(0, 1, 2, 3, 4, 5, 6, 7)
             val output: ShortArray = shortArrayOf((-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort(), 0, (-1).toShort(), 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(aInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<ShortArray, V128>(bInput, PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = u16x8Le(aVecIn, bVecIn)
-            val res: ShortArray = transmute(vecRes)
+            val res: ShortArray = transmuteWithLayouts<V128, ShortArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<ShortArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3910,10 +3913,10 @@ public class Simd128InlineTests {
             val aInput: IntArray = intArrayOf(0, 2, 2, -4)
             val bInput: IntArray = intArrayOf(0, 1, 2, 3)
             val output: IntArray = intArrayOf(-1, 0, -1, -1)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<IntArray, V128>(aInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<IntArray, V128>(bInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i32x4Le(aVecIn, bVecIn)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3935,10 +3938,10 @@ public class Simd128InlineTests {
             val aInput: IntArray = intArrayOf(0, 2, 2, -4)
             val bInput: IntArray = intArrayOf(0, 1, 2, 3)
             val output: IntArray = intArrayOf(-1, 0, -1, 0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<IntArray, V128>(aInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<IntArray, V128>(bInput, PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = u32x4Le(aVecIn, bVecIn)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3960,10 +3963,10 @@ public class Simd128InlineTests {
             val aInput: LongArray = longArrayOf(0L, 2L)
             val bInput: LongArray = longArrayOf(0L, 1L)
             val output: LongArray = longArrayOf(-1L, 0L)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<LongArray, V128>(aInput, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<LongArray, V128>(bInput, PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = i64x2Le(aVecIn, bVecIn)
-            val res: LongArray = transmute(vecRes)
+            val res: LongArray = transmuteWithLayouts<V128, LongArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             if (!false) {
                 check((res).contentEquals(output))
             } else {
@@ -3985,10 +3988,10 @@ public class Simd128InlineTests {
             val aInput: FloatArray = floatArrayOf(0.0f, 2.0f, 2.0f, 4.0f)
             val bInput: FloatArray = floatArrayOf(0.0f, 1.0f, 2.0f, 3.0f)
             val output: IntArray = intArrayOf(-1, 0, -1, -0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(aInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(bInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f32x4Le(aVecIn, bVecIn)
-            val res: IntArray = transmute(vecRes)
+            val res: IntArray = transmuteWithLayouts<V128, IntArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<IntArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4010,10 +4013,10 @@ public class Simd128InlineTests {
             val aInput: DoubleArray = doubleArrayOf(0.0, 2.0)
             val bInput: DoubleArray = doubleArrayOf(0.0, 1.0)
             val output: LongArray = longArrayOf(-1L, 0L)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(aInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(bInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f64x2Le(aVecIn, bVecIn)
-            val res: LongArray = transmute(vecRes)
+            val res: LongArray = transmuteWithLayouts<V128, LongArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<LongArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4034,9 +4037,9 @@ public class Simd128InlineTests {
         run {
             val aInput: FloatArray = floatArrayOf(0.0f, 1.0f, 2.0f, 3.0f)
             val output: FloatArray = floatArrayOf(0.0f, -1.0f, -2.0f, -3.0f)
-            val aVecIn: V128 = transmute(aInput)
+            val aVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(aInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f32x4Neg(aVecIn)
-            val res: FloatArray = transmute(vecRes)
+            val res: FloatArray = transmuteWithLayouts<V128, FloatArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             check((res).contentEquals(output))
         }
     }
@@ -4046,9 +4049,9 @@ public class Simd128InlineTests {
         run {
             val aInput: FloatArray = floatArrayOf(0.0f, -1.0f, 2.0f, -3.0f)
             val output: FloatArray = floatArrayOf(0.0f, 1.0f, 2.0f, 3.0f)
-            val aVecIn: V128 = transmute(aInput)
+            val aVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(aInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f32x4Abs(aVecIn)
-            val res: FloatArray = transmute(vecRes)
+            val res: FloatArray = transmuteWithLayouts<V128, FloatArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             check((res).contentEquals(output))
         }
     }
@@ -4059,10 +4062,10 @@ public class Simd128InlineTests {
             val aInput: FloatArray = floatArrayOf(0.0f, -1.0f, 7.0f, 8.0f)
             val bInput: FloatArray = floatArrayOf(1.0f, -3.0f, -4.0f, 10.0f)
             val output: FloatArray = floatArrayOf(0.0f, -3.0f, -4.0f, 8.0f)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(aInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(bInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f32x4Min(aVecIn, bVecIn)
-            val res: FloatArray = transmute(vecRes)
+            val res: FloatArray = transmuteWithLayouts<V128, FloatArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4084,10 +4087,10 @@ public class Simd128InlineTests {
             val aInput: FloatArray = floatArrayOf(0.0f, -1.0f, 7.0f, 8.0f)
             val bInput: FloatArray = floatArrayOf(1.0f, -3.0f, -4.0f, Float.NaN)
             val output: FloatArray = floatArrayOf(0.0f, -3.0f, -4.0f, Float.NaN)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(aInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(bInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f32x4Min(aVecIn, bVecIn)
-            val res: FloatArray = transmute(vecRes)
+            val res: FloatArray = transmuteWithLayouts<V128, FloatArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4109,10 +4112,10 @@ public class Simd128InlineTests {
             val aInput: FloatArray = floatArrayOf(0.0f, -1.0f, 7.0f, 8.0f)
             val bInput: FloatArray = floatArrayOf(1.0f, -3.0f, -4.0f, 10.0f)
             val output: FloatArray = floatArrayOf(1.0f, -1.0f, 7.0f, 10.0f)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(aInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(bInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f32x4Max(aVecIn, bVecIn)
-            val res: FloatArray = transmute(vecRes)
+            val res: FloatArray = transmuteWithLayouts<V128, FloatArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4134,10 +4137,10 @@ public class Simd128InlineTests {
             val aInput: FloatArray = floatArrayOf(0.0f, -1.0f, 7.0f, 8.0f)
             val bInput: FloatArray = floatArrayOf(1.0f, -3.0f, -4.0f, Float.NaN)
             val output: FloatArray = floatArrayOf(1.0f, -1.0f, 7.0f, Float.NaN)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(aInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(bInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f32x4Max(aVecIn, bVecIn)
-            val res: FloatArray = transmute(vecRes)
+            val res: FloatArray = transmuteWithLayouts<V128, FloatArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4159,10 +4162,10 @@ public class Simd128InlineTests {
             val aInput: FloatArray = floatArrayOf(0.0f, -1.0f, 7.0f, 8.0f)
             val bInput: FloatArray = floatArrayOf(1.0f, -3.0f, -4.0f, 10.0f)
             val output: FloatArray = floatArrayOf(1.0f, -4.0f, 3.0f, 18.0f)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(aInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(bInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f32x4Add(aVecIn, bVecIn)
-            val res: FloatArray = transmute(vecRes)
+            val res: FloatArray = transmuteWithLayouts<V128, FloatArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4184,10 +4187,10 @@ public class Simd128InlineTests {
             val aInput: FloatArray = floatArrayOf(0.0f, -1.0f, 7.0f, 8.0f)
             val bInput: FloatArray = floatArrayOf(1.0f, -3.0f, -4.0f, 10.0f)
             val output: FloatArray = floatArrayOf(-1.0f, 2.0f, 11.0f, -2.0f)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(aInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(bInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f32x4Sub(aVecIn, bVecIn)
-            val res: FloatArray = transmute(vecRes)
+            val res: FloatArray = transmuteWithLayouts<V128, FloatArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4209,10 +4212,10 @@ public class Simd128InlineTests {
             val aInput: FloatArray = floatArrayOf(0.0f, -1.0f, 7.0f, 8.0f)
             val bInput: FloatArray = floatArrayOf(1.0f, -3.0f, -4.0f, 10.0f)
             val output: FloatArray = floatArrayOf(0.0f, 3.0f, -28.0f, 80.0f)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(aInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(bInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f32x4Mul(aVecIn, bVecIn)
-            val res: FloatArray = transmute(vecRes)
+            val res: FloatArray = transmuteWithLayouts<V128, FloatArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4234,10 +4237,10 @@ public class Simd128InlineTests {
             val aInput: FloatArray = floatArrayOf(0.0f, -8.0f, 70.0f, 8.0f)
             val bInput: FloatArray = floatArrayOf(1.0f, 4.0f, 10.0f, 2.0f)
             val output: FloatArray = floatArrayOf(0.0f, -2.0f, 7.0f, 4.0f)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(aInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<FloatArray, V128>(bInput, PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f32x4Div(aVecIn, bVecIn)
-            val res: FloatArray = transmute(vecRes)
+            val res: FloatArray = transmuteWithLayouts<V128, FloatArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<FloatArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4258,9 +4261,9 @@ public class Simd128InlineTests {
         run {
             val aInput: DoubleArray = doubleArrayOf(0.0, 1.0)
             val output: DoubleArray = doubleArrayOf(0.0, -1.0)
-            val aVecIn: V128 = transmute(aInput)
+            val aVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(aInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f64x2Neg(aVecIn)
-            val res: DoubleArray = transmute(vecRes)
+            val res: DoubleArray = transmuteWithLayouts<V128, DoubleArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             check((res).contentEquals(output))
         }
     }
@@ -4270,9 +4273,9 @@ public class Simd128InlineTests {
         run {
             val aInput: DoubleArray = doubleArrayOf(0.0, -1.0)
             val output: DoubleArray = doubleArrayOf(0.0, 1.0)
-            val aVecIn: V128 = transmute(aInput)
+            val aVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(aInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f64x2Abs(aVecIn)
-            val res: DoubleArray = transmute(vecRes)
+            val res: DoubleArray = transmuteWithLayouts<V128, DoubleArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             check((res).contentEquals(output))
         }
     }
@@ -4283,10 +4286,10 @@ public class Simd128InlineTests {
             val aInput: DoubleArray = doubleArrayOf(0.0, -1.0)
             val bInput: DoubleArray = doubleArrayOf(1.0, -3.0)
             val output: DoubleArray = doubleArrayOf(0.0, -3.0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(aInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(bInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f64x2Min(aVecIn, bVecIn)
-            val res: DoubleArray = transmute(vecRes)
+            val res: DoubleArray = transmuteWithLayouts<V128, DoubleArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4308,10 +4311,10 @@ public class Simd128InlineTests {
             val aInput: DoubleArray = doubleArrayOf(7.0, 8.0)
             val bInput: DoubleArray = doubleArrayOf(-4.0, Double.NaN)
             val output: DoubleArray = doubleArrayOf(-4.0, Double.NaN)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(aInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(bInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f64x2Min(aVecIn, bVecIn)
-            val res: DoubleArray = transmute(vecRes)
+            val res: DoubleArray = transmuteWithLayouts<V128, DoubleArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4333,10 +4336,10 @@ public class Simd128InlineTests {
             val aInput: DoubleArray = doubleArrayOf(0.0, -1.0)
             val bInput: DoubleArray = doubleArrayOf(1.0, -3.0)
             val output: DoubleArray = doubleArrayOf(1.0, -1.0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(aInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(bInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f64x2Max(aVecIn, bVecIn)
-            val res: DoubleArray = transmute(vecRes)
+            val res: DoubleArray = transmuteWithLayouts<V128, DoubleArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4358,10 +4361,10 @@ public class Simd128InlineTests {
             val aInput: DoubleArray = doubleArrayOf(7.0, 8.0)
             val bInput: DoubleArray = doubleArrayOf(-4.0, Double.NaN)
             val output: DoubleArray = doubleArrayOf(7.0, Double.NaN)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(aInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(bInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f64x2Max(aVecIn, bVecIn)
-            val res: DoubleArray = transmute(vecRes)
+            val res: DoubleArray = transmuteWithLayouts<V128, DoubleArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4383,10 +4386,10 @@ public class Simd128InlineTests {
             val aInput: DoubleArray = doubleArrayOf(0.0, -1.0)
             val bInput: DoubleArray = doubleArrayOf(1.0, -3.0)
             val output: DoubleArray = doubleArrayOf(1.0, -4.0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(aInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(bInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f64x2Add(aVecIn, bVecIn)
-            val res: DoubleArray = transmute(vecRes)
+            val res: DoubleArray = transmuteWithLayouts<V128, DoubleArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4408,10 +4411,10 @@ public class Simd128InlineTests {
             val aInput: DoubleArray = doubleArrayOf(0.0, -1.0)
             val bInput: DoubleArray = doubleArrayOf(1.0, -3.0)
             val output: DoubleArray = doubleArrayOf(-1.0, 2.0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(aInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(bInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f64x2Sub(aVecIn, bVecIn)
-            val res: DoubleArray = transmute(vecRes)
+            val res: DoubleArray = transmuteWithLayouts<V128, DoubleArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4433,10 +4436,10 @@ public class Simd128InlineTests {
             val aInput: DoubleArray = doubleArrayOf(0.0, -1.0)
             val bInput: DoubleArray = doubleArrayOf(1.0, -3.0)
             val output: DoubleArray = doubleArrayOf(0.0, 3.0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(aInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(bInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f64x2Mul(aVecIn, bVecIn)
-            val res: DoubleArray = transmute(vecRes)
+            val res: DoubleArray = transmuteWithLayouts<V128, DoubleArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4458,10 +4461,10 @@ public class Simd128InlineTests {
             val aInput: DoubleArray = doubleArrayOf(0.0, -8.0)
             val bInput: DoubleArray = doubleArrayOf(1.0, 4.0)
             val output: DoubleArray = doubleArrayOf(0.0, -2.0)
-            val aVecIn: V128 = transmute(aInput)
-            val bVecIn: V128 = transmute(bInput)
+            val aVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(aInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
+            val bVecIn: V128 = transmuteWithLayouts<DoubleArray, V128>(bInput, PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<V128>())
             val vecRes: V128 = f64x2Div(aVecIn, bVecIn)
-            val res: DoubleArray = transmute(vecRes)
+            val res: DoubleArray = transmuteWithLayouts<V128, DoubleArray>(vecRes, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<DoubleArray>())
             if (!true) {
                 check((res).contentEquals(output))
             } else {
@@ -4480,7 +4483,7 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun f32x4ConvertSI32x4() {
         run {
-            val from: V128 = transmute(intArrayOf(1, 2, 3, 4))
+            val from: V128 = transmuteWithLayouts<IntArray, V128>(intArrayOf(1, 2, 3, 4), PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<V128>())
             val to: V128 = transmute(listOf(1.0f, 2.0, 3.0, 4.0))
             val r: V128 = f32x4ConvertI32x4(from)
             compareBytes(r, to)
@@ -4490,8 +4493,8 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun f32x4ConvertUI32x4() {
         run {
-            val from: V128 = transmute(uintArrayOf(UInt.MAX_VALUE, 2u, 3u, 4u))
-            val to: V128 = transmute(floatArrayOf(UInt.MAX_VALUE.toFloat(), 2.0f, 3.0f, 4.0f))
+            val from: V128 = transmuteWithLayouts<UIntArray, V128>(uintArrayOf(UInt.MAX_VALUE, 2u, 3u, 4u), UnresolvedTypeLayout<UIntArray>(), UnresolvedTypeLayout<V128>())
+            val to: V128 = transmuteWithLayouts<FloatArray, V128>(floatArrayOf(UInt.MAX_VALUE.toFloat(), 2.0f, 3.0f, 4.0f), UnresolvedTypeLayout<FloatArray>(), UnresolvedTypeLayout<V128>())
             val r: V128 = f32x4ConvertU32x4(from)
             compareBytes(r, to)
         }
@@ -4538,8 +4541,8 @@ public class Simd128InlineTests {
         run {
             val a: ByteArray = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             val b: ByteArray = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-            val low = transmute(i16x8ExtmulLowI8x16(i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
-            val high = transmute(i16x8ExtmulHighI8x16(i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
+            val low = transmuteWithLayouts<V128, ShortArray>(i16x8ExtmulLowI8x16(i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.shortArray((16 / sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()))
+            val high = transmuteWithLayouts<V128, ShortArray>(i16x8ExtmulHighI8x16(i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.shortArray((16 / sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()))
             val half = a.size / 2
             for (i in 0 until half) {
                 check(((a[i].toShort()) * (b[i].toShort())).toShort() == low[i])
@@ -4549,8 +4552,8 @@ public class Simd128InlineTests {
         run {
             val a1: ByteArray = byteArrayOf((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0)
             val b1: ByteArray = byteArrayOf((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)
-            val low1 = transmute(i16x8ExtmulLowI8x16(i8x16((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0), i8x16((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)))
-            val high1 = transmute(i16x8ExtmulHighI8x16(i8x16((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0), i8x16((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)))
+            val low1 = transmuteWithLayouts<V128, ShortArray>(i16x8ExtmulLowI8x16(i8x16((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0), i8x16((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.shortArray((16 / sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()))
+            val high1 = transmuteWithLayouts<V128, ShortArray>(i16x8ExtmulHighI8x16(i8x16((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0), i8x16((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.shortArray((16 / sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()))
             val half1 = a1.size / 2
             for (i1 in 0 until half1) {
                 check(((a1[i1].toShort()) * (b1[i1].toShort())).toShort() == low1[i1])
@@ -4582,8 +4585,8 @@ public class Simd128InlineTests {
         run {
             val a4: ShortArray = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             val b4: ShortArray = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
-            val low4 = transmute(i32x4ExtmulLowI16x8(i16x8(0, 0, 0, 0, 0, 0, 0, 0), i16x8(0, 0, 0, 0, 0, 0, 0, 0)))
-            val high4 = transmute(i32x4ExtmulHighI16x8(i16x8(0, 0, 0, 0, 0, 0, 0, 0), i16x8(0, 0, 0, 0, 0, 0, 0, 0)))
+            val low4 = transmuteWithLayouts<V128, IntArray>(i32x4ExtmulLowI16x8(i16x8(0, 0, 0, 0, 0, 0, 0, 0), i16x8(0, 0, 0, 0, 0, 0, 0, 0)), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.intArray((16 / sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()))
+            val high4 = transmuteWithLayouts<V128, IntArray>(i32x4ExtmulHighI16x8(i16x8(0, 0, 0, 0, 0, 0, 0, 0), i16x8(0, 0, 0, 0, 0, 0, 0, 0)), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.intArray((16 / sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()))
             val half4 = a4.size / 2
             for (i4 in 0 until half4) {
                 check(((a4[i4].toInt()) * (b4[i4].toInt())) == low4[i4])
@@ -4593,8 +4596,8 @@ public class Simd128InlineTests {
         run {
             val a5: ShortArray = shortArrayOf((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87)
             val b5: ShortArray = shortArrayOf(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())
-            val low5 = transmute(i32x4ExtmulLowI16x8(i16x8((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87), i16x8(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())))
-            val high5 = transmute(i32x4ExtmulHighI16x8(i16x8((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87), i16x8(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())))
+            val low5 = transmuteWithLayouts<V128, IntArray>(i32x4ExtmulLowI16x8(i16x8((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87), i16x8(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.intArray((16 / sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()))
+            val high5 = transmuteWithLayouts<V128, IntArray>(i32x4ExtmulHighI16x8(i16x8((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87), i16x8(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.intArray((16 / sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()))
             val half5 = a5.size / 2
             for (i5 in 0 until half5) {
                 check(((a5[i5].toInt()) * (b5[i5].toInt())) == low5[i5])
@@ -4626,8 +4629,8 @@ public class Simd128InlineTests {
         run {
             val a8: IntArray = intArrayOf(0, 0, 0, 0)
             val b8: IntArray = intArrayOf(0, 0, 0, 0)
-            val low8 = transmute(i64x2ExtmulLowI32x4(i32x4(0, 0, 0, 0), i32x4(0, 0, 0, 0)))
-            val high8 = transmute(i64x2ExtmulHighI32x4(i32x4(0, 0, 0, 0), i32x4(0, 0, 0, 0)))
+            val low8 = transmuteWithLayouts<V128, LongArray>(i64x2ExtmulLowI32x4(i32x4(0, 0, 0, 0), i32x4(0, 0, 0, 0)), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.longArray((16 / sizeOf<Long>(typeLayoutT = PrimitiveLayouts.I64)).toInt()))
+            val high8 = transmuteWithLayouts<V128, LongArray>(i64x2ExtmulHighI32x4(i32x4(0, 0, 0, 0), i32x4(0, 0, 0, 0)), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.longArray((16 / sizeOf<Long>(typeLayoutT = PrimitiveLayouts.I64)).toInt()))
             val half8 = a8.size / 2
             for (i8 in 0 until half8) {
                 check(((a8[i8].toLong()) * (b8[i8].toLong())) == low8[i8])
@@ -4637,8 +4640,8 @@ public class Simd128InlineTests {
         run {
             val a9: IntArray = intArrayOf(-1, 0, Int.MAX_VALUE, 19931)
             val b9: IntArray = intArrayOf(1, 1, Int.MIN_VALUE, 29391)
-            val low9 = transmute(i64x2ExtmulLowI32x4(i32x4(-1, 0, Int.MAX_VALUE, 19931), i32x4(1, 1, Int.MIN_VALUE, 29391)))
-            val high9 = transmute(i64x2ExtmulHighI32x4(i32x4(-1, 0, Int.MAX_VALUE, 19931), i32x4(1, 1, Int.MIN_VALUE, 29391)))
+            val low9 = transmuteWithLayouts<V128, LongArray>(i64x2ExtmulLowI32x4(i32x4(-1, 0, Int.MAX_VALUE, 19931), i32x4(1, 1, Int.MIN_VALUE, 29391)), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.longArray((16 / sizeOf<Long>(typeLayoutT = PrimitiveLayouts.I64)).toInt()))
+            val high9 = transmuteWithLayouts<V128, LongArray>(i64x2ExtmulHighI32x4(i32x4(-1, 0, Int.MAX_VALUE, 19931), i32x4(1, 1, Int.MIN_VALUE, 29391)), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.longArray((16 / sizeOf<Long>(typeLayoutT = PrimitiveLayouts.I64)).toInt()))
             val half9 = a9.size / 2
             for (i9 in 0 until half9) {
                 check(((a9[i9].toLong()) * (b9[i9].toLong())) == low9[i9])
@@ -4648,8 +4651,8 @@ public class Simd128InlineTests {
         run {
             val a10: IntArray = intArrayOf(Int.MAX_VALUE, 3003183, 3 shl 20, 0xffffff)
             val b10: IntArray = intArrayOf(Int.MAX_VALUE, Int.MIN_VALUE, -40042, 300)
-            val low10 = transmute(i64x2ExtmulLowI32x4(i32x4(Int.MAX_VALUE, 3003183, 3 shl 20, 0xffffff), i32x4(Int.MAX_VALUE, Int.MIN_VALUE, -40042, 300)))
-            val high10 = transmute(i64x2ExtmulHighI32x4(i32x4(Int.MAX_VALUE, 3003183, 3 shl 20, 0xffffff), i32x4(Int.MAX_VALUE, Int.MIN_VALUE, -40042, 300)))
+            val low10 = transmuteWithLayouts<V128, LongArray>(i64x2ExtmulLowI32x4(i32x4(Int.MAX_VALUE, 3003183, 3 shl 20, 0xffffff), i32x4(Int.MAX_VALUE, Int.MIN_VALUE, -40042, 300)), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.longArray((16 / sizeOf<Long>(typeLayoutT = PrimitiveLayouts.I64)).toInt()))
+            val high10 = transmuteWithLayouts<V128, LongArray>(i64x2ExtmulHighI32x4(i32x4(Int.MAX_VALUE, 3003183, 3 shl 20, 0xffffff), i32x4(Int.MAX_VALUE, Int.MIN_VALUE, -40042, 300)), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.longArray((16 / sizeOf<Long>(typeLayoutT = PrimitiveLayouts.I64)).toInt()))
             val half10 = a10.size / 2
             for (i10 in 0 until half10) {
                 check(((a10[i10].toLong()) * (b10[i10].toLong())) == low10[i10])
@@ -4697,7 +4700,7 @@ public class Simd128InlineTests {
             val aV = i16x8(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7])
             val bV = i16x8(b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7])
             val result = i16x8Q15mulrSat(aV, bV)
-            val result1 = transmute(result)
+            val result1 = transmuteWithLayouts<V128, ShortArray>(result, UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.shortArray((8).toInt()))
             for ((i, a1, b1) in (a.zip(b)).mapIndexed { index, item -> Pair(index, item) }) {
                 check(result1[i] == (((a1.toInt()) * (b1.toInt()) + 0x4000) shr 15).toShort())
             }
@@ -4711,8 +4714,8 @@ public class Simd128InlineTests {
     public fun testExtadd() {
         run {
             val a: ByteArray = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-            val aV = transmute(a)
-            val r = transmute(i16x8ExtaddPairwiseI8x16(aV))
+            val aV = transmuteWithLayouts<ByteArray, V128>(a, PrimitiveArrayLayouts.byteArray((16 / sizeOf<Byte>(typeLayoutT = PrimitiveLayouts.I8)).toInt()), UnresolvedTypeLayout<V128>())
+            val r = transmuteWithLayouts<V128, ShortArray>(i16x8ExtaddPairwiseI8x16(aV), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.shortArray((16 / sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()))
             val half = a.size / 2
             for (i in 0 until half) {
                 check(((a[2 * i].toShort()) + (a[2 * i + 1].toShort())).toShort() == r[i])
@@ -4720,8 +4723,8 @@ public class Simd128InlineTests {
         }
         run {
             val a1: ByteArray = byteArrayOf((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0)
-            val aV1 = transmute(a1)
-            val r1 = transmute(i16x8ExtaddPairwiseI8x16(aV1))
+            val aV1 = transmuteWithLayouts<ByteArray, V128>(a1, PrimitiveArrayLayouts.byteArray((16 / sizeOf<Byte>(typeLayoutT = PrimitiveLayouts.I8)).toInt()), UnresolvedTypeLayout<V128>())
+            val r1 = transmuteWithLayouts<V128, ShortArray>(i16x8ExtaddPairwiseI8x16(aV1), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.shortArray((16 / sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()))
             val half1 = a1.size / 2
             for (i1 in 0 until half1) {
                 check(((a1[2 * i1].toShort()) + (a1[2 * i1 + 1].toShort())).toShort() == r1[i1])
@@ -4729,8 +4732,8 @@ public class Simd128InlineTests {
         }
         run {
             val a2: ByteArray = byteArrayOf((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)
-            val aV2 = transmute(a2)
-            val r2 = transmute(i16x8ExtaddPairwiseI8x16(aV2))
+            val aV2 = transmuteWithLayouts<ByteArray, V128>(a2, PrimitiveArrayLayouts.byteArray((16 / sizeOf<Byte>(typeLayoutT = PrimitiveLayouts.I8)).toInt()), UnresolvedTypeLayout<V128>())
+            val r2 = transmuteWithLayouts<V128, ShortArray>(i16x8ExtaddPairwiseI8x16(aV2), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.shortArray((16 / sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()))
             val half2 = a2.size / 2
             for (i2 in 0 until half2) {
                 check(((a2[2 * i2].toShort()) + (a2[2 * i2 + 1].toShort())).toShort() == r2[i2])
@@ -4738,8 +4741,8 @@ public class Simd128InlineTests {
         }
         run {
             val a3: UByteArray = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val aV3 = transmute(a3)
-            val r3 = transmute(i16x8ExtaddPairwiseU8x16(aV3))
+            val aV3 = transmuteWithLayouts<UByteArray, V128>(a3, PrimitiveArrayLayouts.uByteArray((16 / sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8)).toInt()), UnresolvedTypeLayout<V128>())
+            val r3 = transmuteWithLayouts<V128, ShortArray>(i16x8ExtaddPairwiseU8x16(aV3), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.shortArray((16 / sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()))
             val half3 = a3.size / 2
             for (i3 in 0 until half3) {
                 check(((a3[2 * i3].toShort()) + (a3[2 * i3 + 1].toShort())).toShort() == r3[i3])
@@ -4747,8 +4750,8 @@ public class Simd128InlineTests {
         }
         run {
             val a4: UByteArray = ubyteArrayOf(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u)
-            val aV4 = transmute(a4)
-            val r4 = transmute(i16x8ExtaddPairwiseU8x16(aV4))
+            val aV4 = transmuteWithLayouts<UByteArray, V128>(a4, PrimitiveArrayLayouts.uByteArray((16 / sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8)).toInt()), UnresolvedTypeLayout<V128>())
+            val r4 = transmuteWithLayouts<V128, ShortArray>(i16x8ExtaddPairwiseU8x16(aV4), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.shortArray((16 / sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()))
             val half4 = a4.size / 2
             for (i4 in 0 until half4) {
                 check(((a4[2 * i4].toShort()) + (a4[2 * i4 + 1].toShort())).toShort() == r4[i4])
@@ -4756,8 +4759,8 @@ public class Simd128InlineTests {
         }
         run {
             val a5: UByteArray = ubyteArrayOf(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)
-            val aV5 = transmute(a5)
-            val r5 = transmute(i16x8ExtaddPairwiseU8x16(aV5))
+            val aV5 = transmuteWithLayouts<UByteArray, V128>(a5, PrimitiveArrayLayouts.uByteArray((16 / sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8)).toInt()), UnresolvedTypeLayout<V128>())
+            val r5 = transmuteWithLayouts<V128, ShortArray>(i16x8ExtaddPairwiseU8x16(aV5), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.shortArray((16 / sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()))
             val half5 = a5.size / 2
             for (i5 in 0 until half5) {
                 check(((a5[2 * i5].toShort()) + (a5[2 * i5 + 1].toShort())).toShort() == r5[i5])
@@ -4765,8 +4768,8 @@ public class Simd128InlineTests {
         }
         run {
             val a6: ShortArray = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
-            val aV6 = transmute(a6)
-            val r6 = transmute(i32x4ExtaddPairwiseI16x8(aV6))
+            val aV6 = transmuteWithLayouts<ShortArray, V128>(a6, PrimitiveArrayLayouts.shortArray((16 / sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()), UnresolvedTypeLayout<V128>())
+            val r6 = transmuteWithLayouts<V128, IntArray>(i32x4ExtaddPairwiseI16x8(aV6), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.intArray((16 / sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()))
             val half6 = a6.size / 2
             for (i6 in 0 until half6) {
                 check(((a6[2 * i6].toInt()) + (a6[2 * i6 + 1].toInt())) == r6[i6])
@@ -4774,8 +4777,8 @@ public class Simd128InlineTests {
         }
         run {
             val a7: ShortArray = shortArrayOf((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87)
-            val aV7 = transmute(a7)
-            val r7 = transmute(i32x4ExtaddPairwiseI16x8(aV7))
+            val aV7 = transmuteWithLayouts<ShortArray, V128>(a7, PrimitiveArrayLayouts.shortArray((16 / sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()), UnresolvedTypeLayout<V128>())
+            val r7 = transmuteWithLayouts<V128, IntArray>(i32x4ExtaddPairwiseI16x8(aV7), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.intArray((16 / sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()))
             val half7 = a7.size / 2
             for (i7 in 0 until half7) {
                 check(((a7[2 * i7].toInt()) + (a7[2 * i7 + 1].toInt())) == r7[i7])
@@ -4783,8 +4786,8 @@ public class Simd128InlineTests {
         }
         run {
             val a8: ShortArray = shortArrayOf(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())
-            val aV8 = transmute(a8)
-            val r8 = transmute(i32x4ExtaddPairwiseI16x8(aV8))
+            val aV8 = transmuteWithLayouts<ShortArray, V128>(a8, PrimitiveArrayLayouts.shortArray((16 / sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()), UnresolvedTypeLayout<V128>())
+            val r8 = transmuteWithLayouts<V128, IntArray>(i32x4ExtaddPairwiseI16x8(aV8), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.intArray((16 / sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()))
             val half8 = a8.size / 2
             for (i8 in 0 until half8) {
                 check(((a8[2 * i8].toInt()) + (a8[2 * i8 + 1].toInt())) == r8[i8])
@@ -4792,8 +4795,8 @@ public class Simd128InlineTests {
         }
         run {
             val a9: UShortArray = ushortArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val aV9 = transmute(a9)
-            val r9 = transmute(i32x4ExtaddPairwiseU16x8(aV9))
+            val aV9 = transmuteWithLayouts<UShortArray, V128>(a9, PrimitiveArrayLayouts.uShortArray((16 / sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()), UnresolvedTypeLayout<V128>())
+            val r9 = transmuteWithLayouts<V128, IntArray>(i32x4ExtaddPairwiseU16x8(aV9), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.intArray((16 / sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()))
             val half9 = a9.size / 2
             for (i9 in 0 until half9) {
                 check(((a9[2 * i9].toInt()) + (a9[2 * i9 + 1].toInt())) == r9[i9])
@@ -4801,8 +4804,8 @@ public class Simd128InlineTests {
         }
         run {
             val a10: UShortArray = ushortArrayOf(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u)
-            val aV10 = transmute(a10)
-            val r10 = transmute(i32x4ExtaddPairwiseU16x8(aV10))
+            val aV10 = transmuteWithLayouts<UShortArray, V128>(a10, PrimitiveArrayLayouts.uShortArray((16 / sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()), UnresolvedTypeLayout<V128>())
+            val r10 = transmuteWithLayouts<V128, IntArray>(i32x4ExtaddPairwiseU16x8(aV10), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.intArray((16 / sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()))
             val half10 = a10.size / 2
             for (i10 in 0 until half10) {
                 check(((a10[2 * i10].toInt()) + (a10[2 * i10 + 1].toInt())) == r10[i10])
@@ -4810,8 +4813,8 @@ public class Simd128InlineTests {
         }
         run {
             val a11: UShortArray = ushortArrayOf(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)
-            val aV11 = transmute(a11)
-            val r11 = transmute(i32x4ExtaddPairwiseU16x8(aV11))
+            val aV11 = transmuteWithLayouts<UShortArray, V128>(a11, PrimitiveArrayLayouts.uShortArray((16 / sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()), UnresolvedTypeLayout<V128>())
+            val r11 = transmuteWithLayouts<V128, IntArray>(i32x4ExtaddPairwiseU16x8(aV11), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.intArray((16 / sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()))
             val half11 = a11.size / 2
             for (i11 in 0 until half11) {
                 check(((a11[2 * i11].toInt()) + (a11[2 * i11 + 1].toInt())) == r11[i11])

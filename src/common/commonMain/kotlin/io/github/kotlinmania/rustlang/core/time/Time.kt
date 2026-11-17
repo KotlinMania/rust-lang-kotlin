@@ -787,25 +787,29 @@ public open class Duration(
     public override fun add(rhs: Duration): Duration = (this.checkedAdd(rhs) ?: error("adding durations should not exceed u64::MAX"))
 
     public override fun addAssign(rhs: Duration) {
-        this = this + rhs
+        var selfMut = this
+        selfMut = selfMut + rhs
     }
 
     public override fun sub(rhs: Duration): Duration = (this.checkedSub(rhs) ?: error("subtracting durations should not be negative"))
 
     public override fun subAssign(rhs: Duration) {
-        this = this - rhs
+        var selfMut = this
+        selfMut = selfMut - rhs
     }
 
     public override fun mul(rhs: UInt): Duration = (this.checkedMul(rhs) ?: error("multiplying duration by scalar should not exceed u64::MAX"))
 
     public override fun mulAssign(rhs: UInt) {
-        this = this * rhs
+        var selfMut = this
+        selfMut = selfMut * rhs
     }
 
     public override fun div(rhs: UInt): Duration = (this.checkedDiv(rhs) ?: error("divisor should not be zero"))
 
     public override fun divAssign(rhs: UInt) {
-        this = this / rhs
+        var selfMut = this
+        selfMut = selfMut / rhs
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {

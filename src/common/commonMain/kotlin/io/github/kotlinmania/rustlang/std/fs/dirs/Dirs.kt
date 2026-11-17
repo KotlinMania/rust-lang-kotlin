@@ -218,7 +218,7 @@ public open class HomeDirs(
          * This is useful with the builder `set_ *` methods to create a `HomeDirs`
          * with exactly the directories you want, without any other defaults.
          */
-        public fun empty(): HomeDirs = HomeDirs(cache = null, config = null, data = null, state = null, extra = Default.default())
+        public fun empty(): HomeDirs = HomeDirs(cache = null, config = null, data = null, state = null, extra = ExtraHomeDirs.default())
     }
 }
 
@@ -479,6 +479,6 @@ public open class MediaDirs(
          * This is useful with the builder `set_ *` methods to create a `MediaDirs`
          * with exactly the directories you want, without any other defaults.
          */
-        public fun empty(): MediaDirs = MediaDirs(desktop = null, documents = null, downloads = null, music = null, pictures = null, videos = null, extra = Default.default())
+        public fun empty(): MediaDirs = MediaDirs(desktop = null, documents = null, downloads = null, music = null, pictures = null, videos = null, extra = ExtraMediaDirs.default())
     }
 }

@@ -8,7 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.Rc
@@ -149,7 +149,7 @@ public open class BorrowedHandle internal constructor(
             check(sizeOf<RawHandle>(typeLayoutT = UnresolvedTypeLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = UnresolvedTypeLayout<BorrowedHandle>()))
         }
         typeCheck<File>()
-        return transmute(this)
+        return transmuteWithLayouts<BorrowedHandle, File>(this, UnresolvedTypeLayout<BorrowedHandle>(), UnresolvedTypeLayout<File>())
     }
 
     public open fun asRefPipeWriter(): PipeWriter {
@@ -159,7 +159,7 @@ public open class BorrowedHandle internal constructor(
             check(sizeOf<RawHandle>(typeLayoutT = UnresolvedTypeLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = UnresolvedTypeLayout<BorrowedHandle>()))
         }
         typeCheck<PipeWriter>()
-        return transmute(this)
+        return transmuteWithLayouts<BorrowedHandle, PipeWriter>(this, UnresolvedTypeLayout<BorrowedHandle>(), UnresolvedTypeLayout<PipeWriter>())
     }
 
     public open fun asRefPipeReader(): PipeReader {
@@ -169,7 +169,7 @@ public open class BorrowedHandle internal constructor(
             check(sizeOf<RawHandle>(typeLayoutT = UnresolvedTypeLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = UnresolvedTypeLayout<BorrowedHandle>()))
         }
         typeCheck<PipeReader>()
-        return transmute(this)
+        return transmuteWithLayouts<BorrowedHandle, PipeReader>(this, UnresolvedTypeLayout<BorrowedHandle>(), UnresolvedTypeLayout<PipeReader>())
     }
 
     public companion object {

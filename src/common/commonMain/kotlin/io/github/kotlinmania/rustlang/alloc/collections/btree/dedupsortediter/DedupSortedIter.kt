@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.peekable.Peekable
  *
  * Used by [`BTreeMap.bulkBuildFromSortedIter`][1].
  */
-public open class DedupSortedIter<K, V, I> internal constructor(
+public open class DedupSortedIter<K, V, I, Item> internal constructor(
     iterCtorArg: Peekable<I>,
 ) : Iterable<Pair<K, V>> where I : Iterator<Pair<K, V>> {
     public var iter: Peekable<I> = iterCtorArg
@@ -49,12 +49,12 @@ public open class DedupSortedIter<K, V, I> internal constructor(
     }
 
     public companion object {
-        public operator fun <K, V, I> invoke(
+        public operator fun <K, V, I, Item> invoke(
             iter: Peekable<I>,
-        ): DedupSortedIter<K, V, I> = DedupSortedIter<K, V, I>(
+        ): DedupSortedIter<K, V, I, Item> = DedupSortedIter<K, V, I, Item>(
             iterCtorArg = iter,
         )
 
-        public fun <K, V, I> new(iter: I): DedupSortedIter<K, V, I> where I : Iterator<Pair<K, V>> = DedupSortedIter(iter = iter.peekable())
+        public fun <K, V, I> new(iter: I): DedupSortedIter<K, V, I, Item> where I : Iterator<Pair<K, V>> = DedupSortedIter(iter = iter.peekable())
     }
 }

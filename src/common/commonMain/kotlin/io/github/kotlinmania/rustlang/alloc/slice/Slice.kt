@@ -431,7 +431,7 @@ public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTyp
             // which is tracked via `m` - when `m == 0`, we've written `mostSignificantBit(n)`
             // elements to the buffer.
             run {
-                copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (UnresolvedTypeLayout<*>()).strideBytes)), buf.size, typeLayoutT = typeLayoutT)
+                copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (typeLayoutT).strideBytes)), buf.size, typeLayoutT = typeLayoutT)
             }
             // `buf` has capacity of `self.len() * n`.
             val bufLen = buf.size
@@ -456,7 +456,7 @@ public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTyp
         // space with copies of the previous `len` elements.
         run {
             // This is non-overlapping since `2 ^ expn> rem`.
-            copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (UnresolvedTypeLayout<*>()).strideBytes)), remLen, typeLayoutT = typeLayoutT)
+            copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (typeLayoutT).strideBytes)), remLen, typeLayoutT = typeLayoutT)
             // `buf.len() + remLen` equals to `buf.capacity()` (`= self.len() * n`).
             buf.setLen(capacity)
         }

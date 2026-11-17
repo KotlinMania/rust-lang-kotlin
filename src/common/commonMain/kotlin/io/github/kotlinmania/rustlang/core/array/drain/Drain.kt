@@ -43,7 +43,7 @@ public open class Drain<T, F>(
     // Note(const-Note): ideally this would be an unchecked fn `next()`, and to use it you would instead `| _ | unchecked ( drain.next() )`.
     public override fun callMut(tupleArg0: Int, typeLayoutT: TypeLayout<T>): U =
         if (((typeLayoutT).sizeBytes == 0L)) {
-            val len = transmuteWithLayouts(this.endOrLen, PrimitiveLayouts.mutPtrLayout(64L), PrimitiveLayouts.USIZE64)
+            val len = transmuteWithLayouts<MutPtr, Int>(this.endOrLen, PrimitiveLayouts.mutPtrLayout(64L), PrimitiveLayouts.USIZE64)
             // SAFETY:
             // The caller guarantees that this is never called more than N times
             // (see `Drain.new`), hence this cannot underflow.
@@ -63,7 +63,7 @@ public open class Drain<T, F>(
     public open fun drop(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         val slice =
             if (((typeLayoutT).sizeBytes == 0L)) {
-                linearMutSliceView(this.ptr.asPtr(), (transmuteWithLayouts(this.endOrLen, PrimitiveLayouts.mutPtrLayout(64L), PrimitiveLayouts.USIZE64)).toInt(), PrimitiveLayouts.U8)
+                linearMutSliceView(this.ptr.asPtr(), (transmuteWithLayouts<MutPtr, Int>(this.endOrLen, PrimitiveLayouts.mutPtrLayout(64L), PrimitiveLayouts.USIZE64)).toInt(), PrimitiveLayouts.U8)
             } else {
                 // SAFETY: we cant read more than N elements
                 linearMutSliceView(this.ptr.asPtr(), this.endOrLen.offsetFromUnsigned((this.ptr.asPtr()).asConstPtr()).toInt(), PrimitiveLayouts.U8)

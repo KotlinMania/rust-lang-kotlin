@@ -202,7 +202,7 @@ public open class Iter<T>(
          * check(iter.len() == 0)
          * ```
          */
-        public fun <T> default(): Iter<T> = Iter(i1 = Default.default(), i2 = Default.default())
+        public fun <T> default(): Iter<T> = Iter(i1 = ArrayDeque(), i2 = ArrayDeque())
 
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
     }

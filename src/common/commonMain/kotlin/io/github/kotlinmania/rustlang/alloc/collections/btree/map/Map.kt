@@ -1727,7 +1727,7 @@ public open class Iter<K, V> internal constructor(
          * check(iter.len() == 0)
          * ```
          */
-        public fun <K, V> default(): Iter<K, V> = Iter(range = Default.default(), length = 0)
+        public fun <K, V> default(): Iter<K, V> = Iter(range = LazyLeafRange.default(), length = 0)
     }
 }
 
@@ -1816,7 +1816,7 @@ public open class IterMut<K, V> internal constructor(
          * check(iter.len() == 0)
          * ```
          */
-        public fun <K, V> default(): IterMut<K, V> = IterMut(range = Default.default(), length = 0, marker = PhantomData())
+        public fun <K, V> default(): IterMut<K, V> = IterMut(range = LazyLeafRange.default(), length = 0, marker = PhantomData())
     }
 }
 
@@ -2004,7 +2004,7 @@ public open class Keys<K, V>(
          * check(iter.len() == 0)
          * ```
          */
-        public fun <K, V> default(): Keys<K, V> = Keys(inner = Default.default())
+        public fun <K, V> default(): Keys<K, V> = Keys(inner = Iter.default())
     }
 }
 
@@ -2053,7 +2053,7 @@ public open class Values<K, V>(
          * check(iter.len() == 0)
          * ```
          */
-        public fun <K, V> default(): Values<K, V> = Values(inner = Default.default())
+        public fun <K, V> default(): Values<K, V> = Values(inner = Iter.default())
     }
 }
 
@@ -2100,7 +2100,7 @@ public open class ValuesMut<K, V>(
          * check(iter.count() == 0)
          * ```
          */
-        public fun <K, V> default(): ValuesMut<K, V> = ValuesMut(inner = Default.default())
+        public fun <K, V> default(): ValuesMut<K, V> = ValuesMut(inner = IterMut.default())
     }
 }
 
@@ -2274,7 +2274,7 @@ public open class Range<K, V> internal constructor(
          * check(iter.count() == 0)
          * ```
          */
-        public fun <K, V> default(): Range<K, V> = Range(inner = Default.default())
+        public fun <K, V> default(): Range<K, V> = Range(inner = LeafRange.default())
     }
 }
 
@@ -2337,7 +2337,7 @@ public open class RangeMut<K, V> internal constructor(
          * check(iter.count() == 0)
          * ```
          */
-        public fun <K, V> default(): RangeMut<K, V> = RangeMut(inner = Default.default(), marker = Unit)
+        public fun <K, V> default(): RangeMut<K, V> = RangeMut(inner = LeafRange.default(), marker = Unit)
     }
 }
 

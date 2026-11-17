@@ -722,7 +722,7 @@ public open class Rc<T, A : Allocator> internal constructor(
             // ignore-tidy-undocumented-unchecked
             return run {
                 val inner = initPtr.asPtr()
-                write(addrOfMut(inner.value), data)
+                write(addrOfMut(inner.value), data, typeLayoutT = UnresolvedTypeLayout<T>())
                 val prevValue = inner.strong.get()
                 check(prevValue == 0)
                 inner.strong.set(1)
@@ -1522,7 +1522,7 @@ public open class Rc<T, A : Allocator> internal constructor(
                     // Initialize `inProgress` with move of **this.
                     // We have to express this in terms of bytes because `T: ? Sized`; there is no
                     // operation that just copies a value based on its `sizeOfVal()`.
-                    copyNonoverlapping(thisRef1.cast(), inProgress.dataPtr().cast(), sizeOfVal)
+                    copyNonoverlapping(thisRef1.cast(), inProgress.dataPtr().cast(), sizeOfVal, typeLayoutT = PrimitiveLayouts.U8)
                     // This leaves us with 0 strong refs, so the data has
                     // effectively been moved to the new rc.
                     thisRef1.inner().decStrong()
@@ -2308,7 +2308,7 @@ public fun <T> Rc.Companion.copyFromSlice(v: List<T>): Rc<List<T>, Global> {
     // ignore-tidy-undocumented-unchecked
     return run {
         val ptr = Rc.allocateForSlice(v.size)
-        copyNonoverlapping(v.asPtr(), mutPtrFromRustCast((addrOfMut(ptr.value))), v.size)
+        copyNonoverlapping(v.asPtr(), mutPtrFromRustCast((addrOfMut(ptr.value))), v.size, typeLayoutT = UnresolvedTypeLayout<T>())
         Rc.fromPtr(ptr)
     }
 }
@@ -2381,7 +2381,7 @@ public fun <T> rcFromSliceFromSliceRcTSlice(v: List<T>): Rc<List<T>, Global> {
  * # Examples
  *
  * ```kotlin
- * val x: Int = Default.default()
+ * val x: Int = 0
  * check(x == 0)
  * ```
  */

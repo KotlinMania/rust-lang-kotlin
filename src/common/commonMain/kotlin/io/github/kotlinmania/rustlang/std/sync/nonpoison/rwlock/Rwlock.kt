@@ -428,12 +428,12 @@ public open class RwLock<T>(
         run {
             val matchVal = this.tryRead()
             when {
-                matchVal is Result.Ok -> {
-                    val guard = matchVal.value
+                matchVal is Result.Ok<*, *> -> {
+                    val guard = (matchVal as Result.Ok<*, *>).value
                     d.field("data", guard)
                 }
                 else -> {
-                    val WouldBlock = matchVal.error
+                    val WouldBlock = (matchVal as Result.Err<*, *>).error
                     d.field("data", "<locked>")
                 }
             }

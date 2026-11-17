@@ -178,12 +178,17 @@ public fun benchmark(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest
         when {
             // bs.bench(f) (
             result is Result.Ok && result.value is Result.Ok && (result.value as Result.Ok).value != null -> {
+                val valueVal = result.value
+                val valueVal1 = (valueVal as Result.Ok).value
+                val nsIterSumm = valueVal1
                 val nsIter = max(nsIterSumm.median.toULong(), 1)
                 val mbS = bs.bytes * 1000uL / nsIter
                 val bs1 = BenchSamples(nsIterSumm = nsIterSumm, mbS = mbS.toInt())
                 TestResult.TrBench(bs1)
             }
             result is Result.Ok && result.value is Result.Ok && (result.value as Result.Ok).value == null -> {
+                val valueVal2 = result.value
+                val None = (valueVal2 as Result.Ok).value
                 // iter not called, so no data.
                 // Note: error in this case?
                 val samples: MutableList<Double> = MutableList(1) { 0.0 }
@@ -191,7 +196,10 @@ public fun benchmark(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest
                 TestResult.TrBench(bs2)
             }
             result is Result.Err -> TestResult.TrFailed
-            else -> TestResult.TrFailed
+            else -> {
+                val valueVal3 = result.value
+                TestResult.TrFailed
+            }
         }
     val stdout = data.lock().unwrap().toVec()
     val message = CompletedTest.new(id, desc, testResult, null, stdout)

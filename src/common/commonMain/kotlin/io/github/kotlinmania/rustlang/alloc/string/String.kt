@@ -471,10 +471,11 @@ public open class RustAllocString(
     public open fun tryPushStr(string: String): Result<Unit, TryReserveError> = this.vec.tryExtendFromSliceOfBytes(string.encodeToByteArray().map { it.toUByte() })
 
     public open fun pushStrSlice(slice: List<String>) {
+        var selfMut = this
         // use saturating arithmetic to ensure that in the case of an overflow, reserve() throws OOM
         val additional: Saturating<Int> = slice.map({ x -> Saturating(x.len()) }).sum()
-        this.reserve(additional.first)
-        val (ptr, len, cap) = take(this).intoRawParts()
+        selfMut.reserve(additional.first)
+        val (ptr, len, cap) = take(selfMut).intoRawParts()
         // SAFETY: `self` have reserved enough space for strs in `slice`, and we are copying from valid UTF-8 slices.
         // Therefore all unchecked operations are safe.
         run {
@@ -483,7 +484,7 @@ public open class RustAllocString(
                 ptr.copyNonoverlapping(new.asPtr(), dst, new.len())
                 dst = dst.add(new.len())
             }
-            this = String.fromRawParts(ptr, len + additional.first, cap)
+            selfMut = String.fromRawParts(ptr, len + additional.first, cap)
         }
     }
 
@@ -1100,7 +1101,7 @@ public open class RustAllocString(
         // or into the uninitialized spare capacity otherwise. The borrow checker
         // ensures that the source and destination do not overlap.
         run {
-            copyNonoverlapping(string.asPtr(), this.vec.asMutPtr().add(idx), amt)
+            copyNonoverlapping(string.asPtr(), this.vec.asMutPtr().add(idx), amt, typeLayoutT = PrimitiveLayouts.U8)
         }
         // SAFETY: Update the length to include the newly added bytes.
         run {

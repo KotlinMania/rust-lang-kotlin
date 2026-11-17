@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
@@ -33,7 +34,6 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.TryLockError
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.os.windows.io.AsHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.AsRawHandle
@@ -129,7 +129,7 @@ public open class File internal constructor(
             val overlapped: c.Overlapped  = c.Overlapped()
             val event = c.CreateEventW(MutPtr(0L), c.FALSE, c.FALSE, ConstPtr(0L))
             if (event.isNull()) {
-                return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+                return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
             }
             overlapped.hEvent = event
             val lockResult = cvt(c.LockFileEx(this.handle.asRawHandle(), flags, 0, UInt.MAX_VALUE, UInt.MAX_VALUE, overlapped))
@@ -403,9 +403,18 @@ public open class File internal constructor(
         return run {
             val matchVal = this.posixDelete()
             when {
-                matchVal is Result.Err && matchVal.error == WinError.INVALID_PARAMETER -> this.win32Delete()
-                matchVal is Result.Err && matchVal.error == WinError.NOT_SUPPORTED -> this.win32Delete()
-                matchVal is Result.Err && matchVal.error == WinError.INVALID_FUNCTION -> this.win32Delete()
+                matchVal is Result.Err && matchVal.error == WinError.INVALID_PARAMETER -> {
+                    val errorVal = matchVal.error
+                    this.win32Delete()
+                }
+                matchVal is Result.Err && matchVal.error == WinError.NOT_SUPPORTED -> {
+                    val errorVal1 = matchVal.error
+                    this.win32Delete()
+                }
+                matchVal is Result.Err && matchVal.error == WinError.INVALID_FUNCTION -> {
+                    val errorVal2 = matchVal.error
+                    this.win32Delete()
+                }
                 else -> {
                     val result = matchVal
                     result
@@ -883,15 +892,15 @@ public open class OpenOptions(
             val matchVal1 = Triple(this.read, this.write, this.append)
             when {
                 matchVal1.second == false && matchVal1.third == false && (this.truncate || this.create || this.createNew) -> {
-                    Result.Err<UInt, Error>(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
+                    Result.Err<UInt, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
                 }
-                matchVal1.third == true && this.truncate && !this.createNew -> Result.Err<UInt, Error>(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "append and truncate cannot both be enabled"))
+                matchVal1.third == true && this.truncate && !this.createNew -> Result.Err<UInt, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidInput, "append and truncate cannot both be enabled"))
                 matchVal1.first == true && matchVal1.second == false && matchVal1.third == false -> Result.Ok<UInt, Error>(c.GENERIC_READ)
                 matchVal1.first == false && matchVal1.second == true && matchVal1.third == false -> Result.Ok<UInt, Error>(c.GENERIC_WRITE)
                 matchVal1.first == true && matchVal1.second == true && matchVal1.third == false -> Result.Ok<UInt, Error>(c.GENERIC_READ or c.GENERIC_WRITE)
                 matchVal1.first == false && matchVal1.third == true -> Result.Ok<UInt, Error>(c.FILE_GENERIC_WRITE and c.FILE_WRITE_DATA.inv())
                 matchVal1.first == true && matchVal1.third == true -> Result.Ok<UInt, Error>(c.GENERIC_READ or (c.FILE_GENERIC_WRITE and c.FILE_WRITE_DATA.inv()))
-                else -> Result.Err<UInt, Error>(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "must specify at least one of read, write, or append access"))
+                else -> Result.Err<UInt, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidInput, "must specify at least one of read, write, or append access"))
             }
         }
     }
@@ -1156,7 +1165,7 @@ public fun readdir(p: Path): Result<ReadDir, Error> {
     if (p.asOsStr().isEmpty()) {
         // Return an error code consistent with other ways of opening files.
         // E.g. fs.metadata or File.open.
-        return Result.Err<ReadDir, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(c.ERROR_PATH_NOT_FOUND.toInt()))
+        return Result.Err<ReadDir, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(c.ERROR_PATH_NOT_FOUND.toInt()))
     }
     val root = p.toPathBuf()
     val star = p.join("*")
@@ -1220,7 +1229,7 @@ public fun unlink(path: WCStr): Result<Unit, Error> {
             }
         }
         // return the original error if any of the above fails.
-        Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(err.code))
+        Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(err.code))
     } else {
         Result.Ok<Unit, Error>(Unit)
     }
@@ -1254,7 +1263,7 @@ public fun renameInner(old: WCStr, new: WCStr, moveFlags: UInt, renameFlags: UIn
                 (addrOfMut(fileRenameInfo.rootDirectory)).write(MutPtr(0L))
                 // Don't include the NULL in the size
                 (addrOfMut(fileRenameInfo.fileNameLength)).write(newLenWithoutNulInBytes)
-                kmCopyNonoverlapping((new.asPtr()).rawAddress, ((addrOfMut(fileRenameInfo.fileName)).cast()).rawAddress, (new.countBytes()).toLong() * (PrimitiveLayouts.U16).sizeBytes)
+                kmCopyNonoverlapping((new.asPtr()).rawAddress, ((addrOfMut(fileRenameInfo.fileName)).cast()).rawAddress, (new.countBytes()).toLong() * (UnresolvedTypeLayout<WCStr>()).sizeBytes)
             }
             val result = c.SetFileInformationByHandle(f.asRawHandle(), c.FileRenameInfoEx, fileRenameInfo.cast(), structSize)
             dealloc(fileRenameInfo.cast(), layout)
@@ -1295,7 +1304,7 @@ public fun removeDirAll(path: WCStr): Result<Unit, Error> {
     val file = when (val tryResult = File.openNative(path, opts)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
     // Test if the file is not a directory or a symlink to a directory.
     if ((when (val tryResult = file.basicInfo()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }.fileAttributes and c.FILE_ATTRIBUTE_DIRECTORY) == 0u) {
-        return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(((c.ERROR_DIRECTORY as Any?) as Result<Unit, Error>)))
+        return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(((c.ERROR_DIRECTORY as Any?) as Result<Unit, Error>)))
     }
     // Remove the directory and all its contents.
     return removeDirAllIterative(file).ioResult()

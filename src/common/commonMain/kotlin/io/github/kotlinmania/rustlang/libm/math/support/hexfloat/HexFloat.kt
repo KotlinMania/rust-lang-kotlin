@@ -12,7 +12,6 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.num.trailingZeros
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.libm.math.exp.exp
 import io.github.kotlinmania.rustlang.libm.math.support.env.Round
 import io.github.kotlinmania.rustlang.libm.math.support.env.Status
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
@@ -33,7 +32,11 @@ public fun hf16(s: String): F16 =
                 val bits = matchVal.value
                 F16.fromBits(bits.toUShort())
             }
-            else -> error("$s")
+            else -> {
+                val errorVal = matchVal.error
+                val (s1) = errorVal as HexFloatParseError
+                error("$s1")
+            }
         }
     }
 
@@ -48,7 +51,11 @@ public fun hf32(s: String): kotlin.Float =
                 val bits = matchVal.value
                 f32FromBits(bits.toUInt())
             }
-            else -> error("$s")
+            else -> {
+                val errorVal = matchVal.error
+                val (s1) = errorVal as HexFloatParseError
+                error("$s1")
+            }
         }
     }
 
@@ -63,7 +70,11 @@ public fun hf64(s: String): Double =
                 val bits = matchVal.value
                 f64FromBits(bits.toULong())
             }
-            else -> error("$s")
+            else -> {
+                val errorVal = matchVal.error
+                val (s1) = errorVal as HexFloatParseError
+                error("$s1")
+            }
         }
     }
 
@@ -78,7 +89,11 @@ public fun hf128(s: String): F128 =
                 val bits = matchVal.value
                 F128.fromBits(bits)
             }
-            else -> error("$s")
+            else -> {
+                val errorVal = matchVal.error
+                val (s1) = errorVal as HexFloatParseError
+                error("$s1")
+            }
         }
     }
 
@@ -105,10 +120,26 @@ public fun parseHexExact(s: String, bits: UInt, sigBits: UInt): Result<U128, Hex
                 val e = matchVal.error
                 Result.Err<U128, HexFloatParseError>(e)
             }
-            matchVal is Result.Ok && matchVal.value.second == Status.OK -> Result.Ok<U128, HexFloatParseError>(bits)
-            matchVal is Result.Ok && (matchVal as Result.Ok).value.second.overflow() -> Result.Err<U128, HexFloatParseError>(HexFloatParseError("the value is too huge"))
-            matchVal is Result.Ok && (matchVal as Result.Ok).value.second.underflow() -> Result.Err<U128, HexFloatParseError>(HexFloatParseError("the value is too tiny"))
-            matchVal is Result.Ok && (matchVal as Result.Ok).value.second.inexact() -> Result.Err<U128, HexFloatParseError>(HexFloatParseError("the value is too precise"))
+            matchVal is Result.Ok && matchVal.value.second == Status.OK -> {
+                val valueVal = matchVal.value
+                val bits1 = valueVal.first
+                Result.Ok<U128, HexFloatParseError>(bits1)
+            }
+            matchVal is Result.Ok && (matchVal as Result.Ok).value.second.overflow() -> {
+                val valueVal1 = matchVal.value
+                val status = valueVal1.second
+                Result.Err<U128, HexFloatParseError>(HexFloatParseError("the value is too huge"))
+            }
+            matchVal is Result.Ok && (matchVal as Result.Ok).value.second.underflow() -> {
+                val valueVal2 = matchVal.value
+                val status1 = valueVal2.second
+                Result.Err<U128, HexFloatParseError>(HexFloatParseError("the value is too tiny"))
+            }
+            matchVal is Result.Ok && (matchVal as Result.Ok).value.second.inexact() -> {
+                val valueVal3 = matchVal.value
+                val status2 = valueVal3.second
+                Result.Err<U128, HexFloatParseError>(HexFloatParseError("the value is too precise"))
+            }
             else -> error("unreachable")
         }
     }
@@ -176,7 +207,7 @@ public fun parseFinite(b: List<UByte>, bits: UInt, sigBits: UInt, roundingMode: 
     val maxMsb: Int = (1 shl (expBits - 1u).toInt()) - 1
     // The exponent of one ULP in the subnormals
     val minLsb: Int = 1 - maxMsb - sigBits.toInt()
-    var (sig, exp) =
+    var (sig1, exp1) =
         run {
             val matchVal = parseHex(b)
             when {
@@ -184,44 +215,52 @@ public fun parseFinite(b: List<UByte>, bits: UInt, sigBits: UInt, roundingMode: 
                     val e = matchVal.error
                     return Result.Err<Pair<U128, Status>, HexFloatParseError>(e)
                 }
-                matchVal is Result.Ok && matchVal.value.sig == 0 -> { return Result.Ok<Pair<U128, Status>, HexFloatParseError>(Pair(0, Status.OK)) }
-                else -> Pair(sig, exp)
+                matchVal is Result.Ok && matchVal.value.sig == 0 -> {
+                    val valueVal = matchVal.value
+                    return Result.Ok<Pair<U128, Status>, HexFloatParseError>(Pair(0, Status.OK))
+                }
+                else -> {
+                    val valueVal1 = matchVal.value
+                    val sig = valueVal1.sig
+                    val exp = valueVal1.exp
+                    Pair(sig, exp)
+                }
             }
         }
-    var roundBits = sig.ilog2().toInt() - sigBits.toInt()
+    var roundBits = sig1.ilog2().toInt() - sigBits.toInt()
     // Round at least up to minLsb
-    if (exp < minLsb - roundBits) {
-        roundBits = minLsb - exp
+    if (exp1 < minLsb - roundBits) {
+        roundBits = minLsb - exp1
     }
     var status = Status.OK
-    exp += roundBits
+    exp1 += roundBits
     if (roundBits > 0) {
         // first, prepare for rounding exactly two bits
         if (roundBits == 1) {
-            sig = sig shl 1
+            sig1 = sig1 shl 1
         } else if (roundBits > 2) {
-            sig = shrOddRounding(sig, (roundBits - 2).toUInt())
+            sig1 = shrOddRounding(sig1, (roundBits - 2).toUInt())
         }
-        if (sig and 0x3 != 0) {
+        if (sig1 and 0x3 != 0) {
             status = Status.INEXACT
         }
-        sig = shr2Round(sig, roundingMode)
+        sig1 = shr2Round(sig1, roundingMode)
     } else if (roundBits < 0) {
-        sig = sig shl -roundBits
+        sig1 = sig1 shl -roundBits
     }
     // The parsed value is X = sig * 2^exp
     // Expressed as a multiple U of the smallest subnormal value:
     // X = U * 2^minLsb, so U = sig * 2^(exp-minLsb)
-    val uexp = U128.fromInt((exp - minLsb))
+    val uexp = U128.fromInt((exp1 - minLsb))
     val uexp1 = uexp shl sigBits.toInt()
     // Note that it is possible for the exponent bits to equal 2 here
     // if the value rounded up, but that means the mantissa is all zeroes
     // so the value is still correct
-    check(sig <= 2 shl sigBits.toInt())
+    check(sig1 <= 2 shl sigBits.toInt())
     val inf = ((1 shl expBits.toInt()) - 1) shl sigBits.toInt()
     val bits2 =
         run {
-            val matchVal1 = sig.checkedAdd(uexp1)
+            val matchVal1 = sig1.checkedAdd(uexp1)
             when {
                 matchVal1 != null && bits < inf -> {
                     val bits1 = matchVal1

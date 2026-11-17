@@ -89,7 +89,7 @@ public open class BorrowedSocket internal constructor(
         } else {
             val error = C.WSAGetLastError()
             if (error != C.WSAEPROTOTYPE && error != C.WSAEINVAL) {
-                return Result.Err<OwnedSocket, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
+                return Result.Err<OwnedSocket, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(error))
             }
             val socket1 = C.WSASocketW(info.iAddressFamily, info.iSocketType, info.iProtocol, info, 0, C.WSA_FLAG_OVERLAPPED)
             if (socket1 == C.INVALID_SOCKET) {
@@ -208,7 +208,7 @@ public open class OwnedSocket internal constructor(
 /**
  * Returns the last error from the Windows socket interface.
  */
-public fun lastError(): io.github.kotlinmania.rustlang.std.io.Error = io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(C.WSAGetLastError())
+public fun lastError(): io.github.kotlinmania.rustlang.core.io.error.Error = io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(C.WSAGetLastError())
 
 /**
  * A trait to borrow the socket from an underlying object.

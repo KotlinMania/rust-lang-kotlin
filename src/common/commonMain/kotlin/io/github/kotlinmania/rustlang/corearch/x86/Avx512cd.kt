@@ -2,7 +2,9 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.simd.I32x16
 import io.github.kotlinmania.rustlang.corearch.simd.I32x4
 import io.github.kotlinmania.rustlang.corearch.simd.I32x8
@@ -69,7 +71,7 @@ public fun mmBroadcastmbEpi64(k: Mmask8): M128i = mmSet1Epi64x(k.toLong())
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_conflict_epi32&expand=1248)
  */
-public fun mm512ConflictEpi32(a: M512i): M512i = transmute(vpconflictd(a.asI32x16()))
+public fun mm512ConflictEpi32(a: M512i): M512i = transmuteWithLayouts<I32x16, M512i>(vpconflictd(a.asI32x16()), UnresolvedTypeLayout<I32x16>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Test each 32-bit element of a for equality with all other elements in a closer to the least significant bit using writemask k (elements are copied from src when the corresponding mask bit is not set). Each element's comparison forms a zero extended bit vector in dst.
@@ -98,7 +100,7 @@ public fun mm512MaskzConflictEpi32(k: Mmask16, a: M512i): M512i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_conflict_epi32&expand=1245)
  */
-public fun mm256ConflictEpi32(a: M256i): M256i = transmute(vpconflictd256(a.asI32x8()))
+public fun mm256ConflictEpi32(a: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpconflictd256(a.asI32x8()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Test each 32-bit element of a for equality with all other elements in a closer to the least significant bit using writemask k (elements are copied from src when the corresponding mask bit is not set). Each element's comparison forms a zero extended bit vector in dst.
@@ -127,7 +129,7 @@ public fun mm256MaskzConflictEpi32(k: Mmask8, a: M256i): M256i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_conflict_epi32&expand=1242)
  */
-public fun mmConflictEpi32(a: M128i): M128i = transmute(vpconflictd128(a.asI32x4()))
+public fun mmConflictEpi32(a: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpconflictd128(a.asI32x4()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Test each 32-bit element of a for equality with all other elements in a closer to the least significant bit using writemask k (elements are copied from src when the corresponding mask bit is not set). Each element's comparison forms a zero extended bit vector in dst.
@@ -156,7 +158,7 @@ public fun mmMaskzConflictEpi32(k: Mmask8, a: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_conflict_epi64&expand=1257)
  */
-public fun mm512ConflictEpi64(a: M512i): M512i = transmute(vpconflictq(a.asI64x8()))
+public fun mm512ConflictEpi64(a: M512i): M512i = transmuteWithLayouts<I64x8, M512i>(vpconflictq(a.asI64x8()), UnresolvedTypeLayout<I64x8>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Test each 64-bit element of a for equality with all other elements in a closer to the least significant bit using writemask k (elements are copied from src when the corresponding mask bit is not set). Each element's comparison forms a zero extended bit vector in dst.
@@ -185,7 +187,7 @@ public fun mm512MaskzConflictEpi64(k: Mmask8, a: M512i): M512i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_conflict_epi64&expand=1254)
  */
-public fun mm256ConflictEpi64(a: M256i): M256i = transmute(vpconflictq256(a.asI64x4()))
+public fun mm256ConflictEpi64(a: M256i): M256i = transmuteWithLayouts<I64x4, M256i>(vpconflictq256(a.asI64x4()), UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Test each 64-bit element of a for equality with all other elements in a closer to the least significant bit using writemask k (elements are copied from src when the corresponding mask bit is not set). Each element's comparison forms a zero extended bit vector in dst.
@@ -214,7 +216,7 @@ public fun mm256MaskzConflictEpi64(k: Mmask8, a: M256i): M256i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_conflict_epi64&expand=1251)
  */
-public fun mmConflictEpi64(a: M128i): M128i = transmute(vpconflictq128(a.asI64x2()))
+public fun mmConflictEpi64(a: M128i): M128i = transmuteWithLayouts<I64x2, M128i>(vpconflictq128(a.asI64x2()), UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Test each 64-bit element of a for equality with all other elements in a closer to the least significant bit using writemask k (elements are copied from src when the corresponding mask bit is not set). Each element's comparison forms a zero extended bit vector in dst.

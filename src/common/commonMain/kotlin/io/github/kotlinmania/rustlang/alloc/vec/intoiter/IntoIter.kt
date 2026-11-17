@@ -531,7 +531,7 @@ public open class IntoIter<T, A : Allocator>(
          * Creates an empty `vec.IntoIter`.
          *
          * ```kotlin
-         * val iter: ArrayDeque<UByte> = Default.default()
+         * val iter: ArrayDeque<UByte> = ArrayDeque()
          * check(iter.size == 0)
          * check(iter.toList() == listOf())
          * ```

@@ -201,7 +201,7 @@ public open class Hasher<S : Sip>(
                     }
                     val localStorageL1C0 = AddressableLocal(0.toULong(), PrimitiveLayouts.U64)
                     val data by localStorageL1C0
-                    copyNonoverlapping(ConstPtr((msg.asPtr()).rawAddress + ((i).toLong() * (PrimitiveLayouts.U8).strideBytes)), (MutPtr(localStorageL1C0.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<ULong>(typeLayoutT = PrimitiveLayouts.U64))
+                    copyNonoverlapping(ConstPtr((msg.asPtr()).rawAddress + ((i).toLong() * (PrimitiveLayouts.U8).strideBytes)), (MutPtr(localStorageL1C0.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<ULong>(typeLayoutT = PrimitiveLayouts.U64), typeLayoutT = PrimitiveLayouts.U8)
                     data
                 }
             this.state.v3 = this.state.v3 xor mi
@@ -321,7 +321,7 @@ public fun u8to64Le(buf: List<UByte>, start: Int, len: Int): ULong {
             }
             val localStorageL1C0 = AddressableLocal(0.toUInt(), PrimitiveLayouts.U32)
             val data by localStorageL1C0
-            copyNonoverlapping(ConstPtr((buf.asPtr()).rawAddress + ((start + i).toLong() * (PrimitiveLayouts.U8).strideBytes)), (MutPtr(localStorageL1C0.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32))
+            copyNonoverlapping(ConstPtr((buf.asPtr()).rawAddress + ((start + i).toLong() * (PrimitiveLayouts.U8).strideBytes)), (MutPtr(localStorageL1C0.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32), typeLayoutT = PrimitiveLayouts.U8)
             data
         }).toULong()
         i += 4
@@ -334,7 +334,7 @@ public fun u8to64Le(buf: List<UByte>, start: Int, len: Int): ULong {
             }
             val localStorageL1C0 = AddressableLocal(0.toUShort(), PrimitiveLayouts.U16)
             val data1 by localStorageL1C0
-            copyNonoverlapping(ConstPtr((buf.asPtr()).rawAddress + ((start + i).toLong() * (PrimitiveLayouts.U8).strideBytes)), (MutPtr(localStorageL1C0.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16))
+            copyNonoverlapping(ConstPtr((buf.asPtr()).rawAddress + ((start + i).toLong() * (PrimitiveLayouts.U8).strideBytes)), (MutPtr(localStorageL1C0.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16), typeLayoutT = PrimitiveLayouts.U8)
             data1
         }).toULong()) shl (i * 8).toInt())
         i += 2

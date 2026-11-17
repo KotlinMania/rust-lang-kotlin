@@ -10,11 +10,11 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.overflowingAdd
 import io.github.kotlinmania.rustlang.core.num.overflowingSub
@@ -47,7 +47,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
  * s390x-specific 128-bit wide vector of sixteen packed `Byte`
  */
 public open class VectorSignedChar(
-    public var value: ByteArray,
+    public var value: ByteArray = ByteArray(16),
 ) {
     public var field0: ByteArray
         get() = value
@@ -95,17 +95,17 @@ public open class VectorSignedChar(
          */
         public fun splat(value: Byte): VectorSignedChar = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Byte>): VectorSignedChar = transmute(simd)
+        public fun from(simd: Simd<Byte>): VectorSignedChar = transmuteWithLayouts<Simd<Byte>, VectorSignedChar>(simd, UnresolvedTypeLayout<Simd<Byte>>(), VectorSignedChar.typeLayout())
     }
 }
 
-public fun fromSimdByte(simd: VectorSignedChar): Simd<Byte> = transmute(simd)
+public fun fromSimdByte(simd: VectorSignedChar): Simd<Byte> = transmuteWithLayouts<VectorSignedChar, Simd<Byte>>(simd, VectorSignedChar.typeLayout(), UnresolvedTypeLayout<Simd<Byte>>())
 
 /**
  * s390x-specific 128-bit wide vector of sixteen packed `UByte`
  */
 public open class VectorUnsignedChar(
-    public var value: UByteArray,
+    public var value: UByteArray = UByteArray(16),
 ) {
     public var field0: UByteArray
         get() = value
@@ -153,17 +153,17 @@ public open class VectorUnsignedChar(
          */
         public fun splat(value: UByte): VectorUnsignedChar = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UByte>): VectorUnsignedChar = transmute(simd)
+        public fun from(simd: Simd<UByte>): VectorUnsignedChar = transmuteWithLayouts<Simd<UByte>, VectorUnsignedChar>(simd, UnresolvedTypeLayout<Simd<UByte>>(), VectorUnsignedChar.typeLayout())
     }
 }
 
-public fun fromSimdUByte(simd: VectorUnsignedChar): Simd<UByte> = transmute(simd)
+public fun fromSimdUByte(simd: VectorUnsignedChar): Simd<UByte> = transmuteWithLayouts<VectorUnsignedChar, Simd<UByte>>(simd, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<Simd<UByte>>())
 
 /**
  * s390x-specific 128-bit wide vector mask of sixteen packed elements
  */
 public open class VectorBoolChar(
-    public var value: ByteArray,
+    public var value: ByteArray = ByteArray(16),
 ) {
     public var field0: ByteArray
         get() = value
@@ -211,19 +211,19 @@ public open class VectorBoolChar(
          */
         public fun splat(value: Byte): VectorBoolChar = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Byte>): VectorBoolChar = transmute(simd)
+        public fun from(simd: Simd<Byte>): VectorBoolChar = transmuteWithLayouts<Simd<Byte>, VectorBoolChar>(simd, UnresolvedTypeLayout<Simd<Byte>>(), VectorBoolChar.typeLayout())
 
-        public fun from(value: M8x16): VectorBoolChar = transmute(value)
+        public fun from(value: M8x16): VectorBoolChar = transmuteWithLayouts<M8x16, VectorBoolChar>(value, UnresolvedTypeLayout<M8x16>(), VectorBoolChar.typeLayout())
     }
 }
 
-public fun fromSimdByte(simd: VectorBoolChar): Simd<Byte> = transmute(simd)
+public fun fromSimdByte(simd: VectorBoolChar): Simd<Byte> = transmuteWithLayouts<VectorBoolChar, Simd<Byte>>(simd, VectorBoolChar.typeLayout(), UnresolvedTypeLayout<Simd<Byte>>())
 
 /**
  * s390x-specific 128-bit wide vector of eight packed `Short`
  */
 public open class VectorSignedShort(
-    public var value: ShortArray,
+    public var value: ShortArray = ShortArray(8),
 ) {
     public var field0: ShortArray
         get() = value
@@ -271,17 +271,17 @@ public open class VectorSignedShort(
          */
         public fun splat(value: Short): VectorSignedShort = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Short>): VectorSignedShort = transmute(simd)
+        public fun from(simd: Simd<Short>): VectorSignedShort = transmuteWithLayouts<Simd<Short>, VectorSignedShort>(simd, UnresolvedTypeLayout<Simd<Short>>(), VectorSignedShort.typeLayout())
     }
 }
 
-public fun fromSimdShort(simd: VectorSignedShort): Simd<Short> = transmute(simd)
+public fun fromSimdShort(simd: VectorSignedShort): Simd<Short> = transmuteWithLayouts<VectorSignedShort, Simd<Short>>(simd, VectorSignedShort.typeLayout(), UnresolvedTypeLayout<Simd<Short>>())
 
 /**
  * s390x-specific 128-bit wide vector of eight packed `UShort`
  */
 public open class VectorUnsignedShort(
-    public var value: UShortArray,
+    public var value: UShortArray = UShortArray(8),
 ) {
     public var field0: UShortArray
         get() = value
@@ -329,17 +329,17 @@ public open class VectorUnsignedShort(
          */
         public fun splat(value: UShort): VectorUnsignedShort = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UShort>): VectorUnsignedShort = transmute(simd)
+        public fun from(simd: Simd<UShort>): VectorUnsignedShort = transmuteWithLayouts<Simd<UShort>, VectorUnsignedShort>(simd, UnresolvedTypeLayout<Simd<UShort>>(), VectorUnsignedShort.typeLayout())
     }
 }
 
-public fun fromSimdUShort(simd: VectorUnsignedShort): Simd<UShort> = transmute(simd)
+public fun fromSimdUShort(simd: VectorUnsignedShort): Simd<UShort> = transmuteWithLayouts<VectorUnsignedShort, Simd<UShort>>(simd, VectorUnsignedShort.typeLayout(), UnresolvedTypeLayout<Simd<UShort>>())
 
 /**
  * s390x-specific 128-bit wide vector mask of eight packed elements
  */
 public open class VectorBoolShort(
-    public var value: ShortArray,
+    public var value: ShortArray = ShortArray(8),
 ) {
     public var field0: ShortArray
         get() = value
@@ -387,19 +387,19 @@ public open class VectorBoolShort(
          */
         public fun splat(value: Short): VectorBoolShort = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Short>): VectorBoolShort = transmute(simd)
+        public fun from(simd: Simd<Short>): VectorBoolShort = transmuteWithLayouts<Simd<Short>, VectorBoolShort>(simd, UnresolvedTypeLayout<Simd<Short>>(), VectorBoolShort.typeLayout())
 
-        public fun from(value: M16x8): VectorBoolShort = transmute(value)
+        public fun from(value: M16x8): VectorBoolShort = transmuteWithLayouts<M16x8, VectorBoolShort>(value, UnresolvedTypeLayout<M16x8>(), VectorBoolShort.typeLayout())
     }
 }
 
-public fun fromSimdShort(simd: VectorBoolShort): Simd<Short> = transmute(simd)
+public fun fromSimdShort(simd: VectorBoolShort): Simd<Short> = transmuteWithLayouts<VectorBoolShort, Simd<Short>>(simd, VectorBoolShort.typeLayout(), UnresolvedTypeLayout<Simd<Short>>())
 
 /**
  * s390x-specific 128-bit wide vector of four packed `Int`
  */
 public open class VectorSignedInt(
-    public var value: IntArray,
+    public var value: IntArray = IntArray(4),
 ) {
     public var field0: IntArray
         get() = value
@@ -447,17 +447,17 @@ public open class VectorSignedInt(
          */
         public fun splat(value: Int): VectorSignedInt = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Int>): VectorSignedInt = transmute(simd)
+        public fun from(simd: Simd<Int>): VectorSignedInt = transmuteWithLayouts<Simd<Int>, VectorSignedInt>(simd, UnresolvedTypeLayout<Simd<Int>>(), VectorSignedInt.typeLayout())
     }
 }
 
-public fun fromSimdInt(simd: VectorSignedInt): Simd<Int> = transmute(simd)
+public fun fromSimdInt(simd: VectorSignedInt): Simd<Int> = transmuteWithLayouts<VectorSignedInt, Simd<Int>>(simd, VectorSignedInt.typeLayout(), UnresolvedTypeLayout<Simd<Int>>())
 
 /**
  * s390x-specific 128-bit wide vector of four packed `UInt`
  */
 public open class VectorUnsignedInt(
-    public var value: UIntArray,
+    public var value: UIntArray = UIntArray(4),
 ) {
     public var field0: UIntArray
         get() = value
@@ -505,17 +505,17 @@ public open class VectorUnsignedInt(
          */
         public fun splat(value: UInt): VectorUnsignedInt = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UInt>): VectorUnsignedInt = transmute(simd)
+        public fun from(simd: Simd<UInt>): VectorUnsignedInt = transmuteWithLayouts<Simd<UInt>, VectorUnsignedInt>(simd, UnresolvedTypeLayout<Simd<UInt>>(), VectorUnsignedInt.typeLayout())
     }
 }
 
-public fun fromSimdUInt(simd: VectorUnsignedInt): Simd<UInt> = transmute(simd)
+public fun fromSimdUInt(simd: VectorUnsignedInt): Simd<UInt> = transmuteWithLayouts<VectorUnsignedInt, Simd<UInt>>(simd, VectorUnsignedInt.typeLayout(), UnresolvedTypeLayout<Simd<UInt>>())
 
 /**
  * s390x-specific 128-bit wide vector mask of four packed elements
  */
 public open class VectorBoolInt(
-    public var value: IntArray,
+    public var value: IntArray = IntArray(4),
 ) {
     public var field0: IntArray
         get() = value
@@ -563,19 +563,19 @@ public open class VectorBoolInt(
          */
         public fun splat(value: Int): VectorBoolInt = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Int>): VectorBoolInt = transmute(simd)
+        public fun from(simd: Simd<Int>): VectorBoolInt = transmuteWithLayouts<Simd<Int>, VectorBoolInt>(simd, UnresolvedTypeLayout<Simd<Int>>(), VectorBoolInt.typeLayout())
 
-        public fun from(value: M32x4): VectorBoolInt = transmute(value)
+        public fun from(value: M32x4): VectorBoolInt = transmuteWithLayouts<M32x4, VectorBoolInt>(value, UnresolvedTypeLayout<M32x4>(), VectorBoolInt.typeLayout())
     }
 }
 
-public fun fromSimdInt(simd: VectorBoolInt): Simd<Int> = transmute(simd)
+public fun fromSimdInt(simd: VectorBoolInt): Simd<Int> = transmuteWithLayouts<VectorBoolInt, Simd<Int>>(simd, VectorBoolInt.typeLayout(), UnresolvedTypeLayout<Simd<Int>>())
 
 /**
  * s390x-specific 128-bit wide vector of two packed `Long`
  */
 public open class VectorSignedLongLong(
-    public var value: LongArray,
+    public var value: LongArray = LongArray(2),
 ) {
     public var field0: LongArray
         get() = value
@@ -623,17 +623,17 @@ public open class VectorSignedLongLong(
          */
         public fun splat(value: Long): VectorSignedLongLong = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): VectorSignedLongLong = transmute(simd)
+        public fun from(simd: Simd<Long>): VectorSignedLongLong = transmuteWithLayouts<Simd<Long>, VectorSignedLongLong>(simd, UnresolvedTypeLayout<Simd<Long>>(), VectorSignedLongLong.typeLayout())
     }
 }
 
-public fun fromSimdLong(simd: VectorSignedLongLong): Simd<Long> = transmute(simd)
+public fun fromSimdLong(simd: VectorSignedLongLong): Simd<Long> = transmuteWithLayouts<VectorSignedLongLong, Simd<Long>>(simd, VectorSignedLongLong.typeLayout(), UnresolvedTypeLayout<Simd<Long>>())
 
 /**
  * s390x-specific 128-bit wide vector of two packed `ULong`
  */
 public open class VectorUnsignedLongLong(
-    public var value: ULongArray,
+    public var value: ULongArray = ULongArray(2),
 ) {
     public var field0: ULongArray
         get() = value
@@ -681,17 +681,17 @@ public open class VectorUnsignedLongLong(
          */
         public fun splat(value: ULong): VectorUnsignedLongLong = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<ULong>): VectorUnsignedLongLong = transmute(simd)
+        public fun from(simd: Simd<ULong>): VectorUnsignedLongLong = transmuteWithLayouts<Simd<ULong>, VectorUnsignedLongLong>(simd, UnresolvedTypeLayout<Simd<ULong>>(), VectorUnsignedLongLong.typeLayout())
     }
 }
 
-public fun fromSimdULong(simd: VectorUnsignedLongLong): Simd<ULong> = transmute(simd)
+public fun fromSimdULong(simd: VectorUnsignedLongLong): Simd<ULong> = transmuteWithLayouts<VectorUnsignedLongLong, Simd<ULong>>(simd, VectorUnsignedLongLong.typeLayout(), UnresolvedTypeLayout<Simd<ULong>>())
 
 /**
  * s390x-specific 128-bit wide vector mask of two packed elements
  */
 public open class VectorBoolLongLong(
-    public var value: LongArray,
+    public var value: LongArray = LongArray(2),
 ) {
     public var field0: LongArray
         get() = value
@@ -739,17 +739,17 @@ public open class VectorBoolLongLong(
          */
         public fun splat(value: Long): VectorBoolLongLong = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): VectorBoolLongLong = transmute(simd)
+        public fun from(simd: Simd<Long>): VectorBoolLongLong = transmuteWithLayouts<Simd<Long>, VectorBoolLongLong>(simd, UnresolvedTypeLayout<Simd<Long>>(), VectorBoolLongLong.typeLayout())
     }
 }
 
-public fun fromSimdLong(simd: VectorBoolLongLong): Simd<Long> = transmute(simd)
+public fun fromSimdLong(simd: VectorBoolLongLong): Simd<Long> = transmuteWithLayouts<VectorBoolLongLong, Simd<Long>>(simd, VectorBoolLongLong.typeLayout(), UnresolvedTypeLayout<Simd<Long>>())
 
 /**
  * s390x-specific 128-bit wide vector of four packed `Float`
  */
 public open class VectorFloat(
-    public var value: FloatArray,
+    public var value: FloatArray = FloatArray(4),
 ) {
     public var field0: FloatArray
         get() = value
@@ -797,17 +797,17 @@ public open class VectorFloat(
          */
         public fun splat(value: Float): VectorFloat = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Float>): VectorFloat = transmute(simd)
+        public fun from(simd: Simd<Float>): VectorFloat = transmuteWithLayouts<Simd<Float>, VectorFloat>(simd, UnresolvedTypeLayout<Simd<Float>>(), VectorFloat.typeLayout())
     }
 }
 
-public fun fromSimdFloat(simd: VectorFloat): Simd<Float> = transmute(simd)
+public fun fromSimdFloat(simd: VectorFloat): Simd<Float> = transmuteWithLayouts<VectorFloat, Simd<Float>>(simd, VectorFloat.typeLayout(), UnresolvedTypeLayout<Simd<Float>>())
 
 /**
  * s390x-specific 128-bit wide vector of two packed `Double`
  */
 public open class VectorDouble(
-    public var value: DoubleArray,
+    public var value: DoubleArray = DoubleArray(2),
 ) {
     public var field0: DoubleArray
         get() = value
@@ -855,17 +855,17 @@ public open class VectorDouble(
          */
         public fun splat(value: Double): VectorDouble = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): VectorDouble = transmute(simd)
+        public fun from(simd: Simd<Double>): VectorDouble = transmuteWithLayouts<Simd<Double>, VectorDouble>(simd, UnresolvedTypeLayout<Simd<Double>>(), VectorDouble.typeLayout())
     }
 }
 
-public fun fromSimdDouble(simd: VectorDouble): Simd<Double> = transmute(simd)
+public fun fromSimdDouble(simd: VectorDouble): Simd<Double> = transmuteWithLayouts<VectorDouble, Simd<Double>>(simd, VectorDouble.typeLayout(), UnresolvedTypeLayout<Simd<Double>>())
 
-public fun fromM8x16(value: VectorBoolChar): M8x16 = transmute(value)
+public fun fromM8x16(value: VectorBoolChar): M8x16 = transmuteWithLayouts<VectorBoolChar, M8x16>(value, VectorBoolChar.typeLayout(), UnresolvedTypeLayout<M8x16>())
 
-public fun fromM16x8(value: VectorBoolShort): M16x8 = transmute(value)
+public fun fromM16x8(value: VectorBoolShort): M16x8 = transmuteWithLayouts<VectorBoolShort, M16x8>(value, VectorBoolShort.typeLayout(), UnresolvedTypeLayout<M16x8>())
 
-public fun fromM32x4(value: VectorBoolInt): M32x4 = transmute(value)
+public fun fromM32x4(value: VectorBoolInt): M32x4 = transmuteWithLayouts<VectorBoolInt, M32x4>(value, VectorBoolInt.typeLayout(), UnresolvedTypeLayout<M32x4>())
 
 public open class PackedTuple<T, U>(
     public var x: T,
@@ -1245,7 +1245,7 @@ public expect fun maxnumV4f32(a: VectorFloat, b: VectorFloat): VectorFloat
 public expect fun maxnumV2f64(a: VectorDouble, b: VectorDouble): VectorDouble
 
 public open class ShuffleMask(
-    public var value: UIntArray,
+    public var value: UIntArray = UIntArray((N).toInt()),
 ) {
     public var field0: UIntArray
         get() = value
@@ -1275,7 +1275,7 @@ public open class ShuffleMask(
             }
 
         public fun reverse(n: Int): ShuffleMask {
-            val index = MutableList(n) { 0 }
+            val index = UIntArray(n) { 0u }
             var i = 0
             while (i < n) {
                 index[i] = (n - i - 1).toUInt()
@@ -1285,7 +1285,7 @@ public open class ShuffleMask(
         }
 
         public fun mergeLow(n: Int): ShuffleMask {
-            val mask = MutableList(n) { 0 }
+            val mask = UIntArray(n) { 0u }
             var i = n / 2
             var index = 0
             while (index < n) {
@@ -1298,7 +1298,7 @@ public open class ShuffleMask(
         }
 
         public fun mergeHigh(n: Int): ShuffleMask {
-            val mask = MutableList(n) { 0 }
+            val mask = UIntArray(n) { 0u }
             var i = 0
             var index = 0
             while (index < n) {
@@ -1311,7 +1311,7 @@ public open class ShuffleMask(
         }
 
         public fun even(n: Int): ShuffleMask {
-            val mask = MutableList(n) { 0 }
+            val mask = UIntArray(n) { 0u }
             var i = 0
             var index = 0
             while (index < n) {
@@ -1323,7 +1323,7 @@ public open class ShuffleMask(
         }
 
         public fun odd(n: Int): ShuffleMask {
-            val mask = MutableList(n) { 0 }
+            val mask = UIntArray(n) { 0u }
             var i = 1
             var index = 0
             while (index < n) {
@@ -1337,7 +1337,7 @@ public open class ShuffleMask(
         public fun pack(n: Int): ShuffleMask = ShuffleMask.odd()
 
         public fun unpackLow(n: Int): ShuffleMask {
-            val mask = MutableList(n) { 0 }
+            val mask = UIntArray(n) { 0u }
             var i = 0
             while (i < n) {
                 mask[i] = (n + i).toUInt()
@@ -1347,7 +1347,7 @@ public open class ShuffleMask(
         }
 
         public fun unpackHigh(n: Int): ShuffleMask {
-            val mask = MutableList(n) { 0 }
+            val mask = UIntArray(n) { 0u }
             var i = 0
             while (i < n) {
                 mask[i] = i.toUInt()
@@ -1832,9 +1832,9 @@ public fun <T : VectorSum4<T>> vecSum4(a: T, b: T): VectorUnsignedInt = a.vecSum
  * This function operates on the vectors as 128-bit unsigned integers. It returns low 128 bits of a + b.
  */
 public fun vecAddU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar {
-    val a1: U128 = transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    val b1: U128 = transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    return transmuteWithLayouts(a1.wrappingAdd(b1), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
+    val a1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(a, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    val b1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(b, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    return transmuteWithLayouts<U128, VectorUnsignedChar>(a1.wrappingAdd(b1), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
 }
 
 /**
@@ -1845,9 +1845,9 @@ public fun vecAddU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsig
  * This function operates on the vectors as 128-bit unsigned integers. It returns low 128 bits of a - b.
  */
 public fun vecSubU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar {
-    val a1: U128 = transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    val b1: U128 = transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    return transmuteWithLayouts(a1.wrappingSub(b1), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
+    val a1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(a, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    val b1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(b, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    return transmuteWithLayouts<U128, VectorUnsignedChar>(a1.wrappingSub(b1), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
 }
 
 /**
@@ -1867,42 +1867,42 @@ public fun <Result, T : VectorSubc<U, Result>, U> vecSubc(a: T, b: U): Result = 
  * If no borrow occurred, the bit 127 of d is 1; otherwise it is set to 0. All other bits of d are 0.
  */
 public fun vecSubcU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar {
-    val a1: U128 = transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    val b1: U128 = transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    return transmuteWithLayouts((if (!a1.overflowingSub(b1).second) U128.ONE else U128.ZERO), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
+    val a1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(a, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    val b1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(b, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    return transmuteWithLayouts<U128, VectorUnsignedChar>((if (!a1.overflowingSub(b1).second) U128.ONE else U128.ZERO), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
 }
 
 /**
  * Vector Add Compute Carryout unsigned 128-bits
  */
 public fun vecAddcU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar {
-    val a1: U128 = transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    val b1: U128 = transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    return transmuteWithLayouts(U128.fromLong((a1.overflowingAdd(b1).second).toLong()), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
+    val a1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(a, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    val b1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(b, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    return transmuteWithLayouts<U128, VectorUnsignedChar>(U128.fromLong((a1.overflowingAdd(b1).second).toLong()), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
 }
 
 /**
  * Vector Add With Carry unsigned 128-bits
  */
 public fun vecAddeU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar {
-    val a1: U128 = transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    val b1: U128 = transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    val c1: U128 = transmuteWithLayouts(c, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
+    val a1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(a, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    val b1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(b, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    val c1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(c, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
     // Note(llvm) https://github.com/llvm/llvm-project/pull/153557
     // let (d, _carry) = a.carryingAdd(b, c & 1 != 0);
     // reinterpret(d)
-    return transmute(vacq(a1, b1, c1))
+    return transmuteWithLayouts<U128, VectorUnsignedChar>(vacq(a1, b1, c1), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
 }
 
 /**
  * Vector Add With Carry Compute Carry unsigned 128-bits
  */
 public fun vecAddecU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar {
-    val a1: U128 = transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    val b1: U128 = transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    val c1: U128 = transmuteWithLayouts(c, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
+    val a1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(a, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    val b1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(b, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
+    val c1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(c, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
     val (d, carry) = a1.carryingAdd(b1, c1 and U128(0x0uL, 0x1uL) != U128(0x0uL, 0x0uL))
-    return transmuteWithLayouts(U128.fromLong(carry.toLong()), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
+    return transmuteWithLayouts<U128, VectorUnsignedChar>(U128.fromLong(carry.toLong()), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
 }
 
 /**
@@ -1915,7 +1915,7 @@ public fun vecAddecU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorU
  *
  * Note: Only the borrow indication bit (127-bit) of c is used, and the other bits are ignored.
  */
-public fun vecSubeU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar = transmute(vsbiq(transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout()), transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout()), transmuteWithLayouts(c, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())))
+public fun vecSubeU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<U128, VectorUnsignedChar>(vsbiq(a, b, c), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
 
 /**
  * Vector Subtract with Carryout, Carryout
@@ -1928,7 +1928,7 @@ public fun vecSubeU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUn
  *
  * Note: Only the borrow indication bit (127-bit) of c is used, and the other bits are ignored.
  */
-public fun vecSubecU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar = transmute(vsbcbiq(transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout()), transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout()), transmuteWithLayouts(c, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())))
+public fun vecSubecU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<U128, VectorUnsignedChar>(vsbcbiq(a, b, c), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
 
 /**
  * Vector Splat Signed Byte
@@ -2139,12 +2139,12 @@ public fun <Result, T : VectorGfmsumAccum<T, Result>> vecGfmsumAccum(a: T, b: T,
 /**
  * Vector Galois Field Multiply Sum 128-bits
  */
-public fun vecGfmsum128(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong): VectorUnsignedChar = transmute(vgfmg(a, b))
+public fun vecGfmsum128(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong): VectorUnsignedChar = transmuteWithLayouts<U128, VectorUnsignedChar>(vgfmg(a, b), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
 
 /**
  * Vector Galois Field Multiply Sum and Accumulate 128-bits
  */
-public fun vecGfmsumAccum128(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong, c: VectorUnsignedChar): VectorUnsignedChar = transmute(vgfmag(a, b, transmuteWithLayouts(c, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())))
+public fun vecGfmsumAccum128(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong, c: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<U128, VectorUnsignedChar>(vgfmag(a, b, c), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
 
 /**
  * Vector Bit Permute
@@ -2314,7 +2314,7 @@ public fun vecMsumU128(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong, c: 
     }) {
         error("D needs to be one of 0, 4, 8, 12")
     }
-    return transmute(vmslg(a, b, transmuteWithLayouts(c, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout()), d))
+    return transmuteWithLayouts<U128, VectorUnsignedChar>(vmslg(a, b, c, d), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
 }
 
 /**

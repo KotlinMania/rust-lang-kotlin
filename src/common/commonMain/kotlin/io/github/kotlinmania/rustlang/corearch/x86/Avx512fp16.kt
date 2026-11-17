@@ -4,7 +4,9 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
@@ -155,7 +157,7 @@ public fun mm512UndefinedPh(): M512h = f16x32.ZERO.asM512h()
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_castpd_ph)
  */
-public fun mmCastpdPh(a: M128d): M128h = transmute(a)
+public fun mmCastpdPh(a: M128d): M128h = transmuteWithLayouts<M128d, M128h>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128h>())
 
 /**
  * Cast vector of type `__m256d` to type `__m256h`. This intrinsic is only used for compilation and
@@ -163,7 +165,7 @@ public fun mmCastpdPh(a: M128d): M128h = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_castpd_ph)
  */
-public fun mm256CastpdPh(a: M256d): M256h = transmute(a)
+public fun mm256CastpdPh(a: M256d): M256h = transmuteWithLayouts<M256d, M256h>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<M256h>())
 
 /**
  * Cast vector of type `__m512d` to type `__m512h`. This intrinsic is only used for compilation and
@@ -171,7 +173,7 @@ public fun mm256CastpdPh(a: M256d): M256h = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_castpd_ph)
  */
-public fun mm512CastpdPh(a: M512d): M512h = transmute(a)
+public fun mm512CastpdPh(a: M512d): M512h = transmuteWithLayouts<M512d, M512h>(a, UnresolvedTypeLayout<M512d>(), UnresolvedTypeLayout<M512h>())
 
 /**
  * Cast vector of type `__m128h` to type `__m128d`. This intrinsic is only used for compilation and
@@ -179,7 +181,7 @@ public fun mm512CastpdPh(a: M512d): M512h = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_castph_pd)
  */
-public fun mmCastphPd(a: M128h): M128d = transmute(a)
+public fun mmCastphPd(a: M128h): M128d = transmuteWithLayouts<M128h, M128d>(a, UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128d>())
 
 /**
  * Cast vector of type `__m256h` to type `__m256d`. This intrinsic is only used for compilation and
@@ -187,7 +189,7 @@ public fun mmCastphPd(a: M128h): M128d = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_castph_pd)
  */
-public fun mm256CastphPd(a: M256h): M256d = transmute(a)
+public fun mm256CastphPd(a: M256h): M256d = transmuteWithLayouts<M256h, M256d>(a, UnresolvedTypeLayout<M256h>(), UnresolvedTypeLayout<M256d>())
 
 /**
  * Cast vector of type `__m512h` to type `__m512d`. This intrinsic is only used for compilation and
@@ -195,7 +197,7 @@ public fun mm256CastphPd(a: M256h): M256d = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_castph_pd)
  */
-public fun mm512CastphPd(a: M512h): M512d = transmute(a)
+public fun mm512CastphPd(a: M512h): M512d = transmuteWithLayouts<M512h, M512d>(a, UnresolvedTypeLayout<M512h>(), UnresolvedTypeLayout<M512d>())
 
 /**
  * Cast vector of type `__m128` to type `__m128h`. This intrinsic is only used for compilation and
@@ -203,7 +205,7 @@ public fun mm512CastphPd(a: M512h): M512d = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_castps_ph)
  */
-public fun mmCastpsPh(a: M128): M128h = transmute(a)
+public fun mmCastpsPh(a: M128): M128h = transmuteWithLayouts<M128, M128h>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
 
 /**
  * Cast vector of type `__m256` to type `__m256h`. This intrinsic is only used for compilation and
@@ -211,7 +213,7 @@ public fun mmCastpsPh(a: M128): M128h = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_castps_ph)
  */
-public fun mm256CastpsPh(a: M256): M256h = transmute(a)
+public fun mm256CastpsPh(a: M256): M256h = transmuteWithLayouts<M256, M256h>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256h>())
 
 /**
  * Cast vector of type `__m512` to type `__m512h`. This intrinsic is only used for compilation and
@@ -219,7 +221,7 @@ public fun mm256CastpsPh(a: M256): M256h = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_castps_ph)
  */
-public fun mm512CastpsPh(a: M512): M512h = transmute(a)
+public fun mm512CastpsPh(a: M512): M512h = transmuteWithLayouts<M512, M512h>(a, UnresolvedTypeLayout<M512>(), UnresolvedTypeLayout<M512h>())
 
 /**
  * Cast vector of type `__m128h` to type `__m128`. This intrinsic is only used for compilation and
@@ -227,7 +229,7 @@ public fun mm512CastpsPh(a: M512): M512h = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_castph_ps)
  */
-public fun mmCastphPs(a: M128h): M128 = transmute(a)
+public fun mmCastphPs(a: M128h): M128 = transmuteWithLayouts<M128h, M128>(a, UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>())
 
 /**
  * Cast vector of type `__m256h` to type `__m256`. This intrinsic is only used for compilation and
@@ -235,7 +237,7 @@ public fun mmCastphPs(a: M128h): M128 = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_castph_ps)
  */
-public fun mm256CastphPs(a: M256h): M256 = transmute(a)
+public fun mm256CastphPs(a: M256h): M256 = transmuteWithLayouts<M256h, M256>(a, UnresolvedTypeLayout<M256h>(), UnresolvedTypeLayout<M256>())
 
 /**
  * Cast vector of type `__m512h` to type `__m512`. This intrinsic is only used for compilation and
@@ -243,7 +245,7 @@ public fun mm256CastphPs(a: M256h): M256 = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_castph_ps)
  */
-public fun mm512CastphPs(a: M512h): M512 = transmute(a)
+public fun mm512CastphPs(a: M512h): M512 = transmuteWithLayouts<M512h, M512>(a, UnresolvedTypeLayout<M512h>(), UnresolvedTypeLayout<M512>())
 
 /**
  * Cast vector of type `__m128i` to type `__m128h`. This intrinsic is only used for compilation and
@@ -251,7 +253,7 @@ public fun mm512CastphPs(a: M512h): M512 = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_castsi128_ph)
  */
-public fun mmCastsi128Ph(a: M128i): M128h = transmute(a)
+public fun mmCastsi128Ph(a: M128i): M128h = transmuteWithLayouts<M128i, M128h>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128h>())
 
 /**
  * Cast vector of type `__m256i` to type `__m256h`. This intrinsic is only used for compilation and
@@ -259,7 +261,7 @@ public fun mmCastsi128Ph(a: M128i): M128h = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_castsi256_ph)
  */
-public fun mm256Castsi256Ph(a: M256i): M256h = transmute(a)
+public fun mm256Castsi256Ph(a: M256i): M256h = transmuteWithLayouts<M256i, M256h>(a, UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M256h>())
 
 /**
  * Cast vector of type `__m512i` to type `__m512h`. This intrinsic is only used for compilation and
@@ -267,7 +269,7 @@ public fun mm256Castsi256Ph(a: M256i): M256h = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_castsi512_ph)
  */
-public fun mm512Castsi512Ph(a: M512i): M512h = transmute(a)
+public fun mm512Castsi512Ph(a: M512i): M512h = transmuteWithLayouts<M512i, M512h>(a, UnresolvedTypeLayout<M512i>(), UnresolvedTypeLayout<M512h>())
 
 /**
  * Cast vector of type `__m128h` to type `__m128i`. This intrinsic is only used for compilation and
@@ -275,7 +277,7 @@ public fun mm512Castsi512Ph(a: M512i): M512h = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_castph_si128)
  */
-public fun mmCastphSi128(a: M128h): M128i = transmute(a)
+public fun mmCastphSi128(a: M128h): M128i = transmuteWithLayouts<M128h, M128i>(a, UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Cast vector of type `__m256h` to type `__m256i`. This intrinsic is only used for compilation and
@@ -283,7 +285,7 @@ public fun mmCastphSi128(a: M128h): M128i = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_castph_si256)
  */
-public fun mm256CastphSi256(a: M256h): M256i = transmute(a)
+public fun mm256CastphSi256(a: M256h): M256i = transmuteWithLayouts<M256h, M256i>(a, UnresolvedTypeLayout<M256h>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Cast vector of type `__m512h` to type `__m512i`. This intrinsic is only used for compilation and
@@ -291,7 +293,7 @@ public fun mm256CastphSi256(a: M256h): M256i = transmute(a)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_castph_si512)
  */
-public fun mm512CastphSi512(a: M512h): M512i = transmute(a)
+public fun mm512CastphSi512(a: M512h): M512i = transmuteWithLayouts<M512h, M512i>(a, UnresolvedTypeLayout<M512h>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Cast vector of type `__m256h` to type `__m128h`. This intrinsic is only used for compilation and
@@ -714,7 +716,7 @@ public fun mmMaskzLoadSh(k: Mmask8, memAddr: ConstPtr): M128h {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_loadu_ph)
  */
-public fun mmLoaduPh(memAddr: ConstPtr): M128h = readUnaligned(memAddr)
+public fun mmLoaduPh(memAddr: ConstPtr): M128h = readUnaligned(memAddr, typeLayoutT = PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Load 256-bits (composed of 16 packed half-precision (16-bit) floating-point elements) from memory into
@@ -722,7 +724,7 @@ public fun mmLoaduPh(memAddr: ConstPtr): M128h = readUnaligned(memAddr)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_loadu_ph)
  */
-public fun mm256LoaduPh(memAddr: ConstPtr): M256h = readUnaligned(memAddr)
+public fun mm256LoaduPh(memAddr: ConstPtr): M256h = readUnaligned(memAddr, typeLayoutT = PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Load 512-bits (composed of 32 packed half-precision (16-bit) floating-point elements) from memory into
@@ -730,7 +732,7 @@ public fun mm256LoaduPh(memAddr: ConstPtr): M256h = readUnaligned(memAddr)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_loadu_ph)
  */
-public fun mm512LoaduPh(memAddr: ConstPtr): M512h = readUnaligned(memAddr)
+public fun mm512LoaduPh(memAddr: ConstPtr): M512h = readUnaligned(memAddr, typeLayoutT = PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Move the lower half-precision (16-bit) floating-point element from b to the lower element of dst
@@ -832,7 +834,7 @@ public fun mmMaskStoreSh(memAddr: MutPtr, k: Mmask8, a: M128h) {
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_storeu_ph)
  */
 public fun mmStoreuPh(memAddr: MutPtr, a: M128h) {
-    writeUnaligned(memAddr, a)
+    writeUnaligned(memAddr, a, typeLayoutT = PrimitiveLayouts.F16_LAYOUT)
 }
 
 /**
@@ -842,7 +844,7 @@ public fun mmStoreuPh(memAddr: MutPtr, a: M128h) {
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_storeu_ph)
  */
 public fun mm256StoreuPh(memAddr: MutPtr, a: M256h) {
-    writeUnaligned(memAddr, a)
+    writeUnaligned(memAddr, a, typeLayoutT = PrimitiveLayouts.F16_LAYOUT)
 }
 
 /**
@@ -852,7 +854,7 @@ public fun mm256StoreuPh(memAddr: MutPtr, a: M256h) {
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_storeu_ph)
  */
 public fun mm512StoreuPh(memAddr: MutPtr, a: M512h) {
-    writeUnaligned(memAddr, a)
+    writeUnaligned(memAddr, a, typeLayoutT = PrimitiveLayouts.F16_LAYOUT)
 }
 
 /**
@@ -1930,7 +1932,7 @@ public fun mmMulPch(a: M128h, b: M128h): M128h = mmMaskMulPch(mmUndefinedPh(), 0
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_mul_pch)
  */
-public fun mmMaskMulPch(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = transmute(vfmulcph128(transmute(a), transmute(b), transmute(src), k))
+public fun mmMaskMulPch(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = transmuteWithLayouts<M128, M128h>(vfmulcph128(a, b, src, k), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
 
 /**
  * Multiply packed complex numbers in a and b, and store the results in dst using zeromask k (the element
@@ -1957,7 +1959,7 @@ public fun mm256MulPch(a: M256h, b: M256h): M256h = mm256MaskMulPch(mm256Undefin
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_mul_pch)
  */
-public fun mm256MaskMulPch(src: M256h, k: Mmask8, a: M256h, b: M256h): M256h = transmute(vfmulcph256(transmute(a), transmute(b), transmute(src), k))
+public fun mm256MaskMulPch(src: M256h, k: Mmask8, a: M256h, b: M256h): M256h = transmuteWithLayouts<M256, M256h>(vfmulcph256(a, b, src, k), UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256h>())
 
 /**
  * Multiply packed complex numbers in a and b, and store the results in dst using zeromask k (the element
@@ -2037,7 +2039,7 @@ public fun mm512MaskMulRoundPch(src: M512h, k: Mmask16, a: M512h, b: M512h, roun
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vfmulcph512(transmute(a), transmute(b), transmute(src), k, rounding))
+        transmuteWithLayouts<M512, M512h>(vfmulcph512(a, b, src, k, rounding), UnresolvedTypeLayout<M512>(), UnresolvedTypeLayout<M512h>())
     }
 
 /**
@@ -2136,7 +2138,7 @@ public fun mmMaskMulRoundSch(src: M128h, k: Mmask8, a: M128h, b: M128h, rounding
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vfmulcsh(transmute(a), transmute(b), transmute(src), k, rounding))
+        transmuteWithLayouts<M128, M128h>(vfmulcsh(a, b, src, k, rounding), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
     }
 
 /**
@@ -2414,7 +2416,7 @@ public fun mmCmulPch(a: M128h, b: M128h): M128h = mmMaskCmulPch(mmUndefinedPh(),
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cmul_pch)
  */
-public fun mmMaskCmulPch(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = transmute(vfcmulcph128(transmute(a), transmute(b), transmute(src), k))
+public fun mmMaskCmulPch(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = transmuteWithLayouts<M128, M128h>(vfcmulcph128(a, b, src, k), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
 
 /**
  * Multiply packed complex numbers in a by the complex conjugates of packed complex numbers in b, and
@@ -2444,7 +2446,7 @@ public fun mm256CmulPch(a: M256h, b: M256h): M256h = mm256MaskCmulPch(mm256Undef
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cmul_pch)
  */
-public fun mm256MaskCmulPch(src: M256h, k: Mmask8, a: M256h, b: M256h): M256h = transmute(vfcmulcph256(transmute(a), transmute(b), transmute(src), k))
+public fun mm256MaskCmulPch(src: M256h, k: Mmask8, a: M256h, b: M256h): M256h = transmuteWithLayouts<M256, M256h>(vfcmulcph256(a, b, src, k), UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256h>())
 
 /**
  * Multiply packed complex numbers in a by the complex conjugates of packed complex numbers in b, and
@@ -2530,7 +2532,7 @@ public fun mm512MaskCmulRoundPch(src: M512h, k: Mmask16, a: M512h, b: M512h, rou
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vfcmulcph512(transmute(a), transmute(b), transmute(src), k, rounding))
+        transmuteWithLayouts<M512, M512h>(vfcmulcph512(a, b, src, k, rounding), UnresolvedTypeLayout<M512>(), UnresolvedTypeLayout<M512h>())
     }
 
 /**
@@ -2628,7 +2630,7 @@ public fun mmMaskCmulRoundSch(src: M128h, k: Mmask8, a: M128h, b: M128h, roundin
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vfcmulcsh(transmute(a), transmute(b), transmute(src), k, rounding))
+        transmuteWithLayouts<M128, M128h>(vfcmulcsh(a, b, src, k, rounding), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
     }
 
 /**
@@ -2916,7 +2918,7 @@ public fun mmMaskzFcmulRoundSch(k: Mmask8, a: M128h, b: M128h, rounding: Int): M
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_abs_ph)
  */
-public fun mmAbsPh(v2: M128h): M128h = transmute(mmAndSi128(transmute(v2), mmSet1Epi16(Short.MAX_VALUE)))
+public fun mmAbsPh(v2: M128h): M128h = transmuteWithLayouts<M128i, M128h>(mmAndSi128(v2, mmSet1Epi16(Short.MAX_VALUE)), UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128h>())
 
 /**
  * Finds the absolute value of each packed half-precision (16-bit) floating-point element in v2, storing
@@ -2924,7 +2926,7 @@ public fun mmAbsPh(v2: M128h): M128h = transmute(mmAndSi128(transmute(v2), mmSet
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_abs_ph)
  */
-public fun mm256AbsPh(v2: M256h): M256h = transmute(mm256AndSi256(transmute(v2), mm256Set1Epi16(Short.MAX_VALUE)))
+public fun mm256AbsPh(v2: M256h): M256h = transmuteWithLayouts<M256i, M256h>(mm256AndSi256(v2, mm256Set1Epi16(Short.MAX_VALUE)), UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M256h>())
 
 /**
  * Finds the absolute value of each packed half-precision (16-bit) floating-point element in v2, storing
@@ -2932,7 +2934,7 @@ public fun mm256AbsPh(v2: M256h): M256h = transmute(mm256AndSi256(transmute(v2),
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_abs_ph)
  */
-public fun mm512AbsPh(v2: M512h): M512h = transmute(mm512AndSi512(transmute(v2), mm512Set1Epi16(Short.MAX_VALUE)))
+public fun mm512AbsPh(v2: M512h): M512h = transmuteWithLayouts<M512i, M512h>(mm512AndSi512(v2, mm512Set1Epi16(Short.MAX_VALUE)), UnresolvedTypeLayout<M512i>(), UnresolvedTypeLayout<M512h>())
 
 /**
  * Compute the complex conjugates of complex numbers in a, and store the results in dst. Each complex
@@ -2942,7 +2944,7 @@ public fun mm512AbsPh(v2: M512h): M512h = transmute(mm512AndSi512(transmute(v2),
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_conj_pch)
  */
-public fun mmConjPch(a: M128h): M128h = transmute(mmXorSi128(transmute(a), mmSet1Epi32(Int.MIN_VALUE)))
+public fun mmConjPch(a: M128h): M128h = transmuteWithLayouts<M128i, M128h>(mmXorSi128(a, mmSet1Epi32(Int.MIN_VALUE)), UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128h>())
 
 /**
  * Compute the complex conjugates of complex numbers in a, and store the results in dst using writemask k
@@ -2954,8 +2956,8 @@ public fun mmConjPch(a: M128h): M128h = transmute(mmXorSi128(transmute(a), mmSet
  */
 public fun mmMaskConjPch(src: M128h, k: Mmask8, a: M128h): M128h =
     run {
-        val r: M128 = transmute(mmConjPch(a))
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = transmute(src); _simdArg1 })
+        val r: M128 = transmuteWithLayouts<M128h, M128>(mmConjPch(a), UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>())
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 })
     }
 
 /**
@@ -2975,7 +2977,7 @@ public fun mmMaskzConjPch(k: Mmask8, a: M128h): M128h = mmMaskConjPch(mmSetzeroP
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_conj_pch)
  */
-public fun mm256ConjPch(a: M256h): M256h = transmute(mm256XorSi256(transmute(a), mm256Set1Epi32(Int.MIN_VALUE)))
+public fun mm256ConjPch(a: M256h): M256h = transmuteWithLayouts<M256i, M256h>(mm256XorSi256(a, mm256Set1Epi32(Int.MIN_VALUE)), UnresolvedTypeLayout<M256i>(), UnresolvedTypeLayout<M256h>())
 
 /**
  * Compute the complex conjugates of complex numbers in a, and store the results in dst using writemask k
@@ -2987,8 +2989,8 @@ public fun mm256ConjPch(a: M256h): M256h = transmute(mm256XorSi256(transmute(a),
  */
 public fun mm256MaskConjPch(src: M256h, k: Mmask8, a: M256h): M256h =
     run {
-        val r: M256 = transmute(mm256ConjPch(a))
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = transmute(src); _simdArg1 })
+        val r: M256 = transmuteWithLayouts<M256h, M256>(mm256ConjPch(a), UnresolvedTypeLayout<M256h>(), UnresolvedTypeLayout<M256>())
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 })
     }
 
 /**
@@ -3008,7 +3010,7 @@ public fun mm256MaskzConjPch(k: Mmask8, a: M256h): M256h = mm256MaskConjPch(mm25
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_conj_pch)
  */
-public fun mm512ConjPch(a: M512h): M512h = transmute(mm512XorSi512(transmute(a), mm512Set1Epi32(Int.MIN_VALUE)))
+public fun mm512ConjPch(a: M512h): M512h = transmuteWithLayouts<M512i, M512h>(mm512XorSi512(a, mm512Set1Epi32(Int.MIN_VALUE)), UnresolvedTypeLayout<M512i>(), UnresolvedTypeLayout<M512h>())
 
 /**
  * Compute the complex conjugates of complex numbers in a, and store the results in dst using writemask k
@@ -3020,8 +3022,8 @@ public fun mm512ConjPch(a: M512h): M512h = transmute(mm512XorSi512(transmute(a),
  */
 public fun mm512MaskConjPch(src: M512h, k: Mmask16, a: M512h): M512h =
     run {
-        val r: M512 = transmute(mm512ConjPch(a))
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = transmute(src); _simdArg1 })
+        val r: M512 = transmuteWithLayouts<M512h, M512>(mm512ConjPch(a), UnresolvedTypeLayout<M512h>(), UnresolvedTypeLayout<M512>())
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 })
     }
 
 /**
@@ -3053,9 +3055,9 @@ public fun mmFmaddPch(a: M128h, b: M128h, c: M128h): M128h = mmMask3FmaddPch(a, 
  */
 public fun mmMaskFmaddPch(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h =
     run {
-        val r: M128 = transmute(mmMask3FmaddPch(a, b, c, k))
+        val r: M128 = transmuteWithLayouts<M128h, M128>(mmMask3FmaddPch(a, b, c, k), UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>())
         // using `0xff` would have been fine here, but this is what CLang does
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = transmute(a); _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = a; _simdArg1 })
     }
 
 /**
@@ -3066,7 +3068,7 @@ public fun mmMaskFmaddPch(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask3_fmadd_pch)
  */
-public fun mmMask3FmaddPch(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = transmute(vfmaddcphMask3128(transmute(a), transmute(b), transmute(c), k))
+public fun mmMask3FmaddPch(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = transmuteWithLayouts<M128, M128h>(vfmaddcphMask3128(a, b, c, k), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
 
 /**
  * Multiply packed complex numbers in a and b, accumulate to the corresponding complex numbers in c,
@@ -3076,7 +3078,7 @@ public fun mmMask3FmaddPch(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = tra
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_maskz_fmadd_pch)
  */
-public fun mmMaskzFmaddPch(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = transmute(vfmaddcphMaskz128(transmute(a), transmute(b), transmute(c), k))
+public fun mmMaskzFmaddPch(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = transmuteWithLayouts<M128, M128h>(vfmaddcphMaskz128(a, b, c, k), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
 
 /**
  * Multiply packed complex numbers in a and b, accumulate to the corresponding complex numbers in c,
@@ -3097,9 +3099,9 @@ public fun mm256FmaddPch(a: M256h, b: M256h, c: M256h): M256h = mm256Mask3FmaddP
  */
 public fun mm256MaskFmaddPch(a: M256h, k: Mmask8, b: M256h, c: M256h): M256h =
     run {
-        val r: M256 = transmute(mm256Mask3FmaddPch(a, b, c, k))
+        val r: M256 = transmuteWithLayouts<M256h, M256>(mm256Mask3FmaddPch(a, b, c, k), UnresolvedTypeLayout<M256h>(), UnresolvedTypeLayout<M256>())
         // using `0xff` would have been fine here, but this is what CLang does
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = transmute(a); _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = a; _simdArg1 })
     }
 
 /**
@@ -3110,7 +3112,7 @@ public fun mm256MaskFmaddPch(a: M256h, k: Mmask8, b: M256h, c: M256h): M256h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask3_fmadd_pch)
  */
-public fun mm256Mask3FmaddPch(a: M256h, b: M256h, c: M256h, k: Mmask8): M256h = transmute(vfmaddcphMask3256(transmute(a), transmute(b), transmute(c), k))
+public fun mm256Mask3FmaddPch(a: M256h, b: M256h, c: M256h, k: Mmask8): M256h = transmuteWithLayouts<M256, M256h>(vfmaddcphMask3256(a, b, c, k), UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256h>())
 
 /**
  * Multiply packed complex numbers in a and b, accumulate to the corresponding complex numbers in c,
@@ -3120,7 +3122,7 @@ public fun mm256Mask3FmaddPch(a: M256h, b: M256h, c: M256h, k: Mmask8): M256h = 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_maskz_fmadd_pch)
  */
-public fun mm256MaskzFmaddPch(k: Mmask8, a: M256h, b: M256h, c: M256h): M256h = transmute(vfmaddcphMaskz256(transmute(a), transmute(b), transmute(c), k))
+public fun mm256MaskzFmaddPch(k: Mmask8, a: M256h, b: M256h, c: M256h): M256h = transmuteWithLayouts<M256, M256h>(vfmaddcphMaskz256(a, b, c, k), UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256h>())
 
 /**
  * Multiply packed complex numbers in a and b, accumulate to the corresponding complex numbers in c,
@@ -3204,9 +3206,9 @@ public fun mm512MaskFmaddRoundPch(a: M512h, k: Mmask16, b: M512h, c: M512h, roun
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        val r: M512 = transmute(mm512Mask3FmaddRoundPch(a, b, c, k, rounding))
+        val r: M512 = transmuteWithLayouts<M512h, M512>(mm512Mask3FmaddRoundPch(a, b, c, k, rounding), UnresolvedTypeLayout<M512h>(), UnresolvedTypeLayout<M512>())
         // using `0xffff` would have been fine here, but this is what CLang does
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = transmute(a); _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = a; _simdArg1 })
     }
 
 /**
@@ -3230,7 +3232,7 @@ public fun mm512Mask3FmaddRoundPch(a: M512h, b: M512h, c: M512h, k: Mmask16, rou
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vfmaddcphMask3512(transmute(a), transmute(b), transmute(c), k, rounding))
+        transmuteWithLayouts<M512, M512h>(vfmaddcphMask3512(a, b, c, k, rounding), UnresolvedTypeLayout<M512>(), UnresolvedTypeLayout<M512h>())
     }
 
 /**
@@ -3254,7 +3256,7 @@ public fun mm512MaskzFmaddRoundPch(k: Mmask16, a: M512h, b: M512h, c: M512h, rou
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vfmaddcphMaskz512(transmute(a), transmute(b), transmute(c), k, rounding))
+        transmuteWithLayouts<M512, M512h>(vfmaddcphMaskz512(a, b, c, k, rounding), UnresolvedTypeLayout<M512>(), UnresolvedTypeLayout<M512h>())
     }
 
 /**
@@ -3320,7 +3322,7 @@ public fun mmFmaddRoundSch(a: M128h, b: M128h, c: M128h, rounding: Int): M128h =
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vfmaddcshMask(transmute(a), transmute(b), transmute(c), 0xffu, rounding))
+        transmuteWithLayouts<M128, M128h>(vfmaddcshMask(a, b, c, 0xffu, rounding), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
     }
 
 /**
@@ -3345,10 +3347,10 @@ public fun mmMaskFmaddRoundSch(a: M128h, k: Mmask8, b: M128h, c: M128h, rounding
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        val a1 = transmute(a)
-        val r = vfmaddcshMask(a1, transmute(b), transmute(c), k, rounding)
+        val a1 = a
+        val r = vfmaddcshMask(a1, b, c, k, rounding)
         // using `0xff` would have been fine here, but this is what CLang does
-        transmute(mmMaskMoveSs(a1, k, a1, r))
+        transmuteWithLayouts<M128, M128h>(mmMaskMoveSs(a1, k, a1, r), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
     }
 
 /**
@@ -3373,9 +3375,9 @@ public fun mmMask3FmaddRoundSch(a: M128h, b: M128h, c: M128h, k: Mmask8, roundin
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        val c1 = transmute(c)
-        val r = vfmaddcshMask(transmute(a), transmute(b), c1, k, rounding)
-        transmute(mmMoveSs(c1, r))
+        val c1 = c
+        val r = vfmaddcshMask(a, b, c1, k, rounding)
+        transmuteWithLayouts<M128, M128h>(mmMoveSs(c1, r), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
     }
 
 /**
@@ -3400,7 +3402,7 @@ public fun mmMaskzFmaddRoundSch(k: Mmask8, a: M128h, b: M128h, c: M128h, roundin
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vfmaddcshMaskz(transmute(a), transmute(b), transmute(c), k, rounding))
+        transmuteWithLayouts<M128, M128h>(vfmaddcshMaskz(a, b, c, k, rounding), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
     }
 
 /**
@@ -3424,9 +3426,9 @@ public fun mmFcmaddPch(a: M128h, b: M128h, c: M128h): M128h = mmMask3FcmaddPch(a
  */
 public fun mmMaskFcmaddPch(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h =
     run {
-        val r: M128 = transmute(mmMask3FcmaddPch(a, b, c, k))
+        val r: M128 = transmuteWithLayouts<M128h, M128>(mmMask3FcmaddPch(a, b, c, k), UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>())
         // using `0xff` would have been fine here, but this is what CLang does
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = transmute(a); _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = a; _simdArg1 })
     }
 
 /**
@@ -3438,7 +3440,7 @@ public fun mmMaskFcmaddPch(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask3_fcmadd_pch)
  */
-public fun mmMask3FcmaddPch(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = transmute(vfcmaddcphMask3128(transmute(a), transmute(b), transmute(c), k))
+public fun mmMask3FcmaddPch(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = transmuteWithLayouts<M128, M128h>(vfcmaddcphMask3128(a, b, c, k), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
 
 /**
  * Multiply packed complex numbers in a by the complex conjugates of packed complex numbers in b, accumulate
@@ -3449,7 +3451,7 @@ public fun mmMask3FcmaddPch(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = tr
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_maskz_fcmadd_pch)
  */
-public fun mmMaskzFcmaddPch(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = transmute(vfcmaddcphMaskz128(transmute(a), transmute(b), transmute(c), k))
+public fun mmMaskzFcmaddPch(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = transmuteWithLayouts<M128, M128h>(vfcmaddcphMaskz128(a, b, c, k), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
 
 /**
  * Multiply packed complex numbers in a by the complex conjugates of packed complex numbers in b, accumulate
@@ -3472,9 +3474,9 @@ public fun mm256FcmaddPch(a: M256h, b: M256h, c: M256h): M256h = mm256Mask3Fcmad
  */
 public fun mm256MaskFcmaddPch(a: M256h, k: Mmask8, b: M256h, c: M256h): M256h =
     run {
-        val r: M256 = transmute(mm256Mask3FcmaddPch(a, b, c, k))
+        val r: M256 = transmuteWithLayouts<M256h, M256>(mm256Mask3FcmaddPch(a, b, c, k), UnresolvedTypeLayout<M256h>(), UnresolvedTypeLayout<M256>())
         // using `0xff` would have been fine here, but this is what CLang does
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = transmute(a); _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = a; _simdArg1 })
     }
 
 /**
@@ -3486,7 +3488,7 @@ public fun mm256MaskFcmaddPch(a: M256h, k: Mmask8, b: M256h, c: M256h): M256h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask3_fcmadd_pch)
  */
-public fun mm256Mask3FcmaddPch(a: M256h, b: M256h, c: M256h, k: Mmask8): M256h = transmute(vfcmaddcphMask3256(transmute(a), transmute(b), transmute(c), k))
+public fun mm256Mask3FcmaddPch(a: M256h, b: M256h, c: M256h, k: Mmask8): M256h = transmuteWithLayouts<M256, M256h>(vfcmaddcphMask3256(a, b, c, k), UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256h>())
 
 /**
  * Multiply packed complex numbers in a by the complex conjugates of packed complex numbers in b, accumulate
@@ -3497,7 +3499,7 @@ public fun mm256Mask3FcmaddPch(a: M256h, b: M256h, c: M256h, k: Mmask8): M256h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_maskz_fcmadd_pch)
  */
-public fun mm256MaskzFcmaddPch(k: Mmask8, a: M256h, b: M256h, c: M256h): M256h = transmute(vfcmaddcphMaskz256(transmute(a), transmute(b), transmute(c), k))
+public fun mm256MaskzFcmaddPch(k: Mmask8, a: M256h, b: M256h, c: M256h): M256h = transmuteWithLayouts<M256, M256h>(vfcmaddcphMaskz256(a, b, c, k), UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256h>())
 
 /**
  * Multiply packed complex numbers in a by the complex conjugates of packed complex numbers in b, accumulate
@@ -3587,9 +3589,9 @@ public fun mm512MaskFcmaddRoundPch(a: M512h, k: Mmask16, b: M512h, c: M512h, rou
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        val r: M512 = transmute(mm512Mask3FcmaddRoundPch(a, b, c, k, rounding))
+        val r: M512 = transmuteWithLayouts<M512h, M512>(mm512Mask3FcmaddRoundPch(a, b, c, k, rounding), UnresolvedTypeLayout<M512h>(), UnresolvedTypeLayout<M512>())
         // using `0xffff` would have been fine here, but this is what CLang does
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = transmute(a); _simdArg1 })
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = a; _simdArg1 })
     }
 
 /**
@@ -3614,7 +3616,7 @@ public fun mm512Mask3FcmaddRoundPch(a: M512h, b: M512h, c: M512h, k: Mmask16, ro
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vfcmaddcphMask3512(transmute(a), transmute(b), transmute(c), k, rounding))
+        transmuteWithLayouts<M512, M512h>(vfcmaddcphMask3512(a, b, c, k, rounding), UnresolvedTypeLayout<M512>(), UnresolvedTypeLayout<M512h>())
     }
 
 /**
@@ -3639,7 +3641,7 @@ public fun mm512MaskzFcmaddRoundPch(k: Mmask16, a: M512h, b: M512h, c: M512h, ro
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vfcmaddcphMaskz512(transmute(a), transmute(b), transmute(c), k, rounding))
+        transmuteWithLayouts<M512, M512h>(vfcmaddcphMaskz512(a, b, c, k, rounding), UnresolvedTypeLayout<M512>(), UnresolvedTypeLayout<M512h>())
     }
 
 /**
@@ -3711,7 +3713,7 @@ public fun mmFcmaddRoundSch(a: M128h, b: M128h, c: M128h, rounding: Int): M128h 
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vfcmaddcshMask(transmute(a), transmute(b), transmute(c), 0xffu, rounding))
+        transmuteWithLayouts<M128, M128h>(vfcmaddcshMask(a, b, c, 0xffu, rounding), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
     }
 
 /**
@@ -3737,9 +3739,9 @@ public fun mmMaskFcmaddRoundSch(a: M128h, k: Mmask8, b: M128h, c: M128h, roundin
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        val a1 = transmute(a)
-        val r = vfcmaddcshMask(a1, transmute(b), transmute(c), k, rounding)
-        transmute(mmMaskMoveSs(a1, k, a1, r))
+        val a1 = a
+        val r = vfcmaddcshMask(a1, b, c, k, rounding)
+        transmuteWithLayouts<M128, M128h>(mmMaskMoveSs(a1, k, a1, r), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
     }
 
 /**
@@ -3765,9 +3767,9 @@ public fun mmMask3FcmaddRoundSch(a: M128h, b: M128h, c: M128h, k: Mmask8, roundi
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        val c1 = transmute(c)
-        val r = vfcmaddcshMask(transmute(a), transmute(b), c1, k, rounding)
-        transmute(mmMoveSs(c1, r))
+        val c1 = c
+        val r = vfcmaddcshMask(a, b, c1, k, rounding)
+        transmuteWithLayouts<M128, M128h>(mmMoveSs(c1, r), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
     }
 
 /**
@@ -3793,7 +3795,7 @@ public fun mmMaskzFcmaddRoundSch(k: Mmask8, a: M128h, b: M128h, c: M128h, roundi
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vfcmaddcshMaskz(transmute(a), transmute(b), transmute(c), k, rounding))
+        transmuteWithLayouts<M128, M128h>(vfcmaddcshMaskz(a, b, c, k, rounding), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
     }
 
 /**
@@ -10341,7 +10343,7 @@ public fun mmCvtphEpi16(a: M128h): M128i = mmMaskCvtphEpi16(mmUndefinedSi128(), 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cvtph_epi16)
  */
-public fun mmMaskCvtphEpi16(src: M128i, k: Mmask8, a: M128h): M128i = transmute(vcvtph2w128(a, src.asI16x8(), k))
+public fun mmMaskCvtphEpi16(src: M128i, k: Mmask8, a: M128h): M128i = transmuteWithLayouts<I16x8, M128i>(vcvtph2w128(a, src.asI16x8(), k), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 16-bit integers, and
@@ -10366,7 +10368,7 @@ public fun mm256CvtphEpi16(a: M256h): M256i = mm256MaskCvtphEpi16(mm256Undefined
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cvtph_epi16)
  */
-public fun mm256MaskCvtphEpi16(src: M256i, k: Mmask16, a: M256h): M256i = transmute(vcvtph2w256(a, src.asI16x16(), k))
+public fun mm256MaskCvtphEpi16(src: M256i, k: Mmask16, a: M256h): M256i = transmuteWithLayouts<I16x16, M256i>(vcvtph2w256(a, src.asI16x16(), k), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 16-bit integers, and
@@ -10391,7 +10393,7 @@ public fun mm512CvtphEpi16(a: M512h): M512i = mm512MaskCvtphEpi16(mm512Undefined
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvtph_epi16)
  */
-public fun mm512MaskCvtphEpi16(src: M512i, k: Mmask32, a: M512h): M512i = transmute(vcvtph2w512(a, src.asI16x32(), k, MM_FROUND_CUR_DIRECTION))
+public fun mm512MaskCvtphEpi16(src: M512i, k: Mmask32, a: M512h): M512i = transmuteWithLayouts<I16x32, M512i>(vcvtph2w512(a, src.asI16x32(), k, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 16-bit integers, and
@@ -10442,7 +10444,7 @@ public fun mm512MaskCvtRoundphEpi16(src: M512i, k: Mmask32, a: M512h, rounding: 
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vcvtph2w512(a, src.asI16x32(), k, rounding))
+        transmuteWithLayouts<I16x32, M512i>(vcvtph2w512(a, src.asI16x32(), k, rounding), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -10481,7 +10483,7 @@ public fun mmCvtphEpu16(a: M128h): M128i = mmMaskCvtphEpu16(mmUndefinedSi128(), 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cvtph_epu16)
  */
-public fun mmMaskCvtphEpu16(src: M128i, k: Mmask8, a: M128h): M128i = transmute(vcvtph2uw128(a, src.asU16x8(), k))
+public fun mmMaskCvtphEpu16(src: M128i, k: Mmask8, a: M128h): M128i = transmuteWithLayouts<U16x8, M128i>(vcvtph2uw128(a, src.asU16x8(), k), UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed unsigned 16-bit integers,
@@ -10506,7 +10508,7 @@ public fun mm256CvtphEpu16(a: M256h): M256i = mm256MaskCvtphEpu16(mm256Undefined
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cvtph_epu16)
  */
-public fun mm256MaskCvtphEpu16(src: M256i, k: Mmask16, a: M256h): M256i = transmute(vcvtph2uw256(a, src.asU16x16(), k))
+public fun mm256MaskCvtphEpu16(src: M256i, k: Mmask16, a: M256h): M256i = transmuteWithLayouts<U16x16, M256i>(vcvtph2uw256(a, src.asU16x16(), k), UnresolvedTypeLayout<U16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed unsigned 16-bit integers,
@@ -10531,7 +10533,7 @@ public fun mm512CvtphEpu16(a: M512h): M512i = mm512MaskCvtphEpu16(mm512Undefined
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvtph_epu16)
  */
-public fun mm512MaskCvtphEpu16(src: M512i, k: Mmask32, a: M512h): M512i = transmute(vcvtph2uw512(a, src.asU16x32(), k, MM_FROUND_CUR_DIRECTION))
+public fun mm512MaskCvtphEpu16(src: M512i, k: Mmask32, a: M512h): M512i = transmuteWithLayouts<U16x32, M512i>(vcvtph2uw512(a, src.asU16x32(), k, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<U16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed unsigned 16-bit integers,
@@ -10570,7 +10572,7 @@ public fun mm512MaskCvtRoundphEpu16(src: M512i, k: Mmask32, a: M512h, sae: Int):
         run {
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
-        transmute(vcvtph2uw512(a, src.asU16x32(), k, sae))
+        transmuteWithLayouts<U16x32, M512i>(vcvtph2uw512(a, src.asU16x32(), k, sae), UnresolvedTypeLayout<U16x32>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -10603,7 +10605,7 @@ public fun mmCvttphEpi16(a: M128h): M128i = mmMaskCvttphEpi16(mmUndefinedSi128()
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cvttph_epi16)
  */
-public fun mmMaskCvttphEpi16(src: M128i, k: Mmask8, a: M128h): M128i = transmute(vcvttph2w128(a, src.asI16x8(), k))
+public fun mmMaskCvttphEpi16(src: M128i, k: Mmask8, a: M128h): M128i = transmuteWithLayouts<I16x8, M128i>(vcvttph2w128(a, src.asI16x8(), k), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 16-bit integers with
@@ -10629,7 +10631,7 @@ public fun mm256CvttphEpi16(a: M256h): M256i = mm256MaskCvttphEpi16(mm256Undefin
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cvttph_epi16)
  */
-public fun mm256MaskCvttphEpi16(src: M256i, k: Mmask16, a: M256h): M256i = transmute(vcvttph2w256(a, src.asI16x16(), k))
+public fun mm256MaskCvttphEpi16(src: M256i, k: Mmask16, a: M256h): M256i = transmuteWithLayouts<I16x16, M256i>(vcvttph2w256(a, src.asI16x16(), k), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 16-bit integers with
@@ -10655,7 +10657,7 @@ public fun mm512CvttphEpi16(a: M512h): M512i = mm512MaskCvttphEpi16(mm512Undefin
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvttph_epi16)
  */
-public fun mm512MaskCvttphEpi16(src: M512i, k: Mmask32, a: M512h): M512i = transmute(vcvttph2w512(a, src.asI16x32(), k, MM_FROUND_CUR_DIRECTION))
+public fun mm512MaskCvttphEpi16(src: M512i, k: Mmask32, a: M512h): M512i = transmuteWithLayouts<I16x32, M512i>(vcvttph2w512(a, src.asI16x32(), k, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 16-bit integers with
@@ -10695,7 +10697,7 @@ public fun mm512MaskCvttRoundphEpi16(src: M512i, k: Mmask32, a: M512h, sae: Int)
         run {
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
-        transmute(vcvttph2w512(a, src.asI16x32(), k, sae))
+        transmuteWithLayouts<I16x32, M512i>(vcvttph2w512(a, src.asI16x32(), k, sae), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -10729,7 +10731,7 @@ public fun mmCvttphEpu16(a: M128h): M128i = mmMaskCvttphEpu16(mmUndefinedSi128()
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cvttph_epu16)
  */
-public fun mmMaskCvttphEpu16(src: M128i, k: Mmask8, a: M128h): M128i = transmute(vcvttph2uw128(a, src.asU16x8(), k))
+public fun mmMaskCvttphEpu16(src: M128i, k: Mmask8, a: M128h): M128i = transmuteWithLayouts<U16x8, M128i>(vcvttph2uw128(a, src.asU16x8(), k), UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed unsigned 16-bit integers with
@@ -10755,7 +10757,7 @@ public fun mm256CvttphEpu16(a: M256h): M256i = mm256MaskCvttphEpu16(mm256Undefin
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cvttph_epu16)
  */
-public fun mm256MaskCvttphEpu16(src: M256i, k: Mmask16, a: M256h): M256i = transmute(vcvttph2uw256(a, src.asU16x16(), k))
+public fun mm256MaskCvttphEpu16(src: M256i, k: Mmask16, a: M256h): M256i = transmuteWithLayouts<U16x16, M256i>(vcvttph2uw256(a, src.asU16x16(), k), UnresolvedTypeLayout<U16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed unsigned 16-bit integers with
@@ -10781,7 +10783,7 @@ public fun mm512CvttphEpu16(a: M512h): M512i = mm512MaskCvttphEpu16(mm512Undefin
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvttph_epu16)
  */
-public fun mm512MaskCvttphEpu16(src: M512i, k: Mmask32, a: M512h): M512i = transmute(vcvttph2uw512(a, src.asU16x32(), k, MM_FROUND_CUR_DIRECTION))
+public fun mm512MaskCvttphEpu16(src: M512i, k: Mmask32, a: M512h): M512i = transmuteWithLayouts<U16x32, M512i>(vcvttph2uw512(a, src.asU16x32(), k, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<U16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed unsigned 16-bit integers with
@@ -10821,7 +10823,7 @@ public fun mm512MaskCvttRoundphEpu16(src: M512i, k: Mmask32, a: M512h, sae: Int)
         run {
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
-        transmute(vcvttph2uw512(a, src.asU16x32(), k, sae))
+        transmuteWithLayouts<U16x32, M512i>(vcvttph2uw512(a, src.asU16x32(), k, sae), UnresolvedTypeLayout<U16x32>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -10854,7 +10856,7 @@ public fun mmCvtphEpi32(a: M128h): M128i = mmMaskCvtphEpi32(mmUndefinedSi128(), 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cvtph_epi32)
  */
-public fun mmMaskCvtphEpi32(src: M128i, k: Mmask8, a: M128h): M128i = transmute(vcvtph2dq128(a, src.asI32x4(), k))
+public fun mmMaskCvtphEpi32(src: M128i, k: Mmask8, a: M128h): M128i = transmuteWithLayouts<I32x4, M128i>(vcvtph2dq128(a, src.asI32x4(), k), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit integers, and store the
@@ -10878,7 +10880,7 @@ public fun mm256CvtphEpi32(a: M128h): M256i = mm256MaskCvtphEpi32(mm256Undefined
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cvtph_epi32)
  */
-public fun mm256MaskCvtphEpi32(src: M256i, k: Mmask8, a: M128h): M256i = transmute(vcvtph2dq256(a, src.asI32x8(), k))
+public fun mm256MaskCvtphEpi32(src: M256i, k: Mmask8, a: M128h): M256i = transmuteWithLayouts<I32x8, M256i>(vcvtph2dq256(a, src.asI32x8(), k), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit integers, and store the
@@ -10902,7 +10904,7 @@ public fun mm512CvtphEpi32(a: M256h): M512i = mm512MaskCvtphEpi32(mm512Undefined
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvtph_epi32)
  */
-public fun mm512MaskCvtphEpi32(src: M512i, k: Mmask16, a: M256h): M512i = transmute(vcvtph2dq512(a, src.asI32x16(), k, MM_FROUND_CUR_DIRECTION))
+public fun mm512MaskCvtphEpi32(src: M512i, k: Mmask16, a: M256h): M512i = transmuteWithLayouts<I32x16, M512i>(vcvtph2dq512(a, src.asI32x16(), k, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<I32x16>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit integers, and store the
@@ -10952,7 +10954,7 @@ public fun mm512MaskCvtRoundphEpi32(src: M512i, k: Mmask16, a: M256h, rounding: 
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vcvtph2dq512(a, src.asI32x16(), k, rounding))
+        transmuteWithLayouts<I32x16, M512i>(vcvtph2dq512(a, src.asI32x16(), k, rounding), UnresolvedTypeLayout<I32x16>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -11020,7 +11022,7 @@ public fun mmCvtphEpu32(a: M128h): M128i = mmMaskCvtphEpu32(mmUndefinedSi128(), 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cvtph_epu32)
  */
-public fun mmMaskCvtphEpu32(src: M128i, k: Mmask8, a: M128h): M128i = transmute(vcvtph2udq128(a, src.asU32x4(), k))
+public fun mmMaskCvtphEpu32(src: M128i, k: Mmask8, a: M128h): M128i = transmuteWithLayouts<U32x4, M128i>(vcvtph2udq128(a, src.asU32x4(), k), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit unsigned integers, and store
@@ -11044,7 +11046,7 @@ public fun mm256CvtphEpu32(a: M128h): M256i = mm256MaskCvtphEpu32(mm256Undefined
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cvtph_epu32)
  */
-public fun mm256MaskCvtphEpu32(src: M256i, k: Mmask8, a: M128h): M256i = transmute(vcvtph2udq256(a, src.asU32x8(), k))
+public fun mm256MaskCvtphEpu32(src: M256i, k: Mmask8, a: M128h): M256i = transmuteWithLayouts<U32x8, M256i>(vcvtph2udq256(a, src.asU32x8(), k), UnresolvedTypeLayout<U32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit unsigned integers, and store
@@ -11068,7 +11070,7 @@ public fun mm512CvtphEpu32(a: M256h): M512i = mm512MaskCvtphEpu32(mm512Undefined
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvtph_epu32)
  */
-public fun mm512MaskCvtphEpu32(src: M512i, k: Mmask16, a: M256h): M512i = transmute(vcvtph2udq512(a, src.asU32x16(), k, MM_FROUND_CUR_DIRECTION))
+public fun mm512MaskCvtphEpu32(src: M512i, k: Mmask16, a: M256h): M512i = transmuteWithLayouts<U32x16, M512i>(vcvtph2udq512(a, src.asU32x16(), k, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<U32x16>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit unsigned integers, and store
@@ -11118,7 +11120,7 @@ public fun mm512MaskCvtRoundphEpu32(src: M512i, k: Mmask16, a: M256h, rounding: 
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vcvtph2udq512(a, src.asU32x16(), k, rounding))
+        transmuteWithLayouts<U32x16, M512i>(vcvtph2udq512(a, src.asU32x16(), k, rounding), UnresolvedTypeLayout<U32x16>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -11180,7 +11182,7 @@ public fun mmCvttphEpi32(a: M128h): M128i = mmMaskCvttphEpi32(mmUndefinedSi128()
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cvttph_epi32)
  */
-public fun mmMaskCvttphEpi32(src: M128i, k: Mmask8, a: M128h): M128i = transmute(vcvttph2dq128(a, src.asI32x4(), k))
+public fun mmMaskCvttphEpi32(src: M128i, k: Mmask8, a: M128h): M128i = transmuteWithLayouts<I32x4, M128i>(vcvttph2dq128(a, src.asI32x4(), k), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit integers with truncation, and
@@ -11204,7 +11206,7 @@ public fun mm256CvttphEpi32(a: M128h): M256i = mm256MaskCvttphEpi32(mm256Undefin
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cvttph_epi32)
  */
-public fun mm256MaskCvttphEpi32(src: M256i, k: Mmask8, a: M128h): M256i = transmute(vcvttph2dq256(a, src.asI32x8(), k))
+public fun mm256MaskCvttphEpi32(src: M256i, k: Mmask8, a: M128h): M256i = transmuteWithLayouts<I32x8, M256i>(vcvttph2dq256(a, src.asI32x8(), k), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit integers with truncation, and
@@ -11228,7 +11230,7 @@ public fun mm512CvttphEpi32(a: M256h): M512i = mm512MaskCvttphEpi32(mm512Undefin
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvttph_epi32)
  */
-public fun mm512MaskCvttphEpi32(src: M512i, k: Mmask16, a: M256h): M512i = transmute(vcvttph2dq512(a, src.asI32x16(), k, MM_FROUND_CUR_DIRECTION))
+public fun mm512MaskCvttphEpi32(src: M512i, k: Mmask16, a: M256h): M512i = transmuteWithLayouts<I32x16, M512i>(vcvttph2dq512(a, src.asI32x16(), k, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<I32x16>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit integers with truncation, and
@@ -11266,7 +11268,7 @@ public fun mm512MaskCvttRoundphEpi32(src: M512i, k: Mmask16, a: M256h, sae: Int)
         run {
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
-        transmute(vcvttph2dq512(a, src.asI32x16(), k, sae))
+        transmuteWithLayouts<I32x16, M512i>(vcvttph2dq512(a, src.asI32x16(), k, sae), UnresolvedTypeLayout<I32x16>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -11322,7 +11324,7 @@ public fun mmCvttphEpu32(a: M128h): M128i = mmMaskCvttphEpu32(mmUndefinedSi128()
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cvttph_epu32)
  */
-public fun mmMaskCvttphEpu32(src: M128i, k: Mmask8, a: M128h): M128i = transmute(vcvttph2udq128(a, src.asU32x4(), k))
+public fun mmMaskCvttphEpu32(src: M128i, k: Mmask8, a: M128h): M128i = transmuteWithLayouts<U32x4, M128i>(vcvttph2udq128(a, src.asU32x4(), k), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit unsigned integers with truncation, and
@@ -11346,7 +11348,7 @@ public fun mm256CvttphEpu32(a: M128h): M256i = mm256MaskCvttphEpu32(mm256Undefin
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cvttph_epu32)
  */
-public fun mm256MaskCvttphEpu32(src: M256i, k: Mmask8, a: M128h): M256i = transmute(vcvttph2udq256(a, src.asU32x8(), k))
+public fun mm256MaskCvttphEpu32(src: M256i, k: Mmask8, a: M128h): M256i = transmuteWithLayouts<U32x8, M256i>(vcvttph2udq256(a, src.asU32x8(), k), UnresolvedTypeLayout<U32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit unsigned integers with truncation, and
@@ -11370,7 +11372,7 @@ public fun mm512CvttphEpu32(a: M256h): M512i = mm512MaskCvttphEpu32(mm512Undefin
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvttph_epu32)
  */
-public fun mm512MaskCvttphEpu32(src: M512i, k: Mmask16, a: M256h): M512i = transmute(vcvttph2udq512(a, src.asU32x16(), k, MM_FROUND_CUR_DIRECTION))
+public fun mm512MaskCvttphEpu32(src: M512i, k: Mmask16, a: M256h): M512i = transmuteWithLayouts<U32x16, M512i>(vcvttph2udq512(a, src.asU32x16(), k, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<U32x16>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit unsigned integers with truncation, and
@@ -11408,7 +11410,7 @@ public fun mm512MaskCvttRoundphEpu32(src: M512i, k: Mmask16, a: M256h, sae: Int)
         run {
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
-        transmute(vcvttph2udq512(a, src.asU32x16(), k, sae))
+        transmuteWithLayouts<U32x16, M512i>(vcvttph2udq512(a, src.asU32x16(), k, sae), UnresolvedTypeLayout<U32x16>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -11464,7 +11466,7 @@ public fun mmCvtphEpi64(a: M128h): M128i = mmMaskCvtphEpi64(mmUndefinedSi128(), 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cvtph_epi64)
  */
-public fun mmMaskCvtphEpi64(src: M128i, k: Mmask8, a: M128h): M128i = transmute(vcvtph2qq128(a, src.asI64x2(), k))
+public fun mmMaskCvtphEpi64(src: M128i, k: Mmask8, a: M128h): M128i = transmuteWithLayouts<I64x2, M128i>(vcvtph2qq128(a, src.asI64x2(), k), UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit integers, and
@@ -11488,7 +11490,7 @@ public fun mm256CvtphEpi64(a: M128h): M256i = mm256MaskCvtphEpi64(mm256Undefined
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cvtph_epi64)
  */
-public fun mm256MaskCvtphEpi64(src: M256i, k: Mmask8, a: M128h): M256i = transmute(vcvtph2qq256(a, src.asI64x4(), k))
+public fun mm256MaskCvtphEpi64(src: M256i, k: Mmask8, a: M128h): M256i = transmuteWithLayouts<I64x4, M256i>(vcvtph2qq256(a, src.asI64x4(), k), UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit integers, and
@@ -11512,7 +11514,7 @@ public fun mm512CvtphEpi64(a: M128h): M512i = mm512MaskCvtphEpi64(mm512Undefined
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvtph_epi64)
  */
-public fun mm512MaskCvtphEpi64(src: M512i, k: Mmask8, a: M128h): M512i = transmute(vcvtph2qq512(a, src.asI64x8(), k, MM_FROUND_CUR_DIRECTION))
+public fun mm512MaskCvtphEpi64(src: M512i, k: Mmask8, a: M128h): M512i = transmuteWithLayouts<I64x8, M512i>(vcvtph2qq512(a, src.asI64x8(), k, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<I64x8>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit integers, and
@@ -11562,7 +11564,7 @@ public fun mm512MaskCvtRoundphEpi64(src: M512i, k: Mmask8, a: M128h, rounding: I
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vcvtph2qq512(a, src.asI64x8(), k, rounding))
+        transmuteWithLayouts<I64x8, M512i>(vcvtph2qq512(a, src.asI64x8(), k, rounding), UnresolvedTypeLayout<I64x8>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -11600,7 +11602,7 @@ public fun mmCvtphEpu64(a: M128h): M128i = mmMaskCvtphEpu64(mmUndefinedSi128(), 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cvtph_epu64)
  */
-public fun mmMaskCvtphEpu64(src: M128i, k: Mmask8, a: M128h): M128i = transmute(vcvtph2uqq128(a, src.asU64x2(), k))
+public fun mmMaskCvtphEpu64(src: M128i, k: Mmask8, a: M128h): M128i = transmuteWithLayouts<U64x2, M128i>(vcvtph2uqq128(a, src.asU64x2(), k), UnresolvedTypeLayout<U64x2>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit unsigned integers, and
@@ -11624,7 +11626,7 @@ public fun mm256CvtphEpu64(a: M128h): M256i = mm256MaskCvtphEpu64(mm256Undefined
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cvtph_epu64)
  */
-public fun mm256MaskCvtphEpu64(src: M256i, k: Mmask8, a: M128h): M256i = transmute(vcvtph2uqq256(a, src.asU64x4(), k))
+public fun mm256MaskCvtphEpu64(src: M256i, k: Mmask8, a: M128h): M256i = transmuteWithLayouts<U64x4, M256i>(vcvtph2uqq256(a, src.asU64x4(), k), UnresolvedTypeLayout<U64x4>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit unsigned integers, and
@@ -11648,7 +11650,7 @@ public fun mm512CvtphEpu64(a: M128h): M512i = mm512MaskCvtphEpu64(mm512Undefined
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvtph_epu64)
  */
-public fun mm512MaskCvtphEpu64(src: M512i, k: Mmask8, a: M128h): M512i = transmute(vcvtph2uqq512(a, src.asU64x8(), k, MM_FROUND_CUR_DIRECTION))
+public fun mm512MaskCvtphEpu64(src: M512i, k: Mmask8, a: M128h): M512i = transmuteWithLayouts<U64x8, M512i>(vcvtph2uqq512(a, src.asU64x8(), k, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<U64x8>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit unsigned integers, and
@@ -11698,7 +11700,7 @@ public fun mm512MaskCvtRoundphEpu64(src: M512i, k: Mmask8, a: M128h, rounding: I
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmute(vcvtph2uqq512(a, src.asU64x8(), k, rounding))
+        transmuteWithLayouts<U64x8, M512i>(vcvtph2uqq512(a, src.asU64x8(), k, rounding), UnresolvedTypeLayout<U64x8>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -11736,7 +11738,7 @@ public fun mmCvttphEpi64(a: M128h): M128i = mmMaskCvttphEpi64(mmUndefinedSi128()
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cvttph_epi64)
  */
-public fun mmMaskCvttphEpi64(src: M128i, k: Mmask8, a: M128h): M128i = transmute(vcvttph2qq128(a, src.asI64x2(), k))
+public fun mmMaskCvttphEpi64(src: M128i, k: Mmask8, a: M128h): M128i = transmuteWithLayouts<I64x2, M128i>(vcvttph2qq128(a, src.asI64x2(), k), UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit integers with truncation, and
@@ -11760,7 +11762,7 @@ public fun mm256CvttphEpi64(a: M128h): M256i = mm256MaskCvttphEpi64(mm256Undefin
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cvttph_epi64)
  */
-public fun mm256MaskCvttphEpi64(src: M256i, k: Mmask8, a: M128h): M256i = transmute(vcvttph2qq256(a, src.asI64x4(), k))
+public fun mm256MaskCvttphEpi64(src: M256i, k: Mmask8, a: M128h): M256i = transmuteWithLayouts<I64x4, M256i>(vcvttph2qq256(a, src.asI64x4(), k), UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit integers with truncation, and
@@ -11784,7 +11786,7 @@ public fun mm512CvttphEpi64(a: M128h): M512i = mm512MaskCvttphEpi64(mm512Undefin
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvttph_epi64)
  */
-public fun mm512MaskCvttphEpi64(src: M512i, k: Mmask8, a: M128h): M512i = transmute(vcvttph2qq512(a, src.asI64x8(), k, MM_FROUND_CUR_DIRECTION))
+public fun mm512MaskCvttphEpi64(src: M512i, k: Mmask8, a: M128h): M512i = transmuteWithLayouts<I64x8, M512i>(vcvttph2qq512(a, src.asI64x8(), k, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<I64x8>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit integers with truncation, and
@@ -11822,7 +11824,7 @@ public fun mm512MaskCvttRoundphEpi64(src: M512i, k: Mmask8, a: M128h, sae: Int):
         run {
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
-        transmute(vcvttph2qq512(a, src.asI64x8(), k, sae))
+        transmuteWithLayouts<I64x8, M512i>(vcvttph2qq512(a, src.asI64x8(), k, sae), UnresolvedTypeLayout<I64x8>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -11854,7 +11856,7 @@ public fun mmCvttphEpu64(a: M128h): M128i = mmMaskCvttphEpu64(mmUndefinedSi128()
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cvttph_epu64)
  */
-public fun mmMaskCvttphEpu64(src: M128i, k: Mmask8, a: M128h): M128i = transmute(vcvttph2uqq128(a, src.asU64x2(), k))
+public fun mmMaskCvttphEpu64(src: M128i, k: Mmask8, a: M128h): M128i = transmuteWithLayouts<U64x2, M128i>(vcvttph2uqq128(a, src.asU64x2(), k), UnresolvedTypeLayout<U64x2>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit unsigned integers with truncation, and
@@ -11878,7 +11880,7 @@ public fun mm256CvttphEpu64(a: M128h): M256i = mm256MaskCvttphEpu64(mm256Undefin
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cvttph_epu64)
  */
-public fun mm256MaskCvttphEpu64(src: M256i, k: Mmask8, a: M128h): M256i = transmute(vcvttph2uqq256(a, src.asU64x4(), k))
+public fun mm256MaskCvttphEpu64(src: M256i, k: Mmask8, a: M128h): M256i = transmuteWithLayouts<U64x4, M256i>(vcvttph2uqq256(a, src.asU64x4(), k), UnresolvedTypeLayout<U64x4>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit unsigned integers with truncation, and
@@ -11902,7 +11904,7 @@ public fun mm512CvttphEpu64(a: M128h): M512i = mm512MaskCvttphEpu64(mm512Undefin
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvttph_epu64)
  */
-public fun mm512MaskCvttphEpu64(src: M512i, k: Mmask8, a: M128h): M512i = transmute(vcvttph2uqq512(a, src.asU64x8(), k, MM_FROUND_CUR_DIRECTION))
+public fun mm512MaskCvttphEpu64(src: M512i, k: Mmask8, a: M128h): M512i = transmuteWithLayouts<U64x8, M512i>(vcvttph2uqq512(a, src.asU64x8(), k, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<U64x8>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit unsigned integers with truncation, and
@@ -11940,7 +11942,7 @@ public fun mm512MaskCvttRoundphEpu64(src: M512i, k: Mmask8, a: M128h, sae: Int):
         run {
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
-        transmute(vcvttph2uqq512(a, src.asU64x8(), k, sae))
+        transmuteWithLayouts<U64x8, M512i>(vcvttph2uqq512(a, src.asU64x8(), k, sae), UnresolvedTypeLayout<U64x8>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**

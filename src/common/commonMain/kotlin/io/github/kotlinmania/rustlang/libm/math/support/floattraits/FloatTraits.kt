@@ -17,7 +17,6 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundTiesEvenf64
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.floatFmaWithLayout
 import io.github.kotlinmania.rustlang.core.mem.floatUnaryWithLayout
-import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.f16.isSignNegative
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.ops.arith.Add
@@ -28,10 +27,10 @@ import io.github.kotlinmania.rustlang.core.ops.arith.MulAssign
 import io.github.kotlinmania.rustlang.core.ops.arith.Neg
 import io.github.kotlinmania.rustlang.core.ops.arith.Rem
 import io.github.kotlinmania.rustlang.core.ops.arith.Sub
-import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.fma.fmaf
 import io.github.kotlinmania.rustlang.libm.math.floor.floorf
 import io.github.kotlinmania.rustlang.libm.math.floor.floorf128
 import io.github.kotlinmania.rustlang.libm.math.floor.floorf16
+import io.github.kotlinmania.rustlang.libm.math.fma.fmaf
 import io.github.kotlinmania.rustlang.libm.math.fma.fmaf128
 import io.github.kotlinmania.rustlang.libm.math.fmaf16.fmaf16
 import io.github.kotlinmania.rustlang.libm.math.generic.fabs
@@ -668,17 +667,17 @@ public fun Double.copysignFloat(other: Double): Double {
 
 public fun Double.fma(y: Double, z: Double): Double {
     kmFmaf64(this, y, z)
-    return fma(this, y, z)
+    return io.github.kotlinmania.rustlang.libm.math.fma.fma(this, y, z)
 }
 
 public fun Double.floor(): Double {
     kmFloorf64(this)
-    return floor(this)
+    return io.github.kotlinmania.rustlang.libm.math.floor.floor(this)
 }
 
 public fun Double.roundeven(): Double {
     kmRoundTiesEvenf64(this)
-    return roundeven(this)
+    return io.github.kotlinmania.rustlang.libm.math.roundeven.roundeven(this)
 }
 
 public fun floatNormalizeDouble(significand: ULong): Pair<Int, ULong> {
@@ -809,7 +808,7 @@ public fun floatNormalizeF128(significand: U128): Pair<Int, U128> {
  */
 public fun f32FromBits(bits: UInt): kotlin.Float {
     // SAFETY: POD cast with no preconditions
-    return transmuteWithLayouts(bits, PrimitiveLayouts.U32, PrimitiveLayouts.F32)
+    return kotlin.Float.fromBits((bits).toInt())
 }
 
 // workaround for false positive RUST-144060
@@ -820,7 +819,7 @@ public fun f32FromBits(bits: UInt): kotlin.Float {
  */
 public fun f32ToBits(x: kotlin.Float): UInt {
     // SAFETY: POD cast with no preconditions
-    return transmuteWithLayouts(x, PrimitiveLayouts.F32, PrimitiveLayouts.U32)
+    return (x).toRawBits().toUInt()
 }
 
 // lint appears in newer versions of Rust
@@ -830,7 +829,7 @@ public fun f32ToBits(x: kotlin.Float): UInt {
  */
 public fun f64FromBits(bits: ULong): Double {
     // SAFETY: POD cast with no preconditions
-    return transmuteWithLayouts(bits, PrimitiveLayouts.U64, PrimitiveLayouts.F64)
+    return Double.fromBits((bits).toLong())
 }
 
 // workaround for false positive RUST-144060
@@ -841,7 +840,7 @@ public fun f64FromBits(bits: ULong): Double {
  */
 public fun f64ToBits(x: Double): ULong {
     // SAFETY: POD cast with no preconditions
-    return transmuteWithLayouts(x, PrimitiveLayouts.F64, PrimitiveLayouts.U64)
+    return (x).toRawBits().toULong()
 }
 
 /**

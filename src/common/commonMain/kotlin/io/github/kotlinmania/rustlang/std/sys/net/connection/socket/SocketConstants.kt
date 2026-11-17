@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.std.sys.net.connection.socket
 
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 
 // Similarly to reads (see READ_LIMIT), the `send` syscall on most platforms
 // takes a `sizeT` length, but returns an `ssizeT` of bytes written. So the

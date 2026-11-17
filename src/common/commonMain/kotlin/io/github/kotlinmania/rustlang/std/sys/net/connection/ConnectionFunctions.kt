@@ -1,9 +1,9 @@
 package io.github.kotlinmania.rustlang.std.sys.net.connection
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.net.socketaddr.ToSocketAddrs
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.lookupHost

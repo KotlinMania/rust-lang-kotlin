@@ -2,7 +2,9 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 import io.github.kotlinmania.rustlang.corearch.simd.I8x32
 import io.github.kotlinmania.rustlang.corearch.simd.I8x64
@@ -14,7 +16,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.I8x64
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_permutex2var_epi8&expand=4262)
  */
-public fun mm512Permutex2varEpi8(a: M512i, idx: M512i, b: M512i): M512i = transmute(vpermi2b(a.asI8x64(), idx.asI8x64(), b.asI8x64()))
+public fun mm512Permutex2varEpi8(a: M512i, idx: M512i, b: M512i): M512i = transmuteWithLayouts<I8x64, M512i>(vpermi2b(a.asI8x64(), idx.asI8x64(), b.asI8x64()), UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Shuffle 8-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -58,7 +60,7 @@ public fun mm512Mask2Permutex2varEpi8(a: M512i, idx: M512i, k: Mmask64, b: M512i
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_permutex2var_epi8&expand=4258)
  */
-public fun mm256Permutex2varEpi8(a: M256i, idx: M256i, b: M256i): M256i = transmute(vpermi2b256(a.asI8x32(), idx.asI8x32(), b.asI8x32()))
+public fun mm256Permutex2varEpi8(a: M256i, idx: M256i, b: M256i): M256i = transmuteWithLayouts<I8x32, M256i>(vpermi2b256(a.asI8x32(), idx.asI8x32(), b.asI8x32()), UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Shuffle 8-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -102,7 +104,7 @@ public fun mm256Mask2Permutex2varEpi8(a: M256i, idx: M256i, k: Mmask32, b: M256i
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_permutex2var_epi8&expand=4254)
  */
-public fun mmPermutex2varEpi8(a: M128i, idx: M128i, b: M128i): M128i = transmute(vpermi2b128(a.asI8x16(), idx.asI8x16(), b.asI8x16()))
+public fun mmPermutex2varEpi8(a: M128i, idx: M128i, b: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpermi2b128(a.asI8x16(), idx.asI8x16(), b.asI8x16()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Shuffle 8-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -144,7 +146,7 @@ public fun mmMask2Permutex2varEpi8(a: M128i, idx: M128i, k: Mmask16, b: M128i): 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_permutexvar_epi8&expand=4316)
  */
-public fun mm512PermutexvarEpi8(idx: M512i, a: M512i): M512i = transmute(vpermb(a.asI8x64(), idx.asI8x64()))
+public fun mm512PermutexvarEpi8(idx: M512i, a: M512i): M512i = transmuteWithLayouts<I8x64, M512i>(vpermb(a.asI8x64(), idx.asI8x64()), UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Shuffle 8-bit integers in a across lanes using the corresponding index in idx, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -173,7 +175,7 @@ public fun mm512MaskzPermutexvarEpi8(k: Mmask64, idx: M512i, a: M512i): M512i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_permutexvar_epi8&expand=4313)
  */
-public fun mm256PermutexvarEpi8(idx: M256i, a: M256i): M256i = transmute(vpermb256(a.asI8x32(), idx.asI8x32()))
+public fun mm256PermutexvarEpi8(idx: M256i, a: M256i): M256i = transmuteWithLayouts<I8x32, M256i>(vpermb256(a.asI8x32(), idx.asI8x32()), UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Shuffle 8-bit integers in a across lanes using the corresponding index in idx, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -202,7 +204,7 @@ public fun mm256MaskzPermutexvarEpi8(k: Mmask32, idx: M256i, a: M256i): M256i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_permutexvar_epi8&expand=4310)
  */
-public fun mmPermutexvarEpi8(idx: M128i, a: M128i): M128i = transmute(vpermb128(a.asI8x16(), idx.asI8x16()))
+public fun mmPermutexvarEpi8(idx: M128i, a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpermb128(a.asI8x16(), idx.asI8x16()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Shuffle 8-bit integers in a across lanes using the corresponding index in idx, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -231,7 +233,7 @@ public fun mmMaskzPermutexvarEpi8(k: Mmask16, idx: M128i, a: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_multishift_epi64_epi8&expand=4026)
  */
-public fun mm512MultishiftEpi64Epi8(a: M512i, b: M512i): M512i = transmute(vpmultishiftqb(a.asI8x64(), b.asI8x64()))
+public fun mm512MultishiftEpi64Epi8(a: M512i, b: M512i): M512i = transmuteWithLayouts<I8x64, M512i>(vpmultishiftqb(a.asI8x64(), b.asI8x64()), UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * For each 64-bit element in b, select 8 unaligned bytes using a byte-granular shift control within the corresponding 64-bit element of a, and store the 8 assembled bytes to the corresponding 64-bit element of dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -260,7 +262,7 @@ public fun mm512MaskzMultishiftEpi64Epi8(k: Mmask64, a: M512i, b: M512i): M512i 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_multishift_epi64_epi8&expand=4023)
  */
-public fun mm256MultishiftEpi64Epi8(a: M256i, b: M256i): M256i = transmute(vpmultishiftqb256(a.asI8x32(), b.asI8x32()))
+public fun mm256MultishiftEpi64Epi8(a: M256i, b: M256i): M256i = transmuteWithLayouts<I8x32, M256i>(vpmultishiftqb256(a.asI8x32(), b.asI8x32()), UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * For each 64-bit element in b, select 8 unaligned bytes using a byte-granular shift control within the corresponding 64-bit element of a, and store the 8 assembled bytes to the corresponding 64-bit element of dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -289,7 +291,7 @@ public fun mm256MaskzMultishiftEpi64Epi8(k: Mmask32, a: M256i, b: M256i): M256i 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/IntrinsicsGuide/#text=_mm_multishift_epi64_epi8&expand=4020)
  */
-public fun mmMultishiftEpi64Epi8(a: M128i, b: M128i): M128i = transmute(vpmultishiftqb128(a.asI8x16(), b.asI8x16()))
+public fun mmMultishiftEpi64Epi8(a: M128i, b: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmultishiftqb128(a.asI8x16(), b.asI8x16()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * For each 64-bit element in b, select 8 unaligned bytes using a byte-granular shift control within the corresponding 64-bit element of a, and store the 8 assembled bytes to the corresponding 64-bit element of dst using writemask k (elements are copied from src when the corresponding mask bit is not set).

@@ -1,7 +1,8 @@
 // port-lint: source x86/sse4a.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.simd.I64x2
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
@@ -34,7 +35,7 @@ public expect fun insertqi(x: I64x2, y: I64x2, len: UByte, idx: UByte): I64x2
  * destination register are cleared to 0. The upper quadword of the destination
  * register is undefined.
  */
-public fun mmExtractSi64(x: M128i, y: M128i): M128i = transmute(extrq(x.asI64x2(), y.asI8x16()))
+public fun mmExtractSi64(x: M128i, y: M128i): M128i = transmuteWithLayouts<I64x2, M128i>(extrq(x.asI64x2(), y.asI8x16()), UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Extracts the specified bits from the lower 64 bits of the 128-bit integer vector operand at the
@@ -59,7 +60,7 @@ public fun mmExtractiSi64(x: M128i, len: Int, idx: Int): M128i {
     run {
         check((len == 0 && idx == 0) || (len != 0 && len + idx <= 64))
     }
-    return transmute(extrqi(x.asI64x2(), len.toUByte(), idx.toUByte()))
+    return transmuteWithLayouts<I64x2, M128i>(extrqi(x.asI64x2(), len.toUByte(), idx.toUByte()), UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
 }
 
 /**
@@ -75,7 +76,7 @@ public fun mmExtractiSi64(x: M128i, len: Int, idx: Int): M128i {
  *
  * The upper 64 bits of the destination are undefined.
  */
-public fun mmInsertSi64(x: M128i, y: M128i): M128i = transmute(insertq(x.asI64x2(), y.asI64x2()))
+public fun mmInsertSi64(x: M128i, y: M128i): M128i = transmuteWithLayouts<I64x2, M128i>(insertq(x.asI64x2(), y.asI64x2()), UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Inserts the `len` least-significant bits from the lower 64 bits of the 128-bit integer vector operand `y` into
@@ -97,7 +98,7 @@ public fun mmInsertiSi64(x: M128i, y: M128i, len: Int, idx: Int): M128i {
     run {
         check((len == 0 && idx == 0) || (len != 0 && len + idx <= 64))
     }
-    return transmute(insertqi(x.asI64x2(), y.asI64x2(), len.toUByte(), idx.toUByte()))
+    return transmuteWithLayouts<I64x2, M128i>(insertqi(x.asI64x2(), y.asI64x2(), len.toUByte(), idx.toUByte()), UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
 }
 
 /**

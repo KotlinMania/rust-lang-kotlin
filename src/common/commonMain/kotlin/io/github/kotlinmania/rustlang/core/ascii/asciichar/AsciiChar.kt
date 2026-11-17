@@ -19,8 +19,9 @@ import io.github.kotlinmania.rustlang.core.char.isAsciiWhitespace
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.escape.HEX_DIGITS
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.ascii.asciichar.AsciiChar.ReverseSolidus as Backslash
@@ -715,7 +716,8 @@ public sealed class AsciiChar(
      * [toUppercase]: Self.toUppercase
      */
     public open fun makeUppercase() {
-        this = this.toUppercase()
+        var selfMut = this
+        selfMut = selfMut.toUppercase()
     }
 
     /**
@@ -742,7 +744,8 @@ public sealed class AsciiChar(
      * [toLowercase]: Self.toLowercase
      */
     public open fun makeLowercase() {
-        this = this.toLowercase()
+        var selfMut = this
+        selfMut = selfMut.toLowercase()
     }
 
     /**
@@ -1245,7 +1248,7 @@ public sealed class AsciiChar(
         public fun fromU8Unchecked(b: UByte): AsciiChar {
             Unit
             // SAFETY: Our safety precondition is that `b` is in-range.
-            return transmute(b)
+            return transmuteWithLayouts<UByte, AsciiChar>(b, PrimitiveLayouts.U8, UnresolvedTypeLayout<AsciiChar>())
         }
 
         /**

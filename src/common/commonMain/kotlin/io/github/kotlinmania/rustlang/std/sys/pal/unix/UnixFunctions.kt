@@ -1,22 +1,5 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.unix
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.fuchsia.EAGAIN
-import io.github.kotlinmania.libc.fuchsia.EBADF
-import io.github.kotlinmania.libc.fuchsia.EINTR
-import io.github.kotlinmania.libc.fuchsia.EINVAL
-import io.github.kotlinmania.libc.fuchsia.ENOMEM
-import io.github.kotlinmania.libc.fuchsia.ENOSYS
-import io.github.kotlinmania.libc.fuchsia.F_GETFD
-import io.github.kotlinmania.libc.fuchsia.NfdsT
-import io.github.kotlinmania.libc.fuchsia.O_RDWR
-import io.github.kotlinmania.libc.fuchsia.POLLNVAL
-import io.github.kotlinmania.libc.fuchsia.Pollfd
-import io.github.kotlinmania.libc.fuchsia.SIGPIPE
-import io.github.kotlinmania.libc.fuchsia.SIG_DFL
-import io.github.kotlinmania.libc.fuchsia.SIG_ERR
-import io.github.kotlinmania.libc.fuchsia.SIG_IGN
-import io.github.kotlinmania.libc.unix.bsd.netbsdlike.netbsd.open
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -24,11 +7,28 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.Poll
 import io.github.kotlinmania.rustlang.libc.Signal
 import io.github.kotlinmania.rustlang.libc.abort
 import io.github.kotlinmania.rustlang.libc.dup
 import io.github.kotlinmania.rustlang.libc.fcntl
+import io.github.kotlinmania.rustlang.libc.open
+import io.github.kotlinmania.rustlang.libc.unix.Pollfd
+import io.github.kotlinmania.rustlang.libc.unix.SIG_DFL
+import io.github.kotlinmania.rustlang.libc.unix.SIG_ERR
+import io.github.kotlinmania.rustlang.libc.unix.SIG_IGN
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGPIPE
+import io.github.kotlinmania.rustlang.libc.wasi.EAGAIN
+import io.github.kotlinmania.rustlang.libc.wasi.EBADF
+import io.github.kotlinmania.rustlang.libc.wasi.EINTR
+import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
+import io.github.kotlinmania.rustlang.libc.wasi.ENOMEM
+import io.github.kotlinmania.rustlang.libc.wasi.ENOSYS
+import io.github.kotlinmania.rustlang.libc.wasi.F_GETFD
+import io.github.kotlinmania.rustlang.libc.wasi.NfdsT
+import io.github.kotlinmania.rustlang.libc.wasi.O_RDWR
+import io.github.kotlinmania.rustlang.libc.wasi.POLLNVAL
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.sys.io.Errno
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
@@ -185,7 +185,7 @@ public fun cleanup() {}
  */
 public fun <T : IsMinusOne> cvt(t: T): Result<T, Error> =
     if (t.isMinusOne()) {
-        Result.Err<T, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        Result.Err<T, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
     } else {
         Result.Ok<T, Error>(t)
     }
@@ -219,7 +219,7 @@ public fun cvtNz(error: CInt): Result<Unit, Error> =
     if (error == 0) {
         Result.Ok<Unit, Error>(Unit)
     } else {
-        Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
+        Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(error))
     }
 
 // libc.abort() will run the SIGABRT handler.  That's fine because anyone who

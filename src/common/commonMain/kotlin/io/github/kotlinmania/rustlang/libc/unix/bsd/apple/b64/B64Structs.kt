@@ -38,7 +38,7 @@ public open class Timeval32(
                 }
             }
 
-        public fun default(): Timeval32 = Timeval32(tvSec = Default.default(), tvUsec = Default.default())
+        public fun default(): Timeval32 = Timeval32(tvSec = 0, tvUsec = 0)
     }
 }
 
@@ -209,7 +209,7 @@ public open class IfData(
                 }
             }
 
-        public fun default(): IfData = IfData(ifiType = Default.default(), ifiTypelen = Default.default(), ifiPhysical = Default.default(), ifiAddrlen = Default.default(), ifiHdrlen = Default.default(), ifiRecvquota = Default.default(), ifiXmitquota = Default.default(), ifiUnused1 = Default.default(), ifiMtu = Default.default(), ifiMetric = Default.default(), ifiBaudrate = Default.default(), ifiIpackets = Default.default(), ifiIerrors = Default.default(), ifiOpackets = Default.default(), ifiOerrors = Default.default(), ifiCollisions = Default.default(), ifiIbytes = Default.default(), ifiObytes = Default.default(), ifiImcasts = Default.default(), ifiOmcasts = Default.default(), ifiIqdrops = Default.default(), ifiNoproto = Default.default(), ifiRecvtiming = Default.default(), ifiXmittiming = Default.default(), ifiLastchange = Default.default(), ifiUnused2 = Default.default(), ifiHwassist = Default.default(), ifiReserved1 = Default.default(), ifiReserved2 = Default.default())
+        public fun default(): IfData = IfData(ifiType = 0u, ifiTypelen = 0u, ifiPhysical = 0u, ifiAddrlen = 0u, ifiHdrlen = 0u, ifiRecvquota = 0u, ifiXmitquota = 0u, ifiUnused1 = 0u, ifiMtu = 0u, ifiMetric = 0u, ifiBaudrate = 0u, ifiIpackets = 0u, ifiIerrors = 0u, ifiOpackets = 0u, ifiOerrors = 0u, ifiCollisions = 0u, ifiIbytes = 0u, ifiObytes = 0u, ifiImcasts = 0u, ifiOmcasts = 0u, ifiIqdrops = 0u, ifiNoproto = 0u, ifiRecvtiming = 0u, ifiXmittiming = 0u, ifiLastchange = Timeval32.default(), ifiUnused2 = 0u, ifiHwassist = 0u, ifiReserved1 = 0u, ifiReserved2 = 0u)
     }
 }
 
@@ -254,6 +254,6 @@ public open class BpfHdr(
                 }
             }
 
-        public fun default(): BpfHdr = BpfHdr(bhTstamp = Default.default(), bhCaplen = Default.default(), bhDatalen = Default.default(), bhHdrlen = Default.default())
+        public fun default(): BpfHdr = BpfHdr(bhTstamp = Timeval32.default(), bhCaplen = 0u, bhDatalen = 0u, bhHdrlen = 0u)
     }
 }

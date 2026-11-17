@@ -46,7 +46,7 @@ public class DebugStruct(
  * This `class` is created by [Iterator.flatMap]. See its documentation
  * for more.
  */
-public open class FlatMap<I, U, F> internal constructor(
+public open class FlatMap<I, U, F, Item, IntoIter> internal constructor(
     innerCtorArg: FlattenCompat<Map<I, F>, IntoIter>,
 ) : TrustedLen, SourceIter<Source>, Iterable<Item> {
     public var inner: FlattenCompat<Map<I, F>, IntoIter> = innerCtorArg
@@ -63,7 +63,7 @@ public open class FlatMap<I, U, F> internal constructor(
 
     public open fun intoParts(): Triple<IntoIter?, I?, IntoIter?> = Triple(this.inner.frontiter, this.inner.iter.intoInner().map({ it.intoInner() }), this.inner.backiter)
 
-    public open fun clone(): FlatMap<I, U, F> = FlatMap(inner = this.inner.clone())
+    public open fun clone(): FlatMap<I, U, F, Item, IntoIter> = FlatMap(inner = this.inner.clone())
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "FlatMap").field("inner", this.inner).finish()
 
@@ -95,13 +95,13 @@ public open class FlatMap<I, U, F> internal constructor(
     }
 
     public companion object {
-        public operator fun <I, U, F> invoke(
+        public operator fun <I, U, F, Item, IntoIter> invoke(
             inner: FlattenCompat<Map<I, F>, IntoIter>,
-        ): FlatMap<I, U, F> = FlatMap<I, U, F>(
+        ): FlatMap<I, U, F, Item, IntoIter> = FlatMap<I, U, F, Item, IntoIter>(
             innerCtorArg = inner,
         )
 
-        public fun <I, U> new(iter: I, f: (Item) -> U): FlatMap<I, U, (Item) -> U> = FlatMap(inner = FlattenCompat.new(iter.map(f)))
+        public fun <I, U> new(iter: I, f: (Item) -> U): FlatMap<I, U, (Item) -> U, Item, IntoIter> = FlatMap(inner = FlattenCompat.new(iter.map(f)))
     }
 }
 
@@ -114,7 +114,7 @@ public open class FlatMap<I, U, F> internal constructor(
  *
  * [flatten]: Iterator.flatten()
  */
-public open class Flatten<I> internal constructor(
+public open class Flatten<I, Item> internal constructor(
     innerCtorArg: FlattenCompat<I, IntoIter>,
 ) : TrustedLen, SourceIter<Source>, Iterable<U.Item> {
     public var inner: FlattenCompat<I, IntoIter> = innerCtorArg
@@ -131,7 +131,7 @@ public open class Flatten<I> internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Flatten").field("inner", this.inner).finish()
 
-    public open fun clone(): Flatten<I> = Flatten(inner = this.inner.clone())
+    public open fun clone(): Flatten<I, Item> = Flatten(inner = this.inner.clone())
 
     public override fun next(): Item? = this.inner.next()
 
@@ -161,13 +161,13 @@ public open class Flatten<I> internal constructor(
     }
 
     public companion object {
-        public operator fun <I> invoke(
+        public operator fun <I, Item> invoke(
             inner: FlattenCompat<I, IntoIter>,
-        ): Flatten<I> = Flatten<I>(
+        ): Flatten<I, Item> = Flatten<I, Item>(
             innerCtorArg = inner,
         )
 
-        public fun <I> new(iter: I): Flatten<I> = Flatten(inner = FlattenCompat.new(iter))
+        public fun <I> new(iter: I): Flatten<I, Item> = Flatten(inner = FlattenCompat.new(iter))
 
         /**
          * Creates a `Flatten` iterator from the default value of `I`.
@@ -181,7 +181,7 @@ public open class Flatten<I> internal constructor(
          * }
          * ```
          */
-        public fun <I> default(defaultIFn: () -> I): Flatten<I> = Flatten.new(defaultIFn())
+        public fun <I> default(defaultIFn: () -> I): Flatten<I, Item> = Flatten.new(defaultIFn())
     }
 }
 

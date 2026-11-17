@@ -39,7 +39,7 @@ public sealed class TryReserveErrorKind {
 /**
  * An intermediate trait for specialization of `Extend`.
  */
-public interface SpecExtend<I> {
+public interface SpecExtend<I, Item, IntoIter> {
     /**
      * Extends `self` with the contents of the given iterator.
      */

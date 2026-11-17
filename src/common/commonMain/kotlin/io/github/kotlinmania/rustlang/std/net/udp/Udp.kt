@@ -666,7 +666,7 @@ public open class UdpSocket(
      * }
      * ```
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value.takeError()
 
     /**
      * Connects this UDP socket to a remote address, allowing the `send` and

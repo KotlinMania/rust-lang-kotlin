@@ -323,6 +323,8 @@ public fun defaultHook(info: PanicHookInfo) {
     run {
         val matchVal1 = trySetOutputCapture(null)
         if (matchVal1 is Result.Ok && matchVal1.value != null) {
+            val valueVal = matchVal1.value
+            val local = valueVal
             write(local.lock().unwrapOrElse({ e -> e.intoInner() }))
             trySetOutputCapture(local).ok()
         } else {

@@ -2,18 +2,18 @@
 package io.github.kotlinmania.rustlang.std.os.windows.net
 
 import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.asMutPtr
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
@@ -90,7 +90,7 @@ public open class SocketAddr(
 
     public open fun address(): AddressKind {
         val len = this.len.toInt() - SUN_PATH_OFFSET
-        val path = transmute(this.addr.sunPath)
+        val path = transmuteWithLayouts<List<Byte>, List<UByte>>(this.addr.sunPath, UnresolvedTypeLayout<List<Byte>>(), UnresolvedTypeLayout<List<UByte>>())
         return if (len == 0) {
             AddressKind.Unnamed
         } else if (this.addr.sunPath[0] == 0.toByte()) {

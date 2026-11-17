@@ -124,7 +124,6 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.IntErrorKind.*
 import io.github.kotlinmania.rustlang.core.num.error.ParseIntError
@@ -3043,7 +3042,7 @@ public fun Byte.toLeBytes(): UByteArray = ubyteArrayOf(this.toUByte())
  * assertEq(bytes, if cfg(targetEndian = "big") {} else {});
  * ```
  */
-public fun Byte.toNeBytes(): UByteArray = transmute(this)
+public fun Byte.toNeBytes(): UByteArray = transmuteWithLayouts<Byte, UByteArray>(this, UnresolvedTypeLayout<Byte>(), PrimitiveArrayLayouts.uByteArray((sizeOf<Byte>(typeLayoutT = PrimitiveLayouts.I8)).toInt()))
 
 /**
  * Creates an integer value from its representation as a byte array in
@@ -3121,7 +3120,7 @@ public fun Byte.Companion.fromLeBytes(bytes: UByteArray): Byte = Byte.fromNeByte
  * )
  * ```
  */
-public fun Byte.Companion.fromNeBytes(bytes: UByteArray): Byte = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<Byte>(typeLayoutT = PrimitiveLayouts.I8)).toInt()), PrimitiveLayouts.I8)
+public fun Byte.Companion.fromNeBytes(bytes: UByteArray): Byte = transmuteWithLayouts<UByteArray, Byte>(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<Byte>(typeLayoutT = PrimitiveLayouts.I8)).toInt()), PrimitiveLayouts.I8)
 
 /**
  * New code should prefer to use
@@ -6190,7 +6189,7 @@ public fun Short.toLeBytes(): UByteArray = run { val rawBits = this.toUInt(); ub
  * assertEq(bytes, if cfg(targetEndian = "big") {} else {});
  * ```
  */
-public fun Short.toNeBytes(): UByteArray = transmute(this)
+public fun Short.toNeBytes(): UByteArray = transmuteWithLayouts<Short, UByteArray>(this, UnresolvedTypeLayout<Short>(), PrimitiveArrayLayouts.uByteArray((sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()))
 
 /**
  * Creates an integer value from its representation as a byte array in
@@ -6253,7 +6252,7 @@ public fun Short.Companion.fromLeBytes(bytes: UByteArray): Short = Short.fromNeB
  * )
  * ```
  */
-public fun Short.Companion.fromNeBytes(bytes: UByteArray): Short = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()), PrimitiveLayouts.I16)
+public fun Short.Companion.fromNeBytes(bytes: UByteArray): Short = transmuteWithLayouts<UByteArray, Short>(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()), PrimitiveLayouts.I16)
 
 /**
  * New code should prefer to use
@@ -9322,7 +9321,7 @@ public fun Int.toLeBytes(): UByteArray = run { val rawBits = this.toUInt(); ubyt
  * assertEq(bytes, if cfg(targetEndian = "big") {} else {});
  * ```
  */
-public fun Int.toNeBytes(): UByteArray = transmute(this)
+public fun Int.toNeBytes(): UByteArray = transmuteWithLayouts<Int, UByteArray>(this, UnresolvedTypeLayout<Int>(), PrimitiveArrayLayouts.uByteArray((sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()))
 
 /**
  * Creates an integer value from its representation as a byte array in
@@ -9385,7 +9384,7 @@ public fun Int.Companion.fromLeBytes(bytes: UByteArray): Int = Int.fromNeBytes(b
  * )
  * ```
  */
-public fun Int.Companion.fromNeBytes(bytes: UByteArray): Int = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()), PrimitiveLayouts.I32)
+public fun Int.Companion.fromNeBytes(bytes: UByteArray): Int = transmuteWithLayouts<UByteArray, Int>(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()), PrimitiveLayouts.I32)
 
 /**
  * New code should prefer to use
@@ -12454,7 +12453,7 @@ public fun Long.toLeBytes(): UByteArray = run { val rawBits = this.toULong(); ub
  * assertEq(bytes, if cfg(targetEndian = "big") {} else {});
  * ```
  */
-public fun Long.toNeBytes(): UByteArray = transmute(this)
+public fun Long.toNeBytes(): UByteArray = transmuteWithLayouts<Long, UByteArray>(this, UnresolvedTypeLayout<Long>(), PrimitiveArrayLayouts.uByteArray((sizeOf<Long>(typeLayoutT = PrimitiveLayouts.I64)).toInt()))
 
 /**
  * Creates an integer value from its representation as a byte array in
@@ -12517,7 +12516,7 @@ public fun Long.Companion.fromLeBytes(bytes: UByteArray): Long = Long.fromNeByte
  * )
  * ```
  */
-public fun Long.Companion.fromNeBytes(bytes: UByteArray): Long = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<Long>(typeLayoutT = PrimitiveLayouts.I64)).toInt()), PrimitiveLayouts.I64)
+public fun Long.Companion.fromNeBytes(bytes: UByteArray): Long = transmuteWithLayouts<UByteArray, Long>(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<Long>(typeLayoutT = PrimitiveLayouts.I64)).toInt()), PrimitiveLayouts.I64)
 
 /**
  * New code should prefer to use
@@ -15594,7 +15593,7 @@ public fun I128.toLeBytes(): UByteArray = this.toLe().toLeBytes()
  * assertEq(bytes, if cfg(targetEndian = "big") {} else {});
  * ```
  */
-public fun I128.toNeBytes(): UByteArray = transmute(this)
+public fun I128.toNeBytes(): UByteArray = transmuteWithLayouts<I128, UByteArray>(this, UnresolvedTypeLayout<I128>(), PrimitiveArrayLayouts.uByteArray((sizeOf<I128>(typeLayoutT = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))).toInt()))
 
 /**
  * Creates an integer value from its representation as a byte array in
@@ -15657,7 +15656,7 @@ public fun I128.Companion.fromLeBytes(bytes: UByteArray): I128 = I128.fromLe(I12
  * )
  * ```
  */
-public fun I128.Companion.fromNeBytes(bytes: UByteArray): I128 = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<I128>(typeLayoutT = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))).toInt()), PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
+public fun I128.Companion.fromNeBytes(bytes: UByteArray): I128 = transmuteWithLayouts<UByteArray, I128>(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<I128>(typeLayoutT = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))).toInt()), PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 
 /**
  * New code should prefer to use
@@ -19021,7 +19020,7 @@ public fun UByte.toLeBytes(): UByteArray = ubyteArrayOf(this)
  * assertEq(bytes, if cfg(targetEndian = "big") {} else {});
  * ```
  */
-public fun UByte.toNeBytes(): UByteArray = transmute(this)
+public fun UByte.toNeBytes(): UByteArray = transmuteWithLayouts<UByte, UByteArray>(this, UnresolvedTypeLayout<UByte>(), PrimitiveArrayLayouts.uByteArray((sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8)).toInt()))
 
 /**
  * Creates a native endian integer value from its representation
@@ -19096,7 +19095,7 @@ public fun UByte.Companion.fromLeBytes(bytes: UByteArray): UByte = UByte.fromNeB
  * )
  * ```
  */
-public fun UByte.Companion.fromNeBytes(bytes: UByteArray): UByte = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8)).toInt()), PrimitiveLayouts.U8)
+public fun UByte.Companion.fromNeBytes(bytes: UByteArray): UByte = transmuteWithLayouts<UByteArray, UByte>(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8)).toInt()), PrimitiveLayouts.U8)
 
 /**
  * New code should prefer to use
@@ -19439,7 +19438,8 @@ public fun UByte.eqIgnoreAsciiCase(other: UByte): Boolean = this.toAsciiLowercas
  * [toAsciiUppercase]: Self.toAsciiUppercase
  */
 public fun UByte.makeAsciiUppercase() {
-    this = this.toAsciiUppercase()
+    var selfMut = this
+    selfMut = selfMut.toAsciiUppercase()
 }
 
 /**
@@ -19462,7 +19462,8 @@ public fun UByte.makeAsciiUppercase() {
  * [toAsciiLowercase]: Self.toAsciiLowercase
  */
 public fun UByte.makeAsciiLowercase() {
-    this = this.toAsciiLowercase()
+    var selfMut = this
+    selfMut = selfMut.toAsciiLowercase()
 }
 
 /**
@@ -22818,7 +22819,7 @@ public fun UShort.toLeBytes(): UByteArray = run { val rawBits = this.toUInt(); u
  * assertEq(bytes, if cfg(targetEndian = "big") {} else {});
  * ```
  */
-public fun UShort.toNeBytes(): UByteArray = transmute(this)
+public fun UShort.toNeBytes(): UByteArray = transmuteWithLayouts<UShort, UByteArray>(this, UnresolvedTypeLayout<UShort>(), PrimitiveArrayLayouts.uByteArray((sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()))
 
 /**
  * Creates a native endian integer value from its representation
@@ -22881,7 +22882,7 @@ public fun UShort.Companion.fromLeBytes(bytes: UByteArray): UShort = UShort.from
  * )
  * ```
  */
-public fun UShort.Companion.fromNeBytes(bytes: UByteArray): UShort = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()), PrimitiveLayouts.U16)
+public fun UShort.Companion.fromNeBytes(bytes: UByteArray): UShort = transmuteWithLayouts<UByteArray, UShort>(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()), PrimitiveLayouts.U16)
 
 /**
  * New code should prefer to use
@@ -26037,7 +26038,7 @@ public fun UInt.toLeBytes(): UByteArray = run { val rawBits = this; ubyteArrayOf
  * assertEq(bytes, if cfg(targetEndian = "big") {} else {});
  * ```
  */
-public fun UInt.toNeBytes(): UByteArray = transmute(this)
+public fun UInt.toNeBytes(): UByteArray = transmuteWithLayouts<UInt, UByteArray>(this, UnresolvedTypeLayout<UInt>(), PrimitiveArrayLayouts.uByteArray((sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32)).toInt()))
 
 /**
  * Creates a native endian integer value from its representation
@@ -26100,7 +26101,7 @@ public fun UInt.Companion.fromLeBytes(bytes: UByteArray): UInt = UInt.fromNeByte
  * )
  * ```
  */
-public fun UInt.Companion.fromNeBytes(bytes: UByteArray): UInt = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32)).toInt()), PrimitiveLayouts.U32)
+public fun UInt.Companion.fromNeBytes(bytes: UByteArray): UInt = transmuteWithLayouts<UByteArray, UInt>(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32)).toInt()), PrimitiveLayouts.U32)
 
 /**
  * New code should prefer to use
@@ -29231,7 +29232,7 @@ public fun ULong.toLeBytes(): UByteArray = run { val rawBits = this; ubyteArrayO
  * assertEq(bytes, if cfg(targetEndian = "big") {} else {});
  * ```
  */
-public fun ULong.toNeBytes(): UByteArray = transmute(this)
+public fun ULong.toNeBytes(): UByteArray = transmuteWithLayouts<ULong, UByteArray>(this, UnresolvedTypeLayout<ULong>(), PrimitiveArrayLayouts.uByteArray((sizeOf<ULong>(typeLayoutT = PrimitiveLayouts.U64)).toInt()))
 
 /**
  * Creates a native endian integer value from its representation
@@ -29294,7 +29295,7 @@ public fun ULong.Companion.fromLeBytes(bytes: UByteArray): ULong = ULong.fromNeB
  * )
  * ```
  */
-public fun ULong.Companion.fromNeBytes(bytes: UByteArray): ULong = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<ULong>(typeLayoutT = PrimitiveLayouts.U64)).toInt()), PrimitiveLayouts.U64)
+public fun ULong.Companion.fromNeBytes(bytes: UByteArray): ULong = transmuteWithLayouts<UByteArray, ULong>(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<ULong>(typeLayoutT = PrimitiveLayouts.U64)).toInt()), PrimitiveLayouts.U64)
 
 /**
  * New code should prefer to use
@@ -32425,7 +32426,7 @@ public fun U128.toLeBytes(): UByteArray = this.toLe().toLeBytes()
  * assertEq(bytes, if cfg(targetEndian = "big") {} else {});
  * ```
  */
-public fun U128.toNeBytes(): UByteArray = transmute(this)
+public fun U128.toNeBytes(): UByteArray = transmuteWithLayouts<U128, UByteArray>(this, UnresolvedTypeLayout<U128>(), PrimitiveArrayLayouts.uByteArray((sizeOf<U128>(typeLayoutT = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))).toInt()))
 
 /**
  * Creates a native endian integer value from its representation
@@ -32488,7 +32489,7 @@ public fun U128.Companion.fromLeBytes(bytes: UByteArray): U128 = U128.fromLe(U12
  * )
  * ```
  */
-public fun U128.Companion.fromNeBytes(bytes: UByteArray): U128 = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<U128>(typeLayoutT = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))).toInt()), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
+public fun U128.Companion.fromNeBytes(bytes: UByteArray): U128 = transmuteWithLayouts<UByteArray, U128>(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<U128>(typeLayoutT = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))).toInt()), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 
 /**
  * New code should prefer to use

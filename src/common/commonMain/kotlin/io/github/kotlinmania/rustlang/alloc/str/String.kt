@@ -106,7 +106,7 @@ public fun <B, T, S> joinGenericCopy(slice: List<S>, sep: List<T>): List<T> wher
     // to simplify implementation in specializeForLengths.
     // SAFETY: `sep` is a slice of `T`, so `sep.asPtr().cast()` is a valid pointer,
     // and `sep.len()` is the number of elements in the slice, so `fromRawParts` is safe.
-    val sepUninit = linearSliceView(sep.asPtr(), sep.size, PrimitiveLayouts.U8)
+    val sepUninit = linearSliceView(sep.asPtr(), sep.size, UnresolvedTypeLayout<T>())
     val iterUninit =
         iter.map({ it ->
             val it1 = it.borrow().asRef()

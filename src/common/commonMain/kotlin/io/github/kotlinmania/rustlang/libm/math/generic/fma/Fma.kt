@@ -191,7 +191,7 @@ public fun <Int, SignedInt, D, OtherSign, Unsigned, F> fmaRound(x: F, y: F, z: F
 /**
  * Representation of `F` that has handled subnormals.
  */
-public open class Norm<F : Float<F, Any?, Any?>>(
+public open class Norm<F : Float<F, Int, SignedInt>, Int, SignedInt>(
     /**
      * Normalized significand with one guard bit, unsigned.
      */
@@ -203,7 +203,7 @@ public open class Norm<F : Float<F, Any?, Any?>>(
     public var e: Int,
     public var neg: Boolean,
 ) {
-    public open fun clone(): Norm<F> = Norm(m, e, neg)
+    public open fun clone(): Norm<F, Int, SignedInt> = Norm(m, e, neg)
 
     /**
      * True if the value was zero, infinity, or NaN.
@@ -219,28 +219,28 @@ public open class Norm<F : Float<F, Any?, Any?>>(
     }
 
     public companion object {
-        public fun <F : Float<F, Any?, Any?>> typeLayout(): TypeLayout<Norm<F>> =
-            object : TypeLayout<Norm<F>> {
+        public fun <F : Float<F, Int, SignedInt>, Int, SignedInt> typeLayout(): TypeLayout<Norm<F, Int, SignedInt>> =
+            object : TypeLayout<Norm<F, Int, SignedInt>> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 12L
-                override fun readNative(addr: Long): Norm<F> =
+                override fun readNative(addr: Long): Norm<F, Int, SignedInt> =
                     Norm(
                         (PrimitiveLayouts.I32).readNative(addr),
                         (PrimitiveLayouts.I32).readNative(addr + 4L),
                         (PrimitiveLayouts.BOOL).readNative(addr + 8L),
                     )
-                override fun writeNative(addr: Long, value: Norm<F>) {
+                override fun writeNative(addr: Long, value: Norm<F, Int, SignedInt>) {
                     (PrimitiveLayouts.I32).writeNative(addr, value.m)
                     (PrimitiveLayouts.I32).writeNative(addr + 4L, value.e)
                     (PrimitiveLayouts.BOOL).writeNative(addr + 8L, value.neg)
                 }
-                override fun readBytes(buf: ByteArray, offset: Int): Norm<F> =
+                override fun readBytes(buf: ByteArray, offset: Int): Norm<F, Int, SignedInt> =
                     Norm(
                         (PrimitiveLayouts.I32).readBytes(buf, offset),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 4),
                         (PrimitiveLayouts.BOOL).readBytes(buf, offset + 8),
                     )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Norm<F>) {
+                override fun writeBytes(buf: ByteArray, offset: Int, value: Norm<F, Int, SignedInt>) {
                     (PrimitiveLayouts.I32).writeBytes(buf, offset, value.m)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 4, value.e)
                     (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 8, value.neg)
@@ -258,7 +258,7 @@ public open class Norm<F : Float<F, Any?, Any?>>(
          */
         public val ZERO_INF_NAN: UInt = F.EXP_SAT - Norm.EXP_UNBIAS
 
-        public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> fromFloat(x: F, fromPartsFFn: (Boolean, UInt, Int) -> F): Norm<F> {
+        public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> fromFloat(x: F, fromPartsFFn: (Boolean, UInt, Int) -> F): Norm<F, Int, SignedInt> {
             var ix = x.toBits()
             var e = x.ex().toInt()
             val neg = x.isSignNegative()

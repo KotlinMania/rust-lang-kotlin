@@ -2,10 +2,11 @@
 package io.github.kotlinmania.rustlang.core.array.iter
 
 import io.github.kotlinmania.rustlang.core.array.iter.iterinner.PolymorphicIter
-import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.needsDrop
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
@@ -62,7 +63,7 @@ public fun <T> List<T>.intoIterFromTArrayn(n: Int): IntoIter<T> {
     //
     // Note: If normal `reinterpret` ever gets smart enough to allow this
     // directly, use it instead of `transmuteUnchecked`.
-    val data: List<MaybeUninit<T>> = transmuteUnchecked(this)
+    val data: List<MaybeUninit<T>> = transmuteWithLayouts<List<T>, List<MaybeUninit<T>>>(this, UnresolvedTypeLayout<List<T>>(), UnresolvedTypeLayout<List<MaybeUninit<T>>>())
     // SAFETY: The original array was entirely initialized and the alive
     // range we're passing here represents that fact.
     val inner = InnerSized.newUnchecked(IndexRange.zeroTo(n), data)

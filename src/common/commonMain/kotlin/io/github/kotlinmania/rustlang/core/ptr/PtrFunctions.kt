@@ -478,7 +478,7 @@ public fun withoutProvenanceMut(addr: Int): MutPtr {
     // semantics, it relies on sysroot crates having special status.
     // SAFETY: every valid integer is also a valid pointer (as long as you don't dereference that
     // pointer).
-    return transmuteWithLayouts(addr, PrimitiveLayouts.USIZE64, PrimitiveLayouts.mutPtrLayout(64L))
+    return transmuteWithLayouts<Int, MutPtr>(addr, PrimitiveLayouts.USIZE64, PrimitiveLayouts.mutPtrLayout(64L))
 }
 
 /**
@@ -1260,7 +1260,7 @@ public fun <T> readUnaligned(src: ConstPtr, typeLayoutT: TypeLayout<T> = Unresol
     // `Unaligned<T>` to `T`.  Transmute is a value-based (not a place-based)
     // operation that doesn't care about alignment.
     return run {
-        val unaligned = read(src1)
+        val unaligned = read(src1, typeLayoutT = Unaligned.typeLayout<T>(typeLayoutT = typeLayoutT))
         // Can't just destructure because that's not allowed in const fn
         transmuteNeo(unaligned)
     }
@@ -1446,7 +1446,7 @@ public fun <T> writeUnaligned(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T> = 
     // SAFETY: the caller must guarantee that `dst` is valid for writes.
     // Writing it as `Unaligned<T>` instead of `T` writes those same bytes because
     // it's the same size (thus zero offset), but with alignment 1 instead.
-    write(dst1, src1)
+    write(dst1, src1, typeLayoutT = Unaligned.typeLayout<T>(typeLayoutT = typeLayoutT))
 }
 
 /**

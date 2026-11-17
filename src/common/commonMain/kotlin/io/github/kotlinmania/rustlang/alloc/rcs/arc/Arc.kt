@@ -715,7 +715,7 @@ public open class Arc<T, A : Allocator> internal constructor(
             val inner = initPtr.asPtr()
             // ignore-tidy-undocumented-unchecked
             return run {
-                write(addrOfMut(inner.data), data)
+                write(addrOfMut(inner.data), data, typeLayoutT = UnresolvedTypeLayout<T>())
                 // The above write to the data field must be visible to any threads which
                 // observe a non-zero strong count. Therefore we need at least "Release" ordering
                 // in order to synchronize with the `compareExchangeWeak` in `Weak.upgrade`.
@@ -1598,7 +1598,7 @@ public open class Arc<T, A : Allocator> internal constructor(
                     // Initialize `inProgress` with move of **this.
                     // We have to express this in terms of bytes because `T: ? Sized`; there is no
                     // operation that just copies a value based on its `sizeOfVal()`.
-                    copyNonoverlapping(thisRef1.cast(), inProgress.dataPtr().cast(), sizeOfVal)
+                    copyNonoverlapping(thisRef1.cast(), inProgress.dataPtr().cast(), sizeOfVal, typeLayoutT = PrimitiveLayouts.U8)
                     // We are now safe from panics.
                     forget(guard)
                     // Materialize our own implicit weak pointer, so that it can clean
@@ -3011,7 +3011,7 @@ public fun <T> Arc.Companion.copyFromSlice(v: List<T>): Arc<List<T>, Global> {
     // ignore-tidy-undocumented-unchecked
     return run {
         val ptr = Arc.allocateForSlice(v.size)
-        copyNonoverlapping(v.asPtr(), mutPtrFromRustCast((addrOfMut(ptr.data))), v.size)
+        copyNonoverlapping(v.asPtr(), mutPtrFromRustCast((addrOfMut(ptr.data))), v.size, typeLayoutT = UnresolvedTypeLayout<T>())
         Arc.fromPtr(ptr)
     }
 }
@@ -3285,7 +3285,7 @@ public interface ArcEqIdent<T, A : Allocator> {
  * # Examples
  *
  * ```kotlin
- * val x: Int = Default.default()
+ * val x: Int = 0
  * check(x == 0)
  * ```
  */
@@ -3332,7 +3332,7 @@ public var STATIC_INNER_SLICE: SliceArcInnerForStatic = SliceArcInnerForStatic(i
  * This may or may not share an allocation with other Arcs.
  */
 public fun defaultArcString(): Arc<String, Global> {
-    val arc: Arc<List<UByte>, Global> = Default.default()
+    val arc: Arc<List<UByte>, Global> = Arc.default()
     check(String.fromUtf8(arc).isOk())
     val (ptr, alloc) = Arc.intoInnerWithAllocator(arc)
     // ignore-tidy-undocumented-unchecked

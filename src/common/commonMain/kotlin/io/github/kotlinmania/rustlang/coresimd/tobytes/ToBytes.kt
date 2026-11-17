@@ -1,7 +1,8 @@
 // port-lint: source to_bytes.rs
 package io.github.kotlinmania.rustlang.coresimd.tobytes
 
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.coresimd.Simd
 
 /**
@@ -43,23 +44,25 @@ public interface ToBytes<T, Bytes> {
     public fun fromLeBytes(bytes: Bytes): T
 }
 
-public fun Simd<UByte>.toNeBytes(): Simd<UByte> = transmute(this)
+public fun Simd<UByte>.toNeBytes(): Simd<UByte> = this
 
 public fun Simd<UByte>.toBeBytes(): Simd<UByte> {
+    var selfMut = this
     if (!false) {
-        this = this.swapBytes()
+        selfMut = selfMut.swapBytes()
     }
-    return this.toNeBytes()
+    return selfMut.toNeBytes()
 }
 
 public fun Simd<UByte>.toLeBytes(): Simd<UByte> {
+    var selfMut = this
     if (!true) {
-        this = this.swapBytes()
+        selfMut = selfMut.swapBytes()
     }
-    return this.toNeBytes()
+    return selfMut.toNeBytes()
 }
 
-public fun toBytesFromNeBytesSimdUByte(bytes: Simd<UByte>): Simd<UByte> = transmute(bytes)
+public fun toBytesFromNeBytesSimdUByte(bytes: Simd<UByte>): Simd<UByte> = bytes
 
 public fun toBytesFromBeBytesSimdUByte(bytes: Simd<UByte>): Simd<UByte> {
     val ret = Simd.fromNeBytes(bytes)
@@ -79,7 +82,7 @@ public fun toBytesFromLeBytesSimdUByte(bytes: Simd<UByte>): Simd<UByte> {
     }
 }
 
-public fun toBytesFromNeBytesSimdUShort(bytes: Simd<UByte>): Simd<UShort> = transmute(bytes)
+public fun toBytesFromNeBytesSimdUShort(bytes: Simd<UByte>): Simd<UShort> = transmuteWithLayouts<Simd<UByte>, Simd<UShort>>(bytes, UnresolvedTypeLayout<Simd<UByte>>(), UnresolvedTypeLayout<Simd<UShort>>())
 
 public fun toBytesFromBeBytesSimdUShort(bytes: Simd<UByte>): Simd<UShort> {
     val ret = Simd.fromNeBytes(bytes)
@@ -99,7 +102,7 @@ public fun toBytesFromLeBytesSimdUShort(bytes: Simd<UByte>): Simd<UShort> {
     }
 }
 
-public fun toBytesFromNeBytesSimdUInt(bytes: Simd<UByte>): Simd<UInt> = transmute(bytes)
+public fun toBytesFromNeBytesSimdUInt(bytes: Simd<UByte>): Simd<UInt> = transmuteWithLayouts<Simd<UByte>, Simd<UInt>>(bytes, UnresolvedTypeLayout<Simd<UByte>>(), UnresolvedTypeLayout<Simd<UInt>>())
 
 public fun toBytesFromBeBytesSimdUInt(bytes: Simd<UByte>): Simd<UInt> {
     val ret = Simd.fromNeBytes(bytes)
@@ -119,7 +122,7 @@ public fun toBytesFromLeBytesSimdUInt(bytes: Simd<UByte>): Simd<UInt> {
     }
 }
 
-public fun toBytesFromNeBytesSimdULong(bytes: Simd<UByte>): Simd<ULong> = transmute(bytes)
+public fun toBytesFromNeBytesSimdULong(bytes: Simd<UByte>): Simd<ULong> = transmuteWithLayouts<Simd<UByte>, Simd<ULong>>(bytes, UnresolvedTypeLayout<Simd<UByte>>(), UnresolvedTypeLayout<Simd<ULong>>())
 
 public fun toBytesFromBeBytesSimdULong(bytes: Simd<UByte>): Simd<ULong> {
     val ret = Simd.fromNeBytes(bytes)
@@ -139,7 +142,7 @@ public fun toBytesFromLeBytesSimdULong(bytes: Simd<UByte>): Simd<ULong> {
     }
 }
 
-public fun toBytesFromNeBytesSimdInt(bytes: Simd<UByte>): Simd<Int> = transmute(bytes)
+public fun toBytesFromNeBytesSimdInt(bytes: Simd<UByte>): Simd<Int> = transmuteWithLayouts<Simd<UByte>, Simd<Int>>(bytes, UnresolvedTypeLayout<Simd<UByte>>(), UnresolvedTypeLayout<Simd<Int>>())
 
 public fun toBytesFromBeBytesSimdInt(bytes: Simd<UByte>): Simd<Int> {
     val ret = Simd.fromNeBytes(bytes)
@@ -159,7 +162,7 @@ public fun toBytesFromLeBytesSimdInt(bytes: Simd<UByte>): Simd<Int> {
     }
 }
 
-public fun toBytesFromNeBytesSimdByte(bytes: Simd<UByte>): Simd<Byte> = transmute(bytes)
+public fun toBytesFromNeBytesSimdByte(bytes: Simd<UByte>): Simd<Byte> = transmuteWithLayouts<Simd<UByte>, Simd<Byte>>(bytes, UnresolvedTypeLayout<Simd<UByte>>(), UnresolvedTypeLayout<Simd<Byte>>())
 
 public fun toBytesFromBeBytesSimdByte(bytes: Simd<UByte>): Simd<Byte> {
     val ret = Simd.fromNeBytes(bytes)
@@ -179,7 +182,7 @@ public fun toBytesFromLeBytesSimdByte(bytes: Simd<UByte>): Simd<Byte> {
     }
 }
 
-public fun toBytesFromNeBytesSimdShort(bytes: Simd<UByte>): Simd<Short> = transmute(bytes)
+public fun toBytesFromNeBytesSimdShort(bytes: Simd<UByte>): Simd<Short> = transmuteWithLayouts<Simd<UByte>, Simd<Short>>(bytes, UnresolvedTypeLayout<Simd<UByte>>(), UnresolvedTypeLayout<Simd<Short>>())
 
 public fun toBytesFromBeBytesSimdShort(bytes: Simd<UByte>): Simd<Short> {
     val ret = Simd.fromNeBytes(bytes)
@@ -199,7 +202,7 @@ public fun toBytesFromLeBytesSimdShort(bytes: Simd<UByte>): Simd<Short> {
     }
 }
 
-public fun toBytesFromNeBytesSimdLong(bytes: Simd<UByte>): Simd<Long> = transmute(bytes)
+public fun toBytesFromNeBytesSimdLong(bytes: Simd<UByte>): Simd<Long> = transmuteWithLayouts<Simd<UByte>, Simd<Long>>(bytes, UnresolvedTypeLayout<Simd<UByte>>(), UnresolvedTypeLayout<Simd<Long>>())
 
 public fun toBytesFromBeBytesSimdLong(bytes: Simd<UByte>): Simd<Long> {
     val ret = Simd.fromNeBytes(bytes)
@@ -219,7 +222,7 @@ public fun toBytesFromLeBytesSimdLong(bytes: Simd<UByte>): Simd<Long> {
     }
 }
 
-public fun toBytesFromNeBytesSimdFloat(bytes: Simd<UByte>): Simd<Float> = transmute(bytes)
+public fun toBytesFromNeBytesSimdFloat(bytes: Simd<UByte>): Simd<Float> = transmuteWithLayouts<Simd<UByte>, Simd<Float>>(bytes, UnresolvedTypeLayout<Simd<UByte>>(), UnresolvedTypeLayout<Simd<Float>>())
 
 public fun toBytesFromBeBytesSimdFloat(bytes: Simd<UByte>): Simd<Float> {
     val ret = Simd.fromNeBytes(bytes)
@@ -239,7 +242,7 @@ public fun toBytesFromLeBytesSimdFloat(bytes: Simd<UByte>): Simd<Float> {
     }
 }
 
-public fun toBytesFromNeBytesSimdDouble(bytes: Simd<UByte>): Simd<Double> = transmute(bytes)
+public fun toBytesFromNeBytesSimdDouble(bytes: Simd<UByte>): Simd<Double> = transmuteWithLayouts<Simd<UByte>, Simd<Double>>(bytes, UnresolvedTypeLayout<Simd<UByte>>(), UnresolvedTypeLayout<Simd<Double>>())
 
 public fun toBytesFromBeBytesSimdDouble(bytes: Simd<UByte>): Simd<Double> {
     val ret = Simd.fromNeBytes(bytes)

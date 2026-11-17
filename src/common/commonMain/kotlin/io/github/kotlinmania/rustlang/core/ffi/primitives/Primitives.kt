@@ -6,6 +6,10 @@ package io.github.kotlinmania.rustlang.core.ffi.primitives
 // This module is intentionally standalone to facilitate parsing when retrieving
 // core C types.
 
+// `@doc(cfg(true))` is used to prevent rustdoc from displaying a "Available on ..." box.
+// The implementation of these constants is target-specific, but every target does define them.
+public typealias CChar = UByte
+
 public typealias CSchar = Byte
 
 public typealias CUchar = UByte
@@ -14,11 +18,21 @@ public typealias CShort = Short
 
 public typealias CUshort = UShort
 
+public typealias CInt = Int
+
+public typealias CUint = UInt
+
+public typealias CLong = Long
+
+public typealias CUlong = ULong
+
 public typealias CLonglong = Long
 
 public typealias CUlonglong = ULong
 
 public typealias CFloat = kotlin.Float
+
+public typealias CDouble = Double
 
 /**
  * Equivalent to C's `sizeT` type, from `stddef.h` (or `cstddef` for C++).

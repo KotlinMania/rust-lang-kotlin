@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.f32.sqrt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -150,14 +151,14 @@ public fun mmAddsEpu16(a: M128i, b: M128i): M128i = transmute(run { val _simdArg
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_avg_epu8)
  */
-public fun mmAvgEpu8(a: M128i, b: M128i): M128i = transmute(pavgb(a.asU8x16(), b.asU8x16()))
+public fun mmAvgEpu8(a: M128i, b: M128i): M128i = transmuteWithLayouts<U8x16, M128i>(pavgb(a.asU8x16(), b.asU8x16()), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Averages packed unsigned 16-bit integers in `a` and `b`.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_avg_epu16)
  */
-public fun mmAvgEpu16(a: M128i, b: M128i): M128i = transmute(pavgw(a.asU16x8(), b.asU16x8()))
+public fun mmAvgEpu16(a: M128i, b: M128i): M128i = transmuteWithLayouts<U16x8, M128i>(pavgw(a.asU16x8(), b.asU16x8()), UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiplies and then horizontally add signed 16 bit integers in `a` and `b`.
@@ -181,7 +182,7 @@ public fun mmMaddEpi16(a: M128i, b: M128i): M128i {
     // If we implement this using generic vector intrinsics, the optimizer
     // will eliminate this pattern, and `pmaddwd` will no longer be emitted.
     // For this reason, we use x86 intrinsics.
-    return transmute(pmaddwd(a.asI16x8(), b.asI16x8()))
+    return transmuteWithLayouts<I32x4, M128i>(pmaddwd(a.asI16x8(), b.asI16x8()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 }
 
 /**
@@ -224,7 +225,7 @@ public fun mmMinEpu8(a: M128i, b: M128i): M128i = simdImin(a.asU8x16(), b.asU8x1
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mulhi_epi16)
  */
-public fun mmMulhiEpi16(a: M128i, b: M128i): M128i = transmute(pmulhw(a.asI16x8(), b.asI16x8()))
+public fun mmMulhiEpi16(a: M128i, b: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(pmulhw(a.asI16x8(), b.asI16x8()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiplies the packed unsigned 16-bit integers in `a` and `b`.
@@ -234,7 +235,7 @@ public fun mmMulhiEpi16(a: M128i, b: M128i): M128i = transmute(pmulhw(a.asI16x8(
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mulhi_epu16)
  */
-public fun mmMulhiEpu16(a: M128i, b: M128i): M128i = transmute(pmulhuw(a.asU16x8(), b.asU16x8()))
+public fun mmMulhiEpu16(a: M128i, b: M128i): M128i = transmuteWithLayouts<U16x8, M128i>(pmulhuw(a.asU16x8(), b.asU16x8()), UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiplies the packed 16-bit integers in `a` and `b`.
@@ -272,7 +273,7 @@ public fun mmMulEpu32(a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sad_epu8)
  */
-public fun mmSadEpu8(a: M128i, b: M128i): M128i = transmute(psadbw(a.asU8x16(), b.asU8x16()))
+public fun mmSadEpu8(a: M128i, b: M128i): M128i = transmuteWithLayouts<U64x2, M128i>(psadbw(a.asU8x16(), b.asU8x16()), UnresolvedTypeLayout<U64x2>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Subtracts packed 8-bit integers in `b` from packed 8-bit integers in `a`.
@@ -359,7 +360,7 @@ public fun mmSlliSi128Impl(a: M128i, imm8: Int): M128i {
             16u - shift1 + i
         }
     }
-    return transmute(run { val _simdArg0 = i8x16.ZERO; val _simdArg1 = a.asI8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u))); _simdArg0 })
+    return transmuteWithLayouts<I8x16, M128i>(run { val _simdArg0 = i8x16.ZERO; val _simdArg1 = a.asI8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u))); _simdArg0 }, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 }
 
 /**
@@ -410,7 +411,7 @@ public fun mmSlliEpi16(a: M128i, imm8: Int): M128i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sll_epi16)
  */
-public fun mmSllEpi16(a: M128i, count: M128i): M128i = transmute(psllw(a.asI16x8(), count.asI16x8()))
+public fun mmSllEpi16(a: M128i, count: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(psllw(a.asI16x8(), count.asI16x8()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Shifts packed 32-bit integers in `a` left by `IMM8` while shifting in zeros.
@@ -434,7 +435,7 @@ public fun mmSlliEpi32(a: M128i, imm8: Int): M128i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sll_epi32)
  */
-public fun mmSllEpi32(a: M128i, count: M128i): M128i = transmute(pslld(a.asI32x4(), count.asI32x4()))
+public fun mmSllEpi32(a: M128i, count: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(pslld(a.asI32x4(), count.asI32x4()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Shifts packed 64-bit integers in `a` left by `IMM8` while shifting in zeros.
@@ -458,7 +459,7 @@ public fun mmSlliEpi64(a: M128i, imm8: Int): M128i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sll_epi64)
  */
-public fun mmSllEpi64(a: M128i, count: M128i): M128i = transmute(psllq(a.asI64x2(), count.asI64x2()))
+public fun mmSllEpi64(a: M128i, count: M128i): M128i = transmuteWithLayouts<I64x2, M128i>(psllq(a.asI64x2(), count.asI64x2()), UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Shifts packed 16-bit integers in `a` right by `IMM8` while shifting in sign
@@ -479,7 +480,7 @@ public fun mmSraiEpi16(a: M128i, imm8: Int): M128i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sra_epi16)
  */
-public fun mmSraEpi16(a: M128i, count: M128i): M128i = transmute(psraw(a.asI16x8(), count.asI16x8()))
+public fun mmSraEpi16(a: M128i, count: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(psraw(a.asI16x8(), count.asI16x8()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Shifts packed 32-bit integers in `a` right by `IMM8` while shifting in sign
@@ -500,7 +501,7 @@ public fun mmSraiEpi32(a: M128i, imm8: Int): M128i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sra_epi32)
  */
-public fun mmSraEpi32(a: M128i, count: M128i): M128i = transmute(psrad(a.asI32x4(), count.asI32x4()))
+public fun mmSraEpi32(a: M128i, count: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(psrad(a.asI32x4(), count.asI32x4()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Shifts `a` right by `IMM8` bytes while shifting in zeros.
@@ -526,7 +527,7 @@ public fun mmSrliSi128Impl(a: M128i, imm8: Int): M128i {
             i + (shift.toUInt())
         }
     val x: I8x16 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = i8x16.ZERO; val _simdArg2 = SimdShuffleIdx(uintArrayOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u))); _simdArg0 }
-    return transmute(x)
+    return transmuteWithLayouts<I8x16, M128i>(x, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 }
 
 /**
@@ -552,7 +553,7 @@ public fun mmSrliEpi16(a: M128i, imm8: Int): M128i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_srl_epi16)
  */
-public fun mmSrlEpi16(a: M128i, count: M128i): M128i = transmute(psrlw(a.asI16x8(), count.asI16x8()))
+public fun mmSrlEpi16(a: M128i, count: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(psrlw(a.asI16x8(), count.asI16x8()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Shifts packed 32-bit integers in `a` right by `IMM8` while shifting in
@@ -577,7 +578,7 @@ public fun mmSrliEpi32(a: M128i, imm8: Int): M128i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_srl_epi32)
  */
-public fun mmSrlEpi32(a: M128i, count: M128i): M128i = transmute(psrld(a.asI32x4(), count.asI32x4()))
+public fun mmSrlEpi32(a: M128i, count: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(psrld(a.asI32x4(), count.asI32x4()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Shifts packed 64-bit integers in `a` right by `IMM8` while shifting in
@@ -602,7 +603,7 @@ public fun mmSrliEpi64(a: M128i, imm8: Int): M128i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_srl_epi64)
  */
-public fun mmSrlEpi64(a: M128i, count: M128i): M128i = transmute(psrlq(a.asI64x2(), count.asI64x2()))
+public fun mmSrlEpi64(a: M128i, count: M128i): M128i = transmuteWithLayouts<I64x2, M128i>(psrlq(a.asI64x2(), count.asI64x2()), UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Computes the bitwise AND of 128 bits (representing integer data) in `a` and
@@ -641,63 +642,63 @@ public fun mmXorSi128(a: M128i, b: M128i): M128i = run { val _simdArg0 = a; val 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpeq_epi8)
  */
-public fun mmCmpeqEpi8(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); _simdArg0 })
+public fun mmCmpeqEpi8(a: M128i, b: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); _simdArg0 }, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Compares packed 16-bit integers in `a` and `b` for equality.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpeq_epi16)
  */
-public fun mmCmpeqEpi16(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 })
+public fun mmCmpeqEpi16(a: M128i, b: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 }, UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Compares packed 32-bit integers in `a` and `b` for equality.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpeq_epi32)
  */
-public fun mmCmpeqEpi32(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); _simdArg0 })
+public fun mmCmpeqEpi32(a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); _simdArg0 }, UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Compares packed 8-bit integers in `a` and `b` for greater-than.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpgt_epi8)
  */
-public fun mmCmpgtEpi8(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); _simdArg0 })
+public fun mmCmpgtEpi8(a: M128i, b: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); _simdArg0 }, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Compares packed 16-bit integers in `a` and `b` for greater-than.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpgt_epi16)
  */
-public fun mmCmpgtEpi16(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 })
+public fun mmCmpgtEpi16(a: M128i, b: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 }, UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Compares packed 32-bit integers in `a` and `b` for greater-than.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpgt_epi32)
  */
-public fun mmCmpgtEpi32(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); _simdArg0 })
+public fun mmCmpgtEpi32(a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); _simdArg0 }, UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Compares packed 8-bit integers in `a` and `b` for less-than.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmplt_epi8)
  */
-public fun mmCmpltEpi8(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); _simdArg0 })
+public fun mmCmpltEpi8(a: M128i, b: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); _simdArg0 }, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Compares packed 16-bit integers in `a` and `b` for less-than.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmplt_epi16)
  */
-public fun mmCmpltEpi16(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 })
+public fun mmCmpltEpi16(a: M128i, b: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 }, UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Compares packed 32-bit integers in `a` and `b` for less-than.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmplt_epi32)
  */
-public fun mmCmpltEpi32(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); _simdArg0 })
+public fun mmCmpltEpi32(a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); _simdArg0 }, UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Converts the lower two packed 32-bit integers in `a` to packed
@@ -733,7 +734,7 @@ public fun mmCvtepi32Ps(a: M128i): M128 = transmute(run { val _simdArg0 = a.asI3
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtps_epi32)
  */
-public fun mmCvtpsEpi32(a: M128): M128i = transmute(cvtps2dq(a))
+public fun mmCvtpsEpi32(a: M128): M128i = transmuteWithLayouts<I32x4, M128i>(cvtps2dq(a), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Returns a vector whose lowest element is `a` and all higher elements are
@@ -1001,7 +1002,7 @@ public fun mmStreamSi32(memAddr: MutPtr, a: Int) {
 public fun mmMoveEpi64(a: M128i): M128i =
     run {
         val r: I64x2 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = i64x2.ZERO; val _simdArg2 = SimdShuffleIdx(listOf(0, 2)); _simdArg0 }
-        transmute(r)
+        transmuteWithLayouts<I64x2, M128i>(r, UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -1010,7 +1011,7 @@ public fun mmMoveEpi64(a: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_packs_epi16)
  */
-public fun mmPacksEpi16(a: M128i, b: M128i): M128i = transmute(packsswb(a.asI16x8(), b.asI16x8()))
+public fun mmPacksEpi16(a: M128i, b: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(packsswb(a.asI16x8(), b.asI16x8()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Converts packed 32-bit integers from `a` and `b` to packed 16-bit integers
@@ -1018,7 +1019,7 @@ public fun mmPacksEpi16(a: M128i, b: M128i): M128i = transmute(packsswb(a.asI16x
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_packs_epi32)
  */
-public fun mmPacksEpi32(a: M128i, b: M128i): M128i = transmute(packssdw(a.asI32x4(), b.asI32x4()))
+public fun mmPacksEpi32(a: M128i, b: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(packssdw(a.asI32x4(), b.asI32x4()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Converts packed 16-bit integers from `a` and `b` to packed 8-bit integers
@@ -1026,7 +1027,7 @@ public fun mmPacksEpi32(a: M128i, b: M128i): M128i = transmute(packssdw(a.asI32x
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_packus_epi16)
  */
-public fun mmPackusEpi16(a: M128i, b: M128i): M128i = transmute(packuswb(a.asI16x8(), b.asI16x8()))
+public fun mmPackusEpi16(a: M128i, b: M128i): M128i = transmuteWithLayouts<U8x16, M128i>(packuswb(a.asI16x8(), b.asI16x8()), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Returns the `imm8` element of `a`.
@@ -1076,7 +1077,7 @@ public fun mmShuffleEpi32(a: M128i, imm8: Int): M128i {
     return run {
         val a1 = a.asI32x4()
         val x: I32x4 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(imm8.toUInt() and 0x3u, (imm8.toUInt() shr 2) and 0x3u, (imm8.toUInt() shr 4) and 0x3u, (imm8.toUInt() shr 6) and 0x3u)); _simdArg0 }
-        transmute(x)
+        transmuteWithLayouts<I32x4, M128i>(x, UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
     }
 }
 
@@ -1096,7 +1097,7 @@ public fun mmShufflehiEpi16(a: M128i, imm8: Int): M128i {
     return run {
         val a1 = a.asI16x8()
         val x: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, (imm8.toUInt() and 0x3u) + 4u, ((imm8.toUInt() shr 2) and 0x3u) + 4u, ((imm8.toUInt() shr 4) and 0x3u) + 4u, ((imm8.toUInt() shr 6) and 0x3u) + 4u)); _simdArg0 }
-        transmute(x)
+        transmuteWithLayouts<I16x8, M128i>(x, UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
     }
 }
 
@@ -1116,7 +1117,7 @@ public fun mmShuffleloEpi16(a: M128i, imm8: Int): M128i {
     return run {
         val a1 = a.asI16x8()
         val x: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(imm8.toUInt() and 0x3u, (imm8.toUInt() shr 2) and 0x3u, (imm8.toUInt() shr 4) and 0x3u, (imm8.toUInt() shr 6) and 0x3u, 4u, 5u, 6u, 7u)); _simdArg0 }
-        transmute(x)
+        transmuteWithLayouts<I16x8, M128i>(x, UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
     }
 }
 
@@ -1125,7 +1126,7 @@ public fun mmShuffleloEpi16(a: M128i, imm8: Int): M128i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_unpackhi_epi8)
  */
-public fun mmUnpackhiEpi8(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); val _simdArg2 = SimdShuffleIdx(listOf(8, 24, 9, 25, 10, 26, 11, 27, 12, 28, 13, 29, 14, 30, 15, 31)); _simdArg0 })
+public fun mmUnpackhiEpi8(a: M128i, b: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); val _simdArg2 = SimdShuffleIdx(listOf(8, 24, 9, 25, 10, 26, 11, 27, 12, 28, 13, 29, 14, 30, 15, 31)); _simdArg0 }, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Unpacks and interleave 16-bit integers from the high half of `a` and `b`.
@@ -1135,7 +1136,7 @@ public fun mmUnpackhiEpi8(a: M128i, b: M128i): M128i = transmute(run { val _simd
 public fun mmUnpackhiEpi16(a: M128i, b: M128i): M128i =
     run {
         val x = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); val _simdArg2 = SimdShuffleIdx(listOf(4, 12, 5, 13, 6, 14, 7, 15)); _simdArg0 }
-        transmute(x)
+        transmuteWithLayouts<I16x8, M128i>(x, UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -1143,21 +1144,21 @@ public fun mmUnpackhiEpi16(a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_unpackhi_epi32)
  */
-public fun mmUnpackhiEpi32(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); val _simdArg2 = SimdShuffleIdx(listOf(2, 6, 3, 7)); _simdArg0 })
+public fun mmUnpackhiEpi32(a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); val _simdArg2 = SimdShuffleIdx(listOf(2, 6, 3, 7)); _simdArg0 }, UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Unpacks and interleave 64-bit integers from the high half of `a` and `b`.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_unpackhi_epi64)
  */
-public fun mmUnpackhiEpi64(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); val _simdArg2 = SimdShuffleIdx(listOf(1, 3)); _simdArg0 })
+public fun mmUnpackhiEpi64(a: M128i, b: M128i): M128i = transmuteWithLayouts<I64x2, M128i>(run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); val _simdArg2 = SimdShuffleIdx(listOf(1, 3)); _simdArg0 }, UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Unpacks and interleave 8-bit integers from the low half of `a` and `b`.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_unpacklo_epi8)
  */
-public fun mmUnpackloEpi8(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); val _simdArg2 = SimdShuffleIdx(listOf(0, 16, 1, 17, 2, 18, 3, 19, 4, 20, 5, 21, 6, 22, 7, 23)); _simdArg0 })
+public fun mmUnpackloEpi8(a: M128i, b: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); val _simdArg2 = SimdShuffleIdx(listOf(0, 16, 1, 17, 2, 18, 3, 19, 4, 20, 5, 21, 6, 22, 7, 23)); _simdArg0 }, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Unpacks and interleave 16-bit integers from the low half of `a` and `b`.
@@ -1167,7 +1168,7 @@ public fun mmUnpackloEpi8(a: M128i, b: M128i): M128i = transmute(run { val _simd
 public fun mmUnpackloEpi16(a: M128i, b: M128i): M128i =
     run {
         val x = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); val _simdArg2 = SimdShuffleIdx(listOf(0, 8, 1, 9, 2, 10, 3, 11)); _simdArg0 }
-        transmute(x)
+        transmuteWithLayouts<I16x8, M128i>(x, UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -1175,14 +1176,14 @@ public fun mmUnpackloEpi16(a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_unpacklo_epi32)
  */
-public fun mmUnpackloEpi32(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 1, 5)); _simdArg0 })
+public fun mmUnpackloEpi32(a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); val _simdArg2 = SimdShuffleIdx(listOf(0, 4, 1, 5)); _simdArg0 }, UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Unpacks and interleave 64-bit integers from the low half of `a` and `b`.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_unpacklo_epi64)
  */
-public fun mmUnpackloEpi64(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); val _simdArg2 = SimdShuffleIdx(listOf(0, 2)); _simdArg0 })
+public fun mmUnpackloEpi64(a: M128i, b: M128i): M128i = transmuteWithLayouts<I64x2, M128i>(run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); val _simdArg2 = SimdShuffleIdx(listOf(0, 2)); _simdArg0 }, UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Returns a new vector with the low element of `a` replaced by the sum of the
@@ -1303,9 +1304,9 @@ public fun mmSubPd(a: M128d, b: M128d): M128d = run { val _simdArg0 = a; val _si
  */
 public fun mmAndPd(a: M128d, b: M128d): M128d =
     run {
-        val a1: M128i = transmute(a)
-        val b1: M128i = transmute(b)
-        transmute(mmAndSi128(a1, b1))
+        val a1: M128i = transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())
+        val b1: M128i = transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())
+        transmuteWithLayouts<M128i, M128d>(mmAndSi128(a1, b1), UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128d>())
     }
 
 /**
@@ -1315,9 +1316,9 @@ public fun mmAndPd(a: M128d, b: M128d): M128d =
  */
 public fun mmAndnotPd(a: M128d, b: M128d): M128d =
     run {
-        val a1: M128i = transmute(a)
-        val b1: M128i = transmute(b)
-        transmute(mmAndnotSi128(a1, b1))
+        val a1: M128i = transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())
+        val b1: M128i = transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())
+        transmuteWithLayouts<M128i, M128d>(mmAndnotSi128(a1, b1), UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128d>())
     }
 
 /**
@@ -1327,9 +1328,9 @@ public fun mmAndnotPd(a: M128d, b: M128d): M128d =
  */
 public fun mmOrPd(a: M128d, b: M128d): M128d =
     run {
-        val a1: M128i = transmute(a)
-        val b1: M128i = transmute(b)
-        transmute(mmOrSi128(a1, b1))
+        val a1: M128i = transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())
+        val b1: M128i = transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())
+        transmuteWithLayouts<M128i, M128d>(mmOrSi128(a1, b1), UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128d>())
     }
 
 /**
@@ -1339,9 +1340,9 @@ public fun mmOrPd(a: M128d, b: M128d): M128d =
  */
 public fun mmXorPd(a: M128d, b: M128d): M128d =
     run {
-        val a1: M128i = transmute(a)
-        val b1: M128i = transmute(b)
-        transmute(mmXorSi128(a1, b1))
+        val a1: M128i = transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())
+        val b1: M128i = transmuteWithLayouts<M128d, M128i>(b, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())
+        transmuteWithLayouts<M128i, M128d>(mmXorSi128(a1, b1), UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128d>())
     }
 
 /**
@@ -1622,7 +1623,7 @@ public fun mmCvtpdPs(a: M128d): M128 =
     run {
         val r = run { val _simdArg0 = a.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<F32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<F32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<F32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<F32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<F32x2>()).alignBytes)); res } }
         val zero = f32x2.ZERO
-        transmute(run { val _simdArg0 = r; val _simdArg1 = zero; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 })
+        transmuteWithLayouts<F32x4, M128>(run { val _simdArg0 = r; val _simdArg1 = zero; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
 /**
@@ -1644,7 +1645,7 @@ public fun mmCvtpsPd(a: M128): M128d =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtpd_epi32)
  */
-public fun mmCvtpdEpi32(a: M128d): M128i = transmute(cvtpd2dq(a))
+public fun mmCvtpdEpi32(a: M128d): M128i = transmuteWithLayouts<I32x4, M128i>(cvtpd2dq(a), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Converts the lower double-precision (64-bit) floating-point element in a to
@@ -1691,7 +1692,7 @@ public fun mmCvtssSd(a: M128d, b: M128): M128d =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvttpd_epi32)
  */
-public fun mmCvttpdEpi32(a: M128d): M128i = transmute(cvttpd2dq(a))
+public fun mmCvttpdEpi32(a: M128d): M128i = transmuteWithLayouts<I32x4, M128i>(cvttpd2dq(a), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Converts the lower double-precision (64-bit) floating-point element in `a`
@@ -1707,7 +1708,7 @@ public fun mmCvttsdSi32(a: M128d): Int = cvttsd2si(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvttps_epi32)
  */
-public fun mmCvttpsEpi32(a: M128): M128i = transmute(cvttps2dq(a))
+public fun mmCvttpsEpi32(a: M128): M128i = transmuteWithLayouts<I32x4, M128i>(cvttps2dq(a), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Copies double-precision (64-bit) floating-point element `a` to the lower
@@ -1769,7 +1770,7 @@ public fun mmMovemaskPd(a: M128d): Int {
     // Propagate the highest bit to the rest, because simdBitmask
     // requires all-1 or all-0.
     return run {
-        val mask: I64x2 = run { val _simdArg0 = transmute(a); val _simdArg1 = i64x2.ZERO; _simdArg0 }
+        val mask: I64x2 = run { val _simdArg0 = transmuteWithLayouts<M128d, I64x2>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<I64x2>()); val _simdArg1 = i64x2.ZERO; _simdArg0 }
         (run { val _simdArg0 = mask; 0u }).toInt()
     }
 }
@@ -2063,7 +2064,7 @@ public fun mmMoveSd(a: M128d, b: M128d): M128d = mmSetrPd(run { val _simdArg0 = 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_castpd_ps)
  */
-public fun mmCastpdPs(a: M128d): M128 = transmute(a)
+public fun mmCastpdPs(a: M128d): M128 = transmuteWithLayouts<M128d, M128>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128>())
 
 /**
  * Casts a 128-bit floating-point vector of `[2 x double]` into a 128-bit
@@ -2071,7 +2072,7 @@ public fun mmCastpdPs(a: M128d): M128 = transmute(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_castpd_si128)
  */
-public fun mmCastpdSi128(a: M128d): M128i = transmute(a)
+public fun mmCastpdSi128(a: M128d): M128i = transmuteWithLayouts<M128d, M128i>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Casts a 128-bit floating-point vector of `[4 x float]` into a 128-bit
@@ -2079,7 +2080,7 @@ public fun mmCastpdSi128(a: M128d): M128i = transmute(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_castps_pd)
  */
-public fun mmCastpsPd(a: M128): M128d = transmute(a)
+public fun mmCastpsPd(a: M128): M128d = transmuteWithLayouts<M128, M128d>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128d>())
 
 /**
  * Casts a 128-bit floating-point vector of `[4 x float]` into a 128-bit
@@ -2087,7 +2088,7 @@ public fun mmCastpsPd(a: M128): M128d = transmute(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_castps_si128)
  */
-public fun mmCastpsSi128(a: M128): M128i = transmute(a)
+public fun mmCastpsSi128(a: M128): M128i = transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Casts a 128-bit integer vector into a 128-bit floating-point vector
@@ -2095,7 +2096,7 @@ public fun mmCastpsSi128(a: M128): M128i = transmute(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_castsi128_pd)
  */
-public fun mmCastsi128Pd(a: M128i): M128d = transmute(a)
+public fun mmCastsi128Pd(a: M128i): M128d = transmuteWithLayouts<M128i, M128d>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128d>())
 
 /**
  * Casts a 128-bit integer vector into a 128-bit floating-point vector
@@ -2103,7 +2104,7 @@ public fun mmCastsi128Pd(a: M128i): M128d = transmute(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_castsi128_ps)
  */
-public fun mmCastsi128Ps(a: M128i): M128 = transmute(a)
+public fun mmCastsi128Ps(a: M128i): M128 = transmuteWithLayouts<M128i, M128>(a, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())
 
 /**
  * Returns vector of type __m128d with indeterminate elements.with indetermination elements.

@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.core.str.converts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -173,7 +173,7 @@ public fun fromUtf8Mut(v: MutableList<UByte>): Result<String, Utf8Error> {
 public fun fromUtf8Unchecked(v: List<UByte>): String {
     // SAFETY: the caller must guarantee that the bytes `v` are valid UTF-8.
     // Also relies on `String` and `[UByte]` having the same layout.
-    return transmute(v)
+    return transmuteWithLayouts<List<UByte>, String>(v, UnresolvedTypeLayout<List<UByte>>(), UnresolvedTypeLayout<String>())
 }
 
 /**

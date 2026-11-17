@@ -11,7 +11,7 @@ public fun err2io(err: Errno): Error = Error.fromRawOsError(err.raw().into())
 
 public fun <T : IsMinusOne> cvt(t: T): Result<T, io.github.kotlinmania.rustlang.std.io.error.Error> =
     if (t.isMinusOne()) {
-        Result.Err<T, io.github.kotlinmania.rustlang.std.io.error.Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        Result.Err<T, io.github.kotlinmania.rustlang.std.io.error.Error>(Error.lastOsError())
     } else {
         Result.Ok<T, io.github.kotlinmania.rustlang.std.io.error.Error>(t)
     }

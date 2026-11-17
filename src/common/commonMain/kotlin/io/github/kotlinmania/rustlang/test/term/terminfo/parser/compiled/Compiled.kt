@@ -230,7 +230,10 @@ public fun parse(file: Read, longnames: Boolean): Result<TermInfo, String> {
                     val e16 = matchVal14.error
                     Result.Err(e16)
                 }
-                matchVal14 is Result.Ok && matchVal14.value == 1 -> Result.Ok(Pair(bnames[i].toString(), true))
+                matchVal14 is Result.Ok && matchVal14.value == 1 -> {
+                    val valueVal = matchVal14.value
+                    Result.Ok(Pair(bnames[i].toString(), true))
+                }
                 else -> null
             }
         } }).toMap(LinkedHashMap())
@@ -265,7 +268,10 @@ public fun parse(file: Read, longnames: Boolean): Result<TermInfo, String> {
                     readLeU16(file).map(Into::into)
                 }
             when {
-                number is Result.Ok && number.value == 0xFFFF -> null
+                number is Result.Ok && number.value == 0xFFFF -> {
+                    val valueVal = number.value
+                    null
+                }
                 number is Result.Ok -> {
                     val n5 = number.value
                     Result.Ok(Pair(nnames[i].toString(), n5))

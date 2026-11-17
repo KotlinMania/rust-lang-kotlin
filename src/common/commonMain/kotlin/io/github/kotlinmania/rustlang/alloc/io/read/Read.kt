@@ -944,7 +944,10 @@ public fun <R : Read<R>> defaultReadExact(thisRef: R, buf: MutableList<UByte>): 
         run {
             val matchVal = thisRef.read(buf1)
             when {
-                matchVal is Result.Ok && matchVal.value == 0 -> { break }
+                matchVal is Result.Ok && matchVal.value == 0 -> {
+                    val valueVal = matchVal.value
+                    break
+                }
                 matchVal is Result.Ok -> {
                     val n = matchVal.value
                     buf1 = buf1.subList(n, buf1.size)
@@ -978,7 +981,9 @@ public fun <R : Read<R>> defaultReadBufExact(thisRef: R, cursor: BorrowedCursor<
         run {
             val matchVal = thisRef.readBuf(cursor.reborrow())
             when {
-                matchVal is Result.Ok -> {}
+                matchVal is Result.Ok -> {
+                    val valueVal = matchVal.value
+                }
                 matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
                     val e = matchVal.error
                     continue

@@ -5,9 +5,10 @@ import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
@@ -17,7 +18,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
  * ARM-specific 64-bit wide vector of one packed `Double`.
  */
 public open class Float64x1T(
-    public var value: DoubleArray,
+    public var value: DoubleArray = DoubleArray(1),
 ) {
     public var field0: DoubleArray
         get() = value
@@ -65,7 +66,7 @@ public open class Float64x1T(
          */
         public fun splat(value: Double): Float64x1T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): Float64x1T = transmute(simd)
+        public fun from(simd: Simd<Double>): Float64x1T = transmuteWithLayouts<Simd<Double>, Float64x1T>(simd, UnresolvedTypeLayout<Simd<Double>>(), Float64x1T.typeLayout())
     }
 }
 
@@ -73,7 +74,7 @@ public open class Float64x1T(
  * ARM-specific 128-bit wide vector of two packed `Double`.
  */
 public open class Float64x2T(
-    public var value: DoubleArray,
+    public var value: DoubleArray = DoubleArray(2),
 ) {
     public var field0: DoubleArray
         get() = value
@@ -121,7 +122,7 @@ public open class Float64x2T(
          */
         public fun splat(value: Double): Float64x2T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): Float64x2T = transmute(simd)
+        public fun from(simd: Simd<Double>): Float64x2T = transmuteWithLayouts<Simd<Double>, Float64x2T>(simd, UnresolvedTypeLayout<Simd<Double>>(), Float64x2T.typeLayout())
     }
 }
 

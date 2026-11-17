@@ -19,6 +19,7 @@ import io.github.kotlinmania.rustlang.libc.sysctlbyname
 import io.github.kotlinmania.rustlang.std.fs.read
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 import io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.corefoundation.CFDictionaryRef
 import io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.corefoundation.CFHandle
 import io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.corefoundation.CFStringRef
@@ -304,7 +305,7 @@ public fun parseOsVersion(version: List<UByte>): Result<OSVersion, ParseIntError
  */
 public fun rootRelative(path: String): Path =
     if (false) {
-        val root = PathBuf.from(env.varOs("IPHONE_SIMULATOR_ROOT").expect("environment variable `IPHONE_SIMULATOR_ROOT` must be set when executing under simulator"))
+        val root = PathBuf.from(Env.varOs("IPHONE_SIMULATOR_ROOT").expect("environment variable `IPHONE_SIMULATOR_ROOT` must be set when executing under simulator"))
         // Convert absolute path to relative path, to make the `.push` work as expected.
         root.push((Path.new(path).takeIf { it.startsWith("/") }?.removePrefix("/"))!!)
         root.into()

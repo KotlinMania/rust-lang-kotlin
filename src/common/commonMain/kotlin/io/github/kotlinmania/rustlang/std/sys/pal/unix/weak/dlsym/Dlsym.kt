@@ -1,7 +1,6 @@
 // port-lint: source sys/pal/unix/weak/dlsym.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.weak.dlsym
 
-import io.github.kotlinmania.libc.fuchsia.RTLD_DEFAULT
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -10,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.libc.dlsym
+import io.github.kotlinmania.rustlang.libc.unix.bsd.RTLD_DEFAULT
 
 public open class DlsymWeak<F> internal constructor(
     nameCtorArg: ConstPtr,

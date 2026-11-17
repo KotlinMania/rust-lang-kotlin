@@ -401,7 +401,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         if (src.size <= headRoom) {
             // ignore-tidy-undocumented-unchecked
             run {
-                copyNonoverlapping(src.asPtr(), this.ptr().add(dst.asIndex()), src.size)
+                copyNonoverlapping(src.asPtr(), this.ptr().add(dst.asIndex()), src.size, typeLayoutT = UnresolvedTypeLayout<T>())
             }
         } else {
             val (left, right) = src.splitAt(headRoom)
@@ -435,7 +435,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         if (src.size <= headRoom) {
             // ignore-tidy-undocumented-unchecked
             run {
-                copyNonoverlappingReversed(src.asPtr(), this.ptr().add(dst.asIndex()), src.size)
+                copyNonoverlappingReversed(src.asPtr(), this.ptr().add(dst.asIndex()), src.size, typeLayoutT = UnresolvedTypeLayout<T>())
             }
         } else {
             val (left, right) = src.splitAt(src.size - headRoom)

@@ -18,8 +18,8 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundf64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmTruncf64
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.floatBinaryWithLayout
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.FpCategory
 import io.github.kotlinmania.rustlang.core.num.imp.libm.fdim
@@ -965,7 +965,7 @@ public inline fun <reified Int> Double.toIntStrict(): Int = (this.toIntChecked<I
  */
 public fun Double.toBits(): ULong {
     // SAFETY: `ULong` is a plain old datatype so we can always reinterpret to it.
-    return transmute(this)
+    return transmuteWithLayouts<Double, ULong>(this, UnresolvedTypeLayout<Double>(), PrimitiveLayouts.U64)
 }
 
 /**
@@ -1009,7 +1009,7 @@ public fun Double.toBits(): ULong {
 public fun Double.Companion.fromBits(v: ULong): Double {
     // It turns out the safety issues with sNaN were overblown! Hooray!
     // SAFETY: `ULong` is a plain old datatype so we can always reinterpret from it.
-    return transmuteWithLayouts(v, PrimitiveLayouts.U64, PrimitiveLayouts.F64)
+    return transmuteWithLayouts<ULong, Double>(v, PrimitiveLayouts.U64, PrimitiveLayouts.F64)
 }
 
 /**
@@ -1253,14 +1253,15 @@ public fun Double.totalCmp(other: Double): Ordering {
  * ```
  */
 public fun Double.clamp(min: Double, max: Double): Double {
+    var selfMut = this
     constAssert(min <= max, "min > max, or either was NaN", "min > max, or either was NaN. min = {min:?}, max = {max:?}", min, max)
-    if (this < min) {
-        this = min
+    if (selfMut < min) {
+        selfMut = min
     }
-    if (this > max) {
-        this = max
+    if (selfMut > max) {
+        selfMut = max
     }
-    return this
+    return selfMut
 }
 
 /**

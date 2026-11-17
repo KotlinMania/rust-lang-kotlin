@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.std.thread.functions.availableParallelism
 // during tests execution.
 
 public fun getConcurrency(): Int =
-    when (val matchVal = variable("RUST_TEST_THREADS")) {
+    when (val matchVal = Env.variable("RUST_TEST_THREADS")) {
         is Ok -> {
             val value = matchVal.value
             run {

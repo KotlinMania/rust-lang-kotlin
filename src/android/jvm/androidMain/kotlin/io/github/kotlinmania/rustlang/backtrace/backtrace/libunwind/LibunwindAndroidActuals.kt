@@ -2,8 +2,8 @@
 
 package io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind
 
-import io.github.kotlinmania.libc.fuchsia.UintptrT
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.libc.unix.UintptrT
 
 private object BacktraceLibunwindJniBridge {
     init {

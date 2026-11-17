@@ -1,16 +1,16 @@
 // port-lint: source detect/os/linux/riscv.rs
 package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.riscv
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.CLong
-import io.github.kotlinmania.libc.CUint
-import io.github.kotlinmania.libc.fuchsia.SizeT
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.libc.CInt
+import io.github.kotlinmania.rustlang.libc.CLong
+import io.github.kotlinmania.rustlang.libc.CUint
+import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.syscall
 import io.github.kotlinmania.rustlang.libc.prctl
-import io.github.kotlinmania.rustlang.libc.syscall
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
 import io.github.kotlinmania.rustlang.stddetect.detect.cache.cache

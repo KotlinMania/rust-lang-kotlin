@@ -1,10 +1,10 @@
 // port-lint: source os/fd/raw.rs
 package io.github.kotlinmania.rustlang.std.os.fd
 
-import io.github.kotlinmania.libc.hermit.STDERR_FILENO
-import io.github.kotlinmania.libc.hermit.STDIN_FILENO
-import io.github.kotlinmania.libc.hermit.STDOUT_FILENO
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.libc.wasi.STDERR_FILENO
+import io.github.kotlinmania.rustlang.libc.wasi.STDIN_FILENO
+import io.github.kotlinmania.rustlang.libc.wasi.STDOUT_FILENO
 import io.github.kotlinmania.rustlang.std.Rc
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader

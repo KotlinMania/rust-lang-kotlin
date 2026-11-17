@@ -1073,13 +1073,13 @@ public fun <Src, Dst> transmutePrefix(src: Src, typeLayoutSrc: TypeLayout<Src> =
         // SAFETY: When Dst is bigger, the union is the size of Dst
         Ordering.Less -> run {
             val a = transmuteNeo(src, typeLayoutSrc = typeLayoutSrc)
-            transmuteUnchecked(Transmute(a = a))
+            transmuteWithLayouts<Transmute, Dst>(Transmute(a = a), UnresolvedTypeLayout<Transmute>(), typeLayoutDst)
         }
         // SAFETY: When they're the same size, we can use the MIR primitive
-        Ordering.Equal -> transmuteWithLayouts(src, typeLayoutSrc, typeLayoutDst)
+        Ordering.Equal -> transmuteWithLayouts<Src, Dst>(src, typeLayoutSrc, typeLayoutDst)
         // SAFETY: When Src is bigger, the union is the size of Src
         Ordering.Greater -> run {
-            val u: Transmute<Src, Dst> = transmuteWithLayouts(src, typeLayoutSrc, typeLayoutDst)
+            val u: Transmute<Src, Dst> = transmuteWithLayouts<Src, Transmute<Src, Dst>>(src, typeLayoutSrc, UnresolvedTypeLayout<Transmute<Src, Dst>>())
             transmuteNeo(u.b, typeLayoutSrc = UnresolvedTypeLayout<B>())
         }
     }
@@ -1121,7 +1121,7 @@ public fun <Src, Dst> transmuteNeo(src: Src, typeLayoutSrc: TypeLayout<Src> = Un
     check((typeLayoutSrc).sizeBytes.toInt() == (UnresolvedTypeLayout<Dst>()).sizeBytes.toInt())
     // SAFETY: the const-assert just checked that they're the same size,
     // and any other safety invariants need to be upheld by the caller.
-    return transmuteWithLayouts(src, typeLayoutSrc, UnresolvedTypeLayout<Dst>())
+    return transmuteWithLayouts<Src, Dst>(src, typeLayoutSrc, UnresolvedTypeLayout<Dst>())
 }
 
 // even without panics, this helps for Miri backtraces

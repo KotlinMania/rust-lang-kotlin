@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.LibrarySegment
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsStr
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -50,13 +51,13 @@ public fun nativeLibrary(i: UInt): Library? {
                 macho.mhMagic -> {
                     val endian = NativeEndian
                     val header1 = header.cast()
-                    val data = linearSliceView(ConstPtr((ptrFromRef(header1)).rawAddress), sizeOfVal(header1) + header1.sizeofcmds.get(endian).toInt(), PrimitiveLayouts.U8)
+                    val data = linearSliceView(ConstPtr((ptrFromRef(header1)).rawAddress), sizeOfVal(header1, typeLayoutT = UnresolvedTypeLayout<macho.MachHeader32<NativeEndian>>()) + header1.sizeofcmds.get(endian).toInt(), PrimitiveLayouts.U8)
                     Pair((header1.loadCommands(endian, data, 0).ok() ?: return null), endian)
                 }
                 macho.mhMagic64 -> {
                     val endian1 = NativeEndian
                     val header2 = header.cast()
-                    val data1 = linearSliceView(ConstPtr((ptrFromRef(header2)).rawAddress), sizeOfVal(header2) + header2.sizeofcmds.get(endian1).toInt(), PrimitiveLayouts.U8)
+                    val data1 = linearSliceView(ConstPtr((ptrFromRef(header2)).rawAddress), sizeOfVal(header2, typeLayoutT = UnresolvedTypeLayout<macho.MachHeader64<NativeEndian>>()) + header2.sizeofcmds.get(endian1).toInt(), PrimitiveLayouts.U8)
                     Pair((header2.loadCommands(endian1, data1, 0).ok() ?: return null), endian1)
                 }
                 else -> { return null }

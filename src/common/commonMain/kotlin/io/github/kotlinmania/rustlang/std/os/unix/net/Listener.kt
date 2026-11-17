@@ -1,10 +1,6 @@
 // port-lint: source os/unix/net/listener.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net
 
-import io.github.kotlinmania.libc.fuchsia.AF_UNIX
-import io.github.kotlinmania.libc.fuchsia.SOCK_STREAM
-import io.github.kotlinmania.libc.fuchsia.SockaddrUn
-import io.github.kotlinmania.libc.fuchsia.SocklenT
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -15,6 +11,10 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.bind
 import io.github.kotlinmania.rustlang.libc.getsockname
 import io.github.kotlinmania.rustlang.libc.listen
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SockaddrUn
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SOCK_STREAM
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AF_UNIX
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
 import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
@@ -216,7 +216,7 @@ public open class UnixListener(
      * On Redox this always returns `None`.
      * ```
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.takeError()
 
     /**
      * Returns an iterator over incoming connections.

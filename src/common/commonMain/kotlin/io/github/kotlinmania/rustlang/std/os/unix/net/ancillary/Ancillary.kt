@@ -1,18 +1,6 @@
 // port-lint: source os/unix/net/ancillary.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net.ancillary
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.fuchsia.Cmsghdr
-import io.github.kotlinmania.libc.fuchsia.GidT
-import io.github.kotlinmania.libc.fuchsia.MSG_CTRUNC
-import io.github.kotlinmania.libc.fuchsia.MSG_TRUNC
-import io.github.kotlinmania.libc.fuchsia.Msghdr
-import io.github.kotlinmania.libc.fuchsia.PidT
-import io.github.kotlinmania.libc.fuchsia.SOL_SOCKET
-import io.github.kotlinmania.libc.fuchsia.Ucred
-import io.github.kotlinmania.libc.fuchsia.UidT
-import io.github.kotlinmania.libc.unix.bsd.freebsdlike.freebsd.SCM_CREDS2
-import io.github.kotlinmania.libc.unix.hurd.SCM_CREDS
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
@@ -33,12 +21,24 @@ import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.CMSG_DATA
 import io.github.kotlinmania.rustlang.libc.CMSG_FIRSTHDR
 import io.github.kotlinmania.rustlang.libc.CMSG_LEN
 import io.github.kotlinmania.rustlang.libc.CMSG_NXTHDR
 import io.github.kotlinmania.rustlang.libc.CMSG_SPACE
+import io.github.kotlinmania.rustlang.libc.SCM_CREDS2
 import io.github.kotlinmania.rustlang.libc.memcpy
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.Cmsghdr
+import io.github.kotlinmania.rustlang.libc.unix.bsd.Msghdr
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SCM_CREDS
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_CTRUNC
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_TRUNC
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Ucred
+import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.unix.net.SockaddrUn
@@ -427,7 +427,7 @@ public open class Messages(
                         CMSG_NXTHDR(msg, current)
                     }
                 }
-            val cmsg1 = when (val tryResult = cmsg.asRef()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            val cmsg1 = when (val tryResult = cmsg.asRef()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<AncillaryData, AncillaryError, Error>(tryResult.error) }
             // Most operating systems, but not Linux or emscripten, return the previous pointer
             // when its length is zero. Therefore, check if the previous pointer is the same as
             // the current one.

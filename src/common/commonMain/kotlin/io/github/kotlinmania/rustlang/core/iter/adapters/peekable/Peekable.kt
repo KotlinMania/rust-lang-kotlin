@@ -21,7 +21,7 @@ public typealias Source<I> = I.Source
  * [peekable]: Iterator.peekable
  * [Iterator]: trait.Iterator.html
  */
-public open class Peekable<I>(
+public open class Peekable<I, Item>(
     public var iter: I,
     /**
      * Remember a peeked value, even if it was None.
@@ -37,7 +37,7 @@ public open class Peekable<I>(
         }
     }
 
-    public open fun clone(): Peekable<I> = Peekable(iter, peeked)
+    public open fun clone(): Peekable<I, Item> = Peekable(iter, peeked)
 
     // Peekable must remember if a None has been seen in the `.peek()` method.
     // It ensures that `.peek();.peek();` or `.peek();.next();` only advances the
@@ -485,6 +485,6 @@ public open class Peekable<I>(
     }
 
     public companion object {
-        public fun <I> new(iter: I): Peekable<I> = Peekable(iter = iter, peeked = null)
+        public fun <I> new(iter: I): Peekable<I, Item> = Peekable(iter = iter, peeked = null)
     }
 }

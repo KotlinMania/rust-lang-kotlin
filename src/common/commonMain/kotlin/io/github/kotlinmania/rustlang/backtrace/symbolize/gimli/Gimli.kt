@@ -390,6 +390,8 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
                     while (true) {
                         val matchVal3 = frames.next()
                         if (matchVal3 !is Result.Ok) break
+                        val valueVal = (matchVal3 as Result.Ok).value
+                        val frame = valueVal
                         anyFrames = true
                         val name =
                             when (val matchVal4 = frame.function) {
@@ -416,8 +418,10 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
                                 while (true) {
                                     val matchVal7 = frames1.next()
                                     if (matchVal7 !is Result.Ok) break
+                                    val valueVal1 = (matchVal7 as Result.Ok).value
+                                    val frame1 = valueVal1
                                     anyFrames = true
-                                    call(Symbol.Frame(addr = mutPtrFromRustCast(addr1), location = frame.location, name = frame.function.map({ f1 -> f1.name.slice() })))
+                                    call(Symbol.Frame(addr = mutPtrFromRustCast(addr1), location = frame1.location, name = frame1.function.map({ f1 -> f1.name.slice() })))
                                 }
                             }
                             else -> {}

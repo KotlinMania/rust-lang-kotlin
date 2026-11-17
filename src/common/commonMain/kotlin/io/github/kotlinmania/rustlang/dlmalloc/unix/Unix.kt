@@ -1,15 +1,6 @@
 // port-lint: source unix.rs
 package io.github.kotlinmania.rustlang.dlmalloc.unix
 
-import io.github.kotlinmania.libc.fuchsia.MAP_ANON
-import io.github.kotlinmania.libc.fuchsia.MAP_FAILED
-import io.github.kotlinmania.libc.fuchsia.MAP_PRIVATE
-import io.github.kotlinmania.libc.fuchsia.MREMAP_MAYMOVE
-import io.github.kotlinmania.libc.fuchsia.PROT_READ
-import io.github.kotlinmania.libc.fuchsia.PROT_WRITE
-import io.github.kotlinmania.libc.fuchsia.PTHREAD_MUTEX_INITIALIZER
-import io.github.kotlinmania.libc.fuchsia.PthreadMutexT
-import io.github.kotlinmania.libc.unix.solarish.pthreadMutexLock
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -18,7 +9,16 @@ import io.github.kotlinmania.rustlang.libc.mmap
 import io.github.kotlinmania.rustlang.libc.mremap
 import io.github.kotlinmania.rustlang.libc.munmap
 import io.github.kotlinmania.rustlang.libc.pthreadAtfork
+import io.github.kotlinmania.rustlang.libc.pthreadMutexLock
 import io.github.kotlinmania.rustlang.libc.pthreadMutexUnlock
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.MAP_ANON
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MAP_FAILED
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MAP_PRIVATE
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_READ
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_WRITE
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.MREMAP_MAYMOVE
+import io.github.kotlinmania.rustlang.libc.wasi.PTHREAD_MUTEX_INITIALIZER
+import io.github.kotlinmania.rustlang.libc.wasi.PthreadMutexT
 
 /**
  * System setting for Linux

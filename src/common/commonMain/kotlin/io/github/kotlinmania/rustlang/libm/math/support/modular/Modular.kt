@@ -68,7 +68,7 @@ public fun <D, OtherSign, Unsigned, H, U> linearMulReduction(x: U, e: UInt, y: U
  * The value of `n` is fixed for a given `Reducer`,
  * but the value of `x` is modified by the methods.
  */
-public open class Reducer<U : HInt<U, Any?, Any?, Any?>>(
+public open class Reducer<U : HInt<U, D, OtherSign, Unsigned>, D, OtherSign, Unsigned>(
     // m = 2n
     public var m: U,
     // q = (RR/2) / m
@@ -79,7 +79,7 @@ public open class Reducer<U : HInt<U, Any?, Any?, Any?>>(
     // The value `x` is implicitly stored as `2 * q * x`:
     public var v2xq: D,
 ) {
-    public open fun clone(): Reducer<U> = Reducer(m, r, v2xq)
+    public open fun clone(): Reducer<U, D, OtherSign, Unsigned> = Reducer(m, r, v2xq)
 
     /**
      * Extract the current remainder `x` in the range `[0, 2n)`
@@ -189,7 +189,7 @@ public open class Reducer<U : HInt<U, Any?, Any?, Any?>>(
          *
          * Requires `R / 8<n<R / 4` and `x<2n`.
          */
-        public fun <D, OtherSign, Unsigned, H, U : HInt<U, D, OtherSign, Unsigned>> new(x: U, n: U): Reducer<U> where U : HInt<U, D, OtherSign, Unsigned>, U : Int<U, OtherSign, U> {
+        public fun <D, OtherSign, Unsigned, H, U : HInt<U, D, OtherSign, Unsigned>> new(x: U, n: U): Reducer<U, D, OtherSign, Unsigned> where U : HInt<U, D, OtherSign, Unsigned>, U : Int<U, OtherSign, U> {
             val v1 = U.ONE
             check(n > (v1 shl (U.BITS - 3).toInt()))
             check(n < (v1 shl (U.BITS - 2).toInt()))

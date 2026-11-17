@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.c
+import io.github.kotlinmania.rustlang.std.sys.env.windows.Env
 import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Slice
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.os2path
 
@@ -315,8 +316,8 @@ public interface MediaDirsExt<T> {
 }
 
 public fun homeDirsExtAppdataEnvHomeDirs(): Result<HomeDirs, Error> {
-    val roamingAppData = when (val tryResult = env.varOs("APPDATA").map(PathBuf::from).filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "non-absolute %APPDATA%"))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<HomeDirs, Error>(tryResult.error) }
-    val localAppData = when (val tryResult = env.varOs("LOCALAPPDATA").map(PathBuf::from).filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "non-absolute %LOCALAPPDATA%"))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<HomeDirs, Error>(tryResult.error) }
+    val roamingAppData = when (val tryResult = Env.varOs("APPDATA").map(PathBuf::from).filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "non-absolute %APPDATA%"))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<HomeDirs, Error>(tryResult.error) }
+    val localAppData = when (val tryResult = Env.varOs("LOCALAPPDATA").map(PathBuf::from).filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "non-absolute %LOCALAPPDATA%"))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<HomeDirs, Error>(tryResult.error) }
     // AppData/Local -- system-local, doesn't make sense to sync to another
     // AppData/Roaming -- data that makes sense to sync across machines
     val dirs = HomeDirs.empty()
@@ -391,7 +392,7 @@ public fun getKnownFolderPath(id: c.Guid): Result<PathBuf?, Error> {
             }
             else -> {
                 // Miscellaneous error
-                Result.Err<PathBuf?, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(hr))
+                Result.Err<PathBuf?, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(hr))
             }
         }
     // SAFETY: The caller is responsible for freeing the path returned by

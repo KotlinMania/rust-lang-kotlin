@@ -55,12 +55,12 @@ public fun testMain(args: List<String>, tests: List<TestDescAndFn>): ExitCode {
 public fun testMainInner(args: List<String>, tests: TestList, options: Options?): ExitCode {
     var opts =
         when (val matchVal = parseOpts(args)) {
-            is Result.Ok -> {
-                val o = (matchVal as Result.Ok).value
+            is Result.Ok<*, *> -> {
+                val o = (matchVal as Result.Ok<*, *>).value
                 o
             }
-            is Result.Err -> {
-                val msg = (matchVal as Result.Err).error
+            is Result.Err<*, *> -> {
+                val msg = (matchVal as Result.Err<*, *>).error
                 println("error: $msg")
                 return ERROR_EXIT_CODE.into()
             }
@@ -124,8 +124,13 @@ public fun testMainInner(args: List<String>, tests: TestList, options: Options?)
         // Prevent Valgrind from reporting reachable blocks in users' unit tests.
         (panic.takeHook()).let { }
         when {
-            res is Result.Ok && res.value == true -> {}
-            res is Result.Ok && res.value == false -> { return ExitCode.from(ERROR_EXIT_CODE) }
+            res is Result.Ok && res.value == true -> {
+                val valueVal = res.value
+            }
+            res is Result.Ok && res.value == false -> {
+                val valueVal1 = res.value
+                return ExitCode.from(ERROR_EXIT_CODE)
+            }
             else -> {
                 val e1 = res.error
                 println("error: io error when listing tests: $e")
@@ -146,7 +151,7 @@ public fun testMainEnvArgs(tests: List<TestDescAndFn>): ExitCode {
     // This is supposed to be reasonably fast even in Miri. In particular, when invoked via `--exact
     // test`, we want the entire invocation to be`O(log n)` in the number of tests: never iterate
     // the entire test list (as that list could be big)!
-    val args = args().collect<Vec>()
+    val args = Env.args().collect<Vec>()
     // Tests are sorted by name at compile time by mkTestsSlice.
     val tests1 = TestList.new(tests, TestListOrder.Sorted)
     return testMainInner(args, tests1, null)
@@ -165,7 +170,7 @@ public fun testMainEnvArgsAbort(tests: List<TestDescAndFn>): ExitCode {
     val tests1 = tests
     // If we're being run in SpawnedSecondary mode, run the test here. runTest
     // will then exit the process.
-    when (val matchVal = variable(SECONDARY_TEST_INVOKER_VAR)) {
+    when (val matchVal = Env.variable(SECONDARY_TEST_INVOKER_VAR)) {
         is Ok -> {
             val name = matchVal.value
             // SAFETY: Technically, this is a racy access that we probably shouldn't do?
@@ -177,14 +182,14 @@ public fun testMainEnvArgsAbort(tests: List<TestDescAndFn>): ExitCode {
             // If we ever grow an actual story for libtest and start documenting custom harness reqs,
             // we should either fix this being racy or say "write it in Rust, please".
             run {
-                removeVar(SECONDARY_TEST_INVOKER_VAR)
+                Env.removeVar(SECONDARY_TEST_INVOKER_VAR)
             }
             // Convert benchmarks to tests if we're not benchmarking.
             var tests2 = tests1.iter().copied().cloned().collect<Vec>()
-            if (variable(SECONDARY_TEST_BENCH_BENCHMARKS_VAR).isOk()) {
+            if (Env.variable(SECONDARY_TEST_BENCH_BENCHMARKS_VAR).isOk()) {
                 // SAFETY: Same as for SECONDARY_TEST_INVOKER_VAR
                 run {
-                    removeVar(SECONDARY_TEST_BENCH_BENCHMARKS_VAR)
+                    Env.removeVar(SECONDARY_TEST_BENCH_BENCHMARKS_VAR)
                 }
             } else {
                 tests2 = convertBenchmarksToTests(tests2)
@@ -208,7 +213,7 @@ public fun testMainEnvArgsAbort(tests: List<TestDescAndFn>): ExitCode {
         }
         else -> {}
     }
-    val args = args().collect<Vec>()
+    val args = Env.args().collect<Vec>()
     // Tests are sorted by name at compile time by mkTestsSlice.
     val tests3 = TestList.new(tests1, TestListOrder.Sorted)
     return testMainInner(args, tests3, Options.new().panicAbort(true))
@@ -221,12 +226,12 @@ public fun testMainEnvArgsAbort(tests: List<TestDescAndFn>): ExitCode {
 public fun printMergedDoctestsTimes(args: List<String>, totalTime: Double, compilationTime: Double) {
     val opts =
         when (val matchVal = parseOpts(args)) {
-            is Result.Ok -> {
-                val o = (matchVal as Result.Ok).value
+            is Result.Ok<*, *> -> {
+                val o = (matchVal as Result.Ok<*, *>).value
                 o
             }
-            is Result.Err -> {
-                val msg = (matchVal as Result.Err).error
+            is Result.Err<*, *> -> {
+                val msg = (matchVal as Result.Err<*, *>).error
                 println("error: $msg")
                 exit(ERROR_EXIT_CODE.into())
             }
@@ -403,7 +408,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
                         }
                         when {
                             res is Result.Err && res.error == RecvTimeoutError.Timeout -> {
-                                // Result is not yet ready, continue waiting.
+                                val errorVal = res.error
                             }
                             else -> {
                                 // We've got a result, stop the loop.
@@ -659,18 +664,26 @@ public fun runTestInProcess(id: TestId, desc: TestDesc, nocapture: Boolean, repo
 
 public fun <T, E> foldErr(result: Result<Result<T, E>, RustAny>): Result<T, RustAny> =
     when {
-        result is Result.Ok && result.value is Result.Err -> Result.Err<T, RustAny>(e)
-        result is Result.Ok && result.value is Result.Ok -> Result.Ok<T, RustAny>(v)
-        else -> {
-            val e = result.error
+        result is Result.Ok && result.value is Result.Err -> {
+            val valueVal = result.value
+            val e = (valueVal as Result.Err).error
             Result.Err<T, RustAny>(e)
+        }
+        result is Result.Ok && result.value is Result.Ok -> {
+            val valueVal1 = result.value
+            val v = (valueVal1 as Result.Ok).value
+            Result.Ok<T, RustAny>(v)
+        }
+        else -> {
+            val e1 = result.error
+            Result.Err<T, RustAny>(e1)
         }
     }
 
 public fun spawnTestSubprocess(id: TestId, desc: TestDesc, nocapture: Boolean, reportTime: Boolean, monitorCh: Sender<CompletedTest>, timeOpts: TestTimeOptions?, benchBenchmarks: Boolean) {
     val (result, testOutput, execTime) =
         (closure@{
-            val args = args().collect<Vec>()
+            val args = Env.args().collect<Vec>()
             val currentExe = args[0]
             var command = Command.new(currentExe)
             command.env(SECONDARY_TEST_INVOKER_VAR, desc.name.asSlice())

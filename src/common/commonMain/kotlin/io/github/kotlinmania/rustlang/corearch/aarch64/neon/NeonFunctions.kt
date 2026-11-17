@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.corearch.aarch64.neon
 import io.github.kotlinmania.rustlang.core.intrinsics.*
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -55,7 +56,7 @@ public fun vld1qLaneF64(ptr: ConstPtr, src: Float64x2T, lane: Int): Float64x2T {
  */
 public fun vbslF64(a: Uint64x1T, b: Float64x1T, c: Float64x1T): Float64x1T {
     val not = int64x1T.splat(-1)
-    return transmute(run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = transmuteWithLayouts(b, Float64x1T.typeLayout(), Float64x1T.typeLayout()); _simdArg0 }; val _simdArg1 = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = transmute(not); _simdArg0 }; val _simdArg1 = transmuteWithLayouts(c, Float64x1T.typeLayout(), Float64x1T.typeLayout()); _simdArg0 }; _simdArg0 })
+    return transmute(run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = transmuteWithLayouts<Float64x1T, Uint64x1T>(b, Float64x1T.typeLayout(), UnresolvedTypeLayout<Uint64x1T>()); _simdArg0 }; val _simdArg1 = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = transmute(not); _simdArg0 }; val _simdArg1 = c; _simdArg0 }; _simdArg0 })
 }
 
 /**
@@ -71,7 +72,7 @@ public fun vbslP64(a: Poly64x1T, b: Poly64x1T, c: Poly64x1T): Poly64x1T {
  */
 public fun vbslqF64(a: Uint64x2T, b: Float64x2T, c: Float64x2T): Float64x2T {
     val not = int64x2T.splat(-1)
-    return transmute(run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = transmuteWithLayouts(b, Float64x2T.typeLayout(), Float64x2T.typeLayout()); _simdArg0 }; val _simdArg1 = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = transmute(not); _simdArg0 }; val _simdArg1 = transmuteWithLayouts(c, Float64x2T.typeLayout(), Float64x2T.typeLayout()); _simdArg0 }; _simdArg0 })
+    return transmute(run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = transmuteWithLayouts<Float64x2T, Uint64x2T>(b, Float64x2T.typeLayout(), UnresolvedTypeLayout<Uint64x2T>()); _simdArg0 }; val _simdArg1 = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = transmute(not); _simdArg0 }; val _simdArg1 = c; _simdArg0 }; _simdArg0 })
 }
 
 /**
@@ -254,6 +255,6 @@ public fun vsradNU64(a: ULong, b: ULong, n: Int): ULong {
     return (a + vshrdNU64(b, n).toULong())
 }
 
-public fun fromSimdDouble(simd: Float64x1T): Simd<Double> = transmute(simd)
+public fun fromSimdDouble(simd: Float64x1T): Simd<Double> = transmuteWithLayouts<Float64x1T, Simd<Double>>(simd, Float64x1T.typeLayout(), UnresolvedTypeLayout<Simd<Double>>())
 
-public fun fromSimdDouble(simd: Float64x2T): Simd<Double> = transmute(simd)
+public fun fromSimdDouble(simd: Float64x2T): Simd<Double> = transmuteWithLayouts<Float64x2T, Simd<Double>>(simd, Float64x2T.typeLayout(), UnresolvedTypeLayout<Simd<Double>>())

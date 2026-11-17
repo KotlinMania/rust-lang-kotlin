@@ -56,7 +56,7 @@ public open class Sockaddr(
                 }
             }
 
-        public fun default(): Sockaddr = Sockaddr(saLen = Default.default(), saFamily = Default.default(), saData = Default.default())
+        public fun default(): Sockaddr = Sockaddr(saLen = 0u, saFamily = 0u, saData = Default.default())
     }
 }
 
@@ -72,7 +72,7 @@ public open class SockaddrIn6(
     public open fun clone(): SockaddrIn6 = SockaddrIn6(sin6Len, sin6Family, sin6Port, sin6Flowinfo, sin6Addr, sin6ScopeId)
 
     public companion object {
-        public fun default(): SockaddrIn6 = SockaddrIn6(sin6Len = Default.default(), sin6Family = Default.default(), sin6Port = Default.default(), sin6Flowinfo = Default.default(), sin6Addr = Default.default(), sin6ScopeId = Default.default())
+        public fun default(): SockaddrIn6 = SockaddrIn6(sin6Len = 0u, sin6Family = 0u, sin6Port = 0u, sin6Flowinfo = 0u, sin6Addr = In6Addr.default(), sin6ScopeId = 0u)
     }
 }
 
@@ -197,7 +197,7 @@ public open class Passwd internal constructor(
             pwFields = pwFields,
         )
 
-        public fun default(): Passwd = Passwd(pwName = MutPtr(0L), pwPasswd = MutPtr(0L), pwUid = Default.default(), pwGid = Default.default(), pwChange = Default.default(), pwClass = MutPtr(0L), pwGecos = MutPtr(0L), pwDir = MutPtr(0L), pwShell = MutPtr(0L), pwExpire = Default.default(), pwFields = Default.default())
+        public fun default(): Passwd = Passwd(pwName = MutPtr(0L), pwPasswd = MutPtr(0L), pwUid = 0u, pwGid = 0u, pwChange = 0L, pwClass = MutPtr(0L), pwGecos = MutPtr(0L), pwDir = MutPtr(0L), pwShell = MutPtr(0L), pwExpire = 0L, pwFields = 0)
     }
 }
 
@@ -294,7 +294,7 @@ public open class Ifaddrs internal constructor(
             ifaDataCtorArg = ifaData,
         )
 
-        public fun default(): Ifaddrs = Ifaddrs(ifaNext = MutPtr(0L), ifaName = MutPtr(0L), ifaFlags = Default.default(), ifaAddr = MutPtr(0L), ifaNetmask = MutPtr(0L), ifaDstaddr = MutPtr(0L), ifaData = MutPtr(0L), ifaAddrflags = Default.default())
+        public fun default(): Ifaddrs = Ifaddrs(ifaNext = MutPtr(0L), ifaName = MutPtr(0L), ifaFlags = 0u, ifaAddr = MutPtr(0L), ifaNetmask = MutPtr(0L), ifaDstaddr = MutPtr(0L), ifaData = MutPtr(0L), ifaAddrflags = Ifaddrs.default())
     }
 }
 
@@ -418,7 +418,7 @@ public open class Msghdr internal constructor(
             msgFlags = msgFlags,
         )
 
-        public fun default(): Msghdr = Msghdr(msgName = MutPtr(0L), msgNamelen = Default.default(), msgIov = MutPtr(0L), msgIovlen = Default.default(), msgControl = MutPtr(0L), msgControllen = Default.default(), msgFlags = Default.default())
+        public fun default(): Msghdr = Msghdr(msgName = MutPtr(0L), msgNamelen = 0u, msgIov = MutPtr(0L), msgIovlen = 0, msgControl = MutPtr(0L), msgControllen = 0u, msgFlags = 0)
     }
 }
 
@@ -459,7 +459,7 @@ public open class Cmsghdr(
                 }
             }
 
-        public fun default(): Cmsghdr = Cmsghdr(cmsgLen = Default.default(), cmsgLevel = Default.default(), cmsgType = Default.default())
+        public fun default(): Cmsghdr = Cmsghdr(cmsgLen = 0u, cmsgLevel = 0, cmsgType = 0)
     }
 }
 
@@ -541,7 +541,7 @@ public open class IfNameindex internal constructor(
             ifNameCtorArg = ifName,
         )
 
-        public fun default(): IfNameindex = IfNameindex(ifIndex = Default.default(), ifName = MutPtr(0L))
+        public fun default(): IfNameindex = IfNameindex(ifIndex = 0u, ifName = MutPtr(0L))
     }
 }
 
@@ -611,7 +611,7 @@ public open class RegexT internal constructor(
             nonExhaustive = nonExhaustive,
         )
 
-        public fun default(): RegexT = RegexT(reMagic = Default.default(), reNsub = Default.default(), reEndp = MutPtr(0L), reG = MutPtr(0L), nonExhaustive = Unit)
+        public fun default(): RegexT = RegexT(reMagic = 0, reNsub = 0uL, reEndp = MutPtr(0L), reG = MutPtr(0L), nonExhaustive = Unit)
     }
 }
 
@@ -647,7 +647,7 @@ public open class RegmatchT(
                 }
             }
 
-        public fun default(): RegmatchT = RegmatchT(rmSo = Default.default(), rmEo = Default.default())
+        public fun default(): RegmatchT = RegmatchT(rmSo = 0L, rmEo = 0L)
     }
 }
 
@@ -711,7 +711,7 @@ public open class Option internal constructor(
             value = value,
         )
 
-        public fun default(): Option = Option(name = MutPtr(0L), hasArg = Default.default(), flag = MutPtr(0L), value = Default.default())
+        public fun default(): Option = Option(name = MutPtr(0L), hasArg = 0, flag = MutPtr(0L), value = 0)
     }
 }
 
@@ -752,7 +752,7 @@ public open class SockaddrUn(
                 }
             }
 
-        public fun default(): SockaddrUn = SockaddrUn(sunLen = Default.default(), sunFamily = Default.default(), sunPath = UByteArray(104) { 0u.toUByte() })
+        public fun default(): SockaddrUn = SockaddrUn(sunLen = 0u, sunFamily = 0u, sunPath = UByteArray(104) { 0u.toUByte() })
     }
 }
 

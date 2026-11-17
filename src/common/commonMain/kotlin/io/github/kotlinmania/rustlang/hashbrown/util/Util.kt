@@ -25,4 +25,4 @@ public fun unlikely(b: Boolean): Boolean =
 
 // Note: use strict provenance functions once they are stable.
 // Implement it with a reinterpret for now.
-public fun invalidMut(addr: Int): MutPtr = transmuteWithLayouts(addr, PrimitiveLayouts.USIZE64, PrimitiveLayouts.mutPtrLayout(64L))
+public fun invalidMut(addr: Int): MutPtr = transmuteWithLayouts<Int, MutPtr>(addr, PrimitiveLayouts.USIZE64, PrimitiveLayouts.mutPtrLayout(64L))

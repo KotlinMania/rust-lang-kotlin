@@ -1837,7 +1837,7 @@ public fun <T> sliceInsert(slice: MutableList<MaybeUninit<T>>, idx: Int, value: 
     // ignore-tidy-undocumented-unchecked
     run {
         if (len > idx + 1) {
-            copy((MutPtr((slicePtr).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).asConstPtr(), MutPtr((slicePtr).rawAddress + ((idx + 1).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes)), len - idx - 1)
+            copy((MutPtr((slicePtr).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).asConstPtr(), MutPtr((slicePtr).rawAddress + ((idx + 1).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes)), len - idx - 1, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<T>>())
         }
         (UnresolvedTypeLayout<MaybeUninit<T>>()).readNative((MutPtr((slicePtr).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).write(value)
     }
@@ -1857,7 +1857,7 @@ public fun <T> sliceRemove(slice: MutableList<MaybeUninit<T>>, idx: Int): T {
     // ignore-tidy-undocumented-unchecked
     return run {
         val ret = (UnresolvedTypeLayout<MaybeUninit<T>>()).readNative((MutPtr((slicePtr).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).assumeInitRead()
-        copy((MutPtr((slicePtr).rawAddress + ((idx + 1).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).asConstPtr(), MutPtr((slicePtr).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes)), len - idx - 1)
+        copy((MutPtr((slicePtr).rawAddress + ((idx + 1).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).asConstPtr(), MutPtr((slicePtr).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes)), len - idx - 1, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<T>>())
         ret
     }
 }
@@ -1872,7 +1872,7 @@ public fun <T> sliceShl(slice: MutableList<MaybeUninit<T>>, distance: Int) {
     val slicePtr = slice.asMutPtr()
     // ignore-tidy-undocumented-unchecked
     run {
-        copy((MutPtr((slicePtr).rawAddress + ((distance).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).asConstPtr(), slicePtr, slice.size - distance)
+        copy((MutPtr((slicePtr).rawAddress + ((distance).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).asConstPtr(), slicePtr, slice.size - distance, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<T>>())
     }
 }
 
@@ -1886,7 +1886,7 @@ public fun <T> sliceShr(slice: MutableList<MaybeUninit<T>>, distance: Int) {
     val slicePtr = slice.asMutPtr()
     // ignore-tidy-undocumented-unchecked
     run {
-        copy((slicePtr).asConstPtr(), MutPtr((slicePtr).rawAddress + ((distance).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes)), slice.size - distance)
+        copy((slicePtr).asConstPtr(), MutPtr((slicePtr).rawAddress + ((distance).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes)), slice.size - distance, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<T>>())
     }
 }
 
@@ -1899,6 +1899,6 @@ public fun <T> moveToSlice(src: MutableList<MaybeUninit<T>>, dst: MutableList<Ma
     check(src.size == dst.size)
     // ignore-tidy-undocumented-unchecked
     run {
-        copyNonoverlapping(src.asPtr(), dst.asMutPtr(), src.size)
+        copyNonoverlapping(src.asPtr(), dst.asMutPtr(), src.size, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<T>>())
     }
 }

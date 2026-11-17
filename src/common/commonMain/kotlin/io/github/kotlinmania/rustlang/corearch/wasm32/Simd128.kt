@@ -13,7 +13,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
@@ -48,7 +48,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
  * functions in this module.
  */
 public open class V128(
-    public var value: IntArray,
+    public var value: IntArray = IntArray(4),
 ) {
     public var field0: IntArray
         get() = value
@@ -70,25 +70,25 @@ public open class V128(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v128", this.asArray())
 
-    public open fun asU8x16(): U8x16 = transmute(this)
+    public open fun asU8x16(): U8x16 = transmuteWithLayouts<V128, U8x16>(this, V128.typeLayout(), UnresolvedTypeLayout<U8x16>())
 
-    public open fun asU16x8(): U16x8 = transmute(this)
+    public open fun asU16x8(): U16x8 = transmuteWithLayouts<V128, U16x8>(this, V128.typeLayout(), UnresolvedTypeLayout<U16x8>())
 
-    public open fun asU32x4(): U32x4 = transmute(this)
+    public open fun asU32x4(): U32x4 = transmuteWithLayouts<V128, U32x4>(this, V128.typeLayout(), UnresolvedTypeLayout<U32x4>())
 
-    public open fun asU64x2(): U64x2 = transmute(this)
+    public open fun asU64x2(): U64x2 = transmuteWithLayouts<V128, U64x2>(this, V128.typeLayout(), UnresolvedTypeLayout<U64x2>())
 
-    public open fun asI8x16(): I8x16 = transmute(this)
+    public open fun asI8x16(): I8x16 = transmuteWithLayouts<V128, I8x16>(this, V128.typeLayout(), UnresolvedTypeLayout<I8x16>())
 
-    public open fun asI16x8(): I16x8 = transmute(this)
+    public open fun asI16x8(): I16x8 = transmuteWithLayouts<V128, I16x8>(this, V128.typeLayout(), UnresolvedTypeLayout<I16x8>())
 
-    public open fun asI32x4(): I32x4 = transmute(this)
+    public open fun asI32x4(): I32x4 = transmuteWithLayouts<V128, I32x4>(this, V128.typeLayout(), UnresolvedTypeLayout<I32x4>())
 
-    public open fun asI64x2(): I64x2 = transmute(this)
+    public open fun asI64x2(): I64x2 = transmuteWithLayouts<V128, I64x2>(this, V128.typeLayout(), UnresolvedTypeLayout<I64x2>())
 
-    public open fun asF32x4(): F32x4 = transmute(this)
+    public open fun asF32x4(): F32x4 = transmuteWithLayouts<V128, F32x4>(this, V128.typeLayout(), UnresolvedTypeLayout<F32x4>())
 
-    public open fun asF64x2(): F64x2 = transmute(this)
+    public open fun asF64x2(): F64x2 = transmuteWithLayouts<V128, F64x2>(this, V128.typeLayout(), UnresolvedTypeLayout<F64x2>())
 
     public companion object {
         public fun typeLayout(): TypeLayout<V128> =
@@ -116,31 +116,31 @@ public open class V128(
          */
         public fun splat(value: Int): V128 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Int>): V128 = transmute(simd)
+        public fun from(simd: Simd<Int>): V128 = transmuteWithLayouts<Simd<Int>, V128>(simd, UnresolvedTypeLayout<Simd<Int>>(), V128.typeLayout())
     }
 }
 
-public fun fromSimdInt(simd: V128): Simd<Int> = transmute(simd)
+public fun fromSimdInt(simd: V128): Simd<Int> = transmuteWithLayouts<V128, Simd<Int>>(simd, V128.typeLayout(), UnresolvedTypeLayout<Simd<Int>>())
 
-public fun U8x16.v128(): V128 = transmute(this)
+public fun U8x16.v128(): V128 = transmuteWithLayouts<U8x16, V128>(this, UnresolvedTypeLayout<U8x16>(), V128.typeLayout())
 
-public fun U16x8.v128(): V128 = transmute(this)
+public fun U16x8.v128(): V128 = transmuteWithLayouts<U16x8, V128>(this, UnresolvedTypeLayout<U16x8>(), V128.typeLayout())
 
-public fun U32x4.v128(): V128 = transmute(this)
+public fun U32x4.v128(): V128 = transmuteWithLayouts<U32x4, V128>(this, UnresolvedTypeLayout<U32x4>(), V128.typeLayout())
 
-public fun U64x2.v128(): V128 = transmute(this)
+public fun U64x2.v128(): V128 = transmuteWithLayouts<U64x2, V128>(this, UnresolvedTypeLayout<U64x2>(), V128.typeLayout())
 
-public fun I8x16.v128(): V128 = transmute(this)
+public fun I8x16.v128(): V128 = transmuteWithLayouts<I8x16, V128>(this, UnresolvedTypeLayout<I8x16>(), V128.typeLayout())
 
-public fun I16x8.v128(): V128 = transmute(this)
+public fun I16x8.v128(): V128 = transmuteWithLayouts<I16x8, V128>(this, UnresolvedTypeLayout<I16x8>(), V128.typeLayout())
 
-public fun I32x4.v128(): V128 = transmute(this)
+public fun I32x4.v128(): V128 = transmuteWithLayouts<I32x4, V128>(this, UnresolvedTypeLayout<I32x4>(), V128.typeLayout())
 
-public fun I64x2.v128(): V128 = transmute(this)
+public fun I64x2.v128(): V128 = transmuteWithLayouts<I64x2, V128>(this, UnresolvedTypeLayout<I64x2>(), V128.typeLayout())
 
-public fun F32x4.v128(): V128 = transmute(this)
+public fun F32x4.v128(): V128 = transmuteWithLayouts<F32x4, V128>(this, UnresolvedTypeLayout<F32x4>(), V128.typeLayout())
 
-public fun F64x2.v128(): V128 = transmute(this)
+public fun F64x2.v128(): V128 = transmuteWithLayouts<F64x2, V128>(this, UnresolvedTypeLayout<F64x2>(), V128.typeLayout())
 
 public expect fun llvmSwizzle(a: I8x16, b: I8x16): I8x16
 

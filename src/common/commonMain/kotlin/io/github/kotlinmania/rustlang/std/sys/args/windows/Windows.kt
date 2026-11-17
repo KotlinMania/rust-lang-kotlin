@@ -5,6 +5,7 @@ package io.github.kotlinmania.rustlang.std.sys.args.windows
 
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphanumeric
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU16Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -13,7 +14,6 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Iter
@@ -318,7 +318,7 @@ public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<U
 }
 
 public fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes: Boolean): Result<List<UShort>, Error> {
-    val INVALID_ARGUMENT_ERROR: io.github.kotlinmania.rustlang.std.io.Error = constError(ErrorKind.InvalidInput, "batch file arguments are invalid")
+    val INVALID_ARGUMENT_ERROR: io.github.kotlinmania.rustlang.core.io.error.Error = constError(ErrorKind.InvalidInput, "batch file arguments are invalid")
     // Windows file names cannot contain a `"` character or end with `\\`.
     // If the script name does then return an error.
     // Also we disallow `^` and `%` to prevent escaping or environment variable substitution.

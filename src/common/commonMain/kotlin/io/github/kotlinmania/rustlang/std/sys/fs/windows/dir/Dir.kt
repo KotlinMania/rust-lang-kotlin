@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.alloc.alloc.alloc
 import io.github.kotlinmania.rustlang.alloc.alloc.dealloc
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -15,7 +16,6 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawHandle
@@ -224,7 +224,7 @@ public open class Dir internal constructor(
                     val handle1 = matchVal.value
                     Result.Ok<Dir, Error>(Dir(handle = Handle.fromInner(handle1)))
                 }; is Result.Err -> {
-                    Result.Err<Dir, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+                    Result.Err<Dir, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
                 } }
             }
         }

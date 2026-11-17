@@ -59,9 +59,9 @@ public fun Mapping.Companion.new(path: Path): Mapping? {
     // file. This should have the symbol table for at least some
     // symbolication purposes.
     return Mapping.mk(map, closure@{ data1, stash ->
-        val (macho1, data2) = when (val tryResult = findHeader(data1)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
+        val (macho1, data2) = when (val tryResult = findHeader(data1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
         val endian1 = when (val tryResult = macho1.endian().ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
-        val obj = when (val tryResult = Object.parse(macho1, endian1, data2)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
+        val obj = when (val tryResult = Object.parse(macho1, endian1, data2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
         Context.new(stash, obj, null, null)
     })
 }
@@ -103,13 +103,13 @@ public fun Mapping.Companion.tryDsymCandidate(dir: Path, uuid: UByteArray): Mapp
         val map = (mmap(entry1.path()) ?: return null)
         val candidate =
             Mapping.mk(map, closure1@{ data, stash ->
-                val (macho, data1) = when (val tryResult = findHeader(data)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }
+                val (macho, data1) = when (val tryResult = findHeader(data)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
                 val endian = when (val tryResult = macho.endian().ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }
                 val entryUuid = when (val tryResult = when (val tryResult = macho.uuid(endian, data1, 0).ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }
                 if (!entryUuid.contentEquals(uuid)) {
                     return@closure1 null
                 }
-                val obj = when (val tryResult = Object.parse(macho, endian, data1)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }
+                val obj = when (val tryResult = Object.parse(macho, endian, data1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
                 Context.new(stash, obj, null, null)
             })
         if (candidate != null) {
@@ -244,6 +244,8 @@ public open class Object(
             while (true) {
                 val matchVal = commands.next()
                 if (matchVal !is Result.Ok) break
+                val valueVal = (matchVal as Result.Ok).value
+                val command = valueVal
                 when (val matchVal2 = (MachSegment.fromCommand(command).ok() ?: return null)) {
                     null -> {
                         when (val matchVal1 = (command.symtab().ok() ?: return null)) {
@@ -303,9 +305,9 @@ public fun objectMapping(file: ObjectMapFile): Mapping? {
                     when (val tryResult = member.data(data).ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err(tryResult.error) }
                 }
             }
-        val (macho, data2) = when (val tryResult = findHeader(data1)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err(tryResult.error) }
+        val (macho, data2) = when (val tryResult = findHeader(data1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
         val endian = when (val tryResult = macho.endian().ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err(tryResult.error) }
-        val obj = when (val tryResult = Object.parse(macho, endian, data2)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err(tryResult.error) }
+        val obj = when (val tryResult = Object.parse(macho, endian, data2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
         Context.new(stash, obj, null, null)
     })
 }

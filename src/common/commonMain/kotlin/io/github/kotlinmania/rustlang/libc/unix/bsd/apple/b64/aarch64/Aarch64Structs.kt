@@ -73,6 +73,6 @@ public open class MaxAlignT(
                 }
             }
 
-        public fun default(): MaxAlignT = MaxAlignT(priv = Default.default(), nonExhaustive = Unit)
+        public fun default(): MaxAlignT = MaxAlignT(priv = 0.0, nonExhaustive = Unit)
     }
 }

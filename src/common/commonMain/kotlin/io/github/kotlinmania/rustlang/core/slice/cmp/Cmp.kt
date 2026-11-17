@@ -10,13 +10,12 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteCopy
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 
@@ -45,7 +44,7 @@ public fun asUnderlying(x: ControlFlow<Boolean, Unit>): UByte {
     // any uninitialized memory. The callers then only check for `0` or `1` from this,
     // which must necessarily match the `Break` variant, and we're fine no matter
     // what ends up getting picked as the value representing `Continue(())`.
-    return transmute(x)
+    return transmuteWithLayouts<ControlFlow<Boolean, Unit>, UByte>(x, UnresolvedTypeLayout<ControlFlow<Boolean, Unit>>(), PrimitiveLayouts.U8)
 }
 
 /**
@@ -151,7 +150,7 @@ public fun <A, B, C> chainingImpl(left: List<A>, right: List<A>, elemChain: (A, 
     val lhs = ((left).subList(0, l))
     val rhs = ((right).subList(0, l))
     for (i in 0 until l) {
-        when (val tryResult = elemChain(lhs[i], rhs[i])) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = elemChain(lhs[i], rhs[i])) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<B, C>(tryResult.value); else -> error("Unexpected ControlFlow variant: $tryResult") }
     }
     return lenChain(left.size, right.size)
 }

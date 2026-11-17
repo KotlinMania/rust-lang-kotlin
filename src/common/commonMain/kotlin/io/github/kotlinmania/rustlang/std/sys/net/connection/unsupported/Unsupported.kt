@@ -75,7 +75,7 @@ public open class TcpStream(
 
     public open fun hopLimitV6(): Result<UByte, Error> = this.value
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value
 
     public open fun setNonblocking(arg0: Boolean): Result<Unit, Error> = this.value
 
@@ -115,7 +115,7 @@ public open class TcpListener(
 
     public open fun onlyV6(): Result<Boolean, Error> = this.value
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value
 
     public open fun setNonblocking(arg0: Boolean): Result<Unit, Error> = this.value
 
@@ -191,7 +191,7 @@ public open class UdpSocket(
 
     public open fun multicastHopLimitV6(): Result<UByte, Error> = this.value
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value
 
     public open fun setNonblocking(arg0: Boolean): Result<Unit, Error> = this.value
 

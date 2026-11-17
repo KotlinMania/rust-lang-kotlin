@@ -601,7 +601,7 @@ public open class CString(
          * Creates an empty `CString`.
          */
         public fun default(): CString {
-            val a: CStr = Default.default()
+            val a: CStr = CStr.default()
             return a.toOwned()
         }
 

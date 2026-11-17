@@ -14,6 +14,7 @@ import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
+import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo.LOCK
 
 // Common code for printing backtraces.
@@ -83,7 +84,7 @@ public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt): Result<Unit, io.git
     // this allows Miri to display backtraces in isolation mode
     val cwd =
         if (!false) {
-            env.currentDir().ok()
+            Env.currentDir().ok()
         } else {
             null
         }

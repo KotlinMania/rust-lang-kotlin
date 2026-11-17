@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.corearch.aarch64.sve2
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmuteUnchecked
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -2389,7 +2388,7 @@ public fun svcvtltF64F32M(inactive: Svfloat64T, pg: SvboolT, op: Svfloat32T): Sv
  * Up convert long (top)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtltF64[_f32]_x)
  */
-public fun svcvtltF64F32X(pg: SvboolT, op: Svfloat32T): Svfloat64T = svcvtltF64F32M(transmuteWithLayouts(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svfloat64T>()), pg, op)
+public fun svcvtltF64F32X(pg: SvboolT, op: Svfloat32T): Svfloat64T = svcvtltF64F32M(transmuteWithLayouts<Svfloat32T, Svfloat64T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svfloat64T>()), pg, op)
 
 /**
  * Down convert and narrow (top)
@@ -2419,7 +2418,7 @@ public fun svcvtxF32F64M(inactive: Svfloat32T, pg: SvboolT, op: Svfloat64T): Svf
  * Down convert, rounding to odd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtxF32[_f64]_x)
  */
-public fun svcvtxF32F64X(pg: SvboolT, op: Svfloat64T): Svfloat32T = svcvtxF32F64M(transmuteUnchecked(op), pg, op)
+public fun svcvtxF32F64X(pg: SvboolT, op: Svfloat64T): Svfloat32T = svcvtxF32F64M(transmuteWithLayouts<Svfloat64T, Svfloat32T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svfloat32T>()), pg, op)
 
 /**
  * Down convert, rounding to odd
@@ -5262,7 +5261,7 @@ public fun svlogbF32M(inactive: Svint32T, pg: SvboolT, op: Svfloat32T): Svint32T
  * Base 2 logarithm as integer
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlogb[_f32]_x)
  */
-public fun svlogbF32X(pg: SvboolT, op: Svfloat32T): Svint32T = svlogbF32M(transmuteUnchecked(op), pg, op)
+public fun svlogbF32X(pg: SvboolT, op: Svfloat32T): Svint32T = svlogbF32M(transmuteWithLayouts<Svfloat32T, Svint32T>(op, UnresolvedTypeLayout<Svfloat32T>(), UnresolvedTypeLayout<Svint32T>()), pg, op)
 
 /**
  * Base 2 logarithm as integer
@@ -5283,7 +5282,7 @@ public fun svlogbF64M(inactive: Svint64T, pg: SvboolT, op: Svfloat64T): Svint64T
  * Base 2 logarithm as integer
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlogb[_f64]_x)
  */
-public fun svlogbF64X(pg: SvboolT, op: Svfloat64T): Svint64T = svlogbF64M(transmuteUnchecked(op), pg, op)
+public fun svlogbF64X(pg: SvboolT, op: Svfloat64T): Svint64T = svlogbF64M(transmuteWithLayouts<Svfloat64T, Svint64T>(op, UnresolvedTypeLayout<Svfloat64T>(), UnresolvedTypeLayout<Svint64T>()), pg, op)
 
 /**
  * Base 2 logarithm as integer
@@ -7014,7 +7013,7 @@ public fun svpmullbPairNU64(op1: Svuint64T, op2: ULong): Svuint64T = svpmullbPai
  * Polynomial multiply long (bottom)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullb[_u16])
  */
-public fun svpmullbU16(op1: Svuint8T, op2: Svuint8T): Svuint16T = transmuteUnchecked(svpmullbPairU8(op1, op2))
+public fun svpmullbU16(op1: Svuint8T, op2: Svuint8T): Svuint16T = transmuteWithLayouts<Svuint8T, Svuint16T>(svpmullbPairU8(op1, op2), UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svuint16T>())
 
 /**
  * Polynomial multiply long (bottom)
@@ -7026,7 +7025,7 @@ public fun svpmullbNU16(op1: Svuint8T, op2: UByte): Svuint16T = svpmullbU16(op1,
  * Polynomial multiply long (bottom)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullb[_u64])
  */
-public fun svpmullbU64(op1: Svuint32T, op2: Svuint32T): Svuint64T = transmuteUnchecked(svpmullbPairU32(op1, op2))
+public fun svpmullbU64(op1: Svuint32T, op2: Svuint32T): Svuint64T = transmuteWithLayouts<Svuint32T, Svuint64T>(svpmullbPairU32(op1, op2), UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svuint64T>())
 
 /**
  * Polynomial multiply long (bottom)
@@ -7083,7 +7082,7 @@ public fun svpmulltPairNU64(op1: Svuint64T, op2: ULong): Svuint64T = svpmulltPai
  * Polynomial multiply long (top)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullt[_u16])
  */
-public fun svpmulltU16(op1: Svuint8T, op2: Svuint8T): Svuint16T = transmuteUnchecked(svpmulltPairU8(op1, op2))
+public fun svpmulltU16(op1: Svuint8T, op2: Svuint8T): Svuint16T = transmuteWithLayouts<Svuint8T, Svuint16T>(svpmulltPairU8(op1, op2), UnresolvedTypeLayout<Svuint8T>(), UnresolvedTypeLayout<Svuint16T>())
 
 /**
  * Polynomial multiply long (top)
@@ -7095,7 +7094,7 @@ public fun svpmulltNU16(op1: Svuint8T, op2: UByte): Svuint16T = svpmulltU16(op1,
  * Polynomial multiply long (top)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullt[_u64])
  */
-public fun svpmulltU64(op1: Svuint32T, op2: Svuint32T): Svuint64T = transmuteUnchecked(svpmulltPairU32(op1, op2))
+public fun svpmulltU64(op1: Svuint32T, op2: Svuint32T): Svuint64T = transmuteWithLayouts<Svuint32T, Svuint64T>(svpmulltPairU32(op1, op2), UnresolvedTypeLayout<Svuint32T>(), UnresolvedTypeLayout<Svuint64T>())
 
 /**
  * Polynomial multiply long (top)

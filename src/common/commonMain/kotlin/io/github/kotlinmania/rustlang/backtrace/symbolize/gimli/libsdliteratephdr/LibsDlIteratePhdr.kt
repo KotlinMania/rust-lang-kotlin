@@ -1,20 +1,20 @@
 // port-lint: source symbolize/gimli/libs_dl_iterate_phdr.rs
 package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.libsdliteratephdr
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.fuchsia.DlPhdrInfo
-import io.github.kotlinmania.libc.fuchsia.SizeT
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Library
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.LibrarySegment
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.extractZipPathAndroid
-import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.env
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.Env
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsStr
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsString
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.dlIteratePhdr
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.DlPhdrInfo
 
 public open class CallbackData(
     public var libs: List<Library>,
@@ -38,7 +38,7 @@ public fun inferCurrentExe(maps: List<parserunningmmaps.MapsEntry>?, baseAddr: I
             return path
         }
     }
-    return env.currentExe().map({ e -> e.into() }).unwrapOrDefault()
+    return Env.currentExe().map({ e -> e.into() }).unwrapOrDefault()
 }
 
 /**
@@ -65,7 +65,7 @@ public fun callback(info: MutPtr, size: SizeT, data: MutPtr): CInt {
     val name =
         if (isStatic) {
             // don't try to look up our name from /proc/self/maps, it'll get silly
-            env.currentExe().unwrapOrDefault().intoOsString()
+            Env.currentExe().unwrapOrDefault().intoOsString()
         } else if (isMain && noGivenName) {
             inferCurrentExe(maps, dlpiAddr.toInt())
         } else {

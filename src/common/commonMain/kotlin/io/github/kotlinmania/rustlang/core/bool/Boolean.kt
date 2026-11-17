@@ -162,7 +162,8 @@ public fun <E> Boolean.okOrElse(f: () -> E): Result<Unit, E> =
  * [falseVal]: ../std/keyword.false.html
  */
 public fun Boolean.toggle() {
-    this = !this
+    var selfMut = this
+    selfMut = !selfMut
 }
 
 /**

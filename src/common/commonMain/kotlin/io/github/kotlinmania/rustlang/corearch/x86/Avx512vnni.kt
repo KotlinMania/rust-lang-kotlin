@@ -2,7 +2,9 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.simd.I16x16
 import io.github.kotlinmania.rustlang.corearch.simd.I16x32
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8
@@ -23,7 +25,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U8x64
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_dpwssd_epi32&expand=2219)
  */
-public fun mm512DpwssdEpi32(src: M512i, a: M512i, b: M512i): M512i = transmute(vpdpwssd(src.asI32x16(), a.asI16x32(), b.asI16x32()))
+public fun mm512DpwssdEpi32(src: M512i, a: M512i, b: M512i): M512i = transmuteWithLayouts<I32x16, M512i>(vpdpwssd(src.asI32x16(), a.asI16x32(), b.asI16x32()), UnresolvedTypeLayout<I32x16>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of signed 16-bit integers in a with corresponding 16-bit integers in b, producing 2 intermediate signed 32-bit results. Sum these 2 results with the corresponding 32-bit integer in src, and store the packed 32-bit results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -52,14 +54,14 @@ public fun mm512MaskzDpwssdEpi32(k: Mmask16, src: M512i, a: M512i, b: M512i): M5
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpwssd_avx_epi32&expand=2713)
  */
-public fun mm256DpwssdAvxEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpwssd256(src.asI32x8(), a.asI16x16(), b.asI16x16()))
+public fun mm256DpwssdAvxEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpwssd256(src.asI32x8(), a.asI16x16(), b.asI16x16()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of signed 16-bit integers in a with corresponding 16-bit integers in b, producing 2 intermediate signed 32-bit results. Sum these 2 results with the corresponding 32-bit integer in src, and store the packed 32-bit results in dst.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpwssd_epi32&expand=2216)
  */
-public fun mm256DpwssdEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpwssd256(src.asI32x8(), a.asI16x16(), b.asI16x16()))
+public fun mm256DpwssdEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpwssd256(src.asI32x8(), a.asI16x16(), b.asI16x16()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of signed 16-bit integers in a with corresponding 16-bit integers in b, producing 2 intermediate signed 32-bit results. Sum these 2 results with the corresponding 32-bit integer in src, and store the packed 32-bit results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -88,14 +90,14 @@ public fun mm256MaskzDpwssdEpi32(k: Mmask8, src: M256i, a: M256i, b: M256i): M25
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpwssd_avx_epi32&expand=2712)
  */
-public fun mmDpwssdAvxEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpwssd128(src.asI32x4(), a.asI16x8(), b.asI16x8()))
+public fun mmDpwssdAvxEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpwssd128(src.asI32x4(), a.asI16x8(), b.asI16x8()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of signed 16-bit integers in a with corresponding 16-bit integers in b, producing 2 intermediate signed 32-bit results. Sum these 2 results with the corresponding 32-bit integer in src, and store the packed 32-bit results in dst.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpwssd_epi32&expand=2213)
  */
-public fun mmDpwssdEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpwssd128(src.asI32x4(), a.asI16x8(), b.asI16x8()))
+public fun mmDpwssdEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpwssd128(src.asI32x4(), a.asI16x8(), b.asI16x8()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of signed 16-bit integers in a with corresponding 16-bit integers in b, producing 2 intermediate signed 32-bit results. Sum these 2 results with the corresponding 32-bit integer in src, and store the packed 32-bit results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -124,7 +126,7 @@ public fun mmMaskzDpwssdEpi32(k: Mmask8, src: M128i, a: M128i, b: M128i): M128i 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_dpwssds_epi32&expand=2228)
  */
-public fun mm512DpwssdsEpi32(src: M512i, a: M512i, b: M512i): M512i = transmute(vpdpwssds(src.asI32x16(), a.asI16x32(), b.asI16x32()))
+public fun mm512DpwssdsEpi32(src: M512i, a: M512i, b: M512i): M512i = transmuteWithLayouts<I32x16, M512i>(vpdpwssds(src.asI32x16(), a.asI16x32(), b.asI16x32()), UnresolvedTypeLayout<I32x16>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of signed 16-bit integers in a with corresponding 16-bit integers in b, producing 2 intermediate signed 32-bit results. Sum these 2 results with the corresponding 32-bit integer in src using signed saturation, and store the packed 32-bit results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -153,14 +155,14 @@ public fun mm512MaskzDpwssdsEpi32(k: Mmask16, src: M512i, a: M512i, b: M512i): M
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpwssds_avx_epi32&expand=2726)
  */
-public fun mm256DpwssdsAvxEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpwssds256(src.asI32x8(), a.asI16x16(), b.asI16x16()))
+public fun mm256DpwssdsAvxEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpwssds256(src.asI32x8(), a.asI16x16(), b.asI16x16()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of signed 16-bit integers in a with corresponding 16-bit integers in b, producing 2 intermediate signed 32-bit results. Sum these 2 results with the corresponding 32-bit integer in src using signed saturation, and store the packed 32-bit results in dst.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpwssds_epi32&expand=2225)
  */
-public fun mm256DpwssdsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpwssds256(src.asI32x8(), a.asI16x16(), b.asI16x16()))
+public fun mm256DpwssdsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpwssds256(src.asI32x8(), a.asI16x16(), b.asI16x16()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of signed 16-bit integers in a with corresponding 16-bit integers in b, producing 2 intermediate signed 32-bit results. Sum these 2 results with the corresponding 32-bit integer in src using signed saturation, and store the packed 32-bit results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -189,14 +191,14 @@ public fun mm256MaskzDpwssdsEpi32(k: Mmask8, src: M256i, a: M256i, b: M256i): M2
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpwssds_avx_epi32&expand=2725)
  */
-public fun mmDpwssdsAvxEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpwssds128(src.asI32x4(), a.asI16x8(), b.asI16x8()))
+public fun mmDpwssdsAvxEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpwssds128(src.asI32x4(), a.asI16x8(), b.asI16x8()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of signed 16-bit integers in a with corresponding 16-bit integers in b, producing 2 intermediate signed 32-bit results. Sum these 2 results with the corresponding 32-bit integer in src using signed saturation, and store the packed 32-bit results in dst.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpwssds_epi32&expand=2222)
  */
-public fun mmDpwssdsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpwssds128(src.asI32x4(), a.asI16x8(), b.asI16x8()))
+public fun mmDpwssdsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpwssds128(src.asI32x4(), a.asI16x8(), b.asI16x8()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of signed 16-bit integers in a with corresponding 16-bit integers in b, producing 2 intermediate signed 32-bit results. Sum these 2 results with the corresponding 32-bit integer in src using signed saturation, and store the packed 32-bit results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -225,7 +227,7 @@ public fun mmMaskzDpwssdsEpi32(k: Mmask8, src: M128i, a: M128i, b: M128i): M128i
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_dpbusd_epi32&expand=2201)
  */
-public fun mm512DpbusdEpi32(src: M512i, a: M512i, b: M512i): M512i = transmute(vpdpbusd(src.asI32x16(), a.asU8x64(), b.asI8x64()))
+public fun mm512DpbusdEpi32(src: M512i, a: M512i, b: M512i): M512i = transmuteWithLayouts<I32x16, M512i>(vpdpbusd(src.asI32x16(), a.asU8x64(), b.asI8x64()), UnresolvedTypeLayout<I32x16>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of unsigned 8-bit integers in a with corresponding signed 8-bit integers in b, producing 4 intermediate signed 16-bit results. Sum these 4 results with the corresponding 32-bit integer in src, and store the packed 32-bit results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -254,14 +256,14 @@ public fun mm512MaskzDpbusdEpi32(k: Mmask16, src: M512i, a: M512i, b: M512i): M5
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpbusd_avx_epi32&expand=2683)
  */
-public fun mm256DpbusdAvxEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpbusd256(src.asI32x8(), a.asU8x32(), b.asI8x32()))
+public fun mm256DpbusdAvxEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpbusd256(src.asI32x8(), a.asU8x32(), b.asI8x32()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of unsigned 8-bit integers in a with corresponding signed 8-bit integers in b, producing 4 intermediate signed 16-bit results. Sum these 4 results with the corresponding 32-bit integer in src, and store the packed 32-bit results in dst.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpbusd_epi32&expand=2198)
  */
-public fun mm256DpbusdEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpbusd256(src.asI32x8(), a.asU8x32(), b.asI8x32()))
+public fun mm256DpbusdEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpbusd256(src.asI32x8(), a.asU8x32(), b.asI8x32()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of unsigned 8-bit integers in a with corresponding signed 8-bit integers in b, producing 4 intermediate signed 16-bit results. Sum these 4 results with the corresponding 32-bit integer in src, and store the packed 32-bit results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -290,14 +292,14 @@ public fun mm256MaskzDpbusdEpi32(k: Mmask8, src: M256i, a: M256i, b: M256i): M25
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpbusd_avx_epi32&expand=2682)
  */
-public fun mmDpbusdAvxEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpbusd128(src.asI32x4(), a.asU8x16(), b.asI8x16()))
+public fun mmDpbusdAvxEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpbusd128(src.asI32x4(), a.asU8x16(), b.asI8x16()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of unsigned 8-bit integers in a with corresponding signed 8-bit integers in b, producing 4 intermediate signed 16-bit results. Sum these 4 results with the corresponding 32-bit integer in src, and store the packed 32-bit results in dst.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpbusd_epi32&expand=2195)
  */
-public fun mmDpbusdEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpbusd128(src.asI32x4(), a.asU8x16(), b.asI8x16()))
+public fun mmDpbusdEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpbusd128(src.asI32x4(), a.asU8x16(), b.asI8x16()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of unsigned 8-bit integers in a with corresponding signed 8-bit integers in b, producing 4 intermediate signed 16-bit results. Sum these 4 results with the corresponding 32-bit integer in src, and store the packed 32-bit results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -326,7 +328,7 @@ public fun mmMaskzDpbusdEpi32(k: Mmask8, src: M128i, a: M128i, b: M128i): M128i 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_dpbusds_epi32&expand=2210)
  */
-public fun mm512DpbusdsEpi32(src: M512i, a: M512i, b: M512i): M512i = transmute(vpdpbusds(src.asI32x16(), a.asU8x64(), b.asI8x64()))
+public fun mm512DpbusdsEpi32(src: M512i, a: M512i, b: M512i): M512i = transmuteWithLayouts<I32x16, M512i>(vpdpbusds(src.asI32x16(), a.asU8x64(), b.asI8x64()), UnresolvedTypeLayout<I32x16>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of unsigned 8-bit integers in a with corresponding signed 8-bit integers in b, producing 4 intermediate signed 16-bit results. Sum these 4 results with the corresponding 32-bit integer in src using signed saturation, and store the packed 32-bit results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -355,14 +357,14 @@ public fun mm512MaskzDpbusdsEpi32(k: Mmask16, src: M512i, a: M512i, b: M512i): M
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpbusds_avx_epi32&expand=2696)
  */
-public fun mm256DpbusdsAvxEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpbusds256(src.asI32x8(), a.asU8x32(), b.asI8x32()))
+public fun mm256DpbusdsAvxEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpbusds256(src.asI32x8(), a.asU8x32(), b.asI8x32()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of unsigned 8-bit integers in a with corresponding signed 8-bit integers in b, producing 4 intermediate signed 16-bit results. Sum these 4 results with the corresponding 32-bit integer in src using signed saturation, and store the packed 32-bit results in dst.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpbusds_epi32&expand=2207)
  */
-public fun mm256DpbusdsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpbusds256(src.asI32x8(), a.asU8x32(), b.asI8x32()))
+public fun mm256DpbusdsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpbusds256(src.asI32x8(), a.asU8x32(), b.asI8x32()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of unsigned 8-bit integers in a with corresponding signed 8-bit integers in b, producing 4 intermediate signed 16-bit results. Sum these 4 results with the corresponding 32-bit integer in src using signed saturation, and store the packed 32-bit results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -391,14 +393,14 @@ public fun mm256MaskzDpbusdsEpi32(k: Mmask8, src: M256i, a: M256i, b: M256i): M2
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpbusds_avx_epi32&expand=2695)
  */
-public fun mmDpbusdsAvxEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpbusds128(src.asI32x4(), a.asU8x16(), b.asI8x16()))
+public fun mmDpbusdsAvxEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpbusds128(src.asI32x4(), a.asU8x16(), b.asI8x16()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of unsigned 8-bit integers in a with corresponding signed 8-bit integers in b, producing 4 intermediate signed 16-bit results. Sum these 4 results with the corresponding 32-bit integer in src using signed saturation, and store the packed 32-bit results in dst.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpbusds_epi32&expand=2204)
  */
-public fun mmDpbusdsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpbusds128(src.asI32x4(), a.asU8x16(), b.asI8x16()))
+public fun mmDpbusdsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpbusds128(src.asI32x4(), a.asU8x16(), b.asI8x16()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of unsigned 8-bit integers in a with corresponding signed 8-bit integers in b, producing 4 intermediate signed 16-bit results. Sum these 4 results with the corresponding 32-bit integer in src using signed saturation, and store the packed 32-bit results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -429,7 +431,7 @@ public fun mmMaskzDpbusdsEpi32(k: Mmask8, src: M128i, a: M128i, b: M128i): M128i
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpbssd_epi32&expand=2674)
  */
-public fun mmDpbssdEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpbssd128(src.asI32x4(), a.asI8x16(), b.asI8x16()))
+public fun mmDpbssdEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpbssd128(src.asI32x4(), a.asI8x16(), b.asI8x16()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of signed 8-bit integers in a with corresponding signed 8-bit
@@ -438,7 +440,7 @@ public fun mmDpbssdEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdp
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpbssd_epi32&expand=2675)
  */
-public fun mm256DpbssdEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpbssd256(src.asI32x8(), a.asI8x32(), b.asI8x32()))
+public fun mm256DpbssdEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpbssd256(src.asI32x8(), a.asI8x32(), b.asI8x32()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of signed 8-bit integers in a with corresponding signed 8-bit
@@ -447,7 +449,7 @@ public fun mm256DpbssdEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(v
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpbssds_epi32&expand=2676)
  */
-public fun mmDpbssdsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpbssds128(src.asI32x4(), a.asI8x16(), b.asI8x16()))
+public fun mmDpbssdsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpbssds128(src.asI32x4(), a.asI8x16(), b.asI8x16()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of signed 8-bit integers in a with corresponding signed 8-bit
@@ -456,7 +458,7 @@ public fun mmDpbssdsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpd
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpbssds_epi32&expand=2677)
  */
-public fun mm256DpbssdsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpbssds256(src.asI32x8(), a.asI8x32(), b.asI8x32()))
+public fun mm256DpbssdsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpbssds256(src.asI32x8(), a.asI8x32(), b.asI8x32()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of signed 8-bit integers in a with corresponding unsigned 8-bit
@@ -465,7 +467,7 @@ public fun mm256DpbssdsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpbsud_epi32&expand=2678)
  */
-public fun mmDpbsudEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpbsud128(src.asI32x4(), a.asI8x16(), b.asU8x16()))
+public fun mmDpbsudEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpbsud128(src.asI32x4(), a.asI8x16(), b.asU8x16()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of signed 8-bit integers in a with corresponding unsigned 8-bit
@@ -474,7 +476,7 @@ public fun mmDpbsudEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdp
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpbsud_epi32&expand=2679)
  */
-public fun mm256DpbsudEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpbsud256(src.asI32x8(), a.asI8x32(), b.asU8x32()))
+public fun mm256DpbsudEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpbsud256(src.asI32x8(), a.asI8x32(), b.asU8x32()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of signed 8-bit integers in a with corresponding unsigned 8-bit
@@ -483,7 +485,7 @@ public fun mm256DpbsudEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(v
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpbsuds_epi32&expand=2680)
  */
-public fun mmDpbsudsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpbsuds128(src.asI32x4(), a.asI8x16(), b.asU8x16()))
+public fun mmDpbsudsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpbsuds128(src.asI32x4(), a.asI8x16(), b.asU8x16()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of signed 8-bit integers in a with corresponding unsigned 8-bit
@@ -492,7 +494,7 @@ public fun mmDpbsudsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpd
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpbsuds_epi32&expand=2681)
  */
-public fun mm256DpbsudsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpbsuds256(src.asI32x8(), a.asI8x32(), b.asU8x32()))
+public fun mm256DpbsudsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpbsuds256(src.asI32x8(), a.asI8x32(), b.asU8x32()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of unsigned 8-bit integers in a with corresponding unsigned 8-bit
@@ -501,7 +503,7 @@ public fun mm256DpbsudsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpbuud_epi32&expand=2708)
  */
-public fun mmDpbuudEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpbuud128(src.asI32x4(), a.asU8x16(), b.asU8x16()))
+public fun mmDpbuudEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpbuud128(src.asI32x4(), a.asU8x16(), b.asU8x16()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of unsigned 8-bit integers in a with corresponding unsigned 8-bit
@@ -510,7 +512,7 @@ public fun mmDpbuudEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdp
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpbuud_epi32&expand=2709)
  */
-public fun mm256DpbuudEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpbuud256(src.asI32x8(), a.asU8x32(), b.asU8x32()))
+public fun mm256DpbuudEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpbuud256(src.asI32x8(), a.asU8x32(), b.asU8x32()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of unsigned 8-bit integers in a with corresponding unsigned 8-bit
@@ -519,7 +521,7 @@ public fun mm256DpbuudEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(v
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpbuuds_epi32&expand=2710)
  */
-public fun mmDpbuudsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpbuuds128(src.asI32x4(), a.asU8x16(), b.asU8x16()))
+public fun mmDpbuudsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpbuuds128(src.asI32x4(), a.asU8x16(), b.asU8x16()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 4 adjacent pairs of unsigned 8-bit integers in a with corresponding unsigned 8-bit
@@ -528,7 +530,7 @@ public fun mmDpbuudsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpd
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpbuuds_epi32&expand=2711)
  */
-public fun mm256DpbuudsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpbuuds256(src.asI32x8(), a.asU8x32(), b.asU8x32()))
+public fun mm256DpbuudsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpbuuds256(src.asI32x8(), a.asU8x32(), b.asU8x32()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of signed 16-bit integers in a with corresponding unsigned 16-bit
@@ -537,7 +539,7 @@ public fun mm256DpbuudsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpwsud_epi32&expand=2738)
  */
-public fun mmDpwsudEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpwsud128(src.asI32x4(), a.asI16x8(), b.asU16x8()))
+public fun mmDpwsudEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpwsud128(src.asI32x4(), a.asI16x8(), b.asU16x8()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of signed 16-bit integers in a with corresponding unsigned 16-bit
@@ -546,7 +548,7 @@ public fun mmDpwsudEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdp
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpwsud_epi32&expand=2739)
  */
-public fun mm256DpwsudEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpwsud256(src.asI32x8(), a.asI16x16(), b.asU16x16()))
+public fun mm256DpwsudEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpwsud256(src.asI32x8(), a.asI16x16(), b.asU16x16()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of signed 16-bit integers in a with corresponding unsigned 16-bit
@@ -555,7 +557,7 @@ public fun mm256DpwsudEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(v
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpwsuds_epi32&expand=2740)
  */
-public fun mmDpwsudsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpwsuds128(src.asI32x4(), a.asI16x8(), b.asU16x8()))
+public fun mmDpwsudsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpwsuds128(src.asI32x4(), a.asI16x8(), b.asU16x8()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of signed 16-bit integers in a with corresponding unsigned 16-bit
@@ -564,7 +566,7 @@ public fun mmDpwsudsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpd
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpwsuds_epi32&expand=2741)
  */
-public fun mm256DpwsudsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpwsuds256(src.asI32x8(), a.asI16x16(), b.asU16x16()))
+public fun mm256DpwsudsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpwsuds256(src.asI32x8(), a.asI16x16(), b.asU16x16()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of unsigned 16-bit integers in a with corresponding signed 16-bit
@@ -573,7 +575,7 @@ public fun mm256DpwsudsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpwusd_epi32&expand=2742)
  */
-public fun mmDpwusdEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpwusd128(src.asI32x4(), a.asU16x8(), b.asI16x8()))
+public fun mmDpwusdEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpwusd128(src.asI32x4(), a.asU16x8(), b.asI16x8()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of unsigned 16-bit integers in a with corresponding signed 16-bit
@@ -582,7 +584,7 @@ public fun mmDpwusdEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdp
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpwusd_epi32&expand=2743)
  */
-public fun mm256DpwusdEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpwusd256(src.asI32x8(), a.asU16x16(), b.asI16x16()))
+public fun mm256DpwusdEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpwusd256(src.asI32x8(), a.asU16x16(), b.asI16x16()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of unsigned 16-bit integers in a with corresponding signed 16-bit
@@ -591,7 +593,7 @@ public fun mm256DpwusdEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(v
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpwusds_epi32&expand=2744)
  */
-public fun mmDpwusdsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpwusds128(src.asI32x4(), a.asU16x8(), b.asI16x8()))
+public fun mmDpwusdsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpwusds128(src.asI32x4(), a.asU16x8(), b.asI16x8()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of unsigned 16-bit integers in a with corresponding signed 16-bit
@@ -600,7 +602,7 @@ public fun mmDpwusdsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpd
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpwusds_epi32&expand=2745)
  */
-public fun mm256DpwusdsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpwusds256(src.asI32x8(), a.asU16x16(), b.asI16x16()))
+public fun mm256DpwusdsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpwusds256(src.asI32x8(), a.asU16x16(), b.asI16x16()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of unsigned 16-bit integers in a with corresponding unsigned 16-bit
@@ -609,7 +611,7 @@ public fun mm256DpwusdsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpwuud_epi32&expand=2746)
  */
-public fun mmDpwuudEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpwuud128(src.asI32x4(), a.asU16x8(), b.asU16x8()))
+public fun mmDpwuudEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpwuud128(src.asI32x4(), a.asU16x8(), b.asU16x8()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of unsigned 16-bit integers in a with corresponding unsigned 16-bit
@@ -618,7 +620,7 @@ public fun mmDpwuudEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdp
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpwuud_epi32&expand=2747)
  */
-public fun mm256DpwuudEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpwuud256(src.asI32x8(), a.asU16x16(), b.asU16x16()))
+public fun mm256DpwuudEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpwuud256(src.asI32x8(), a.asU16x16(), b.asU16x16()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of unsigned 16-bit integers in a with corresponding unsigned 16-bit
@@ -627,7 +629,7 @@ public fun mm256DpwuudEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(v
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dpwuuds_epi32&expand=2748)
  */
-public fun mmDpwuudsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpdpwuuds128(src.asI32x4(), a.asU16x8(), b.asU16x8()))
+public fun mmDpwuudsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpdpwuuds128(src.asI32x4(), a.asU16x8(), b.asU16x8()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Multiply groups of 2 adjacent pairs of unsigned 16-bit integers in a with corresponding unsigned 16-bit
@@ -636,7 +638,7 @@ public fun mmDpwuudsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmute(vpd
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dpwuuds_epi32&expand=2749)
  */
-public fun mm256DpwuudsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmute(vpdpwuuds256(src.asI32x8(), a.asU16x16(), b.asU16x16()))
+public fun mm256DpwuudsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vpdpwuuds256(src.asI32x8(), a.asU16x16(), b.asU16x16()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 public expect fun vpdpwssd(src: I32x16, a: I16x32, b: I16x32): I32x16
 

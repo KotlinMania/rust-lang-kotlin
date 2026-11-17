@@ -16,7 +16,7 @@ import io.github.kotlinmania.rustlang.core.result.andThen
  *
  * [decodeUtf16]: char.decodeUtf16
  */
-public open class DecodeUtf16<I>(
+public open class DecodeUtf16<I, Item>(
     public var iter: I,
     public var buf: UShort?,
 ) : Iterable<Result<Char, DecodeUtf16Error>> where I : Iterator<UShort> {
@@ -29,7 +29,7 @@ public open class DecodeUtf16<I>(
         }
     }
 
-    public open fun clone(): DecodeUtf16<I> = DecodeUtf16(iter, buf)
+    public open fun clone(): DecodeUtf16<I, Item> = DecodeUtf16(iter, buf)
 
     public open fun next(): Result<Char, DecodeUtf16Error>? {
         val u =
@@ -150,4 +150,4 @@ public open class DecodeUtf16Error(
  * Creates an iterator over the UTF-16 encoded code points in `iter`,
  * returning unpaired surrogates as `Err`s. See [char.decodeUtf16].
  */
-public fun <I : Iterable<UShort>> decodeUtf16(iter: I): DecodeUtf16<IntoIter> = DecodeUtf16(iter = iter.iterator(), buf = null)
+public fun <I : Iterable<UShort>> decodeUtf16(iter: I): DecodeUtf16<IntoIter, Item> = DecodeUtf16(iter = iter.iterator(), buf = null)

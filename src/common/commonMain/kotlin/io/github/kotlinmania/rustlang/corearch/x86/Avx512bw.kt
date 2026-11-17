@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
@@ -1068,7 +1069,7 @@ public fun mmMaskzSubsEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mulhi_epu16&expand=3973)
  */
-public fun mm512MulhiEpu16(a: M512i, b: M512i): M512i = transmute(vpmulhuw(a.asU16x32(), b.asU16x32()))
+public fun mm512MulhiEpu16(a: M512i, b: M512i): M512i = transmuteWithLayouts<U16x32, M512i>(vpmulhuw(a.asU16x32(), b.asU16x32()), UnresolvedTypeLayout<U16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Multiply the packed unsigned 16-bit integers in a and b, producing intermediate 32-bit integers, and store the high 16 bits of the intermediate integers in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -1141,7 +1142,7 @@ public fun mmMaskzMulhiEpu16(k: Mmask8, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mulhi_epi16&expand=3962)
  */
-public fun mm512MulhiEpi16(a: M512i, b: M512i): M512i = transmute(vpmulhw(a.asI16x32(), b.asI16x32()))
+public fun mm512MulhiEpi16(a: M512i, b: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpmulhw(a.asI16x32(), b.asI16x32()), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Multiply the packed signed 16-bit integers in a and b, producing intermediate 32-bit integers, and store the high 16 bits of the intermediate integers in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -1214,7 +1215,7 @@ public fun mmMaskzMulhiEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mulhrs_epi16&expand=3986)
  */
-public fun mm512MulhrsEpi16(a: M512i, b: M512i): M512i = transmute(vpmulhrsw(a.asI16x32(), b.asI16x32()))
+public fun mm512MulhrsEpi16(a: M512i, b: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpmulhrsw(a.asI16x32(), b.asI16x32()), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Multiply packed signed 16-bit integers in a and b, producing intermediate signed 32-bit integers. Truncate each intermediate integer to the 18 most significant bits, round by adding 1, and store bits \[16:1\] to dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -4361,7 +4362,7 @@ public fun mm512MaddEpi16(a: M512i, b: M512i): M512i {
     // If we implement this using generic vector intrinsics, the optimizer
     // will eliminate this pattern, and `vpmaddwd` will no longer be emitted.
     // For this reason, we use x86 intrinsics.
-    return transmute(vpmaddwd(a.asI16x32(), b.asI16x32()))
+    return transmuteWithLayouts<I32x16, M512i>(vpmaddwd(a.asI16x32(), b.asI16x32()), UnresolvedTypeLayout<I32x16>(), UnresolvedTypeLayout<M512i>())
 }
 
 /**
@@ -4435,7 +4436,7 @@ public fun mmMaskzMaddEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maddubs_epi16&expand=3539)
  */
-public fun mm512MaddubsEpi16(a: M512i, b: M512i): M512i = transmute(vpmaddubsw(a.asU8x64(), b.asI8x64()))
+public fun mm512MaddubsEpi16(a: M512i, b: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpmaddubsw(a.asU8x64(), b.asI8x64()), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Multiply packed unsigned 8-bit integers in a by packed signed 8-bit integers in b, producing intermediate signed 16-bit integers. Horizontally add adjacent pairs of intermediate signed 16-bit integers, and pack the saturated results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -4508,7 +4509,7 @@ public fun mmMaskzMaddubsEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_packs_epi32&expand=4091)
  */
-public fun mm512PacksEpi32(a: M512i, b: M512i): M512i = transmute(vpackssdw(a.asI32x16(), b.asI32x16()))
+public fun mm512PacksEpi32(a: M512i, b: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpackssdw(a.asI32x16(), b.asI32x16()), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed signed 32-bit integers from a and b to packed 16-bit integers using signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -4581,7 +4582,7 @@ public fun mmMaskzPacksEpi32(k: Mmask8, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_packs_epi16&expand=4082)
  */
-public fun mm512PacksEpi16(a: M512i, b: M512i): M512i = transmute(vpacksswb(a.asI16x32(), b.asI16x32()))
+public fun mm512PacksEpi16(a: M512i, b: M512i): M512i = transmuteWithLayouts<I8x64, M512i>(vpacksswb(a.asI16x32(), b.asI16x32()), UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed signed 16-bit integers from a and b to packed 8-bit integers using signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -4654,7 +4655,7 @@ public fun mmMaskzPacksEpi16(k: Mmask16, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_packus_epi32&expand=4130)
  */
-public fun mm512PackusEpi32(a: M512i, b: M512i): M512i = transmute(vpackusdw(a.asI32x16(), b.asI32x16()))
+public fun mm512PackusEpi32(a: M512i, b: M512i): M512i = transmuteWithLayouts<U16x32, M512i>(vpackusdw(a.asI32x16(), b.asI32x16()), UnresolvedTypeLayout<U16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed signed 32-bit integers from a and b to packed 16-bit integers using unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -4727,7 +4728,7 @@ public fun mmMaskzPackusEpi32(k: Mmask8, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_packus_epi16&expand=4121)
  */
-public fun mm512PackusEpi16(a: M512i, b: M512i): M512i = transmute(vpackuswb(a.asI16x32(), b.asI16x32()))
+public fun mm512PackusEpi16(a: M512i, b: M512i): M512i = transmuteWithLayouts<U8x64, M512i>(vpackuswb(a.asI16x32(), b.asI16x32()), UnresolvedTypeLayout<U8x64>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed signed 16-bit integers from a and b to packed 8-bit integers using unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -4800,7 +4801,7 @@ public fun mmMaskzPackusEpi16(k: Mmask16, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_avg_epu16&expand=388)
  */
-public fun mm512AvgEpu16(a: M512i, b: M512i): M512i = transmute(vpavgw(a.asU16x32(), b.asU16x32()))
+public fun mm512AvgEpu16(a: M512i, b: M512i): M512i = transmuteWithLayouts<U16x32, M512i>(vpavgw(a.asU16x32(), b.asU16x32()), UnresolvedTypeLayout<U16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Average packed unsigned 16-bit integers in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -4873,7 +4874,7 @@ public fun mmMaskzAvgEpu16(k: Mmask8, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_avg_epu8&expand=397)
  */
-public fun mm512AvgEpu8(a: M512i, b: M512i): M512i = transmute(vpavgb(a.asU8x64(), b.asU8x64()))
+public fun mm512AvgEpu8(a: M512i, b: M512i): M512i = transmuteWithLayouts<U8x64, M512i>(vpavgb(a.asU8x64(), b.asU8x64()), UnresolvedTypeLayout<U8x64>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Average packed unsigned 8-bit integers in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -4946,7 +4947,7 @@ public fun mmMaskzAvgEpu8(k: Mmask16, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_sll_epi16&expand=5271)
  */
-public fun mm512SllEpi16(a: M512i, count: M128i): M512i = transmute(vpsllw(a.asI16x32(), count.asI16x8()))
+public fun mm512SllEpi16(a: M512i, count: M128i): M512i = transmuteWithLayouts<I16x32, M512i>(vpsllw(a.asI16x32(), count.asI16x8()), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Shift packed 16-bit integers in a left by count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -5147,7 +5148,7 @@ public fun mmMaskzSlliEpi16(k: Mmask8, a: M128i, imm8: UInt): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_sllv_epi16&expand=5333)
  */
-public fun mm512SllvEpi16(a: M512i, count: M512i): M512i = transmute(vpsllvw(a.asI16x32(), count.asI16x32()))
+public fun mm512SllvEpi16(a: M512i, count: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpsllvw(a.asI16x32(), count.asI16x32()), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Shift packed 16-bit integers in a left by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -5176,7 +5177,7 @@ public fun mm512MaskzSllvEpi16(k: Mmask32, a: M512i, count: M512i): M512i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_sllv_epi16&expand=5330)
  */
-public fun mm256SllvEpi16(a: M256i, count: M256i): M256i = transmute(vpsllvw256(a.asI16x16(), count.asI16x16()))
+public fun mm256SllvEpi16(a: M256i, count: M256i): M256i = transmuteWithLayouts<I16x16, M256i>(vpsllvw256(a.asI16x16(), count.asI16x16()), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Shift packed 16-bit integers in a left by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -5205,7 +5206,7 @@ public fun mm256MaskzSllvEpi16(k: Mmask16, a: M256i, count: M256i): M256i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sllv_epi16&expand=5327)
  */
-public fun mmSllvEpi16(a: M128i, count: M128i): M128i = transmute(vpsllvw128(a.asI16x8(), count.asI16x8()))
+public fun mmSllvEpi16(a: M128i, count: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpsllvw128(a.asI16x8(), count.asI16x8()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Shift packed 16-bit integers in a left by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -5234,7 +5235,7 @@ public fun mmMaskzSllvEpi16(k: Mmask8, a: M128i, count: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_srl_epi16&expand=5483)
  */
-public fun mm512SrlEpi16(a: M512i, count: M128i): M512i = transmute(vpsrlw(a.asI16x32(), count.asI16x8()))
+public fun mm512SrlEpi16(a: M512i, count: M128i): M512i = transmuteWithLayouts<I16x32, M512i>(vpsrlw(a.asI16x32(), count.asI16x8()), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Shift packed 16-bit integers in a right by count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -5418,7 +5419,7 @@ public fun mmMaskzSrliEpi16(k: Mmask8, a: M128i, imm8: Int): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_srlv_epi16&expand=5545)
  */
-public fun mm512SrlvEpi16(a: M512i, count: M512i): M512i = transmute(vpsrlvw(a.asI16x32(), count.asI16x32()))
+public fun mm512SrlvEpi16(a: M512i, count: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpsrlvw(a.asI16x32(), count.asI16x32()), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -5447,7 +5448,7 @@ public fun mm512MaskzSrlvEpi16(k: Mmask32, a: M512i, count: M512i): M512i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_srlv_epi16&expand=5542)
  */
-public fun mm256SrlvEpi16(a: M256i, count: M256i): M256i = transmute(vpsrlvw256(a.asI16x16(), count.asI16x16()))
+public fun mm256SrlvEpi16(a: M256i, count: M256i): M256i = transmuteWithLayouts<I16x16, M256i>(vpsrlvw256(a.asI16x16(), count.asI16x16()), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -5476,7 +5477,7 @@ public fun mm256MaskzSrlvEpi16(k: Mmask16, a: M256i, count: M256i): M256i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_srlv_epi16&expand=5539)
  */
-public fun mmSrlvEpi16(a: M128i, count: M128i): M128i = transmute(vpsrlvw128(a.asI16x8(), count.asI16x8()))
+public fun mmSrlvEpi16(a: M128i, count: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpsrlvw128(a.asI16x8(), count.asI16x8()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -5505,7 +5506,7 @@ public fun mmMaskzSrlvEpi16(k: Mmask8, a: M128i, count: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_sra_epi16&expand=5398)
  */
-public fun mm512SraEpi16(a: M512i, count: M128i): M512i = transmute(vpsraw(a.asI16x32(), count.asI16x8()))
+public fun mm512SraEpi16(a: M512i, count: M128i): M512i = transmuteWithLayouts<I16x32, M512i>(vpsraw(a.asI16x32(), count.asI16x8()), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Shift packed 16-bit integers in a right by count while shifting in sign bits, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -5675,7 +5676,7 @@ public fun mmMaskzSraiEpi16(k: Mmask8, a: M128i, imm8: UInt): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_srav_epi16&expand=5456)
  */
-public fun mm512SravEpi16(a: M512i, count: M512i): M512i = transmute(vpsravw(a.asI16x32(), count.asI16x32()))
+public fun mm512SravEpi16(a: M512i, count: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpsravw(a.asI16x32(), count.asI16x32()), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in sign bits, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -5704,7 +5705,7 @@ public fun mm512MaskzSravEpi16(k: Mmask32, a: M512i, count: M512i): M512i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_srav_epi16&expand=5453)
  */
-public fun mm256SravEpi16(a: M256i, count: M256i): M256i = transmute(vpsravw256(a.asI16x16(), count.asI16x16()))
+public fun mm256SravEpi16(a: M256i, count: M256i): M256i = transmuteWithLayouts<I16x16, M256i>(vpsravw256(a.asI16x16(), count.asI16x16()), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in sign bits, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -5733,7 +5734,7 @@ public fun mm256MaskzSravEpi16(k: Mmask16, a: M256i, count: M256i): M256i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_srav_epi16&expand=5450)
  */
-public fun mmSravEpi16(a: M128i, count: M128i): M128i = transmute(vpsravw128(a.asI16x8(), count.asI16x8()))
+public fun mmSravEpi16(a: M128i, count: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpsravw128(a.asI16x8(), count.asI16x8()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in sign bits, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -5764,7 +5765,7 @@ public fun mmMaskzSravEpi16(k: Mmask8, a: M128i, count: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_permutex2var_epi16&expand=4226)
  */
-public fun mm512Permutex2varEpi16(a: M512i, idx: M512i, b: M512i): M512i = transmute(vpermi2w(a.asI16x32(), idx.asI16x32(), b.asI16x32()))
+public fun mm512Permutex2varEpi16(a: M512i, idx: M512i, b: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpermi2w(a.asI16x32(), idx.asI16x32(), b.asI16x32()), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Shuffle 16-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -5808,7 +5809,7 @@ public fun mm512Mask2Permutex2varEpi16(a: M512i, idx: M512i, k: Mmask32, b: M512
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_permutex2var_epi16&expand=4222)
  */
-public fun mm256Permutex2varEpi16(a: M256i, idx: M256i, b: M256i): M256i = transmute(vpermi2w256(a.asI16x16(), idx.asI16x16(), b.asI16x16()))
+public fun mm256Permutex2varEpi16(a: M256i, idx: M256i, b: M256i): M256i = transmuteWithLayouts<I16x16, M256i>(vpermi2w256(a.asI16x16(), idx.asI16x16(), b.asI16x16()), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Shuffle 16-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -5852,7 +5853,7 @@ public fun mm256Mask2Permutex2varEpi16(a: M256i, idx: M256i, k: Mmask16, b: M256
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_permutex2var_epi16&expand=4218)
  */
-public fun mmPermutex2varEpi16(a: M128i, idx: M128i, b: M128i): M128i = transmute(vpermi2w128(a.asI16x8(), idx.asI16x8(), b.asI16x8()))
+public fun mmPermutex2varEpi16(a: M128i, idx: M128i, b: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpermi2w128(a.asI16x8(), idx.asI16x8(), b.asI16x8()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Shuffle 16-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
@@ -5894,7 +5895,7 @@ public fun mmMask2Permutex2varEpi16(a: M128i, idx: M128i, k: Mmask8, b: M128i): 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_permutexvar_epi16&expand=4295)
  */
-public fun mm512PermutexvarEpi16(idx: M512i, a: M512i): M512i = transmute(vpermw(a.asI16x32(), idx.asI16x32()))
+public fun mm512PermutexvarEpi16(idx: M512i, a: M512i): M512i = transmuteWithLayouts<I16x32, M512i>(vpermw(a.asI16x32(), idx.asI16x32()), UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Shuffle 16-bit integers in a across lanes using the corresponding index in idx, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -5923,7 +5924,7 @@ public fun mm512MaskzPermutexvarEpi16(k: Mmask32, idx: M512i, a: M512i): M512i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_permutexvar_epi16&expand=4292)
  */
-public fun mm256PermutexvarEpi16(idx: M256i, a: M256i): M256i = transmute(vpermw256(a.asI16x16(), idx.asI16x16()))
+public fun mm256PermutexvarEpi16(idx: M256i, a: M256i): M256i = transmuteWithLayouts<I16x16, M256i>(vpermw256(a.asI16x16(), idx.asI16x16()), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Shuffle 16-bit integers in a across lanes using the corresponding index in idx, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -5952,7 +5953,7 @@ public fun mm256MaskzPermutexvarEpi16(k: Mmask16, idx: M256i, a: M256i): M256i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_permutexvar_epi16&expand=4289)
  */
-public fun mmPermutexvarEpi16(idx: M128i, a: M128i): M128i = transmute(vpermw128(a.asI16x8(), idx.asI16x8()))
+public fun mmPermutexvarEpi16(idx: M128i, a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpermw128(a.asI16x8(), idx.asI16x8()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Shuffle 16-bit integers in a across lanes using the corresponding index in idx, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -6039,7 +6040,7 @@ public fun mm512BroadcastwEpi16(a: M128i): M512i =
     run {
         val a1 = mm512Castsi128Si512(a).asI16x32()
         val ret: I16x32 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); _simdArg0 }
-        transmute(ret)
+        transmuteWithLayouts<I16x32, M512i>(ret, UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -6117,7 +6118,7 @@ public fun mm512BroadcastbEpi8(a: M128i): M512i =
     run {
         val a1 = mm512Castsi128Si512(a).asI8x64()
         val ret: I8x64 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); _simdArg0 }
-        transmute(ret)
+        transmuteWithLayouts<I8x64, M512i>(ret, UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -6196,7 +6197,7 @@ public fun mm512UnpackhiEpi16(a: M512i, b: M512i): M512i =
         val a1 = a.asI16x32()
         val b1 = b.asI16x32()
         val r: I16x32 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(4, 32 + 4, 5, 32 + 5, 6, 32 + 6, 7, 32 + 7, 12, 32 + 12, 13, 32 + 13, 14, 32 + 14, 15, 32 + 15, 20, 32 + 20, 21, 32 + 21, 22, 32 + 22, 23, 32 + 23, 28, 32 + 28, 29, 32 + 29, 30, 32 + 30, 31, 32 + 31)); _simdArg0 }
-        transmute(r)
+        transmuteWithLayouts<I16x32, M512i>(r, UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -6275,7 +6276,7 @@ public fun mm512UnpackhiEpi8(a: M512i, b: M512i): M512i =
         val a1 = a.asI8x64()
         val b1 = b.asI8x64()
         val r: I8x64 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(8, 64 + 8, 9, 64 + 9, 10, 64 + 10, 11, 64 + 11, 12, 64 + 12, 13, 64 + 13, 14, 64 + 14, 15, 64 + 15, 24, 64 + 24, 25, 64 + 25, 26, 64 + 26, 27, 64 + 27, 28, 64 + 28, 29, 64 + 29, 30, 64 + 30, 31, 64 + 31, 40, 64 + 40, 41, 64 + 41, 42, 64 + 42, 43, 64 + 43, 44, 64 + 44, 45, 64 + 45, 46, 64 + 46, 47, 64 + 47, 56, 64 + 56, 57, 64 + 57, 58, 64 + 58, 59, 64 + 59, 60, 64 + 60, 61, 64 + 61, 62, 64 + 62, 63, 64 + 63)); _simdArg0 }
-        transmute(r)
+        transmuteWithLayouts<I8x64, M512i>(r, UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -6354,7 +6355,7 @@ public fun mm512UnpackloEpi16(a: M512i, b: M512i): M512i =
         val a1 = a.asI16x32()
         val b1 = b.asI16x32()
         val r: I16x32 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(0, 32 + 0, 1, 32 + 1, 2, 32 + 2, 3, 32 + 3, 8, 32 + 8, 9, 32 + 9, 10, 32 + 10, 11, 32 + 11, 16, 32 + 16, 17, 32 + 17, 18, 32 + 18, 19, 32 + 19, 24, 32 + 24, 25, 32 + 25, 26, 32 + 26, 27, 32 + 27)); _simdArg0 }
-        transmute(r)
+        transmuteWithLayouts<I16x32, M512i>(r, UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -6433,7 +6434,7 @@ public fun mm512UnpackloEpi8(a: M512i, b: M512i): M512i =
         val a1 = a.asI8x64()
         val b1 = b.asI8x64()
         val r: I8x64 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(0, 64 + 0, 1, 64 + 1, 2, 64 + 2, 3, 64 + 3, 4, 64 + 4, 5, 64 + 5, 6, 64 + 6, 7, 64 + 7, 16, 64 + 16, 17, 64 + 17, 18, 64 + 18, 19, 64 + 19, 20, 64 + 20, 21, 64 + 21, 22, 64 + 22, 23, 64 + 23, 32, 64 + 32, 33, 64 + 33, 34, 64 + 34, 35, 64 + 35, 36, 64 + 36, 37, 64 + 37, 38, 64 + 38, 39, 64 + 39, 48, 64 + 48, 49, 64 + 49, 50, 64 + 50, 51, 64 + 51, 52, 64 + 52, 53, 64 + 53, 54, 64 + 54, 55, 64 + 55)); _simdArg0 }
-        transmute(r)
+        transmuteWithLayouts<I8x64, M512i>(r, UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -6778,7 +6779,7 @@ public fun mm512ShuffleloEpi16(a: M512i, imm8: Int): M512i =
         }
         val a1 = a.asI16x32()
         val r: I16x32 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(imm8.toUInt() and 0x3u, (imm8.toUInt() shr 2) and 0x3u, (imm8.toUInt() shr 4) and 0x3u, (imm8.toUInt() shr 6) and 0x3u, 4u, 5u, 6u, 7u, (imm8.toUInt() and 0x3u) + 8u, ((imm8.toUInt() shr 2) and 0x3u) + 8u, ((imm8.toUInt() shr 4) and 0x3u) + 8u, ((imm8.toUInt() shr 6) and 0x3u) + 8u, 12u, 13u, 14u, 15u, (imm8.toUInt() and 0x3u) + 16u, ((imm8.toUInt() shr 2) and 0x3u) + 16u, ((imm8.toUInt() shr 4) and 0x3u) + 16u, ((imm8.toUInt() shr 6) and 0x3u) + 16u, 20u, 21u, 22u, 23u, (imm8.toUInt() and 0x3u) + 24u, ((imm8.toUInt() shr 2) and 0x3u) + 24u, ((imm8.toUInt() shr 4) and 0x3u) + 24u, ((imm8.toUInt() shr 6) and 0x3u) + 24u, 28u, 29u, 30u, 31u)); _simdArg0 }
-        transmute(r)
+        transmuteWithLayouts<I16x32, M512i>(r, UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -6877,7 +6878,7 @@ public fun mm512ShufflehiEpi16(a: M512i, imm8: Int): M512i =
         }
         val a1 = a.asI16x32()
         val r: I16x32 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, (imm8.toUInt() and 0x3u) + 4u, ((imm8.toUInt() shr 2) and 0x3u) + 4u, ((imm8.toUInt() shr 4) and 0x3u) + 4u, ((imm8.toUInt() shr 6) and 0x3u) + 4u, 8u, 9u, 10u, 11u, (imm8.toUInt() and 0x3u) + 12u, ((imm8.toUInt() shr 2) and 0x3u) + 12u, ((imm8.toUInt() shr 4) and 0x3u) + 12u, ((imm8.toUInt() shr 6) and 0x3u) + 12u, 16u, 17u, 18u, 19u, (imm8.toUInt() and 0x3u) + 20u, ((imm8.toUInt() shr 2) and 0x3u) + 20u, ((imm8.toUInt() shr 4) and 0x3u) + 20u, ((imm8.toUInt() shr 6) and 0x3u) + 20u, 24u, 25u, 26u, 27u, (imm8.toUInt() and 0x3u) + 28u, ((imm8.toUInt() shr 2) and 0x3u) + 28u, ((imm8.toUInt() shr 4) and 0x3u) + 28u, ((imm8.toUInt() shr 6) and 0x3u) + 28u)); _simdArg0 }
-        transmute(r)
+        transmuteWithLayouts<I16x32, M512i>(r, UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -6969,7 +6970,7 @@ public fun mmMaskzShufflehiEpi16(k: Mmask8, a: M128i, imm8: Int): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_shuffle_epi8&expand=5159)
  */
-public fun mm512ShuffleEpi8(a: M512i, b: M512i): M512i = transmute(vpshufb(a.asI8x64(), b.asI8x64()))
+public fun mm512ShuffleEpi8(a: M512i, b: M512i): M512i = transmuteWithLayouts<I8x64, M512i>(vpshufb(a.asI8x64(), b.asI8x64()), UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Shuffle 8-bit integers in a within 128-bit lanes using the control in the corresponding 8-bit element of b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -7346,7 +7347,7 @@ public fun loadMask32(memAddr: ConstPtr): Mmask32 = read(memAddr, typeLayoutT = 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_sad_epu8&expand=4855)
  */
-public fun mm512SadEpu8(a: M512i, b: M512i): M512i = transmute(vpsadbw(a.asU8x64(), b.asU8x64()))
+public fun mm512SadEpu8(a: M512i, b: M512i): M512i = transmuteWithLayouts<U64x8, M512i>(vpsadbw(a.asU8x64(), b.asU8x64()), UnresolvedTypeLayout<U64x8>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Compute the sum of absolute differences (SADs) of quadruplets of unsigned 8-bit integers in a compared to those in b, and store the 16-bit results in dst. Four SADs are performed on four 8-bit quadruplets for each 64-bit lane. The first two SADs use the lower 8-bit quadruplet of the lane from a, and the last two SADs use the uppper 8-bit quadruplet of the lane from a. Quadruplets from b are selected from within 128-bit lanes according to the control in imm8, and each SAD in each 64-bit lane uses the selected quadruplet at 8-bit offsets.
@@ -7361,7 +7362,7 @@ public fun mm512DbsadEpu8(a: M512i, b: M512i, imm8: Int): M512i =
         val a1 = a.asU8x64()
         val b1 = b.asU8x64()
         val r = vdbpsadbw(a1, b1, imm8)
-        transmute(r)
+        transmuteWithLayouts<U16x32, M512i>(r, UnresolvedTypeLayout<U16x32>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -7409,7 +7410,7 @@ public fun mm256DbsadEpu8(a: M256i, b: M256i, imm8: Int): M256i =
         val a1 = a.asU8x32()
         val b1 = b.asU8x32()
         val r = vdbpsadbw256(a1, b1, imm8)
-        transmute(r)
+        transmuteWithLayouts<U16x16, M256i>(r, UnresolvedTypeLayout<U16x16>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -7457,7 +7458,7 @@ public fun mmDbsadEpu8(a: M128i, b: M128i, imm8: Int): M128i =
         val a1 = a.asU8x16()
         val b1 = b.asU8x16()
         val r = vdbpsadbw128(a1, b1, imm8)
-        transmute(r)
+        transmuteWithLayouts<U16x8, M128i>(r, UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -7912,7 +7913,7 @@ public fun mm512Kunpackd(a: Mmask64, b: Mmask64): Mmask64 = ((a and 0xffffffffuL
 public fun mm512Cvtepi16Epi8(a: M512i): M256i =
     run {
         val a1 = a.asI16x32()
-        transmute(run { val _simdArg0 = a1; _simdArg0 })
+        transmuteWithLayouts<I8x32, M256i>(run { val _simdArg0 = a1; _simdArg0 }, UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -7945,7 +7946,7 @@ public fun mm512MaskzCvtepi16Epi8(k: Mmask32, a: M512i): M256i =
 public fun mm256Cvtepi16Epi8(a: M256i): M128i =
     run {
         val a1 = a.asI16x16()
-        transmute(run { val _simdArg0 = a1; _simdArg0 })
+        transmuteWithLayouts<I8x16, M128i>(run { val _simdArg0 = a1; _simdArg0 }, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -7979,7 +7980,7 @@ public fun mmCvtepi16Epi8(a: M128i): M128i =
     run {
         val a1 = a.asI16x8()
         val v256: I16x16 = run { val _simdArg0 = a1; val _simdArg1 = i16x8.ZERO; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 8, 8, 8, 8, 8, 8, 8)); _simdArg0 }
-        transmute(run { val _simdArg0 = v256; _simdArg0 })
+        transmuteWithLayouts<I8x16, M128i>(run { val _simdArg0 = v256; _simdArg0 }, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -8048,21 +8049,21 @@ public fun mm256MaskzCvtsepi16Epi8(k: Mmask16, a: M256i): M128i = run { val _sim
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtsepi16_epi8&expand=1801)
  */
-public fun mmCvtsepi16Epi8(a: M128i): M128i = transmute(vpmovswb128(a.asI16x8(), i8x16.ZERO, 0xFFu))
+public fun mmCvtsepi16Epi8(a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovswb128(a.asI16x8(), i8x16.ZERO, 0xFFu), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cvtsepi16_epi8&expand=1802)
  */
-public fun mmMaskCvtsepi16Epi8(src: M128i, k: Mmask8, a: M128i): M128i = transmute(vpmovswb128(a.asI16x8(), src.asI8x16(), k))
+public fun mmMaskCvtsepi16Epi8(src: M128i, k: Mmask8, a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovswb128(a.asI16x8(), src.asI8x16(), k), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_cvtsepi16_epi8&expand=1803)
  */
-public fun mmMaskzCvtsepi16Epi8(k: Mmask8, a: M128i): M128i = transmute(vpmovswb128(a.asI16x8(), i8x16.ZERO, k))
+public fun mmMaskzCvtsepi16Epi8(k: Mmask8, a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovswb128(a.asI16x8(), i8x16.ZERO, k), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst.
@@ -8111,21 +8112,21 @@ public fun mm256MaskzCvtusepi16Epi8(k: Mmask16, a: M256i): M128i = run { val _si
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtusepi16_epi8&expand=2036)
  */
-public fun mmCvtusepi16Epi8(a: M128i): M128i = transmute(vpmovuswb128(a.asU16x8(), u8x16.ZERO, 0xFFu))
+public fun mmCvtusepi16Epi8(a: M128i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovuswb128(a.asU16x8(), u8x16.ZERO, 0xFFu), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cvtusepi16_epi8&expand=2037)
  */
-public fun mmMaskCvtusepi16Epi8(src: M128i, k: Mmask8, a: M128i): M128i = transmute(vpmovuswb128(a.asU16x8(), src.asU8x16(), k))
+public fun mmMaskCvtusepi16Epi8(src: M128i, k: Mmask8, a: M128i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovuswb128(a.asU16x8(), src.asU8x16(), k), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_cvtusepi16_epi8&expand=2038)
  */
-public fun mmMaskzCvtusepi16Epi8(k: Mmask8, a: M128i): M128i = transmute(vpmovuswb128(a.asU16x8(), u8x16.ZERO, k))
+public fun mmMaskzCvtusepi16Epi8(k: Mmask8, a: M128i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovuswb128(a.asU16x8(), u8x16.ZERO, k), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Sign extend packed 8-bit integers in a to packed 16-bit integers, and store the results in dst.
@@ -8135,7 +8136,7 @@ public fun mmMaskzCvtusepi16Epi8(k: Mmask8, a: M128i): M128i = transmute(vpmovus
 public fun mm512Cvtepi8Epi16(a: M256i): M512i =
     run {
         val a1 = a.asI8x32()
-        transmute(run { val _simdArg0 = a1; _simdArg0 })
+        transmuteWithLayouts<I16x32, M512i>(run { val _simdArg0 = a1; _simdArg0 }, UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -8212,7 +8213,7 @@ public fun mmMaskzCvtepi8Epi16(k: Mmask8, a: M128i): M128i =
 public fun mm512Cvtepu8Epi16(a: M256i): M512i =
     run {
         val a1 = a.asU8x32()
-        transmute(run { val _simdArg0 = a1; _simdArg0 })
+        transmuteWithLayouts<I16x32, M512i>(run { val _simdArg0 = a1; _simdArg0 }, UnresolvedTypeLayout<I16x32>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -8302,7 +8303,7 @@ public fun mm512BslliEpi128(a: M512i, imm8: Int): M512i {
         val a1 = a.asI8x64()
         val zero = i8x64.ZERO
         val r: I8x64 = run { val _simdArg0 = zero; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u), mask(imm8, 16u), mask(imm8, 17u), mask(imm8, 18u), mask(imm8, 19u), mask(imm8, 20u), mask(imm8, 21u), mask(imm8, 22u), mask(imm8, 23u), mask(imm8, 24u), mask(imm8, 25u), mask(imm8, 26u), mask(imm8, 27u), mask(imm8, 28u), mask(imm8, 29u), mask(imm8, 30u), mask(imm8, 31u), mask(imm8, 32u), mask(imm8, 33u), mask(imm8, 34u), mask(imm8, 35u), mask(imm8, 36u), mask(imm8, 37u), mask(imm8, 38u), mask(imm8, 39u), mask(imm8, 40u), mask(imm8, 41u), mask(imm8, 42u), mask(imm8, 43u), mask(imm8, 44u), mask(imm8, 45u), mask(imm8, 46u), mask(imm8, 47u), mask(imm8, 48u), mask(imm8, 49u), mask(imm8, 50u), mask(imm8, 51u), mask(imm8, 52u), mask(imm8, 53u), mask(imm8, 54u), mask(imm8, 55u), mask(imm8, 56u), mask(imm8, 57u), mask(imm8, 58u), mask(imm8, 59u), mask(imm8, 60u), mask(imm8, 61u), mask(imm8, 62u), mask(imm8, 63u))); _simdArg0 }
-        transmute(r)
+        transmuteWithLayouts<I8x64, M512i>(r, UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
     }
 }
 
@@ -8327,7 +8328,7 @@ public fun mm512BsrliEpi128(a: M512i, imm8: Int): M512i {
         val a1 = a.asI8x64()
         val zero = i8x64.ZERO
         val r: I8x64 = run { val _simdArg0 = zero; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u), mask(imm8, 16u), mask(imm8, 17u), mask(imm8, 18u), mask(imm8, 19u), mask(imm8, 20u), mask(imm8, 21u), mask(imm8, 22u), mask(imm8, 23u), mask(imm8, 24u), mask(imm8, 25u), mask(imm8, 26u), mask(imm8, 27u), mask(imm8, 28u), mask(imm8, 29u), mask(imm8, 30u), mask(imm8, 31u), mask(imm8, 32u), mask(imm8, 33u), mask(imm8, 34u), mask(imm8, 35u), mask(imm8, 36u), mask(imm8, 37u), mask(imm8, 38u), mask(imm8, 39u), mask(imm8, 40u), mask(imm8, 41u), mask(imm8, 42u), mask(imm8, 43u), mask(imm8, 44u), mask(imm8, 45u), mask(imm8, 46u), mask(imm8, 47u), mask(imm8, 48u), mask(imm8, 49u), mask(imm8, 50u), mask(imm8, 51u), mask(imm8, 52u), mask(imm8, 53u), mask(imm8, 54u), mask(imm8, 55u), mask(imm8, 56u), mask(imm8, 57u), mask(imm8, 58u), mask(imm8, 59u), mask(imm8, 60u), mask(imm8, 61u), mask(imm8, 62u), mask(imm8, 63u))); _simdArg0 }
-        transmute(r)
+        transmuteWithLayouts<I8x64, M512i>(r, UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
     }
 }
 
@@ -8366,7 +8367,7 @@ public fun mm512AlignrEpi8(a: M512i, b: M512i, imm8: Int): M512i {
             return transmute(a1)
         }
         val r: I8x64 = run { val _simdArg0 = b1.asI8x64(); val _simdArg1 = a1.asI8x64(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(mask(imm8.toUInt(), 0u), mask(imm8.toUInt(), 1u), mask(imm8.toUInt(), 2u), mask(imm8.toUInt(), 3u), mask(imm8.toUInt(), 4u), mask(imm8.toUInt(), 5u), mask(imm8.toUInt(), 6u), mask(imm8.toUInt(), 7u), mask(imm8.toUInt(), 8u), mask(imm8.toUInt(), 9u), mask(imm8.toUInt(), 10u), mask(imm8.toUInt(), 11u), mask(imm8.toUInt(), 12u), mask(imm8.toUInt(), 13u), mask(imm8.toUInt(), 14u), mask(imm8.toUInt(), 15u), mask(imm8.toUInt(), 16u), mask(imm8.toUInt(), 17u), mask(imm8.toUInt(), 18u), mask(imm8.toUInt(), 19u), mask(imm8.toUInt(), 20u), mask(imm8.toUInt(), 21u), mask(imm8.toUInt(), 22u), mask(imm8.toUInt(), 23u), mask(imm8.toUInt(), 24u), mask(imm8.toUInt(), 25u), mask(imm8.toUInt(), 26u), mask(imm8.toUInt(), 27u), mask(imm8.toUInt(), 28u), mask(imm8.toUInt(), 29u), mask(imm8.toUInt(), 30u), mask(imm8.toUInt(), 31u), mask(imm8.toUInt(), 32u), mask(imm8.toUInt(), 33u), mask(imm8.toUInt(), 34u), mask(imm8.toUInt(), 35u), mask(imm8.toUInt(), 36u), mask(imm8.toUInt(), 37u), mask(imm8.toUInt(), 38u), mask(imm8.toUInt(), 39u), mask(imm8.toUInt(), 40u), mask(imm8.toUInt(), 41u), mask(imm8.toUInt(), 42u), mask(imm8.toUInt(), 43u), mask(imm8.toUInt(), 44u), mask(imm8.toUInt(), 45u), mask(imm8.toUInt(), 46u), mask(imm8.toUInt(), 47u), mask(imm8.toUInt(), 48u), mask(imm8.toUInt(), 49u), mask(imm8.toUInt(), 50u), mask(imm8.toUInt(), 51u), mask(imm8.toUInt(), 52u), mask(imm8.toUInt(), 53u), mask(imm8.toUInt(), 54u), mask(imm8.toUInt(), 55u), mask(imm8.toUInt(), 56u), mask(imm8.toUInt(), 57u), mask(imm8.toUInt(), 58u), mask(imm8.toUInt(), 59u), mask(imm8.toUInt(), 60u), mask(imm8.toUInt(), 61u), mask(imm8.toUInt(), 62u), mask(imm8.toUInt(), 63u))); _simdArg0 }
-        transmute(r)
+        transmuteWithLayouts<I8x64, M512i>(r, UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
     }
 }
 

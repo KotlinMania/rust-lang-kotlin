@@ -1,11 +1,6 @@
 // port-lint: source os/unix/net/datagram.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net
 
-import io.github.kotlinmania.libc.fuchsia.AF_UNIX
-import io.github.kotlinmania.libc.fuchsia.MSG_PEEK
-import io.github.kotlinmania.libc.fuchsia.SOCK_DGRAM
-import io.github.kotlinmania.libc.fuchsia.SO_RCVTIMEO
-import io.github.kotlinmania.libc.fuchsia.SO_SNDTIMEO
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
@@ -20,6 +15,11 @@ import io.github.kotlinmania.rustlang.libc.getpeername
 import io.github.kotlinmania.rustlang.libc.getsockname
 import io.github.kotlinmania.rustlang.libc.recvfrom
 import io.github.kotlinmania.rustlang.libc.sendto
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SOCK_DGRAM
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_RCVTIMEO
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_SNDTIMEO
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AF_UNIX
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_PEEK
 import io.github.kotlinmania.rustlang.std.net.Shutdown
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
 import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
@@ -681,7 +681,7 @@ public open class UnixDatagram(
      * )
      * ```kotlin
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.takeError()
 
     /**
      * Shut down the read, write, or both halves of this connection.

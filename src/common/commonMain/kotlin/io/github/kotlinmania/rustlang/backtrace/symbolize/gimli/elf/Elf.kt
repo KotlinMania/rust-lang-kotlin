@@ -30,7 +30,7 @@ public typealias Elf = FileHeader64<NativeEndian>
 public fun Mapping.Companion.new(path: Path): Mapping? {
     val map = (mmap(path) ?: return null)
     return Mapping.mkOrOther(map, closure@{ map1, stash ->
-        val obj = when (val tryResult = Object.parse(map1)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
+        val obj = when (val tryResult = Object.parse(map1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
         // Try to locate an external debug file using the build ID.
         when (val matchVal = obj.buildId()?.let(::locateBuildId)) {
             null -> {}
@@ -89,7 +89,7 @@ public fun Mapping.Companion.newAndroid(path: Path, zipOffset: ULong?): Mapping?
         // NOTE: mmap will fail if `zipOffset` is not page-aligned
         val map = (Mmap.map(file, (Int.tryFrom(len - zipOffset1.toInt()).ok() ?: return null), zipOffset1) ?: return null)
         return Mapping.mk(map, closure1@{ map1, stash ->
-            Context.new(stash, when (val tryResult = Object.parse(map1)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }, null, null)
+            Context.new(stash, when (val tryResult = Object.parse(map1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }, null, null)
         })
     }
     // if ZIP offset is given, try mapping as a ZIP-embedded library
@@ -108,7 +108,7 @@ public fun Mapping.Companion.newAndroid(path: Path, zipOffset: ULong?): Mapping?
 public fun Mapping.Companion.newDebug(originalPath: Path, path: PathBuf, crc: UInt?): Mapping? {
     val map = (mmap(path) ?: return null)
     return Mapping.mk(map, closure2@{ map1, stash ->
-        val obj = when (val tryResult = Object.parse(map1)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure2 Result.Err(tryResult.error) }
+        val obj = when (val tryResult = Object.parse(map1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
         if (crc != null) {
             // Note: check crc
         }
@@ -317,9 +317,13 @@ public open class Object internal constructor(
             run {
                 val matchVal = section.notes(this.endian, this.data)
                 if (matchVal is Result.Ok && matchVal.value != null) {
+                    val valueVal = matchVal.value
+                    val notes = valueVal
                     while (true) {
                         val matchVal1 = notes.next()
                         if (matchVal1 !is Result.Ok) break
+                        val valueVal1 = (matchVal1 as Result.Ok).value
+                        val note = valueVal1
                         if (note.name() == ELF_NOTE_GNU && note.nType(this.endian) == NT_GNU_BUILD_ID) {
                             return note.desc()
                         }
@@ -415,6 +419,8 @@ public fun decompressZstd(input: List<UByte>, output: MutableList<UByte>): Unit?
                         decoder
                     }
                     matchVal is Result.Err && matchVal.error is FrameDecoderError.ReadFrameHeaderError && (matchVal.error as FrameDecoderError.ReadFrameHeaderError).value is ReadFrameHeaderError.SkipFrame -> {
+                        val errorVal = matchVal.error
+                        val length = ((errorVal as FrameDecoderError.ReadFrameHeaderError).value as ReadFrameHeaderError.SkipFrame).length
                         input1 = (input1.get(length.toInt() until Int.MAX_VALUE) ?: return null)
                         continue
                     }
@@ -565,6 +571,8 @@ public fun handleSplitDwarf(pkg: gimli.DwarfPackage<EndianSlice<Endian>>?, stash
             run {
                 val matchVal1 = dwp.findCu(load.dwoId, load.parent)
                 if (matchVal1 is Result.Ok && matchVal1.value != null) {
+                    val valueVal = matchVal1.value
+                    val cu = valueVal
                     return cu
                 }
             }

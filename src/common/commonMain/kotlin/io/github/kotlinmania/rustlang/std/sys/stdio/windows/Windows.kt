@@ -3,6 +3,9 @@
 
 package io.github.kotlinmania.rustlang.std.sys.stdio.windows
 
+import io.github.kotlinmania.rustlang.alloc.io.read.Read
+import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -19,9 +22,6 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.str.validations.utf8CharWidth
 import io.github.kotlinmania.rustlang.std.alloc.System
-import io.github.kotlinmania.rustlang.std.io.Error
-import io.github.kotlinmania.rustlang.std.io.Read
-import io.github.kotlinmania.rustlang.std.io.Write
 import io.github.kotlinmania.rustlang.std.sys.c
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
@@ -311,7 +311,10 @@ public fun writeConsoleWithBuffer(data: List<UByte>, incompleteUtf8: IncompleteU
         run {
             val matchVal = writeConsoleChunk(((data).subList(written, (data).size)), incompleteUtf8, utf16, handle)
             when {
-                matchVal is Result.Ok && matchVal.value == 0 -> { break }
+                matchVal is Result.Ok && matchVal.value == 0 -> {
+                    val valueVal = matchVal.value
+                    break
+                }
                 matchVal is Result.Ok -> {
                     val consumed = matchVal.value
                     written += consumed

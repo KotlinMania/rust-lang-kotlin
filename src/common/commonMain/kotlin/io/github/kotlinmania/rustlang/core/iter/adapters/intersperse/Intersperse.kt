@@ -35,7 +35,7 @@ public class DebugStruct(
  * This `class` is created by [Iterator.intersperse]. See its documentation
  * for more information.
  */
-public open class Intersperse<I>(
+public open class Intersperse<I, Item>(
     public var started: Boolean,
     public var separator: Item,
     public var nextItem: Item?,
@@ -50,7 +50,7 @@ public open class Intersperse<I>(
         }
     }
 
-    public open fun clone(): Intersperse<I> = Intersperse(started, separator, nextItem, iter)
+    public open fun clone(): Intersperse<I, Item> = Intersperse(started, separator, nextItem, iter)
 
     public open fun next(): Item? =
         if (this.started) {
@@ -83,7 +83,7 @@ public open class Intersperse<I>(
     }
 
     public companion object {
-        public fun <I> new(iter: I, separator: Item): Intersperse<I> = Intersperse(started = false, separator = separator, nextItem = null, iter = iter)
+        public fun <I> new(iter: I, separator: Item): Intersperse<I, Item> = Intersperse(started = false, separator = separator, nextItem = null, iter = iter)
     }
 }
 
@@ -93,7 +93,7 @@ public open class Intersperse<I>(
  * This `class` is created by [Iterator.intersperseWith]. See its
  * documentation for more information.
  */
-public open class IntersperseWith<I, G>(
+public open class IntersperseWith<I, G, Item>(
     public var started: Boolean,
     public var separator: G,
     public var nextItem: Item?,
@@ -110,7 +110,7 @@ public open class IntersperseWith<I, G>(
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "IntersperseWith").field("started", this.started).field("separator", this.separator).field("iter", this.iter).field("next_item", this.nextItem).finish()
 
-    public open fun clone(): IntersperseWith<I, G> = IntersperseWith(started = this.started, separator = this.separator.clone(), iter = this.iter.clone(), nextItem = this.nextItem)
+    public open fun clone(): IntersperseWith<I, G, Item> = IntersperseWith(started = this.started, separator = this.separator.clone(), iter = this.iter.clone(), nextItem = this.nextItem)
 
     public open fun next(): Item? =
         if (this.started) {
@@ -140,7 +140,7 @@ public open class IntersperseWith<I, G>(
     public open fun <B> fold(init: B, f: (B, Item) -> B): B = intersperseFold(this.iter, init, f, this.separator, this.started, this.nextItem)
 
     public companion object {
-        public fun <I> new(iter: I, separator: () -> Item): IntersperseWith<I, G> = IntersperseWith(started = false, separator = separator, nextItem = null, iter = iter)
+        public fun <I> new(iter: I, separator: () -> Item): IntersperseWith<I, G, Item> = IntersperseWith(started = false, separator = separator, nextItem = null, iter = iter)
     }
 }
 

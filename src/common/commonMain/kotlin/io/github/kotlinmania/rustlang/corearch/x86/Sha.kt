@@ -1,7 +1,8 @@
 // port-lint: source x86/sha.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.simd.I32x4
 import io.github.kotlinmania.rustlang.corearch.simd.I32x8
 import io.github.kotlinmania.rustlang.corearch.simd.I64x2
@@ -48,7 +49,7 @@ public expect fun vsm4rnds4256(a: I32x8, b: I32x8): I32x8
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sha1msg1_epu32)
  */
-public fun mmSha1msg1Epu32(a: M128i, b: M128i): M128i = transmute(sha1msg1(a.asI32x4(), b.asI32x4()))
+public fun mmSha1msg1Epu32(a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(sha1msg1(a.asI32x4(), b.asI32x4()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Performs the final calculation for the next four SHA1 message values
@@ -57,7 +58,7 @@ public fun mmSha1msg1Epu32(a: M128i, b: M128i): M128i = transmute(sha1msg1(a.asI
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sha1msg2_epu32)
  */
-public fun mmSha1msg2Epu32(a: M128i, b: M128i): M128i = transmute(sha1msg2(a.asI32x4(), b.asI32x4()))
+public fun mmSha1msg2Epu32(a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(sha1msg2(a.asI32x4(), b.asI32x4()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Calculate SHA1 state variable E after four rounds of operation from the
@@ -66,7 +67,7 @@ public fun mmSha1msg2Epu32(a: M128i, b: M128i): M128i = transmute(sha1msg2(a.asI
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sha1nexte_epu32)
  */
-public fun mmSha1nexteEpu32(a: M128i, b: M128i): M128i = transmute(sha1nexte(a.asI32x4(), b.asI32x4()))
+public fun mmSha1nexteEpu32(a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(sha1nexte(a.asI32x4(), b.asI32x4()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Performs four rounds of SHA1 operation using an initial SHA1 state (A,B,C,D)
@@ -81,7 +82,7 @@ public fun mmSha1rnds4Epu32(a: M128i, b: M128i, func: Int): M128i {
     run {
         check(0 <= func && func < (1 shl 2)) { "FUNC doesn't fit in 2 bits (unsigned)" }
     }
-    return transmute(sha1rnds4(a.asI32x4(), b.asI32x4(), func.toByte()))
+    return transmuteWithLayouts<I32x4, M128i>(sha1rnds4(a.asI32x4(), b.asI32x4(), func.toByte()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 }
 
 /**
@@ -91,7 +92,7 @@ public fun mmSha1rnds4Epu32(a: M128i, b: M128i, func: Int): M128i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sha256msg1_epu32)
  */
-public fun mmSha256msg1Epu32(a: M128i, b: M128i): M128i = transmute(sha256msg1(a.asI32x4(), b.asI32x4()))
+public fun mmSha256msg1Epu32(a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(sha256msg1(a.asI32x4(), b.asI32x4()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Performs the final calculation for the next four SHA256 message values
@@ -100,7 +101,7 @@ public fun mmSha256msg1Epu32(a: M128i, b: M128i): M128i = transmute(sha256msg1(a
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sha256msg2_epu32)
  */
-public fun mmSha256msg2Epu32(a: M128i, b: M128i): M128i = transmute(sha256msg2(a.asI32x4(), b.asI32x4()))
+public fun mmSha256msg2Epu32(a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(sha256msg2(a.asI32x4(), b.asI32x4()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Performs 2 rounds of SHA256 operation using an initial SHA256 state
@@ -111,7 +112,7 @@ public fun mmSha256msg2Epu32(a: M128i, b: M128i): M128i = transmute(sha256msg2(a
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sha256rnds2_epu32)
  */
-public fun mmSha256rnds2Epu32(a: M128i, b: M128i, k: M128i): M128i = transmute(sha256rnds2(a.asI32x4(), b.asI32x4(), k.asI32x4()))
+public fun mmSha256rnds2Epu32(a: M128i, b: M128i, k: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(sha256rnds2(a.asI32x4(), b.asI32x4(), k.asI32x4()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * This intrinsic is one of the two SHA512 message scheduling instructions.
@@ -120,7 +121,7 @@ public fun mmSha256rnds2Epu32(a: M128i, b: M128i, k: M128i): M128i = transmute(s
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_sha512msg1_epi64)
  */
-public fun mm256Sha512msg1Epi64(a: M256i, b: M128i): M256i = transmute(vsha512msg1(a.asI64x4(), b.asI64x2()))
+public fun mm256Sha512msg1Epi64(a: M256i, b: M128i): M256i = transmuteWithLayouts<I64x4, M256i>(vsha512msg1(a.asI64x4(), b.asI64x2()), UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * This intrinsic is one of the two SHA512 message scheduling instructions.
@@ -129,7 +130,7 @@ public fun mm256Sha512msg1Epi64(a: M256i, b: M128i): M256i = transmute(vsha512ms
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_sha512msg2_epi64)
  */
-public fun mm256Sha512msg2Epi64(a: M256i, b: M256i): M256i = transmute(vsha512msg2(a.asI64x4(), b.asI64x4()))
+public fun mm256Sha512msg2Epi64(a: M256i, b: M256i): M256i = transmuteWithLayouts<I64x4, M256i>(vsha512msg2(a.asI64x4(), b.asI64x4()), UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * This intrinsic performs two rounds of SHA512 operation using initial SHA512 state
@@ -141,7 +142,7 @@ public fun mm256Sha512msg2Epi64(a: M256i, b: M256i): M256i = transmute(vsha512ms
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_sha512rnds2_epi64)
  */
-public fun mm256Sha512rnds2Epi64(a: M256i, b: M256i, k: M128i): M256i = transmute(vsha512rnds2(a.asI64x4(), b.asI64x4(), k.asI64x2()))
+public fun mm256Sha512rnds2Epi64(a: M256i, b: M256i, k: M128i): M256i = transmuteWithLayouts<I64x4, M256i>(vsha512rnds2(a.asI64x4(), b.asI64x4(), k.asI64x2()), UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * This is one of the two SM3 message scheduling intrinsics. The intrinsic performs
@@ -150,7 +151,7 @@ public fun mm256Sha512rnds2Epi64(a: M256i, b: M256i, k: M128i): M256i = transmut
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sm3msg1_epi32)
  */
-public fun mmSm3msg1Epi32(a: M128i, b: M128i, c: M128i): M128i = transmute(vsm3msg1(a.asI32x4(), b.asI32x4(), c.asI32x4()))
+public fun mmSm3msg1Epi32(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vsm3msg1(a.asI32x4(), b.asI32x4(), c.asI32x4()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * This is one of the two SM3 message scheduling intrinsics. The intrinsic performs
@@ -159,7 +160,7 @@ public fun mmSm3msg1Epi32(a: M128i, b: M128i, c: M128i): M128i = transmute(vsm3m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sm3msg2_epi32)
  */
-public fun mmSm3msg2Epi32(a: M128i, b: M128i, c: M128i): M128i = transmute(vsm3msg2(a.asI32x4(), b.asI32x4(), c.asI32x4()))
+public fun mmSm3msg2Epi32(a: M128i, b: M128i, c: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vsm3msg2(a.asI32x4(), b.asI32x4(), c.asI32x4()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * The intrinsic performs two rounds of SM3 operation using initial SM3 state `(C, D, G, H)`
@@ -176,7 +177,7 @@ public fun mmSm3rnds2Epi32(a: M128i, b: M128i, c: M128i, imm8: Int): M128i {
     run {
         check(imm8 == (imm8 and 0x3e)) { "IMM8 must be an even number in the range `0..=62`" }
     }
-    return transmute(vsm3rnds2(a.asI32x4(), b.asI32x4(), c.asI32x4(), imm8))
+    return transmuteWithLayouts<I32x4, M128i>(vsm3rnds2(a.asI32x4(), b.asI32x4(), c.asI32x4(), imm8), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 }
 
 /**
@@ -185,7 +186,7 @@ public fun mmSm3rnds2Epi32(a: M128i, b: M128i, c: M128i, imm8: Int): M128i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sm4key4_epi32)
  */
-public fun mmSm4key4Epi32(a: M128i, b: M128i): M128i = transmute(vsm4key4128(a.asI32x4(), b.asI32x4()))
+public fun mmSm4key4Epi32(a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vsm4key4128(a.asI32x4(), b.asI32x4()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * This intrinsic performs four rounds of SM4 key expansion. The intrinsic operates on independent
@@ -193,7 +194,7 @@ public fun mmSm4key4Epi32(a: M128i, b: M128i): M128i = transmute(vsm4key4128(a.a
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_sm4key4_epi32)
  */
-public fun mm256Sm4key4Epi32(a: M256i, b: M256i): M256i = transmute(vsm4key4256(a.asI32x8(), b.asI32x8()))
+public fun mm256Sm4key4Epi32(a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vsm4key4256(a.asI32x8(), b.asI32x8()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * This intrinsic performs four rounds of SM4 encryption. The intrinsic operates on independent
@@ -201,7 +202,7 @@ public fun mm256Sm4key4Epi32(a: M256i, b: M256i): M256i = transmute(vsm4key4256(
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sm4rnds4_epi32)
  */
-public fun mmSm4rnds4Epi32(a: M128i, b: M128i): M128i = transmute(vsm4rnds4128(a.asI32x4(), b.asI32x4()))
+public fun mmSm4rnds4Epi32(a: M128i, b: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vsm4rnds4128(a.asI32x4(), b.asI32x4()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * This intrinsic performs four rounds of SM4 encryption. The intrinsic operates on independent
@@ -209,4 +210,4 @@ public fun mmSm4rnds4Epi32(a: M128i, b: M128i): M128i = transmute(vsm4rnds4128(a
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_sm4rnds4_epi32)
  */
-public fun mm256Sm4rnds4Epi32(a: M256i, b: M256i): M256i = transmute(vsm4rnds4256(a.asI32x8(), b.asI32x8()))
+public fun mm256Sm4rnds4Epi32(a: M256i, b: M256i): M256i = transmuteWithLayouts<I32x8, M256i>(vsm4rnds4256(a.asI32x8(), b.asI32x8()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())

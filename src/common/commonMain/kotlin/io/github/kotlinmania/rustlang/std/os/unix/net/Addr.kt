@@ -1,11 +1,8 @@
 // port-lint: source os/unix/net/addr.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.fuchsia.AF_UNIX
-import io.github.kotlinmania.libc.fuchsia.SockaddrUn
-import io.github.kotlinmania.libc.fuchsia.SocklenT
 import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -13,12 +10,16 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.asMutPtr
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.libc.CChar
+import io.github.kotlinmania.rustlang.libc.CInt
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SockaddrUn
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AF_UNIX
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.net.linuxext.addr.SocketAddrExt
@@ -147,7 +148,7 @@ public open class SocketAddr(
 
     public open fun address(): AddressKind {
         val len = this.len - SUN_PATH_OFFSET
-        val path = transmute(this.addr.sunPath)
+        val path = transmuteWithLayouts<List<CChar>, List<UByte>>(this.addr.sunPath, UnresolvedTypeLayout<List<CChar>>(), UnresolvedTypeLayout<List<UByte>>())
         // macOS seems to return a len of 16 and a zeroed sunPath for unnamed addresses
         return if (len == 0 || (true && this.addr.sunPath[0] == 0.toByte())) {
             AddressKind.Unnamed
@@ -204,7 +205,7 @@ public open class SocketAddr(
                 // on OpenBSD, getsockname(2) returns the actual size of the socket address,
                 // and not the len of the content. Figure out the length for ourselves.
                 // https://marc.info/?l=openbsd-bugs&m=170105481926736&w=2
-                val sunPath: List<UByte> = transmute(addr.sunPath)
+                val sunPath: List<UByte> = transmuteWithLayouts<List<CChar>, List<UByte>>(addr.sunPath, UnresolvedTypeLayout<List<CChar>>(), UnresolvedTypeLayout<List<UByte>>())
                 len1 = (slice.memchr(0, sunPath)?.let({ newLen -> (newLen + SUN_PATH_OFFSET) }) ?: len1)
             }
             len1 = len1.min(sizeOf<SockaddrUn>(typeLayoutT = UnresolvedTypeLayout<SockaddrUn>()).toInt())

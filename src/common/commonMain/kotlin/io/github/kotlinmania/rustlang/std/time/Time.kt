@@ -290,13 +290,15 @@ public open class Instant(
     public open fun add(other: Duration): Instant = (this.checkedAdd(other) ?: error("overflow when adding duration to instant"))
 
     public open fun addAssign(other: Duration) {
-        this = this + other
+        var selfMut = this
+        selfMut = selfMut + other
     }
 
     public open fun sub(other: Duration): Instant = (this.checkedSub(other) ?: error("overflow when subtracting duration from instant"))
 
     public open fun subAssign(other: Duration) {
-        this = this - other
+        var selfMut = this
+        selfMut = selfMut - other
     }
 
     /**
@@ -566,13 +568,15 @@ public open class SystemTime(
     public open fun add(dur: Duration): SystemTime = (this.checkedAdd(dur) ?: error("overflow when adding duration to `SystemTime`"))
 
     public open fun addAssign(other: Duration) {
-        this = this + other
+        var selfMut = this
+        selfMut = selfMut + other
     }
 
     public open fun sub(dur: Duration): SystemTime = (this.checkedSub(dur) ?: error("overflow when subtracting duration from `SystemTime`"))
 
     public open fun subAssign(other: Duration) {
-        this = this - other
+        var selfMut = this
+        selfMut = selfMut - other
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.value.fmt(f)

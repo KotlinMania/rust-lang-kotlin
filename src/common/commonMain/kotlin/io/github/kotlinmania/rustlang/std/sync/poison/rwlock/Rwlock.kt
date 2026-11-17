@@ -157,10 +157,10 @@ public open class RwLock<T>(
     public open fun getCloned(): Result<T, PoisonError<Unit>> =
         run {
             val matchVal = this.read()
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val guard = matchVal.value
                 Result.Ok<T, PoisonError<Unit>>(guard.clone())
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 Result.Err<T, PoisonError<Unit>>(PoisonError.new())
             } }
         }
@@ -196,11 +196,11 @@ public open class RwLock<T>(
         } else {
             run {
                 val matchVal = this.write()
-                when (matchVal) { is Result.Ok -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val guard = matchVal.value
                     guard = value
                     Result.Ok<Unit, PoisonError<T>>(Unit)
-                }; is Result.Err -> {
+                }; is Result.Err<*, *> -> {
                     Result.Err<Unit, PoisonError<T>>(PoisonError.new(value))
                 } }
             }
@@ -231,10 +231,10 @@ public open class RwLock<T>(
     public open fun replace(value: T): LockResult<T> =
         run {
             val matchVal = this.write()
-            when (matchVal) { is Result.Ok -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val guard = matchVal.value
                 Result.Ok(replace(guard, value))
-            }; is Result.Err -> {
+            }; is Result.Err<*, *> -> {
                 Result.Err(PoisonError.new(value))
             } }
         }
@@ -332,7 +332,7 @@ public open class RwLock<T>(
      */
     public open fun tryRead(): TryLockResult<RwLockReadGuard<T>> {
         return if (this.inner.tryRead()) {
-            Result.Ok(when (val tryResult = RwLockReadGuard.new(this)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) })
+            Result.Ok(when (val tryResult = RwLockReadGuard.new(this)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") })
         } else {
             Result.Err(TryLockError.WouldBlock)
         }
@@ -416,7 +416,7 @@ public open class RwLock<T>(
      */
     public open fun tryWrite(): TryLockResult<RwLockWriteGuard<T>> {
         return if (this.inner.tryWrite()) {
-            Result.Ok(when (val tryResult = RwLockWriteGuard.new(this)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) })
+            Result.Ok(when (val tryResult = RwLockWriteGuard.new(this)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") })
         } else {
             Result.Err(TryLockError.WouldBlock)
         }
@@ -555,14 +555,17 @@ public open class RwLock<T>(
         run {
             val matchVal = this.tryRead()
             when {
-                matchVal is Result.Ok -> {
-                    val guard = matchVal.value
+                matchVal is Result.Ok<*, *> -> {
+                    val guard = (matchVal as Result.Ok<*, *>).value
                     d.field("data", guard)
                 }
-                matchVal is Result.Err && matchVal.error is TryLockError.Poisoned -> {
+                matchVal is Result.Err<*, *> && matchVal.error is TryLockError.Poisoned -> {
+                    val errorVal = (matchVal as Result.Err<*, *>).error
+                    val (err) = errorVal as TryLockError.Poisoned
                     d.field("data", err.getRef())
                 }
                 else -> {
+                    val errorVal1 = (matchVal as Result.Err<*, *>).error
                     d.field("data", "<locked>")
                 }
             }

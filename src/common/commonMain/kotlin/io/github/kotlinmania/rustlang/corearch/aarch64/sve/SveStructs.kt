@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmuteUnchecked
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 
 public open class SvboolT(
     public var value: Boolean,
@@ -62,7 +62,7 @@ public open class Svint8T(
 
     public open fun clone(): Svint8T = Svint8T(value)
 
-    public override fun asUnsigned(): Svuint8T = transmuteUnchecked(this)
+    public override fun asUnsigned(): Svuint8T = transmuteWithLayouts<Svint8T, Svuint8T>(this, Svint8T.typeLayout(), Svuint8T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svint8T> =
@@ -98,7 +98,7 @@ public open class Svuint8T(
 
     public open fun clone(): Svuint8T = Svuint8T(value)
 
-    public override fun asSigned(): Svint8T = transmuteUnchecked(this)
+    public override fun asSigned(): Svint8T = transmuteWithLayouts<Svuint8T, Svint8T>(this, Svuint8T.typeLayout(), Svint8T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svuint8T> =
@@ -134,7 +134,7 @@ public open class Svint16T(
 
     public open fun clone(): Svint16T = Svint16T(value)
 
-    public override fun asUnsigned(): Svuint16T = transmuteUnchecked(this)
+    public override fun asUnsigned(): Svuint16T = transmuteWithLayouts<Svint16T, Svuint16T>(this, Svint16T.typeLayout(), Svuint16T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svint16T> =
@@ -170,7 +170,7 @@ public open class Svuint16T(
 
     public open fun clone(): Svuint16T = Svuint16T(value)
 
-    public override fun asSigned(): Svint16T = transmuteUnchecked(this)
+    public override fun asSigned(): Svint16T = transmuteWithLayouts<Svuint16T, Svint16T>(this, Svuint16T.typeLayout(), Svint16T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svuint16T> =
@@ -240,7 +240,7 @@ public open class Svint32T(
 
     public open fun clone(): Svint32T = Svint32T(value)
 
-    public override fun asUnsigned(): Svuint32T = transmuteUnchecked(this)
+    public override fun asUnsigned(): Svuint32T = transmuteWithLayouts<Svint32T, Svuint32T>(this, Svint32T.typeLayout(), Svuint32T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svint32T> =
@@ -276,7 +276,7 @@ public open class Svuint32T(
 
     public open fun clone(): Svuint32T = Svuint32T(value)
 
-    public override fun asSigned(): Svint32T = transmuteUnchecked(this)
+    public override fun asSigned(): Svint32T = transmuteWithLayouts<Svuint32T, Svint32T>(this, Svuint32T.typeLayout(), Svint32T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svuint32T> =
@@ -346,7 +346,7 @@ public open class Svint64T(
 
     public open fun clone(): Svint64T = Svint64T(value)
 
-    public override fun asUnsigned(): Svuint64T = transmuteUnchecked(this)
+    public override fun asUnsigned(): Svuint64T = transmuteWithLayouts<Svint64T, Svuint64T>(this, Svint64T.typeLayout(), Svuint64T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svint64T> =
@@ -382,7 +382,7 @@ public open class Svuint64T(
 
     public open fun clone(): Svuint64T = Svuint64T(value)
 
-    public override fun asSigned(): Svint64T = transmuteUnchecked(this)
+    public override fun asSigned(): Svint64T = transmuteWithLayouts<Svuint64T, Svint64T>(this, Svuint64T.typeLayout(), Svint64T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svuint64T> =
@@ -418,7 +418,7 @@ public open class Nxv2i8(
 
     public open fun clone(): Nxv2i8 = Nxv2i8(value)
 
-    public override fun asUnsigned(): Nxv2u8 = transmuteUnchecked(this)
+    public override fun asUnsigned(): Nxv2u8 = transmuteWithLayouts<Nxv2i8, Nxv2u8>(this, Nxv2i8.typeLayout(), Nxv2u8.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Nxv2i8> =
@@ -454,7 +454,7 @@ public open class Nxv4i8(
 
     public open fun clone(): Nxv4i8 = Nxv4i8(value)
 
-    public override fun asUnsigned(): Nxv4u8 = transmuteUnchecked(this)
+    public override fun asUnsigned(): Nxv4u8 = transmuteWithLayouts<Nxv4i8, Nxv4u8>(this, Nxv4i8.typeLayout(), Nxv4u8.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Nxv4i8> =
@@ -490,7 +490,7 @@ public open class Nxv8i8(
 
     public open fun clone(): Nxv8i8 = Nxv8i8(value)
 
-    public override fun asUnsigned(): Nxv8u8 = transmuteUnchecked(this)
+    public override fun asUnsigned(): Nxv8u8 = transmuteWithLayouts<Nxv8i8, Nxv8u8>(this, Nxv8i8.typeLayout(), Nxv8u8.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Nxv8i8> =
@@ -526,7 +526,7 @@ public open class Nxv2i16(
 
     public open fun clone(): Nxv2i16 = Nxv2i16(value)
 
-    public override fun asUnsigned(): Nxv2u16 = transmuteUnchecked(this)
+    public override fun asUnsigned(): Nxv2u16 = transmuteWithLayouts<Nxv2i16, Nxv2u16>(this, Nxv2i16.typeLayout(), Nxv2u16.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Nxv2i16> =
@@ -562,7 +562,7 @@ public open class Nxv4i16(
 
     public open fun clone(): Nxv4i16 = Nxv4i16(value)
 
-    public override fun asUnsigned(): Nxv4u16 = transmuteUnchecked(this)
+    public override fun asUnsigned(): Nxv4u16 = transmuteWithLayouts<Nxv4i16, Nxv4u16>(this, Nxv4i16.typeLayout(), Nxv4u16.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Nxv4i16> =
@@ -598,7 +598,7 @@ public open class Nxv2i32(
 
     public open fun clone(): Nxv2i32 = Nxv2i32(value)
 
-    public override fun asUnsigned(): Nxv2u32 = transmuteUnchecked(this)
+    public override fun asUnsigned(): Nxv2u32 = transmuteWithLayouts<Nxv2i32, Nxv2u32>(this, Nxv2i32.typeLayout(), Nxv2u32.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Nxv2i32> =
@@ -634,7 +634,7 @@ public open class Nxv2u8(
 
     public open fun clone(): Nxv2u8 = Nxv2u8(value)
 
-    public override fun asSigned(): Nxv2i8 = transmuteUnchecked(this)
+    public override fun asSigned(): Nxv2i8 = transmuteWithLayouts<Nxv2u8, Nxv2i8>(this, Nxv2u8.typeLayout(), Nxv2i8.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Nxv2u8> =
@@ -670,7 +670,7 @@ public open class Nxv4u8(
 
     public open fun clone(): Nxv4u8 = Nxv4u8(value)
 
-    public override fun asSigned(): Nxv4i8 = transmuteUnchecked(this)
+    public override fun asSigned(): Nxv4i8 = transmuteWithLayouts<Nxv4u8, Nxv4i8>(this, Nxv4u8.typeLayout(), Nxv4i8.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Nxv4u8> =
@@ -706,7 +706,7 @@ public open class Nxv8u8(
 
     public open fun clone(): Nxv8u8 = Nxv8u8(value)
 
-    public override fun asSigned(): Nxv8i8 = transmuteUnchecked(this)
+    public override fun asSigned(): Nxv8i8 = transmuteWithLayouts<Nxv8u8, Nxv8i8>(this, Nxv8u8.typeLayout(), Nxv8i8.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Nxv8u8> =
@@ -742,7 +742,7 @@ public open class Nxv2u16(
 
     public open fun clone(): Nxv2u16 = Nxv2u16(value)
 
-    public override fun asSigned(): Nxv2i16 = transmuteUnchecked(this)
+    public override fun asSigned(): Nxv2i16 = transmuteWithLayouts<Nxv2u16, Nxv2i16>(this, Nxv2u16.typeLayout(), Nxv2i16.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Nxv2u16> =
@@ -778,7 +778,7 @@ public open class Nxv4u16(
 
     public open fun clone(): Nxv4u16 = Nxv4u16(value)
 
-    public override fun asSigned(): Nxv4i16 = transmuteUnchecked(this)
+    public override fun asSigned(): Nxv4i16 = transmuteWithLayouts<Nxv4u16, Nxv4i16>(this, Nxv4u16.typeLayout(), Nxv4i16.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Nxv4u16> =
@@ -814,7 +814,7 @@ public open class Nxv2u32(
 
     public open fun clone(): Nxv2u32 = Nxv2u32(value)
 
-    public override fun asSigned(): Nxv2i32 = transmuteUnchecked(this)
+    public override fun asSigned(): Nxv2i32 = transmuteWithLayouts<Nxv2u32, Nxv2i32>(this, Nxv2u32.typeLayout(), Nxv2i32.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Nxv2u32> =
@@ -845,7 +845,7 @@ public open class Svint8x2T(
 ) : AsUnsigned<Svuint8x2T> {
     public open fun clone(): Svint8x2T = Svint8x2T(field0, field1)
 
-    public override fun asUnsigned(): Svuint8x2T = transmuteUnchecked(this)
+    public override fun asUnsigned(): Svuint8x2T = transmuteWithLayouts<Svint8x2T, Svuint8x2T>(this, Svint8x2T.typeLayout(), Svuint8x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svint8x2T> =
@@ -880,7 +880,7 @@ public open class Svuint8x2T(
 ) : AsSigned<Svint8x2T> {
     public open fun clone(): Svuint8x2T = Svuint8x2T(field0, field1)
 
-    public override fun asSigned(): Svint8x2T = transmuteUnchecked(this)
+    public override fun asSigned(): Svint8x2T = transmuteWithLayouts<Svuint8x2T, Svint8x2T>(this, Svuint8x2T.typeLayout(), Svint8x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svuint8x2T> =
@@ -915,7 +915,7 @@ public open class Svint16x2T(
 ) : AsUnsigned<Svuint16x2T> {
     public open fun clone(): Svint16x2T = Svint16x2T(field0, field1)
 
-    public override fun asUnsigned(): Svuint16x2T = transmuteUnchecked(this)
+    public override fun asUnsigned(): Svuint16x2T = transmuteWithLayouts<Svint16x2T, Svuint16x2T>(this, Svint16x2T.typeLayout(), Svuint16x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svint16x2T> =
@@ -950,7 +950,7 @@ public open class Svuint16x2T(
 ) : AsSigned<Svint16x2T> {
     public open fun clone(): Svuint16x2T = Svuint16x2T(field0, field1)
 
-    public override fun asSigned(): Svint16x2T = transmuteUnchecked(this)
+    public override fun asSigned(): Svint16x2T = transmuteWithLayouts<Svuint16x2T, Svint16x2T>(this, Svuint16x2T.typeLayout(), Svint16x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svuint16x2T> =
@@ -1018,7 +1018,7 @@ public open class Svint32x2T(
 ) : AsUnsigned<Svuint32x2T> {
     public open fun clone(): Svint32x2T = Svint32x2T(field0, field1)
 
-    public override fun asUnsigned(): Svuint32x2T = transmuteUnchecked(this)
+    public override fun asUnsigned(): Svuint32x2T = transmuteWithLayouts<Svint32x2T, Svuint32x2T>(this, Svint32x2T.typeLayout(), Svuint32x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svint32x2T> =
@@ -1053,7 +1053,7 @@ public open class Svuint32x2T(
 ) : AsSigned<Svint32x2T> {
     public open fun clone(): Svuint32x2T = Svuint32x2T(field0, field1)
 
-    public override fun asSigned(): Svint32x2T = transmuteUnchecked(this)
+    public override fun asSigned(): Svint32x2T = transmuteWithLayouts<Svuint32x2T, Svint32x2T>(this, Svuint32x2T.typeLayout(), Svint32x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svuint32x2T> =
@@ -1121,7 +1121,7 @@ public open class Svint64x2T(
 ) : AsUnsigned<Svuint64x2T> {
     public open fun clone(): Svint64x2T = Svint64x2T(field0, field1)
 
-    public override fun asUnsigned(): Svuint64x2T = transmuteUnchecked(this)
+    public override fun asUnsigned(): Svuint64x2T = transmuteWithLayouts<Svint64x2T, Svuint64x2T>(this, Svint64x2T.typeLayout(), Svuint64x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svint64x2T> =
@@ -1156,7 +1156,7 @@ public open class Svuint64x2T(
 ) : AsSigned<Svint64x2T> {
     public open fun clone(): Svuint64x2T = Svuint64x2T(field0, field1)
 
-    public override fun asSigned(): Svint64x2T = transmuteUnchecked(this)
+    public override fun asSigned(): Svint64x2T = transmuteWithLayouts<Svuint64x2T, Svint64x2T>(this, Svuint64x2T.typeLayout(), Svint64x2T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svuint64x2T> =
@@ -1192,7 +1192,7 @@ public open class Svint8x3T(
 ) : AsUnsigned<Svuint8x3T> {
     public open fun clone(): Svint8x3T = Svint8x3T(field0, field1, field2)
 
-    public override fun asUnsigned(): Svuint8x3T = transmuteUnchecked(this)
+    public override fun asUnsigned(): Svuint8x3T = transmuteWithLayouts<Svint8x3T, Svuint8x3T>(this, Svint8x3T.typeLayout(), Svuint8x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svint8x3T> =
@@ -1232,7 +1232,7 @@ public open class Svuint8x3T(
 ) : AsSigned<Svint8x3T> {
     public open fun clone(): Svuint8x3T = Svuint8x3T(field0, field1, field2)
 
-    public override fun asSigned(): Svint8x3T = transmuteUnchecked(this)
+    public override fun asSigned(): Svint8x3T = transmuteWithLayouts<Svuint8x3T, Svint8x3T>(this, Svuint8x3T.typeLayout(), Svint8x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svuint8x3T> =
@@ -1272,7 +1272,7 @@ public open class Svint16x3T(
 ) : AsUnsigned<Svuint16x3T> {
     public open fun clone(): Svint16x3T = Svint16x3T(field0, field1, field2)
 
-    public override fun asUnsigned(): Svuint16x3T = transmuteUnchecked(this)
+    public override fun asUnsigned(): Svuint16x3T = transmuteWithLayouts<Svint16x3T, Svuint16x3T>(this, Svint16x3T.typeLayout(), Svuint16x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svint16x3T> =
@@ -1312,7 +1312,7 @@ public open class Svuint16x3T(
 ) : AsSigned<Svint16x3T> {
     public open fun clone(): Svuint16x3T = Svuint16x3T(field0, field1, field2)
 
-    public override fun asSigned(): Svint16x3T = transmuteUnchecked(this)
+    public override fun asSigned(): Svint16x3T = transmuteWithLayouts<Svuint16x3T, Svint16x3T>(this, Svuint16x3T.typeLayout(), Svint16x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svuint16x3T> =
@@ -1390,7 +1390,7 @@ public open class Svint32x3T(
 ) : AsUnsigned<Svuint32x3T> {
     public open fun clone(): Svint32x3T = Svint32x3T(field0, field1, field2)
 
-    public override fun asUnsigned(): Svuint32x3T = transmuteUnchecked(this)
+    public override fun asUnsigned(): Svuint32x3T = transmuteWithLayouts<Svint32x3T, Svuint32x3T>(this, Svint32x3T.typeLayout(), Svuint32x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svint32x3T> =
@@ -1430,7 +1430,7 @@ public open class Svuint32x3T(
 ) : AsSigned<Svint32x3T> {
     public open fun clone(): Svuint32x3T = Svuint32x3T(field0, field1, field2)
 
-    public override fun asSigned(): Svint32x3T = transmuteUnchecked(this)
+    public override fun asSigned(): Svint32x3T = transmuteWithLayouts<Svuint32x3T, Svint32x3T>(this, Svuint32x3T.typeLayout(), Svint32x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svuint32x3T> =
@@ -1508,7 +1508,7 @@ public open class Svint64x3T(
 ) : AsUnsigned<Svuint64x3T> {
     public open fun clone(): Svint64x3T = Svint64x3T(field0, field1, field2)
 
-    public override fun asUnsigned(): Svuint64x3T = transmuteUnchecked(this)
+    public override fun asUnsigned(): Svuint64x3T = transmuteWithLayouts<Svint64x3T, Svuint64x3T>(this, Svint64x3T.typeLayout(), Svuint64x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svint64x3T> =
@@ -1548,7 +1548,7 @@ public open class Svuint64x3T(
 ) : AsSigned<Svint64x3T> {
     public open fun clone(): Svuint64x3T = Svuint64x3T(field0, field1, field2)
 
-    public override fun asSigned(): Svint64x3T = transmuteUnchecked(this)
+    public override fun asSigned(): Svint64x3T = transmuteWithLayouts<Svuint64x3T, Svint64x3T>(this, Svuint64x3T.typeLayout(), Svint64x3T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svuint64x3T> =
@@ -1589,7 +1589,7 @@ public open class Svint8x4T(
 ) : AsUnsigned<Svuint8x4T> {
     public open fun clone(): Svint8x4T = Svint8x4T(field0, field1, field2, field3)
 
-    public override fun asUnsigned(): Svuint8x4T = transmuteUnchecked(this)
+    public override fun asUnsigned(): Svuint8x4T = transmuteWithLayouts<Svint8x4T, Svuint8x4T>(this, Svint8x4T.typeLayout(), Svuint8x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svint8x4T> =
@@ -1634,7 +1634,7 @@ public open class Svuint8x4T(
 ) : AsSigned<Svint8x4T> {
     public open fun clone(): Svuint8x4T = Svuint8x4T(field0, field1, field2, field3)
 
-    public override fun asSigned(): Svint8x4T = transmuteUnchecked(this)
+    public override fun asSigned(): Svint8x4T = transmuteWithLayouts<Svuint8x4T, Svint8x4T>(this, Svuint8x4T.typeLayout(), Svint8x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svuint8x4T> =
@@ -1679,7 +1679,7 @@ public open class Svint16x4T(
 ) : AsUnsigned<Svuint16x4T> {
     public open fun clone(): Svint16x4T = Svint16x4T(field0, field1, field2, field3)
 
-    public override fun asUnsigned(): Svuint16x4T = transmuteUnchecked(this)
+    public override fun asUnsigned(): Svuint16x4T = transmuteWithLayouts<Svint16x4T, Svuint16x4T>(this, Svint16x4T.typeLayout(), Svuint16x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svint16x4T> =
@@ -1724,7 +1724,7 @@ public open class Svuint16x4T(
 ) : AsSigned<Svint16x4T> {
     public open fun clone(): Svuint16x4T = Svuint16x4T(field0, field1, field2, field3)
 
-    public override fun asSigned(): Svint16x4T = transmuteUnchecked(this)
+    public override fun asSigned(): Svint16x4T = transmuteWithLayouts<Svuint16x4T, Svint16x4T>(this, Svuint16x4T.typeLayout(), Svint16x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svuint16x4T> =
@@ -1812,7 +1812,7 @@ public open class Svint32x4T(
 ) : AsUnsigned<Svuint32x4T> {
     public open fun clone(): Svint32x4T = Svint32x4T(field0, field1, field2, field3)
 
-    public override fun asUnsigned(): Svuint32x4T = transmuteUnchecked(this)
+    public override fun asUnsigned(): Svuint32x4T = transmuteWithLayouts<Svint32x4T, Svuint32x4T>(this, Svint32x4T.typeLayout(), Svuint32x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svint32x4T> =
@@ -1857,7 +1857,7 @@ public open class Svuint32x4T(
 ) : AsSigned<Svint32x4T> {
     public open fun clone(): Svuint32x4T = Svuint32x4T(field0, field1, field2, field3)
 
-    public override fun asSigned(): Svint32x4T = transmuteUnchecked(this)
+    public override fun asSigned(): Svint32x4T = transmuteWithLayouts<Svuint32x4T, Svint32x4T>(this, Svuint32x4T.typeLayout(), Svint32x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svuint32x4T> =
@@ -1945,7 +1945,7 @@ public open class Svint64x4T(
 ) : AsUnsigned<Svuint64x4T> {
     public open fun clone(): Svint64x4T = Svint64x4T(field0, field1, field2, field3)
 
-    public override fun asUnsigned(): Svuint64x4T = transmuteUnchecked(this)
+    public override fun asUnsigned(): Svuint64x4T = transmuteWithLayouts<Svint64x4T, Svuint64x4T>(this, Svint64x4T.typeLayout(), Svuint64x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svint64x4T> =
@@ -1990,7 +1990,7 @@ public open class Svuint64x4T(
 ) : AsSigned<Svint64x4T> {
     public open fun clone(): Svuint64x4T = Svuint64x4T(field0, field1, field2, field3)
 
-    public override fun asSigned(): Svint64x4T = transmuteUnchecked(this)
+    public override fun asSigned(): Svint64x4T = transmuteWithLayouts<Svuint64x4T, Svint64x4T>(this, Svuint64x4T.typeLayout(), Svint64x4T.typeLayout())
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svuint64x4T> =

@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.error.Error
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -33,7 +34,6 @@ import io.github.kotlinmania.rustlang.std.fs.ReadDir
 import io.github.kotlinmania.rustlang.std.fs.exists
 import io.github.kotlinmania.rustlang.std.fs.metadata
 import io.github.kotlinmania.rustlang.std.fs.symlinkMetadata
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.Prefix.*
 import io.github.kotlinmania.rustlang.std.rc.Rc

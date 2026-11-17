@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.path.Prefix
+import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 
 public fun isVerbatimSep(b: UByte): Boolean = isSepByte(b)
 
@@ -39,7 +40,7 @@ public fun absolute(path: Path): Result<PathBuf, Error> {
                 PathBuf.new()
             }
         } else {
-            when (val tryResult = env.currentDir()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<PathBuf, Error>(tryResult.error) }
+            when (val tryResult = Env.currentDir()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<PathBuf, Error>(tryResult.error) }
         }
     normalized.extend(components)
     // "Interfaces using pathname resolution may specify additional constraints

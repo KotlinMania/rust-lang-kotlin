@@ -3,11 +3,11 @@ package io.github.kotlinmania.rustlang.std.hash.random
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.hash.BuildHasher
+import io.github.kotlinmania.rustlang.core.hash.sip.SipHasher13
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.hash.BuildHasher
-import io.github.kotlinmania.rustlang.std.hash.SipHasher13
 import io.github.kotlinmania.rustlang.std.sys.random.hashmapRandomKeys
 import io.github.kotlinmania.rustlang.std.thread.LocalKey
 import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner

@@ -48,7 +48,7 @@ public open class Chain<A, B>(
     public open fun clone(): Chain<A, B> = Chain(a, b)
 
     public override fun next(): Item? {
-        return (andThenOrClear(this.a, Iterator::next) ?: closure@{ when (val tryResult = this.b) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }.next() }())
+        return (andThenOrClear(this.a, Iterator::next) ?: closure@{ when (val tryResult = this.b) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }.next() }())
     }
 
     public override fun count(): Int {
@@ -168,7 +168,7 @@ public open class Chain<A, B>(
     }
 
     public override fun find(predicate: (Item) -> Boolean): Item? {
-        return (andThenOrClear(this.a, { a -> a.indexOf(predicate).takeIf { it >= 0 } }) ?: closure1@{ when (val tryResult = this.b) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }.indexOf(predicate).takeIf { it >= 0 } }())
+        return (andThenOrClear(this.a, { a -> a.indexOf(predicate).takeIf { it >= 0 } }) ?: closure1@{ when (val tryResult = this.b) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }.indexOf(predicate).takeIf { it >= 0 } }())
     }
 
     public override fun last(): Item? {
@@ -212,7 +212,7 @@ public open class Chain<A, B>(
         }
 
     public open fun nextBack(): Item? {
-        return (andThenOrClear(this.b, { b -> b.nextBack() }) ?: closure2@{ when (val tryResult = this.a) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure2 Result.Err(tryResult.error) }.nextBack() }())
+        return (andThenOrClear(this.b, { b -> b.nextBack() }) ?: closure2@{ when (val tryResult = this.a) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }.nextBack() }())
     }
 
     public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
@@ -272,7 +272,7 @@ public open class Chain<A, B>(
     }
 
     public open fun rfind(predicate: (Item) -> Boolean): Item? {
-        return (andThenOrClear(this.b, { b -> b.rfind(predicate) }) ?: closure3@{ when (val tryResult = this.a) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err(tryResult.error) }.rfind(predicate) }())
+        return (andThenOrClear(this.b, { b -> b.rfind(predicate) }) ?: closure3@{ when (val tryResult = this.a) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }.rfind(predicate) }())
     }
 
     public open fun <Residual, Acc, R> tryRfold(acc: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
@@ -340,7 +340,7 @@ public open class Chain<A, B>(
          * val unused: Chain = take(foo.first)
          * ```
          */
-        public fun <A, B> default(): Chain<A, B> = Chain.new(Default.default(), Default.default())
+        public fun <A, B> default(): Chain<A, B> = Chain.new(Chain.default(), Chain.default())
     }
 }
 

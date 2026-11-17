@@ -7,7 +7,6 @@ import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -74,7 +73,7 @@ public open class F16b internal constructor(
      */
     public open fun toBits(): UShort {
         // SAFETY: `f16b` and `UShort` have the same size, and every bit pattern is valid.
-        return transmute(this)
+        return transmuteWithLayouts<F16b, UShort>(this, UnresolvedTypeLayout<F16b>(), PrimitiveLayouts.U16)
     }
 
     public open fun clone(): F16b = F16b(this.value)
@@ -137,7 +136,7 @@ public open class F16b internal constructor(
          */
         public fun fromBits(bits: UShort): F16b {
             // SAFETY: `f16b` and `UShort` have the same size, and every bit pattern is valid.
-            return transmuteWithLayouts(bits, PrimitiveLayouts.U16, TransparentTypeLayout(PrimitiveLayouts.U16, { ptr, layout -> F16b(ptr, layout) }, { it.value }))
+            return transmuteWithLayouts<UShort, F16b>(bits, PrimitiveLayouts.U16, TransparentTypeLayout(PrimitiveLayouts.U16, { ptr, layout -> F16b(ptr, layout) }, { it.value }))
         }
 
         public fun default(): F16b = F16b.fromBits(0u)

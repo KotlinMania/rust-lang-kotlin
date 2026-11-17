@@ -268,7 +268,7 @@ public class V0InlineTests {
     public fun demanglingLimits() {
         // Stress tests found via fuzzing.
         for (sym in includeStr("v0-large-test-symbols/early-recursion-limit").lines().filter({ line -> !line.isEmpty() && !line.startsWith('#') })) {
-            check((io.github.kotlinmania.rustlang.rustcdemangle.demangle(sym).map({ Unit })).rustEquals(Result.Err(ParseError.RecursedTooDeep)))
+            check((io.github.kotlinmania.rustlang.rustcdemangle.demangle(sym).map({ Unit })).rustEquals(Result.Err(io.github.kotlinmania.rustlang.alloc.string.ParseError.RecursedTooDeep)))
         }
         assertContains(demangle("RIC20tRYIMYNRYFG05_EB5_B_B6_RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRB_E").toString(), "{recursion limit reached}")
     }

@@ -1,7 +1,6 @@
 // port-lint: source detect/os/linux/auxvec.rs
 package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec
 
-import io.github.kotlinmania.libc.CUlong
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -11,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.chunks
+import io.github.kotlinmania.rustlang.libc.CUlong
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.readFile
 
 // Parses ELF auxiliary vectors.
@@ -170,7 +170,7 @@ public fun auxvFromFileBytes(bytes: List<UByte>): Result<AuxVec, String> {
     val len = bytes.size
     val buf = mutableListOf(0, 1 + len / sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64))
     run {
-        copyNonoverlapping(bytes.asPtr(), mutPtrFromRustCast(buf.asMutPtr()), len)
+        copyNonoverlapping(bytes.asPtr(), mutPtrFromRustCast(buf.asMutPtr()), len, typeLayoutT = PrimitiveLayouts.U8)
     }
     return auxvFromBuf(buf)
 }

@@ -1,8 +1,8 @@
 // port-lint: source os/unix/process.rs
 package io.github.kotlinmania.rustlang.std.os.unix.process
 
-import io.github.kotlinmania.libc.fuchsia.SIGKILL
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGKILL
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
@@ -153,7 +153,7 @@ public interface CommandExt {
      * required to gracefully handle errors it is recommended to use the
      * cross-platform `spawn` instead.
      */
-    public fun exec(): io.github.kotlinmania.rustlang.std.io.Error
+    public fun exec(): io.github.kotlinmania.rustlang.core.io.error.Error
 
     /**
      * Set executable argument
@@ -259,7 +259,7 @@ public fun Command.preExec(f: () -> Result<Unit, Error>): Command {
     return this
 }
 
-public fun Command.exec(): io.github.kotlinmania.rustlang.std.io.Error {
+public fun Command.exec(): io.github.kotlinmania.rustlang.core.io.error.Error {
     // NOTE: This may *not* be safe to call after `libc.fork`, because it
     // may allocate. That may be worth fixing at some point in the future.
     return this.asInnerMut().exec(Stdio.Inherit)

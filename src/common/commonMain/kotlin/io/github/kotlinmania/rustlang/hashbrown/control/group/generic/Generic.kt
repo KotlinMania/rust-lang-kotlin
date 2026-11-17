@@ -6,6 +6,7 @@ package io.github.kotlinmania.rustlang.hashbrown.control.group.generic
 import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -67,7 +68,7 @@ public open class Group(
     public open fun storeAligned(ptr: MutPtr) {
         check(ptr.alignOffset(alignOf<Group>(typeLayoutT = Group.typeLayout())) == 0)
         run {
-            write(ptr, this.value)
+            write(ptr, this.value, typeLayoutT = UnresolvedTypeLayout<Tag>())
         }
     }
 
@@ -177,7 +178,7 @@ public open class Group(
         /**
          * Loads a group of tags starting at the given address.
          */
-        public fun load(ptr: ConstPtr): Group = Group(readUnaligned(ptr))
+        public fun load(ptr: ConstPtr): Group = Group(readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<Tag>()))
 
         /**
          * Loads a group of tags starting at the given address, which must be
@@ -185,7 +186,7 @@ public open class Group(
          */
         public fun loadAligned(ptr: ConstPtr): Group {
             check(ptr.alignOffset(alignOf<Group>(typeLayoutT = Group.typeLayout())) == 0)
-            return Group(read(ptr))
+            return Group(read(ptr, typeLayoutT = UnresolvedTypeLayout<Tag>()))
         }
     }
 }

@@ -520,20 +520,21 @@ public fun <K, V> Handle<NodeRef<Immut, K, V, Leaf>, Edge>.nextBackUnchecked(): 
  *   live mutable reference
  */
 public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.BorrowType, K, V, R> Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>.performNextUnchecked(f: (Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>) -> R): R {
-    val idx = this.idx()
-    val len = this.reborrow().intoNode().len()
+    var selfMut = this
+    val idx = selfMut.idx()
+    val len = selfMut.reborrow().intoNode().len()
     // The fast path when the next KV is still in the same node
     return if (idx < len) {
         // SAFETY: `self` will be immediately replaced below
-        val node = read(this).intoNode()
+        val node = read(selfMut).intoNode()
         // SAFETY: `idx + 1 <= node.len()`. The copy of `node` is only used
         // to form the next edge; `node` is consumed below to access the current KV.
-        this = Handle.newEdge(read(node), idx + 1)
+        selfMut = Handle.newEdge(read(node), idx + 1)
         // SAFETY: `idx<node.len()`.
         f(Handle.newKv(node, idx).forgetNodeType())
     } else {
         val kv =
-            replace(this, { leafEdge ->
+            replace(selfMut, { leafEdge ->
                 val kv = leafEdge.nextKv().ok()!!
                 // SAFETY: The copy of `kv` is only used to form the next edge
                 Pair(read(kv).nextLeafEdge(), kv)
@@ -549,19 +550,20 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
  *   live mutable reference
  */
 public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.BorrowType, K, V, R> Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>.performNextBackUnchecked(f: (Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>) -> R): R {
-    val idx = this.idx()
+    var selfMut = this
+    val idx = selfMut.idx()
     // The fast path when the next KV is still in the same node
     return if (idx > 0) {
         // SAFETY: `self` will be replaced below
-        val node = read(this).intoNode()
+        val node = read(selfMut).intoNode()
         // SAFETY: `0 <= idx - 1<node.len()`. The copy of `node` is only used
         // to form the next edge; `node` is consumed below to access the current KV.
-        this = Handle.newEdge(read(node), idx - 1)
+        selfMut = Handle.newEdge(read(node), idx - 1)
         // SAFETY: `0 <= idx - 1<node.len()`
         f(Handle.newKv(node, idx - 1).forgetNodeType())
     } else {
         val kv =
-            replace(this, { leafEdge ->
+            replace(selfMut, { leafEdge ->
                 val kv = leafEdge.nextBackKv().ok()!!
                 // SAFETY: The copy of `kv` is only used to form the next edge
                 Pair(read(kv).nextBackLeafEdge(), kv)

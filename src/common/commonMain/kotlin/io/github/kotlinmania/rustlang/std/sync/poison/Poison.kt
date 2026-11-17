@@ -343,9 +343,13 @@ public typealias TryLockResult<Guard> = Result<Guard, TryLockError<Guard>>
 
 public fun <T, U> mapResult(result: LockResult<T>, f: (T) -> U): LockResult<U> =
     when {
-        result is Result.Ok -> {
-            val t = result.value
+        result is Result.Ok<*, *> -> {
+            val t = (result as Result.Ok<*, *>).value
             Result.Ok(f(t))
         }
-        else -> Result.Err(PoisonError.new(f(data)))
+        else -> {
+            val errorVal = (result as Result.Err<*, *>).error
+            val data = errorVal.data
+            Result.Err(PoisonError.new(f(data)))
+        }
     }

@@ -1,7 +1,8 @@
 // port-lint: source powerpc64/vsx.rs
 package io.github.kotlinmania.rustlang.corearch.powerpc64
 
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorSignedInt
@@ -24,19 +25,19 @@ public interface VectorXloads<out Result> {
     public fun vecXlLen(l: Int): Result
 }
 
-public fun ConstPtr.vecXlLen(l: Int): TTL = transmute(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l))
+public fun ConstPtr.vecXlLen(l: Int): TTL = transmuteWithLayouts<VectorSignedInt, TTL>(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TTL>())
 
-public fun ConstPtr.vecXlLenFromConstPtrUByte(l: Int): TTL = transmute(vecLxvl(this, l))
+public fun ConstPtr.vecXlLenFromConstPtrUByte(l: Int): TTL = transmuteWithLayouts<VectorSignedInt, TTL>(vecLxvl(this, l), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TTL>())
 
-public fun ConstPtr.vecXlLenFromConstPtrShort(l: Int): TTL = transmute(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l))
+public fun ConstPtr.vecXlLenFromConstPtrShort(l: Int): TTL = transmuteWithLayouts<VectorSignedInt, TTL>(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TTL>())
 
-public fun ConstPtr.vecXlLenFromConstPtrUShort(l: Int): TTL = transmute(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l))
+public fun ConstPtr.vecXlLenFromConstPtrUShort(l: Int): TTL = transmuteWithLayouts<VectorSignedInt, TTL>(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TTL>())
 
-public fun ConstPtr.vecXlLenFromConstPtrInt(l: Int): TTL = transmute(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l))
+public fun ConstPtr.vecXlLenFromConstPtrInt(l: Int): TTL = transmuteWithLayouts<VectorSignedInt, TTL>(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TTL>())
 
-public fun ConstPtr.vecXlLenFromConstPtrUInt(l: Int): TTL = transmute(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l))
+public fun ConstPtr.vecXlLenFromConstPtrUInt(l: Int): TTL = transmuteWithLayouts<VectorSignedInt, TTL>(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TTL>())
 
-public fun ConstPtr.vecXlLenFromConstPtrFloat(l: Int): TTL = transmute(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l))
+public fun ConstPtr.vecXlLenFromConstPtrFloat(l: Int): TTL = transmuteWithLayouts<VectorSignedInt, TTL>(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TTL>())
 
 public fun vecStxvl(v: VectorSignedInt, a: MutPtr, l: ULong) {
     stxvl(v, a, l shl 56)
@@ -47,7 +48,7 @@ public interface VectorXstores<Out> {
 }
 
 public fun TTL.vecXstLen(a: MutPtr, l: ULong) {
-    stxvl(transmute(this), MutPtr(a.rawAddress, a.rawMeta), l)
+    stxvl(transmuteWithLayouts<TTL, Unit>(this, UnresolvedTypeLayout<TTL>(), UnresolvedTypeLayout<Unit>()), MutPtr(a.rawAddress, a.rawMeta), l)
 }
 
 /**

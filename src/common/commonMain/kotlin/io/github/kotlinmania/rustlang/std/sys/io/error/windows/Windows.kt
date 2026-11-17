@@ -4,12 +4,12 @@
 package io.github.kotlinmania.rustlang.std.sys.io.error.windows
 
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.WouldBlock
 import io.github.kotlinmania.rustlang.std.sys.pal.api
 import io.github.kotlinmania.rustlang.std.sys.pal.c

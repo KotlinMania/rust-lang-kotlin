@@ -6,6 +6,7 @@ package io.github.kotlinmania.rustlang.corearch.powerpc
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmute
@@ -30,7 +31,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
  * PowerPC-specific 128-bit wide vector of two packed `Long`
  */
 public open class VectorSignedLong(
-    public var value: LongArray,
+    public var value: LongArray = LongArray(2),
 ) {
     public var field0: LongArray
         get() = value
@@ -78,17 +79,17 @@ public open class VectorSignedLong(
          */
         public fun splat(value: Long): VectorSignedLong = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): VectorSignedLong = transmute(simd)
+        public fun from(simd: Simd<Long>): VectorSignedLong = transmuteWithLayouts<Simd<Long>, VectorSignedLong>(simd, UnresolvedTypeLayout<Simd<Long>>(), VectorSignedLong.typeLayout())
     }
 }
 
-public fun fromSimdLong(simd: VectorSignedLong): Simd<Long> = transmute(simd)
+public fun fromSimdLong(simd: VectorSignedLong): Simd<Long> = transmuteWithLayouts<VectorSignedLong, Simd<Long>>(simd, VectorSignedLong.typeLayout(), UnresolvedTypeLayout<Simd<Long>>())
 
 /**
  * PowerPC-specific 128-bit wide vector of two packed `ULong`
  */
 public open class VectorUnsignedLong(
-    public var value: ULongArray,
+    public var value: ULongArray = ULongArray(2),
 ) {
     public var field0: ULongArray
         get() = value
@@ -136,17 +137,17 @@ public open class VectorUnsignedLong(
          */
         public fun splat(value: ULong): VectorUnsignedLong = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<ULong>): VectorUnsignedLong = transmute(simd)
+        public fun from(simd: Simd<ULong>): VectorUnsignedLong = transmuteWithLayouts<Simd<ULong>, VectorUnsignedLong>(simd, UnresolvedTypeLayout<Simd<ULong>>(), VectorUnsignedLong.typeLayout())
     }
 }
 
-public fun fromSimdULong(simd: VectorUnsignedLong): Simd<ULong> = transmute(simd)
+public fun fromSimdULong(simd: VectorUnsignedLong): Simd<ULong> = transmuteWithLayouts<VectorUnsignedLong, Simd<ULong>>(simd, VectorUnsignedLong.typeLayout(), UnresolvedTypeLayout<Simd<ULong>>())
 
 /**
  * PowerPC-specific 128-bit wide vector mask of two `Long`
  */
 public open class VectorBoolLong(
-    public var value: LongArray,
+    public var value: LongArray = LongArray(2),
 ) {
     public var field0: LongArray
         get() = value
@@ -194,19 +195,19 @@ public open class VectorBoolLong(
          */
         public fun splat(value: Long): VectorBoolLong = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): VectorBoolLong = transmute(simd)
+        public fun from(simd: Simd<Long>): VectorBoolLong = transmuteWithLayouts<Simd<Long>, VectorBoolLong>(simd, UnresolvedTypeLayout<Simd<Long>>(), VectorBoolLong.typeLayout())
 
-        public fun from(value: M64x2): VectorBoolLong = transmute(value)
+        public fun from(value: M64x2): VectorBoolLong = transmuteWithLayouts<M64x2, VectorBoolLong>(value, UnresolvedTypeLayout<M64x2>(), VectorBoolLong.typeLayout())
     }
 }
 
-public fun fromSimdLong(simd: VectorBoolLong): Simd<Long> = transmute(simd)
+public fun fromSimdLong(simd: VectorBoolLong): Simd<Long> = transmuteWithLayouts<VectorBoolLong, Simd<Long>>(simd, VectorBoolLong.typeLayout(), UnresolvedTypeLayout<Simd<Long>>())
 
 /**
  * PowerPC-specific 128-bit wide vector of two packed `Double`
  */
 public open class VectorDouble(
-    public var value: DoubleArray,
+    public var value: DoubleArray = DoubleArray(2),
 ) {
     public var field0: DoubleArray
         get() = value
@@ -254,13 +255,13 @@ public open class VectorDouble(
          */
         public fun splat(value: Double): VectorDouble = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): VectorDouble = transmute(simd)
+        public fun from(simd: Simd<Double>): VectorDouble = transmuteWithLayouts<Simd<Double>, VectorDouble>(simd, UnresolvedTypeLayout<Simd<Double>>(), VectorDouble.typeLayout())
     }
 }
 
-public fun fromSimdDouble(simd: VectorDouble): Simd<Double> = transmute(simd)
+public fun fromSimdDouble(simd: VectorDouble): Simd<Double> = transmuteWithLayouts<VectorDouble, Simd<Double>>(simd, VectorDouble.typeLayout(), UnresolvedTypeLayout<Simd<Double>>())
 
-public fun fromM64x2(value: VectorBoolLong): M64x2 = transmute(value)
+public fun fromM64x2(value: VectorBoolLong): M64x2 = transmuteWithLayouts<VectorBoolLong, M64x2>(value, VectorBoolLong.typeLayout(), UnresolvedTypeLayout<M64x2>())
 
 public expect fun vperm(a: VectorSignedInt, b: VectorSignedInt, c: VectorUnsignedChar): VectorSignedInt
 
@@ -270,8 +271,8 @@ public interface VectorPermDI<T> {
 
 // xxpermdi has an big-endian bias and extended mnemonics
 public fun xxpermdi(a: VectorSignedLong, b: VectorSignedLong, dm: UByte): VectorSignedLong {
-    val a1: I64x2 = transmuteWithLayouts(a, VectorSignedLong.typeLayout(), VectorSignedLong.typeLayout())
-    val b1: I64x2 = transmuteWithLayouts(b, VectorSignedLong.typeLayout(), VectorSignedLong.typeLayout())
+    val a1: I64x2 = transmuteWithLayouts<VectorSignedLong, I64x2>(a, VectorSignedLong.typeLayout(), UnresolvedTypeLayout<I64x2>())
+    val b1: I64x2 = transmuteWithLayouts<VectorSignedLong, I64x2>(b, VectorSignedLong.typeLayout(), UnresolvedTypeLayout<I64x2>())
     val r: I64x2 =
         when (dm and 0x3u.toUByte()) {
             0 -> {
@@ -287,16 +288,16 @@ public fun xxpermdi(a: VectorSignedLong, b: VectorSignedLong, dm: UByte): Vector
                 run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(0x1, 0x3)); _simdArg0 }
             }
         }
-    return transmute(r)
+    return transmuteWithLayouts<I64x2, VectorSignedLong>(r, UnresolvedTypeLayout<I64x2>(), VectorSignedLong.typeLayout())
 }
 
-public fun VectorUnsignedLong.vecXxpermdi(b: VectorUnsignedLong, dm: UByte): VectorUnsignedLong = transmute(xxpermdi(transmute(this), transmuteWithLayouts(b, VectorUnsignedLong.typeLayout(), VectorUnsignedLong.typeLayout()), dm))
+public fun VectorUnsignedLong.vecXxpermdi(b: VectorUnsignedLong, dm: UByte): VectorUnsignedLong = transmuteWithLayouts<VectorSignedLong, VectorUnsignedLong>(xxpermdi(this, b, dm), VectorSignedLong.typeLayout(), VectorUnsignedLong.typeLayout())
 
-public fun VectorSignedLong.vecXxpermdi(b: VectorSignedLong, dm: UByte): VectorSignedLong = transmute(xxpermdi(transmute(this), transmuteWithLayouts(b, VectorSignedLong.typeLayout(), VectorSignedLong.typeLayout()), dm))
+public fun VectorSignedLong.vecXxpermdi(b: VectorSignedLong, dm: UByte): VectorSignedLong = xxpermdi(this, b, dm)
 
-public fun VectorBoolLong.vecXxpermdi(b: VectorBoolLong, dm: UByte): VectorBoolLong = transmute(xxpermdi(transmute(this), transmuteWithLayouts(b, VectorBoolLong.typeLayout(), VectorBoolLong.typeLayout()), dm))
+public fun VectorBoolLong.vecXxpermdi(b: VectorBoolLong, dm: UByte): VectorBoolLong = transmuteWithLayouts<VectorSignedLong, VectorBoolLong>(xxpermdi(this, b, dm), VectorSignedLong.typeLayout(), VectorBoolLong.typeLayout())
 
-public fun VectorDouble.vecXxpermdi(b: VectorDouble, dm: UByte): VectorDouble = transmute(xxpermdi(transmute(this), transmuteWithLayouts(b, VectorDouble.typeLayout(), VectorDouble.typeLayout()), dm))
+public fun VectorDouble.vecXxpermdi(b: VectorDouble, dm: UByte): VectorDouble = transmuteWithLayouts<VectorSignedLong, VectorDouble>(xxpermdi(this, b, dm), VectorSignedLong.typeLayout(), VectorDouble.typeLayout())
 
 public interface VectorMergeEo<T> {
     public fun vecMergee(b: T): T
@@ -314,21 +315,21 @@ public fun mergeo(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt {
     return vecPerm(a, b, p)
 }
 
-public fun VectorSignedInt.vecMergee(b: VectorSignedInt): VectorSignedInt = transmute(mergee(transmute(this), transmute(b)))
+public fun VectorSignedInt.vecMergee(b: VectorSignedInt): VectorSignedInt = mergee(this, b)
 
-public fun VectorSignedInt.vecMergeo(b: VectorSignedInt): VectorSignedInt = transmute(mergeo(transmute(this), transmute(b)))
+public fun VectorSignedInt.vecMergeo(b: VectorSignedInt): VectorSignedInt = mergeo(this, b)
 
-public fun VectorUnsignedInt.vecMergee(b: VectorUnsignedInt): VectorUnsignedInt = transmute(mergee(transmute(this), transmute(b)))
+public fun VectorUnsignedInt.vecMergee(b: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedInt, VectorUnsignedInt>(mergee(this, b), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedInt>())
 
-public fun VectorUnsignedInt.vecMergeo(b: VectorUnsignedInt): VectorUnsignedInt = transmute(mergeo(transmute(this), transmute(b)))
+public fun VectorUnsignedInt.vecMergeo(b: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedInt, VectorUnsignedInt>(mergeo(this, b), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedInt>())
 
-public fun VectorBoolInt.vecMergee(b: VectorBoolInt): VectorBoolInt = transmute(mergee(transmute(this), transmute(b)))
+public fun VectorBoolInt.vecMergee(b: VectorBoolInt): VectorBoolInt = transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(mergee(this, b), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>())
 
-public fun VectorBoolInt.vecMergeo(b: VectorBoolInt): VectorBoolInt = transmute(mergeo(transmute(this), transmute(b)))
+public fun VectorBoolInt.vecMergeo(b: VectorBoolInt): VectorBoolInt = transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(mergeo(this, b), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>())
 
-public fun VectorFloat.vecMergee(b: VectorFloat): VectorFloat = transmute(mergee(transmute(this), transmute(b)))
+public fun VectorFloat.vecMergee(b: VectorFloat): VectorFloat = transmuteWithLayouts<VectorSignedInt, VectorFloat>(mergee(this, b), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorFloat>())
 
-public fun VectorFloat.vecMergeo(b: VectorFloat): VectorFloat = transmute(mergeo(transmute(this), transmute(b)))
+public fun VectorFloat.vecMergeo(b: VectorFloat): VectorFloat = transmuteWithLayouts<VectorSignedInt, VectorFloat>(mergeo(this, b), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorFloat>())
 
 // @rustcLegacyConstGenerics(2)
 

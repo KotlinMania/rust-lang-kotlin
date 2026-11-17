@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU8Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.saturating.Saturating
@@ -213,6 +213,6 @@ public fun <T : IsZero> Wrapping<T>.isZero(): Boolean = this.value.isZero()
 public fun <T : IsZero> Saturating<T>.isZero(): Boolean = this.value.isZero()
 
 public fun Boolean?.isZero(): Boolean {
-    val raw: UByte = transmute(this!!)
+    val raw: UByte = transmuteWithLayouts<Boolean, UByte>(this!!, UnresolvedTypeLayout<Boolean>(), UnresolvedTypeLayout<UByte>())
     return raw == 0u.toUByte()
 }

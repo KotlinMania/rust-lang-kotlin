@@ -1416,7 +1416,8 @@ public fun I128.shrI128(other: I128): Output = Shr.Shr(this, other)
  *
  *     // rhs is the "right-hand side" of the expression `a & = b`
  *     public open fun bitandAssign(rhs: Scalar) {
- *         this = Scalar(this.value and rhs.value)
+ *         var selfMut = this
+ *         selfMut = Scalar(selfMut.value and rhs.value)
  *     }
  * }
  * var scalar = Scalar(true)
@@ -1448,8 +1449,9 @@ public fun I128.shrI128(other: I128): Output = Shr.Shr(this, other)
  *
  *     // `rhs` is the "right-hand side" of the expression `a & = b`.
  *     public open fun bitandAssign(rhs: BooleanVector) {
- *         check(this.value.size == rhs.value.size)
- *         this = BooleanVector((this.value.zip(rhs.value)).map({ (x, y) -> x and y }).collect())
+ *         var selfMut = this
+ *         check(selfMut.value.size == rhs.value.size)
+ *         selfMut = BooleanVector((selfMut.value.zip(rhs.value)).map({ (x, y) -> x and y }).collect())
  *     }
  * }
  * var bv = BooleanVector(mutableListOf(true, true, false, false))

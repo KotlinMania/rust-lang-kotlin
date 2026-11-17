@@ -1,14 +1,14 @@
 // port-lint: source sys/alloc/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.alloc.unix
 
-import io.github.kotlinmania.libc.unix.bsd.apple.b64.x8664.calloc
-import io.github.kotlinmania.libc.vxworks.posixMemalign
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CSizeT
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.libc.calloc
+import io.github.kotlinmania.rustlang.libc.posixMemalign
 import io.github.kotlinmania.rustlang.std.sys.alloc.MIN_ALIGN
 import io.github.kotlinmania.rustlang.std.sys.alloc.reallocFallback
 
@@ -24,7 +24,7 @@ public fun alloc(layout: Layout): MutPtr {
     // Also see <https://github.com/rust-lang/rust/issues/45955> and
     // <https://github.com/rust-lang/rust/issues/62251#issuecomment-507580914>.
     return if (layout.align() <= MIN_ALIGN && layout.align() <= layout.size()) {
-        (io.github.kotlinmania.libc.unix.bsd.apple.b64.x8664.malloc(layout.size())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
+        (io.github.kotlinmania.rustlang.libc.malloc(layout.size())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
     } else {
         // `posixMemalign` returns a non-aligned value if supplied a very
         // large alignment on older versions of Apple's platforms (unknown
@@ -53,12 +53,12 @@ public fun allocZeroed(layout: Layout): MutPtr {
 }
 
 public fun dealloc(ptr: MutPtr, layout: Layout) {
-    io.github.kotlinmania.libc.psp.free(MutPtr(ptr.rawAddress, ptr.rawMeta))
+    io.github.kotlinmania.rustlang.libc.free(MutPtr(ptr.rawAddress, ptr.rawMeta))
 }
 
 public fun realloc(ptr: MutPtr, layout: Layout, newSize: Int): MutPtr =
     if (layout.align() <= MIN_ALIGN && layout.align() <= newSize) {
-        mutPtrFromRustCast(io.github.kotlinmania.libc.unix.bsd.apple.b64.x8664.realloc(MutPtr(ptr.rawAddress, ptr.rawMeta), newSize))
+        mutPtrFromRustCast(io.github.kotlinmania.rustlang.libc.realloc(MutPtr(ptr.rawAddress, ptr.rawMeta), newSize))
     } else {
         reallocFallback(ptr, layout, newSize)
     }

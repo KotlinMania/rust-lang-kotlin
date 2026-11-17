@@ -514,7 +514,7 @@ public open class TcpStream(
      * stream.takeError().expect("No error was expected...")
      * ```
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value.takeError()
 
     /**
      * Moves this TCP stream into or out of nonblocking mode.
@@ -965,7 +965,7 @@ public open class TcpListener(
      * listener.takeError().expect("`takeError` should succeed")
      * ```
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value.takeError()
 
     /**
      * Moves this TCP stream into or out of nonblocking mode.

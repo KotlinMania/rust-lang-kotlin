@@ -184,17 +184,17 @@ public fun <T : FreezeMarker> smallSortGeneralWithScratch(v: MutableList<T>, scr
         val presortedLen =
             if (sizeOf<T>(typeLayoutT = typeLayoutT) <= 16 && len >= 16) {
                 // SAFETY: scratchBase is valid and has enough space.
-                sort8Stable(vBase, scratchBase, MutPtr((scratchBase).rawAddress + ((len).toLong() * (typeLayoutT).strideBytes)), isLess)
-                sort8Stable(MutPtr((vBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), MutPtr((scratchBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), MutPtr((scratchBase).rawAddress + ((len + 8).toLong() * (typeLayoutT).strideBytes)), isLess)
+                sort8Stable(vBase, scratchBase, MutPtr((scratchBase).rawAddress + ((len).toLong() * (typeLayoutT).strideBytes)), isLess, typeLayoutT = typeLayoutT)
+                sort8Stable(MutPtr((vBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), MutPtr((scratchBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), MutPtr((scratchBase).rawAddress + ((len + 8).toLong() * (typeLayoutT).strideBytes)), isLess, typeLayoutT = typeLayoutT)
                 8
             } else if (len >= 8) {
                 // SAFETY: scratchBase is valid and has enough space.
-                sort4Stable((vBase).asConstPtr(), scratchBase, isLess)
-                sort4Stable((MutPtr((vBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), MutPtr((scratchBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), isLess)
+                sort4Stable((vBase).asConstPtr(), scratchBase, isLess, typeLayoutT = typeLayoutT)
+                sort4Stable((MutPtr((vBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), MutPtr((scratchBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), isLess, typeLayoutT = typeLayoutT)
                 4
             } else {
-                copyNonoverlapping((vBase).asConstPtr(), scratchBase, 1)
-                copyNonoverlapping((MutPtr((vBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), MutPtr((scratchBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), 1)
+                copyNonoverlapping((vBase).asConstPtr(), scratchBase, 1, typeLayoutT = typeLayoutT)
+                copyNonoverlapping((MutPtr((vBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), MutPtr((scratchBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), 1, typeLayoutT = typeLayoutT)
                 1
             }
         for (offset in intArrayOf(0, lenDiv2)) {
@@ -209,7 +209,7 @@ public fun <T : FreezeMarker> smallSortGeneralWithScratch(v: MutableList<T>, scr
                     len - lenDiv2
                 }
             for (i in presortedLen until desiredLen) {
-                copyNonoverlapping((MutPtr((src).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), MutPtr((dst).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes)), 1)
+                copyNonoverlapping((MutPtr((src).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), MutPtr((dst).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes)), 1, typeLayoutT = typeLayoutT)
                 insertTail(dst, MutPtr((dst).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes)), isLess, typeLayoutT = typeLayoutT)
             }
         }
@@ -374,31 +374,31 @@ public fun <T> sort9Optimal(v: MutableList<T>, isLess: (T, T) -> Boolean) {
     // https://bertdobbelaere.github.io/sortingNetworks.html.
     // SAFETY: We checked the len.
     run {
-        swapIfLess(vBase, 0, 3, isLess)
-        swapIfLess(vBase, 1, 7, isLess)
-        swapIfLess(vBase, 2, 5, isLess)
-        swapIfLess(vBase, 4, 8, isLess)
-        swapIfLess(vBase, 0, 7, isLess)
-        swapIfLess(vBase, 2, 4, isLess)
-        swapIfLess(vBase, 3, 8, isLess)
-        swapIfLess(vBase, 5, 6, isLess)
-        swapIfLess(vBase, 0, 2, isLess)
-        swapIfLess(vBase, 1, 3, isLess)
-        swapIfLess(vBase, 4, 5, isLess)
-        swapIfLess(vBase, 7, 8, isLess)
-        swapIfLess(vBase, 1, 4, isLess)
-        swapIfLess(vBase, 3, 6, isLess)
-        swapIfLess(vBase, 5, 7, isLess)
-        swapIfLess(vBase, 0, 1, isLess)
-        swapIfLess(vBase, 2, 4, isLess)
-        swapIfLess(vBase, 3, 5, isLess)
-        swapIfLess(vBase, 6, 8, isLess)
-        swapIfLess(vBase, 2, 3, isLess)
-        swapIfLess(vBase, 4, 5, isLess)
-        swapIfLess(vBase, 6, 7, isLess)
-        swapIfLess(vBase, 1, 2, isLess)
-        swapIfLess(vBase, 3, 4, isLess)
-        swapIfLess(vBase, 5, 6, isLess)
+        swapIfLess(vBase, 0, 3, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 1, 7, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 2, 5, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 4, 8, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 0, 7, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 2, 4, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 3, 8, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 5, 6, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 0, 2, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 1, 3, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 4, 5, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 7, 8, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 1, 4, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 3, 6, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 5, 7, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 0, 1, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 2, 4, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 3, 5, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 6, 8, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 2, 3, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 4, 5, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 6, 7, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 1, 2, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 3, 4, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 5, 6, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
     }
 }
 
@@ -419,51 +419,51 @@ public fun <T> sort13Optimal(v: MutableList<T>, isLess: (T, T) -> Boolean) {
     // https://bertdobbelaere.github.io/sortingNetworks.html.
     // SAFETY: We checked the len.
     run {
-        swapIfLess(vBase, 0, 12, isLess)
-        swapIfLess(vBase, 1, 10, isLess)
-        swapIfLess(vBase, 2, 9, isLess)
-        swapIfLess(vBase, 3, 7, isLess)
-        swapIfLess(vBase, 5, 11, isLess)
-        swapIfLess(vBase, 6, 8, isLess)
-        swapIfLess(vBase, 1, 6, isLess)
-        swapIfLess(vBase, 2, 3, isLess)
-        swapIfLess(vBase, 4, 11, isLess)
-        swapIfLess(vBase, 7, 9, isLess)
-        swapIfLess(vBase, 8, 10, isLess)
-        swapIfLess(vBase, 0, 4, isLess)
-        swapIfLess(vBase, 1, 2, isLess)
-        swapIfLess(vBase, 3, 6, isLess)
-        swapIfLess(vBase, 7, 8, isLess)
-        swapIfLess(vBase, 9, 10, isLess)
-        swapIfLess(vBase, 11, 12, isLess)
-        swapIfLess(vBase, 4, 6, isLess)
-        swapIfLess(vBase, 5, 9, isLess)
-        swapIfLess(vBase, 8, 11, isLess)
-        swapIfLess(vBase, 10, 12, isLess)
-        swapIfLess(vBase, 0, 5, isLess)
-        swapIfLess(vBase, 3, 8, isLess)
-        swapIfLess(vBase, 4, 7, isLess)
-        swapIfLess(vBase, 6, 11, isLess)
-        swapIfLess(vBase, 9, 10, isLess)
-        swapIfLess(vBase, 0, 1, isLess)
-        swapIfLess(vBase, 2, 5, isLess)
-        swapIfLess(vBase, 6, 9, isLess)
-        swapIfLess(vBase, 7, 8, isLess)
-        swapIfLess(vBase, 10, 11, isLess)
-        swapIfLess(vBase, 1, 3, isLess)
-        swapIfLess(vBase, 2, 4, isLess)
-        swapIfLess(vBase, 5, 6, isLess)
-        swapIfLess(vBase, 9, 10, isLess)
-        swapIfLess(vBase, 1, 2, isLess)
-        swapIfLess(vBase, 3, 4, isLess)
-        swapIfLess(vBase, 5, 7, isLess)
-        swapIfLess(vBase, 6, 8, isLess)
-        swapIfLess(vBase, 2, 3, isLess)
-        swapIfLess(vBase, 4, 5, isLess)
-        swapIfLess(vBase, 6, 7, isLess)
-        swapIfLess(vBase, 8, 9, isLess)
-        swapIfLess(vBase, 3, 4, isLess)
-        swapIfLess(vBase, 5, 6, isLess)
+        swapIfLess(vBase, 0, 12, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 1, 10, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 2, 9, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 3, 7, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 5, 11, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 6, 8, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 1, 6, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 2, 3, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 4, 11, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 7, 9, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 8, 10, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 0, 4, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 1, 2, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 3, 6, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 7, 8, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 9, 10, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 11, 12, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 4, 6, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 5, 9, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 8, 11, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 10, 12, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 0, 5, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 3, 8, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 4, 7, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 6, 11, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 9, 10, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 0, 1, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 2, 5, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 6, 9, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 7, 8, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 10, 11, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 1, 3, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 2, 4, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 5, 6, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 9, 10, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 1, 2, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 3, 4, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 5, 7, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 6, 8, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 2, 3, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 4, 5, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 6, 7, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 8, 9, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 3, 4, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        swapIfLess(vBase, 5, 6, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
     }
 }
 
@@ -526,7 +526,7 @@ public fun <T> insertionSortShiftLeft(v: MutableList<T>, offset: Int, isLess: (T
         while (((tail).rawAddress.toULong() != (vEnd).rawAddress.toULong())) {
             // SAFETY: vBase and tail are both valid pointers to elements, and
             // vBase < tail since we checked offset != 0.
-            insertTail(vBase, tail, isLess)
+            insertTail(vBase, tail, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
             // SAFETY: we checked that tail is not yet the one-past-end pointer.
             tail = MutPtr((tail).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
         }
@@ -723,8 +723,8 @@ public fun <T : FreezeMarker> bidirectionalMerge(v: List<T>, dst: MutPtr, isLess
         val rightRev = ConstPtr((src).rawAddress + ((len - 1).toLong() * (typeLayoutT).strideBytes))
         val dstRev = dst1.add(len - 1)
         for (unused in 0 until lenDiv2) {
-            Triple(left, right, dst1) = mergeUp(left, right, dst1, isLess)
-            Triple(leftRev, rightRev, dstRev) = mergeDown(leftRev, rightRev, dstRev, isLess)
+            Triple(left, right, dst1) = mergeUp(left, right, dst1, isLess, typeLayoutT = typeLayoutT)
+            Triple(leftRev, rightRev, dstRev) = mergeDown(leftRev, rightRev, dstRev, isLess, typeLayoutT = typeLayoutT)
         }
         val leftEnd = ConstPtr((leftRev).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes))
         val rightEnd = ConstPtr((rightRev).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes))

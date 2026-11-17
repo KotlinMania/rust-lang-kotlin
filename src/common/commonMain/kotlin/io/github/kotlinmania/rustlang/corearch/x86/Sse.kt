@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.f32.sqrt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -179,8 +180,8 @@ public fun mmMaxPs(a: M128, b: M128): M128 {
  */
 public fun mmAndPs(a: M128, b: M128): M128 =
     run {
-        val a1: M128i = transmute(a)
-        val b1: M128i = transmute(b)
+        val a1: M128i = transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
+        val b1: M128i = transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
         transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
     }
 
@@ -197,8 +198,8 @@ public fun mmAndPs(a: M128, b: M128): M128 =
  */
 public fun mmAndnotPs(a: M128, b: M128): M128 =
     run {
-        val a1: M128i = transmute(a)
-        val b1: M128i = transmute(b)
+        val a1: M128i = transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
+        val b1: M128i = transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
         val mask: M128i = transmute(i32x4.splat(-1))
         transmute(run { val _simdArg0 = run { val _simdArg0 = mask; val _simdArg1 = a1; _simdArg0 }; val _simdArg1 = b1; _simdArg0 })
     }
@@ -212,8 +213,8 @@ public fun mmAndnotPs(a: M128, b: M128): M128 =
  */
 public fun mmOrPs(a: M128, b: M128): M128 =
     run {
-        val a1: M128i = transmute(a)
-        val b1: M128i = transmute(b)
+        val a1: M128i = transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
+        val b1: M128i = transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
         transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
     }
 
@@ -227,8 +228,8 @@ public fun mmOrPs(a: M128, b: M128): M128 =
  */
 public fun mmXorPs(a: M128, b: M128): M128 =
     run {
-        val a1: M128i = transmute(a)
-        val b1: M128i = transmute(b)
+        val a1: M128i = transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
+        val b1: M128i = transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
         transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
     }
 
@@ -791,7 +792,7 @@ public fun mmMovemaskPs(a: M128): Int {
     // Propagate the highest bit to the rest, because simdBitmask
     // requires all-1 or all-0.
     return run {
-        val mask: I32x4 = run { val _simdArg0 = transmute(a); val _simdArg1 = i32x4.ZERO; _simdArg0 }
+        val mask: I32x4 = run { val _simdArg0 = transmuteWithLayouts<M128, I32x4>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<I32x4>()); val _simdArg1 = i32x4.ZERO; _simdArg0 }
         (run { val _simdArg0 = mask; 0u }).toInt()
     }
 }

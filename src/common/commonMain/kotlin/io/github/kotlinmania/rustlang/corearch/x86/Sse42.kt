@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.simd.I64x2
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
@@ -105,7 +106,7 @@ public fun mmCmpistrm(a: M128i, b: M128i, imm8: Int): M128i {
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(pcmpistrm128(a.asI8x16(), b.asI8x16(), imm8.toByte()))
+    return transmuteWithLayouts<I8x16, M128i>(pcmpistrm128(a.asI8x16(), b.asI8x16(), imm8.toByte()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 }
 
 /**
@@ -312,7 +313,7 @@ public fun mmCmpestrm(a: M128i, la: Int, b: M128i, lb: Int, imm8: Int): M128i {
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(pcmpestrm128(a.asI8x16(), la, b.asI8x16(), lb, imm8.toByte()))
+    return transmuteWithLayouts<U8x16, M128i>(pcmpestrm128(a.asI8x16(), la, b.asI8x16(), lb, imm8.toByte()), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
 }
 
 /**
