@@ -17,6 +17,7 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.adapters.peekable.Peekable
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.ops.arith.Sub
 import io.github.kotlinmania.rustlang.core.ops.bit.BitAnd
 import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
@@ -732,7 +733,7 @@ public open class BTreeSet<T, A : AllocatorClone>(
      * ```
      */
     public open fun retain(f: (T) -> Boolean) {
-        this.extractIf(0 until 0, { v -> !f(v) }).forEach(drop)
+        this.extractIf(0 until 0, { v -> !f(v) }).forEach({ drop(it) })
     }
 
     /**

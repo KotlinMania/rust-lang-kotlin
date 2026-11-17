@@ -15,7 +15,6 @@ import io.github.kotlinmania.rustlang.alloc.vec.sveretain.MIN_SVE_SIZE_4
 import io.github.kotlinmania.rustlang.alloc.vec.sveretain.MIN_SVE_SIZE_8
 import io.github.kotlinmania.rustlang.alloc.vec.sveretain.PanicGuard
 import io.github.kotlinmania.rustlang.alloc.vec.sveretain.chunkedRetain
-import io.github.kotlinmania.rustlang.alloc.wtf8.cloneInto
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.fmt.Error
@@ -43,7 +42,6 @@ import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -2732,7 +2730,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun cloneFrom(source: Vec<T, A>) {
-        cloneInto(source.asSlice(), this)
+        source.asSlice().cloneInto(this)
     }
 
     /**
@@ -3834,7 +3832,7 @@ public fun <T> fromVecT(s: MutableList<T>): Vec<T, Global> = s.toMutableList()
  * check(Vec.from(listOf(1, 2, 3)) == mutableListOf(1, 2, 3))
  * ```
  */
-public fun <T> fromVecT(s: List<T>, n: Int): Vec<T, Global> = Vec.from(s.asSlice())
+public fun <T> fromVecT(s: List<T>, n: Int): Vec<T, Global> = Vec.from(s.asSlice(), n)
 
 /**
  * Allocates a `List<UByte>` and fills it with a UTF-8 string.

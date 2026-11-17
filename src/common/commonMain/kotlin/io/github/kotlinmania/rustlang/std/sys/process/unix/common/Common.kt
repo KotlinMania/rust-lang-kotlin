@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -568,7 +569,7 @@ public fun constructEnvp(env: MutableMap<OsString, OsString>, sawNul: RustMutabl
         k.push(v)
         // Add the new entry into the array
         when (val matchVal = CString.new(k.intoVec())) {
-            is Ok -> {
+            is Result.Ok -> {
                 val item = matchVal.value
                 result.push(item)
             }
@@ -684,11 +685,11 @@ public fun readOutput(out: ChildPipe, stdout: List<UByte>, err: ChildPipe, stder
         when (val tryResult = cvtR({ Poll(localStorageL651C4.elementMutPtr(0), 2, -1) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         if (fds[0].revents != 0 && when (val tryResult = read(out, stdout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }) {
             when (val tryResult = err.setNonblocking(false)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
-            return err.readToEnd(stderr).map({ Unit })
+            return err.readToEnd(stderr).map({ drop(it) })
         }
         if (fds[1].revents != 0 && when (val tryResult = read(err, stderr)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }) {
             when (val tryResult = out.setNonblocking(false)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
-            return out.readToEnd(stdout).map({ Unit })
+            return out.readToEnd(stdout).map({ drop(it) })
         }
     }
 }

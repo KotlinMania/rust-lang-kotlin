@@ -65,7 +65,7 @@ public fun glibcVersion(): Pair<Int, Int>? {
     fun gnuGetLibcVersion(): ConstPtr = ConstPtr(0L)
     val versionCstr = CStr.fromPtr(gnuGetLibcVersion())
     return when (val matchVal = versionCstr.toStr()) {
-        is Ok -> {
+        is Result.Ok -> {
             val versionStr = matchVal.value
             parseGlibcVersion(versionStr)
         }

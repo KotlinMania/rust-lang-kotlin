@@ -22,11 +22,9 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.client.Client
 import io.github.kotlinmania.rustlang.procmacro.bridge.handle.Handle
 import io.github.kotlinmania.rustlang.procmacro.bridge.panicmessage.PanicMessage
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
-import io.github.kotlinmania.rustlang.std.panicking.panicking
 import io.github.kotlinmania.rustlang.std.sync.mpsc.Receiver
 import io.github.kotlinmania.rustlang.std.sync.mpsc.SyncSender
 import io.github.kotlinmania.rustlang.std.sync.mpsc.syncChannel
-import io.github.kotlinmania.rustlang.std.thread.functions.spawn
 
 // Server-side traits.
 
@@ -177,7 +175,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r
                     }
                 val r =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod)).mapErr(PanicMessage::from)
@@ -193,7 +191,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r1
                     }
                 val r1 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod1())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod1)).mapErr(PanicMessage::from)
@@ -210,7 +208,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r3
                     }
                 val r2 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod2())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod2)).mapErr(PanicMessage::from)
@@ -226,7 +224,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r3
                     }
                 val r3 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod3())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod3)).mapErr(PanicMessage::from)
@@ -242,7 +240,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r4
                     }
                 val r4 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod4())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod4)).mapErr(PanicMessage::from)
@@ -259,7 +257,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r6
                     }
                 val r5 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod5())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod5)).mapErr(PanicMessage::from)
@@ -276,7 +274,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r7
                     }
                 val r6 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod6())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod6)).mapErr(PanicMessage::from)
@@ -293,7 +291,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r8
                     }
                 val r7 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod7())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod7)).mapErr(PanicMessage::from)
@@ -310,7 +308,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r9
                     }
                 val r8 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod8())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod8)).mapErr(PanicMessage::from)
@@ -327,7 +325,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r10
                     }
                 val r9 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod9())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod9)).mapErr(PanicMessage::from)
@@ -344,7 +342,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r11
                     }
                 val r10 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod10())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod10)).mapErr(PanicMessage::from)
@@ -362,7 +360,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r12
                     }
                 val r11 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod11())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod11)).mapErr(PanicMessage::from)
@@ -380,7 +378,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r13
                     }
                 val r12 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod12())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod12)).mapErr(PanicMessage::from)
@@ -397,7 +395,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r14
                     }
                 val r13 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod13())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod13)).mapErr(PanicMessage::from)
@@ -414,7 +412,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r15
                     }
                 val r14 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod14())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod14)).mapErr(PanicMessage::from)
@@ -431,7 +429,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r16
                     }
                 val r15 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod15())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod15)).mapErr(PanicMessage::from)
@@ -448,7 +446,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r17
                     }
                 val r16 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod16())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod16)).mapErr(PanicMessage::from)
@@ -465,7 +463,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r18
                     }
                 val r17 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod17())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod17)).mapErr(PanicMessage::from)
@@ -482,7 +480,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r19
                     }
                 val r18 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod18())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod18)).mapErr(PanicMessage::from)
@@ -499,7 +497,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r20
                     }
                 val r19 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod19())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod19)).mapErr(PanicMessage::from)
@@ -516,7 +514,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r21
                     }
                 val r20 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod20())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod20)).mapErr(PanicMessage::from)
@@ -533,7 +531,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r22
                     }
                 val r21 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod21())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod21)).mapErr(PanicMessage::from)
@@ -550,7 +548,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r23
                     }
                 val r22 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod22())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod22)).mapErr(PanicMessage::from)
@@ -567,7 +565,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r24
                     }
                 val r23 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod23())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod23)).mapErr(PanicMessage::from)
@@ -585,7 +583,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r25
                     }
                 val r24 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod24())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod24)).mapErr(PanicMessage::from)
@@ -604,7 +602,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r26
                     }
                 val r25 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod25())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod25)).mapErr(PanicMessage::from)
@@ -622,7 +620,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r27
                     }
                 val r26 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod26())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod26)).mapErr(PanicMessage::from)
@@ -639,7 +637,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r28
                     }
                 val r27 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod27())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod27)).mapErr(PanicMessage::from)
@@ -656,7 +654,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r29
                     }
                 val r28 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod28())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod28)).mapErr(PanicMessage::from)
@@ -673,7 +671,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r30
                     }
                 val r29 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod29())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod29)).mapErr(PanicMessage::from)
@@ -690,7 +688,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                         r31
                     }
                 val r30 =
-                    if (panicking()) {
+                    if (Thread.panicking()) {
                         Result.Ok(callMethod30())
                     } else {
                         catchUnwind(AssertUnwindSafe(callMethod30)).mapErr(PanicMessage::from)
@@ -773,7 +771,7 @@ public open class MaybeCrossThread(
         if (this.crossThread || ALREADY_RUNNING_SAME_THREAD.get()) {
             var (server, client) = MessagePipe.new()
             val joinHandle =
-                spawn({
+                Thread.spawn({
                     var dispatch =
                         { b: Buffer ->
                             client.send(b)

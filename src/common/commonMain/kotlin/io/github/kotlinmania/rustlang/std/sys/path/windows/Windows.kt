@@ -21,7 +21,7 @@ import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.api.utf16
-import io.github.kotlinmania.rustlang.std.sys.pal.c
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getFullPathNameW
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.fillUtf16Buf
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.os2path
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.toU16s
@@ -189,7 +189,7 @@ public fun getLongPath(path: List<UShort>, preferVerbatim: Boolean): Result<List
     // Firstly, get the absolute path using `GetFullPathNameW`.
     // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfullpathnamew
     val lpfilename = path.asPtr()
-    when (val tryResult = fillUtf16Buf({ buffer, size -> c.GetFullPathNameW(lpfilename, size, buffer, MutPtr(0L)) }, { absolute ->
+    when (val tryResult = fillUtf16Buf({ buffer, size -> getFullPathNameW(lpfilename, size, buffer, MutPtr(0L)) }, { absolute ->
         path.clear()
         // Only prepend the prefix if needed.
         if (preferVerbatim || absolute.len() + 1 >= LEGACY_MAX_PATH) {
@@ -242,7 +242,7 @@ public fun absolute(path: Path): Result<PathBuf, Error> {
     }
     val path2 = when (val tryResult = toU16s(path1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<PathBuf, Error>(tryResult.error) }
     val lpfilename = path2.asPtr()
-    return fillUtf16Buf({ buffer, size -> c.GetFullPathNameW(lpfilename, size, buffer, MutPtr(0L)) }, os2path)
+    return fillUtf16Buf({ buffer, size -> getFullPathNameW(lpfilename, size, buffer, MutPtr(0L)) }, os2path)
 }
 
 public fun isAbsolute(path: Path): Boolean = (path.hasRoot() && path.prefix() != null).toUByte()
@@ -271,7 +271,7 @@ public fun isAbsoluteExact(path: List<UShort>): Boolean {
     // given path, otherwise they're not equal.
     val bufferLen = path.size
     val newPath = ArrayList(bufferLen)
-    val result = c.GetFullPathNameW(path.asPtr(), newPath.capacity().toUInt(), newPath.asMutPtr(), MutPtr(0L))
+    val result = getFullPathNameW(path.asPtr(), newPath.capacity().toUInt(), newPath.asMutPtr(), MutPtr(0L))
     // Note: if non-zero, the returned result is the length of the buffer without the null termination
     return if (result == 0u || result.toInt() != bufferLen - 1) {
         false

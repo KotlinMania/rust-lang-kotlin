@@ -17,9 +17,9 @@ import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtNz
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.AF_UNIX
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SockaddrUn
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvtNz
 
 public fun sockaddrUn(path: Path): Result<Pair<SockaddrUn, Int>, Error> {
     // SAFETY: All zeros is a valid representation for `sockaddrUn`.

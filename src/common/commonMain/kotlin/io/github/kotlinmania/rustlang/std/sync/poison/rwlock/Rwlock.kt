@@ -3,17 +3,18 @@ package io.github.kotlinmania.rustlang.std.sync.poison.rwlock
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.std.sync.nonpoison.TryLockResult
 import io.github.kotlinmania.rustlang.std.sync.poison.Flag
 import io.github.kotlinmania.rustlang.std.sync.poison.Guard
 import io.github.kotlinmania.rustlang.std.sync.poison.LockResult
 import io.github.kotlinmania.rustlang.std.sync.poison.PoisonError
 import io.github.kotlinmania.rustlang.std.sync.poison.TryLockError
+import io.github.kotlinmania.rustlang.std.sync.poison.TryLockResult
 import io.github.kotlinmania.rustlang.std.sync.poison.mapResult
 
 public class DebugStruct(
@@ -192,7 +193,7 @@ public open class RwLock<T>(
         if (needsDrop<T>()) {
             // If the contained value has non-trivial destructor, we
             // call that destructor after the lock being released.
-            this.replace(value).map({ Unit })
+            this.replace(value).map({ drop(it) })
         } else {
             run {
                 val matchVal = this.write()

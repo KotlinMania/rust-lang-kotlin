@@ -44,7 +44,7 @@ import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.unix.net.SockaddrUn
 import io.github.kotlinmania.rustlang.std.os.unix.net.SocketAddr
 import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.Socket
 
 public fun recvVectoredWithAncillaryFrom(socket: Socket, bufs: MutableList<IoSliceMut>, ancillary: SocketAncillary): Result<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error> {
     return run {
@@ -102,7 +102,7 @@ public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutabl
         if (cmsgSize != null) {
             val sourceLen = cmsgSize
             when (val matchVal = UInt.tryFrom(sourceLen)) {
-                is Ok -> {
+                is Result.Ok -> {
                     val sourceLen1 = matchVal.value
                     sourceLen1
                 }

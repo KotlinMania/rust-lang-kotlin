@@ -194,7 +194,7 @@ public fun <Mask, T> Simd<T>.shiftElementsLeft(padding: T, n: Int, offset: Int):
             index
         }
     }
-    return Shift.concatSwizzle(this, Simd.splat(padding))
+    return Shift.concatSwizzle(this, Simd.splat(padding, n))
 }
 
 /**
@@ -220,7 +220,7 @@ public fun <Mask, T> Simd<T>.shiftElementsRight(padding: T, n: Int, offset: Int)
             index
         }
     }
-    return Shift.concatSwizzle(this, Simd.splat(padding))
+    return Shift.concatSwizzle(this, Simd.splat(padding, n))
 }
 
 /**
@@ -331,7 +331,7 @@ public fun <Mask, T> Simd<T>.resize(value: T, n: Int, m: Int): Simd<T> {
             index
         }
     }
-    return Resize.concatSwizzle(this, Simd.splat(value))
+    return Resize.concatSwizzle(this, Simd.splat(value, n))
 }
 
 /**

@@ -50,17 +50,17 @@ public open class PrettyFormatter<T>(
             is OutputLocation.Pretty -> {
                 val (term) = matchVal
                 if (this.useColor) {
-                    when (val tryResult = term.fg(color)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                    when (val tryResult = term.fg(color)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
-                when (val tryResult = term.writeAll(word.encodeToByteArray().map { it.toUByte() })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                when (val tryResult = term.writeAll(word.encodeToByteArray().map { it.toUByte() })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 if (this.useColor) {
-                    when (val tryResult = term.reset()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                    when (val tryResult = term.reset()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
                 term.flush()
             }
             is OutputLocation.Raw -> {
                 val (stdout) = matchVal
-                when (val tryResult = stdout.writeAll(word.encodeToByteArray().map { it.toUByte() })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                when (val tryResult = stdout.writeAll(word.encodeToByteArray().map { it.toUByte() })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 stdout.flush()
             }
         }
@@ -68,7 +68,7 @@ public open class PrettyFormatter<T>(
 
     public open fun writePlain(s: String): Result<Unit> {
         val s1 = s
-        when (val tryResult = this.out.writeAll(s1.encodeToByteArray().map { it.toUByte() })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.out.writeAll(s1.encodeToByteArray().map { it.toUByte() })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         return this.out.flush()
     }
 
@@ -90,10 +90,10 @@ public open class PrettyFormatter<T>(
                     null
                 }
             when (color) {
-                null -> when (val tryResult = this.writePlain(timeStr)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                null -> when (val tryResult = this.writePlain(timeStr)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 else -> {
                     val color1 = color
-                    when (val tryResult = this.writePretty(timeStr, color1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.writePretty(timeStr, color1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
             }
         }
@@ -102,7 +102,7 @@ public open class PrettyFormatter<T>(
 
     public open fun writeResults(inputs: List<Pair<TestDesc, List<UByte>>>, resultsType: String): Result<Unit> {
         val resultsOutStr = "\n$resultsType:\n"
-        when (val tryResult = this.writePlain(resultsOutStr)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePlain(resultsOutStr)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         val results = mutableListOf()
         var stdouts = ""
         for ((f, stdout) in inputs) {
@@ -115,13 +115,13 @@ public open class PrettyFormatter<T>(
             }
         }
         if (!stdouts.isEmpty()) {
-            when (val tryResult = this.writePlain("\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-            when (val tryResult = this.writePlain(stdouts)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePlain("\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = this.writePlain(stdouts)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
-        when (val tryResult = this.writePlain(resultsOutStr)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePlain(resultsOutStr)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         results.sort()
         for (name in results) {
-            when (val tryResult = this.writePlain("    $name\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePlain("    $name\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
         return Result.Ok(Unit)
     }
@@ -136,11 +136,11 @@ public open class PrettyFormatter<T>(
         val name = desc.paddedName(this.maxNameLen, desc.name.padding())
         when (val matchVal = desc.testMode()) {
             null -> {
-                when (val tryResult = this.writePlain("test $name ... ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                when (val tryResult = this.writePlain("test $name ... ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
             else -> {
                 val testMode = matchVal
-                when (val tryResult = this.writePlain("test $name - $testMode ... ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                when (val tryResult = this.writePlain("test $name - $testMode ... ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
         }
         return Result.Ok(Unit)
@@ -160,7 +160,7 @@ public open class PrettyFormatter<T>(
                 }
             }
         if (state.tests != 0 || state.benchmarks != 0) {
-            when (val tryResult = this.writePlain("\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePlain("\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
         return this.writePlain((plural(state.tests, "test")).toString() + ", " + (plural(state.benchmarks, "benchmark")).toString() + "\n")
     }
@@ -187,28 +187,28 @@ public open class PrettyFormatter<T>(
         // When running the tests serially, we print the name here so
         // that the user can see which test hangs.
         if (!this.isMultithreaded) {
-            when (val tryResult = this.writeTestName(desc)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writeTestName(desc)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
         return Result.Ok(Unit)
     }
 
     public override fun writeResult(desc: TestDesc, result: TestResult, execTime: TestExecTime?, arg3: List<UByte>, arg4: ConsoleTestState): Result<Unit> {
         if (this.isMultithreaded) {
-            when (val tryResult = this.writeTestName(desc)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writeTestName(desc)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
         when (result) {
-            TestResult.TrOk -> when (val tryResult = this.writeOk()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-            TestResult.TrFailed -> when (val tryResult = this.writeFailed()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-            is TestResult.TrFailedMsg -> when (val tryResult = this.writeFailed()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-            TestResult.TrIgnored -> when (val tryResult = this.writeIgnored(desc.ignoreMessage)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            TestResult.TrOk -> when (val tryResult = this.writeOk()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            TestResult.TrFailed -> when (val tryResult = this.writeFailed()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            is TestResult.TrFailedMsg -> when (val tryResult = this.writeFailed()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            TestResult.TrIgnored -> when (val tryResult = this.writeIgnored(desc.ignoreMessage)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             is TestResult.TrBench -> {
                 val (bs) = result
-                when (val tryResult = this.writeBench()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-                when (val tryResult = this.writePlain(": ${fmtBenchSamples(bs)}")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                when (val tryResult = this.writeBench()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = this.writePlain(": ${fmtBenchSamples(bs)}")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
-            TestResult.TrTimedFail -> when (val tryResult = this.writeTimeFailed()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            TestResult.TrTimedFail -> when (val tryResult = this.writeTimeFailed()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
-        when (val tryResult = this.writeTime(desc, execTime)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writeTime(desc, execTime)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         return this.writePlain("\n")
     }
 
@@ -216,35 +216,35 @@ public open class PrettyFormatter<T>(
 
     public override fun writeRunFinish(state: ConsoleTestState): Result<Boolean> {
         if (state.options.displayOutput) {
-            when (val tryResult = this.writeSuccesses(state)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writeSuccesses(state)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
         }
         val success = state.failed == 0
         if (!success) {
             if (!state.failures.isEmpty()) {
-                when (val tryResult = this.writeFailures(state)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                when (val tryResult = this.writeFailures(state)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
             }
             if (!state.timeFailures.isEmpty()) {
-                when (val tryResult = this.writeTimeFailures(state)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                when (val tryResult = this.writeTimeFailures(state)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
             }
         }
-        when (val tryResult = this.writePlain("\ntest result: ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePlain("\ntest result: ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
         if (success) {
             // There's no parallelism at this point so it's safe to use color
-            when (val tryResult = this.writePretty("ok", GREEN)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePretty("ok", GREEN)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
         } else {
-            when (val tryResult = this.writePretty("FAILED", RED)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePretty("FAILED", RED)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
         }
         val s = ". ${state.passed} passed; ${state.failed} failed; ${state.ignored} ignored; ${state.measured} measured; ${state.filteredOut} filtered out"
-        when (val tryResult = this.writePlain(s)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePlain(s)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
         when (val matchVal = state.execTime) {
             null -> {}
             else -> {
                 val execTime = matchVal
                 val timeStr = "; finished in $execTime"
-                when (val tryResult = this.writePlain(timeStr)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                when (val tryResult = this.writePlain(timeStr)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
             }
         }
-        when (val tryResult = this.writePlain("\n\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePlain("\n\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
         return Result.Ok(success)
     }
 

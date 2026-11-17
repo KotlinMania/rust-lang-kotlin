@@ -1,13 +1,13 @@
 // port-lint: source hash/sip.rs
 package io.github.kotlinmania.rustlang.core.hash.sip
 
-import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.rotateLeft
 import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -350,7 +350,7 @@ public fun u8to64Le(buf: List<UByte>, start: Int, len: Int): ULong {
                 val leftVal = matchVal.first
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
-                    val kind = Eq
+                    val kind = AssertKind.Eq
                     assertFailed(kind, leftVal, rightVal, Option.None)
                 }
             }

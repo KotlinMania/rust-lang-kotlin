@@ -5,9 +5,9 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.hashbrown.HashMap
-import io.github.kotlinmania.rustlang.hashbrown.RawEntryMut.Occupied
-import io.github.kotlinmania.rustlang.hashbrown.RawEntryMut.Vacant
 import io.github.kotlinmania.rustlang.hashbrown.makeHash
+import io.github.kotlinmania.rustlang.hashbrown.rawentry.RawEntryMut.Occupied
+import io.github.kotlinmania.rustlang.hashbrown.rawentry.RawEntryMut.Vacant
 
 public class RawEntryTestMapInlineTests {
     @kotlin.test.Test

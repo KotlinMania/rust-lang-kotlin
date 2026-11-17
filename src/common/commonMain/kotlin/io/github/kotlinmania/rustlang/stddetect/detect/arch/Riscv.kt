@@ -566,169 +566,169 @@ public sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rv32i(): Boolean = checkFor(::rv32i)
+public fun rv32i(): Boolean = checkFor(Feature::rv32i)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rv32e(): Boolean = checkFor(::rv32e)
+public fun rv32e(): Boolean = checkFor(Feature::rv32e)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rv64i(): Boolean = checkFor(::rv64i)
+public fun rv64i(): Boolean = checkFor(Feature::rv64i)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rv128i(): Boolean = checkFor(::rv128i)
+public fun rv128i(): Boolean = checkFor(Feature::rv128i)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun unalignedScalarMem(): Boolean = checkFor(::unalignedScalarMem)
+public fun unalignedScalarMem(): Boolean = checkFor(Feature::unalignedScalarMem)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun unalignedVectorMem(): Boolean = checkFor(::unalignedVectorMem)
+public fun unalignedVectorMem(): Boolean = checkFor(Feature::unalignedVectorMem)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zicsr(): Boolean = checkFor(::zicsr)
+public fun zicsr(): Boolean = checkFor(Feature::zicsr)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zicntr(): Boolean = checkFor(::zicntr)
+public fun zicntr(): Boolean = checkFor(Feature::zicntr)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zihpm(): Boolean = checkFor(::zihpm)
+public fun zihpm(): Boolean = checkFor(Feature::zihpm)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zifencei(): Boolean = checkFor(::zifencei)
+public fun zifencei(): Boolean = checkFor(Feature::zifencei)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zihintntl(): Boolean = checkFor(::zihintntl)
+public fun zihintntl(): Boolean = checkFor(Feature::zihintntl)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zihintpause(): Boolean = checkFor(::zihintpause)
+public fun zihintpause(): Boolean = checkFor(Feature::zihintpause)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zimop(): Boolean = checkFor(::zimop)
+public fun zimop(): Boolean = checkFor(Feature::zimop)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zicbom(): Boolean = checkFor(::zicbom)
+public fun zicbom(): Boolean = checkFor(Feature::zicbom)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zicboz(): Boolean = checkFor(::zicboz)
+public fun zicboz(): Boolean = checkFor(Feature::zicboz)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zicond(): Boolean = checkFor(::zicond)
+public fun zicond(): Boolean = checkFor(Feature::zicond)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun m(): Boolean = checkFor(::m)
+public fun m(): Boolean = checkFor(Feature::m)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zmmul(): Boolean = checkFor(::zmmul)
+public fun zmmul(): Boolean = checkFor(Feature::zmmul)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun a(): Boolean = checkFor(::a)
+public fun a(): Boolean = checkFor(Feature::a)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zalrsc(): Boolean = checkFor(::zalrsc)
+public fun zalrsc(): Boolean = checkFor(Feature::zalrsc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zaamo(): Boolean = checkFor(::zaamo)
+public fun zaamo(): Boolean = checkFor(Feature::zaamo)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zawrs(): Boolean = checkFor(::zawrs)
+public fun zawrs(): Boolean = checkFor(Feature::zawrs)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zabha(): Boolean = checkFor(::zabha)
+public fun zabha(): Boolean = checkFor(Feature::zabha)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zacas(): Boolean = checkFor(::zacas)
+public fun zacas(): Boolean = checkFor(Feature::zacas)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zam(): Boolean = checkFor(::zam)
+public fun zam(): Boolean = checkFor(Feature::zam)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ztso(): Boolean = checkFor(::ztso)
+public fun ztso(): Boolean = checkFor(Feature::ztso)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun f(): Boolean = checkFor(::f)
+public fun f(): Boolean = checkFor(Feature::f)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun d(): Boolean = checkFor(::d)
+public fun d(): Boolean = checkFor(Feature::d)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
@@ -740,193 +740,193 @@ public fun q(): Boolean = checkFor(Feature::q)
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zfh(): Boolean = checkFor(::zfh)
+public fun zfh(): Boolean = checkFor(Feature::zfh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zfhmin(): Boolean = checkFor(::zfhmin)
+public fun zfhmin(): Boolean = checkFor(Feature::zfhmin)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zfa(): Boolean = checkFor(::zfa)
+public fun zfa(): Boolean = checkFor(Feature::zfa)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zfbfmin(): Boolean = checkFor(::zfbfmin)
+public fun zfbfmin(): Boolean = checkFor(Feature::zfbfmin)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zfinx(): Boolean = checkFor(::zfinx)
+public fun zfinx(): Boolean = checkFor(Feature::zfinx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zdinx(): Boolean = checkFor(::zdinx)
+public fun zdinx(): Boolean = checkFor(Feature::zdinx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zhinx(): Boolean = checkFor(::zhinx)
+public fun zhinx(): Boolean = checkFor(Feature::zhinx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zhinxmin(): Boolean = checkFor(::zhinxmin)
+public fun zhinxmin(): Boolean = checkFor(Feature::zhinxmin)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun c(): Boolean = checkFor(::c)
+public fun c(): Boolean = checkFor(Feature::c)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zca(): Boolean = checkFor(::zca)
+public fun zca(): Boolean = checkFor(Feature::zca)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zcf(): Boolean = checkFor(::zcf)
+public fun zcf(): Boolean = checkFor(Feature::zcf)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zcd(): Boolean = checkFor(::zcd)
+public fun zcd(): Boolean = checkFor(Feature::zcd)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zcb(): Boolean = checkFor(::zcb)
+public fun zcb(): Boolean = checkFor(Feature::zcb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zcmop(): Boolean = checkFor(::zcmop)
+public fun zcmop(): Boolean = checkFor(Feature::zcmop)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun b(): Boolean = checkFor(::b)
+public fun b(): Boolean = checkFor(Feature::b)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zba(): Boolean = checkFor(::zba)
+public fun zba(): Boolean = checkFor(Feature::zba)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbb(): Boolean = checkFor(::zbb)
+public fun zbb(): Boolean = checkFor(Feature::zbb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbc(): Boolean = checkFor(::zbc)
+public fun zbc(): Boolean = checkFor(Feature::zbc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbs(): Boolean = checkFor(::zbs)
+public fun zbs(): Boolean = checkFor(Feature::zbs)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbkb(): Boolean = checkFor(::zbkb)
+public fun zbkb(): Boolean = checkFor(Feature::zbkb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbkc(): Boolean = checkFor(::zbkc)
+public fun zbkc(): Boolean = checkFor(Feature::zbkc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbkx(): Boolean = checkFor(::zbkx)
+public fun zbkx(): Boolean = checkFor(Feature::zbkx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zknd(): Boolean = checkFor(::zknd)
+public fun zknd(): Boolean = checkFor(Feature::zknd)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zkne(): Boolean = checkFor(::zkne)
+public fun zkne(): Boolean = checkFor(Feature::zkne)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zknh(): Boolean = checkFor(::zknh)
+public fun zknh(): Boolean = checkFor(Feature::zknh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zksed(): Boolean = checkFor(::zksed)
+public fun zksed(): Boolean = checkFor(Feature::zksed)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zksh(): Boolean = checkFor(::zksh)
+public fun zksh(): Boolean = checkFor(Feature::zksh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zkr(): Boolean = checkFor(::zkr)
+public fun zkr(): Boolean = checkFor(Feature::zkr)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zkn(): Boolean = checkFor(::zkn)
+public fun zkn(): Boolean = checkFor(Feature::zkn)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zks(): Boolean = checkFor(::zks)
+public fun zks(): Boolean = checkFor(Feature::zks)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zk(): Boolean = checkFor(::zk)
+public fun zk(): Boolean = checkFor(Feature::zk)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zkt(): Boolean = checkFor(::zkt)
+public fun zkt(): Boolean = checkFor(Feature::zkt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
@@ -938,157 +938,157 @@ public fun v(): Boolean = checkFor(Feature::v)
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zve32x(): Boolean = checkFor(::zve32x)
+public fun zve32x(): Boolean = checkFor(Feature::zve32x)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zve32f(): Boolean = checkFor(::zve32f)
+public fun zve32f(): Boolean = checkFor(Feature::zve32f)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zve64x(): Boolean = checkFor(::zve64x)
+public fun zve64x(): Boolean = checkFor(Feature::zve64x)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zve64f(): Boolean = checkFor(::zve64f)
+public fun zve64f(): Boolean = checkFor(Feature::zve64f)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zve64d(): Boolean = checkFor(::zve64d)
+public fun zve64d(): Boolean = checkFor(Feature::zve64d)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvfh(): Boolean = checkFor(::zvfh)
+public fun zvfh(): Boolean = checkFor(Feature::zvfh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvfhmin(): Boolean = checkFor(::zvfhmin)
+public fun zvfhmin(): Boolean = checkFor(Feature::zvfhmin)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvfbfmin(): Boolean = checkFor(::zvfbfmin)
+public fun zvfbfmin(): Boolean = checkFor(Feature::zvfbfmin)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvfbfwma(): Boolean = checkFor(::zvfbfwma)
+public fun zvfbfwma(): Boolean = checkFor(Feature::zvfbfwma)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvbb(): Boolean = checkFor(::zvbb)
+public fun zvbb(): Boolean = checkFor(Feature::zvbb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvbc(): Boolean = checkFor(::zvbc)
+public fun zvbc(): Boolean = checkFor(Feature::zvbc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkb(): Boolean = checkFor(::zvkb)
+public fun zvkb(): Boolean = checkFor(Feature::zvkb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkg(): Boolean = checkFor(::zvkg)
+public fun zvkg(): Boolean = checkFor(Feature::zvkg)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkned(): Boolean = checkFor(::zvkned)
+public fun zvkned(): Boolean = checkFor(Feature::zvkned)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvknha(): Boolean = checkFor(::zvknha)
+public fun zvknha(): Boolean = checkFor(Feature::zvknha)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvknhb(): Boolean = checkFor(::zvknhb)
+public fun zvknhb(): Boolean = checkFor(Feature::zvknhb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvksed(): Boolean = checkFor(::zvksed)
+public fun zvksed(): Boolean = checkFor(Feature::zvksed)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvksh(): Boolean = checkFor(::zvksh)
+public fun zvksh(): Boolean = checkFor(Feature::zvksh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkn(): Boolean = checkFor(::zvkn)
+public fun zvkn(): Boolean = checkFor(Feature::zvkn)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvknc(): Boolean = checkFor(::zvknc)
+public fun zvknc(): Boolean = checkFor(Feature::zvknc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkng(): Boolean = checkFor(::zvkng)
+public fun zvkng(): Boolean = checkFor(Feature::zvkng)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvks(): Boolean = checkFor(::zvks)
+public fun zvks(): Boolean = checkFor(Feature::zvks)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvksc(): Boolean = checkFor(::zvksc)
+public fun zvksc(): Boolean = checkFor(Feature::zvksc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvksg(): Boolean = checkFor(::zvksg)
+public fun zvksg(): Boolean = checkFor(Feature::zvksg)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkt(): Boolean = checkFor(::zvkt)
+public fun zvkt(): Boolean = checkFor(Feature::zvkt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun j(): Boolean = checkFor(::j)
+public fun j(): Boolean = checkFor(Feature::j)
 
 /**
  * PLEASE: do not use this, it is an implementation detail

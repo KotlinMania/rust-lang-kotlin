@@ -2,7 +2,6 @@
 
 package io.github.kotlinmania.rustlang.core.ptr
 
-import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.intrinsics.assume
 import io.github.kotlinmania.rustlang.core.intrinsics.cttzNonzero
@@ -34,6 +33,7 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.function.FnPtr
 import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawParts
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut
@@ -930,7 +930,7 @@ public fun swapNonoverlappingBytes(x: MutPtr, y: MutPtr, bytes: NonZero<Int, Non
         val chunks1 = chunks.get()
         for (i in 0 until chunks1) {
             // SAFETY: i is in [0, chunks) so the adds and dereferences are in-bounds.
-            swapChunk(RustMutableReference(MutPtr((MutPtr((x1).rawAddress + ((i).toLong() * (UnresolvedTypeLayout<MaybeUninit<UByteArray>>()).strideBytes))).rawAddress), UnresolvedTypeLayout<MaybeUninit<UByteArray>>()), RustMutableReference(MutPtr((MutPtr((y1).rawAddress + ((i).toLong() * (UnresolvedTypeLayout<MaybeUninit<UByteArray>>()).strideBytes))).rawAddress), UnresolvedTypeLayout<MaybeUninit<UByteArray>>()))
+            swapChunk(RustMutableReference(MutPtr((MutPtr((x1).rawAddress + ((i).toLong() * (UnresolvedTypeLayout<MaybeUninit<UByteArray>>()).strideBytes))).rawAddress), UnresolvedTypeLayout<MaybeUninit<UByteArray>>()), RustMutableReference(MutPtr((MutPtr((y1).rawAddress + ((i).toLong() * (UnresolvedTypeLayout<MaybeUninit<UByteArray>>()).strideBytes))).rawAddress), UnresolvedTypeLayout<MaybeUninit<UByteArray>>()), n)
         }
     }
     // Same as `swapNonoverlappingBytes`, but accepts at most 1+2+4=7 bytes
@@ -959,7 +959,7 @@ public fun swapNonoverlappingBytes(x: MutPtr, y: MutPtr, bytes: NonZero<Int, Non
                     val leftVal = matchVal.first
                     val rightVal = matchVal.second
                     if (!(leftVal == rightVal)) {
-                        val kind = Eq
+                        val kind = AssertKind.Eq
                         assertFailed(kind, leftVal, rightVal, Option.None)
                     }
                 }

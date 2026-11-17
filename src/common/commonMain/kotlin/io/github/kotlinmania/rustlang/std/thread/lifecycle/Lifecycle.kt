@@ -121,7 +121,7 @@ public open class ThreadInit(
         // why we take Holder<Self>, to ensure the Holder is not destroyed until after this point.
         // Cloning the handle does not invoke the global allocator, it is an Arc.
         when (val matchVal = setCurrent(this.handle.clone())) {
-            is Err -> {
+            is Result.Err -> {
                 run {
                     when (val matchVal1 = panicOutput()) {
                         null -> {}
@@ -194,7 +194,7 @@ public open class Packet<T> internal constructor(
         when (val matchVal1 = catchUnwind(AssertUnwindSafe({
             this.result.getMut() = null
         }))) {
-            is Err -> {
+            is Result.Err -> {
                 run {
                     when (val matchVal2 = panicOutput()) {
                         null -> {}

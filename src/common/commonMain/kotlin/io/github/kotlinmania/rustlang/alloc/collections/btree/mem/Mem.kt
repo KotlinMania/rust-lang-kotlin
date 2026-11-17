@@ -1,11 +1,10 @@
 // port-lint: source collections/btree/mem.rs
 package io.github.kotlinmania.rustlang.alloc.collections.btree.mem
 
-import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
-import io.github.kotlinmania.rustlang.core.ptr.read
+import io.github.kotlinmania.rustlang.core.ptr.write
 
 // keep as illustration and for future use
 

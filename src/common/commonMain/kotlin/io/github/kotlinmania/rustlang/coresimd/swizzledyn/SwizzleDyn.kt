@@ -25,41 +25,41 @@ public fun Simd<UByte>.swizzleDyn(idxs: Simd<UByte>, n: Int): Simd<UByte> {
     // SAFETY: Intrinsics covered by cfg
     return when (n) {
         // Aarch64
-        8, 16, 24, 32, 48, 64 -> aarch64Swizzle(this, idxs)
+        8, 16, 24, 32, 48, 64 -> aarch64Swizzle(this, idxs, n)
         // WASM SIMD128
-        16 -> transize(wasm.i8x16Swizzle, this, idxs)
-        32 -> transize(swizzleDynSplit, this, idxs)
+        16 -> transize(wasm.i8x16Swizzle, this, idxs, n)
+        32 -> transize(swizzleDynSplit, this, idxs, n)
         // LoongArch64
-        16 -> transize(::loong64LsxSwizzle, this, idxs)
-        32 -> transize(::loong64LasxSwizzle, this, idxs)
-        32 -> transize(swizzleDynSplit, this, idxs)
-        64 -> transize(swizzleDynSplit, this, idxs)
+        16 -> transize(::loong64LsxSwizzle, this, idxs, n)
+        32 -> transize(::loong64LasxSwizzle, this, idxs, n)
+        32 -> transize(swizzleDynSplit, this, idxs, n)
+        64 -> transize(swizzleDynSplit, this, idxs, n)
         // x86, x86-64
-        16 -> transize(x86.mmShuffleEpi8, this, zeroingIdxs(idxs))
+        16 -> transize(x86.mmShuffleEpi8, this, zeroingIdxs(idxs, n), n)
         32 -> {
             val swizzler =
                 { bytes, idxs1 ->
                     // Clamp out-of-range indices to the first byte of a
                     // second, all-zero table.
-                    val idxs2 = x86.mm256MinEpu8(idxs1, Simd.splat(n.toUByte()).into())
+                    val idxs2 = x86.mm256MinEpu8(idxs1, Simd.splat(n.toUByte(), n).into())
                     x86.mm256Permutex2varEpi8(bytes, idxs2, x86.mm256SetzeroSi256())
                 }
-            transize(swizzler, this, idxs)
+            transize(swizzler, this, idxs, n)
         }
-        32 -> transize(::avx2Pshufb, this, idxs)
-        32 -> transize(swizzleDynSplit, this, idxs)
+        32 -> transize(::avx2Pshufb, this, idxs, n)
+        32 -> transize(swizzleDynSplit, this, idxs, n)
         // Notable absence: avx512bw pshufb shuffle
         64 -> {
             val swizzler1 =
                 { bytes, idxs1 ->
                     // Clamp out-of-range indices to the first byte of a
                     // second, all-zero table.
-                    val idxs2 = x86.mm512MinEpu8(idxs1, Simd.splat(n.toUByte()).into())
+                    val idxs2 = x86.mm512MinEpu8(idxs1, Simd.splat(n.toUByte(), n).into())
                     x86.mm512Permutex2varEpi8(bytes, idxs2, x86.mm512SetzeroSi512())
                 }
-            transize(swizzler1, this, idxs)
+            transize(swizzler1, this, idxs, n)
         }
-        64 -> transize(swizzleDynSplit, this, idxs)
+        64 -> transize(swizzleDynSplit, this, idxs, n)
         // scalar fallback
         else -> {
             val array = MutableList(n) { 0 }
@@ -93,7 +93,7 @@ public fun swizzleDynSplit(bytes: Simd<UByte>, idxs: Simd<UByte>, n: Int, half: 
     val tableHigh = bytes.extract()
     val idxsLow = idxs.extract()
     val idxsHigh = idxs.extract()
-    val tableHighOffset = Simd.splat(half.toUByte())
+    val tableHighOffset = Simd.splat(half.toUByte(), n)
     val outputLowFromLow = tableLow.swizzleDyn(idxsLow)
     val outputLowFromHigh = tableHigh.swizzleDyn(idxsLow - tableHighOffset)
     val outputLow = outputLowFromLow or outputLowFromHigh
@@ -235,6 +235,6 @@ public fun <T> transize(f: (T, T) -> T, a: Simd<UByte>, b: Simd<UByte>, n: Int):
 public fun zeroingIdxs(idxs: Simd<UByte>, n: Int): Simd<UByte> {
     // Adding this sets the high bit for indices N..=127, while PSHUFB ignores
     // the other changed bits. The OR preserves the high bit for indices 128..=255.
-    val zeroingBits = idxs + Simd.splat((127 - n + 1).toUByte())
+    val zeroingBits = idxs + Simd.splat((127 - n + 1).toUByte(), n)
     return idxs or zeroingBits
 }

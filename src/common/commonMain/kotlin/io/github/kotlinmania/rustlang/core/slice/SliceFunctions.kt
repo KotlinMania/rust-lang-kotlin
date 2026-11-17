@@ -2,7 +2,6 @@ package io.github.kotlinmania.rustlang.core.slice
 
 import io.github.kotlinmania.rustlang.core.Simd
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
-import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
@@ -37,9 +36,9 @@ import io.github.kotlinmania.rustlang.core.ops.range.OneSidedRangeBound.End
 import io.github.kotlinmania.rustlang.core.ops.range.OneSidedRangeBound.StartInclusive
 import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
-import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panic.constPanic
+import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -1599,7 +1598,7 @@ public fun <T> List<T>.asRchunksMut(n: Int): Pair<MutableList<T>, MutableList<Li
  */
 public fun <T> List<T>.arrayWindows(n: Int): ArrayWindows<T> {
     check(n != 0) { "window size must be non-zero" }
-    return ArrayWindows.new(this)
+    return ArrayWindows.new(this, n)
 }
 
 /**
@@ -4305,7 +4304,7 @@ public fun <T> List<T>.asSimd(lanes: Int, typeLayoutT: TypeLayout<T> = Unresolve
             val leftVal = matchVal.first
             val rightVal = matchVal.second
             if (!(leftVal == rightVal)) {
-                val kind = Eq
+                val kind = AssertKind.Eq
                 assertFailed(kind, leftVal, rightVal, Option.None)
             }
         }
@@ -4341,7 +4340,7 @@ public fun <T> List<T>.asSimdMut(lanes: Int, typeLayoutT: TypeLayout<T> = Unreso
             val leftVal = matchVal.first
             val rightVal = matchVal.second
             if (!(leftVal == rightVal)) {
-                val kind = Eq
+                val kind = AssertKind.Eq
                 assertFailed(kind, leftVal, rightVal, Option.None)
             }
         }
@@ -4842,7 +4841,7 @@ public fun <Output, T, I> List<T>.getDisjointUncheckedMut(indices: List<I>, n: I
  * ```
  */
 public fun <Output, T, I> List<T>.getDisjointMut(indices: List<I>, n: Int): Result<List<Output>, GetDisjointMutError> where I : GetDisjointMutIndex<I>, I : SliceIndex<List<T>, Output> {
-    when (val tryResult = getDisjointCheckValid(indices, this.size)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<Output>, GetDisjointMutError>(tryResult.error) }
+    when (val tryResult = getDisjointCheckValid(indices, this.size, n)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<Output>, GetDisjointMutError>(tryResult.error) }
     // SAFETY: The `getDisjointCheckValid()` call checked that all indices
     // are disjunct and in bounds.
     return Result.Ok<List<Output>, GetDisjointMutError>(this.getDisjointUncheckedMut(indices))
@@ -4962,7 +4961,7 @@ public fun <T> List<T>.elementOffset(element: T, typeLayoutT: TypeLayout<T> = Un
  * }
  * ```
  */
-public fun <T> List<T>.subsliceRange(subslice: List<T>, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): range.Range<Int>? {
+public fun <T> List<T>.subsliceRange(subslice: List<T>, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): IntRange? {
     if (((typeLayoutT).sizeBytes == 0L)) {
         error("elements are zero-sized")
     }
@@ -4975,7 +4974,7 @@ public fun <T> List<T>.subsliceRange(subslice: List<T>, typeLayoutT: TypeLayout<
     val start = byteStart / sizeOf<T>(typeLayoutT = typeLayoutT)
     val end = (start + subslice.size)
     return if (start <= this.size && end <= this.size) {
-        range.Range(start = start, end = end)
+        Range.Range(start = start, end = end)
     } else {
         null
     }
@@ -5206,11 +5205,5 @@ public fun IntRange.isOverlapping(other: IntRange): Boolean = (this.start < othe
 // SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
 
 // SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
-public fun range.Range<Int>.isInBounds(len: Int): Boolean = Range.from(this).isInBounds(len)
-
-public fun range.Range<Int>.isOverlapping(other: range.Range<Int>): Boolean = Range.from(this).isOverlapping(Range.from(other))
 
 // SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
-public fun range.RangeInclusive<Int>.isInBounds(len: Int): Boolean = RangeInclusive.from(this).isInBounds(len)
-
-public fun range.RangeInclusive<Int>.isOverlapping(other: range.RangeInclusive<Int>): Boolean = RangeInclusive.from(this).isOverlapping(RangeInclusive.from(other))

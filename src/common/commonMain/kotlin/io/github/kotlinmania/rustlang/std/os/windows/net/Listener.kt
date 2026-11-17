@@ -12,14 +12,14 @@ import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.IntoRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawSocket
 import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtNz
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.Socket
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.AF_UNIX
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SOCK_STREAM
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SockaddrUn
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.bind
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getsockname
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.listen
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvtNz
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.winsock.startup
 
 public class DebugStruct(
@@ -95,7 +95,7 @@ public open class UnixListener(
         val builder = DebugStruct(fmt, "UnixListener")
         builder.field("sock", this.value.asInner())
         when (val matchVal = this.localAddr()) {
-            is Ok -> {
+            is Result.Ok -> {
                 val addr = matchVal.value
                 builder.field("local", addr)
             }

@@ -128,7 +128,7 @@ private object LibGeneratedJniBridge {
     external fun wasip1LibGeneratedProcRaise(arg0: Int): Int
 
     @JvmStatic
-    external fun wasip1LibGeneratedSchedYield(): Int
+    external fun wasip1LibGeneratedWasiSnapshotPreview1SchedYield(): Int
 
     @JvmStatic
     external fun wasip1LibGeneratedRandomGet(arg0: Int, arg1: Int): Int
@@ -268,8 +268,8 @@ public actual fun procExit(arg0: Int): Nothing {
 public actual fun procRaise(arg0: Int): Int =
     LibGeneratedJniBridge.wasip1LibGeneratedProcRaise(arg0)
 
-public actual fun schedYield(): Int =
-    LibGeneratedJniBridge.wasip1LibGeneratedSchedYield()
+public actual fun wasiSnapshotPreview1SchedYield(): Int =
+    LibGeneratedJniBridge.wasip1LibGeneratedWasiSnapshotPreview1SchedYield()
 
 public actual fun randomGet(arg0: Int, arg1: Int): Int =
     LibGeneratedJniBridge.wasip1LibGeneratedRandomGet(arg0, arg1)

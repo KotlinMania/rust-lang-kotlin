@@ -127,8 +127,8 @@ private external fun wasmWasip1LibGeneratedProcExit(p0: Int)
 @JsFun("(p0) => globalThis.__km_napi_kmcore.wasip1LibGeneratedProcRaise(p0)")
 private external fun wasmWasip1LibGeneratedProcRaise(p0: Int): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.wasip1LibGeneratedSchedYield()")
-private external fun wasmWasip1LibGeneratedSchedYield(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.wasip1LibGeneratedWasiSnapshotPreview1SchedYield()")
+private external fun wasmWasip1LibGeneratedWasiSnapshotPreview1SchedYield(): Int
 
 @JsFun("(p0, p1) => globalThis.__km_napi_kmcore.wasip1LibGeneratedRandomGet(p0, p1)")
 private external fun wasmWasip1LibGeneratedRandomGet(p0: Int, p1: Int): Int
@@ -271,8 +271,8 @@ public actual fun procExit(arg0: Int): Nothing {
 public actual fun procRaise(arg0: Int): Int =
     if (libGeneratedNapiAvailable) wasmWasip1LibGeneratedProcRaise(arg0) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun schedYield(): Int =
-    if (libGeneratedNapiAvailable) wasmWasip1LibGeneratedSchedYield() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun wasiSnapshotPreview1SchedYield(): Int =
+    if (libGeneratedNapiAvailable) wasmWasip1LibGeneratedWasiSnapshotPreview1SchedYield() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun randomGet(arg0: Int, arg1: Int): Int =
     if (libGeneratedNapiAvailable) wasmWasip1LibGeneratedRandomGet(arg0, arg1) else throw UnsupportedOperationException("Native FFI addon is not available")

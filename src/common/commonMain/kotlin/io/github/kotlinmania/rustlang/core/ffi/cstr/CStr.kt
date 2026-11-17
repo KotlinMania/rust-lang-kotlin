@@ -364,7 +364,7 @@ public open class CStr internal constructor(
         }
     }
 
-    public open fun index(index: range.RangeFrom<Int>): CStr = this.index(RangeFrom.from(index))
+    public open fun indexRangeFromInt(index: RangeFrom<Int>): CStr = this.index(RangeFrom.from(index))
 
     public override fun asRef(): CStr = this
 

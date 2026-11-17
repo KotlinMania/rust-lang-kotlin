@@ -119,7 +119,7 @@ public fun <I, F> MapWindows.Companion.new(iter: I, f: F, n: Int, typeLayoutI: T
     if (((UnresolvedTypeLayout<Item>()).sizeBytes == 0L)) {
         check(n.checkedMul(2) != null) { "array size of `Iterator::map_windows` is too large" }
     }
-    return MapWindows(inner = MapWindowsInner.new(iter), f = f)
+    return MapWindows(inner = MapWindowsInner.new(iter, n), f = f)
 }
 
 public fun <I> MapWindowsInner.Companion.new(iter: I, n: Int): MapWindowsInner<I, Item> = MapWindowsInner(iter = iter, buffer = null)
@@ -128,7 +128,7 @@ public fun <I> MapWindowsInner<I, Item>.nextWindow(n: Int): List<Item>? {
     when (val matchVal = this.buffer) {
         // It is the first time to advance. We collect
         // the first `N` items from `self.iter` to initialize `self.buffer`.
-        null -> this.buffer = Buffer.tryFromIter(this.iter)
+        null -> this.buffer = Buffer.tryFromIter(this.iter, n)
         else -> {
             val buffer = matchVal
             when (val matchVal1 = this.iter.next()) {
@@ -163,7 +163,7 @@ public fun <I> MapWindowsInner<I, Item>.sizeHint(n: Int): Pair<Int, Int?> {
 }
 
 public fun <T> Buffer.Companion.tryFromIter(iter: Any, n: Int): Buffer<T>? {
-    val firstHalf = (iterNextChunk(iter).ok() ?: return null)
+    val firstHalf = (iterNextChunk(iter, n).ok() ?: return null)
     val buffer = listOf(MaybeUninit.new(firstHalf, PrimitiveLayouts.U8).transpose(), List(n) { MaybeUninit.uninit(PrimitiveLayouts.U8) })
     return Buffer(buffer = buffer, start = 0)
 }

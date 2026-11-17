@@ -24,6 +24,108 @@ import io.github.kotlinmania.rustlang.core.num.wrappingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.CountBits
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorAbs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorAdd
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorAnd
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorAndc
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorAvg
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorCeil
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorCompare
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorComparePredicate
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorCompareRange
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorCopyUntilZero
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorCopyUntilZeroCC
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorEquality
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorEqualityIdx
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorEqv
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorExtendSigned64
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorExtract
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorFindAnyEq
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorFindAnyEqCC
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorFindAnyEqIdx
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorFindAnyEqIdxCC
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorFindAnyEqOrZeroIdx
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorFindAnyEqOrZeroIdxCC
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorFindAnyNe
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorFindAnyNeCC
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorFindAnyNeIdx
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorFindAnyNeIdxCC
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorFindAnyNeOrZeroIdx
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorFindAnyNeOrZeroIdxCC
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorFloor
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorFpTestDataClass
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorGatherElement
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorGfmsum
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorGfmsumAccum
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorInsert
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorInsertAndZero
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorLoad
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorLoadPair
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorMadd
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorMax
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorMeadd
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorMergeh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorMergel
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorMhadd
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorMin
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorMladd
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorMoadd
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorMul
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorMule
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorMulh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorMulo
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorNabs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorNand
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorNeg
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorNmadd
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorNmsub
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorNor
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorOr
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorOrc
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorPack
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorPacks
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorPacksCC
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorPacksu
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorPacksuCC
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorPerm
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorPromote
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorRevb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorReve
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorRint
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorRl
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorRli
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorRound
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorRoundc
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSearchString
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSel
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSigned
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSl
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSlb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSld
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSll
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSplat
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSplats
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSqrt
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSr
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSra
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSrab
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSral
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSrb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSrdb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSrl
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorStore
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSub
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSubc
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSum2
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSum4
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorSumU128
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorTestMask
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorTrunc
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorUnpackh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorUnpackl
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorUnsigned
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorXor
 import io.github.kotlinmania.rustlang.corearch.simd.F32x2
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8
 import io.github.kotlinmania.rustlang.corearch.simd.I32x4
@@ -41,6 +143,18 @@ import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
 // [Reference Summary]: https://www.ibm.com/support/pages/sites/default/files/2021-05/SA22-7871-10.pdf
 // [IBM docs]: https://www.ibm.com/docs/en/zos/2.4.0?topic=support-vector-built-in-functions
 
+// Z vector intrinsic      C23 math.h  LLVM IR         ISO/IEC 60559 operation        inexact  vfidb parameters
+//
+// vecRint                rint        llvm.rint       roundToIntegralExact           yes      0, 0
+// vecRoundc              nearbyint   llvm.nearbyint  n/a                            no       4, 0
+// vecFloor / vecRoundm  floor       llvm.floor      roundToIntegralTowardNegative  no       4, 7
+// vecCeil / vecRoundp   ceil        llvm.ceil       roundToIntegralTowardPositive  no       4, 6
+// vecTrunc / vecRoundz  trunc       llvm.trunc      roundToIntegralTowardZero      no       4, 5
+// vecRound               roundeven   llvm.roundeven  roundToIntegralTiesToEven      no       4, 4
+// n/a                     round       llvm.round      roundToIntegralTiesAway        no       4, 1
+// `simdRoundTiesEven` is implemented as `llvm.rint`.
+// Note(llvm): https://github.com/llvm/llvm-project/issues/153655
+// Other targets can use a min/max for the saturation + a truncation.
 // NOTE: `vuplh` is used for "unpack logical high", hence `vuplhw`.
 
 /**
@@ -1334,7 +1448,7 @@ public open class ShuffleMask(
             return ShuffleMask(mask)
         }
 
-        public fun pack(n: Int): ShuffleMask = ShuffleMask.odd()
+        public fun pack(n: Int): ShuffleMask = ShuffleMask.odd(n)
 
         public fun unpackLow(n: Int): ShuffleMask {
             val mask = UIntArray(n) { 0u }
@@ -2272,12 +2386,12 @@ public fun vecFloate(a: VectorDouble): VectorFloat {
 /**
  * Vector Convert from int to float
  */
-public fun vecFloat(a: VectorFloat): VectorFloat = a.vecFloat()
+public fun vecFloat(a: io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorFloat): VectorFloat = a.vecFloat()
 
 /**
  * Vector Convert from long long to double
  */
-public fun vecDouble(a: VectorDouble): VectorDouble = a.vecDouble()
+public fun vecDouble(a: io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed.VectorDouble): VectorDouble = a.vecDouble()
 
 /**
  * Vector Sign Extend to Doubleword

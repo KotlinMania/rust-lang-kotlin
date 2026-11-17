@@ -1463,7 +1463,7 @@ static Napi::Value wasip1LibGeneratedProcRaise_napi(const Napi::CallbackInfo& km
     return Napi::Number::New(km_env, static_cast<int32_t>(km_res));
 }
 
-static Napi::Value wasip1LibGeneratedSchedYield_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value wasip1LibGeneratedWasiSnapshotPreview1SchedYield_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     typedef int32_t (*km_fn_t)(void);
     static km_fn_t km_fn_ptr = nullptr;
@@ -1714,7 +1714,7 @@ static void register_lib_generated_napi(Napi::Env env, Napi::Object exports) {
     exports.Set("wasip1LibGeneratedPollOneoff", Napi::Function::New(env, wasip1LibGeneratedPollOneoff_napi));
     exports.Set("wasip1LibGeneratedProcExit", Napi::Function::New(env, wasip1LibGeneratedProcExit_napi));
     exports.Set("wasip1LibGeneratedProcRaise", Napi::Function::New(env, wasip1LibGeneratedProcRaise_napi));
-    exports.Set("wasip1LibGeneratedSchedYield", Napi::Function::New(env, wasip1LibGeneratedSchedYield_napi));
+    exports.Set("wasip1LibGeneratedWasiSnapshotPreview1SchedYield", Napi::Function::New(env, wasip1LibGeneratedWasiSnapshotPreview1SchedYield_napi));
     exports.Set("wasip1LibGeneratedRandomGet", Napi::Function::New(env, wasip1LibGeneratedRandomGet_napi));
     exports.Set("wasip1LibGeneratedSockAccept", Napi::Function::New(env, wasip1LibGeneratedSockAccept_napi));
     exports.Set("wasip1LibGeneratedSockRecv", Napi::Function::New(env, wasip1LibGeneratedSockRecv_napi));

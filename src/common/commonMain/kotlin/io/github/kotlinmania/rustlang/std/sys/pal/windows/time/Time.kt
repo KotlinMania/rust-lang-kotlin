@@ -9,8 +9,19 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicI64
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.sys.pal.c
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.CREATE_WAITABLE_TIMER_HIGH_RESOLUTION
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.TIMER_ALL_ACCESS
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FALSE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Handle
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.INFINITE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.WAIT_FAILED
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.closeHandle
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.createWaitableTimerExW
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.queryPerformanceCounter
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.queryPerformanceFrequency
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.setWaitableTimer
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.waitForSingleObject
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt
 
 public val NANOS_PER_SEC: ULong = 1000000000uL
 
@@ -25,7 +36,7 @@ public fun intervals2dur(intervals: ULong): Duration = Duration.new(intervals / 
 public fun now(): Long {
     val localStorageL28C8 = AddressableLocal(0L, PrimitiveLayouts.I64)
     val qpcValue by localStorageL28C8
-    cvt(c.QueryPerformanceCounter(RustMutableReference(localStorageL28C8.asMutPtr(), localStorageL28C8.layout))).unwrap()
+    cvt(queryPerformanceCounter(RustMutableReference(localStorageL28C8.asMutPtr(), localStorageL28C8.layout))).unwrap()
     return qpcValue
 }
 
@@ -48,7 +59,7 @@ public fun frequencyInit(cache: AtomicI64): Long {
     val localStorageL51C8 = AddressableLocal(0, PrimitiveLayouts.I32)
     val frequency by localStorageL51C8
     run {
-        cvt(c.QueryPerformanceFrequency(RustMutableReference(localStorageL51C8.asMutPtr(), localStorageL51C8.layout))).unwrap()
+        cvt(queryPerformanceFrequency(RustMutableReference(localStorageL51C8.asMutPtr(), localStorageL51C8.layout))).unwrap()
     }
     // SAFETY: According to the MSDN entry for `QueryPerformanceFrequency`,
     // a value of 0 will never be returned starting from Windows XP.
@@ -70,9 +81,9 @@ public fun epsilon(): Duration {
  * A timer you can wait on.
  */
 public open class WaitableTimer internal constructor(
-    handleCtorArg: c.Handle,
+    handleCtorArg: Handle,
 ) {
-    public var handle: c.Handle = handleCtorArg
+    public var handle: Handle = handleCtorArg
         internal set
 
     public open fun set(duration: Duration): Result<Unit, Unit> {
@@ -80,7 +91,7 @@ public open class WaitableTimer internal constructor(
         // Negative values are relative times whereas positive values are absolute.
         // Therefore we negate the relative duration.
         val time = when (val tryResult = checkedDur2intervals(duration).okOr()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }.neg()
-        val result = c.SetWaitableTimer(this.handle, time, 0, null, ConstPtr(0L), c.FALSE)
+        val result = setWaitableTimer(this.handle, time, 0, null, ConstPtr(0L), FALSE)
         return if (result != 0) {
             Result.Ok<Unit, Unit>(Unit)
         } else {
@@ -89,8 +100,8 @@ public open class WaitableTimer internal constructor(
     }
 
     public open fun wait(): Result<Unit, Unit> {
-        val result = c.WaitForSingleObject(this.handle, c.INFINITE)
-        return if (result != c.WAIT_FAILED) {
+        val result = waitForSingleObject(this.handle, INFINITE)
+        return if (result != WAIT_FAILED) {
             Result.Ok<Unit, Unit>(Unit)
         } else {
             Result.Err<Unit, Unit>(Unit)
@@ -98,12 +109,12 @@ public open class WaitableTimer internal constructor(
     }
 
     public open fun drop() {
-        c.CloseHandle(this.handle)
+        closeHandle(this.handle)
     }
 
     public companion object {
         public operator fun invoke(
-            handle: c.Handle,
+            handle: Handle,
         ): WaitableTimer = WaitableTimer(
             handleCtorArg = handle,
         )
@@ -112,7 +123,7 @@ public open class WaitableTimer internal constructor(
          * Creates a high-resolution timer. Will fail before Windows 10, version 1803.
          */
         public fun highResolution(): Result<WaitableTimer, Unit> {
-            val handle = c.CreateWaitableTimerExW(ConstPtr(0L), ConstPtr(0L), c.CREATE_WAITABLE_TIMER_HIGH_RESOLUTION, c.TIMER_ALL_ACCESS)
+            val handle = createWaitableTimerExW(ConstPtr(0L), ConstPtr(0L), CREATE_WAITABLE_TIMER_HIGH_RESOLUTION, TIMER_ALL_ACCESS)
             return if (!handle.isNull()) {
                 Result.Ok<WaitableTimer, Unit>(WaitableTimer(handle = handle))
             } else {

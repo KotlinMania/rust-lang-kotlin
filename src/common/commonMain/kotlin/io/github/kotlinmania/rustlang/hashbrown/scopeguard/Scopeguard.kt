@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.hashbrown.scopeguard
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.ptr.read
 
 public open class ScopeGuard<T, F>(
     public var dropfn: F,

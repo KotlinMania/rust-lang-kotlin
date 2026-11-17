@@ -4,18 +4,19 @@ package io.github.kotlinmania.rustlang.std.sys.process.unix.pidfd
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.SysPidfdOpen
 import io.github.kotlinmania.rustlang.libc.SysPidfdSendSignal
-import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.syscall
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.pidfd.PIDFD_GET_INFO
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.pidfd.PIDFD_INFO_EXIT
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.pidfd.PIDFD_INFO_PID
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.pidfd.PIDFD_SIGNAL_PROCESS_GROUP
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.pidfd.PidfdInfo
 import io.github.kotlinmania.rustlang.libc.new.musl.signal.SiginfoT
+import io.github.kotlinmania.rustlang.libc.syscall
 import io.github.kotlinmania.rustlang.libc.unix.bsd.WNOHANG
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.P_PIDFD
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGKILL
@@ -126,12 +127,12 @@ public open class PidFd(
         }
     }
 
-    public open fun sendSignal(signal: Int): Result<Unit, Error> = cvt(syscall(SysPidfdSendSignal, this.value.asRawFd().toLong(), signal.toLong(), ConstPtr(0L).toLong(), 0L)).map({ Unit })
+    public open fun sendSignal(signal: Int): Result<Unit, Error> = cvt(syscall(SysPidfdSendSignal, this.value.asRawFd().toLong(), signal.toLong(), ConstPtr(0L).toLong(), 0L)).map({ drop(it) })
 
     public open fun sendProcessGroupSignal(signal: Int): Result<Unit, Error> {
         // since kernel 6.9
         // https://lore.kernel.org/all/20240210-chihuahua-hinzog-3945b6abd44a@brauner/
-        return cvt(syscall(SysPidfdSendSignal, this.value.asRawFd().toLong(), signal.toLong(), ConstPtr(0L).toLong(), PIDFD_SIGNAL_PROCESS_GROUP.toLong())).map({ Unit })
+        return cvt(syscall(SysPidfdSendSignal, this.value.asRawFd().toLong(), signal.toLong(), ConstPtr(0L).toLong(), PIDFD_SIGNAL_PROCESS_GROUP.toLong())).map({ drop(it) })
     }
 
     public open fun wait(): Result<ExitStatus, Error> {

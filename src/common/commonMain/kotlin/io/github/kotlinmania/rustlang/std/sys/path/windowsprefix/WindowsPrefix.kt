@@ -38,7 +38,7 @@ public open class PrefixParser(
             return prefix
         }
 
-        public fun new(path: OsStr, len: Int): PrefixParser = PrefixParser(path = path, prefix = PrefixParser.getPrefix(path))
+        public fun new(path: OsStr, len: Int): PrefixParser = PrefixParser(path = path, prefix = PrefixParser.getPrefix(path, len))
     }
 }
 

@@ -562,7 +562,7 @@ public fun init(): Result<Init, Unit> {
                 return Result.Err<Init, Unit>(Unit)
             }
             when (val matchVal = LOCK.compareExchange(MutPtr(0L), lock, SeqCst, SeqCst)) {
-                is Err -> {
+                is Result.Err -> {
                     val other = matchVal.error
                     check(!other.isNull())
                     CloseHandle(lock)

@@ -35,7 +35,7 @@ import io.github.kotlinmania.rustlang.std.os.unix.net.ancillary.sendVectoredWith
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.Socket
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 public class DebugStruct(
@@ -95,14 +95,14 @@ public open class UnixDatagram(
         val builder = DebugStruct(fmt, "UnixDatagram")
         builder.field("fd", this.value.asInner())
         when (val matchVal = this.localAddr()) {
-            is Ok -> {
+            is Result.Ok -> {
                 val addr = matchVal.value
                 builder.field("local", addr)
             }
             else -> {}
         }
         when (val matchVal1 = this.peerAddr()) {
-            is Ok -> {
+            is Result.Ok -> {
                 val addr1 = matchVal1.value
                 builder.field("peer", addr1)
             }

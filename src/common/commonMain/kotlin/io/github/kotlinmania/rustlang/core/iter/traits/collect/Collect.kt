@@ -323,7 +323,7 @@ public interface Extend<T> {
 }
 
 public fun <IntoIter, I : IntoIterator<Unit, IntoIter>> Unit.extend(iter: I) {
-    iter.iterator().forEach(drop)
+    iter.iterator().forEach({ drop(it) })
 }
 
 public fun Unit.extendOne(item: Unit) {}

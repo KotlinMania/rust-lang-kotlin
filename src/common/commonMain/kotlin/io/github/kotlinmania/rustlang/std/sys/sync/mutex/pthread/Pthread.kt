@@ -4,19 +4,18 @@ package io.github.kotlinmania.rustlang.std.sys.sync.mutex.pthread
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.std.sys.sync.oncebox.OnceBox
-import io.github.kotlinmania.rustlang.std.sys.pal.sync as pal
 
 public open class Mutex internal constructor(
-    palCtorArg: OnceBox<pal.Mutex>,
+    palCtorArg: OnceBox<io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.mutex.Mutex>,
 ) {
-    public var pal: OnceBox<pal.Mutex> = palCtorArg
+    public var pal: OnceBox<io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.mutex.Mutex> = palCtorArg
         internal set
 
-    public open fun get(): Pin<pal.Mutex> {
+    public open fun get(): Pin<io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.mutex.Mutex> {
         // If the initialization race is lost, the new mutex is destroyed.
         // This is sound however, as it cannot have been locked.
         return this.pal.getOrInit({
-            var pal = Box.pin(pal.Mutex.new())
+            var pal = Box.pin(io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.mutex.Mutex.new())
             // SAFETY: we only call `init` once per `pal.Mutex`, namely here.
             pal.asMut().init()
             pal
@@ -60,7 +59,7 @@ public open class Mutex internal constructor(
 
     public companion object {
         public operator fun invoke(
-            pal: OnceBox<pal.Mutex>,
+            pal: OnceBox<io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.mutex.Mutex>,
         ): Mutex = Mutex(
             palCtorArg = pal,
         )

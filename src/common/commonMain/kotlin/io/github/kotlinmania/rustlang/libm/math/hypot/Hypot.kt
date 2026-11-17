@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
-import io.github.kotlinmania.rustlang.libm.math.sqrt.sqrt
+import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.sqrt.sqrt
 import io.github.kotlinmania.rustlang.libm.math.support.coldPath
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
 

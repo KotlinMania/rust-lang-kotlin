@@ -195,6 +195,95 @@ public fun <T> selectUnpredictable(b: Boolean, trueVal: T, falseVal: T): T =
     }
 
 /**
+ * Returns the square root of a floating-point value.
+ *
+ * The stabilized versions of this intrinsic are available on the float primitives via the
+ * `sqrt` method. For example, [`f32.sqrt`](../../std/primitive.f32.html#method.sqrt).
+ */
+public fun <UInt, T : Dispatch<T, T, UInt>> sqrt(x: T, dispatchTFn: (T) -> T): T = dispatchTFn(x)
+
+/**
+ * Raises a floating-point value to an integer power.
+ *
+ * The stabilized versions of this intrinsic are available on the float primitives via the
+ * `powi` method. For example, [`f32.powi`](../../std/primitive.f32.html#method.powi).
+ */
+public fun <UInt, T : Dispatch<T, T, UInt>> powi(a: T, x: Int, dispatchTFn: (T) -> T): T = dispatchTFn(a, x)
+
+/**
+ * Returns the sine of a floating-point value.
+ *
+ * The stabilized versions of this intrinsic are available on the float primitives via the
+ * `sin` method. For example, [`f32.sin`](../../std/primitive.f32.html#method.sin).
+ */
+public fun <UInt, T : Dispatch<T, T, UInt>> sin(x: T, dispatchTFn: (T) -> T): T = dispatchTFn(x)
+
+/**
+ * Returns the cosine of a floating-point value.
+ *
+ * The stabilized versions of this intrinsic are available on the float primitives via the
+ * `cos` method. For example, [`f32.cos`](../../std/primitive.f32.html#method.cos).
+ */
+public fun <UInt, T : Dispatch<T, T, UInt>> cos(x: T, dispatchTFn: (T) -> T): T = dispatchTFn(x)
+
+/**
+ * Raises a floating-point value to a power of the same type.
+ *
+ * The stabilized versions of this intrinsic are available on the float primitives via the
+ * `powf` method. For example, [`f32.powf`](../../std/primitive.f32.html#method.powf).
+ */
+public fun <UInt, T : Dispatch<T, T, UInt>> powf(a: T, x: T, dispatchTFn: (T) -> T): T = dispatchTFn(a, x)
+
+/**
+ * Returns the exponential of a floating-point value.
+ *
+ * The stabilized versions of this intrinsic are available on the float primitives via the
+ * `exp` method. For example, [`f32.exp`](../../std/primitive.f32.html#method.exp).
+ */
+public fun <UInt, T : Dispatch<T, T, UInt>> exp(x: T, dispatchTFn: (T) -> T): T = dispatchTFn(x)
+
+/**
+ * Returns 2 raised to the power of a floating-point value.
+ *
+ * The stabilized versions of this intrinsic are available on the float primitives via the
+ * `exp2` method. For example, [`f32.exp2`](../../std/primitive.f32.html#method.exp2).
+ */
+public fun <UInt, T : Dispatch<T, T, UInt>> exp2(x: T, dispatchTFn: (T) -> T): T = dispatchTFn(x)
+
+/**
+ * Returns the natural logarithm of a floating-point value.
+ *
+ * The stabilized versions of this intrinsic are available on the float primitives via the
+ * `ln` method. For example, [`f32.ln`](../../std/primitive.f32.html#method.ln).
+ */
+public fun <UInt, T : Dispatch<T, T, UInt>> log(x: T, dispatchTFn: (T) -> T): T = dispatchTFn(x)
+
+/**
+ * Returns the base 10 logarithm of a floating-point value.
+ *
+ * The stabilized versions of this intrinsic are available on the float primitives via the
+ * `log10` method. For example, [`f32.log10`](../../std/primitive.f32.html#method.log10).
+ */
+public fun <UInt, T : Dispatch<T, T, UInt>> log10(x: T, dispatchTFn: (T) -> T): T = dispatchTFn(x)
+
+/**
+ * Returns the base 2 logarithm of a floating-point value.
+ *
+ * The stabilized versions of this intrinsic are available on the float primitives via the
+ * `log2` method. For example, [`f32.log2`](../../std/primitive.f32.html#method.log2).
+ */
+public fun <UInt, T : Dispatch<T, T, UInt>> log2(x: T, dispatchTFn: (T) -> T): T = dispatchTFn(x)
+
+/**
+ * Returns `a * b + c` without rounding the intermediate result.
+ *
+ * The stabilized versions of this intrinsic are available on the float primitives via the
+ * `mulAdd` method. For example,
+ * [`f32.mulAdd`](../../std/primitive.f32.html#method.mulAdd).
+ */
+public fun <UInt, T : Dispatch<T, T, UInt>> fma(a: T, b: T, c: T, dispatchTFn: (T) -> T): T = dispatchTFn(a, b, c)
+
+/**
  * Returns `a * b + c`, non-deterministically executing either a fused multiply-add or two
  * operations with rounding of the intermediate result.
  *
@@ -210,6 +299,49 @@ public fun <T> selectUnpredictable(b: Boolean, trueVal: T, falseVal: T): T =
  * [`f32.mulAddRelaxed`](../../std/primitive.f32.html#method.mulAddRelaxed).
  */
 public fun <UInt, T : FloatPrimitive<T, UInt>> fmuladd(a: T, b: T, c: T): T = a * b + c
+
+/**
+ * Returns the largest integer less than or equal to a floating-point value.
+ *
+ * The stabilized versions of this intrinsic are available on the float primitives via the
+ * `floor` method. For example, [`f32.floor`](../../std/primitive.f32.html#method.floor).
+ */
+public fun <UInt, T : Dispatch<T, T, UInt>> floor(x: T, dispatchTFn: (T) -> T): T = dispatchTFn(x)
+
+/**
+ * Returns the smallest integer greater than or equal to a floating-point value.
+ *
+ * The stabilized versions of this intrinsic are available on the float primitives via the
+ * `ceil` method. For example, [`f32.ceil`](../../std/primitive.f32.html#method.ceil).
+ */
+public fun <UInt, T : Dispatch<T, T, UInt>> ceil(x: T, dispatchTFn: (T) -> T): T = dispatchTFn(x)
+
+/**
+ * Returns the integer part of a floating-point value.
+ *
+ * The stabilized versions of this intrinsic are available on the float primitives via the
+ * `trunc` method. For example, [`f32.trunc`](../../std/primitive.f32.html#method.trunc).
+ */
+public fun <UInt, T : Dispatch<T, T, UInt>> trunc(x: T, dispatchTFn: (T) -> T): T = dispatchTFn(x)
+
+/**
+ * Returns the nearest integer to a floating-point value. Rounds half-way cases to the number
+ * with an even least significant digit.
+ *
+ * The stabilized versions of this intrinsic are available on the float primitives via the
+ * `roundTiesEven` method. For example,
+ * [`f32.roundTiesEven`](../../std/primitive.f32.html#method.roundTiesEven).
+ */
+public fun <UInt, T : Dispatch<T, T, UInt>> roundTiesEven(x: T, dispatchTFn: (T) -> T): T = dispatchTFn(x)
+
+/**
+ * Returns the nearest integer to a floating-point value. Rounds half-way cases away from
+ * zero.
+ *
+ * The stabilized versions of this intrinsic are available on the float primitives via the
+ * `round` method. For example, [`f32.round`](../../std/primitive.f32.html#method.round).
+ */
+public fun <UInt, T : Dispatch<T, T, UInt>> round(x: T, dispatchTFn: (T) -> T): T = dispatchTFn(x)
 
 /**
  * Integer `min`imum, signed or unsigned depending on `T`.

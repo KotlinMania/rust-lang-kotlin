@@ -29,15 +29,14 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.hashbrown.Guard
 import io.github.kotlinmania.rustlang.hashbrown.TryReserveError
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
-import io.github.kotlinmania.rustlang.hashbrown.alloc.doAlloc
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Global
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.doAlloc
 import io.github.kotlinmania.rustlang.hashbrown.control.bitmask.BitMaskIter
 import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.Group
 import io.github.kotlinmania.rustlang.hashbrown.control.tag.Tag
@@ -1193,7 +1192,7 @@ public open class RawTable<T, A : Allocator>(
      */
     public open fun getDisjointMut(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int): List<T> {
         return run {
-            val ptrs = this.getDisjointMutPointers(hashes, eq)
+            val ptrs = this.getDisjointMutPointers(hashes, eq, n)
             for ((i, cur) in ptrs.iter().mapIndexed { index, item -> Pair(index, item) }) {
                 if (cur != null && ptrs[0 until i].contains(cur)) {
                     error("duplicate keys found")
@@ -1206,14 +1205,14 @@ public open class RawTable<T, A : Allocator>(
     }
 
     public open fun getDisjointUncheckedMut(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int): List<T> {
-        val ptrs = this.getDisjointMutPointers(hashes, eq)
+        val ptrs = this.getDisjointMutPointers(hashes, eq, n)
         return ptrs.map({ ptr -> ptr.map({ ptr1 -> ptr1.asMut() }) })
     }
 
     public open fun getDisjointMutPointers(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int): List<NonNull> =
         fromFn({ i ->
             this.find(hashes[i], { k -> eq(i, k) })?.let({ cur -> cur.asNonNull() })
-        })
+        }, n)
 
     /**
      * Returns the number of elements the map can hold without reallocating.

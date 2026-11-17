@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
@@ -341,7 +342,7 @@ public open class Socket(
 
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> {
         val localStorageL586C8 = AddressableLocal(nonblocking.toInt(), UnresolvedTypeLayout<io.github.kotlinmania.rustlang.libc.CInt>())
-        return cvt(Ioctl(this.asRawFd(), FIONBIO, RustMutableReference(localStorageL586C8.asMutPtr(), localStorageL586C8.layout))).map({ Unit })
+        return cvt(Ioctl(this.asRawFd(), FIONBIO, RustMutableReference(localStorageL586C8.asMutPtr(), localStorageL586C8.layout))).map({ drop(it) })
     }
 
     public open fun setMark(mark: UInt): Result<Unit, Error> {

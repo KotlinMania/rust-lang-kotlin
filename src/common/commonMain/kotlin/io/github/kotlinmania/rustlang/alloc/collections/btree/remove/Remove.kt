@@ -83,7 +83,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.remov
         // rearrange the parent through the grandparent, thus change the
         // link to the parent inside the leaf.
         when (val matchVal1 = pos.reborrowMut().intoNode().ascend()) {
-            is Ok -> {
+            is Result.Ok -> {
                 val parent = matchVal1.value
                 if (!parent.intoNode().forgetType().fixNodeAndAffectedAncestors(alloc)) {
                     handleEmptiedInternalRoot()

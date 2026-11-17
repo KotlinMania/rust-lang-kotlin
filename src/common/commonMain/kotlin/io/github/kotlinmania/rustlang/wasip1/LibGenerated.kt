@@ -2836,7 +2836,7 @@ public fun procRaise(sig: Signal): Result<Unit, Errno> {
  * Note: This is similar to `schedYield` in POSIX.
  */
 public fun schedYield(): Result<Unit, Errno> {
-    val ret = schedYield()
+    val ret = wasiSnapshotPreview1SchedYield()
     return when (ret) {
         0 -> Result.Ok<Unit, Errno>(Unit)
         else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
@@ -3211,7 +3211,7 @@ public expect fun procRaise(arg0: Int): Int
  * Temporarily yield execution of the calling thread.
  * Note: This is similar to `schedYield` in POSIX.
  */
-public expect fun schedYield(): Int
+public expect fun wasiSnapshotPreview1SchedYield(): Int
 
 /**
  * Write high-quality random data into a buffer.

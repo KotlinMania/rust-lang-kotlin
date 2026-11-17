@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.env.wasi
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
@@ -18,7 +19,7 @@ import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromVec
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.rwlock.RwLock
 import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runWithCstr
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.wasi.cvt
 
 // This is not available yet in libc.
 public expect fun wasilibcGetEnviron(): MutPtr
@@ -81,11 +82,11 @@ public fun getenv(k: OsStr): OsString? {
 public fun setenv(k: OsStr, v: OsStr): Result<Unit, Error> =
     runWithCstr(k.asBytes(), { k1 ->
         runWithCstr(v.asBytes(), { v1 -> run {
-            cvt(io.github.kotlinmania.rustlang.libc.setenv(k1.asPtr(), v1.asPtr(), 1)).map({ Unit })
+            cvt(io.github.kotlinmania.rustlang.libc.setenv(k1.asPtr(), v1.asPtr(), 1)).map({ drop(it) })
         } })
     })
 
 public fun unsetenv(n: OsStr): Result<Unit, Error> =
     runWithCstr(n.asBytes(), { nbuf -> run {
-        cvt(io.github.kotlinmania.rustlang.libc.unsetenv(nbuf.asPtr())).map({ Unit })
+        cvt(io.github.kotlinmania.rustlang.libc.unsetenv(nbuf.asPtr())).map({ drop(it) })
     } })

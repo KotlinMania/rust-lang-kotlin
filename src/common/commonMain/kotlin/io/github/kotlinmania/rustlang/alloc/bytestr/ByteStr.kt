@@ -87,7 +87,7 @@ public open class ByteString internal constructor(
     public override fun toString(): Result<String, Utf8Error> {
         // Avoid allocating a copy of the contents for invalid UTF-8
         when (val matchVal = String.fromUtf8(this.value)) {
-            is Err -> {
+            is Result.Err -> {
                 val e = matchVal.error
                 return Result.Err<String, Utf8Error>(e)
             }
@@ -435,7 +435,7 @@ public fun tryFromString(s: ByteStr): Result<String, Utf8Error> {
 public fun ByteStr.toString(): Result<String, Utf8Error> {
     // Avoid allocating a copy of the contents for invalid UTF-8
     when (val matchVal = String.fromUtf8(this.value)) {
-        is Err -> {
+        is Result.Err -> {
             val e = matchVal.error
             return Result.Err<String, Utf8Error>(e)
         }

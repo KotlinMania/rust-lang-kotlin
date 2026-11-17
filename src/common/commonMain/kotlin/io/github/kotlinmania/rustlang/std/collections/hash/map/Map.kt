@@ -765,7 +765,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
      * val got = libraries.getDisjointMut(listOf("Athenæum", "Athenæum"))
      * ```
      */
-    public open fun <Q> getDisjointMut(ks: List<Q>, n: Int): List<V> = this.base.getDisjointMut(ks)
+    public open fun <Q> getDisjointMut(ks: List<Q>, n: Int): List<V> = this.base.getDisjointMut(ks, n)
 
     /**
      * Attempts to get mutable references to `N` values in the map at once, without validating that
@@ -806,7 +806,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
      * check(got1 == listOf(RustMutableReference(allocateNativeCell(1807, PrimitiveLayouts.I32), PrimitiveLayouts.I32), null))
      * ```
      */
-    public open fun <Q> getDisjointUncheckedMut(ks: List<Q>, n: Int): List<V> = this.base.getDisjointUncheckedMut(ks)
+    public open fun <Q> getDisjointUncheckedMut(ks: List<Q>, n: Int): List<V> = this.base.getDisjointUncheckedMut(ks, n)
 
     /**
      * Returns `true` if the map contains a value for the specified key.

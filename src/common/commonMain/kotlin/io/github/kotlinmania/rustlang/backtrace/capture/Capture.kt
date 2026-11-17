@@ -119,7 +119,7 @@ public open class Backtrace(
                     if (cwd is Result.Ok) {
                         val cwd1 = cwd.value
                         when (val matchVal = path1.takeIf { it.startsWith(cwd1) }?.removePrefix(cwd1)) {
-                            is Ok -> {
+                            is Result.Ok -> {
                                 val suffix = matchVal.value
                                 return@closure fmt1.append((suffix.display()).toString())
                             }

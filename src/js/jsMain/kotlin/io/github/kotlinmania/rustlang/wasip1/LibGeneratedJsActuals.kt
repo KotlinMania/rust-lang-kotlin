@@ -131,8 +131,8 @@ public actual fun procExit(arg0: Int): Nothing {
 public actual fun procRaise(arg0: Int): Int =
     if (libGeneratedNapiAddon != null) (libGeneratedNapiAddon.wasip1LibGeneratedProcRaise(arg0) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun schedYield(): Int =
-    if (libGeneratedNapiAddon != null) (libGeneratedNapiAddon.wasip1LibGeneratedSchedYield() as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun wasiSnapshotPreview1SchedYield(): Int =
+    if (libGeneratedNapiAddon != null) (libGeneratedNapiAddon.wasip1LibGeneratedWasiSnapshotPreview1SchedYield() as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun randomGet(arg0: Int, arg1: Int): Int =
     if (libGeneratedNapiAddon != null) (libGeneratedNapiAddon.wasip1LibGeneratedRandomGet(arg0, arg1) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")

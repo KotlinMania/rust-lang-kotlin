@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.splice
 
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.drain.Drain
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.mem.drop
 
 /**
  * A splicing iterator for `VecDeque`.
@@ -44,7 +45,7 @@ public open class Splice<I, A : Allocator, Item> internal constructor(
     public open fun drop() {
         // This will set drain.remaining to 0, so its drop won't try to read deallocated memory on
         // drop.
-        this.drain.byRef().forEach(drop)
+        this.drain.byRef().forEach({ drop(it) })
         // At this point draining is done and the only remaining tasks are splicing
         // and moving things into the final place.
         val tailLen = this.drain.tailLen

@@ -198,7 +198,7 @@ public open class SymbolName(
             else -> {
                 val cpp = matchVal1
                 when (val matchVal2 = cpp.demangle()) {
-                    is Ok -> {
+                    is Result.Ok -> {
                         val s1 = matchVal2.value
                         return s1.fmt(f)
                     }
@@ -222,7 +222,7 @@ public open class SymbolName(
             else -> {
                 val cpp = matchVal1
                 when (val matchVal2 = cpp.demangle()) {
-                    is Ok -> {
+                    is Result.Ok -> {
                         val s1 = matchVal2.value
                         return s1.fmt(f)
                     }

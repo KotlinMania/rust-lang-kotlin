@@ -1,7 +1,7 @@
 // port-lint: source term.rs
 package io.github.kotlinmania.rustlang.test.term
 
-import io.github.kotlinmania.rustlang.std.thread.Result
+import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.test.term.terminfo.TerminfoTerminal
 
 // Terminal formatting module.

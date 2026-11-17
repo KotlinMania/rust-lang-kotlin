@@ -142,7 +142,7 @@ public fun stdioHandle(raw: RawHandle): RawHandle {
 public fun fromRawHandleFile(handle: RawHandle): File =
     run {
         val handle1 = MutPtr(handle.rawAddress)
-        File.fromInner(io.github.kotlinmania.rustlang.std.sys.fs.unix.File.fromInner(FromInner.fromInner(OwnedHandle.FromRawHandle(handle1))))
+        File.fromInner(io.github.kotlinmania.rustlang.std.sys.fs.windows.File.fromInner(FromInner.fromInner(OwnedHandle.FromRawHandle(handle1))))
     }
 
 public fun File.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoRawHandle())
@@ -221,19 +221,19 @@ public fun UdpSocket.asRawSocket(): RawSocket = this.asInner().socket().asRawSoc
 
 public fun fromRawSocketTcpStream(sock: RawSocket): TcpStream =
     run {
-        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
+        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
         TcpStream.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream.fromInner(sock1))
     }
 
 public fun fromRawSocketTcpListener(sock: RawSocket): TcpListener =
     run {
-        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
+        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
         TcpListener.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener.fromInner(sock1))
     }
 
 public fun fromRawSocketUdpSocket(sock: RawSocket): UdpSocket =
     run {
-        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
+        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
         UdpSocket.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.socket.UdpSocket.fromInner(sock1))
     }
 

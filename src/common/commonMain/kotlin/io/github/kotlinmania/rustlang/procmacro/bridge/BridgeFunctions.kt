@@ -1,7 +1,7 @@
 package io.github.kotlinmania.rustlang.procmacro.bridge
 
-import io.github.kotlinmania.rustlang.alloc.collections.btree.map.Range
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
+import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.procmacro.Delimiter
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer

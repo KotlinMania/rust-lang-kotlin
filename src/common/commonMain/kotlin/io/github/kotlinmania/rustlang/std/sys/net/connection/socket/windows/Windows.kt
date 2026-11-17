@@ -16,6 +16,7 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -44,15 +45,44 @@ import io.github.kotlinmania.rustlang.std.os.windows.io.RawSocket
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
-import io.github.kotlinmania.rustlang.std.sys.c
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.MAX_SEND_LEN
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.getsockopt
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.setsockopt
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.socketAddrFromC
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.socketAddrToC
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.AF_INET
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.AF_INET6
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.WSA_FLAG_NO_HANDLE_INHERIT
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.WSA_FLAG_OVERLAPPED
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.AddressFamily
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Bool
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FIONBIO
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.INVALID_SOCKET
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IPPROTO_TCP
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Linger
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.MSG_PEEK
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SD_BOTH
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SD_RECEIVE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SD_SEND
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SOCKET_ERROR
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SOL_SOCKET
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SO_ERROR
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SO_KEEPALIVE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SO_LINGER
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.TCP_NODELAY
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Timeval
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.WSAEINVAL
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.WSAEPROTOTYPE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.WSAESHUTDOWN
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.connect
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.ioctlsocket
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.recv
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.recvfrom
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.select
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.wSAGetLastError
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.wSARecv
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.wSASend
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.wSASocketW
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.dur2timeout
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.winsock.lastError
@@ -61,9 +91,9 @@ public typealias WrlenT = Int
 
 public typealias SocklenT = CInt
 
-public val AF_INET: Int = c.AF_INET.toInt()
+public val AF_INET: Int = AF_INET.toInt()
 
-public val AF_INET6: Int = c.AF_INET6.toInt()
+public val AF_INET6: Int = AF_INET6.toInt()
 
 // The following two structs use a union in the generated bindings but
 // our cross-platform code expects a normal field so it's redefined here.
@@ -277,11 +307,11 @@ public open class SockaddrIn6(
     }
 }
 
-public fun send(socket: Socket, buf: ConstPtr, len: CInt, flags: CInt): CInt = c.send(socket, ConstPtr((buf).rawAddress), len, flags)
+public fun send(socket: Socket, buf: ConstPtr, len: CInt, flags: CInt): CInt = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.send(socket, ConstPtr((buf).rawAddress), len, flags)
 
-public fun sendto(socket: Socket, buf: ConstPtr, len: CInt, flags: CInt, addr: ConstPtr, addrlen: CInt): CInt = c.sendto(socket, ConstPtr((buf).rawAddress), len, flags, addr, addrlen)
+public fun sendto(socket: Socket, buf: ConstPtr, len: CInt, flags: CInt, addr: ConstPtr, addrlen: CInt): CInt = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.sendto(socket, ConstPtr((buf).rawAddress), len, flags, addr, addrlen)
 
-public fun getaddrinfo(node: ConstPtr, service: ConstPtr, hints: ConstPtr, res: MutPtr): CInt = c.getaddrinfo(ConstPtr((node).rawAddress), ConstPtr((service).rawAddress), hints, res)
+public fun getaddrinfo(node: ConstPtr, service: ConstPtr, hints: ConstPtr, res: MutPtr): CInt = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getaddrinfo(ConstPtr((node).rawAddress), ConstPtr((service).rawAddress), hints, res)
 
 public open class Socket(
     public var value: OwnedSocket,
@@ -294,15 +324,15 @@ public open class Socket(
 
     public open fun connect(addr: SocketAddr): Result<Unit, Error> {
         val (addr1, len) = socketAddrToC(addr)
-        val result = c.connect(this.asRaw(), addr1.asPtr(), len)
-        return cvt(result).map({ Unit })
+        val result = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.connect(this.asRaw(), addr1.asPtr(), len)
+        return cvt(result).map({ drop(it) })
     }
 
     public open fun pollConnected(timeout: Duration): Result<Unit, Error> {
         if (timeout.asSecs() == 0 && timeout.subsecNanos() == 0) {
             return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.ZERO_TIMEOUT)
         }
-        val timeout1 = c.Timeval(tvSec = (minOf(timeout.asSecs(), Long.MAX_VALUE.toULong()).toLong()).toInt(), tvUsec = (timeout.subsecMicros().toLong()).toInt())
+        val timeout1 = Timeval(tvSec = (minOf(timeout.asSecs(), Long.MAX_VALUE.toULong()).toLong()).toInt(), tvUsec = (timeout.subsecMicros().toLong()).toInt())
         if (timeout1.tvSec == 0 && timeout1.tvUsec == 0) {
             timeout1.tvUsec = 1
         }
@@ -315,7 +345,7 @@ public open class Socket(
         val writefds = fds1
         val errorfds = fds1
         val count = run {
-            val result = c.select(1, MutPtr(0L), writefds, errorfds, timeout1)
+            val result = select(1, MutPtr(0L), writefds, errorfds, timeout1)
             when (val tryResult = cvt(result)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
         return when (count) {
@@ -336,9 +366,9 @@ public open class Socket(
     }
 
     public open fun accept(storage: MutPtr, len: MutPtr): Result<Socket, Error> {
-        val socket = c.accept(this.asRaw(), storage, len)
+        val socket = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.accept(this.asRaw(), storage, len)
         return when (socket) {
-            c.invalidSocket -> Result.Err<Socket, Error>(lastError())
+            INVALID_SOCKET -> Result.Err<Socket, Error>(lastError())
             else -> Result.Ok<Socket, Error>(Socket.fromRaw(socket))
         }
     }
@@ -351,11 +381,11 @@ public open class Socket(
         // On unix when a socket is shut down all further reads return 0, so we
         // do the same on windows to map a shut down socket to returning EOF.
         val length = minOf(buf.capacity(), Int.MAX_VALUE).toInt()
-        val result = c.recv(this.asRaw(), mutPtrFromRustCast(buf.asMut().asMutPtr()), length, flags)
+        val result = recv(this.asRaw(), mutPtrFromRustCast(buf.asMut().asMutPtr()), length, flags)
         return when (result) {
-            c.socketError -> {
-                val error = c.WSAGetLastError()
-                if (error == c.WSAESHUTDOWN) {
+            SOCKET_ERROR -> {
+                val error = wSAGetLastError()
+                if (error == WSAESHUTDOWN) {
                     Result.Ok<Unit, Error>(Unit)
                 } else {
                     Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(error))
@@ -383,12 +413,12 @@ public open class Socket(
         val localStorageL257C8 = AddressableLocal(0, PrimitiveLayouts.I32)
         val nread by localStorageL257C8
         val localStorageL258C8 = AddressableLocal(0, PrimitiveLayouts.I32)
-        val result = c.WSARecv(this.asRaw(), (bufs.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, length, RustMutableReference(localStorageL257C8.asMutPtr(), localStorageL257C8.layout), RustMutableReference(localStorageL258C8.asMutPtr(), localStorageL258C8.layout), MutPtr(0L), null)
+        val result = wSARecv(this.asRaw(), (bufs.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, length, RustMutableReference(localStorageL257C8.asMutPtr(), localStorageL257C8.layout), RustMutableReference(localStorageL258C8.asMutPtr(), localStorageL258C8.layout), MutPtr(0L), null)
         return when (result) {
             0 -> Result.Ok<Int, Error>(nread)
             else -> {
-                val error = c.WSAGetLastError()
-                if (error == c.WSAESHUTDOWN) {
+                val error = wSAGetLastError()
+                if (error == WSAESHUTDOWN) {
                     Result.Ok<Int, Error>(0)
                 } else {
                     Result.Err<Int, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(error))
@@ -401,7 +431,7 @@ public open class Socket(
 
     public open fun peek(buf: MutableList<UByte>): Result<Int, Error> {
         val buf1 = BorrowedBuf.from(buf)
-        when (val tryResult = this.recvWithFlags(buf1.unfilled(), c.MSG_PEEK)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }
+        when (val tryResult = this.recvWithFlags(buf1.unfilled(), MSG_PEEK)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }
         return Result.Ok<Int, Error>(buf1.len())
     }
 
@@ -412,11 +442,11 @@ public open class Socket(
         val length = minOf(buf.size, MAX_SEND_LEN).toInt()
         // On unix when a socket is shut down all further reads return 0, so we
         // do the same on windows to map a shut down socket to returning EOF.
-        val result = c.recvfrom(this.asRaw(), buf.asMutPtr(), length, flags, (localStorageL301C8.asMutPtr()), addrlen)
+        val result = recvfrom(this.asRaw(), buf.asMutPtr(), length, flags, (localStorageL301C8.asMutPtr()), addrlen)
         return when (result) {
-            c.socketError -> {
-                val error = c.WSAGetLastError()
-                if (error == c.WSAESHUTDOWN) {
+            SOCKET_ERROR -> {
+                val error = wSAGetLastError()
+                if (error == WSAESHUTDOWN) {
                     Result.Ok<Pair<Int, SocketAddr>, Error>(Pair(0, when (val tryResult = socketAddrFromC(storage, addrlen)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Int, SocketAddr>, Error>(tryResult.error) }))
                 } else {
                     Result.Err<Pair<Int, SocketAddr>, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(error))
@@ -428,13 +458,13 @@ public open class Socket(
 
     public open fun recvFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>, Error> = this.recvFromWithFlags(buf, 0)
 
-    public open fun peekFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>, Error> = this.recvFromWithFlags(buf, c.MSG_PEEK)
+    public open fun peekFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>, Error> = this.recvFromWithFlags(buf, MSG_PEEK)
 
     public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> {
         val length = minOf(bufs.size, UInt.MAX_VALUE.toInt()).toUInt()
         val localStorageL342C8 = AddressableLocal(0, PrimitiveLayouts.I32)
         val nwritten by localStorageL342C8
-        val result = c.WSASend(this.asRaw(), ((bufs.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, length, RustMutableReference(localStorageL342C8.asMutPtr(), localStorageL342C8.layout), 0, MutPtr(0L), null)
+        val result = wSASend(this.asRaw(), ((bufs.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, length, RustMutableReference(localStorageL342C8.asMutPtr(), localStorageL342C8.layout), 0u, MutPtr(0L), null)
         return cvt(result).map({ nwritten })
     }
 
@@ -453,11 +483,11 @@ public open class Socket(
                     timeout
                 }
             }
-        return setsockopt(this, c.SOL_SOCKET, kind, timeout1)
+        return setsockopt(this, SOL_SOCKET, kind, timeout1)
     }
 
     public open fun timeout(kind: CInt): Result<Duration?, Error> {
-        val raw: UInt = when (val tryResult = getsockopt(this, c.SOL_SOCKET, kind)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Duration?, Error>(tryResult.error) }
+        val raw: UInt = when (val tryResult = getsockopt(this, SOL_SOCKET, kind)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Duration?, Error>(tryResult.error) }
         return if (raw == 0u) {
             Result.Ok<Duration?, Error>(null)
         } else {
@@ -470,46 +500,46 @@ public open class Socket(
     public open fun shutdown(how: Shutdown): Result<Unit, Error> {
         val how1 =
             when (how) {
-                Shutdown.Write -> c.SD_SEND
-                Shutdown.Read -> c.SD_RECEIVE
-                Shutdown.Both -> c.SD_BOTH
+                Shutdown.Write -> SD_SEND
+                Shutdown.Read -> SD_RECEIVE
+                Shutdown.Both -> SD_BOTH
             }
-        val result = c.shutdown(this.asRaw(), how1)
-        return cvt(result).map({ Unit })
+        val result = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.shutdown(this.asRaw(), how1)
+        return cvt(result).map({ drop(it) })
     }
 
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> {
         val nonblocking1 = nonblocking.toULong()
-        val result = c.ioctlsocket(this.asRaw(), c.FIONBIO.toInt(), nonblocking1)
-        return cvt(result).map({ Unit })
+        val result = ioctlsocket(this.asRaw(), FIONBIO.toInt(), nonblocking1)
+        return cvt(result).map({ drop(it) })
     }
 
     public open fun setLinger(linger: Duration?): Result<Unit, Error> {
-        val linger1 = c.Linger(lOnoff = (if (linger != null) 1u else 0u).toUShort(), lLinger = minOf(linger.unwrapOrDefault().asSecs(), UShort.MAX_VALUE.toULong()).toUShort())
-        return setsockopt(this, c.SOL_SOCKET, c.SO_LINGER, linger1)
+        val linger1 = Linger(lOnoff = (if (linger != null) 1u else 0u).toUShort(), lLinger = minOf(linger.unwrapOrDefault().asSecs(), UShort.MAX_VALUE.toULong()).toUShort())
+        return setsockopt(this, SOL_SOCKET, SO_LINGER, linger1)
     }
 
     public open fun linger(): Result<Duration?, Error> {
-        val value: c.Linger = when (val tryResult = getsockopt(this, c.SOL_SOCKET, c.SO_LINGER)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Duration?, Error>(tryResult.error) }
+        val value: Linger = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_LINGER)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Duration?, Error>(tryResult.error) }
         return Result.Ok<Duration?, Error>((value.lOnoff != 0u.toUShort()).then({ Duration.fromSecs(value.lLinger.toULong()) }))
     }
 
-    public open fun setKeepalive(keepalive: Boolean): Result<Unit, Error> = setsockopt(this, c.SOL_SOCKET, c.SO_KEEPALIVE, keepalive.toInt())
+    public open fun setKeepalive(keepalive: Boolean): Result<Unit, Error> = setsockopt(this, SOL_SOCKET, SO_KEEPALIVE, keepalive.toInt())
 
     public open fun keepalive(): Result<Boolean, Error> {
-        val raw: c.Bool = when (val tryResult = getsockopt(this, c.SOL_SOCKET, c.SO_KEEPALIVE)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+        val raw: Bool = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_KEEPALIVE)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
         return Result.Ok<Boolean, Error>((raw != 0).toUByte())
     }
 
-    public open fun setNodelay(nodelay: Boolean): Result<Unit, Error> = setsockopt(this, c.IPPROTO_TCP, c.TCP_NODELAY, nodelay.toInt())
+    public open fun setNodelay(nodelay: Boolean): Result<Unit, Error> = setsockopt(this, IPPROTO_TCP, TCP_NODELAY, nodelay.toInt())
 
     public open fun nodelay(): Result<Boolean, Error> {
-        val raw: c.Bool = when (val tryResult = getsockopt(this, c.IPPROTO_TCP, c.TCP_NODELAY)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+        val raw: Bool = when (val tryResult = getsockopt(this, IPPROTO_TCP, TCP_NODELAY)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
         return Result.Ok<Boolean, Error>((raw != 0).toUByte())
     }
 
     public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> {
-        val raw: CInt = when (val tryResult = getsockopt(this, c.SOL_SOCKET, c.SO_ERROR)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<io.github.kotlinmania.rustlang.core.io.error.Error?, Error>(tryResult.error) }
+        val raw: CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_ERROR)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<io.github.kotlinmania.rustlang.core.io.error.Error?, Error>(tryResult.error) }
         return if (raw == 0) {
             Result.Ok<io.github.kotlinmania.rustlang.core.io.error.Error?, Error>(null)
         } else {
@@ -517,10 +547,10 @@ public open class Socket(
         }
     }
 
-    public open fun asRaw(): c.Socket {
-        check(sizeOf<c.Socket>(typeLayoutT = UnresolvedTypeLayout<c.Socket>()) == sizeOf<RawSocket>(typeLayoutT = UnresolvedTypeLayout<RawSocket>()))
-        check(alignOf<c.Socket>(typeLayoutT = UnresolvedTypeLayout<c.Socket>()) == alignOf<RawSocket>(typeLayoutT = UnresolvedTypeLayout<RawSocket>()))
-        return ((this.asInner().asRawSocket() as Any?) as c.Socket)
+    public open fun asRaw(): io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Socket {
+        check(sizeOf<io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Socket>(typeLayoutT = UnresolvedTypeLayout<io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Socket>()) == sizeOf<RawSocket>(typeLayoutT = UnresolvedTypeLayout<RawSocket>()))
+        check(alignOf<io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Socket>(typeLayoutT = UnresolvedTypeLayout<io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Socket>()) == alignOf<RawSocket>(typeLayoutT = UnresolvedTypeLayout<RawSocket>()))
+        return ((this.asInner().asRawSocket() as Any?) as io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Socket)
     }
 
     public override fun asInner(): OwnedSocket = this.value
@@ -535,16 +565,16 @@ public open class Socket(
 
     public companion object {
         public fun new(family: CInt, ty: CInt): Result<Socket, Error> {
-            val socket = c.WSASocketW(family, ty, 0, MutPtr(0L), 0, c.WSA_FLAG_OVERLAPPED or c.WSA_FLAG_NO_HANDLE_INHERIT)
-            return if (socket != c.INVALID_SOCKET) {
+            val socket = wSASocketW(family, ty, 0, MutPtr(0L), 0u, WSA_FLAG_OVERLAPPED or WSA_FLAG_NO_HANDLE_INHERIT)
+            return if (socket != INVALID_SOCKET) {
                 Result.Ok<Socket, Error>(Socket.fromRaw(socket))
             } else {
-                val error = c.WSAGetLastError()
-                if (error != c.WSAEPROTOTYPE && error != c.WSAEINVAL) {
+                val error = wSAGetLastError()
+                if (error != WSAEPROTOTYPE && error != WSAEINVAL) {
                     return Result.Err<Socket, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(error))
                 }
-                val socket1 = c.WSASocketW(family, ty, 0, MutPtr(0L), 0, c.WSA_FLAG_OVERLAPPED)
-                if (socket1 == c.INVALID_SOCKET) {
+                val socket1 = wSASocketW(family, ty, 0, MutPtr(0L), 0u, WSA_FLAG_OVERLAPPED)
+                if (socket1 == INVALID_SOCKET) {
                     return Result.Err<Socket, Error>(lastError())
                 }
                 run {
@@ -555,9 +585,9 @@ public open class Socket(
             }
         }
 
-        public fun fromRaw(raw: c.Socket): Socket {
-            check(sizeOf<c.Socket>(typeLayoutT = UnresolvedTypeLayout<c.Socket>()) == sizeOf<RawSocket>(typeLayoutT = UnresolvedTypeLayout<RawSocket>()))
-            check(alignOf<c.Socket>(typeLayoutT = UnresolvedTypeLayout<c.Socket>()) == alignOf<RawSocket>(typeLayoutT = UnresolvedTypeLayout<RawSocket>()))
+        public fun fromRaw(raw: io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Socket): Socket {
+            check(sizeOf<io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Socket>(typeLayoutT = UnresolvedTypeLayout<io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Socket>()) == sizeOf<RawSocket>(typeLayoutT = UnresolvedTypeLayout<RawSocket>()))
+            check(alignOf<io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Socket>(typeLayoutT = UnresolvedTypeLayout<io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Socket>()) == alignOf<RawSocket>(typeLayoutT = UnresolvedTypeLayout<RawSocket>()))
             return Socket.fromRawSocket(((raw as Any?) as RawSocket))
         }
 

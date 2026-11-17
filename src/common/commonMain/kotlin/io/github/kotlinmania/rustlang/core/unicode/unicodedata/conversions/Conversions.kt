@@ -5,7 +5,6 @@ package io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions
 
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
-import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
@@ -14,6 +13,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
 import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -123,7 +123,7 @@ public fun lookup(input: Char, l1Lut: L1Lut): List<Char>? {
         }
     }
     when (val matchVal = l2Lut.multis.binarySearchByKey(inputLow, { (p, _) -> p })) {
-        is Ok -> {
+        is Result.Ok -> {
             val idx2 = matchVal.value
             // SAFETY: binary search guarantees that the index is in bounds.
             val (_, outputLows) = l2Lut.multis.getUnchecked(idx2)
@@ -210,7 +210,7 @@ public fun toCasefold(c: Char): List<Char> {
                         val leftVal = matchVal.first
                         val rightVal = matchVal.second
                         if (!(leftVal == rightVal)) {
-                            val kind = Eq
+                            val kind = AssertKind.Eq
                             assertFailed(kind, leftVal, rightVal, Option.None)
                         }
                     }
@@ -222,7 +222,7 @@ public fun toCasefold(c: Char): List<Char> {
                         val leftVal1 = matchVal1.first
                         val rightVal1 = matchVal1.second
                         if (!(leftVal1 == rightVal1)) {
-                            val kind1 = Eq
+                            val kind1 = AssertKind.Eq
                             assertFailed(kind1, leftVal1, rightVal1, Option.None)
                         }
                     }
@@ -237,7 +237,7 @@ public fun toCasefold(c: Char): List<Char> {
                             val leftVal2 = matchVal2.first
                             val rightVal2 = matchVal2.second
                             if (!(leftVal2 == rightVal2)) {
-                                val kind2 = Eq
+                                val kind2 = AssertKind.Eq
                                 assertFailed(kind2, leftVal2, rightVal2, Option.None)
                             }
                         }
@@ -250,7 +250,7 @@ public fun toCasefold(c: Char): List<Char> {
                             val leftVal3 = matchVal3.first
                             val rightVal3 = matchVal3.second
                             if (!(leftVal3 == rightVal3)) {
-                                val kind3 = Eq
+                                val kind3 = AssertKind.Eq
                                 assertFailed(kind3, leftVal3, rightVal3, Option.None)
                             }
                         }
@@ -262,7 +262,7 @@ public fun toCasefold(c: Char): List<Char> {
                             val leftVal4 = matchVal4.first
                             val rightVal4 = matchVal4.second
                             if (!(leftVal4 == rightVal4)) {
-                                val kind4 = Eq
+                                val kind4 = AssertKind.Eq
                                 assertFailed(kind4, leftVal4, rightVal4, Option.None)
                             }
                         }
@@ -276,7 +276,7 @@ public fun toCasefold(c: Char): List<Char> {
                             val leftVal5 = matchVal5.first
                             val rightVal5 = matchVal5.second
                             if (!(leftVal5 == rightVal5)) {
-                                val kind5 = Eq
+                                val kind5 = AssertKind.Eq
                                 assertFailed(kind5, leftVal5, rightVal5, Option.None)
                             }
                         }

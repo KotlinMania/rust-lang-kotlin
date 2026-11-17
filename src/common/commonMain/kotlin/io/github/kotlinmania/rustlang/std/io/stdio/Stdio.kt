@@ -24,7 +24,7 @@ import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
 import io.github.kotlinmania.rustlang.std.sync.oncelock.OnceLock
 import io.github.kotlinmania.rustlang.std.sync.reentrantlock.ReentrantLock
 import io.github.kotlinmania.rustlang.std.sync.reentrantlock.ReentrantLockGuard
-import io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio
+import io.github.kotlinmania.rustlang.std.sys.process.unix.common.Stdio
 import io.github.kotlinmania.rustlang.std.thread.AccessError
 import io.github.kotlinmania.rustlang.std.thread.LocalKey
 import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
@@ -999,7 +999,7 @@ public fun <T> printTo(args: Arguments, globalS: () -> T, label: String) where T
         return
     }
     when (val matchVal = globalS().writeFmt(args)) {
-        is Err -> {
+        is Result.Err -> {
             val e = matchVal.error
             error("failed printing to $label: $e")
         }

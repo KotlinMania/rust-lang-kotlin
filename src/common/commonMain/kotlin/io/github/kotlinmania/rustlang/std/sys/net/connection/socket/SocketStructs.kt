@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -242,14 +243,14 @@ public open class TcpStream(
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         val res = DebugStruct(f, "TcpStream")
         when (val matchVal = this.socketAddr()) {
-            is Ok -> {
+            is Result.Ok -> {
                 val addr = matchVal.value
                 res.field("addr", addr)
             }
             else -> {}
         }
         when (val matchVal1 = this.peerAddr()) {
-            is Ok -> {
+            is Result.Ok -> {
                 val peer = matchVal1.value
                 res.field("peer", peer)
             }
@@ -364,7 +365,7 @@ public open class TcpListener(
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         val res = DebugStruct(f, "TcpListener")
         when (val matchVal = this.socketAddr()) {
-            is Ok -> {
+            is Result.Ok -> {
                 val addr = matchVal.value
                 res.field("addr", addr)
             }
@@ -548,7 +549,7 @@ public open class UdpSocket(
     public open fun <Iter, A : ToSocketAddrs<Iter>> connect(addr: A): Result<Unit, Error> {
         fun inner(thisRef: UdpSocket, addr1: SocketAddr): Result<Unit, Error> {
             val (addr2, len) = socketAddrToC(addr1)
-            return cvtR({ c.connect(thisRef.inner.asRaw(), addr2.asPtr(), len) }).map({ Unit })
+            return cvtR({ c.connect(thisRef.inner.asRaw(), addr2.asPtr(), len) }).map({ drop(it) })
         }
         return eachAddr(addr, { addr1 -> inner(this, addr1) })
     }
@@ -556,7 +557,7 @@ public open class UdpSocket(
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         val res = DebugStruct(f, "UdpSocket")
         when (val matchVal = this.socketAddr()) {
-            is Ok -> {
+            is Result.Ok -> {
                 val addr = matchVal.value
                 res.field("addr", addr)
             }

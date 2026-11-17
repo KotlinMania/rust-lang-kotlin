@@ -8,8 +8,9 @@ import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
-import io.github.kotlinmania.rustlang.std.sys.c
 import io.github.kotlinmania.rustlang.std.sys.helpers.mulDivU64
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Filetime
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getSystemTimePreciseAsFileTime
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.INTERVALS_PER_SEC
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.checkedDur2intervals
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.intervals2dur
@@ -89,8 +90,8 @@ public open class Instant(
 }
 
 public open class SystemTime(
-    public var t: c.Filetime,
-) : IntoInner<c.Filetime> {
+    public var t: Filetime,
+) : IntoInner<Filetime> {
     public open fun clone(): SystemTime = SystemTime(t)
 
     public open fun intervals(): Long = (this.t.dwLowDateTime.toLong()) or ((this.t.dwHighDateTime.toLong()) shl 32)
@@ -127,7 +128,7 @@ public open class SystemTime(
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "SystemTime").field("intervals", this.intervals()).finish()
 
-    public override fun intoInner(): c.Filetime = this.t
+    public override fun intoInner(): Filetime = this.t
 
     public override fun hashCode(): Int {
         var state = 0
@@ -143,13 +144,13 @@ public open class SystemTime(
         public fun now(): SystemTime =
             run {
                 val t: SystemTime  = SystemTime()
-                c.GetSystemTimePreciseAsFileTime(t.t)
+                getSystemTimePreciseAsFileTime(t.t)
                 t
             }
 
-        public fun fromIntervals(intervals: Long): SystemTime = SystemTime(t = c.Filetime(dwLowDateTime = intervals.toUInt(), dwHighDateTime = (intervals shr 32).toUInt()))
+        public fun fromIntervals(intervals: Long): SystemTime = SystemTime(t = Filetime(dwLowDateTime = intervals.toUInt(), dwHighDateTime = (intervals shr 32).toUInt()))
 
-        public fun from(t: c.Filetime): SystemTime = SystemTime(t = t)
+        public fun from(t: Filetime): SystemTime = SystemTime(t = t)
     }
 }
 

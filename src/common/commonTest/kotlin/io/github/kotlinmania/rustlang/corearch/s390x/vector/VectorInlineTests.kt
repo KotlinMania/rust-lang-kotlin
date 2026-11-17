@@ -40,461 +40,461 @@ public fun vecAddI32x4I32x4() {
 }
 
 public fun testVecSubF32x4() {
-    val a: STL = f32x4.new(-1.0, 0.0, 1.0, 2.0).into()
-    val b: STL = f32x4.new(2.0, 1.0, -1.0, -2.0).into()
+    val a: VectorFloat = f32x4.new(-1.0, 0.0, 1.0, 2.0).into()
+    val b: VectorFloat = f32x4.new(2.0, 1.0, -1.0, -2.0).into()
     val d = f32x4.new(-3.0, -1.0, 2.0, 4.0)
     val r = f32x4.from(vecSub(a, b))
     check(d == r)
 }
 
 public fun testVecSubF64x2() {
-    val a: STL = f64x2.new(-1.0, 0.0).into()
-    val b: STL = f64x2.new(2.0, 1.0).into()
+    val a: VectorDouble = f64x2.new(-1.0, 0.0).into()
+    val b: VectorDouble = f64x2.new(2.0, 1.0).into()
     val d = f64x2.new(-3.0, -1.0)
     val r = f64x2.from(vecSub(a, b))
     check(d == r)
 }
 
 public fun testVecSubI64x2() {
-    val a: STL = i64x2.new(-1, 0).into()
-    val b: STL = i64x2.new(2, 1).into()
+    val a: VectorSignedLongLong = i64x2.new(-1, 0).into()
+    val b: VectorSignedLongLong = i64x2.new(2, 1).into()
     val d = i64x2.new(-3, -1)
     val r = i64x2.from(vecSub(a, b))
     check(d == r)
 }
 
 public fun testVecSubU64x2() {
-    val a: STL = u64x2.new(0, 1).into()
-    val b: STL = u64x2.new(1, 0).into()
+    val a: VectorUnsignedLongLong = u64x2.new(0, 1).into()
+    val b: VectorUnsignedLongLong = u64x2.new(1, 0).into()
     val d = u64x2.new(ULong.MAX_VALUE, 1)
     val r = u64x2.from(vecSub(a, b))
     check(d == r)
 }
 
 public fun testVecSubI32x4() {
-    val a: STL = i32x4.new(-1, 0, 1, 2).into()
-    val b: STL = i32x4.new(2, 1, -1, -2).into()
+    val a: VectorSignedInt = i32x4.new(-1, 0, 1, 2).into()
+    val b: VectorSignedInt = i32x4.new(2, 1, -1, -2).into()
     val d = i32x4.new(-3, -1, 2, 4)
     val r = i32x4.from(vecSub(a, b))
     check(d == r)
 }
 
 public fun testVecSubU32x4() {
-    val a: STL = u32x4.new(0, 0, 1, 2).into()
-    val b: STL = u32x4.new(2, 1, 0, 0).into()
+    val a: VectorUnsignedInt = u32x4.new(0, 0, 1, 2).into()
+    val b: VectorUnsignedInt = u32x4.new(2, 1, 0, 0).into()
     val d = u32x4.new(4294967294, 4294967295, 1, 2)
     val r = u32x4.from(vecSub(a, b))
     check(d == r)
 }
 
 public fun testVecSubI16x8() {
-    val a: STL = i16x8.new(-1, 0, 1, 2, -1, 0, 1, 2).into()
-    val b: STL = i16x8.new(2, 1, -1, -2, 2, 1, -1, -2).into()
+    val a: VectorSignedShort = i16x8.new(-1, 0, 1, 2, -1, 0, 1, 2).into()
+    val b: VectorSignedShort = i16x8.new(2, 1, -1, -2, 2, 1, -1, -2).into()
     val d = i16x8.new(-3, -1, 2, 4, -3, -1, 2, 4)
     val r = i16x8.from(vecSub(a, b))
     check(d == r)
 }
 
 public fun testVecSubU16x8() {
-    val a: STL = u16x8.new(0, 0, 1, 2, 0, 0, 1, 2).into()
-    val b: STL = u16x8.new(2, 1, 0, 0, 2, 1, 0, 0).into()
+    val a: VectorUnsignedShort = u16x8.new(0, 0, 1, 2, 0, 0, 1, 2).into()
+    val b: VectorUnsignedShort = u16x8.new(2, 1, 0, 0, 2, 1, 0, 0).into()
     val d = u16x8.new(65534, 65535, 1, 2, 65534, 65535, 1, 2)
     val r = u16x8.from(vecSub(a, b))
     check(d == r)
 }
 
 public fun testVecSubI8x16() {
-    val a: STL = i8x16.new(-1, 0, 1, 2, -1, 0, 1, 2, -1, 0, 1, 2, -1, 0, 1, 2).into()
-    val b: STL = i8x16.new(2, 1, -1, -2, 2, 1, -1, -2, 2, 1, -1, -2, 2, 1, -1, -2).into()
+    val a: VectorSignedChar = i8x16.new(-1, 0, 1, 2, -1, 0, 1, 2, -1, 0, 1, 2, -1, 0, 1, 2).into()
+    val b: VectorSignedChar = i8x16.new(2, 1, -1, -2, 2, 1, -1, -2, 2, 1, -1, -2, 2, 1, -1, -2).into()
     val d = i8x16.new(-3, -1, 2, 4, -3, -1, 2, 4, -3, -1, 2, 4, -3, -1, 2, 4)
     val r = i8x16.from(vecSub(a, b))
     check(d == r)
 }
 
 public fun testVecSubU8x16() {
-    val a: STL = u8x16.new(0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2).into()
-    val b: STL = u8x16.new(2, 1, 0, 0, 2, 1, 0, 0, 2, 1, 0, 0, 2, 1, 0, 0).into()
+    val a: VectorUnsignedChar = u8x16.new(0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2).into()
+    val b: VectorUnsignedChar = u8x16.new(2, 1, 0, 0, 2, 1, 0, 0, 2, 1, 0, 0, 2, 1, 0, 0).into()
     val d = u8x16.new(254, 255, 1, 2, 254, 255, 1, 2, 254, 255, 1, 2, 254, 255, 1, 2)
     val r = u8x16.from(vecSub(a, b))
     check(d == r)
 }
 
 public fun testVecMulF32x4() {
-    val a: STL = f32x4.new(-1.0, 0.0, 1.0, 2.0).into()
-    val b: STL = f32x4.new(2.0, 1.0, -1.0, -2.0).into()
+    val a: VectorFloat = f32x4.new(-1.0, 0.0, 1.0, 2.0).into()
+    val b: VectorFloat = f32x4.new(2.0, 1.0, -1.0, -2.0).into()
     val d = f32x4.new(-2.0, 0.0, -1.0, -4.0)
     val r = f32x4.from(vecMul(a, b))
     check(d == r)
 }
 
 public fun testVecMulF64x2() {
-    val a: STL = f64x2.new(-1.0, 0.0).into()
-    val b: STL = f64x2.new(2.0, 1.0).into()
+    val a: VectorDouble = f64x2.new(-1.0, 0.0).into()
+    val b: VectorDouble = f64x2.new(2.0, 1.0).into()
     val d = f64x2.new(-2.0, 0.0)
     val r = f64x2.from(vecMul(a, b))
     check(d == r)
 }
 
 public fun testVecMulI64x2() {
-    val a: STL = i64x2.new(Long.MAX_VALUE, -4).into()
-    val b: STL = i64x2.new(2, 3).into()
+    val a: VectorSignedLongLong = i64x2.new(Long.MAX_VALUE, -4).into()
+    val b: VectorSignedLongLong = i64x2.new(2, 3).into()
     val d = i64x2.new((Long.MAX_VALUE * 2L), -12)
     val r = i64x2.from(vecMul(a, b))
     check(d == r)
 }
 
 public fun testVecMulU64x2() {
-    val a: STL = u64x2.new(ULong.MAX_VALUE, 4).into()
-    val b: STL = u64x2.new(2, 3).into()
+    val a: VectorUnsignedLongLong = u64x2.new(ULong.MAX_VALUE, 4).into()
+    val b: VectorUnsignedLongLong = u64x2.new(2, 3).into()
     val d = u64x2.new((ULong.MAX_VALUE * 2uL), 12)
     val r = u64x2.from(vecMul(a, b))
     check(d == r)
 }
 
 public fun testVecMulI32x4() {
-    val a: STL = i32x4.new(-1, 0, 1, 2).into()
-    val b: STL = i32x4.new(2, 1, -1, -2).into()
+    val a: VectorSignedInt = i32x4.new(-1, 0, 1, 2).into()
+    val b: VectorSignedInt = i32x4.new(2, 1, -1, -2).into()
     val d = i32x4.new(-2, 0, -1, -4)
     val r = i32x4.from(vecMul(a, b))
     check(d == r)
 }
 
 public fun testVecMulU32x4() {
-    val a: STL = u32x4.new(0, UInt.MAX_VALUE - 1u, 1, 2).into()
-    val b: STL = u32x4.new(5, 6, 7, 8).into()
+    val a: VectorUnsignedInt = u32x4.new(0, UInt.MAX_VALUE - 1u, 1, 2).into()
+    val b: VectorUnsignedInt = u32x4.new(5, 6, 7, 8).into()
     val d = u32x4.new(0, 4294967284, 7, 16)
     val r = u32x4.from(vecMul(a, b))
     check(d == r)
 }
 
 public fun testVecMulI16x8() {
-    val a: STL = i16x8.new(-1, 0, 1, 2, -1, 0, 1, 2).into()
-    val b: STL = i16x8.new(2, 1, -1, -2, 2, 1, -1, -2).into()
+    val a: VectorSignedShort = i16x8.new(-1, 0, 1, 2, -1, 0, 1, 2).into()
+    val b: VectorSignedShort = i16x8.new(2, 1, -1, -2, 2, 1, -1, -2).into()
     val d = i16x8.new(-2, 0, -1, -4, -2, 0, -1, -4)
     val r = i16x8.from(vecMul(a, b))
     check(d == r)
 }
 
 public fun testVecMulU16x8() {
-    val a: STL = u16x8.new(0, UShort.MAX_VALUE - 1u, 1, 2, 3, 4, 5, 6).into()
-    val b: STL = u16x8.new(5, 6, 7, 8, 9, 8, 7, 6).into()
+    val a: VectorUnsignedShort = u16x8.new(0, UShort.MAX_VALUE - 1u, 1, 2, 3, 4, 5, 6).into()
+    val b: VectorUnsignedShort = u16x8.new(5, 6, 7, 8, 9, 8, 7, 6).into()
     val d = u16x8.new(0, 65524, 7, 16, 27, 32, 35, 36)
     val r = u16x8.from(vecMul(a, b))
     check(d == r)
 }
 
 public fun testVecMulI8x16() {
-    val a: STL = i8x16.new(-1, 0, 1, 2, -1, 0, 1, 2, -1, 0, 1, 2, -1, 0, 1, 2).into()
-    val b: STL = i8x16.new(2, 1, -1, -2, 2, 1, -1, -2, 2, 1, -1, -2, 2, 1, -1, -2).into()
+    val a: VectorSignedChar = i8x16.new(-1, 0, 1, 2, -1, 0, 1, 2, -1, 0, 1, 2, -1, 0, 1, 2).into()
+    val b: VectorSignedChar = i8x16.new(2, 1, -1, -2, 2, 1, -1, -2, 2, 1, -1, -2, 2, 1, -1, -2).into()
     val d = i8x16.new(-2, 0, -1, -4, -2, 0, -1, -4, -2, 0, -1, -4, -2, 0, -1, -4)
     val r = i8x16.from(vecMul(a, b))
     check(d == r)
 }
 
 public fun testVecMulU8x16() {
-    val a: STL = u8x16.new(0, UByte.MAX_VALUE - 1u, 1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4).into()
-    val b: STL = u8x16.new(5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 0, UByte.MAX_VALUE, 1, 2, 3, 4).into()
+    val a: VectorUnsignedChar = u8x16.new(0, UByte.MAX_VALUE - 1u, 1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4).into()
+    val b: VectorUnsignedChar = u8x16.new(5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 0, UByte.MAX_VALUE, 1, 2, 3, 4).into()
     val d = u8x16.new(0, 244, 7, 16, 27, 32, 35, 36, 35, 32, 0, 248, 7, 12, 15, 16)
     val r = u8x16.from(vecMul(a, b))
     check(d == r)
 }
 
 public fun testVecAbsI8() {
-    val a: STL = vecSplats(-42)
-    val a1: STL = vecAbs(a)
+    val a: VectorSignedChar = vecSplats(-42)
+    val a1: VectorSignedChar = vecAbs(a)
     val d = i8x16.splat(42)
     check(d == i8x16.from(a1))
 }
 
 public fun testVecAbsI16() {
-    val a: STL = vecSplats(-42)
-    val a1: STL = vecAbs(a)
+    val a: VectorSignedShort = vecSplats(-42)
+    val a1: VectorSignedShort = vecAbs(a)
     val d = i16x8.splat(42)
     check(d == i16x8.from(a1))
 }
 
 public fun testVecAbsI32() {
-    val a: STL = vecSplats(-42)
-    val a1: STL = vecAbs(a)
+    val a: VectorSignedInt = vecSplats(-42)
+    val a1: VectorSignedInt = vecAbs(a)
     val d = i32x4.splat(42)
     check(d == i32x4.from(a1))
 }
 
 public fun testVecAbsI64() {
-    val a: STL = vecSplats(-42L)
-    val a1: STL = vecAbs(a)
+    val a: VectorSignedLongLong = vecSplats(-42L)
+    val a1: VectorSignedLongLong = vecAbs(a)
     val d = i64x2.splat(42L)
     check(d == i64x2.from(a1))
 }
 
 public fun testVecAbsF32() {
-    val a: STL = vecSplats(-42.0f)
-    val a1: STL = vecAbs(a)
+    val a: VectorFloat = vecSplats(-42.0f)
+    val a1: VectorFloat = vecAbs(a)
     val d = f32x4.splat(42.0f)
     check(d == f32x4.from(a1))
 }
 
 public fun testVecAbsF64() {
-    val a: STL = vecSplats(-42.0)
-    val a1: STL = vecAbs(a)
+    val a: VectorDouble = vecSplats(-42.0)
+    val a1: VectorDouble = vecAbs(a)
     val d = f64x2.splat(42.0)
     check(d == f64x2.from(a1))
 }
 
 public fun testVecNabs() {
-    val a: STL = f32x4.new(3.1415927f, 1.0, 0.0, -1.0).into()
+    val a: VectorFloat = f32x4.new(3.1415927f, 1.0, 0.0, -1.0).into()
     val d = f32x4.new(-3.1415927f, -1.0, 0.0, -1.0)
     val r = f32x4.from(vecNabs(a))
     check(d == r)
 }
 
 public fun testVecAndc() {
-    val a: STL = i32x4.new(0xCC, 0xCC, 0xCC, 0xCC).into()
-    val b: STL = i32x4.new(0x33, 0xF3, 0xC, 0x80).into()
+    val a: VectorSignedInt = i32x4.new(0xCC, 0xCC, 0xCC, 0xCC).into()
+    val b: VectorSignedInt = i32x4.new(0x33, 0xF3, 0xC, 0x80).into()
     val d = i32x4.new(0xCC, 0xC, 0xC0, 0x4C)
     val r = i32x4.from(vecAndc(a, b))
     check(d == r)
 }
 
 public fun testVecAnd() {
-    val a: STL = i32x4.new(0xCC, 0xCC, 0xCC, 0xCC).into()
-    val b: STL = i32x4.new(0x33, 0xF3, 0xC, 0x0).into()
+    val a: VectorSignedInt = i32x4.new(0xCC, 0xCC, 0xCC, 0xCC).into()
+    val b: VectorSignedInt = i32x4.new(0x33, 0xF3, 0xC, 0x0).into()
     val d = i32x4.new(0x0, 0xC0, 0xC, 0x0)
     val r = i32x4.from(vecAnd(a, b))
     check(d == r)
 }
 
 public fun testVecNand() {
-    val a: STL = i32x4.new(0xCC, 0xCC, 0xCC, 0xCC).into()
-    val b: STL = i32x4.new(0x33, 0xF3, 0xC, 0x0).into()
+    val a: VectorSignedInt = i32x4.new(0xCC, 0xCC, 0xCC, 0xCC).into()
+    val b: VectorSignedInt = i32x4.new(0x33, 0xF3, 0xC, 0x0).into()
     val d = i32x4.new(0x0.inv(), 0xC0.inv(), 0xC.inv(), 0x0.inv())
     val r = i32x4.from(vecNand(a, b))
     check(d == r)
 }
 
 public fun testVecOrc() {
-    val a: STL = u32x4.new(0xCC, 0xCC, 0xCC, 0xCC).into()
-    val b: STL = u32x4.new(0x33, 0xF3, 0xC, 0x0).into()
+    val a: VectorUnsignedInt = u32x4.new(0xCC, 0xCC, 0xCC, 0xCC).into()
+    val b: VectorUnsignedInt = u32x4.new(0x33, 0xF3, 0xC, 0x0).into()
     val d = u32x4.new(0xCC or 0x33.inv(), 0xCC or 0xF3.inv(), 0xCC or 0xC.inv(), 0xCC or 0x0.inv())
     val r = u32x4.from(vecOrc(a, b))
     check(d == r)
 }
 
 public fun testVecOr() {
-    val a: STL = i32x4.new(0xCC, 0xCC, 0xCC, 0xCC).into()
-    val b: STL = i32x4.new(0x33, 0xF3, 0xC, 0x0).into()
+    val a: VectorSignedInt = i32x4.new(0xCC, 0xCC, 0xCC, 0xCC).into()
+    val b: VectorSignedInt = i32x4.new(0x33, 0xF3, 0xC, 0x0).into()
     val d = i32x4.new(0xFF, 0xFF, 0xCC, 0xCC)
     val r = i32x4.from(vecOr(a, b))
     check(d == r)
 }
 
 public fun testVecNor() {
-    val a: STL = i32x4.new(0xCC, 0xCC, 0xCC, 0xCC).into()
-    val b: STL = i32x4.new(0x33, 0xF3, 0xC, 0x0).into()
+    val a: VectorSignedInt = i32x4.new(0xCC, 0xCC, 0xCC, 0xCC).into()
+    val b: VectorSignedInt = i32x4.new(0x33, 0xF3, 0xC, 0x0).into()
     val d = i32x4.new(0xFF.inv(), 0xFF.inv(), 0xCC.inv(), 0xCC.inv())
     val r = i32x4.from(vecNor(a, b))
     check(d == r)
 }
 
 public fun testVecXor() {
-    val a: STL = i32x4.new(0xCC, 0xCC, 0xCC, 0xCC).into()
-    val b: STL = i32x4.new(0x33, 0xF3, 0xC, 0x0).into()
+    val a: VectorSignedInt = i32x4.new(0xCC, 0xCC, 0xCC, 0xCC).into()
+    val b: VectorSignedInt = i32x4.new(0x33, 0xF3, 0xC, 0x0).into()
     val d = i32x4.new(0xFF, 0x3F, 0xC0, 0xCC)
     val r = i32x4.from(vecXor(a, b))
     check(d == r)
 }
 
 public fun testVecEqv() {
-    val a: STL = i32x4.new(0xCC, 0xCC, 0xCC, 0xCC).into()
-    val b: STL = i32x4.new(0x33, 0xF3, 0xC, 0x0).into()
+    val a: VectorSignedInt = i32x4.new(0xCC, 0xCC, 0xCC, 0xCC).into()
+    val b: VectorSignedInt = i32x4.new(0x33, 0xF3, 0xC, 0x0).into()
     val d = i32x4.new(0xFF.inv(), 0x3F.inv(), 0xC0.inv(), 0xCC.inv())
     val r = i32x4.from(vecEqv(a, b))
     check(d == r)
 }
 
 public fun testVecFloorF32() {
-    val a: STL = f32x4.new(1.1, 1.9, -0.5, -0.9).into()
+    val a: VectorFloat = f32x4.new(1.1, 1.9, -0.5, -0.9).into()
     val d = f32x4.new(1.0, 1.0, -1.0, -1.0)
     val r = f32x4.from(vecFloor(a))
     check(d == r)
 }
 
 public fun testVecFloorF641() {
-    val a: STL = f64x2.new(1.1, 1.9).into()
+    val a: VectorDouble = f64x2.new(1.1, 1.9).into()
     val d = f64x2.new(1.0, 1.0)
     val r = f64x2.from(vecFloor(a))
     check(d == r)
 }
 
 public fun testVecFloorF642() {
-    val a: STL = f64x2.new(-0.5, -0.9).into()
+    val a: VectorDouble = f64x2.new(-0.5, -0.9).into()
     val d = f64x2.new(-1.0, -1.0)
     val r = f64x2.from(vecFloor(a))
     check(d == r)
 }
 
 public fun testVecCeilF32() {
-    val a: STL = f32x4.new(0.1, 0.5, 0.6, 0.9).into()
+    val a: VectorFloat = f32x4.new(0.1, 0.5, 0.6, 0.9).into()
     val d = f32x4.new(1.0, 1.0, 1.0, 1.0)
     val r = f32x4.from(vecCeil(a))
     check(d == r)
 }
 
 public fun testVecCeilF641() {
-    val a: STL = f64x2.new(0.1, 0.5).into()
+    val a: VectorDouble = f64x2.new(0.1, 0.5).into()
     val d = f64x2.new(1.0, 1.0)
     val r = f64x2.from(vecCeil(a))
     check(d == r)
 }
 
 public fun testVecCeilF642() {
-    val a: STL = f64x2.new(0.6, 0.9).into()
+    val a: VectorDouble = f64x2.new(0.6, 0.9).into()
     val d = f64x2.new(1.0, 1.0)
     val r = f64x2.from(vecCeil(a))
     check(d == r)
 }
 
 public fun testVecRoundF32() {
-    val a: STL = f32x4.new(0.1, 0.5, 0.6, 0.9).into()
+    val a: VectorFloat = f32x4.new(0.1, 0.5, 0.6, 0.9).into()
     val d = f32x4.new(0.0, 0.0, 1.0, 1.0)
     val r = f32x4.from(vecRound(a))
     check(d == r)
 }
 
 public fun testVecRoundF32EvenOdd() {
-    val a: STL = f32x4.new(0.5, 1.5, 2.5, 3.5).into()
+    val a: VectorFloat = f32x4.new(0.5, 1.5, 2.5, 3.5).into()
     val d = f32x4.new(0.0, 2.0, 2.0, 4.0)
     val r = f32x4.from(vecRound(a))
     check(d == r)
 }
 
 public fun testVecRoundF641() {
-    val a: STL = f64x2.new(0.1, 0.5).into()
+    val a: VectorDouble = f64x2.new(0.1, 0.5).into()
     val d = f64x2.new(0.0, 0.0)
     val r = f64x2.from(vecRound(a))
     check(d == r)
 }
 
 public fun testVecRoundF642() {
-    val a: STL = f64x2.new(0.6, 0.9).into()
+    val a: VectorDouble = f64x2.new(0.6, 0.9).into()
     val d = f64x2.new(1.0, 1.0)
     val r = f64x2.from(vecRound(a))
     check(d == r)
 }
 
 public fun testVecRoundcF32() {
-    val a: STL = f32x4.new(0.1, 0.5, 0.6, 0.9).into()
+    val a: VectorFloat = f32x4.new(0.1, 0.5, 0.6, 0.9).into()
     val d = f32x4.new(0.0, 0.0, 1.0, 1.0)
     val r = f32x4.from(vecRoundc(a))
     check(d == r)
 }
 
 public fun testVecRoundcF32EvenOdd() {
-    val a: STL = f32x4.new(0.5, 1.5, 2.5, 3.5).into()
+    val a: VectorFloat = f32x4.new(0.5, 1.5, 2.5, 3.5).into()
     val d = f32x4.new(0.0, 2.0, 2.0, 4.0)
     val r = f32x4.from(vecRoundc(a))
     check(d == r)
 }
 
 public fun testVecRoundcF641() {
-    val a: STL = f64x2.new(0.1, 0.5).into()
+    val a: VectorDouble = f64x2.new(0.1, 0.5).into()
     val d = f64x2.new(0.0, 0.0)
     val r = f64x2.from(vecRoundc(a))
     check(d == r)
 }
 
 public fun testVecRoundcF642() {
-    val a: STL = f64x2.new(0.6, 0.9).into()
+    val a: VectorDouble = f64x2.new(0.6, 0.9).into()
     val d = f64x2.new(1.0, 1.0)
     val r = f64x2.from(vecRoundc(a))
     check(d == r)
 }
 
 public fun testVecRintF32() {
-    val a: STL = f32x4.new(0.1, 0.5, 0.6, 0.9).into()
+    val a: VectorFloat = f32x4.new(0.1, 0.5, 0.6, 0.9).into()
     val d = f32x4.new(0.0, 0.0, 1.0, 1.0)
     val r = f32x4.from(vecRint(a))
     check(d == r)
 }
 
 public fun testVecRintF32EvenOdd() {
-    val a: STL = f32x4.new(0.5, 1.5, 2.5, 3.5).into()
+    val a: VectorFloat = f32x4.new(0.5, 1.5, 2.5, 3.5).into()
     val d = f32x4.new(0.0, 2.0, 2.0, 4.0)
     val r = f32x4.from(vecRint(a))
     check(d == r)
 }
 
 public fun testVecRintF641() {
-    val a: STL = f64x2.new(0.1, 0.5).into()
+    val a: VectorDouble = f64x2.new(0.1, 0.5).into()
     val d = f64x2.new(0.0, 0.0)
     val r = f64x2.from(vecRint(a))
     check(d == r)
 }
 
 public fun testVecRintF642() {
-    val a: STL = f64x2.new(0.6, 0.9).into()
+    val a: VectorDouble = f64x2.new(0.6, 0.9).into()
     val d = f64x2.new(1.0, 1.0)
     val r = f64x2.from(vecRint(a))
     check(d == r)
 }
 
 public fun testVecSll() {
-    val a: STL = i32x4.new(1, 1, 1, 1).into()
-    val b: STL = u8x16.new(0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0, 8).into()
+    val a: VectorSignedInt = i32x4.new(1, 1, 1, 1).into()
+    val b: VectorUnsignedChar = u8x16.new(0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0, 8).into()
     val d = i32x4.new(1 shl 2, 1 shl 3, 1 shl 4, 1)
     val r = i32x4.from(vecSll(a, b))
     check(d == r)
 }
 
 public fun testVecSrl() {
-    val a: STL = i32x4.new(0x8, 0x8, 0x8, 0x8).into()
-    val b: STL = u8x16.new(0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 16).into()
+    val a: VectorSignedInt = i32x4.new(0x8, 0x8, 0x8, 0x8).into()
+    val b: VectorUnsignedChar = u8x16.new(0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 16).into()
     val d = i32x4.new(4, 2, 1, 8)
     val r = i32x4.from(vecSrl(a, b))
     check(d == r)
 }
 
 public fun testVecSralPos() {
-    val a: STL = u32x4.new(0x8, 0x8, 0x8, 0x8).into()
-    val b: STL = u8x16.new(0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 16).into()
+    val a: VectorUnsignedInt = u32x4.new(0x8, 0x8, 0x8, 0x8).into()
+    val b: VectorUnsignedChar = u8x16.new(0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 16).into()
     val d = u32x4.new(4, 2, 1, 8)
     val r = u32x4.from(vecSral(a, b))
     check(d == r)
 }
 
 public fun testVecSralNeg() {
-    val a: STL = i32x4.new(-8, -8, -8, -8).into()
-    val b: STL = u8x16.new(0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 16).into()
+    val a: VectorSignedInt = i32x4.new(-8, -8, -8, -8).into()
+    val b: VectorUnsignedChar = u8x16.new(0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 16).into()
     val d = i32x4.new(-4, -2, -1, -8)
     val r = i32x4.from(vecSral(a, b))
     check(d == r)
 }
 
 public fun testVecReveF32() {
-    val a: STL = f32x4.new(0.1, 0.5, 0.6, 0.9).into()
+    val a: VectorFloat = f32x4.new(0.1, 0.5, 0.6, 0.9).into()
     val d = f32x4.new(0.9, 0.6, 0.5, 0.1)
     val r = f32x4.from(vecReve(a))
     check(d == r)
 }
 
 public fun testVecRevbU32() {
-    val a: STL = u32x4.new(0xAABBCCDD, 0xEEFF0011, 0x22334455, 0x66778899).into()
+    val a: VectorUnsignedInt = u32x4.new(0xAABBCCDD, 0xEEFF0011, 0x22334455, 0x66778899).into()
     val d = u32x4.new(0xDDCCBBAA, 0x1100FFEE, 0x55443322, 0x99887766)
     val r = u32x4.from(vecRevb(a))
     check(d == r)
 }
 
 public fun testVecMergehU32() {
-    val a: STL = u32x4.new(0xAAAAAAAA, 0xBBBBBBBB, 0xCCCCCCCC, 0xDDDDDDDD).into()
-    val b: STL = u32x4.new(0x00000000, 0x11111111, 0x22222222, 0x33333333).into()
+    val a: VectorUnsignedInt = u32x4.new(0xAAAAAAAA, 0xBBBBBBBB, 0xCCCCCCCC, 0xDDDDDDDD).into()
+    val b: VectorUnsignedInt = u32x4.new(0x00000000, 0x11111111, 0x22222222, 0x33333333).into()
     val d = u32x4.new(0xAAAAAAAA, 0x00000000, 0xBBBBBBBB, 0x11111111)
     val r = u32x4.from(vecMergeh(a, b))
     check(d == r)
 }
 
 public fun testVecMergelU32() {
-    val a: STL = u32x4.new(0xAAAAAAAA, 0xBBBBBBBB, 0xCCCCCCCC, 0xDDDDDDDD).into()
-    val b: STL = u32x4.new(0x00000000, 0x11111111, 0x22222222, 0x33333333).into()
+    val a: VectorUnsignedInt = u32x4.new(0xAAAAAAAA, 0xBBBBBBBB, 0xCCCCCCCC, 0xDDDDDDDD).into()
+    val b: VectorUnsignedInt = u32x4.new(0x00000000, 0x11111111, 0x22222222, 0x33333333).into()
     val d = u32x4.new(0xCCCCCCCC, 0x22222222, 0xDDDDDDDD, 0x33333333)
     val r = u32x4.from(vecMergel(a, b))
     check(d == r)
@@ -591,71 +591,71 @@ public fun testVecPermF32x4() {
 }
 
 public fun testVecSqrt() {
-    val a: STL = f32x4.new(3.1415927f, 1.0, 25.0, 2.0).into()
+    val a: VectorFloat = f32x4.new(3.1415927f, 1.0, 25.0, 2.0).into()
     val d = f32x4.new(kmSqrtf32(3.1415927f), 1.0, 5.0, 1.4142135f)
     val r = f32x4.from(vecSqrt(a))
     check(d == r)
 }
 
 public fun testVecFindAnyEq() {
-    val a: STL = i32x4.new(1, -2, 3, -4).into()
-    val b: STL = i32x4.new(-5, 3, -7, 8).into()
+    val a: VectorSignedInt = i32x4.new(1, -2, 3, -4).into()
+    val b: VectorSignedInt = i32x4.new(-5, 3, -7, 8).into()
     val d = i32x4.new(0, 0, 0.inv(), 0)
     val r = i32x4.from(vecFindAnyEq(a, b))
     check(d == r)
 }
 
 public fun testVecFindAnyNe() {
-    val a: STL = i32x4.new(1, -2, 3, -4).into()
-    val b: STL = i32x4.new(-5, 3, -7, 8).into()
+    val a: VectorSignedInt = i32x4.new(1, -2, 3, -4).into()
+    val b: VectorSignedInt = i32x4.new(-5, 3, -7, 8).into()
     val d = i32x4.new(0.inv(), 0.inv(), 0, 0.inv())
     val r = i32x4.from(vecFindAnyNe(a, b))
     check(d == r)
 }
 
 public fun testVecFindAnyEqIdx1() {
-    val a: STL = i32x4.new(1, 2, 3, 4).into()
-    val b: STL = i32x4.new(5, 3, 7, 8).into()
+    val a: VectorSignedInt = i32x4.new(1, 2, 3, 4).into()
+    val b: VectorSignedInt = i32x4.new(5, 3, 7, 8).into()
     val d = i32x4.new(0, 8, 0, 0)
     val r = i32x4.from(vecFindAnyEqIdx(a, b))
     check(d == r)
 }
 
 public fun testVecFindAnyEqIdx2() {
-    val a: STL = i32x4.new(1, 2, 3, 4).into()
-    val b: STL = i32x4.new(5, 6, 7, 8).into()
+    val a: VectorSignedInt = i32x4.new(1, 2, 3, 4).into()
+    val b: VectorSignedInt = i32x4.new(5, 6, 7, 8).into()
     val d = i32x4.new(0, 16, 0, 0)
     val r = i32x4.from(vecFindAnyEqIdx(a, b))
     check(d == r)
 }
 
 public fun testVecFindAnyNeIdx1() {
-    val a: STL = i32x4.new(1, 2, 3, 4).into()
-    val b: STL = i32x4.new(1, 5, 3, 4).into()
+    val a: VectorSignedInt = i32x4.new(1, 2, 3, 4).into()
+    val b: VectorSignedInt = i32x4.new(1, 5, 3, 4).into()
     val d = i32x4.new(0, 4, 0, 0)
     val r = i32x4.from(vecFindAnyNeIdx(a, b))
     check(d == r)
 }
 
 public fun testVecFindAnyNeIdx2() {
-    val a: STL = i32x4.new(1, 2, 3, 4).into()
-    val b: STL = i32x4.new(1, 2, 3, 4).into()
+    val a: VectorSignedInt = i32x4.new(1, 2, 3, 4).into()
+    val b: VectorSignedInt = i32x4.new(1, 2, 3, 4).into()
     val d = i32x4.new(0, 16, 0, 0)
     val r = i32x4.from(vecFindAnyNeIdx(a, b))
     check(d == r)
 }
 
 public fun testVecFindAnyEqOr0Idx1() {
-    val a: STL = i32x4.new(1, 2, 0, 4).into()
-    val b: STL = i32x4.new(5, 6, 7, 8).into()
+    val a: VectorSignedInt = i32x4.new(1, 2, 0, 4).into()
+    val b: VectorSignedInt = i32x4.new(5, 6, 7, 8).into()
     val d = i32x4.new(0, 8, 0, 0)
     val r = i32x4.from(vecFindAnyEqOr0Idx(a, b))
     check(d == r)
 }
 
 public fun testVecFindAnyNeOr0Idx1() {
-    val a: STL = i32x4.new(1, 2, 0, 4).into()
-    val b: STL = i32x4.new(1, 2, 3, 4).into()
+    val a: VectorSignedInt = i32x4.new(1, 2, 0, 4).into()
+    val b: VectorSignedInt = i32x4.new(1, 2, 3, 4).into()
     val d = i32x4.new(0, 8, 0, 0)
     val r = i32x4.from(vecFindAnyNeOr0Idx(a, b))
     check(d == r)
@@ -816,92 +816,92 @@ public fun testVectorLcbb() {
 }
 
 public fun testVecPack() {
-    val a: STL = i16x8.new(0, 1, -1, 42, 32767, -32768, 30000, -30000).into()
-    val b: STL = i16x8.new(32767, -32768, 12345, -12345, 0, 1, -1, 42).into()
+    val a: VectorSignedShort = i16x8.new(0, 1, -1, 42, 32767, -32768, 30000, -30000).into()
+    val b: VectorSignedShort = i16x8.new(32767, -32768, 12345, -12345, 0, 1, -1, 42).into()
     val d = i8x16.new(0, 1, -1, 42, -1, 0, 48, -48, -1, 0, 57, -57, 0, 1, -1, 42)
     val r = i8x16.from(vecPack(a, b))
     check(d == r)
 }
 
 public fun testVecPacks() {
-    val a: STL = i16x8.new(0, 1, -1, 42, 32767, -32768, 30000, -30000).into()
-    val b: STL = i16x8.new(32767, -32768, 12345, -12345, 0, 1, -1, 42).into()
+    val a: VectorSignedShort = i16x8.new(0, 1, -1, 42, 32767, -32768, 30000, -30000).into()
+    val b: VectorSignedShort = i16x8.new(32767, -32768, 12345, -12345, 0, 1, -1, 42).into()
     val d = i8x16.new(0, 1, -1, 42, 127, -128, 127, -128, 127, -128, 127, -128, 0, 1, -1, 42)
     val r = i8x16.from(vecPacks(a, b))
     check(d == r)
 }
 
 public fun testVecPacksuSigned() {
-    val a: STL = i16x8.new(0, 1, -1, 42, 32767, -32768, 30000, -30000).into()
-    val b: STL = i16x8.new(32767, -32768, 12345, -12345, 0, 1, -1, 42).into()
+    val a: VectorSignedShort = i16x8.new(0, 1, -1, 42, 32767, -32768, 30000, -30000).into()
+    val b: VectorSignedShort = i16x8.new(32767, -32768, 12345, -12345, 0, 1, -1, 42).into()
     val d = u8x16.new(0, 1, 0, 42, 255, 0, 255, 0, 255, 0, 255, 0, 0, 1, 0, 42)
     val r = u8x16.from(vecPacksu(a, b))
     check(d == r)
 }
 
 public fun testVecPacksuUnsigned() {
-    val a: STL = u16x8.new(65535, 32768, 1234, 5678, 16, 8, 4, 2).into()
-    val b: STL = u16x8.new(30000, 25000, 20000, 15000, 31, 63, 127, 255).into()
+    val a: VectorUnsignedShort = u16x8.new(65535, 32768, 1234, 5678, 16, 8, 4, 2).into()
+    val b: VectorUnsignedShort = u16x8.new(30000, 25000, 20000, 15000, 31, 63, 127, 255).into()
     val d = u8x16.new(255, 255, 255, 255, 16, 8, 4, 2, 255, 255, 255, 255, 31, 63, 127, 255)
     val r = u8x16.from(vecPacksu(a, b))
     check(d == r)
 }
 
 public fun testVecRl() {
-    val a: STL = u32x4.new(0x12345678, 0x9ABCDEF0, 0x0F0F0F0F, 0x12345678).into()
-    val b: STL = u32x4.new(4, 8, 12, 68).into()
+    val a: VectorUnsignedInt = u32x4.new(0x12345678, 0x9ABCDEF0, 0x0F0F0F0F, 0x12345678).into()
+    val b: VectorUnsignedInt = u32x4.new(4, 8, 12, 68).into()
     val d = u32x4.new(0x23456781, 0xBCDEF09A, 0xF0F0F0F0, 0x23456781)
     val r = u32x4.from(vecRl(a, b))
     check(d == r)
 }
 
 public fun testVecUnpackhI() {
-    val a: STL = i16x8.new(0x1234, -2, 0x0F0F, -32768, 0, 0, 0, 0).into()
+    val a: VectorSignedShort = i16x8.new(0x1234, -2, 0x0F0F, -32768, 0, 0, 0, 0).into()
     val d = i32x4.new(0x1234, -2, 0x0F0F, -32768)
     val r = i32x4.from(vecUnpackh(a))
     check(d == r)
 }
 
 public fun testVecUnpackhU() {
-    val a: STL = u16x8.new(0x1234, 0xFFFF, 0x0F0F, 0x8000, 0, 0, 0, 0).into()
+    val a: VectorUnsignedShort = u16x8.new(0x1234, 0xFFFF, 0x0F0F, 0x8000, 0, 0, 0, 0).into()
     val d = u32x4.new(0x1234, 0xFFFF, 0x0F0F, 0x8000)
     val r = u32x4.from(vecUnpackh(a))
     check(d == r)
 }
 
 public fun testVecUnpacklI() {
-    val a: STL = i16x8.new(0, 0, 0, 0, 0x1234, -2, 0x0F0F, -32768).into()
+    val a: VectorSignedShort = i16x8.new(0, 0, 0, 0, 0x1234, -2, 0x0F0F, -32768).into()
     val d = i32x4.new(0x1234, -2, 0x0F0F, -32768)
     val r = i32x4.from(vecUnpackl(a))
     check(d == r)
 }
 
 public fun testVecUnpacklU() {
-    val a: STL = u16x8.new(0, 0, 0, 0, 0x1234, 0xFFFF, 0x0F0F, 0x8000).into()
+    val a: VectorUnsignedShort = u16x8.new(0, 0, 0, 0, 0x1234, 0xFFFF, 0x0F0F, 0x8000).into()
     val d = u32x4.new(0x1234, 0xFFFF, 0x0F0F, 0x8000)
     val r = u32x4.from(vecUnpackl(a))
     check(d == r)
 }
 
 public fun testVecAvg() {
-    val a: STL = u32x4.new(2, 1, UInt.MAX_VALUE, 0).into()
-    val b: STL = u32x4.new(4, 2, 2, 0).into()
+    val a: VectorUnsignedInt = u32x4.new(2, 1, UInt.MAX_VALUE, 0).into()
+    val b: VectorUnsignedInt = u32x4.new(4, 2, 2, 0).into()
     val d = u32x4.new(3, (1u + 2u).divCeil(2), (UInt.MAX_VALUE.toULong() + 2uL).divCeil(2).toUInt(), 0)
     val r = u32x4.from(vecAvg(a, b))
     check(d == r)
 }
 
 public fun testVecChecksum() {
-    val a: STL = u32x4.new(1, 2, 3, UInt.MAX_VALUE).into()
-    val b: STL = u32x4.new(5, 6, 7, 8).into()
+    val a: VectorUnsignedInt = u32x4.new(1, 2, 3, UInt.MAX_VALUE).into()
+    val b: VectorUnsignedInt = u32x4.new(5, 6, 7, 8).into()
     val d = u32x4.new(0, 12, 0, 0)
     val r = u32x4.from(vecChecksum(a, b))
     check(d == r)
 }
 
 public fun testVecAddU128() {
-    val a: STL = u8x16.new(0x01, 0x05, 0x0F, 0x1A, 0x2F, 0x3F, 0x50, 0x65, 0x7A, 0x8F, 0x9A, 0xAD, 0xB0, 0xC3, 0xD5, 0xE8).into()
-    val b: STL = u8x16.new(0xF0, 0xEF, 0xC3, 0xB1, 0x92, 0x71, 0x5A, 0x43, 0x3B, 0x29, 0x13, 0x04, 0xD7, 0xA1, 0x8C, 0x76).into()
+    val a: VectorUnsignedChar = u8x16.new(0x01, 0x05, 0x0F, 0x1A, 0x2F, 0x3F, 0x50, 0x65, 0x7A, 0x8F, 0x9A, 0xAD, 0xB0, 0xC3, 0xD5, 0xE8).into()
+    val b: VectorUnsignedChar = u8x16.new(0xF0, 0xEF, 0xC3, 0xB1, 0x92, 0x71, 0x5A, 0x43, 0x3B, 0x29, 0x13, 0x04, 0xD7, 0xA1, 0x8C, 0x76).into()
     val d = u8x16.new(0xF1, 0xF4, 0xD2, 0xCB, 0xC1, 0xB0, 0xAA, 0xA8, 0xB5, 0xB8, 0xAD, 0xB2, 0x88, 0x65, 0x62, 0x5E)
     val r = u8x16.from(vecAddU128(a, b))
     check(d == r)
@@ -938,64 +938,64 @@ public fun testVecSubcU128() {
 }
 
 public fun testVecMuleU() {
-    val a: STL = u16x8.new(0xFFFF, 0, 2, 0, 2, 0, 1, 0).into()
-    val b: STL = u16x8.new(0xFFFF, 0, 4, 0, 0xFFFF, 0, 2, 0).into()
+    val a: VectorUnsignedShort = u16x8.new(0xFFFF, 0, 2, 0, 2, 0, 1, 0).into()
+    val b: VectorUnsignedShort = u16x8.new(0xFFFF, 0, 4, 0, 0xFFFF, 0, 2, 0).into()
     val d = u32x4.new(0xFFFE0001, 8, 0x0001FFFE, 2)
     val r = u32x4.from(vecMule(a, b))
     check(d == r)
 }
 
 public fun testVecMuleI() {
-    val a: STL = i16x8.new(Short.MIN_VALUE, 0, -2, 0, 2, 0, 1, 0).into()
-    val b: STL = i16x8.new(Short.MIN_VALUE, 0, 4, 0, Short.MAX_VALUE, 0, 2, 0).into()
+    val a: VectorSignedShort = i16x8.new(Short.MIN_VALUE, 0, -2, 0, 2, 0, 1, 0).into()
+    val b: VectorSignedShort = i16x8.new(Short.MIN_VALUE, 0, 4, 0, Short.MAX_VALUE, 0, 2, 0).into()
     val d = i32x4.new(0x40000000, -8, 0xFFFE, 2)
     val r = i32x4.from(vecMule(a, b))
     check(d == r)
 }
 
 public fun testVecMuloU() {
-    val a: STL = u16x8.new(0, 0xFFFF, 0, 2, 0, 2, 0, 1).into()
-    val b: STL = u16x8.new(0, 0xFFFF, 0, 4, 0, 0xFFFF, 0, 2).into()
+    val a: VectorUnsignedShort = u16x8.new(0, 0xFFFF, 0, 2, 0, 2, 0, 1).into()
+    val b: VectorUnsignedShort = u16x8.new(0, 0xFFFF, 0, 4, 0, 0xFFFF, 0, 2).into()
     val d = u32x4.new(0xFFFE0001, 8, 0x0001FFFE, 2)
     val r = u32x4.from(vecMulo(a, b))
     check(d == r)
 }
 
 public fun testVecMuloI() {
-    val a: STL = i16x8.new(0, Short.MIN_VALUE, 0, -2, 0, 2, 0, 1).into()
-    val b: STL = i16x8.new(0, Short.MIN_VALUE, 0, 4, 0, Short.MAX_VALUE, 0, 2).into()
+    val a: VectorSignedShort = i16x8.new(0, Short.MIN_VALUE, 0, -2, 0, 2, 0, 1).into()
+    val b: VectorSignedShort = i16x8.new(0, Short.MIN_VALUE, 0, 4, 0, Short.MAX_VALUE, 0, 2).into()
     val d = i32x4.new(0x40000000, -8, 0xFFFE, 2)
     val r = i32x4.from(vecMulo(a, b))
     check(d == r)
 }
 
 public fun testVecMulhU() {
-    val a: STL = u32x4.new(UInt.MAX_VALUE, 2, 2, 1).into()
-    val b: STL = u32x4.new(UInt.MAX_VALUE, 4, UInt.MAX_VALUE, 2).into()
+    val a: VectorUnsignedInt = u32x4.new(UInt.MAX_VALUE, 2, 2, 1).into()
+    val b: VectorUnsignedInt = u32x4.new(UInt.MAX_VALUE, 4, UInt.MAX_VALUE, 2).into()
     val d = u32x4.new(UInt.MAX_VALUE - 1u, 0, 1, 0)
     val r = u32x4.from(vecMulh(a, b))
     check(d == r)
 }
 
 public fun testVecMulhI() {
-    val a: STL = i32x4.new(Int.MIN_VALUE, -2, 2, 1).into()
-    val b: STL = i32x4.new(Int.MIN_VALUE, 4, Int.MAX_VALUE, 2).into()
+    val a: VectorSignedInt = i32x4.new(Int.MIN_VALUE, -2, 2, 1).into()
+    val b: VectorSignedInt = i32x4.new(Int.MIN_VALUE, 4, Int.MAX_VALUE, 2).into()
     val d = i32x4.new(0x40000000, -1, 0, 0)
     val r = i32x4.from(vecMulh(a, b))
     check(d == r)
 }
 
 public fun testVecGfmsum1() {
-    val a: STL = u16x8.new(0x1234, 0x5678, 0x9ABC, 0xDEF0, 0x1357, 0x2468, 0xACE0, 0xBDF0).into()
-    val b: STL = u16x8.new(0xFFFF, 0x0001, 0x8000, 0x7FFF, 0xAAAA, 0x5555, 0x1234, 0x5678).into()
+    val a: VectorUnsignedShort = u16x8.new(0x1234, 0x5678, 0x9ABC, 0xDEF0, 0x1357, 0x2468, 0xACE0, 0xBDF0).into()
+    val b: VectorUnsignedShort = u16x8.new(0xFFFF, 0x0001, 0x8000, 0x7FFF, 0xAAAA, 0x5555, 0x1234, 0x5678).into()
     val d = u32x4.new(0xE13A794, 0x68764A50, 0x94AA3E, 0x2C93F300)
     val r = u32x4.from(vecGfmsum(a, b))
     check(d == r)
 }
 
 public fun testVecGfmsum2() {
-    val a: STL = u16x8.new(0x0000, 0xFFFF, 0xAAAA, 0x5555, 0x1234, 0x5678, 0x9ABC, 0xDEF0).into()
-    val b: STL = u16x8.new(0xFFFF, 0x0000, 0x5555, 0xAAAA, 0x0001, 0x8000, 0x7FFF, 0x1357).into()
+    val a: VectorUnsignedShort = u16x8.new(0x0000, 0xFFFF, 0xAAAA, 0x5555, 0x1234, 0x5678, 0x9ABC, 0xDEF0).into()
+    val b: VectorUnsignedShort = u16x8.new(0xFFFF, 0x0000, 0x5555, 0xAAAA, 0x0001, 0x8000, 0x7FFF, 0x1357).into()
     val d = u32x4.new(0, 0, 0x2B3C1234, 0x3781D244)
     val r = u32x4.from(vecGfmsum(a, b))
     check(d == r)
@@ -1372,80 +1372,80 @@ public fun testVecCmpnrgOr0Idx() {
 }
 
 public fun testVecCmpgt() {
-    val a: STL = f32x4.new(1.0, Float.NaN, Float.NaN, 3.14).into()
-    val b: STL = f32x4.new(2.0, Float.NaN, 5.0, 2.0).into()
+    val a: VectorFloat = f32x4.new(1.0, Float.NaN, Float.NaN, 3.14).into()
+    val b: VectorFloat = f32x4.new(2.0, Float.NaN, 5.0, 2.0).into()
     val d = i32x4.new(0, 0, 0, 0.inv())
     val r = i32x4.from(vecCmpgt(a, b))
     check(d == r)
 }
 
 public fun testVecCmpge() {
-    val a: STL = f32x4.new(1.0, Float.NaN, Float.NaN, 3.14).into()
-    val b: STL = f32x4.new(1.0, Float.NaN, 5.0, 2.0).into()
+    val a: VectorFloat = f32x4.new(1.0, Float.NaN, Float.NaN, 3.14).into()
+    val b: VectorFloat = f32x4.new(1.0, Float.NaN, 5.0, 2.0).into()
     val d = i32x4.new(0.inv(), 0, 0, 0.inv())
     val r = i32x4.from(vecCmpge(a, b))
     check(d == r)
 }
 
 public fun testVecCmplt() {
-    val a: STL = f32x4.new(1.0, Float.NaN, Float.NaN, 2.0).into()
-    val b: STL = f32x4.new(2.0, Float.NaN, 5.0, 2.0).into()
+    val a: VectorFloat = f32x4.new(1.0, Float.NaN, Float.NaN, 2.0).into()
+    val b: VectorFloat = f32x4.new(2.0, Float.NaN, 5.0, 2.0).into()
     val d = i32x4.new(0.inv(), 0, 0, 0)
     val r = i32x4.from(vecCmplt(a, b))
     check(d == r)
 }
 
 public fun testVecCmple() {
-    val a: STL = f32x4.new(1.0, Float.NaN, Float.NaN, 2.0).into()
-    val b: STL = f32x4.new(1.0, Float.NaN, 5.0, 3.14).into()
+    val a: VectorFloat = f32x4.new(1.0, Float.NaN, Float.NaN, 2.0).into()
+    val b: VectorFloat = f32x4.new(1.0, Float.NaN, 5.0, 3.14).into()
     val d = i32x4.new(0.inv(), 0, 0, 0.inv())
     val r = i32x4.from(vecCmple(a, b))
     check(d == r)
 }
 
 public fun testVecCmpeq() {
-    val a: STL = f32x4.new(1.0, Float.NaN, Float.NaN, 2.0).into()
-    val b: STL = f32x4.new(1.0, Float.NaN, 5.0, 3.14).into()
+    val a: VectorFloat = f32x4.new(1.0, Float.NaN, Float.NaN, 2.0).into()
+    val b: VectorFloat = f32x4.new(1.0, Float.NaN, 5.0, 3.14).into()
     val d = i32x4.new(0.inv(), 0, 0, 0)
     val r = i32x4.from(vecCmpeq(a, b))
     check(d == r)
 }
 
 public fun testVecCmpne() {
-    val a: STL = f32x4.new(1.0, Float.NaN, Float.NaN, 2.0).into()
-    val b: STL = f32x4.new(1.0, Float.NaN, 5.0, 3.14).into()
+    val a: VectorFloat = f32x4.new(1.0, Float.NaN, Float.NaN, 2.0).into()
+    val b: VectorFloat = f32x4.new(1.0, Float.NaN, 5.0, 3.14).into()
     val d = i32x4.new(0, 0.inv(), 0.inv(), 0.inv())
     val r = i32x4.from(vecCmpne(a, b))
     check(d == r)
 }
 
 public fun testVecMaxF32() {
-    val a: STL = f32x4.new(1.0, Float.NaN, Float.POSITIVE_INFINITY, 2.0).into()
-    val b: STL = f32x4.new(-10.0, -10.0, 5.0, Float.NaN).into()
+    val a: VectorFloat = f32x4.new(1.0, Float.NaN, Float.POSITIVE_INFINITY, 2.0).into()
+    val b: VectorFloat = f32x4.new(-10.0, -10.0, 5.0, Float.NaN).into()
     val d = f32x4.new(1.0, -10.0, Float.POSITIVE_INFINITY, 2.0)
     val r = f32x4.from(vecMax(a, b))
     check(d == r)
 }
 
 public fun testVecMinF32() {
-    val a: STL = f32x4.new(1.0, Float.NaN, Float.POSITIVE_INFINITY, 2.0).into()
-    val b: STL = f32x4.new(-10.0, -10.0, 5.0, Float.NaN).into()
+    val a: VectorFloat = f32x4.new(1.0, Float.NaN, Float.POSITIVE_INFINITY, 2.0).into()
+    val b: VectorFloat = f32x4.new(-10.0, -10.0, 5.0, Float.NaN).into()
     val d = f32x4.new(-10.0, -10.0, 5.0, 2.0)
     val r = f32x4.from(vecMin(a, b))
     check(d == r)
 }
 
 public fun testVecMaxF64() {
-    val a: STL = f64x2.new(Double.NaN, 2.0).into()
-    val b: STL = f64x2.new(-10.0, Double.NaN).into()
+    val a: VectorDouble = f64x2.new(Double.NaN, 2.0).into()
+    val b: VectorDouble = f64x2.new(-10.0, Double.NaN).into()
     val d = f64x2.new(-10.0, 2.0)
     val r = f64x2.from(vecMax(a, b))
     check(d == r)
 }
 
 public fun testVecMinF64() {
-    val a: STL = f64x2.new(Double.NaN, 2.0).into()
-    val b: STL = f64x2.new(-10.0, Double.NaN).into()
+    val a: VectorDouble = f64x2.new(Double.NaN, 2.0).into()
+    val b: VectorDouble = f64x2.new(-10.0, Double.NaN).into()
     val d = f64x2.new(-10.0, 2.0)
     val r = f64x2.from(vecMin(a, b))
     check(d == r)

@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align4
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.libc.SysFutex
-import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.syscall
+import io.github.kotlinmania.rustlang.libc.syscall
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_PRIVATE_FLAG
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_WAIT_BITSET
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_WAKE

@@ -17,8 +17,6 @@ import io.github.kotlinmania.rustlang.std.sync.mpsc.RecvTimeoutError
 import io.github.kotlinmania.rustlang.std.sync.mpsc.Sender
 import io.github.kotlinmania.rustlang.std.sync.mpsc.channel
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
-import io.github.kotlinmania.rustlang.std.thread.builder.Builder
-import io.github.kotlinmania.rustlang.std.thread.joinhandle.JoinHandle
 import io.github.kotlinmania.rustlang.std.time.Instant
 import io.github.kotlinmania.rustlang.test.bench.blackBox
 import io.github.kotlinmania.rustlang.test.cli.TestOpts
@@ -72,7 +70,7 @@ public fun testMainInner(args: List<String>, tests: TestList, options: Options?)
     }
     if (opts.list) {
         when (val matchVal1 = listTestsConsole(opts, tests)) {
-            is Err -> {
+            is Result.Err -> {
                 val e = matchVal1.error
                 println("error: io error when listing tests: $e")
                 return ERROR_EXIT_CODE.into()
@@ -96,7 +94,7 @@ public fun testMainInner(args: List<String>, tests: TestList, options: Options?)
                             else -> {
                                 val captured = matchVal2
                                 when (val matchVal3 = captured.lock()) {
-                                    is Ok -> {
+                                    is Result.Ok -> {
                                         val data = matchVal3.value
                                         stdout.writeAll(data)
                                         stdout.flush()
@@ -110,7 +108,7 @@ public fun testMainInner(args: List<String>, tests: TestList, options: Options?)
                 }
             panic.setHook(hook)
             // Use a thread spawning hook to make new threads inherit output capturing.
-            thread.addSpawnHook({
+            Thread.addSpawnHook({
                 // Get and clone the output capture of the current thread.
                 val outputCapture = setOutputCapture(null)
                 setOutputCapture(outputCapture.clone())
@@ -171,7 +169,7 @@ public fun testMainEnvArgsAbort(tests: List<TestDescAndFn>): ExitCode {
     // If we're being run in SpawnedSecondary mode, run the test here. runTest
     // will then exit the process.
     when (val matchVal = Env.variable(SECONDARY_TEST_INVOKER_VAR)) {
-        is Ok -> {
+        is Result.Ok -> {
             val name = matchVal.value
             // SAFETY: Technically, this is a racy access that we probably shouldn't do?
             // In practice, this is completely fine as long as the test harness is made of Rust,
@@ -266,7 +264,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
                 else -> {
                     val joinHandle = matchVal
                     when (val matchVal1 = joinHandle.join()) {
-                        is Err -> {
+                        is Result.Err -> {
                             if (completedTest.result != null) {
                                 completedTest.result = TrFailedMsg("panicked after reporting success".toString())
                             }
@@ -331,10 +329,10 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
     }
     val filteredOut = allTestsLen - filtered.totalLen()
     val event = TestEvent.TeFilteredOut(filteredOut)
-    when (val tryResult = notifyAboutTestEvent(event)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+    when (val tryResult = notifyAboutTestEvent(event)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
     val shuffleSeed = getShuffleSeed(opts)
     val event1 = TestEvent.TeFiltered(filtered.totalLen(), shuffleSeed)
-    when (val tryResult = notifyAboutTestEvent(event1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+    when (val tryResult = notifyAboutTestEvent(event1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
     val concurrency = opts.testThreads.unwrapOrElse(getConcurrency)
     val remaining = filtered.tests
     if (shuffleSeed != null) {
@@ -358,7 +356,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
         while (!remaining1.isEmpty()) {
             val (id, test1) = remaining1.removeFirstOrNull()!!
             val event2 = TestEvent.TeWait(test1.desc.clone())
-            when (val tryResult = notifyAboutTestEvent(event2)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = notifyAboutTestEvent(event2)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             val joinHandle = runTest(opts, !opts.runTests, id, test1, runStrategy, tx.clone())
             // Wait for the test to complete.
             val completedTest = rx.recv().unwrap()
@@ -373,7 +371,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
                     TrTimedFail -> opts.failFast
                 }
             val event3 = TestEvent.TeResult(completedTest)
-            when (val tryResult = notifyAboutTestEvent(event3)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = notifyAboutTestEvent(event3)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             if (failFast) {
                 return Result.Ok(Unit)
             }
@@ -385,7 +383,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
                 val timeout = getDefaultTestTimeout()
                 val desc1 = test2.desc.clone()
                 val event4 = TestEvent.TeWait(desc1.clone())
-                when (val tryResult = notifyAboutTestEvent(event4)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                when (val tryResult = notifyAboutTestEvent(event4)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 // here no pad
                 val joinHandle1 = runTest(opts, !opts.runTests, id1, test2, runStrategy, tx.clone())
                 runningTests.insert(id1, RunningTest(joinHandle = joinHandle1))
@@ -404,7 +402,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
                         res = rx.recvTimeout(timeout1)
                         for (test3 in getTimedOutTests(runningTests, timeoutQueue)) {
                             val event5 = TestEvent.TeTimeout(test3)
-                            when (val tryResult = notifyAboutTestEvent(event5)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                            when (val tryResult = notifyAboutTestEvent(event5)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                         }
                         when {
                             res is Result.Err && res.error == RecvTimeoutError.Timeout -> {
@@ -431,7 +429,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
                     TrTimedFail -> opts.failFast
                 }
             val event6 = TestEvent.TeResult(completedTest1)
-            when (val tryResult = notifyAboutTestEvent(event6)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = notifyAboutTestEvent(event6)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             pending -= 1
             if (failFast1) {
                 // Prevent remaining test threads from panicking
@@ -444,13 +442,13 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
         // All benchmarks run at the end, in serial.
         for ((id2, b) in filtered.benches) {
             val event7 = TestEvent.TeWait(b.desc.clone())
-            when (val tryResult = notifyAboutTestEvent(event7)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = notifyAboutTestEvent(event7)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             val joinHandle2 = runTest(opts, false, id2, b, runStrategy, tx.clone())
             // Wait for the test to complete.
             val completedTest2 = rx.recv().unwrap()
             RunningTest(joinHandle = joinHandle2).join(completedTest2)
             val event8 = TestEvent.TeResult(completedTest2)
-            when (val tryResult = notifyAboutTestEvent(event8)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = notifyAboutTestEvent(event8)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
     }
     return Result.Ok(Unit)
@@ -593,7 +591,7 @@ public fun runTest(opts: TestOpts, forceIgnore: Boolean, id: TestId, test: TestD
             // level.
             val supportsThreads = !false && !false && !false && !false
             if (supportsThreads) {
-                val cfg = Builder.new().name(name.asSlice().toOwned())
+                val cfg = Thread.Builder.new().name(name.asSlice().toOwned())
                 val runtest1 = Mutex.new(runtest)
                 val runtest2 = runtest1.clone()
                 run {
@@ -749,7 +747,7 @@ public fun runTestInSpawnedSubprocess(desc: TestDesc, runnableTest: RunnableTest
     val recordResult2 = recordResult.clone()
     panic.setHook({ info -> recordResult2(info) })
     when (val matchVal = runnableTest.run()) {
-        is Err -> {
+        is Result.Err -> {
             val message = matchVal.error
             error("$message")
         }

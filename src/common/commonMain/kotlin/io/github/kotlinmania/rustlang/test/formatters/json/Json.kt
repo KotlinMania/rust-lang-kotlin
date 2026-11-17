@@ -160,7 +160,7 @@ public open class JsonFormatter<T>(
                 }
             }
         val newline = "\n"
-        when (val tryResult = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"$event\", \"passed\": $passed, \"failed\": $failed, \"ignored\": $ignored, \"measured\": $measured, \"filtered_out\": $filteredOut$execTimeJson }$newline")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"$event\", \"passed\": $passed, \"failed\": $failed, \"ignored\": $ignored, \"measured\": $measured, \"filtered_out\": $filteredOut$execTimeJson }$newline")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
         return Result.Ok(state.failed == 0)
     }
 

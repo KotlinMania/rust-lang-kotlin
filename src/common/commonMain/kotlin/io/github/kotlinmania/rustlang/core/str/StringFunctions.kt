@@ -1,7 +1,6 @@
 package io.github.kotlinmania.rustlang.core.str
 
 import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.constEvalSelect
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -13,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -92,7 +92,7 @@ public fun sliceErrorFailRt(s: String, begin: Int, end: Int): Nothing {
                 val leftVal = matchVal.first
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
-                    val kind = Eq
+                    val kind = AssertKind.Eq
                     assertFailed(kind, leftVal, rightVal, Option.None)
                 }
             }

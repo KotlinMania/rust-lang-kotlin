@@ -16,6 +16,7 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -44,10 +45,10 @@ import io.github.kotlinmania.rustlang.libc.chroot
 import io.github.kotlinmania.rustlang.libc.clockGetres
 import io.github.kotlinmania.rustlang.libc.dup2
 import io.github.kotlinmania.rustlang.libc.execvp
+import io.github.kotlinmania.rustlang.libc.exit
 import io.github.kotlinmania.rustlang.libc.getpid
+import io.github.kotlinmania.rustlang.libc.kill
 import io.github.kotlinmania.rustlang.libc.killpg
-import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.kill
-import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.syscall
 import io.github.kotlinmania.rustlang.libc.new.musl.signal.SiginfoT
 import io.github.kotlinmania.rustlang.libc.recvmsg
 import io.github.kotlinmania.rustlang.libc.sendmsg
@@ -56,6 +57,7 @@ import io.github.kotlinmania.rustlang.libc.setgroups
 import io.github.kotlinmania.rustlang.libc.setpgid
 import io.github.kotlinmania.rustlang.libc.setsid
 import io.github.kotlinmania.rustlang.libc.setuid
+import io.github.kotlinmania.rustlang.libc.syscall
 import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.SIG_DFL
 import io.github.kotlinmania.rustlang.libc.unix.Timespec
@@ -100,7 +102,6 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGQUIT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGTRAP
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.SIGPWR
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.SIGSTKFLT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.exit
 import io.github.kotlinmania.rustlang.libc.waitpid
 import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_MONOTONIC
 import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
@@ -124,7 +125,7 @@ import io.github.kotlinmania.rustlang.std.sync.lazylock.LazyLock
 import io.github.kotlinmania.rustlang.std.sys.env.unix.envReadLock
 import io.github.kotlinmania.rustlang.std.sys.env.unix.environ
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.Socket
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtR
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.onBrokenPipeUsed
@@ -614,7 +615,7 @@ public open class Process(
                 return pidFd.sendSignal(signal)
             }
         }
-        return cvt(kill(this.pid, signal)).map({ Unit })
+        return cvt(kill(this.pid, signal)).map({ drop(it) })
     }
 
     public open fun sendProcessGroupSignal(signal: Int): Result<Unit, Error> {
@@ -630,7 +631,7 @@ public open class Process(
                 return pidFd.sendProcessGroupSignal(signal)
             }
         }
-        return cvt(killpg(this.pid, signal)).map({ Unit })
+        return cvt(killpg(this.pid, signal)).map({ drop(it) })
     }
 
     public open fun wait(): Result<ExitStatus, Error> {

@@ -24,7 +24,7 @@ import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.Socket
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 public class DebugStruct(
@@ -97,7 +97,7 @@ public open class UnixListener(
         val builder = DebugStruct(fmt, "UnixListener")
         builder.field("fd", this.value.asInner())
         when (val matchVal = this.localAddr()) {
-            is Ok -> {
+            is Result.Ok -> {
                 val addr = matchVal.value
                 builder.field("local", addr)
             }

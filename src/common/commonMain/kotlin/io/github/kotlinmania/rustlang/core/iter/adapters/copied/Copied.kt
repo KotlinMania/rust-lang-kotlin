@@ -141,7 +141,7 @@ public interface SpecNextChunk<T> : Iterator<T> {
     public fun next(): T?
 }
 
-public fun <I, T> I.specNextChunk(n: Int): Result<List<T>, IntoIter<T>> where I : Iterator<T> = iterNextChunk(this.copied())
+public fun <I, T> I.specNextChunk(n: Int): Result<List<T>, IntoIter<T>> where I : Iterator<T> = iterNextChunk(this.copied(), n)
 
 public fun <T> Iter<T>.specNextChunk(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<List<T>, IntoIter<T>> {
     val rawArray = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Result<List<T>, IntoIter<T>>>()) }
@@ -150,11 +150,11 @@ public fun <T> Iter<T>.specNextChunk(n: Int, typeLayoutT: TypeLayout<T> = Unreso
         if (len < n) {
             this.advanceBy(len)
             // SAFETY: ZSTs can be conjured ex nihilo; only the amount has to be correct
-            return Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(rawArray, 0 until len))
+            return Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(rawArray, 0 until len, n))
         }
         this.advanceBy(n)
         // SAFETY: ditto
-        return Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawArray))
+        return Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawArray, n))
     }
     if (len < n) {
         // SAFETY: `len` indicates that this many elements are available and we just checked that
@@ -162,7 +162,7 @@ public fun <T> Iter<T>.specNextChunk(n: Int, typeLayoutT: TypeLayout<T> = Unreso
         run {
             copyNonoverlapping(this.asRef().asPtr(), mutPtrFromRustCast(rawArray.asMutPtr()), len)
             this.advanceBy(len)
-            return Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(rawArray, 0 until len))
+            return Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(rawArray, 0 until len, n))
         }
     }
     // SAFETY: `len` is larger than the array size. Copy a fixed amount here to fully initialize
@@ -170,6 +170,6 @@ public fun <T> Iter<T>.specNextChunk(n: Int, typeLayoutT: TypeLayout<T> = Unreso
     return run {
         copyNonoverlapping(this.asRef().asPtr(), mutPtrFromRustCast(rawArray.asMutPtr()), n)
         this.advanceBy(n)
-        Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawArray))
+        Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawArray, n))
     }
 }

@@ -887,7 +887,7 @@ public fun stepBackwardUncheckedU128(start: U128, n: Int): U128 = start.unchecke
 public fun stepStepsBetweenU128(start: U128, end: U128): Pair<Int, Int?> =
     if (start <= end) {
         when (val matchVal = Int.tryFrom(end - start)) {
-            is Ok -> {
+            is Result.Ok -> {
                 val steps = matchVal.value
                 Pair(steps, steps)
             }
@@ -932,7 +932,7 @@ public fun stepStepsBetweenI128(start: I128, end: I128): Pair<Int, Int?> =
             else -> {
                 val result = matchVal
                 when (val matchVal1 = Int.tryFrom(result)) {
-                    is Ok -> {
+                    is Result.Ok -> {
                         val steps = matchVal1.value
                         Pair(steps, steps)
                     }
@@ -997,7 +997,7 @@ public fun stepBackwardOverflowingNonZeroUByte(start: NonZero<UByte, NonZeroU8In
 public fun stepStepsBetweenNonZeroUByte(start: NonZero<UByte, NonZeroU8Inner>, end: NonZero<UByte, NonZeroU8Inner>): Pair<Int, Int?> =
     if (start <= end) {
         when (val matchVal = Int.tryFrom(end.get() - start.get())) {
-            is Ok -> {
+            is Result.Ok -> {
                 val steps = matchVal.value
                 Pair(steps, steps)
             }
@@ -1074,7 +1074,7 @@ public fun stepBackwardOverflowingNonZeroUShort(start: NonZero<UShort, NonZeroU1
 public fun stepStepsBetweenNonZeroUShort(start: NonZero<UShort, NonZeroU16Inner>, end: NonZero<UShort, NonZeroU16Inner>): Pair<Int, Int?> =
     if (start <= end) {
         when (val matchVal = Int.tryFrom(end.get() - start.get())) {
-            is Ok -> {
+            is Result.Ok -> {
                 val steps = matchVal.value
                 Pair(steps, steps)
             }
@@ -1151,7 +1151,7 @@ public fun stepBackwardOverflowingNonZeroUInt(start: NonZero<UInt, NonZeroU32Inn
 public fun stepStepsBetweenNonZeroUInt(start: NonZero<UInt, NonZeroU32Inner>, end: NonZero<UInt, NonZeroU32Inner>): Pair<Int, Int?> =
     if (start <= end) {
         when (val matchVal = Int.tryFrom(end.get() - start.get())) {
-            is Ok -> {
+            is Result.Ok -> {
                 val steps = matchVal.value
                 Pair(steps, steps)
             }
@@ -1228,7 +1228,7 @@ public fun stepBackwardOverflowingNonZeroULong(start: NonZero<ULong, NonZeroU64I
 public fun stepStepsBetweenNonZeroULong(start: NonZero<ULong, NonZeroU64Inner>, end: NonZero<ULong, NonZeroU64Inner>): Pair<Int, Int?> =
     if (start <= end) {
         when (val matchVal = Int.tryFrom(end.get() - start.get())) {
-            is Ok -> {
+            is Result.Ok -> {
                 val steps = matchVal.value
                 Pair(steps, steps)
             }
@@ -1305,7 +1305,7 @@ public fun stepBackwardOverflowingNonZeroInt(start: NonZero<Int, NonZeroUsizeInn
 public fun stepStepsBetweenNonZeroInt(start: NonZero<Int, NonZeroUsizeInner>, end: NonZero<Int, NonZeroUsizeInner>): Pair<Int, Int?> =
     if (start <= end) {
         when (val matchVal = Int.tryFrom(end.get() - start.get())) {
-            is Ok -> {
+            is Result.Ok -> {
                 val steps = matchVal.value
                 Pair(steps, steps)
             }
@@ -1382,7 +1382,7 @@ public fun stepBackwardOverflowingNonZeroU128(start: NonZero<U128, NonZeroU128In
 public fun stepStepsBetweenNonZeroU128(start: NonZero<U128, NonZeroU128Inner>, end: NonZero<U128, NonZeroU128Inner>): Pair<Int, Int?> =
     if (start <= end) {
         when (val matchVal = Int.tryFrom(end.get() - start.get())) {
-            is Ok -> {
+            is Result.Ok -> {
                 val steps = matchVal.value
                 Pair(steps, steps)
             }
@@ -1405,7 +1405,7 @@ public fun stepStepsBetweenChar(start: Char, end: Char): Pair<Int, Int?> {
         val count = end1 - start1
         if (start1 < 0xD800u && 0xE000u <= end1) {
             when (val matchVal = Int.tryFrom(count - 0x800u)) {
-                is Ok -> {
+                is Result.Ok -> {
                     val steps = matchVal.value
                     Pair(steps, steps)
                 }
@@ -1415,7 +1415,7 @@ public fun stepStepsBetweenChar(start: Char, end: Char): Pair<Int, Int?> {
             }
         } else {
             when (val matchVal1 = Int.tryFrom(count)) {
-                is Ok -> {
+                is Result.Ok -> {
                     val steps1 = matchVal1.value
                     Pair(steps1, steps1)
                 }

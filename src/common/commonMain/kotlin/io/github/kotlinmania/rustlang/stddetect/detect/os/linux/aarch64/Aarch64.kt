@@ -13,9 +13,9 @@ import io.github.kotlinmania.rustlang.libc.systemPropertyGet
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.PROP_VALUE_MAX
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
-import io.github.kotlinmania.rustlang.stddetect.detect.cache.cache
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.AuxVec
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
+import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
 
 // Run-time feature detection for Aarch64 on Linux.
 
@@ -36,7 +36,7 @@ public fun detectFeatures(): cache.Initializer {
         len > 0 && arch.startsWith("exynos9810".encodeToByteArray())
     }
     when (val matchVal = auxv()) {
-        is Ok -> {
+        is Result.Ok -> {
             val auxv = matchVal.value
             val hwcap: AtHwcap = auxv.into()
             return hwcap.cache(isExynos9810)

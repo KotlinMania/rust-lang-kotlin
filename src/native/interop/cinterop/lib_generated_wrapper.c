@@ -1135,7 +1135,7 @@ int32_t wasip1LibGeneratedProcRaise(int32_t arg0) {
     return -1;
 }
 
-int32_t wasip1LibGeneratedSchedYield(void) {
+int32_t wasip1LibGeneratedWasiSnapshotPreview1SchedYield(void) {
     typedef int32_t (*km_fn_t)(void);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

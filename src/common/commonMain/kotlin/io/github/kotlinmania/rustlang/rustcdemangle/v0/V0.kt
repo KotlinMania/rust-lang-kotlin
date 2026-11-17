@@ -1,7 +1,6 @@
 // port-lint: source v0.rs
 package io.github.kotlinmania.rustlang.rustcdemangle.v0
 
-import io.github.kotlinmania.rustlang.core.array.fromFn
 import io.github.kotlinmania.rustlang.core.char.methods.toDigit
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.get
@@ -314,7 +313,7 @@ public open class HexNibbles(
                 (half(hi) shl 4) or half(lo)
             })
         val chars =
-            fromFn({
+            Iter.fromFn({
                 // As long as there are any bytes left, there's at least one more
                 // UTF-8-encoded `char` to decode (or the possibility of error).
                 bytes.next()?.let(closure3@{ firstByte ->
@@ -638,7 +637,7 @@ public open class Printer internal constructor(
 
     public open fun popDepth() {
         when (val matchVal = this.parser) {
-            is Ok -> {
+            is Result.Ok -> {
                 val parser = matchVal.value
                 parser.popDepth()
             }
@@ -785,16 +784,16 @@ public open class Printer internal constructor(
      * until the end of the list (`E`) is found, or the parser errors.
      * Returns the number of elements printed.
      */
-    public open fun printSepList(f: (Printer) -> Result<Unit, Error>, sep: String): Result<Int, io.github.kotlinmania.rustlang.core.error.Error> {
+    public open fun printSepList(f: (Printer) -> Result<Unit, Error>, sep: String): Result<Int, Error> {
         var i = 0
         while (this.parser.isOk() && !this.eat(69u)) {
             if (i > 0) {
-                when (val tryResult = this.print(sep)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, io.github.kotlinmania.rustlang.core.error.Error>(tryResult.error) }
+                when (val tryResult = this.print(sep)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }
             }
-            when (val tryResult = f(this)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, io.github.kotlinmania.rustlang.core.error.Error>(tryResult.error) }
+            when (val tryResult = f(this)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }
             i += 1
         }
-        return Result.Ok<Int, io.github.kotlinmania.rustlang.core.error.Error>(i)
+        return Result.Ok<Int, Error>(i)
     }
 
     public open fun printPath(inValue: Boolean): Result<Unit, Error> {
@@ -1320,7 +1319,7 @@ public open class Printer internal constructor(
      * To this end, this method will keep the `<...>` of an `I` path
      * open, by omitting the `>`, and return `Ok(true)` in that case.
      */
-    public open fun printPathMaybeOpenGenerics(): Result<Boolean, io.github.kotlinmania.rustlang.core.error.Error> {
+    public open fun printPathMaybeOpenGenerics(): Result<Boolean, Error> {
         return if (this.eat(66u)) {
             // NOTE(eddyb) the closure may not run if printing is being skipped,
             // but in that case the returned boolean doesn't matter.
@@ -1328,16 +1327,16 @@ public open class Printer internal constructor(
             when (val tryResult = this.printBackref(closure6@{ thisRef ->
                 open = when (val tryResult = thisRef.printPathMaybeOpenGenerics()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure6 Result.Err(tryResult.error) }
                 Result.Ok(Unit)
-            })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, io.github.kotlinmania.rustlang.core.error.Error>(tryResult.error) }
-            Result.Ok<Boolean, io.github.kotlinmania.rustlang.core.error.Error>(open)
+            })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+            Result.Ok<Boolean, Error>(open)
         } else if (this.eat(73u)) {
-            when (val tryResult = this.printPath(false)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, io.github.kotlinmania.rustlang.core.error.Error>(tryResult.error) }
-            when (val tryResult = this.print("<")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, io.github.kotlinmania.rustlang.core.error.Error>(tryResult.error) }
-            when (val tryResult = this.printSepList({ it.printGenericArg() }, ", ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, io.github.kotlinmania.rustlang.core.error.Error>(tryResult.error) }
-            Result.Ok<Boolean, io.github.kotlinmania.rustlang.core.error.Error>(true)
+            when (val tryResult = this.printPath(false)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+            when (val tryResult = this.print("<")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+            when (val tryResult = this.printSepList({ it.printGenericArg() }, ", ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+            Result.Ok<Boolean, Error>(true)
         } else {
-            when (val tryResult = this.printPath(false)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, io.github.kotlinmania.rustlang.core.error.Error>(tryResult.error) }
-            Result.Ok<Boolean, io.github.kotlinmania.rustlang.core.error.Error>(false)
+            when (val tryResult = this.printPath(false)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+            Result.Ok<Boolean, Error>(false)
         }
     }
 
@@ -1509,7 +1508,7 @@ public open class Printer internal constructor(
                     }
                     else -> {
                         val c = validChar
-                        when (val tryResult = this.printQuotedEscapedChars('\'', listOf(c))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                        when (val tryResult = this.printQuotedEscapedChars('\'', Iter.once(c))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                     }
                 }
             }

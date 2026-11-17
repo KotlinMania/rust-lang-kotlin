@@ -43,11 +43,11 @@ import io.github.kotlinmania.rustlang.wasip1.cinterop.wasip1LibGeneratedPollOneo
 import io.github.kotlinmania.rustlang.wasip1.cinterop.wasip1LibGeneratedProcExit
 import io.github.kotlinmania.rustlang.wasip1.cinterop.wasip1LibGeneratedProcRaise
 import io.github.kotlinmania.rustlang.wasip1.cinterop.wasip1LibGeneratedRandomGet
-import io.github.kotlinmania.rustlang.wasip1.cinterop.wasip1LibGeneratedSchedYield
 import io.github.kotlinmania.rustlang.wasip1.cinterop.wasip1LibGeneratedSockAccept
 import io.github.kotlinmania.rustlang.wasip1.cinterop.wasip1LibGeneratedSockRecv
 import io.github.kotlinmania.rustlang.wasip1.cinterop.wasip1LibGeneratedSockSend
 import io.github.kotlinmania.rustlang.wasip1.cinterop.wasip1LibGeneratedSockShutdown
+import io.github.kotlinmania.rustlang.wasip1.cinterop.wasip1LibGeneratedWasiSnapshotPreview1SchedYield
 import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun argsGet(arg0: Int, arg1: Int): Int =
@@ -172,8 +172,8 @@ public actual fun procExit(arg0: Int): Nothing {
 public actual fun procRaise(arg0: Int): Int =
     wasip1LibGeneratedProcRaise(arg0)
 
-public actual fun schedYield(): Int =
-    wasip1LibGeneratedSchedYield()
+public actual fun wasiSnapshotPreview1SchedYield(): Int =
+    wasip1LibGeneratedWasiSnapshotPreview1SchedYield()
 
 public actual fun randomGet(arg0: Int, arg1: Int): Int =
     wasip1LibGeneratedRandomGet(arg0, arg1)

@@ -91,11 +91,11 @@ public open class Filter<I, P>(
         return when (result) {
             is ControlFlow.Break -> {
                 // SAFETY: The loop above is only explicitly broken when the array has been fully initialized
-                Result.Ok<List<Item>, IntoIter<Item>>(MaybeUninit.arrayAssumeInit(array))
+                Result.Ok<List<Item>, IntoIter<Item>>(MaybeUninit.arrayAssumeInit(array, n))
             }
             is ControlFlow.Continue -> {
                 // SAFETY: The range is in bounds since the loop breaks when reaching N elements.
-                Result.Err<List<Item>, IntoIter<Item>>(IntoIter.newUnchecked(array, 0 until initialized))
+                Result.Err<List<Item>, IntoIter<Item>>(IntoIter.newUnchecked(array, 0 until initialized, n))
             }
         }
     }

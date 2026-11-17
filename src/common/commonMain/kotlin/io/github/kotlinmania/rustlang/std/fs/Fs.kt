@@ -25,8 +25,8 @@ import io.github.kotlinmania.rustlang.std.sys.AsInnerMut
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.fs.symlink
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.FileAttr
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.FilePermissions
-import io.github.kotlinmania.rustlang.std.sys.fs.unsupported.FileAttr
 import io.github.kotlinmania.rustlang.std.time.SystemTime
 
 // Filesystem manipulation operations.
@@ -1192,8 +1192,8 @@ public sealed class TryLockError {
  * [TOCTOU]: self#time-of-check-to-time-of-use-toctou
  */
 public open class Dir(
-    public var inner: io.github.kotlinmania.rustlang.std.sys.fs.common.Dir,
-) : AsInner<io.github.kotlinmania.rustlang.std.sys.fs.common.Dir>, FromInner<io.github.kotlinmania.rustlang.std.sys.fs.common.Dir, Dir>, IntoInner<io.github.kotlinmania.rustlang.std.sys.fs.common.Dir> {
+    public var inner: io.github.kotlinmania.rustlang.std.sys.fs.unix.dir.Dir,
+) : AsInner<io.github.kotlinmania.rustlang.std.sys.fs.unix.dir.Dir>, FromInner<io.github.kotlinmania.rustlang.std.sys.fs.unix.dir.Dir, Dir>, IntoInner<io.github.kotlinmania.rustlang.std.sys.fs.unix.dir.Dir> {
     /**
      * Queries metadata about the underlying directory.
      *
@@ -1519,9 +1519,9 @@ public open class Dir(
      */
     public open fun symlinkMetadata(path: Path): Result<Metadata, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.symlinkMetadata(path).map({ Metadata(it) })
 
-    public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.fs.common.Dir = this.inner
+    public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.fs.unix.dir.Dir = this.inner
 
-    public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.fs.common.Dir = this.inner
+    public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.fs.unix.dir.Dir = this.inner
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.inner.fmt(f)
 
@@ -1555,7 +1555,7 @@ public open class Dir(
          * }
          * ```
          */
-        public fun open(path: Path): Result<Dir, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.common.Dir.open(path, OpenOptions.new().read(true).value).map({ inner -> Dir(inner = inner) })
+        public fun open(path: Path): Result<Dir, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.dir.Dir.open(path, OpenOptions.new().read(true).value).map({ inner -> Dir(inner = inner) })
 
         /**
          * Attempts to open a directory at `path` according to `opts`.
@@ -1587,7 +1587,7 @@ public open class Dir(
          * }
          * ```
          */
-        public fun openWith(path: Path, opts: OpenOptions): Result<Dir, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.common.Dir.open(path, opts.value).map({ inner -> Dir(inner = inner) })
+        public fun openWith(path: Path, opts: OpenOptions): Result<Dir, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.dir.Dir.open(path, opts.value).map({ inner -> Dir(inner = inner) })
 
         /**
          * Attempts to open a directory at `path` with the minimum permissions for traversal.
@@ -1619,9 +1619,9 @@ public open class Dir(
          * }
          * ```
          */
-        public fun openForTraversal(path: Path): Result<Dir, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.common.Dir.openForTraversal(path).map({ inner -> Dir(inner = inner) })
+        public fun openForTraversal(path: Path): Result<Dir, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.dir.Dir.openForTraversal(path).map({ inner -> Dir(inner = inner) })
 
-        public fun fromInner(f: io.github.kotlinmania.rustlang.std.sys.fs.common.Dir): Dir = Dir(inner = f)
+        public fun fromInner(f: io.github.kotlinmania.rustlang.std.sys.fs.unix.dir.Dir): Dir = Dir(inner = f)
     }
 }
 
@@ -1871,21 +1871,21 @@ public open class Metadata(
         debug.field("permissions", this.permissions())
         debug.field("len", this.len())
         when (val matchVal = this.modified()) {
-            is Ok -> {
+            is Result.Ok -> {
                 val modified = matchVal.value
                 debug.field("modified", modified)
             }
             else -> {}
         }
         when (val matchVal1 = this.accessed()) {
-            is Ok -> {
+            is Result.Ok -> {
                 val accessed = matchVal1.value
                 debug.field("accessed", accessed)
             }
             else -> {}
         }
         when (val matchVal2 = this.created()) {
-            is Ok -> {
+            is Result.Ok -> {
                 val created = matchVal2.value
                 debug.field("created", created)
             }
@@ -2813,7 +2813,7 @@ public open class DirBuilder(
         uncreatedDirsVec.extend(ancestors.take(uncreatedDirs))
         for (uncreatedDir in ArrayDeque(uncreatedDirsVec).rev()) {
             when (val matchVal1 = this.inner.mkdir(uncreatedDir)) {
-                is Err -> {
+                is Result.Err -> {
                     val e3 = matchVal1.error
                     if (e3.kind() != ErrorKind.AlreadyExists || !uncreatedDir.isDir()) {
                         return Result.Err<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(e3)

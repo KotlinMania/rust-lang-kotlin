@@ -1,7 +1,7 @@
 // port-lint: source math/relaxed/hypotf64.rs
 package io.github.kotlinmania.rustlang.libm.math.relaxed.hypotf64
 
-import io.github.kotlinmania.rustlang.libm.math.sqrt.sqrt
+import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.sqrt.sqrt
 
 public val SPLIT: Double = 134217728.0 + 1.0
 

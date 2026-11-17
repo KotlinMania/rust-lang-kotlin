@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.std.fs.Metadata
-import io.github.kotlinmania.rustlang.std.os.android.raw.Stat
+import io.github.kotlinmania.rustlang.std.os.android.raw.arch.Stat
 
 /**
  * OS-specific extensions to [fs.Metadata].

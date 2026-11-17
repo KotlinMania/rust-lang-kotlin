@@ -8,13 +8,13 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.CLong
 import io.github.kotlinmania.rustlang.libc.CUint
-import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.syscall
 import io.github.kotlinmania.rustlang.libc.prctl
+import io.github.kotlinmania.rustlang.libc.syscall
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
-import io.github.kotlinmania.rustlang.stddetect.detect.cache.cache
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
+import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
 import io.github.kotlinmania.rustlang.stddetect.detect.os.riscv.implyFeatures
 
 // Run-time feature detection for RISC-V on Linux.

@@ -1,7 +1,6 @@
 // port-lint: source io/error/repr_bitpacked.rs
 package io.github.kotlinmania.rustlang.core.io.error.reprbitpacked
 
-import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.io.error.Custom
 import io.github.kotlinmania.rustlang.core.io.error.CustomOwner
 import io.github.kotlinmania.rustlang.core.io.error.ErrorData
@@ -11,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZeroUsize
 import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
@@ -195,7 +195,7 @@ public open class Repr internal constructor(
                         val leftVal = matchVal.first
                         val rightVal = matchVal.second
                         if (!(leftVal == rightVal)) {
-                            val kind = Eq
+                            val kind = AssertKind.Eq
                             assertFailed(kind, leftVal, rightVal, Option.None)
                         }
                     }

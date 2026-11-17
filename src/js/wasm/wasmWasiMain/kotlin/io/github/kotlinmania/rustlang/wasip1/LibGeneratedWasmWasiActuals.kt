@@ -245,11 +245,11 @@ private external fun wasiWasip1LibGeneratedProcRaise(arg0: Int): Int
 public actual fun procRaise(arg0: Int): Int =
     wasiWasip1LibGeneratedProcRaise(arg0).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "wasip1LibGeneratedSchedYield")
-private external fun wasiWasip1LibGeneratedSchedYield(): Int
+@kotlin.wasm.WasmImport("kmcore", "wasip1LibGeneratedWasiSnapshotPreview1SchedYield")
+private external fun wasiWasip1LibGeneratedWasiSnapshotPreview1SchedYield(): Int
 
-public actual fun schedYield(): Int =
-    wasiWasip1LibGeneratedSchedYield().toInt()
+public actual fun wasiSnapshotPreview1SchedYield(): Int =
+    wasiWasip1LibGeneratedWasiSnapshotPreview1SchedYield().toInt()
 
 @kotlin.wasm.WasmImport("kmcore", "wasip1LibGeneratedRandomGet")
 private external fun wasiWasip1LibGeneratedRandomGet(arg0: Int, arg1: Int): Int

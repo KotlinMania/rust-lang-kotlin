@@ -4,11 +4,11 @@ import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.libc.Read
 import io.github.kotlinmania.rustlang.libc.close
 import io.github.kotlinmania.rustlang.libc.open
-import io.github.kotlinmania.rustlang.libc.read
 import io.github.kotlinmania.rustlang.libc.wasi.O_RDONLY
-import io.github.kotlinmania.rustlang.stddetect.detect.cache.cache
+import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
 
 public fun readFile(origPath: CStr): Result<List<UByte>, String> {
     return run {
@@ -20,7 +20,7 @@ public fun readFile(origPath: CStr): Result<List<UByte>, String> {
         while (true) {
             data.reserve(4096)
             val spare = data.spareCapacityMut()
-            when (val matchVal = read(file, mutPtrFromRustCast(spare.asMutPtr()), spare.len())) {
+            when (val matchVal = Read(file, mutPtrFromRustCast(spare.asMutPtr()), spare.len())) {
                 -1 -> {
                     close(file)
                     return Result.Err<List<UByte>, String>("Error while reading from file at ${origPath.display()}")

@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.core.fmt.num.imp
 
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
-import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.fmt.num.DECIMAL_PAIRS
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -10,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.checkedPow
 import io.github.kotlinmania.rustlang.core.num.pow
 import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
@@ -68,7 +68,7 @@ public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: U
                                     val leftVal = matchVal1.first
                                     val rightVal = matchVal1.second
                                     if (!(leftVal == rightVal)) {
-                                        val kind = Eq
+                                        val kind = AssertKind.Eq
                                         assertFailed(kind, leftVal, rightVal, Option.None)
                                     }
                                 }

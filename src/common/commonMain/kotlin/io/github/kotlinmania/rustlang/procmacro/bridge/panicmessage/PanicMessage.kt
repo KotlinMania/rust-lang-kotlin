@@ -56,7 +56,7 @@ public sealed class PanicMessage : Encode<S>, Decode<S, PanicMessage> {
                 }
             }
             when (val matchVal1 = payload.downcast<String>()) {
-                is Ok -> {
+                is Result.Ok -> {
                     val s1 = matchVal1.value
                     return PanicMessage.String(s1)
                 }

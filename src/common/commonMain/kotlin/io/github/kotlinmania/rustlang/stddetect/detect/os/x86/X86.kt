@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
-import io.github.kotlinmania.rustlang.stddetect.detect.cache.cache
+import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
 
 // x86 run-time feature detection is OS independent.
 

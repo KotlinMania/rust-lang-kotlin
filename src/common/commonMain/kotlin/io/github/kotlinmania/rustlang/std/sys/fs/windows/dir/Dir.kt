@@ -23,14 +23,35 @@ import io.github.kotlinmania.rustlang.std.os.windows.io.HandleOrInvalid
 import io.github.kotlinmania.rustlang.std.os.windows.io.OwnedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
 import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.sys.c
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
-import io.github.kotlinmania.rustlang.std.sys.fs.unsupported.FileAttr
+import io.github.kotlinmania.rustlang.std.sys.fs.windows.File
+import io.github.kotlinmania.rustlang.std.sys.fs.windows.FileAttr
+import io.github.kotlinmania.rustlang.std.sys.fs.windows.OpenOptions
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.ReparsePoint
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.debugPathHandle
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.UnicodeStrRef
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.DELETE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_CANT_ACCESS_FILE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_ATTRIBUTE_NORMAL
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_DIRECTORY_FILE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_FLAG_BACKUP_SEMANTICS
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_NON_DIRECTORY_FILE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_OPEN_REPARSE_POINT
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_READ_ATTRIBUTES
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_RENAME_FLAG_POSIX_SEMANTICS
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_RENAME_FLAG_REPLACE_IF_EXISTS
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_SYNCHRONOUS_IO_NONALERT
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_TRAVERSE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.SYNCHRONIZE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ntSuccess
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FileRenameInformation
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FileRenameInformation0
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IoStatusBlock
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.ObjectAttributes
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SecurityAttributes
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.createFileW
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.ntSetInformationFile
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.rtlNtStatusToDosError
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.toU16s
 import io.github.kotlinmania.rustlang.std.sys.path.windows.WCStr
@@ -52,7 +73,7 @@ public open class Dir internal constructor(
             return File.open(path, opts)
         }
         val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<File, Error>(tryResult.error) }
-        return this.openFileNative(path1, opts, c.FILE_NON_DIRECTORY_FILE).map({ handle -> File(handle = handle) })
+        return this.openFileNative(path1, opts, FILE_NON_DIRECTORY_FILE).map({ handle -> File(handle = handle) })
     }
 
     public open fun removeFile(path: Path): Result<Unit, Error> {
@@ -76,7 +97,7 @@ public open class Dir internal constructor(
 
     public open fun openDir(path: Path, opts: OpenOptions): Result<Dir, Error> {
         val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Dir, Error>(tryResult.error) }
-        return this.openFileNative(path1, opts, c.FILE_DIRECTORY_FILE).map({ handle -> Dir(handle = handle) })
+        return this.openFileNative(path1, opts, FILE_DIRECTORY_FILE).map({ handle -> Dir(handle = handle) })
     }
 
     public open fun removeDir(path: Path): Result<Unit, Error> {
@@ -86,20 +107,20 @@ public open class Dir internal constructor(
 
     public open fun openFileNative(path: List<UShort>, opts: OpenOptions, createOpt: UInt): Result<Handle, Error> {
         val name = UnicodeStrRef.fromSlice(path)
-        val objectAttributes = c.ObjectAttributes.withLength().copy(rootDirectory = this.handle.asRawHandle(), objectName = name.asPtr().castMut())
+        val objectAttributes = ObjectAttributes.withLength().copy(rootDirectory = this.handle.asRawHandle(), objectName = name.asPtr().castMut())
         return ntCreateFile(opts, objectAttributes, createOpt)
     }
 
     public open fun removeNative(path: List<UShort>, dir: Boolean): Result<Unit, Error> {
         val opts = OpenOptions.new()
-        opts.accessMode(c.DELETE)
+        opts.accessMode(DELETE)
         var createOpt =
             if (dir) {
-                c.FILE_DIRECTORY_FILE
+                FILE_DIRECTORY_FILE
             } else {
-                c.FILE_NON_DIRECTORY_FILE
+                FILE_NON_DIRECTORY_FILE
             }
-        createOpt = createOpt or c.FILE_OPEN_REPARSE_POINT
+        createOpt = createOpt or FILE_OPEN_REPARSE_POINT
         val handle = when (val tryResult = this.openFileNative(path, opts, createOpt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         return File.fromInner(handle).delete().ioResult()
     }
@@ -108,10 +129,10 @@ public open class Dir internal constructor(
         // Calculate the layout of the `FILE_RENAME_INFORMATION` we pass to `NtSetInformationFile`
         // This is a dynamically sized struct so we need to get the position of the last field to calculate the actual size.
         val opts = OpenOptions.new()
-        opts.accessMode(c.DELETE)
-        val handle = when (val tryResult = this.openFileNative(from, opts, c.FILE_OPEN_REPARSE_POINT)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        opts.accessMode(DELETE)
+        val handle = when (val tryResult = this.openFileNative(from, opts, FILE_OPEN_REPARSE_POINT)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         val structSize = when (val tryResult = (to.size.checkedMul(2)?.let({ x -> x.checkedAdd(0) })?.let { Result.Ok<Any, Error>(it) } ?: Result.Err<Any, Error>(tooLongErr))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
-        val layout = when (val tryResult = Layout.fromSizeAlign(structSize, alignOf<c.FileRenameInformation>(typeLayoutT = UnresolvedTypeLayout<c.FileRenameInformation>())).mapErr({ tooLongErr })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        val layout = when (val tryResult = Layout.fromSizeAlign(structSize, alignOf<FileRenameInformation>(typeLayoutT = UnresolvedTypeLayout<FileRenameInformation>())).mapErr({ tooLongErr })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         val structSize1 = when (val tryResult = UInt.tryFrom(structSize).mapErr({ tooLongErr })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         val toByteLen = when (val tryResult = UInt.tryFrom(to.size * 2).mapErr({ tooLongErr })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         val fileRenameInfo: Any?
@@ -121,19 +142,19 @@ public open class Dir internal constructor(
             if (fileRenameInfo.isNull()) {
                 return Result.Err<Unit, Error>(ErrorKind.OutOfMemory.into())
             }
-            (addrOfMut(fileRenameInfo.anonymous)).write(c.FileRenameInformation0(flags = c.FILE_RENAME_FLAG_REPLACE_IF_EXISTS or c.FILE_RENAME_FLAG_POSIX_SEMANTICS))
+            (addrOfMut(fileRenameInfo.anonymous)).write(FileRenameInformation0(flags = FILE_RENAME_FLAG_REPLACE_IF_EXISTS or FILE_RENAME_FLAG_POSIX_SEMANTICS))
             (addrOfMut(fileRenameInfo.rootDirectory)).write(toDir.handle.asRawHandle())
             // Don't include the NULL in the size
             (addrOfMut(fileRenameInfo.fileNameLength)).write(toByteLen)
             kmCopyNonoverlapping((to.asPtr()).rawAddress, ((addrOfMut(fileRenameInfo.fileName)).cast()).rawAddress, (to.size).toLong() * (PrimitiveLayouts.U16).sizeBytes)
         }
-        val status = c.NtSetInformationFile(handle.asRawHandle(), c.IoStatusBlock.default(), fileRenameInfo.cast(), structSize1, c.FileRenameInformation)
+        val status = ntSetInformationFile(handle.asRawHandle(), IoStatusBlock.default(), fileRenameInfo.cast(), structSize1, FileRenameInformation)
         dealloc(fileRenameInfo.cast(), layout)
-        return if (c.ntSuccess(status)) {
+        return if (ntSuccess(status)) {
             // SAFETY: ntSuccess guarantees that handle is no longer null
             Result.Ok<Unit, Error>(Unit)
         } else {
-            Result.Err<Unit, Error>(WinError.new(c.RtlNtStatusToDosError(status)))
+            Result.Err<Unit, Error>(WinError.new(rtlNtStatusToDosError(status)))
         }.ioResult()
     }
 
@@ -150,12 +171,12 @@ public open class Dir internal constructor(
         return run {
             val matchVal = this.metadataNative(path1, ReparsePoint.Follow)
             when {
-                matchVal is Result.Err && (matchVal as Result.Err).error.rawOsError() == c.ERROR_CANT_ACCESS_FILE.toInt() -> {
+                matchVal is Result.Err && (matchVal as Result.Err).error.rawOsError() == ERROR_CANT_ACCESS_FILE.toInt() -> {
                     val err = matchVal.error
                     // Fallback to opening reparse points when following fails. Needed for UNIX domain
                     // sockets. See <https://github.com/rust-lang/rust/issues/109106>.
                     when (val matchVal1 = this.metadataNative(path1, ReparsePoint.Open)) {
-                        is Ok -> {
+                        is Result.Ok -> {
                             val attrs = matchVal1.value
                             if (!attrs.fileType().isSymlink()) {
                                 return Result.Ok<FileAttr, Error>(attrs)
@@ -181,15 +202,15 @@ public open class Dir internal constructor(
     public open fun metadataNative(path: List<UShort>, reparse: ReparsePoint): Result<FileAttr, Error> {
         val opts = OpenOptions.new()
         // the NT functions need at least c.FileReadAttributes
-        opts.accessMode(c.FILE_READ_ATTRIBUTES)
+        opts.accessMode(FILE_READ_ATTRIBUTES)
         val createOpt =
             if (reparse == ReparsePoint.Open) {
-                c.FILE_OPEN_REPARSE_POINT
+                FILE_OPEN_REPARSE_POINT
             } else {
                 0
             }
         val name = UnicodeStrRef.fromSlice(path)
-        val objectAttributes = c.ObjectAttributes.withLength().copy(rootDirectory = this.handle.asRawHandle(), objectName = name.asPtr().castMut())
+        val objectAttributes = ObjectAttributes.withLength().copy(rootDirectory = this.handle.asRawHandle(), objectName = name.asPtr().castMut())
         val handle = when (val tryResult = ntCreateFile(opts, objectAttributes, createOpt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<FileAttr, Error>(tryResult.error) }
         return File(handle = handle).fileAttr()
     }
@@ -210,14 +231,14 @@ public open class Dir internal constructor(
 
         public fun openForTraversal(path: Path): Result<Dir, Error> {
             val opts = OpenOptions.new()
-            opts.accessMode(c.FILE_TRAVERSE)
+            opts.accessMode(FILE_TRAVERSE)
             return withNativePath(path, { path1 -> Dir.openWithNative(path1, opts) })
         }
 
         public fun openWithNative(path: WCStr, opts: OpenOptions): Result<Dir, Error> {
             val creation = when (val tryResult = opts.getCreationMode()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Dir, Error>(tryResult.error) }
-            val localStorageL119C8 = AddressableLocal(c.SecurityAttributes(nLength = sizeOf<c.SecurityAttributes>(typeLayoutT = UnresolvedTypeLayout<c.SecurityAttributes>()).toUInt(), lpSecurityDescriptor = MutPtr(0L), bInheritHandle = opts.inheritHandle.toInt()), UnresolvedTypeLayout<SecurityAttributes>())
-            val handle = c.CreateFileW(path.asPtr(), when (val tryResult = opts.getAccessMode()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Dir, Error>(tryResult.error) }, opts.shareMode, localStorageL119C8.asConstPtr(), creation, opts.getFlagsAndAttributes() or c.FILE_FLAG_BACKUP_SEMANTICS, MutPtr(0L))
+            val localStorageL119C8 = AddressableLocal(SecurityAttributes(nLength = sizeOf<SecurityAttributes>(typeLayoutT = UnresolvedTypeLayout<SecurityAttributes>()).toUInt(), lpSecurityDescriptor = MutPtr(0L), bInheritHandle = opts.inheritHandle.toInt()), UnresolvedTypeLayout<SecurityAttributes>())
+            val handle = createFileW(path.asPtr(), when (val tryResult = opts.getAccessMode()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Dir, Error>(tryResult.error) }, opts.shareMode, localStorageL119C8.asConstPtr(), creation, opts.getFlagsAndAttributes() or FILE_FLAG_BACKUP_SEMANTICS, MutPtr(0L))
             return run {
                 val matchVal = OwnedHandle.tryFrom(HandleOrInvalid.fromRawHandle(handle))
                 when (matchVal) { is Result.Ok -> {
@@ -242,19 +263,19 @@ public fun toU16sWithoutNul(path: Path): Result<List<UShort>, Error> {
  *
  * This isn't completely safe because `OBJECT_ATTRIBUTES` contains raw pointers.
  */
-public fun ntCreateFile(opts: OpenOptions, objectAttributes: c.ObjectAttributes, createOptions: UInt): Result<Handle, Error> {
+public fun ntCreateFile(opts: OpenOptions, objectAttributes: ObjectAttributes, createOptions: UInt): Result<Handle, Error> {
     val handle = MutPtr(0L)
-    val ioStatus = c.IoStatusBlock.PENDING
+    val ioStatus = IoStatusBlock.PENDING
     // SYNCHRONIZE is included in FILE_GENERIC_READ, but not GENERIC_READ, so we add it manually
-    val access = when (val tryResult = opts.getAccessMode()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Handle, Error>(tryResult.error) } or c.SYNCHRONIZE
+    val access = when (val tryResult = opts.getAccessMode()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Handle, Error>(tryResult.error) } or SYNCHRONIZE
     // one of FILE_SYNCHRONOUS_IO_(,NON)ALERT is required for later operations to succeed.
-    val options = createOptions or c.FILE_SYNCHRONOUS_IO_NONALERT
-    val status = c.NtCreateFile(handle, access, objectAttributes, ioStatus, ConstPtr(0L), c.FILE_ATTRIBUTE_NORMAL, opts.shareMode, when (val tryResult = opts.getDisposition()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Handle, Error>(tryResult.error) }, options, ConstPtr(0L), 0)
-    return if (c.ntSuccess(status)) {
+    val options = createOptions or FILE_SYNCHRONOUS_IO_NONALERT
+    val status = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.ntCreateFile(handle, access, objectAttributes, ioStatus, ConstPtr(0L), FILE_ATTRIBUTE_NORMAL, opts.shareMode, when (val tryResult = opts.getDisposition()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Handle, Error>(tryResult.error) }, options, ConstPtr(0L), 0u)
+    return if (ntSuccess(status)) {
         // SAFETY: ntSuccess guarantees that handle is no longer null
         Result.Ok<Handle, Error>(Handle.fromRawHandle(handle))
     } else {
-        Result.Err<Handle, Error>(WinError.new(c.RtlNtStatusToDosError(status))).ioResult()
+        Result.Err<Handle, Error>(WinError.new(rtlNtStatusToDosError(status))).ioResult()
     }
 }
 

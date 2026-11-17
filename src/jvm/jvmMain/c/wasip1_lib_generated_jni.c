@@ -1372,7 +1372,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_wasip1_LibGeneratedJn
     return (jint)km_res;
 }
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_wasip1_LibGeneratedJniBridge_wasip1LibGeneratedSchedYield(JNIEnv* km_env, jclass km_clazz) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_wasip1_LibGeneratedJniBridge_wasip1LibGeneratedWasiSnapshotPreview1SchedYield(JNIEnv* km_env, jclass km_clazz) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(void);

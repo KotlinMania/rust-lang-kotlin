@@ -4,7 +4,6 @@
 package io.github.kotlinmania.rustlang.alloc.io.read
 
 import io.github.kotlinmania.rustlang.alloc.io.util.Bytes
-import io.github.kotlinmania.rustlang.alloc.io.util.bytes
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
@@ -489,7 +488,7 @@ public interface Read<SelfType> {
      * }
      * ```
      */
-    public fun bytes(): Bytes<SelfType> = bytes(this)
+    public fun bytes(): Bytes<SelfType> = Bytes(this)
 
     /**
      * Creates an adapter which will chain this stream with another.
@@ -592,7 +591,7 @@ public interface Read<SelfType> {
         // Guard against incorrect `readBufExact` implementations.
         check(borrowedBuf.len() == n)
         // SAFETY: Buffer was initialised above.
-        return Result.Ok(MaybeUninit.arrayAssumeInit(buf))
+        return Result.Ok(MaybeUninit.arrayAssumeInit(buf, n))
     }
 
     /**

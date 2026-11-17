@@ -3,7 +3,8 @@ package io.github.kotlinmania.rustlang.alloc.vec.splice
 
 import io.github.kotlinmania.rustlang.alloc.vec.drain.Drain
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
-import io.github.kotlinmania.rustlang.core.mem.copy
+import io.github.kotlinmania.rustlang.core.mem.drop
+import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
@@ -45,7 +46,7 @@ public open class Splice<I, A : Allocator, Item> internal constructor(
 
     // See also: [collections.vecDeque.Splice].
     public open fun drop() {
-        this.drain.byRef().forEach(drop)
+        this.drain.byRef().forEach({ drop(it) })
         // At this point draining is done and the only remaining tasks are splicing
         // and moving things into the final place.
         // Which means we can replace the slice.Iter with pointers that won't point to deallocated

@@ -158,7 +158,7 @@ public interface SimdUint<SelfType, out Scalar, out Cast> {
 
 public fun <Mask, T : SimdCast<Mask>> Simd<UByte>.cast(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
 
-public fun Simd<UByte>.wrappingNeg(n: Int): Simd<UByte> = (-this.cast()).cast()
+public fun Simd<UByte>.wrappingNeg(n: Int): Simd<UByte> = (-this.cast<Byte>(n)).cast(n)
 
 public fun Simd<UByte>.saturatingAdd(second: Simd<UByte>, n: Int): Simd<UByte> = run { val _simdArg0 = this; val _simdArg1 = second; _simdArg0 }
 

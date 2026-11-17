@@ -85,7 +85,7 @@ public interface SimdMutPtr<SelfType, Usize, Isize, out CastPtr, out ConstPtr, o
     public fun wrappingSub(count: Usize): SelfType
 }
 
-public fun Simd<MutPtr>.isNull(n: Int): Mask<Int> = Simd.splat(MutPtr(0L)).simdEq(this)
+public fun Simd<MutPtr>.isNull(n: Int): Mask<Int> = Simd.splat(MutPtr(0L), n).simdEq(this)
 
 public fun Simd<MutPtr>.cast(n: Int): Simd<MutPtr> {
     check(sizeOf<Metadata>(typeLayoutT = UnresolvedTypeLayout<Metadata>()) == 0)
@@ -112,7 +112,7 @@ public fun Simd<MutPtr>.withAddr(addr: Simd<Int>, n: Int): Simd<MutPtr> {
     // In the mean-time, this operation is defined to be "as if" it was
     // a wrappingOffset, so we can emulate it as such. This should properly
     // restore pointer provenance even under today's compiler.
-    return this.cast().wrappingOffset(addr.cast() - this.addr().cast()).cast()
+    return this.cast<UByte>(n).wrappingOffset(addr.cast<Int>(n) - this.addr(n).cast<Int>(n), n).cast(n)
 }
 
 public fun Simd<MutPtr>.exposeProvenance(n: Int): Simd<Int> {
@@ -125,6 +125,6 @@ public fun Simd<MutPtr>.wrappingOffset(count: Simd<Int>, n: Int): Simd<MutPtr> {
     return run { val _simdArg0 = this; val _simdArg1 = count; _simdArg0 }
 }
 
-public fun Simd<MutPtr>.wrappingAdd(count: Simd<Int>, n: Int): Simd<MutPtr> = this.wrappingOffset(count.cast())
+public fun Simd<MutPtr>.wrappingAdd(count: Simd<Int>, n: Int): Simd<MutPtr> = this.wrappingOffset(count.cast(n), n)
 
-public fun Simd<MutPtr>.wrappingSub(count: Simd<Int>, n: Int): Simd<MutPtr> = this.wrappingOffset(-count.cast())
+public fun Simd<MutPtr>.wrappingSub(count: Simd<Int>, n: Int): Simd<MutPtr> = this.wrappingOffset(-count.cast<Int>(n), n)

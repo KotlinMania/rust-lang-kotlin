@@ -17,7 +17,6 @@ import io.github.kotlinmania.rustlang.backtrace.windowssys.CP_UTF8
 import io.github.kotlinmania.rustlang.backtrace.windowssys.ImagehlpLinew64
 import io.github.kotlinmania.rustlang.backtrace.windowssys.MAX_SYM_NAME
 import io.github.kotlinmania.rustlang.backtrace.windowssys.TRUE
-import io.github.kotlinmania.rustlang.core.marker.PhantomData
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
@@ -241,7 +240,7 @@ public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (RustMutabl
             filename = ptrFromRef(Slice.fromRawParts(base, len1))
         }
     }
-    cb(io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol(inner = Symbol(name = name, addr = mutPtrFromRustCast(info.address), line = lineno, filename = filename, filenameCache = cache(filename), marker = PhantomData)))
+    cb(io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol(inner = Symbol(name = name, addr = mutPtrFromRustCast(info.address), line = lineno, filename = filename, filenameCache = cache(filename), marker = Unit)))
 }
 
 public fun cache(filename: ConstPtr?): OsString? = filename?.let({ f -> OsString.fromWide(f) })

@@ -16,7 +16,6 @@ import io.github.kotlinmania.rustlang.core.hint.unlikely
 import io.github.kotlinmania.rustlang.core.iter.sources.fromfn.fromFn
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.copy
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -29,6 +28,7 @@ import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
@@ -481,7 +481,7 @@ public open class RustAllocString(
         run {
             var dst = ptr.add(len)
             for (new in slice) {
-                ptr.copyNonoverlapping(new.asPtr(), dst, new.len())
+                copyNonoverlapping(new.asPtr(), dst, new.len())
                 dst = dst.add(new.len())
             }
             selfMut = String.fromRawParts(ptr, len + additional.first, cap)
@@ -2707,7 +2707,7 @@ public interface SpecToString {
 // to try to remove it.
 public fun <T> T.specToString(): String {
     val buf = String.new()
-    val formatter = fmt.Formatter.new(buf, fmt.FormattingOptions.new())
+    val formatter = Formatter.new(buf, FormattingOptions.new())
     // Bypass formatArgs() to avoid writeStr with zero-length strs
     formatter.append((this).toString()).expect("a Display implementation returned an error unexpectedly")
     return buf

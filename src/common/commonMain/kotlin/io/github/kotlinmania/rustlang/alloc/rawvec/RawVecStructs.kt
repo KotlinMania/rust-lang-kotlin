@@ -16,7 +16,6 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
@@ -377,7 +376,7 @@ public open class RawVecInner<A : Allocator> internal constructor(
     public open fun growOne(elemLayout: Layout) {
         // SAFETY: Precondition passed to caller
         when (val matchVal = this.growAmortized(this.cap.asInner(), 1, elemLayout)) {
-            is Err -> {
+            is Result.Err -> {
                 val err = matchVal.error
                 handleError(err)
             }
@@ -498,7 +497,7 @@ public open class RawVecInner<A : Allocator> internal constructor(
         fun <A : Allocator> doReserveAndHandle(slf: RawVecInner<A>, len1: Int, additional1: Int, elemLayout1: Layout) {
             // SAFETY: Precondition passed to caller
             when (val matchVal = slf.growAmortized(len1, additional1, elemLayout1)) {
-                is Err -> {
+                is Result.Err -> {
                     val err = matchVal.error
                     handleError(err)
                 }
@@ -544,7 +543,7 @@ public open class RawVecInner<A : Allocator> internal constructor(
     public open fun reserveExact(len: Int, additional: Int, elemLayout: Layout) {
         // SAFETY: Precondition passed to caller
         when (val matchVal = this.tryReserveExact(len, additional, elemLayout)) {
-            is Err -> {
+            is Result.Err -> {
                 val err = matchVal.error
                 handleError(err)
             }
@@ -583,7 +582,7 @@ public open class RawVecInner<A : Allocator> internal constructor(
     public open fun shrinkToFit(cap: Int, elemLayout: Layout) {
         // SAFETY: Upheld by caller.
         when (val matchVal = this.shrink(cap, elemLayout)) {
-            is Err -> {
+            is Result.Err -> {
                 val err = matchVal.error
                 handleError(err)
             }

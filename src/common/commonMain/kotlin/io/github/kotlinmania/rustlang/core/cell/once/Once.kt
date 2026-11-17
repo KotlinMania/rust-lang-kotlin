@@ -303,7 +303,7 @@ public open class OnceCell<T>(
         // `panic`, while keeping `tryInsert` would be sound, but it seems
         // better to panic, rather than to silently use an old value.
         return when (val matchVal = this.tryInsert(value)) {
-            is Ok -> {
+            is Result.Ok -> {
                 val value1 = matchVal.value
                 Result.Ok<T, E>(value1)
             }
