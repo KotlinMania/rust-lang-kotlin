@@ -15,7 +15,7 @@ import io.github.kotlinmania.rustlang.core.hash.BuildHasher
  */
 public open class DefaultHashBuilder(
     public var inner: RandomState,
-) : BuildHasher {
+) : BuildHasher<DefaultHasher> {
     public open fun clone(): DefaultHashBuilder = DefaultHashBuilder(inner)
 
     public open fun buildHasher(): DefaultHasher = DefaultHasher(inner = this.inner.buildHasher())

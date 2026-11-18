@@ -43,7 +43,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 public open class FileDesc(
     public var value: OwnedFd,
-) : Read, AsInner<OwnedFd>, IntoInner<OwnedFd>, FromInner<OwnedFd, FileDesc>, AsFd, AsRawFd, IntoRawFd, FromRawFd<FileDesc> {
+) : Read<FileDesc>, AsInner<OwnedFd>, IntoInner<OwnedFd>, FromInner<OwnedFd, FileDesc>, AsFd, AsRawFd, IntoRawFd, FromRawFd<FileDesc> {
     public var field0: OwnedFd
         get() = value
         set(v) {

@@ -5,6 +5,7 @@ package io.github.kotlinmania.rustlang.std.sys.process.unix.unix
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.write.Write
@@ -125,7 +126,6 @@ import io.github.kotlinmania.rustlang.libc.windows.SIGILL
 import io.github.kotlinmania.rustlang.libc.windows.SIGINT
 import io.github.kotlinmania.rustlang.libc.windows.SIGSEGV
 import io.github.kotlinmania.rustlang.libc.windows.SIGTERM
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.panic.alwaysAbort
 import io.github.kotlinmania.rustlang.std.process.Child
@@ -207,7 +207,7 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
     val CLOEXEC_MSG_FOOTER: UByteArray = "NOEX".encodeToByteArray().toUByteArray()
     val envp = this.captureEnv()
     if (this.sawNul()) {
-        return Result.Err<Pair<Process, StdioPipes>, Error>(constError(ErrorKind.InvalidInput, "nul byte found in provided data"))
+        return Result.Err<Pair<Process, StdioPipes>, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "nul byte found in provided data")))
     }
     val (ours, theirs) = when (val tryResult = this.setupIo(default, needsStdin)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) }
     when (val matchVal = when (val tryResult = this.posixSpawn(theirs, envp.asRef())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) }) {
@@ -313,14 +313,14 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
 // what `PROHIBITED` means here (e.g. if calls to these functions are
 // allowed to exist in dead code), but it sounds bad, so we go out of our
 // way to avoid that all-together.
-public val ERR_APPLE_TV_WATCH_NO_FORK_EXEC: Error = constError(ErrorKind.Unsupported, "`fork`+`exec`-based process spawning is not supported on this target")
+public val ERR_APPLE_TV_WATCH_NO_FORK_EXEC: Error = Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.Unsupported, message = "`fork`+`exec`-based process spawning is not supported on this target"))
 
 public fun Command.doFork(): Result<PidT, Error> = Result.Err<PidT, Error>(Command.ERR_APPLE_TV_WATCH_NO_FORK_EXEC)
 
 public fun Command.exec(default: Stdio): Error {
     val envp = this.captureEnv()
     if (this.sawNul()) {
-        return constError(ErrorKind.InvalidInput, "nul byte found in provided data")
+        return Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "nul byte found in provided data"))
     }
     return run {
         val matchVal = this.setupIo(default, true)
@@ -933,6 +933,6 @@ public open class ExitStatusError internal constructor(
     }
 }
 
-public fun Child.pidfd(): Result<io.github.kotlinmania.rustlang.std.os.linux.process.PidFd, Error> = (this.handle.pidfd?.let({ fd -> transmuteWithLayouts<PidFd, io.github.kotlinmania.rustlang.std.os.linux.process.PidFd>(fd, UnresolvedTypeLayout<PidFd>(), UnresolvedTypeLayout<io.github.kotlinmania.rustlang.std.os.linux.process.PidFd>()) })?.let { Result.Ok<Any, Error>(it) } ?: Result.Err<Any, Error>(constError(ErrorKind.Uncategorized, "no pidfd was created.")))
+public fun Child.pidfd(): Result<io.github.kotlinmania.rustlang.std.os.linux.process.PidFd, Error> = (this.handle.pidfd?.let({ fd -> transmuteWithLayouts<PidFd, io.github.kotlinmania.rustlang.std.os.linux.process.PidFd>(fd, UnresolvedTypeLayout<PidFd>(), UnresolvedTypeLayout<io.github.kotlinmania.rustlang.std.os.linux.process.PidFd>()) })?.let { Result.Ok<Any, Error>(it) } ?: Result.Err<Any, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.Uncategorized, message = "no pidfd was created."))))
 
 public fun Child.intoPidfd(): Result<io.github.kotlinmania.rustlang.std.os.linux.process.PidFd, Child> = ((this.handle.pidfd.also { this.handle.pidfd = null })?.let(io.github.kotlinmania.rustlang.std.os.linux.process.PidFd.fromInner)?.let { Result.Ok<Any, Child>(it) } ?: Result.Err<Any, Child>(this))

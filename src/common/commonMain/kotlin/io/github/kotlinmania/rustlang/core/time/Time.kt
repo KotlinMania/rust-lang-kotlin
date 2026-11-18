@@ -1747,9 +1747,9 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
         closure@{ f1: StringBuilder ->
             if (integerPart1 != null) {
                 val integerPart2 = integerPart1
-                when (val tryResult = f1.writeFmt("$prefix$integerPart2")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure Result.Err(tryResult.errValue()) }
+                f1.writeFmt("$prefix$integerPart2")
             } else {
-                when (val tryResult = f1.writeFmt("${prefix}18446744073709551616")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure Result.Err(tryResult.errValue()) }
+                f1.writeFmt("${prefix}18446744073709551616")
             }
             // Write the decimal point and the fractional part (if any).
             if (end > 0) {
@@ -1757,7 +1757,7 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
                 // it was initialized with '0's, so it contains valid UTF8.
                 val s = fromUtf8Unchecked(((buf).sliceArray(0 until end)))
                 // If the user request a precision > 9, we pad '0's at the end.
-                when (val tryResult = f1.writeFmt(".$s")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure Result.Err(tryResult.errValue()) }
+                f1.writeFmt(".$s")
             }
             f1.writeFmt("$postfix")
         }

@@ -19,7 +19,7 @@ import io.github.kotlinmania.rustlang.test.term.terminfo.TerminfoTerminal
 /**
  * Alias for stdout terminals.
  */
-public typealias StdoutTerminal = Terminal
+public typealias StdoutTerminal = Terminal<*>
 
 /**
  * Returns a Terminal wrapping stdout, or None if a terminal couldn't be
@@ -52,7 +52,7 @@ public val WHITE: Color = 7u
  * A terminal with similar capabilities to an ANSI Terminal
  * (foreground/background colors etc).
  */
-public interface Terminal : Write {
+public interface Terminal<T> : Write<T> {
     /**
      * Sets the foreground color to the given color.
      *

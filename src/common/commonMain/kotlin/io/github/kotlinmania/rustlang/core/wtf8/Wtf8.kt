@@ -94,7 +94,7 @@ public open class CodePoint(
      * Format the code point as `U +` followed by four to six hexadecimal digits.
      * Example: `U + 1F4A9`
      */
-    public open fun fmt(formatter: StringBuilder): Result<Unit, Unit> = formatter.writeFmt("U+${this.value.asInner()}")
+    public open fun fmt(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append("U+${this.value.asInner()}"); Result.Ok<Unit, Unit>(Unit) }
 
     /**
      * Returns the numeric value of the code point.
@@ -231,7 +231,7 @@ public open class Wtf8 internal constructor(
             val surrogate = matchVal.second
             // SAFETY: nextSurrogate provides an index for a range of valid UTF-8 bytes.
             when (val tryResult = writeStrEscaped(formatter, String.fromUtf8Unchecked(((this.bytes).subList(pos, surrogatePos))))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
-            when (val tryResult = formatter.writeFmt("\\u{$surrogate}")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+            formatter.append("\\u{$surrogate}")
             pos = surrogatePos + 3
         }
         // SAFETY: after nextSurrogate returns None, the remainder is valid UTF-8.
@@ -720,17 +720,17 @@ public open class EncodeWide(
                 // isn't perfect, so if this output isn't suitable, it is open
                 // to being changed (see #140153).
                 return when (val matchVal = Char.fromU32(this.value.toUInt())) {
-                    null -> f1.writeFmt("0x${this.value}")
+                    null -> run { f1.append("0x${this.value}"); Result.Ok<Unit, Unit>(Unit) }
                     else -> {
                         val c = matchVal
-                        f1.writeFmt("$c")
+                        run { f1.append("$c"); Result.Ok<Unit, Unit>(Unit) }
                     }
                 }
             }
         }
-        when (val tryResult = f.writeFmt("EncodeWide(")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        f.append("EncodeWide(")
         object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone().map({ CodeUnit(it) })).finish()
-        when (val tryResult = f.writeFmt(")")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        f.append(")")
         return Result.Ok<Unit, Unit>(Unit)
     }
 }

@@ -2,13 +2,13 @@
 package io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter
 
 import io.github.kotlinmania.rustlang.alloc.io.buffered.IntoInnerError
-import io.github.kotlinmania.rustlang.alloc.io.constError
 import io.github.kotlinmania.rustlang.alloc.io.read.DEFAULT_BUF_SIZE
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.cmp.min
-import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.seek.Seek
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
@@ -111,7 +111,7 @@ public class DebugStruct(
  * [TcpStream]: ../../std/net/struct.TcpStream.html
  * [flush]: BufWriter.flush
  */
-public open class BufWriter<W : Write>(
+public open class BufWriter<W : Write<W>>(
     // The buffer. Avoid using this like a normal `List` in common code paths.
     // That is, don't use `buf.push`, `buf.extendFromSlice`, or any other
     // methods that require bounds checking or the like. This makes an enormous
@@ -122,7 +122,7 @@ public open class BufWriter<W : Write>(
     // flag tells the Drop impl if it should skip the flush.
     public var panicked: Boolean,
     public var inner: W,
-) : Write, Seek {
+) : Write<BufWriter<W>>, Seek {
     /**
      * Unwraps this `BufWriter<W>`, returning the underlying writer.
      *
@@ -262,7 +262,7 @@ public open class BufWriter<W : Write>(
             when {
                 r is RustResult.Ok<*, *> && r.okValue() == 0 -> {
                     val okValueVal = r.okValue()
-                    return RustResult.Err(constError(ErrorKind.WriteZero, "failed to write the buffered data"))
+                    return RustResult.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.WriteZero, message = "failed to write the buffered data")))
                 }
                 r is RustResult.Ok<*, *> -> {
                     val n = r.okValue()
@@ -585,7 +585,7 @@ public open class BufWriter<W : Write>(
         return this.getMut().flush()
     }
 
-    public open fun fmt(fmt: StringBuilder): RustResult<Unit, Error> = run { DebugStruct(fmt, "BufWriter").field("writer", this.inner).field("buffer", "${this.buf.size}/${this.buf.capacity()}").finish(); RustResult.Ok<Unit, Error>(Unit) }
+    public open fun fmt(fmt: StringBuilder): RustResult<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(fmt, "BufWriter").field("writer", this.inner).field("buffer", "${this.buf.size}/${this.buf.capacity()}").finish(); RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     /**
      * Seek to the offset, in bytes, in the underlying writer.
@@ -617,16 +617,16 @@ public open class BufWriter<W : Write>(
          * var buffer = BufWriter.new(TcpStream.connect("127.0.0.1:34254").unwrap())
          * ```
          */
-        public fun <W : Write> new(inner: W): BufWriter<W> = BufWriter.withCapacity(DEFAULT_BUF_SIZE, inner)
+        public fun <W : Write<W>> new(inner: W): BufWriter<W> = BufWriter.withCapacity(DEFAULT_BUF_SIZE, inner)
 
         /**
          * Attempts to allocate an internal buffer, _then_ calls the provided function
          * to retrieve the inner writer `W`.
          */
-        public fun <W : Write> tryNewWith(f: () -> Result<W>): Result<BufWriter<W>> {
+        public fun <W : Write<W>> tryNewWith(f: () -> Result<W>): Result<BufWriter<W>> {
             val buf =
                 when (val tryResult = Vec.tryWithCapacity(DEFAULT_BUF_SIZE).mapErr({
-                    constError(ErrorKind.OutOfMemory, "failed to allocate write buffer")
+                    Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.OutOfMemory, message = "failed to allocate write buffer"))
                 })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<BufWriter<W>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             val inner = when (val tryResult = f()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<BufWriter<W>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             return RustResult.Ok(BufWriter(inner = inner, buf = buf, panicked = false))
@@ -647,7 +647,7 @@ public open class BufWriter<W : Write>(
          * var buffer = BufWriter.withCapacity(100, stream)
          * ```
          */
-        public fun <W : Write> withCapacity(capacity: Int, inner: W): BufWriter<W> = BufWriter(inner = inner, buf = ArrayList(capacity), panicked = false)
+        public fun <W : Write<W>> withCapacity(capacity: Int, inner: W): BufWriter<W> = BufWriter(inner = inner, buf = ArrayList(capacity), panicked = false)
     }
 }
 
@@ -663,7 +663,7 @@ public open class BufWriter<W : Write>(
  * import std.panic.AssertUnwindSafe
  * import std.panic.catchUnwind
  *
- * open class PanickingWriter : Write {
+ * open class PanickingWriter : Write<PanickingWriter> {
  *     public open fun write(buf: List<UByte>): io.Result<Int> {
  *         return error("panic")
  *     }
@@ -695,7 +695,7 @@ public open class WriterPanicked(
      */
     public open fun intoInner(): List<UByte> = this.buf
 
-    public open fun fmt(f: StringBuilder): RustResult<Unit, Error> = "BufWriter inner writer panicked, what data remains unwritten is not known".fmt(f)
+    public open fun fmt(f: StringBuilder): RustResult<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = "BufWriter inner writer panicked, what data remains unwritten is not known".fmt(f)
 
-    public open fun fmtDebug(f: StringBuilder): RustResult<Unit, Error> = run { DebugStruct(f, "WriterPanicked").field("buffer", "${this.buf.size}/${this.buf.capacity()}").finish(); RustResult.Ok<Unit, Error>(Unit) }
+    public open fun fmtDebug(f: StringBuilder): RustResult<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "WriterPanicked").field("buffer", "${this.buf.size}/${this.buf.capacity()}").finish(); RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 }

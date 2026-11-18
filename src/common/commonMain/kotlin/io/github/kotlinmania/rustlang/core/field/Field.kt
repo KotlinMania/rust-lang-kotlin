@@ -58,10 +58,10 @@ public open class FieldRepresentingType<T>(
             }
         val typeName = "FieldRepresentingType"
         return when (variant) {
-            null -> f.writeFmt("field_of!($typeName, $field)")
+            null -> run { f.append("field_of!($typeName, $field)"); Result.Ok<Unit, Unit>(Unit) }
             else -> {
                 val variant1 = variant
-                f.writeFmt("field_of!($typeName, $variant.$field)")
+                run { f.append("field_of!($typeName, $variant.$field)"); Result.Ok<Unit, Unit>(Unit) }
             }
         }
         // NOTE: if there are changes in the reflection work and the above no

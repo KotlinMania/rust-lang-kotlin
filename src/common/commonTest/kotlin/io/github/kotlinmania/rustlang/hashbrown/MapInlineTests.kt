@@ -28,8 +28,8 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.hashbrown.Entry.Occupied
 import io.github.kotlinmania.rustlang.hashbrown.Entry.Vacant
 import io.github.kotlinmania.rustlang.hashbrown.TryReserveError.CapacityOverflow
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Global
 import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
 import io.github.kotlinmania.rustlang.hashbrown.raw.prevPow2
 import io.github.kotlinmania.rustlang.libc.mmap
@@ -1263,7 +1263,7 @@ public class MapTestMapInlineTests {
 
     @kotlin.test.Test
     public fun testConstWithHasher() {
-        open class MyHasher : BuildHasher {
+        open class MyHasher : BuildHasher<DefaultHasher> {
             public open fun clone(): MyHasher = MyHasher()
 
             public open fun buildHasher(): DefaultHasher = DefaultHasher.new()

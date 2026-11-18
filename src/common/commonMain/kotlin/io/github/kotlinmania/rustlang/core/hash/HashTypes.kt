@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.core.hash
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOfVal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.component10
@@ -15,6 +14,7 @@ import io.github.kotlinmania.rustlang.core.mem.component7
 import io.github.kotlinmania.rustlang.core.mem.component8
 import io.github.kotlinmania.rustlang.core.mem.component9
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
+import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr

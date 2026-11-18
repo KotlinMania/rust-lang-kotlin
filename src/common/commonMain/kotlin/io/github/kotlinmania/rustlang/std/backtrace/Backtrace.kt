@@ -20,7 +20,7 @@ import io.github.kotlinmania.rustlang.std.backtracers.resolveFrameUnsynchronized
 import io.github.kotlinmania.rustlang.std.backtracers.traceUnsynchronized
 import io.github.kotlinmania.rustlang.std.env.currentDir
 import io.github.kotlinmania.rustlang.std.env.variable
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sync.lazylock.LazyLock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.lock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.outputFilename

@@ -5,6 +5,7 @@ package io.github.kotlinmania.rustlang.std.os.unix.fs.dirs
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.env.SplitPathsRef
@@ -16,7 +17,6 @@ import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.dirs.HomeDirs
 import io.github.kotlinmania.rustlang.std.fs.dirs.MediaDirs
 import io.github.kotlinmania.rustlang.std.fs.read
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 
@@ -425,7 +425,7 @@ public fun mediaDirsExtXdgMediaDirs(): Result<MediaDirs, Error> {
                 }
                 matchVal is Result.Err<*, *> && matchVal.errValue().kind() == ErrorKind.NotFound -> {
                     val e = matchVal.errValue()
-                    return Result.Err<MediaDirs, Error>(constError(ErrorKind.NotFound, "missing `\$XDG_CONFIG_HOME/user-dirs.dirs`"))
+                    return Result.Err<MediaDirs, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.NotFound, message = "missing `\$XDG_CONFIG_HOME/user-dirs.dirs`")))
                 }
                 else -> {
                     val e1 = (matchVal as Result.Err<*, *>).errValue()
@@ -449,7 +449,7 @@ public fun splitPathsRef(paths: OsStr): SplitPathsRef {
     return io.github.kotlinmania.rustlang.std.env.splitPathsRef(paths).unwrap()
 }
 
-public fun userHome(): Result<PathBuf, Error> = (homeDir().filter({ p -> p.isAbsolute() })?.let { Result.Ok<Option, Error>(it) } ?: Result.Err<Option, Error>(constError(ErrorKind.InvalidData, "user home directory path not absolute")))
+public fun userHome(): Result<PathBuf, Error> = (homeDir().filter({ p -> p.isAbsolute() })?.let { Result.Ok<Option, Error>(it) } ?: Result.Err<Option, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "user home directory path not absolute"))))
 
 public fun dir(env: String): PathBuf? = varOs(env).filter({ s -> !s.isEmpty() })?.let(PathBuf::from).filter({ path -> path.isAbsolute() })
 

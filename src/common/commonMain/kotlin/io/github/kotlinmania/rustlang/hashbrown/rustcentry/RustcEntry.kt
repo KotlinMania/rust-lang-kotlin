@@ -8,7 +8,7 @@ import io.github.kotlinmania.rustlang.hashbrown.Drain
 import io.github.kotlinmania.rustlang.hashbrown.IntoIter
 import io.github.kotlinmania.rustlang.hashbrown.Iter
 import io.github.kotlinmania.rustlang.hashbrown.IterMut
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.makeHash
 import io.github.kotlinmania.rustlang.hashbrown.makeHasher
 import io.github.kotlinmania.rustlang.hashbrown.raw.Bucket
@@ -81,7 +81,7 @@ public class DebugTuple(
  * check(letters.get('y') == null)
  * ```
  */
-public fun <K, V, S, A> MutableMap<K, V>.rustcEntry(key: K): RustcEntry<K, V, A> where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A> MutableMap<K, V>.rustcEntry(key: K): RustcEntry<K, V, A> where S : BuildHasher<Hasher>, A : Allocator {
     val hash = makeHash(this.hashBuilder, key)
     return when (val matchVal = this.table.find(hash, { q -> q.first.eq(key) })) {
         null -> {
@@ -134,7 +134,7 @@ public fun <K, V, S, A> MutableMap<K, V>.rustcEntry(key: K): RustcEntry<K, V, A>
  * }
  * ```
  */
-public fun <K, V, S, A> MutableMap<K, V>.rustcTryInsert(key: K, value: V): Result<V, RustcOccupiedError<K, V, A>> where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A> MutableMap<K, V>.rustcTryInsert(key: K, value: V): Result<V, RustcOccupiedError<K, V, A>> where S : BuildHasher<Hasher>, A : Allocator {
     val hash = makeHash(this.hashBuilder, key)
     return when (val matchVal = this.table.find(hash, { q -> q.first.eq(key) })) {
         null -> {

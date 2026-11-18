@@ -2,11 +2,12 @@
 package io.github.kotlinmania.rustlang.alloc.io.buffered.bufreader.buffer
 
 import io.github.kotlinmania.rustlang.alloc.boxed.Box
-import io.github.kotlinmania.rustlang.alloc.io.constError
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedBuf
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
@@ -88,7 +89,7 @@ public open class Buffer internal constructor(
     /**
      * Read more bytes into the buffer without discarding any of its contents
      */
-    public open fun readMore(reader: Read): Result<Int> {
+    public open fun readMore(reader: Read<*>): Result<Int> {
         val buf = BorrowedBuf.from(((this.buf).subList(this.filled, (this.buf).size)))
         if (this.initialized) {
             // SAFETY: `self.initialized` is only set after `self.buf` was
@@ -111,7 +112,7 @@ public open class Buffer internal constructor(
         this.pos = 0
     }
 
-    public open fun fillBuf(reader: Read): Result<List<UByte>> {
+    public open fun fillBuf(reader: Read<*>): Result<List<UByte>> {
         // If we've reached the end of our internal buffer then we need to fetch
         // some more data from the reader.
         // Branch using `>=` instead of the more correct `==`
@@ -159,7 +160,7 @@ public open class Buffer internal constructor(
                     val buf = matchVal.okValue()
                     RustResult.Ok(Buffer(buf = buf, pos = 0, filled = 0, initialized = false))
                 }; is RustResult.Err<*, *> -> {
-                    RustResult.Err(constError(ErrorKind.OutOfMemory, "failed to allocate read buffer"))
+                    RustResult.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.OutOfMemory, message = "failed to allocate read buffer")))
                 } }
             }
     }

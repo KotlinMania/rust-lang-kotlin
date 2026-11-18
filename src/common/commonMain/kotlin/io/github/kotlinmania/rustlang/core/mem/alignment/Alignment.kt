@@ -166,7 +166,7 @@ public open class Alignment internal constructor(
         return !(this.asUsize().uncheckedSub(1))
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, TryFromIntError> = f.writeFmt("${this.asNonzeroUsize()} (1 << ${this.log2()})")
+    public open fun fmt(f: StringBuilder): Result<Unit, TryFromIntError> = run { f.append("${this.asNonzeroUsize()} (1 << ${this.log2()})"); Result.Ok<Unit, TryFromIntError>(Unit) }
 
     public open fun cmp(other: Alignment): Ordering = this.asNonzeroUsize().cmp(other.asNonzeroUsize())
 

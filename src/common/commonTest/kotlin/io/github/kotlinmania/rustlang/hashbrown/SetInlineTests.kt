@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Global
 import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
 import io.github.kotlinmania.rustlang.std.hash.random.DefaultHasher
 
@@ -384,7 +384,7 @@ public class SetTestSetInlineTests {
 
     @kotlin.test.Test
     public fun testConstWithHasher() {
-        open class MyHasher : BuildHasher {
+        open class MyHasher : BuildHasher<DefaultHasher> {
             public open fun clone(): MyHasher = MyHasher()
 
             public open fun buildHasher(): DefaultHasher = DefaultHasher.new()

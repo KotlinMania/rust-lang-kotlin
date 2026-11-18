@@ -4,12 +4,12 @@ package io.github.kotlinmania.rustlang.alloc.io.error
 import io.github.kotlinmania.rustlang.alloc.boxed.Box
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.NulError
-import io.github.kotlinmania.rustlang.alloc.io.constError
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.io.error.Custom
 import io.github.kotlinmania.rustlang.core.io.error.CustomOwner
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -199,7 +199,7 @@ public fun <E> Error.downcast(): Result<E, Error> =
 /**
  * Converts a [ffi.NulError] into a [Error].
  */
-public fun fromError(arg0: NulError): Error = constError(ErrorKind.InvalidInput, "data provided contains a nul byte")
+public fun fromError(arg0: NulError): Error = Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "data provided contains a nul byte"))
 
 /**
  * Converts `TryReserveError` to an error with [ErrorKind.OutOfMemory].

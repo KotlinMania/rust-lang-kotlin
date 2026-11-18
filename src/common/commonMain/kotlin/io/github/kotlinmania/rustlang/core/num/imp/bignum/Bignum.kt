@@ -9,18 +9,17 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.fmt.Result
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.zip
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.carryingAdd
 import io.github.kotlinmania.rustlang.core.num.carryingMul
 import io.github.kotlinmania.rustlang.core.num.carryingMulAdd
 import io.github.kotlinmania.rustlang.core.num.trailingZeros
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 // Custom arbitrary-precision number (bignum) implementation.
 //
@@ -391,9 +390,9 @@ public open class Big64x20(
             } else {
                 this.size
             }
-        when (val tryResult = f.writeFmt("${this.base[sz - 1]}")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
+        f.append("${this.base[sz - 1]}")
         for (v in ((this.base).sliceArray(0 until sz - 1)).iter().rev()) {
-            when (val tryResult = f.writeFmt("_$v")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
+            f.append("_$v")
         }
         return io.github.kotlinmania.rustlang.core.result.Result.Ok(Unit)
     }
@@ -722,9 +721,9 @@ public open class Big8x3(
             } else {
                 this.size
             }
-        when (val tryResult = f.writeFmt("${this.base[sz - 1]}")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
+        f.append("${this.base[sz - 1]}")
         for (v in ((this.base).sliceArray(0 until sz - 1)).iter().rev()) {
-            when (val tryResult = f.writeFmt("_$v")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
+            f.append("_$v")
         }
         return io.github.kotlinmania.rustlang.core.result.Result.Ok(Unit)
     }

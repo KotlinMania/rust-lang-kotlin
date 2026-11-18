@@ -21,19 +21,19 @@ public fun <T> T.lowerBound(): Int = SizeHint.lowerBound(this)
 
 public fun <T> T.upperBound(): Int? = SizeHint.upperBound(this)
 
-public fun <W : Write, A : Allocator> W.write(buf: List<UByte>): Result<Int> = this.write(buf)
+public fun <W : Write<W>, A : Allocator> W.write(buf: List<UByte>): Result<Int> = this.write(buf)
 
-public fun <W : Write, A : Allocator> W.writeVectored(bufs: List<IoSlice>): Result<Int> = this.writeVectored(bufs)
+public fun <W : Write<W>, A : Allocator> W.writeVectored(bufs: List<IoSlice>): Result<Int> = this.writeVectored(bufs)
 
-public fun <W : Write, A : Allocator> W.isWriteVectored(): Boolean = this.isWriteVectored()
+public fun <W : Write<W>, A : Allocator> W.isWriteVectored(): Boolean = this.isWriteVectored()
 
-public fun <W : Write, A : Allocator> W.flush(): Result<Unit> = this.flush()
+public fun <W : Write<W>, A : Allocator> W.flush(): Result<Unit> = this.flush()
 
-public fun <W : Write, A : Allocator> W.writeAll(buf: List<UByte>): Result<Unit> = this.writeAll(buf)
+public fun <W : Write<W>, A : Allocator> W.writeAll(buf: List<UByte>): Result<Unit> = this.writeAll(buf)
 
-public fun <W : Write, A : Allocator> W.writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = this.writeAllVectored(bufs)
+public fun <W : Write<W>, A : Allocator> W.writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = this.writeAllVectored(bufs)
 
-public fun <W : Write, A : Allocator> W.writeFmt(fmt: Arguments): Result<Unit> = this.writeFmt(fmt)
+public fun <W : Write<W>, A : Allocator> W.writeFmt(fmt: Arguments): Result<Unit> = this.writeFmt(fmt)
 
 public fun <S : Seek, A : Allocator> S.seek(pos: SeekFrom): Result<ULong> = this.seek(pos)
 

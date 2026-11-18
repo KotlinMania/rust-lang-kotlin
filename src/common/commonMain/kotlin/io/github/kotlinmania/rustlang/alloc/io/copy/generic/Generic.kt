@@ -31,7 +31,7 @@ import io.github.kotlinmania.rustlang.core.result.Result as RustResult
  * Currently, `[UByte]`, `List<UByte>`, `VecDeque<UByte>`, `BufReader<T>` and `BufWriter<T>`
  * are specialized with.
  */
-public fun <R, W> genericCopy(reader: R, writer: W): Result<ULong> where R : Read<R>, W : Write {
+public fun <R, W> genericCopy(reader: R, writer: W): Result<ULong> where R : Read<R>, W : Write<W> {
     val readPriority = reader.bufferPriority()
     val writePriority = writer.bufferPriority()
     if (readPriority >= DEFAULT_BUF_SIZE && readPriority >= writePriority) {
@@ -64,18 +64,18 @@ public val IN_MEMORY: BufferPriority = Int.MAX_VALUE
 public interface BufferedReaderSpec {
     public fun bufferPriority(): BufferPriority
 
-    public fun copyTo(to: Write): Result<ULong>
+    public fun copyTo(to: Write<*>): Result<ULong>
 }
 
 public fun <T> T.bufferPriority(): BufferPriority where T : Read<T> = UNBUFFERED
 
-public fun <T> T.copyTo(to: Write): Result<ULong> where T : Read<T> {
+public fun <T> T.copyTo(to: Write<*>): Result<ULong> where T : Read<T> {
     error("only called from specializations")
 }
 
 public fun List<UByte>.bufferPriority(): BufferPriority = IN_MEMORY
 
-public fun List<UByte>.copyTo(to: Write): Result<ULong> {
+public fun List<UByte>.copyTo(to: Write<*>): Result<ULong> {
     var selfMut = this
     val len = selfMut.size
     when (val tryResult = to.writeAll(selfMut)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
@@ -85,7 +85,7 @@ public fun List<UByte>.copyTo(to: Write): Result<ULong> {
 
 public fun <A : Allocator> VecDeque<UByte, A>.bufferPriority(): BufferPriority = IN_MEMORY
 
-public fun <A : Allocator> VecDeque<UByte, A>.copyTo(to: Write): Result<ULong> {
+public fun <A : Allocator> VecDeque<UByte, A>.copyTo(to: Write<*>): Result<ULong> {
     val len = this.len()
     val (front, back) = this.asSlices()
     val bufs = listOf(IoSlice.new(front), IoSlice.new(back))
@@ -96,7 +96,7 @@ public fun <A : Allocator> VecDeque<UByte, A>.copyTo(to: Write): Result<ULong> {
 
 public fun <I> BufReader<I>.bufferPriority(): BufferPriority = this.capacity()
 
-public fun <I> BufReader<I>.copyTo(to: Write): Result<ULong> {
+public fun <I> BufReader<I>.copyTo(to: Write<*>): Result<ULong> {
     var len = 0
     while (true) {
         // Note: this relies on `implementation Read for BufReader` always calling fillBuf
@@ -136,23 +136,23 @@ public fun <I> BufReader<I>.copyTo(to: Write): Result<ULong> {
  * Specialization of the read-write loop in `genericCopy` that either uses a
  * stack buffer or reuses the internal buffer of a [BufWriter].
  */
-public interface BufferedWriterSpec : Write {
+public interface BufferedWriterSpec<T> : Write<T> {
     public fun bufferPriority(): BufferPriority
 
     public fun <R : Read<R>> copyFrom(reader: R): Result<ULong>
 }
 
-public fun <W : Write> W.bufferPriority(): BufferPriority = UNBUFFERED
+public fun <W : Write<W>> W.bufferPriority(): BufferPriority = UNBUFFERED
 
-public fun <W : Write, R : Read<R>> W.copyFrom(reader: R): Result<ULong> {
+public fun <W : Write<W>, R : Read<R>> W.copyFrom(reader: R): Result<ULong> {
     // Unlike `BufferedReaderSpec.copyTo`, this _will_ be called as the fallback
     // when both the reader and writer provide no specialization.
     return stackBufferCopy(reader, this)
 }
 
-public fun <I : Write> BufWriter<I>.bufferPriority(): BufferPriority = this.capacity()
+public fun <I : Write<I>> BufWriter<I>.bufferPriority(): BufferPriority = this.capacity()
 
-public fun <I : Write, R : Read<R>> BufWriter<I>.copyFrom(reader: R): Result<ULong> {
+public fun <I : Write<I>, R : Read<R>> BufWriter<I>.copyFrom(reader: R): Result<ULong> {
     if (this.capacity() < DEFAULT_BUF_SIZE) {
         // Since neither this buffer nor the reader's buffer are large enough,
         // fall back to the unspecialized implementation.
@@ -206,7 +206,7 @@ public fun <R : Read<R>> List<UByte>.copyFrom(reader: R): Result<ULong> = reader
 /**
  * Copies from `reader` to `writer` using a stack-allocated buffer (a fixed sized array).
  */
-public fun <R : Read<R>, W : Write> stackBufferCopy(reader: R, writer: W): Result<ULong> {
+public fun <R : Read<R>, W : Write<W>> stackBufferCopy(reader: R, writer: W): Result<ULong> {
     val buf: MutableList<Any?> = MutableList(DEFAULT_BUF_SIZE) { MaybeUninit.uninit(UnresolvedTypeLayout<Any?>()) }
     val buf1: BorrowedBuf<UByte>  = buf.into()
     var len = 0

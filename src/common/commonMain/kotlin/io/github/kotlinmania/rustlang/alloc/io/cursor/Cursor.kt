@@ -1,7 +1,6 @@
 // port-lint: source io/cursor.rs
 package io.github.kotlinmania.rustlang.alloc.io.cursor
 
-import io.github.kotlinmania.rustlang.alloc.io.constError
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopy
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
@@ -13,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.io.cursor.sliceWriteVectored
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -103,7 +103,7 @@ public fun Cursor<T>.consume(amt: Int) {
 public fun <A : Allocator> reserveAndPad(posMut: RustMutableReference<ULong>, vec: List<UByte>, bufLen: Int): Result<Int> {
     val pos: Int =
         when (val tryResult = (posMut).read().tryInto().mapErr({
-            constError(ErrorKind.InvalidInput, "cursor position exceeds maximum possible vector length")
+            Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "cursor position exceeds maximum possible vector length"))
         })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     // For safety reasons, we don't want these numbers to overflow
     // otherwise our allocation won't be enough

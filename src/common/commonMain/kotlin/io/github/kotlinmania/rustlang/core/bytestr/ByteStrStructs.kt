@@ -102,18 +102,18 @@ public open class ByteStr internal constructor(
     public open fun derefMut(): MutableList<UByte> = this.value
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = f.writeFmt("\"")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        f.append("\"")
         for (chunk in this.utf8Chunks()) {
             for (c in chunk.valid().chars()) {
                 when (c) {
-                    '\u0000' -> { when (val tryResult = f.writeFmt("\\0")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) } }
-                    in '\u0001'..'\u007f' -> when (val tryResult = f.writeFmt("${(c.toUByte()).escapeAscii()}")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
-                    else -> when (val tryResult = f.writeFmt("${c.escapeDebug()}")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+                    '\u0000' -> { f.append("\\0") }
+                    in '\u0001'..'\u007f' -> f.append("${(c.toUByte()).escapeAscii()}")
+                    else -> f.append("${c.escapeDebug()}")
                 }
             }
-            when (val tryResult = f.writeFmt("${chunk.invalid().escapeAscii()}")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+            f.append("${chunk.invalid().escapeAscii()}")
         }
-        when (val tryResult = f.writeFmt("\"")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        f.append("\"")
         return Result.Ok<Unit, Unit>(Unit)
     }
 

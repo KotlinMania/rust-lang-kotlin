@@ -61,9 +61,9 @@ public open class JsonFormatter<T>(
     }
 }
 
-public fun <T : Write> JsonFormatter<T>.writeDiscoveryStart(): Result<Unit> = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"discovery\" }\n")
+public fun <T : Write<T>> JsonFormatter<T>.writeDiscoveryStart(): Result<Unit> = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"discovery\" }\n")
 
-public fun <T : Write> JsonFormatter<T>.writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit> {
+public fun <T : Write<T>> JsonFormatter<T>.writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit> {
     val name = desc.name
     val ignore = desc.ignore
     val ignoreMessage = desc.ignoreMessage
@@ -77,7 +77,7 @@ public fun <T : Write> JsonFormatter<T>.writeTestDiscovered(desc: TestDesc, test
     return this.writelnMessage("{ \"type\": \"$testType\", \"event\": \"discovered\", \"name\": \"$name\", \"ignore\": $ignore, \"ignore_message\": \"$ignoreMessage\", \"source_path\": \"$sourcePath\", \"start_line\": $startLine, \"start_col\": $startCol, \"end_line\": $endLine, \"end_col\": $endCol }$newline")
 }
 
-public fun <T : Write> JsonFormatter<T>.writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit> {
+public fun <T : Write<T>> JsonFormatter<T>.writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit> {
     val tests = state.tests
     val benchmarks = state.benchmarks
     val ignored = state.ignored
@@ -86,7 +86,7 @@ public fun <T : Write> JsonFormatter<T>.writeDiscoveryFinish(state: ConsoleTestD
     return this.writelnMessage("{ \"type\": \"suite\", \"event\": \"completed\", \"tests\": $tests, \"benchmarks\": $benchmarks, \"total\": $total, \"ignored\": $ignored }$newline")
 }
 
-public fun <T : Write> JsonFormatter<T>.writeRunStart(testCount: Int, shuffleSeed: ULong?): Result<Unit> {
+public fun <T : Write<T>> JsonFormatter<T>.writeRunStart(testCount: Int, shuffleSeed: ULong?): Result<Unit> {
     val shuffleSeedJson =
         if (shuffleSeed != null) {
             ", \"shuffle_seed\": $shuffleSeed"
@@ -97,13 +97,13 @@ public fun <T : Write> JsonFormatter<T>.writeRunStart(testCount: Int, shuffleSee
     return this.writelnMessage("{ \"type\": \"suite\", \"event\": \"started\", \"test_count\": $testCount$shuffleSeedJson }$newline")
 }
 
-public fun <T : Write> JsonFormatter<T>.writeTestStart(desc: TestDesc): Result<Unit> {
+public fun <T : Write<T>> JsonFormatter<T>.writeTestStart(desc: TestDesc): Result<Unit> {
     val name = EscapedString(desc.name.asSlice())
     val newline = "\n"
     return this.writelnMessage("{ \"type\": \"test\", \"event\": \"started\", \"name\": \"$name\" }$newline")
 }
 
-public fun <T : Write> JsonFormatter<T>.writeResult(desc: TestDesc, result: TestResult, execTime: TestExecTime?, stdout: List<UByte>, state: ConsoleTestState): Result<Unit> {
+public fun <T : Write<T>> JsonFormatter<T>.writeResult(desc: TestDesc, result: TestResult, execTime: TestExecTime?, stdout: List<UByte>, state: ConsoleTestState): Result<Unit> {
     val displayStdout = state.options.displayOutput || result != TestResult.TrOk
     val stdout1 =
         if (displayStdout && !stdout.isEmpty()) {
@@ -140,13 +140,13 @@ public fun <T : Write> JsonFormatter<T>.writeResult(desc: TestDesc, result: Test
     }
 }
 
-public fun <T : Write> JsonFormatter<T>.writeTimeout(desc: TestDesc): Result<Unit> {
+public fun <T : Write<T>> JsonFormatter<T>.writeTimeout(desc: TestDesc): Result<Unit> {
     val name = EscapedString(desc.name.asSlice())
     val newline = "\n"
     return this.writelnMessage("{ \"type\": \"test\", \"event\": \"timeout\", \"name\": \"$name\" }$newline")
 }
 
-public fun <T : Write> JsonFormatter<T>.writeRunFinish(state: ConsoleTestState): Result<Boolean> {
+public fun <T : Write<T>> JsonFormatter<T>.writeRunFinish(state: ConsoleTestState): Result<Boolean> {
     val event =
         if (state.failed == 0) {
             "ok"
@@ -173,7 +173,7 @@ public fun <T : Write> JsonFormatter<T>.writeRunFinish(state: ConsoleTestState):
     return RustResult.Ok(state.failed == 0)
 }
 
-public fun <T : Write> JsonFormatter<T>.writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit> {
+public fun <T : Write<T>> JsonFormatter<T>.writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit> {
     val newline = "\n"
     return this.writelnMessage("{ \"type\": \"report\", \"total_time\": $totalTime, \"compilation_time\": $compilationTime }$newline")
 }

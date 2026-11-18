@@ -45,7 +45,7 @@ public open class BacktraceLock internal constructor(
     /**
      * Prints the current backtrace.
      */
-    public open fun print(w: Write, format: PrintFmt): Result<Unit, Error> {
+    public open fun print(w: Write<*>, format: PrintFmt): Result<Unit, Error> {
         open class DisplayBacktrace(
             public var format: PrintFmt,
         ) {

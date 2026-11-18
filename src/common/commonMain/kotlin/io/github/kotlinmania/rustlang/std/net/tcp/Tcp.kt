@@ -57,7 +57,7 @@ import io.github.kotlinmania.rustlang.std.sys.IntoInner
  */
 public open class TcpStream(
     public var value: io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream,
-) : Read, Write, AsInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream>, FromInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream, TcpStream>, IntoInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream> {
+) : Read<TcpStream>, Write<TcpStream>, AsInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream>, FromInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream, TcpStream>, IntoInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream> {
     public var field0: io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream
         get() = value
         set(v) {

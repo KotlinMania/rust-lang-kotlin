@@ -387,7 +387,7 @@ public fun tryBlock(expr: String = ""): String =
  * ```kotlin
  * import core.fmt.Write
  *
- * open class Example : Write {
+ * open class Example : Write<Example> {
  *     public open fun writeStr(s: String) {
  *         error("unsupported")
  *     }

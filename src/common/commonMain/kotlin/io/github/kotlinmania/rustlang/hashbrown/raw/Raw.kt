@@ -49,9 +49,9 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.hashbrown.Guard
 import io.github.kotlinmania.rustlang.hashbrown.TryReserveError
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
-import io.github.kotlinmania.rustlang.hashbrown.alloc.doAlloc
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Global
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.doAlloc
 import io.github.kotlinmania.rustlang.hashbrown.control.bitmask.BitMaskIter
 import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.Group
 import io.github.kotlinmania.rustlang.hashbrown.control.tag.Tag

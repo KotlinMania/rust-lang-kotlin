@@ -9,8 +9,8 @@ import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.num.divCeil
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Global
 import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
 import io.github.kotlinmania.rustlang.hashbrown.raw.Bucket
 import io.github.kotlinmania.rustlang.hashbrown.raw.RawDrain
@@ -1560,7 +1560,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
  * Ensures that a single closure type across uses of this which, in turn prevents multiple
  * instances of any functions like `RawTable.reserve` from being generated
  */
-public fun <Q, V, S> makeHasher(hashBuilder: S): (Pair<Q, V>) -> ULong where S : BuildHasher = { value -> makeHash<Q, S>(hashBuilder, value.first) }
+public fun <Hasher, Q, V, S> makeHasher(hashBuilder: S): (Pair<Q, V>) -> ULong where S : BuildHasher<Hasher> = { value -> makeHash<Q, S>(hashBuilder, value.first) }
 
 /**
  * Ensures that a single closure type across uses of this which, in turn prevents multiple
@@ -1574,7 +1574,7 @@ public fun <Q, K, V> equivalentKey(k: Q): (Pair<K, V>) -> Boolean where Q : Equi
  */
 public fun <Q, K> equivalent(k: Q): (K) -> Boolean where Q : Equivalent<K> = { x -> k.equivalent(x) }
 
-public fun <Q, S> makeHash(hashBuilder: S, value: Q): ULong where S : BuildHasher = hashBuilder.hashOne(value)
+public fun <Hasher, Q, S> makeHash(hashBuilder: S, value: Q): ULong where S : BuildHasher<Hasher> = hashBuilder.hashOne(value)
 
 /**
  * Creates an empty `HashMap`.
@@ -1787,7 +1787,7 @@ public fun <K, V, S> HashMap.Companion.withHasher(hashBuilder: S): HashMap<K, V,
  */
 public fun <K, V, S> HashMap.Companion.withCapacityAndHasher(capacity: Int, hashBuilder: S): HashMap<K, V, S, Global> = HashMap(hashBuilder = hashBuilder, table = RawTable.withCapacity(capacity))
 
-public fun <K, V, S, A> HashMap<K, V, S, A>.eq(other: HashMap<K, V, S, A>): Boolean where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A> HashMap<K, V, S, A>.eq(other: HashMap<K, V, S, A>): Boolean where S : BuildHasher<Hasher>, A : Allocator {
     if (this.len() != other.len()) {
         return false
     }
@@ -1811,7 +1811,7 @@ public fun <K, V, S, A> HashMap<K, V, S, A>.eq(other: HashMap<K, V, S, A>): Bool
  * check(map["b"] == "Two")
  * ```
  */
-public fun <K, Q, V, S, A> HashMap<K, V, S, A>.index(key: Q): V where Q : Equivalent<K>, S : BuildHasher, A : Allocator = (this.get(key) ?: error("no entry found for key"))
+public fun <Hasher, K, Q, V, S, A> HashMap<K, V, S, A>.index(key: Q): V where Q : Equivalent<K>, S : BuildHasher<Hasher>, A : Allocator = (this.get(key) ?: error("no entry found for key"))
 
 // The default hasher is used to match the std implementation signature
 
@@ -2651,7 +2651,7 @@ public sealed class Entry<K, V, S, A> {
      * check(entry.key() == "horseyland")
      * ```
      */
-    public open fun insert(value: V): OccupiedEntry<K, V, S, A> =
+    public open fun <Hasher> insert(value: V): OccupiedEntry<K, V, S, A> =
         when (this) {
             is Entry.Occupied<*, *, *, *> -> {
                 val (entry) = this as Entry.Occupied<K, V, S, A>
@@ -2682,7 +2682,7 @@ public sealed class Entry<K, V, S, A> {
      * check(map["poneyland"] == 6)
      * ```
      */
-    public open fun orInsert(default: V): V =
+    public open fun <Hasher> orInsert(default: V): V =
         when (this) {
             is Entry.Occupied<*, *, *, *> -> {
                 val (entry) = this as Entry.Occupied<K, V, S, A>
@@ -2714,7 +2714,7 @@ public sealed class Entry<K, V, S, A> {
      * check(entry1.get() == 3)
      * ```
      */
-    public open fun orInsertEntry(default: V): OccupiedEntry<K, V, S, A> =
+    public open fun <Hasher> orInsertEntry(default: V): OccupiedEntry<K, V, S, A> =
         when (this) {
             is Entry.Occupied<*, *, *, *> -> {
                 val (entry) = this as Entry.Occupied<K, V, S, A>
@@ -2744,7 +2744,7 @@ public sealed class Entry<K, V, S, A> {
      * check(map["poneyland"] == 6)
      * ```
      */
-    public open fun orInsertWith(default: () -> V): V =
+    public open fun <Hasher> orInsertWith(default: () -> V): V =
         when (this) {
             is Entry.Occupied<*, *, *, *> -> {
                 val (entry) = this as Entry.Occupied<K, V, S, A>
@@ -2778,7 +2778,7 @@ public sealed class Entry<K, V, S, A> {
      * check(map["poneyland"] == 18)
      * ```
      */
-    public open fun orInsertWithKey(default: (K) -> V): V =
+    public open fun <Hasher> orInsertWithKey(default: (K) -> V): V =
         when (this) {
             is Entry.Occupied<*, *, *, *> -> {
                 val (entry) = this as Entry.Occupied<K, V, S, A>
@@ -2940,7 +2940,7 @@ public sealed class Entry<K, V, S, A> {
      * check(map.entry("horseland").orDefault() == 3)
      * ```
      */
-    public open fun orDefault(defaultVFn: () -> V): V =
+    public open fun <Hasher> orDefault(defaultVFn: () -> V): V =
         when (this) {
             is Entry.Occupied<*, *, *, *> -> {
                 val (entry) = this as Entry.Occupied<K, V, S, A>
@@ -3501,7 +3501,7 @@ public open class VacantEntry<K, V, S, A : Allocator> internal constructor(
      * check(map["poneyland"] == 37)
      * ```
      */
-    public open fun insert(value: V): V {
+    public open fun <Hasher> insert(value: V): V {
         val table = this.table.table
         val entry = table.insertEntry(this.hash, Pair(this.key, value), makeHasher<V, S>(this.table.hashBuilder))
         return entry.second
@@ -3528,7 +3528,7 @@ public open class VacantEntry<K, V, S, A : Allocator> internal constructor(
      * }
      * ```
      */
-    public open fun insertEntry(value: V): OccupiedEntry<K, V, S, A> {
+    public open fun <Hasher> insertEntry(value: V): OccupiedEntry<K, V, S, A> {
         val elem = this.table.table.insert(this.hash, Pair(this.key, value), makeHasher<V, S>(this.table.hashBuilder))
         return OccupiedEntry(hash = this.hash, elem = elem, table = this.table)
     }
@@ -3694,7 +3694,7 @@ public sealed class EntryRef<K, Q, V, S, A> {
      * check(entry.key() == "horseyland")
      * ```
      */
-    public open fun insert(value: V): OccupiedEntry<K, V, S, A> =
+    public open fun <Hasher> insert(value: V): OccupiedEntry<K, V, S, A> =
         when (this) {
             is EntryRef.Occupied<*, *, *, *, *> -> {
                 val (entry) = this as EntryRef.Occupied<K, Q, V, S, A>
@@ -3725,7 +3725,7 @@ public sealed class EntryRef<K, Q, V, S, A> {
      * check(map["poneyland"] == 6)
      * ```
      */
-    public open fun orInsert(default: V): V =
+    public open fun <Hasher> orInsert(default: V): V =
         when (this) {
             is EntryRef.Occupied<*, *, *, *, *> -> {
                 val (entry) = this as EntryRef.Occupied<K, Q, V, S, A>
@@ -3755,7 +3755,7 @@ public sealed class EntryRef<K, Q, V, S, A> {
      * check(map["poneyland"] == 6)
      * ```
      */
-    public open fun orInsertWith(default: () -> V): V =
+    public open fun <Hasher> orInsertWith(default: () -> V): V =
         when (this) {
             is EntryRef.Occupied<*, *, *, *, *> -> {
                 val (entry) = this as EntryRef.Occupied<K, Q, V, S, A>
@@ -3786,7 +3786,7 @@ public sealed class EntryRef<K, Q, V, S, A> {
      * check(map["poneyland"] == 18)
      * ```
      */
-    public open fun orInsertWithKey(default: (Q) -> V): V =
+    public open fun <Hasher> orInsertWithKey(default: (Q) -> V): V =
         when (this) {
             is EntryRef.Occupied<*, *, *, *, *> -> {
                 val (entry) = this as EntryRef.Occupied<K, Q, V, S, A>
@@ -3893,7 +3893,7 @@ public sealed class EntryRef<K, Q, V, S, A> {
      * check(map.entryRef("horseland").orDefault() == 3)
      * ```
      */
-    public open fun orDefault(defaultVFn: () -> V): V =
+    public open fun <Hasher> orDefault(defaultVFn: () -> V): V =
         when (this) {
             is EntryRef.Occupied<*, *, *, *, *> -> {
                 val (entry) = this as EntryRef.Occupied<K, Q, V, S, A>
@@ -3926,7 +3926,7 @@ public sealed class EntryRef<K, Q, V, S, A> {
      * check(entry1.get() == 3)
      * ```
      */
-    public open fun orDefaultEntry(defaultVFn: () -> V): OccupiedEntry<K, V, S, A> =
+    public open fun <Hasher> orDefaultEntry(defaultVFn: () -> V): OccupiedEntry<K, V, S, A> =
         when (this) {
             is EntryRef.Occupied<*, *, *, *, *> -> {
                 val (entry) = this as EntryRef.Occupied<K, Q, V, S, A>
@@ -4031,7 +4031,7 @@ public open class VacantEntryRef<K, Q, V, S, A : Allocator> internal constructor
      * check(map["poneyland"] == 37)
      * ```
      */
-    public open fun insert(value: V): V {
+    public open fun <Hasher> insert(value: V): V {
         val table = this.table.table
         val entry = table.insertEntry(this.hash, Pair(this.key.toOwned(), value), makeHasher<V, S>(this.table.hashBuilder))
         return entry.second
@@ -4074,7 +4074,7 @@ public open class VacantEntryRef<K, Q, V, S, A : Allocator> internal constructor
      * check(v == 'c')
      * ```
      */
-    public open fun insertWithKey(key: K, value: V): V = this.insertEntryWithKey(key, value).intoMut()
+    public open fun <Hasher> insertWithKey(key: K, value: V): V = this.insertEntryWithKey(key, value).intoMut()
 
     /**
      * Sets the key and value of the entry and returns a mutable reference to
@@ -4118,7 +4118,7 @@ public open class VacantEntryRef<K, Q, V, S, A : Allocator> internal constructor
      * check(v == 'c')
      * ```
      */
-    public open fun insertWithKeyUnchecked(key: K, value: V): V {
+    public open fun <Hasher> insertWithKeyUnchecked(key: K, value: V): V {
         // SAFETY: Guaranteed by caller.
         return this.insertEntryWithKeyUnchecked(key, value).intoMut()
     }
@@ -4144,7 +4144,7 @@ public open class VacantEntryRef<K, Q, V, S, A : Allocator> internal constructor
      * }
      * ```
      */
-    public open fun insertEntry(value: V): OccupiedEntry<K, V, S, A> {
+    public open fun <Hasher> insertEntry(value: V): OccupiedEntry<K, V, S, A> {
         val elem = this.table.table.insert(this.hash, Pair(this.key.toOwned(), value), makeHasher<V, S>(this.table.hashBuilder))
         return OccupiedEntry(hash = this.hash, elem = elem, table = this.table)
     }
@@ -4185,7 +4185,7 @@ public open class VacantEntryRef<K, Q, V, S, A : Allocator> internal constructor
      * check(r2.get() == 'c')
      * ```
      */
-    public open fun insertEntryWithKey(key: K, value: V): OccupiedEntry<K, V, S, A> {
+    public open fun <Hasher> insertEntryWithKey(key: K, value: V): OccupiedEntry<K, V, S, A> {
         check((this.key).equivalent(key)) { "key used for Entry creation is not equivalent to the one used for insertion" }
         // SAFETY: We checked equivalence first.
         return this.insertEntryWithKeyUnchecked(key, value)
@@ -4233,7 +4233,7 @@ public open class VacantEntryRef<K, Q, V, S, A : Allocator> internal constructor
      * check(r2.get() == 'c')
      * ```
      */
-    public open fun insertEntryWithKeyUnchecked(key: K, value: V): OccupiedEntry<K, V, S, A> {
+    public open fun <Hasher> insertEntryWithKeyUnchecked(key: K, value: V): OccupiedEntry<K, V, S, A> {
         val elem = this.table.table.insert(this.hash, Pair(key, value), makeHasher<V, S>(this.table.hashBuilder))
         return OccupiedEntry(hash = this.hash, elem = elem, table = this.table)
     }
@@ -4317,7 +4317,7 @@ public open class OccupiedError<K, V, S, A : Allocator> internal constructor(
     }
 }
 
-public fun <K, V, S, A, T : Iterable<Pair<K, V>>> fromIteratorFromIterHashMapKVSA(iter: T, defaultSFn: () -> S, defaultAFn: () -> A): HashMap<K, V, S, A> where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A, T : Iterable<Pair<K, V>>> fromIteratorFromIterHashMapKVSA(iter: T, defaultSFn: () -> S, defaultAFn: () -> A): HashMap<K, V, S, A> where S : BuildHasher<Hasher>, A : Allocator {
     val iter1 = iter.iterator()
     val map = HashMap.withCapacityAndHasherIn(iter1.sizeHint().first, defaultSFn(), defaultAFn())
     iter1.forEach({ (k, v) ->
@@ -4362,7 +4362,7 @@ public fun <K, V, S, A, T : Iterable<Pair<K, V>>> fromIteratorFromIterHashMapKVS
  * check(vec == listOf(Pair(1, 1), Pair(2, 2), Pair(3, 3), Pair(4, 4), Pair(5, 5), Pair(6, 6)))
  * ```
  */
-public fun <K, V, S, A, T : Iterable<Pair<K, V>>> HashMap<K, V, S, A>.extend(iter: T) where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A, T : Iterable<Pair<K, V>>> HashMap<K, V, S, A>.extend(iter: T) where S : BuildHasher<Hasher>, A : Allocator {
     // Keys may be already present or show multiple times in the iterator.
     // Reserve the entire hint lower bound if the map is empty.
     // Otherwise reserve half the hint (rounded up), so the map
@@ -4380,12 +4380,12 @@ public fun <K, V, S, A, T : Iterable<Pair<K, V>>> HashMap<K, V, S, A>.extend(ite
     })
 }
 
-public fun <K, V, S, A> HashMap<K, V, S, A>.extendOne(tupleArg0: Pair<K, V>) where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A> HashMap<K, V, S, A>.extendOne(tupleArg0: Pair<K, V>) where S : BuildHasher<Hasher>, A : Allocator {
     val (k, v) = tupleArg0
     this.put(k, v)
 }
 
-public fun <K, V, S, A> HashMap<K, V, S, A>.extendReserve(additional: Int) where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A> HashMap<K, V, S, A>.extendReserve(additional: Int) where S : BuildHasher<Hasher>, A : Allocator {
     // Keys may be already present or show multiple times in the iterator.
     // Reserve the entire hint lower bound if the map is empty.
     // Otherwise reserve half the hint (rounded up), so the map
@@ -4436,16 +4436,16 @@ public fun <K, V, S, A> HashMap<K, V, S, A>.extendReserve(additional: Int) where
  * check(vec == listOf(Pair(1, 1), Pair(2, 2), Pair(3, 3), Pair(4, 4), Pair(5, 5), Pair(6, 6)))
  * ```
  */
-public fun <K, V, S, A, T : Iterable<Pair<K, V>>> HashMap<K, V, S, A>.extendKV(iter: T) where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A, T : Iterable<Pair<K, V>>> HashMap<K, V, S, A>.extendKV(iter: T) where S : BuildHasher<Hasher>, A : Allocator {
     this.extend(iter.iterator().map({ (key, value) -> Pair(key, value) }))
 }
 
-public fun <K, V, S, A> HashMap<K, V, S, A>.extendOneKV(tupleArg0: Pair<K, V>) where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A> HashMap<K, V, S, A>.extendOneKV(tupleArg0: Pair<K, V>) where S : BuildHasher<Hasher>, A : Allocator {
     val (k, v) = tupleArg0
     this.put(k, v)
 }
 
-public fun <K, V, S, A> HashMap<K, V, S, A>.extendReserveKV(additional: Int) where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A> HashMap<K, V, S, A>.extendReserveKV(additional: Int) where S : BuildHasher<Hasher>, A : Allocator {
     Extend.extendReserve(this, additional)
 }
 

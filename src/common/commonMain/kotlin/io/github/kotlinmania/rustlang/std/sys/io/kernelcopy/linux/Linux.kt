@@ -90,21 +90,21 @@ import io.github.kotlinmania.rustlang.libc.sendfile as sendfile64
 //   progress, they can hit a performance cliff.
 // * complexity
 
-public fun <R : Read, W : Write> specCopyCopyFile(read: R, write: W): Result<CopyState> = (Copier(read = read, write = write)).copy()
+public fun <R : Read<R>, W : Write<W>> specCopyCopyFile(read: R, write: W): Result<CopyState> = (Copier(read = read, write = write)).copy()
 
-public fun <R : Read, W : Write> specCopyCopyTcpStream(read: R, write: W): Result<CopyState> = (Copier(read = read, write = write)).copy()
+public fun <R : Read<R>, W : Write<W>> specCopyCopyTcpStream(read: R, write: W): Result<CopyState> = (Copier(read = read, write = write)).copy()
 
-public fun <R : Read, W : Write> specCopyCopyUnixStream(read: R, write: W): Result<CopyState> = (Copier(read = read, write = write)).copy()
+public fun <R : Read<R>, W : Write<W>> specCopyCopyUnixStream(read: R, write: W): Result<CopyState> = (Copier(read = read, write = write)).copy()
 
-public fun <R : Read, W : Write> specCopyCopyPipeReader(read: R, write: W): Result<CopyState> = (Copier(read = read, write = write)).copy()
+public fun <R : Read<R>, W : Write<W>> specCopyCopyPipeReader(read: R, write: W): Result<CopyState> = (Copier(read = read, write = write)).copy()
 
-public fun <R : Read, W : Write> specCopyCopyChildStdout(read: R, write: W): Result<CopyState> = (Copier(read = read, write = write)).copy()
+public fun <R : Read<R>, W : Write<W>> specCopyCopyChildStdout(read: R, write: W): Result<CopyState> = (Copier(read = read, write = write)).copy()
 
-public fun <R : Read, W : Write> specCopyCopyChildStderr(read: R, write: W): Result<CopyState> = (Copier(read = read, write = write)).copy()
+public fun <R : Read<R>, W : Write<W>> specCopyCopyChildStderr(read: R, write: W): Result<CopyState> = (Copier(read = read, write = write)).copy()
 
-public fun <R : Read, W : Write> specCopyCopyStdinLock(read: R, write: W): Result<CopyState> = (Copier(read = read, write = write)).copy()
+public fun <R : Read<R>, W : Write<W>> specCopyCopyStdinLock(read: R, write: W): Result<CopyState> = (Copier(read = read, write = write)).copy()
 
-public fun <R : Read, W : Write> specCopyCopyCachedFileMetadata(read: R, write: W): Result<CopyState> = (Copier(read = read, write = write)).copy()
+public fun <R : Read<R>, W : Write<W>> specCopyCopyCachedFileMetadata(read: R, write: W): Result<CopyState> = (Copier(read = read, write = write)).copy()
 
 /**
  * This type represents either the inferred `FileType` of a `RawFd` based on the source
@@ -230,7 +230,7 @@ public open class CopyParams(
     public var field1: RawFd?,
 )
 
-public open class Copier<R : Read, W : Write>(
+public open class Copier<R : Read<R>, W : Write<W>>(
     public var read: R,
     public var write: W,
 ) : SpecCopy {
@@ -327,7 +327,7 @@ public interface SpecCopy {
     public fun copy(): Result<CopyState>
 }
 
-public interface CopyRead : Read {
+public interface CopyRead<T> : Read<T> {
     /**
      * Implementations that contain buffers (i.e. `BufReader`) must transfer data from their internal
      * buffers into `writer` until either the buffers are emptied or `limit` bytes have been
@@ -337,7 +337,7 @@ public interface CopyRead : Read {
      * This is necessary to directly bypass the wrapper types while preserving the data order
      * when operating directly on the underlying file descriptors.
      */
-    public fun <W : Write> drainTo(writer: W, limit: ULong): Result<ULong> = RustResult.Ok(0)
+    public fun <W : Write<W>> drainTo(writer: W, limit: ULong): Result<ULong> = RustResult.Ok(0)
 
     /**
      * Updates `Take` wrappers to remove the number of bytes copied.
@@ -358,7 +358,7 @@ public interface CopyRead : Read {
     public fun properties(): CopyParams
 }
 
-public interface CopyWrite : Write {
+public interface CopyWrite<T> : Write<T> {
     /**
      * Extracts the file descriptor and hints/metadata, delegating through wrappers if necessary.
      */
@@ -387,7 +387,7 @@ public fun ChildStdout.properties(): CopyParams = CopyParams(FdMeta.Pipe, this.a
 
 public fun ChildStderr.properties(): CopyParams = CopyParams(FdMeta.Pipe, this.asRawFd())
 
-public fun <W : Write> StdinLock.drainTo(writer: W, outerLimit: ULong): Result<ULong> {
+public fun <W : Write<W>> StdinLock.drainTo(writer: W, outerLimit: ULong): Result<ULong> {
     val bufReader = this.asMutBuf()
     val buf = bufReader.buffer()
     val buf1 = buf[0 until minOf(buf.len(), outerLimit.tryInto().unwrapOr(Int.MAX_VALUE))]
@@ -403,7 +403,7 @@ public fun StdoutLock.properties(): CopyParams = CopyParams(fdToMeta(this), this
 
 public fun StderrLock.properties(): CopyParams = CopyParams(fdToMeta(this), this.asRawFd())
 
-public fun <T : CopyRead, W : Write> Take<T>.drainTo(writer: W, outerLimit: ULong): Result<ULong> {
+public fun <T : CopyRead<T>, W : Write<W>> Take<T>.drainTo(writer: W, outerLimit: ULong): Result<ULong> {
     val localLimit = this.limit()
     val combinedLimit = minOf(outerLimit, localLimit)
     val bytesDrained = when (val tryResult = this.getMut().drainTo(writer, combinedLimit)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
@@ -412,16 +412,16 @@ public fun <T : CopyRead, W : Write> Take<T>.drainTo(writer: W, outerLimit: ULon
     return RustResult.Ok(bytesDrained)
 }
 
-public fun <T : CopyRead> Take<T>.taken(bytes: ULong) {
+public fun <T : CopyRead<T>> Take<T>.taken(bytes: ULong) {
     this.setLimit(this.limit() - bytes)
     this.getMut().taken(bytes)
 }
 
-public fun <T : CopyRead> Take<T>.minLimit(): ULong = minOf(Take.limit(this), this.getRef().minLimit())
+public fun <T : CopyRead<T>> Take<T>.minLimit(): ULong = minOf(Take.limit(this), this.getRef().minLimit())
 
-public fun <T : CopyRead> Take<T>.properties(): CopyParams = this.getRef().properties()
+public fun <T : CopyRead<T>> Take<T>.properties(): CopyParams = this.getRef().properties()
 
-public fun <T : CopyRead, W : Write> BufReader<T>.drainTo(writer: W, outerLimit: ULong): Result<ULong> {
+public fun <T : CopyRead<T>, W : Write<W>> BufReader<T>.drainTo(writer: W, outerLimit: ULong): Result<ULong> {
     val buf = this.buffer()
     val buf1 = buf[0 until minOf(buf.len(), outerLimit.tryInto().unwrapOr(Int.MAX_VALUE))]
     val bytes = buf1.len()
@@ -433,15 +433,15 @@ public fun <T : CopyRead, W : Write> BufReader<T>.drainTo(writer: W, outerLimit:
     return RustResult.Ok(bytes.toULong() + innerBytes)
 }
 
-public fun <T : CopyRead> BufReader<T>.taken(bytes: ULong) {
+public fun <T : CopyRead<T>> BufReader<T>.taken(bytes: ULong) {
     this.getMut().taken(bytes)
 }
 
-public fun <T : CopyRead> BufReader<T>.minLimit(): ULong = this.getRef().minLimit()
+public fun <T : CopyRead<T>> BufReader<T>.minLimit(): ULong = this.getRef().minLimit()
 
-public fun <T : CopyRead> BufReader<T>.properties(): CopyParams = this.getRef().properties()
+public fun <T : CopyRead<T>> BufReader<T>.properties(): CopyParams = this.getRef().properties()
 
-public fun <T : CopyWrite> BufWriter<T>.properties(): CopyParams = this.getRef().properties()
+public fun <T : CopyWrite<T>> BufWriter<T>.properties(): CopyParams = this.getRef().properties()
 
 public fun CachedFileMetadata.properties(): CopyParams = CopyParams(FdMeta.Metadata(this.field1.clone()), this.value.asRawFd())
 
@@ -464,7 +464,7 @@ public sealed class CopyResult {
     public data class Error(public var field0: Error, public var field1: ULong) : CopyResult()
     public data class Fallback(public var value: ULong) : CopyResult()
 
-    public open fun updateTake(reader: CopyRead) {
+    public open fun updateTake(reader: CopyRead<*>) {
         when (this) {
             is CopyResult.Fallback -> {
                 val (bytes) = this as CopyResult.Fallback

@@ -6,6 +6,7 @@ package io.github.kotlinmania.rustlang.std.os.darwin.fs.dirs
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -20,7 +21,6 @@ import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SysdirSearchPathEnumer
 import io.github.kotlinmania.rustlang.std.env.homeDir
 import io.github.kotlinmania.rustlang.std.fs.dirs.HomeDirs
 import io.github.kotlinmania.rustlang.std.fs.dirs.MediaDirs
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 
@@ -236,7 +236,7 @@ public interface MediaDirsExt<T> {
     }
 }
 
-public fun userHome(): Result<PathBuf, Error> = (homeDir().filter({ p -> p.isAbsolute() })?.let { Result.Ok<Option, Error>(it) } ?: Result.Err<Option, Error>(constError(ErrorKind.InvalidData, "home path not absolute")))
+public fun userHome(): Result<PathBuf, Error> = (homeDir().filter({ p -> p.isAbsolute() })?.let { Result.Ok<Option, Error>(it) } ?: Result.Err<Option, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "home path not absolute"))))
 
 public fun homeDirsExtSysdirHomeDirs(): Result<HomeDirs, Error> {
     val dirs = HomeDirs.empty()
@@ -279,7 +279,7 @@ public fun getUserDir(home: Path, kind: SysdirSearchPathDirectoryT): Result<Path
     val path1 = when (val tryResult = path) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<PathBuf?, Error>(tryResult.errValue()) }
     if (iter.next() != null) {
         // more than one path returned (shouldn't happen for SYSDIR_DOMAIN_MASK_USER)
-        return Result.Err<PathBuf?, Error>(constError(ErrorKind.InvalidData, "multiple paths returned for standard user directory"))
+        return Result.Err<PathBuf?, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "multiple paths returned for standard user directory")))
     }
     return Result.Ok<PathBuf?, Error>(path1)
 }
@@ -314,18 +314,18 @@ public open class Iter(
             return null
         }
         val path = when (val tryResult = CStr.fromBytesUntilNul(buf)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> // should be impossible given home-relative paths, but be defensive
-return Result.Err(constError(ErrorKind.InvalidData, "standard user directory path too long")) }
+return Result.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "standard user directory path too long"))) }
         val path1 = when (val tryResult1 = path.toStr()) { is Result.Ok<*, *> -> tryResult1.okValue(); is Result.Err<*, *> -> // should be impossible on a working system, but be defensive
-return Result.Err(constError(ErrorKind.InvalidData, "standard user directory path not valid UTF-8")) }
+return Result.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "standard user directory path not valid UTF-8"))) }
         // expand `~` shorthand
         return when {
             path1 == "~" -> Result.Ok(this.home.into())
             path1.startsWith("~/") -> Result.Ok(this.home.join(path1[2 until path1.size]))
-            path1.startsWith("~") -> Result.Err(constError(ErrorKind.InvalidData, "standard user directory relative to different user"))
+            path1.startsWith("~") -> Result.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "standard user directory relative to different user")))
             else -> {
                 val path2 = PathBuf.from(path1)
                 if (path2.isRelative()) {
-                    Result.Err(constError(ErrorKind.InvalidData, "standard user directory path not absolute"))
+                    Result.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "standard user directory path not absolute")))
                 } else {
                     Result.Ok(path2)
                 }

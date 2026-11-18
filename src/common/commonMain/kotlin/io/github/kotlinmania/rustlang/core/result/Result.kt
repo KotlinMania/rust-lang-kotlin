@@ -131,7 +131,7 @@ import io.github.kotlinmania.rustlang.core.ops.trytrait.Yeet
 // ```kotlin
 // import std.io
 //
-// interface Write {
+// interface Write<T> {
 //     public fun writeAll(bytes: List<UByte>): Result<Unit>
 // }
 // ```

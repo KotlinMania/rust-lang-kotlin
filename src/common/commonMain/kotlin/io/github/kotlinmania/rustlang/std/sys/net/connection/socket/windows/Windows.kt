@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedBuf
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
@@ -32,7 +33,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.net.Shutdown
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.os.raw.CUint
@@ -323,7 +323,7 @@ public fun getaddrinfo(node: ConstPtr, service: ConstPtr, hints: ConstPtr, res: 
 
 public open class Socket(
     public var value: OwnedSocket,
-) : Read, AsInner<OwnedSocket>, FromInner<OwnedSocket, Socket>, IntoInner<OwnedSocket>, AsSocket, AsRawSocket, IntoRawSocket, FromRawSocket<Socket> {
+) : Read<Socket>, AsInner<OwnedSocket>, FromInner<OwnedSocket, Socket>, IntoInner<OwnedSocket>, AsSocket, AsRawSocket, IntoRawSocket, FromRawSocket<Socket> {
     public var field0: OwnedSocket
         get() = value
         set(v) {
@@ -357,7 +357,7 @@ public open class Socket(
             when (val tryResult = cvt(result)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
         }
         return when (count) {
-            0 -> Result.Err<Unit, Error>(constError(ErrorKind.TimedOut, "connection timed out"))
+            0 -> Result.Err<Unit, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.TimedOut, message = "connection timed out")))
             else -> {
                 if (writefds.fdCount != 1) {
                     when (val matchVal = when (val tryResult = this.takeError()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }) {
@@ -455,12 +455,12 @@ public open class Socket(
             SOCKET_ERROR -> {
                 val error = wSAGetLastError()
                 if (error == WSAESHUTDOWN) {
-                    Result.Ok<Pair<Int, SocketAddr>, Error>(Pair(0, when (val tryResult = socketAddrFromC(storage, addrlen)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Int, SocketAddr>, Error>(tryResult.errValue()) }))
+                    Result.Ok<Pair<Int, SocketAddr>, Error>(Pair(0, when (val tryResult = socketAddrFromC(storage, addrlen)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }))
                 } else {
                     Result.Err<Pair<Int, SocketAddr>, Error>(Error.fromRawOsError(error))
                 }
             }
-            else -> Result.Ok<Pair<Int, SocketAddr>, Error>(Pair(result, when (val tryResult = socketAddrFromC(storage, addrlen)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Int, SocketAddr>, Error>(tryResult.errValue()) }))
+            else -> Result.Ok<Pair<Int, SocketAddr>, Error>(Pair(result, when (val tryResult = socketAddrFromC(storage, addrlen)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }))
         }
     }
 

@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.core.cell
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -12,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.absDiff
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
 import io.github.kotlinmania.rustlang.core.panic.location.Location
@@ -1201,7 +1201,7 @@ public open class BorrowError(
     public var location: Location,
 ) {
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
-        val res = f.writeFmt("RefCell already mutably borrowed; a previous borrow was at ${this.location}")
+        val res = f.append("RefCell already mutably borrowed; a previous borrow was at ${this.location}")
         return res
     }
 }
@@ -1213,7 +1213,7 @@ public open class BorrowMutError(
     public var location: Location,
 ) {
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
-        val res = f.writeFmt("RefCell already borrowed; a previous borrow was at ${this.location}")
+        val res = f.append("RefCell already borrowed; a previous borrow was at ${this.location}")
         return res
     }
 }

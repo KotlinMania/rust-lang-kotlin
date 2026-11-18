@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.os.windows.process
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -20,7 +21,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.OwnedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
@@ -604,7 +604,7 @@ public open class ProcThreadAttributeListBuilder(
         // with a null pointer to retrieve the required size.
         val localStorageL702C8 = AddressableLocal(0, PrimitiveLayouts.I32)
         var requiredSize by localStorageL702C8
-        val attributeCount = when (val tryResult = this.attributes.size.tryInto()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<ProcThreadAttributeList, Error>(constError(ErrorKind.InvalidInput, "maximum number of ProcThreadAttributes exceeded")) }
+        val attributeCount = when (val tryResult = this.attributes.size.tryInto()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<ProcThreadAttributeList, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "maximum number of ProcThreadAttributes exceeded"))) }
         C.InitializeProcThreadAttributeList(MutPtr(0L), attributeCount, 0, RustMutableReference(localStorageL702C8.asMutPtr(), localStorageL702C8.layout))
         var attributeList = mutableListOf(MaybeUninit.uninit(UnresolvedTypeLayout<Result<ProcThreadAttributeList, Error>>()), requiredSize).intoBoxedSlice()
         // Once we've allocated the necessary memory, it's safe to invoke

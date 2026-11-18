@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.char.methods.isAscii
 import io.github.kotlinmania.rustlang.core.char.methods.isAsciiAlphanumeric
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU16Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -16,7 +17,6 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.Iter
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
@@ -343,7 +343,7 @@ public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<U
 }
 
 public fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes: Boolean): Result<List<UShort>, Error> {
-    val INVALID_ARGUMENT_ERROR: Error = constError(ErrorKind.InvalidInput, "batch file arguments are invalid")
+    val INVALID_ARGUMENT_ERROR: Error = Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "batch file arguments are invalid"))
     // Windows file names cannot contain a `"` character or end with `\\`.
     // If the script name does then return an error.
     // Also we disallow `^` and `%` to prevent escaping or environment variable substitution.
@@ -357,7 +357,7 @@ public fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes
     // Push the script name surrounded by its quote pair.
     cmd.add(34u.toUShort())
     if (script.any({ c -> INVALID.contains(c) }) || script.last() == (92u.toUShort())) {
-        return Result.Err<List<UShort>, Error>(constError(ErrorKind.InvalidInput, "`Command` rejects batch scripts that contain contain `\"`, `^` or `%` or end with `\\`"))
+        return Result.Err<List<UShort>, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "`Command` rejects batch scripts that contain contain `\"`, `^` or `%` or end with `\\`")))
     }
     cmd.addAll((script.stripSuffix(listOf(0)) ?: script))
     cmd.add(34u.toUShort())

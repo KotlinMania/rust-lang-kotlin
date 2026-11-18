@@ -17,7 +17,7 @@ import io.github.kotlinmania.rustlang.libc.wasi.STDOUT_FILENO
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
 import io.github.kotlinmania.rustlang.std.sys.io.DEFAULT_BUF_SIZE
 
-public open class Stdin : Read {
+public open class Stdin : Read<Stdin> {
     public open fun read(buf: MutableList<UByte>): Result<Int, Error> = FileDesc.fromRawFd(STDIN_FILENO).read(buf)
 
     public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = FileDesc.fromRawFd(STDIN_FILENO).readBuf(buf)
@@ -45,7 +45,7 @@ public open class Stdin : Read {
     }
 }
 
-public open class Stdout : Write {
+public open class Stdout : Write<Stdout> {
     public open fun write(buf: List<UByte>): Result<Int, Error> = FileDesc.fromRawFd(STDOUT_FILENO).write(buf)
 
     public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = FileDesc.fromRawFd(STDOUT_FILENO).writeVectored(bufs)
@@ -73,7 +73,7 @@ public open class Stdout : Write {
     }
 }
 
-public open class Stderr : Write {
+public open class Stderr : Write<Stderr> {
     public open fun write(buf: List<UByte>): Result<Int, Error> = FileDesc.fromRawFd(STDERR_FILENO).write(buf)
 
     public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = FileDesc.fromRawFd(STDERR_FILENO).writeVectored(bufs)
@@ -105,4 +105,4 @@ public fun isEbadf(err: Error): Boolean = (err.rawOsError() == EBADF.toInt()).to
 
 public val STDIN_BUF_SIZE: Int = DEFAULT_BUF_SIZE
 
-public fun panicOutput(): Write? = Stderr.new()
+public fun panicOutput(): Write<*>? = Stderr.new()

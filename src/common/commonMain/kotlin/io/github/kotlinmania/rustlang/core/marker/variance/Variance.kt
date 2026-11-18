@@ -47,7 +47,7 @@ public open class PhantomCovariantLifetime internal constructor(
 
     public open fun clone(): PhantomCovariantLifetime = PhantomCovariantLifetime(value, fieldLayout)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt(("PhantomCovariantLifetime").toString())
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(("PhantomCovariantLifetime").toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public operator fun invoke(value: PhantomCovariant<Unit>, fieldLayout: TypeLayout<PhantomCovariant<Unit>> = UnresolvedTypeLayout()): PhantomCovariantLifetime = PhantomCovariantLifetime(value, fieldLayout)
@@ -99,7 +99,7 @@ public open class PhantomContravariantLifetime internal constructor(
 
     public open fun clone(): PhantomContravariantLifetime = PhantomContravariantLifetime(value, fieldLayout)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt(("PhantomContravariantLifetime").toString())
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(("PhantomContravariantLifetime").toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public operator fun invoke(value: PhantomContravariant<Unit>, fieldLayout: TypeLayout<PhantomContravariant<Unit>> = UnresolvedTypeLayout()): PhantomContravariantLifetime = PhantomContravariantLifetime(value, fieldLayout)
@@ -149,7 +149,7 @@ public open class PhantomInvariantLifetime internal constructor(
 
     public open fun clone(): PhantomInvariantLifetime = PhantomInvariantLifetime(value, fieldLayout)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt(("PhantomInvariantLifetime").toString())
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(("PhantomInvariantLifetime").toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public operator fun invoke(value: PhantomInvariant<Unit>, fieldLayout: TypeLayout<PhantomInvariant<Unit>> = UnresolvedTypeLayout()): PhantomInvariantLifetime = PhantomInvariantLifetime(value, fieldLayout)
@@ -200,7 +200,7 @@ public open class PhantomCovariant<T> internal constructor(
 
     public fun pointerLayout(): TypeLayout<PhantomCovariant<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomCovariant<T>(ptr, layout) }, { it.value })
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt(("PhantomCovariant").toString() + "<" + ("PhantomCovariant").toString() + ">")
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(("PhantomCovariant").toString() + "<" + ("PhantomCovariant").toString() + ">"); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun clone(): PhantomCovariant<T> = PhantomCovariant(this.value)
 
@@ -263,7 +263,7 @@ public open class PhantomContravariant<T> internal constructor(
 
     public fun pointerLayout(): TypeLayout<PhantomContravariant<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomContravariant<T>(ptr, layout) }, { it.value })
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt(("PhantomContravariant").toString() + "<" + ("PhantomContravariant").toString() + ">")
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(("PhantomContravariant").toString() + "<" + ("PhantomContravariant").toString() + ">"); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun clone(): PhantomContravariant<T> = PhantomContravariant(this.value)
 
@@ -323,7 +323,7 @@ public open class PhantomInvariant<T> internal constructor(
 
     public fun pointerLayout(): TypeLayout<PhantomInvariant<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomInvariant<T>(ptr, layout) }, { it.value })
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt(("PhantomInvariant").toString() + "<" + ("PhantomInvariant").toString() + ">")
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(("PhantomInvariant").toString() + "<" + ("PhantomInvariant").toString() + ">"); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun clone(): PhantomInvariant<T> = PhantomInvariant(this.value)
 

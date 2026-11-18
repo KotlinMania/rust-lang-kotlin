@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.fs.common
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -13,7 +14,6 @@ import io.github.kotlinmania.rustlang.std.fs.removeDir
 import io.github.kotlinmania.rustlang.std.fs.removeFile
 import io.github.kotlinmania.rustlang.std.fs.rename
 import io.github.kotlinmania.rustlang.std.fs.symlinkMetadata
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
@@ -46,7 +46,7 @@ public class DebugStruct(
     }
 }
 
-public val NOT_FILE_ERROR: Error = constError(ErrorKind.InvalidInput, "the source path is neither a regular file nor a symlink to a regular file")
+public val NOT_FILE_ERROR: Error = Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "the source path is neither a regular file nor a symlink to a regular file"))
 
 public fun copy(from: Path, to: Path): Result<ULong, Error> {
     val reader = when (val tryResult = File.open(from)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<ULong, Error>(tryResult.errValue()) }

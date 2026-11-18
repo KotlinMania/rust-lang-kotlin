@@ -14,7 +14,7 @@ import io.github.kotlinmania.rustlang.std.sync.once.Once
 import io.github.kotlinmania.rustlang.std.sys.backtrace.rustBeginShortBacktrace
 import io.github.kotlinmania.rustlang.std.sys.exit.uniqueThreadExit
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.key.CLEANUP
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.key.keybased.CLEANUP
 import io.github.kotlinmania.rustlang.std.thread.current.currentId
 import io.github.kotlinmania.rustlang.std.thread.current.dropCurrent
 import io.github.kotlinmania.rustlang.std.thread.mainthread.set

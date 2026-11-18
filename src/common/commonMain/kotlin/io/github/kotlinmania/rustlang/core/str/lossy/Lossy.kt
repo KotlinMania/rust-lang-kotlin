@@ -134,7 +134,7 @@ public open class Debug(
             }
             // Broken parts of string as hex escape.
             for (b in chunk.invalid()) {
-                when (val tryResult = f.writeFmt("\\x$b")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+                f.append("\\x$b")
             }
         }
         return run { f.append('"'); Result.Ok<Unit, Unit>(Unit) }

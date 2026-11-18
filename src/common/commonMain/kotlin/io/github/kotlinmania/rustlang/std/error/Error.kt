@@ -385,7 +385,7 @@ public open class Indented<D>(
     public var inner: D,
 )
 
-public fun <T> Indented<T>.writeStr(s: String): Result<Unit, Error> where T : Write {
+public fun <T> Indented<T>.writeStr(s: String): Result<Unit, Error> where T : Write<T> {
     for ((i, line) in s.split('\n').mapIndexed { index, item -> Pair(index, item) }) {
         if (i > 0) {
             this.inner.append('\n')

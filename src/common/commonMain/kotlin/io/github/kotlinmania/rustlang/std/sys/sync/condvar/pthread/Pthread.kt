@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sys.sync.mutex.pthread.Mutex
 import io.github.kotlinmania.rustlang.std.sys.sync.oncebox.OnceBox
 import io.github.kotlinmania.rustlang.std.time.Instant

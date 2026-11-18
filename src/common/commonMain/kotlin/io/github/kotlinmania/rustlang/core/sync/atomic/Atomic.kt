@@ -8,7 +8,6 @@ import io.github.kotlinmania.rustlang.core.default.default
 import io.github.kotlinmania.rustlang.core.hint.spinLoop
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAtomicFence
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAtomicSignalFence
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -22,6 +21,7 @@ import io.github.kotlinmania.rustlang.core.mem.atomicRmwWithLayout
 import io.github.kotlinmania.rustlang.core.mem.atomicStoreWithLayout
 import io.github.kotlinmania.rustlang.core.mem.atomicXchgWithLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr

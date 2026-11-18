@@ -17,10 +17,10 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.AcqRel
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.AcqRel
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Acquire
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Release
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.INIT_ONCE_STATIC_INIT
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FALSE
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.InitOnce

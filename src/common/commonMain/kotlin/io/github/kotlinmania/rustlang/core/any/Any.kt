@@ -7,7 +7,6 @@ import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeId
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdEq
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVtable
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -18,6 +17,7 @@ import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.mem.typeinfo.TraitImpl
 import io.github.kotlinmania.rustlang.core.mem.typeinfo.TypeKind
@@ -619,7 +619,7 @@ public open class TypeId internal constructor(
         return state
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = f.writeFmt("TypeId(${this.asU128()})")
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("TypeId(${this.asU128()})"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<TypeId> =

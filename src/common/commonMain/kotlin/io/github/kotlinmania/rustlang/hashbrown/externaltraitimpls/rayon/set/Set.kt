@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.set
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.num.divCeil
 import io.github.kotlinmania.rustlang.hashbrown.HashSet
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.helpers.collect
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.map.ParKeys
 import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.IntoParallelIterator
@@ -106,7 +106,7 @@ public open class ParDifference<T, S, A : Allocator>(
     public var b: MutableSet<T>,
 )
 
-public fun <T, S, A, C> ParDifference<T, S, A>.driveUnindexed(consumer: C): Result where S : BuildHasher, A : Allocator, C : UnindexedConsumer<T> = this.a.intoParIter().filter({ x -> !this.b.contains(x) }).driveUnindexed(consumer)
+public fun <Hasher, T, S, A, C> ParDifference<T, S, A>.driveUnindexed(consumer: C): Result where S : BuildHasher<Hasher>, A : Allocator, C : UnindexedConsumer<T> = this.a.intoParIter().filter({ x -> !this.b.contains(x) }).driveUnindexed(consumer)
 
 /**
  * Parallel iterator over shared references to elements in the symmetric
@@ -123,7 +123,7 @@ public open class ParSymmetricDifference<T, S, A : Allocator>(
     public var b: MutableSet<T>,
 )
 
-public fun <T, S, A, C> ParSymmetricDifference<T, S, A>.driveUnindexed(consumer: C): Result where S : BuildHasher, A : Allocator, C : UnindexedConsumer<T> = this.a.parDifference(this.b).chain(this.b.parDifference(this.a)).driveUnindexed(consumer)
+public fun <Hasher, T, S, A, C> ParSymmetricDifference<T, S, A>.driveUnindexed(consumer: C): Result where S : BuildHasher<Hasher>, A : Allocator, C : UnindexedConsumer<T> = this.a.parDifference(this.b).chain(this.b.parDifference(this.a)).driveUnindexed(consumer)
 
 /**
  * Parallel iterator over shared references to elements in the intersection of
@@ -139,7 +139,7 @@ public open class ParIntersection<T, S, A : Allocator>(
     public var b: MutableSet<T>,
 )
 
-public fun <T, S, A, C> ParIntersection<T, S, A>.driveUnindexed(consumer: C): Result where S : BuildHasher, A : Allocator, C : UnindexedConsumer<T> = this.a.intoParIter().filter({ x -> this.b.contains(x) }).driveUnindexed(consumer)
+public fun <Hasher, T, S, A, C> ParIntersection<T, S, A>.driveUnindexed(consumer: C): Result where S : BuildHasher<Hasher>, A : Allocator, C : UnindexedConsumer<T> = this.a.intoParIter().filter({ x -> this.b.contains(x) }).driveUnindexed(consumer)
 
 /**
  * Parallel iterator over shared references to elements in the union of sets.
@@ -154,7 +154,7 @@ public open class ParUnion<T, S, A : Allocator>(
     public var b: MutableSet<T>,
 )
 
-public fun <T, S, A, C> ParUnion<T, S, A>.driveUnindexed(consumer: C): Result where S : BuildHasher, A : Allocator, C : UnindexedConsumer<T> {
+public fun <Hasher, T, S, A, C> ParUnion<T, S, A>.driveUnindexed(consumer: C): Result where S : BuildHasher<Hasher>, A : Allocator, C : UnindexedConsumer<T> {
     // We'll iterate one set in full, and only the remaining difference from the other.
     // Use the smaller set for the difference in order to reduce hash lookups.
     val (smaller, larger) =
@@ -170,25 +170,25 @@ public fun <T, S, A, C> ParUnion<T, S, A>.driveUnindexed(consumer: C): Result wh
  * Visits (potentially in parallel) the values representing the union,
  * i.e. all the values in `self` or `other`, without duplicates.
  */
-public fun <T, S, A> MutableSet<T>.parUnion(other: MutableSet<T>): ParUnion<T, S, A> where S : BuildHasher, A : Allocator = ParUnion(a = this, b = other)
+public fun <Hasher, T, S, A> MutableSet<T>.parUnion(other: MutableSet<T>): ParUnion<T, S, A> where S : BuildHasher<Hasher>, A : Allocator = ParUnion(a = this, b = other)
 
 /**
  * Visits (potentially in parallel) the values representing the difference,
  * i.e. the values that are in `self` but not in `other`.
  */
-public fun <T, S, A> MutableSet<T>.parDifference(other: MutableSet<T>): ParDifference<T, S, A> where S : BuildHasher, A : Allocator = ParDifference(a = this, b = other)
+public fun <Hasher, T, S, A> MutableSet<T>.parDifference(other: MutableSet<T>): ParDifference<T, S, A> where S : BuildHasher<Hasher>, A : Allocator = ParDifference(a = this, b = other)
 
 /**
  * Visits (potentially in parallel) the values representing the symmetric
  * difference, i.e. the values that are in `self` or in `other` but not in both.
  */
-public fun <T, S, A> MutableSet<T>.parSymmetricDifference(other: MutableSet<T>): ParSymmetricDifference<T, S, A> where S : BuildHasher, A : Allocator = ParSymmetricDifference(a = this, b = other)
+public fun <Hasher, T, S, A> MutableSet<T>.parSymmetricDifference(other: MutableSet<T>): ParSymmetricDifference<T, S, A> where S : BuildHasher<Hasher>, A : Allocator = ParSymmetricDifference(a = this, b = other)
 
 /**
  * Visits (potentially in parallel) the values representing the
  * intersection, i.e. the values that are both in `self` and `other`.
  */
-public fun <T, S, A> MutableSet<T>.parIntersection(other: MutableSet<T>): ParIntersection<T, S, A> where S : BuildHasher, A : Allocator = ParIntersection(a = this, b = other)
+public fun <Hasher, T, S, A> MutableSet<T>.parIntersection(other: MutableSet<T>): ParIntersection<T, S, A> where S : BuildHasher<Hasher>, A : Allocator = ParIntersection(a = this, b = other)
 
 /**
  * Returns `true` if `self` has no elements in common with `other`.
@@ -196,7 +196,7 @@ public fun <T, S, A> MutableSet<T>.parIntersection(other: MutableSet<T>): ParInt
  *
  * This method runs in a potentially parallel fashion.
  */
-public fun <T, S, A> MutableSet<T>.parIsDisjoint(other: MutableSet<T>): Boolean where S : BuildHasher, A : Allocator = this.intoParIter().all({ x -> !other.contains(x) })
+public fun <Hasher, T, S, A> MutableSet<T>.parIsDisjoint(other: MutableSet<T>): Boolean where S : BuildHasher<Hasher>, A : Allocator = this.intoParIter().all({ x -> !other.contains(x) })
 
 /**
  * Returns `true` if the set is a subset of another,
@@ -204,7 +204,7 @@ public fun <T, S, A> MutableSet<T>.parIsDisjoint(other: MutableSet<T>): Boolean 
  *
  * This method runs in a potentially parallel fashion.
  */
-public fun <T, S, A> MutableSet<T>.parIsSubset(other: MutableSet<T>): Boolean where S : BuildHasher, A : Allocator =
+public fun <Hasher, T, S, A> MutableSet<T>.parIsSubset(other: MutableSet<T>): Boolean where S : BuildHasher<Hasher>, A : Allocator =
     if (this.size <= other.size) {
         this.intoParIter().all({ x -> other.contains(x) })
     } else {
@@ -217,7 +217,7 @@ public fun <T, S, A> MutableSet<T>.parIsSubset(other: MutableSet<T>): Boolean wh
  *
  * This method runs in a potentially parallel fashion.
  */
-public fun <T, S, A> MutableSet<T>.parIsSuperset(other: MutableSet<T>): Boolean where S : BuildHasher, A : Allocator = other.parIsSubset(this)
+public fun <Hasher, T, S, A> MutableSet<T>.parIsSuperset(other: MutableSet<T>): Boolean where S : BuildHasher<Hasher>, A : Allocator = other.parIsSubset(this)
 
 /**
  * Returns `true` if the set is equal to another,
@@ -225,7 +225,7 @@ public fun <T, S, A> MutableSet<T>.parIsSuperset(other: MutableSet<T>): Boolean 
  *
  * This method runs in a potentially parallel fashion.
  */
-public fun <T, S, A> MutableSet<T>.parEq(other: MutableSet<T>): Boolean where S : BuildHasher, A : Allocator = this.size == other.size && this.parIsSubset(other)
+public fun <Hasher, T, S, A> MutableSet<T>.parEq(other: MutableSet<T>): Boolean where S : BuildHasher<Hasher>, A : Allocator = this.size == other.size && this.parIsSubset(other)
 
 /**
  * Consumes (potentially in parallel) all values in an arbitrary order,
@@ -238,7 +238,7 @@ public fun <T, S, A : Allocator> MutableSet<T>.intoParIter(): IntoParIter<T, A> 
 /**
  * Collect values from a parallel iterator into a hashset.
  */
-public fun <T, S, P> fromParallelIteratorFromParIterHashSetTSGlobal(parIter: P): MutableSet<T> where S : BuildHasher, P : IntoParallelIterator<T> {
+public fun <Hasher, T, S, P> fromParallelIteratorFromParIterHashSetTSGlobal(parIter: P): MutableSet<T> where S : BuildHasher<Hasher>, P : IntoParallelIterator<T> {
     val set = HashSet.default()
     set.parExtend(parIter)
     return set
@@ -247,19 +247,19 @@ public fun <T, S, P> fromParallelIteratorFromParIterHashSetTSGlobal(parIter: P):
 /**
  * Extend a hash set with items from a parallel iterator.
  */
-public fun <T, S, I> MutableSet<T>.parExtend(parIter: I) where S : BuildHasher, I : IntoParallelIterator<T> {
+public fun <Hasher, T, S, I> MutableSet<T>.parExtend(parIter: I) where S : BuildHasher<Hasher>, I : IntoParallelIterator<T> {
     extend(this, parIter)
 }
 
 /**
  * Extend a hash set with copied items from a parallel iterator.
  */
-public fun <T, S, I> MutableSet<T>.parExtendT(parIter: I) where S : BuildHasher, I : IntoParallelIterator<T> {
+public fun <Hasher, T, S, I> MutableSet<T>.parExtendT(parIter: I) where S : BuildHasher<Hasher>, I : IntoParallelIterator<T> {
     extend(this, parIter)
 }
 
 // This is equal to the normal `HashSet` -- no custom advantage.
-public fun <T, S, I, A> extend(set: MutableSet<T>, parIter: I) where S : BuildHasher, A : Allocator, I : IntoParallelIterator {
+public fun <Hasher, T, S, I, A> extend(set: MutableSet<T>, parIter: I) where S : BuildHasher<Hasher>, A : Allocator, I : IntoParallelIterator {
     val (list, len) = collect(parIter)
     // Values may be already present or show multiple times in the iterator.
     // Reserve the entire length if the set is empty.

@@ -1005,7 +1005,7 @@ public open class Ipv4Addr(
         // If there are no alignment requirements, write the IP address directly to `f`.
         // Otherwise, write it to a local buffer and then use `f.pad`.
         return if (fmt.precision() == null && fmt.width() == null) {
-            fmt.writeFmt("${octets[0]}.${octets[1]}.${octets[2]}.${octets[3]}")
+            run { fmt.append("${octets[0]}.${octets[1]}.${octets[2]}.${octets[3]}"); Result.Ok<Unit, Unit>(Unit) }
         } else {
             val LONGEST_IPV4_ADDR: String = "255.255.255.255"
             val buf = DisplayBuffer.buffer(LONGEST_IPV4_ADDR.len())
@@ -1957,10 +1957,10 @@ public open class Ipv6Addr(
                             else -> {
                                 val first = matchVal.first
                                 val tail = matchVal.second
-                                when (val tryResult = f1.writeFmt("$first")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
+                                f1.append("$first")
                                 for (segment in tail) {
                                     f1.append(':')
-                                    when (val tryResult = f1.writeFmt("$segment")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
+                                    f1.append("$segment")
                                 }
                             }
                         }
@@ -1995,7 +1995,7 @@ public open class Ipv6Addr(
                 }
                 else -> {
                     val ipv4 = matchVal
-                    f.writeFmt("::ffff:$ipv4")
+                    run { f.append("::ffff:$ipv4"); Result.Ok<Unit, Unit>(Unit) }
                 }
             }
         } else {

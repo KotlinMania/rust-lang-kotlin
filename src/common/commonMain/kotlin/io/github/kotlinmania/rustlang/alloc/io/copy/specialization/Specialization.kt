@@ -14,12 +14,12 @@ public interface SpecCopyInner {
      * The implementation of `io.copy` that can rely on platform specific specialization
      * provided by `libstd`.
      */
-    public fun <W : Write> copy(writer: W): Result<CopyState>
+    public fun <W : Write<W>> copy(writer: W): Result<CopyState>
 }
 
-public fun <R : Read<R>, W : Write> R.copy(writer: W): Result<CopyState> = RustResult.Ok(CopyState.Fallback(0))
+public fun <R : Read<R>, W : Write<W>> R.copy(writer: W): Result<CopyState> = RustResult.Ok(CopyState.Fallback(0))
 
-public fun <R : SpecCopy<R>, W : Write> R.copy(writer: W, copyRFn: (R, W) -> Result<CopyState>): Result<CopyState> = copyRFn(this, writer)
+public fun <R : SpecCopy<R>, W : Write<W>> R.copy(writer: W, copyRFn: (R, W) -> Result<CopyState>): Result<CopyState> = copyRFn(this, writer)
 
 public interface SpecCopy<T> : Read<T> {
     /**
@@ -36,9 +36,9 @@ public interface SpecCopy<T> : Read<T> {
      * As of time of writing, `R`, `Take<R>`, and `BufReader<R>` will
      * forward to `R` for a specialized copy implementation.
      */
-    public fun <R : Read<R>, W : Write> copy(reader: R, writer: W): Result<CopyState>
+    public fun <R : Read<R>, W : Write<W>> copy(reader: R, writer: W): Result<CopyState>
 }
 
-public fun <T : SpecCopy<T>, R : Read<R>, W : Write> specCopyCopyTakeT(reader: R, writer: W, copyTFn: (R, W) -> Result<CopyState>): Result<CopyState> = copyTFn(reader, writer)
+public fun <T : SpecCopy<T>, R : Read<R>, W : Write<W>> specCopyCopyTakeT(reader: R, writer: W, copyTFn: (R, W) -> Result<CopyState>): Result<CopyState> = copyTFn(reader, writer)
 
-public fun <T : SpecCopy<T>, R : Read<R>, W : Write> specCopyCopyBufReaderT(reader: R, writer: W, copyTFn: (R, W) -> Result<CopyState>): Result<CopyState> = copyTFn(reader, writer)
+public fun <T : SpecCopy<T>, R : Read<R>, W : Write<W>> specCopyCopyBufReaderT(reader: R, writer: W, copyTFn: (R, W) -> Result<CopyState>): Result<CopyState> = copyTFn(reader, writer)

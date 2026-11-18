@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedBuf
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
@@ -69,7 +70,6 @@ import io.github.kotlinmania.rustlang.libc.wasi.POLLOUT
 import io.github.kotlinmania.rustlang.libc.wasi.SOCK_CLOEXEC
 import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
 import io.github.kotlinmania.rustlang.libc.wasi.TimeT
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.net.Shutdown
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
 import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
@@ -138,7 +138,7 @@ public open class Socket(
         while (true) {
             val elapsed = start.elapsed()
             if (elapsed >= timeout1) {
-                return Result.Err<Unit, Error>(constError(ErrorKind.TimedOut, "connection timed out"))
+                return Result.Err<Unit, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.TimedOut, message = "connection timed out")))
             }
             val timeout2 = timeout1 - elapsed
             var timeout3 = timeout2.asSecs().saturatingMul(1000).saturatingAdd(timeout2.subsecNanos().toULong() / 1000000uL)
@@ -172,7 +172,7 @@ public open class Socket(
                         }
                     }
                     if (hupOrErr) {
-                        return Result.Err<Unit, Error>(constError(ErrorKind.Uncategorized, "no error set after POLLHUP"))
+                        return Result.Err<Unit, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.Uncategorized, message = "no error set after POLLHUP")))
                     }
                     return Result.Ok<Unit, Error>(Unit)
                 }
@@ -230,7 +230,7 @@ public open class Socket(
         val localStorageL331C8 = AddressableLocal(sizeOfVal(storage, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<SockaddrStorage>>()).toInt(), UnresolvedTypeLayout<io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT>())
         val addrlen by localStorageL331C8
         val n = when (val tryResult = cvt(recvfrom(this.asRawFd(), (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, buf.size, flags, (localStorageL330C8.asMutPtr()), RustMutableReference(localStorageL331C8.asMutPtr(), localStorageL331C8.layout)))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Int, SocketAddr>, Error>(tryResult.errValue()) }
-        return Result.Ok<Pair<Int, SocketAddr>, Error>(Pair(n.toInt(), when (val tryResult = socketAddrFromC(storage.asPtr(), addrlen)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Int, SocketAddr>, Error>(tryResult.errValue()) }))
+        return Result.Ok<Pair<Int, SocketAddr>, Error>(Pair(n.toInt(), when (val tryResult = socketAddrFromC(storage.asPtr(), addrlen)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }))
     }
 
     public open fun recvFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>, Error> = this.recvFromWithFlags(buf, 0)

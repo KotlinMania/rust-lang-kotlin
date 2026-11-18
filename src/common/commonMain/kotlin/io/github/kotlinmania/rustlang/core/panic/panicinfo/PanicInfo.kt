@@ -102,7 +102,7 @@ public open class PanicInfo(
         formatter.append("panicked at ")
         when (val tryResult = this.location.fmt(formatter)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         formatter.append(":\n")
-        when (val tryResult = formatter.writeFmt(this.message)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        formatter.append(this.message)
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -138,7 +138,7 @@ public open class PanicMessage(
      */
     public open fun asStr(): String? = this.message.asStr()
 
-    public open fun fmt(formatter: StringBuilder): Result<Unit, Unit> = formatter.writeFmt(this.message)
+    public open fun fmt(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append(this.message); Result.Ok<Unit, Unit>(Unit) }
 
-    public open fun fmtDebug(formatter: StringBuilder): Result<Unit, Unit> = formatter.writeFmt(this.message)
+    public open fun fmtDebug(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append(this.message); Result.Ok<Unit, Unit>(Unit) }
 }

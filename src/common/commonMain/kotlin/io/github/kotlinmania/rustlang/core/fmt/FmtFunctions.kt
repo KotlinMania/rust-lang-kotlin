@@ -107,7 +107,7 @@ public class DebugTuple(
  * check(output == "Hello world!")
  * ```
  */
-public fun write(output: Write, fmt: Arguments): Result {
+public fun write(output: Write<*>, fmt: Arguments): Result {
     when (val matchVal = fmt.asStr()) {
         null -> {}
         else -> {

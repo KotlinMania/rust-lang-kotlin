@@ -148,11 +148,11 @@ public open class PrettyFormatter<T>(
     }
 }
 
-public fun <T : Write> PrettyFormatter<T>.writeDiscoveryStart(): Result<Unit> = RustResult.Ok(Unit)
+public fun <T : Write<T>> PrettyFormatter<T>.writeDiscoveryStart(): Result<Unit> = RustResult.Ok(Unit)
 
-public fun <T : Write> PrettyFormatter<T>.writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit> = this.writePlain("${desc.name}: $testType\n")
+public fun <T : Write<T>> PrettyFormatter<T>.writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit> = this.writePlain("${desc.name}: $testType\n")
 
-public fun <T : Write> PrettyFormatter<T>.writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit> {
+public fun <T : Write<T>> PrettyFormatter<T>.writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit> {
     fun plural(count: Int, s: String): String =
         when (count) {
             1 -> "1 $s"
@@ -167,7 +167,7 @@ public fun <T : Write> PrettyFormatter<T>.writeDiscoveryFinish(state: ConsoleTes
     return this.writePlain((plural(state.tests, "test")).toString() + ", " + (plural(state.benchmarks, "benchmark")).toString() + "\n")
 }
 
-public fun <T : Write> PrettyFormatter<T>.writeRunStart(testCount: Int, shuffleSeed: ULong?): Result<Unit> {
+public fun <T : Write<T>> PrettyFormatter<T>.writeRunStart(testCount: Int, shuffleSeed: ULong?): Result<Unit> {
     val noun =
         if (testCount != 1) {
             "tests"
@@ -183,7 +183,7 @@ public fun <T : Write> PrettyFormatter<T>.writeRunStart(testCount: Int, shuffleS
     return this.writePlain("\nrunning $testCount $noun$shuffleSeedMsg\n")
 }
 
-public fun <T : Write> PrettyFormatter<T>.writeTestStart(desc: TestDesc): Result<Unit> {
+public fun <T : Write<T>> PrettyFormatter<T>.writeTestStart(desc: TestDesc): Result<Unit> {
     // When running tests concurrently, we should not print
     // the test's name as the result will be mis-aligned.
     // When running the tests serially, we print the name here so
@@ -194,7 +194,7 @@ public fun <T : Write> PrettyFormatter<T>.writeTestStart(desc: TestDesc): Result
     return RustResult.Ok(Unit)
 }
 
-public fun <T : Write> PrettyFormatter<T>.writeResult(desc: TestDesc, result: TestResult, execTime: TestExecTime?, arg3: List<UByte>, arg4: ConsoleTestState): Result<Unit> {
+public fun <T : Write<T>> PrettyFormatter<T>.writeResult(desc: TestDesc, result: TestResult, execTime: TestExecTime?, arg3: List<UByte>, arg4: ConsoleTestState): Result<Unit> {
     if (this.isMultithreaded) {
         when (val tryResult = this.writeTestName(desc)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     }
@@ -214,9 +214,9 @@ public fun <T : Write> PrettyFormatter<T>.writeResult(desc: TestDesc, result: Te
     return this.writePlain("\n")
 }
 
-public fun <T : Write> PrettyFormatter<T>.writeTimeout(desc: TestDesc): Result<Unit> = this.writePlain("test ${desc.name} has been running for over $TEST_WARN_TIMEOUT_S seconds\n")
+public fun <T : Write<T>> PrettyFormatter<T>.writeTimeout(desc: TestDesc): Result<Unit> = this.writePlain("test ${desc.name} has been running for over $TEST_WARN_TIMEOUT_S seconds\n")
 
-public fun <T : Write> PrettyFormatter<T>.writeRunFinish(state: ConsoleTestState): Result<Boolean> {
+public fun <T : Write<T>> PrettyFormatter<T>.writeRunFinish(state: ConsoleTestState): Result<Boolean> {
     if (state.options.displayOutput) {
         when (val tryResult = this.writeSuccesses(state)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     }
@@ -250,4 +250,4 @@ public fun <T : Write> PrettyFormatter<T>.writeRunFinish(state: ConsoleTestState
     return RustResult.Ok(success)
 }
 
-public fun <T : Write> PrettyFormatter<T>.writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit> = this.writePlain("all doctests ran in ${totalTime}s; merged doctests compilation took ${compilationTime}s\n")
+public fun <T : Write<T>> PrettyFormatter<T>.writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit> = this.writePlain("all doctests ran in ${totalTime}s; merged doctests compilation took ${compilationTime}s\n")

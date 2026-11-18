@@ -3,12 +3,12 @@ package io.github.kotlinmania.rustlang.std.net.udp
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv6Addr
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.net.socketaddr.ToSocketAddrs
 import io.github.kotlinmania.rustlang.std.net.socketaddr.toSocketAddrs
 import io.github.kotlinmania.rustlang.std.sys.AsInner
@@ -151,7 +151,7 @@ public open class UdpSocket(
      */
     public open fun <Iter, A : ToSocketAddrs<Iter>> sendTo(buf: List<UByte>, addr: A): Result<Int, Error> {
         return when (val matchVal = when (val tryResult = addr.toSocketAddrs()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.errValue()) }.next()) {
-            null -> Result.Err<Int, Error>(constError(ErrorKind.InvalidInput, "no addresses to send data to"))
+            null -> Result.Err<Int, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "no addresses to send data to")))
             else -> {
                 val addr1 = matchVal
                 this.value.sendTo(buf, addr1)

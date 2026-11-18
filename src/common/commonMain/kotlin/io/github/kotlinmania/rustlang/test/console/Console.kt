@@ -47,7 +47,7 @@ public sealed class OutputLocation<T> {
     public data class Raw<T>(public var value: T) : OutputLocation<T>()
 }
 
-public fun <T : Write> OutputLocation<T>.write(buf: List<UByte>): Result<Int> =
+public fun <T : Write<T>> OutputLocation<T>.write(buf: List<UByte>): Result<Int> =
     when (this) {
         is OutputLocation.Pretty<*> -> {
             val (term) = this as OutputLocation.Pretty<T>
@@ -59,7 +59,7 @@ public fun <T : Write> OutputLocation<T>.write(buf: List<UByte>): Result<Int> =
         }
     }
 
-public fun <T : Write> OutputLocation<T>.flush(): Result<Unit> =
+public fun <T : Write<T>> OutputLocation<T>.flush(): Result<Unit> =
     when (this) {
         is OutputLocation.Pretty<*> -> {
             val (term) = this as OutputLocation.Pretty<T>

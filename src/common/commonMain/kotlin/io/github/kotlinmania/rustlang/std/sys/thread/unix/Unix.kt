@@ -6,6 +6,7 @@ package io.github.kotlinmania.rustlang.std.sys.thread.unix
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -51,7 +52,6 @@ import io.github.kotlinmania.rustlang.libc.wasi.TimeT
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.fs.exists
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.max
 import io.github.kotlinmania.rustlang.std.min
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
@@ -152,7 +152,7 @@ public open class Thread(
                         if (stackSize1.isNoneOr({ stackSize2 ->
                             pthreadAttrSetstacksize(attr2.get(), stackSize2) != 0
                         })) {
-                            return Result.Err<Thread, Error>(constError(ErrorKind.InvalidInput, "invalid stack size"))
+                            return Result.Err<Thread, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "invalid stack size")))
                         }
                     }
                 }
