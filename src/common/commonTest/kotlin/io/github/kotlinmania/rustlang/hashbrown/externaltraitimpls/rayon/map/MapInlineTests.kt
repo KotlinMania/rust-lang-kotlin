@@ -2,8 +2,16 @@
 package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.map
 
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
+import io.github.kotlinmania.rustlang.core.clone.clone
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.fetchAdd
+import io.github.kotlinmania.rustlang.core.sync.atomic.fetchOr
+import io.github.kotlinmania.rustlang.core.sync.atomic.fetchSub
+import io.github.kotlinmania.rustlang.core.sync.atomic.intoInner
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
 import io.github.kotlinmania.rustlang.hashbrown.HashMap
 
 // Rayon extensions for `HashMap`.

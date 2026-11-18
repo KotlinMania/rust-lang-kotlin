@@ -9,10 +9,14 @@ import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 /**
@@ -186,22 +190,22 @@ public interface BufRead<T> : Read<T> {
      * var cursor = io.Cursor.new("lorem-ipsum".encodeToByteArray())
      * var buf = mutableListOf()
      * // cursor is at `l`
-     * val numBytes = cursor.readUntil(45u, buf).expect("reading from cursor won't fail")
+     * val numBytes = cursor.readUntil(45u.toUByte(), buf).expect("reading from cursor won't fail")
      * check(numBytes == 6)
      * check(buf == "lorem-".encodeToByteArray())
      * buf.clear()
      * // cursor is at `i`
-     * val numBytes1 = cursor.readUntil(45u, buf).expect("reading from cursor won't fail")
+     * val numBytes1 = cursor.readUntil(45u.toUByte(), buf).expect("reading from cursor won't fail")
      * check(numBytes1 == 5)
      * check(buf == "ipsum".encodeToByteArray())
      * buf.clear()
      * // cursor is at EOF
-     * val numBytes2 = cursor.readUntil(45u, buf).expect("reading from cursor won't fail")
+     * val numBytes2 = cursor.readUntil(45u.toUByte(), buf).expect("reading from cursor won't fail")
      * check(numBytes2 == 0)
      * check(buf == "".encodeToByteArray())
      * ```
      */
-    public fun readUntil(byte: UByte, buf: List<UByte>): Result<Int> = defaultReadUntil(this, byte, buf)
+    public fun readUntil(byte: UByte, buf: MutableList<UByte>): Result<Int> = defaultReadUntil(this, byte, buf)
 
     /**
      * Skips all bytes until the delimiter `byte` or EOF is reached.
@@ -241,19 +245,19 @@ public interface BufRead<T> : Read<T> {
      * var cursor = io.Cursor.new("Ferris\u0000Likes long walks on the beach\u0000Crustacean\u0000!".encodeToByteArray())
      * // read name
      * var name = mutableListOf()
-     * val numBytes = cursor.readUntil(0u, name).expect("reading from cursor won't fail")
+     * val numBytes = cursor.readUntil(0u.toUByte(), name).expect("reading from cursor won't fail")
      * check(numBytes == 7)
      * check(name == "Ferris\u0000".encodeToByteArray())
      * // skip fun fact
-     * val numBytes1 = cursor.skipUntil(0u).expect("reading from cursor won't fail")
+     * val numBytes1 = cursor.skipUntil(0u.toUByte()).expect("reading from cursor won't fail")
      * check(numBytes1 == 30)
      * // read animal type
      * var animal = mutableListOf()
-     * val numBytes2 = cursor.readUntil(0u, animal).expect("reading from cursor won't fail")
+     * val numBytes2 = cursor.readUntil(0u.toUByte(), animal).expect("reading from cursor won't fail")
      * check(numBytes2 == 11)
      * check(animal == "Crustacean\u0000".encodeToByteArray())
      * // reach EOF
-     * val numBytes3 = cursor.skipUntil(0u).expect("reading from cursor won't fail")
+     * val numBytes3 = cursor.skipUntil(0u.toUByte()).expect("reading from cursor won't fail")
      * check(numBytes3 == 1)
      * ```
      */
@@ -322,7 +326,7 @@ public interface BufRead<T> : Read<T> {
         // rather our hardcoded implementation. For more details as to why, see
         // the comments in `defaultReadToString`.
         // ignore-tidy-undocumented-unchecked
-        return appendToString(buf, { b -> defaultReadUntil(this, 10u, b) })
+        return appendToString(buf, { b -> defaultReadUntil(this, 10u.toUByte(), b) })
     }
 
     /**
@@ -348,7 +352,7 @@ public interface BufRead<T> : Read<T> {
      * import std.io.BufRead
      *
      * val cursor = io.Cursor.new("lorem-ipsum-dolor".encodeToByteArray())
-     * var splitIter = cursor.split(45u).map({ l -> l.unwrap() })
+     * var splitIter = cursor.split(45u.toUByte()).map({ l -> l.unwrap() })
      * check(splitIter.next() == "lorem".encodeToByteArray().toVec())
      * check(splitIter.next() == "ipsum".encodeToByteArray().toVec())
      * check(splitIter.next() == "dolor".encodeToByteArray().toVec())
@@ -388,7 +392,7 @@ public interface BufRead<T> : Read<T> {
     public fun lines(): Lines<T> = Lines(this)
 }
 
-public fun <R : BufRead<R>> defaultReadUntil(r: R, delim: UByte, buf: List<UByte>): Result<Int> {
+public fun <R : BufRead<R>> defaultReadUntil(r: R, delim: UByte, buf: MutableList<UByte>): Result<Int> {
     var read = 0
     while (true) {
         val (done1, used) = run {
@@ -405,7 +409,7 @@ public fun <R : BufRead<R>> defaultReadUntil(r: R, delim: UByte, buf: List<UByte
                             continue
                         }
                         else -> {
-                            val e1 = (matchVal as RustResult.Err<*, *>).errValue()
+                            val e1 = matchVal.errValue()
                             return RustResult.Err(e1)
                         }
                     }
@@ -460,7 +464,7 @@ public fun <R : BufRead<R>> defaultSkipUntil(r: R, delim: UByte): Result<Int> {
                             continue
                         }
                         else -> {
-                            val e1 = (matchVal as RustResult.Err<*, *>).errValue()
+                            val e1 = matchVal.errValue()
                             return RustResult.Err(e1)
                         }
                     }

@@ -21,7 +21,7 @@ public interface Swizzle {
      *
      * Lane `i` of the output is `vector[Self.INDEX[i]]`.
      */
-    public fun <Mask, T> swizzle(vector: Simd<T>, m: Int): Simd<T> {
+    public fun <Mask, T> swizzle(vector: Simd<T>, m: Int = 0): Simd<T> {
         // Safety: `vector` is a vector, and the index is a const vector of u32.
         return run { val simdArg0 = vector; val simdArg1 = vector; val simdArg2 = run {
             // The index list needs to be returned as a vector.
@@ -53,7 +53,7 @@ public interface Swizzle {
      * Lane `i` of the output is `concat[Self.INDEX[i]]`, where `concat` is the concatenation of
      * `first` and `second`.
      */
-    public fun <Mask, T> concatSwizzle(first: Simd<T>, second: Simd<T>, m: Int): Simd<T> {
+    public fun <Mask, T> concatSwizzle(first: Simd<T>, second: Simd<T>, m: Int = 0): Simd<T> {
         // Safety: `first` and `second` are vectors, and the index is a const vector of u32.
         return run { val simdArg0 = first; val simdArg1 = second; val simdArg2 = run {
             // The index list needs to be returned as a vector.
@@ -84,7 +84,7 @@ public interface Swizzle {
      *
      * Element `i` of the output is `mask[Self.INDEX[i]]`.
      */
-    public fun <T> swizzleMask(mask: Mask<T>, m: Int): Mask<T> where T : MaskElement<T, Any?, Any?> {
+    public fun <T> swizzleMask(mask: Mask<T>, m: Int = 0): Mask<T> where T : MaskElement<T, Any?, Any?> {
         // SAFETY: all elements of this mask come from another mask
         return Mask.fromSimdUnchecked(this.swizzle(mask.toSimd()), n)
     }
@@ -95,7 +95,7 @@ public interface Swizzle {
      * Element `i` of the output is `concat[Self.INDEX[i]]`, where `concat` is the concatenation of
      * `first` and `second`.
      */
-    public fun <T> concatSwizzleMask(first: Mask<T>, second: Mask<T>, m: Int): Mask<T> where T : MaskElement<T, Any?, Any?> {
+    public fun <T> concatSwizzleMask(first: Mask<T>, second: Mask<T>, m: Int = 0): Mask<T> where T : MaskElement<T, Any?, Any?> {
         // SAFETY: all elements of this mask come from another mask
         return Mask.fromSimdUnchecked(this.concatSwizzle(first.toSimd(), second.toSimd()), n)
     }

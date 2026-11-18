@@ -25,6 +25,8 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.intoInner
+import io.github.kotlinmania.rustlang.core.sync.atomic.swap
 import io.github.kotlinmania.rustlang.std.io.stdio.trySetOutputCapture
 import io.github.kotlinmania.rustlang.std.panic.BacktraceStyle
 import io.github.kotlinmania.rustlang.std.panic.PanicHookInfo
@@ -97,7 +99,7 @@ public fun rustDropPanic(): Nothing =
             null -> {}
             else -> {
                 val out = matchVal
-                Write.writeFmt(out, "fatal runtime error: " + ("Rust panics must be rethrown").toString() + ", aborting\n")
+                out.writeFmt("fatal runtime error: " + ("Rust panics must be rethrown").toString() + ", aborting\n")
             }
         }
         run {
@@ -116,7 +118,7 @@ public fun rustForeignException(): Nothing =
             null -> {}
             else -> {
                 val out = matchVal
-                Write.writeFmt(out, "fatal runtime error: " + ("Rust cannot catch foreign exceptions").toString() + ", aborting\n")
+                out.writeFmt("fatal runtime error: " + ("Rust cannot catch foreign exceptions").toString() + ", aborting\n")
             }
         }
         run {
@@ -375,7 +377,7 @@ public fun panicHandler(info: PanicInfo): Nothing {
             })
         }
 
-        public open fun takeBox(): RustAny {
+        public override fun takeBox(): RustAny {
             // We do two allocations here, unfortunately. But (a) they're required with the current
             // scheme, and (b) we don't handle panic + OOM properly anyway (see comment in
             // beginPanic below).
@@ -383,7 +385,7 @@ public fun panicHandler(info: PanicInfo): Nothing {
             return contents
         }
 
-        public open fun get(): RustAny = this.fill()
+        public override fun get(): RustAny = this.fill()
 
         public open fun fmt(f: StringBuilder): Result<Unit, Error> =
             when (val matchVal = this.string) {
@@ -405,11 +407,11 @@ public fun panicHandler(info: PanicInfo): Nothing {
                 value = v
             }
 
-        public open fun takeBox(): RustAny = this.value
+        public override fun takeBox(): RustAny = this.value
 
-        public open fun get(): RustAny = this.value
+        public override fun get(): RustAny = this.value
 
-        public open fun asStr(): String? = this.value
+        public override fun asStr(): String? = this.value
 
         public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(this.value); Result.Ok<Unit, Error>(Unit) }
     }
@@ -443,7 +445,7 @@ public fun <M> beginPanic(msg: M): Nothing {
     open class Payload<A>(
         public var inner: A?,
     ) : PanicPayload {
-        public open fun takeBox(): RustAny {
+        public override fun takeBox(): RustAny {
             // Note that this should be the only allocation performed in this code path. Currently
             // this means that panic() on OOM will invoke this code path, but then again we're not
             // really ready for panic on OOM anyway. If we do start doing this, then we should
@@ -458,7 +460,7 @@ public fun <M> beginPanic(msg: M): Nothing {
             }
         }
 
-        public open fun get(): RustAny =
+        public override fun get(): RustAny =
             when (val matchVal = this.inner) {
                 null -> abort()
                 else -> {
@@ -562,7 +564,7 @@ public fun panicWithHook(payload: PanicPayload, location: Location, canUnwind: B
             null -> {}
             else -> {
                 val out = matchVal1
-                Write.writeFmt(out, "thread caused non-unwinding panic. aborting.\n")
+                out.writeFmt("thread caused non-unwinding panic. aborting.\n")
             }
         }
         run {
@@ -587,9 +589,9 @@ public fun resumeUnwind(payload: RustAny): Nothing {
                 value = v
             }
 
-        public open fun takeBox(): RustAny = replace(this.value, Box.new(Unit))
+        public override fun takeBox(): RustAny = replace(this.value, Box.new(Unit))
 
-        public open fun get(): RustAny = this.value
+        public override fun get(): RustAny = this.value
 
         public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(payloadAsStr(this.value)); Result.Ok<Unit, Error>(Unit) }
     }
@@ -626,7 +628,7 @@ public fun rustPanic(msg: PanicPayload): Nothing {
             null -> {}
             else -> {
                 val out = matchVal
-                Write.writeFmt(out, "fatal runtime error: " + ("failed to initiate panic, error $code").toString() + ", aborting\n")
+                out.writeFmt("fatal runtime error: " + ("failed to initiate panic, error $code").toString() + ", aborting\n")
             }
         }
         run {

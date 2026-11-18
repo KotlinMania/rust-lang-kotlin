@@ -3,9 +3,9 @@ package io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex
 
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSpinLoopHint
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Acquire
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Relaxed
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Release
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Acquire
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Release
 import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.Futex
 import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.Primitive
 import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWait

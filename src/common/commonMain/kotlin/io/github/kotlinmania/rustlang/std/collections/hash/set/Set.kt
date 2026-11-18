@@ -4,11 +4,15 @@ package io.github.kotlinmania.rustlang.std.collections.hash.set
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.iter.adapters.chain.Chain
 import io.github.kotlinmania.rustlang.core.iter.adapters.chain.chain
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.std.collections.hash.map.mapTryReserveError
 import io.github.kotlinmania.rustlang.std.hash.random.RandomState
 import io.github.kotlinmania.rustlang.hashbrown.HashSet as Base

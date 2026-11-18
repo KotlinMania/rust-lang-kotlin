@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.hashbrown.rustcentry
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.hashbrown.Drain
 import io.github.kotlinmania.rustlang.hashbrown.IntoIter
 import io.github.kotlinmania.rustlang.hashbrown.Iter

@@ -7,6 +7,8 @@ import io.github.kotlinmania.rustlang.core.char.methods.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.wtf8.Wtf8
 
 /**

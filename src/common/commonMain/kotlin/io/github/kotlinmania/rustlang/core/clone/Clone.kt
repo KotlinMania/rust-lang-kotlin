@@ -7,10 +7,9 @@ import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.withMetadataOf
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.withMetadataOf
 
 // The `Clone` trait for types that cannot be implicitly copied'.
@@ -640,9 +639,9 @@ public fun Char.clone(): Char = this
 
 public fun Nothing.clone(): Nothing = this
 
-public fun <T> ConstPtr.clone(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ConstPtr = (typeLayoutT).readNative((this).rawAddress)
+public fun ConstPtr.clone(): ConstPtr = this
 
-public fun <T> MutPtr.clone(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutPtr = (typeLayoutT).readNative((this).rawAddress)
+public fun MutPtr.clone(): MutPtr = this
 
 /**
  * Shared references can be cloned, but mutable references *cannot*!

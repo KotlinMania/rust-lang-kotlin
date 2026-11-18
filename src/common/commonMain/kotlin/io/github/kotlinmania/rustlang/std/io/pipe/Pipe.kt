@@ -124,7 +124,7 @@ public open class PipeReader internal constructor(
      *     var jobs = mutableListOf()
      *     var (reader, writer) = pipe().getOrElse { return Result.failure(it) }
      *     // Write NUM_SLOT characters the pipe.
-     *     writer.writeAll(UByteArray(NUM_SLOT.toInt()) { 124u }).getOrElse { return Result.failure(it) }
+     *     writer.writeAll(UByteArray(NUM_SLOT.toInt()) { 124u.toUByte() }).getOrElse { return Result.failure(it) }
      *     // Spawn several processes that read a character from the pipe, do some work, then
      *     // write back to the pipe. When the pipe is empty, the processes block, so only
      *     // NUM_SLOT processes can be working at any given time.
@@ -145,23 +145,23 @@ public open class PipeReader internal constructor(
      */
     public open fun tryClone(): Result<PipeReader, Error> = this.value.tryClone().map({ PipeReader(it) })
 
-    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = this.value.read(buf)
+    public override fun read(buf: MutableList<UByte>): Result<Int, Error> = this.value.read(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.value.readVectored(bufs)
+    public override fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.value.readVectored(bufs)
 
-    public open fun isReadVectored(): Boolean = this.value.isReadVectored()
+    public override fun isReadVectored(): Boolean = this.value.isReadVectored()
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = this.value.readToEnd(buf)
+    public override fun readToEnd(buf: MutableList<UByte>): Result<Int, Error> = this.value.readToEnd(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.value.readBuf(buf)
+    public override fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.value.readBuf(buf)
 
-    public open fun readVectoredRead(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.value.readVectored(bufs)
+    public override fun readVectoredRead(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.value.readVectored(bufs)
 
-    public open fun isReadVectoredRead(): Boolean = this.value.isReadVectored()
+    public override fun isReadVectoredRead(): Boolean = this.value.isReadVectored()
 
-    public open fun readToEndRead(buf: List<UByte>): Result<Int, Error> = this.value.readToEnd(buf)
+    public override fun readToEndRead(buf: MutableList<UByte>): Result<Int, Error> = this.value.readToEnd(buf)
 
-    public open fun readBufRead(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.value.readBuf(buf)
+    public override fun readBufRead(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.value.readBuf(buf)
 
     public companion object {
         public operator fun invoke(
@@ -213,19 +213,19 @@ public open class PipeWriter internal constructor(
      */
     public open fun tryClone(): Result<PipeWriter, Error> = this.value.tryClone().map({ PipeWriter(it) })
 
-    public open fun write(buf: List<UByte>): Result<Int, Error> = this.value.write(buf)
+    public override fun write(buf: List<UByte>): Result<Int, Error> = this.value.write(buf)
 
-    public open fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
+    public override fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = this.value.writeVectored(bufs)
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = this.value.writeVectored(bufs)
 
-    public open fun isWriteVectored(): Boolean = this.value.isWriteVectored()
+    public override fun isWriteVectored(): Boolean = this.value.isWriteVectored()
 
-    public open fun flushWrite(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
+    public override fun flushWrite(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
-    public open fun writeVectoredWrite(bufs: List<IoSlice>): Result<Int, Error> = this.value.writeVectored(bufs)
+    public override fun writeVectoredWrite(bufs: List<IoSlice>): Result<Int, Error> = this.value.writeVectored(bufs)
 
-    public open fun isWriteVectoredWrite(): Boolean = this.value.isWriteVectored()
+    public override fun isWriteVectoredWrite(): Boolean = this.value.isWriteVectored()
 
     public companion object {
         public operator fun invoke(

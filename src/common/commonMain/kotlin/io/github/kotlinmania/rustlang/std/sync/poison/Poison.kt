@@ -10,6 +10,8 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.std.thread.functions.panicking
 
 // Synchronization objects that employ poisoning.

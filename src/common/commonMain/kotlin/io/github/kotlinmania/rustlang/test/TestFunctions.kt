@@ -1,10 +1,13 @@
 package io.github.kotlinmania.rustlang.test
 
 import io.github.kotlinmania.rustlang.core.RustAny
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.iterMut
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.io.stdio.setOutputCapture
 import io.github.kotlinmania.rustlang.std.panic.PanicHookInfo
@@ -130,7 +133,7 @@ public fun testMainInner(args: List<String>, tests: TestList, options: Options?)
                 return ExitCode.from(ERROR_EXIT_CODE)
             }
             else -> {
-                val e1 = (res as Result.Err<*, *>).errValue()
+                val e1 = res.errValue()
                 println("error: io error when listing tests: $e")
                 return ExitCode.from(ERROR_EXIT_CODE)
             }
@@ -609,7 +612,7 @@ public fun runTest(opts: TestOpts, forceIgnore: Boolean, id: TestId, test: TestD
                             null
                         }
                         else -> {
-                            val e1 = (matchVal1 as RustResult.Err<*, *>).errValue()
+                            val e1 = matchVal1.errValue()
                             error("failed to spawn thread to run test: $e")
                         }
                     }
@@ -664,16 +667,16 @@ public fun <T, E> foldErr(result: RustResult<RustResult<T, E>, RustAny>): RustRe
     when {
         result is RustResult.Ok<*, *> && result.okValue() is RustResult.Err<*, *> -> {
             val okValueVal = result.okValue()
-            val e = (okValueVal as RustResult.Err<*, *>).errValue()
+            val e = okValueVal.errValue()
             RustResult.Err<T, RustAny>(e)
         }
         result is RustResult.Ok<*, *> && result.okValue() is RustResult.Ok<*, *> -> {
             val okValueVal1 = result.okValue()
-            val v = (okValueVal1 as RustResult.Ok<*, *>).okValue()
+            val v = okValueVal1.okValue()
             RustResult.Ok<T, RustAny>(v)
         }
         else -> {
-            val e1 = (result as RustResult.Err<*, *>).errValue()
+            val e1 = result.errValue()
             RustResult.Err<T, RustAny>(e1)
         }
     }

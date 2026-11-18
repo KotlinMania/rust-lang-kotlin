@@ -14,11 +14,13 @@ import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.borrow.BorrowMut
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.error.Request
 import io.github.kotlinmania.rustlang.core.future.future.Future
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
@@ -40,10 +42,15 @@ import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.pin.PinSafePointer
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.castUninit
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.constptr.withMetadataOf
 import io.github.kotlinmania.rustlang.core.ptr.dangling
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.castUninit
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.withMetadataOf
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.read
@@ -51,6 +58,8 @@ import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.task.poll.Poll
 import io.github.kotlinmania.rustlang.core.task.wake.Context
 
@@ -286,7 +295,7 @@ public open class Box<T, A : Allocator>(
         // SAFETY: The construction site of the unsized box had ensured for us that the
         // allocation was made with a valid layout (the size does not overflow an isize,
         // possibly because the size of the type is 0).
-        val layout = Layout.forValueRaw(ptr.asPtr())
+        val layout = Layout.forValueRaw((ptr.asPtr()).asConstPtr())
         if (layout.size() != 0) {
             // SAFETY: Any nonzero allocation would have been created with the allocator
             // of this box and `layout` would fit that allocation. We also are the only ones
@@ -716,7 +725,7 @@ public open class Box<T, A : Allocator>(
         public fun <T, A : Allocator> intoBoxedSlice(boxed: Box<T, A>): Box<List<T>, A> {
             val (raw, alloc) = Box.intoRawWithAllocator(boxed)
             // SAFETY: A pointer to T is also a valid pointer to [T; 1].
-            return Box.fromRawIn(mutPtrFromRustCast(raw), alloc)
+            return Box.fromRawIn(MutPtr(raw.rawAddress, raw.rawMeta), alloc)
         }
 
         /**
@@ -1384,7 +1393,7 @@ public open class Box<T, A : Allocator>(
             val (ptr, alloc) = Box.intoRawWithAllocator(b)
             forget(alloc)
             // SAFETY: Pointer is valid and unique.
-            return ptr
+            return RustMutableReference(MutPtr((ptr).rawAddress), UnresolvedTypeLayout<T>())
         }
 
         /**
@@ -1944,7 +1953,7 @@ public fun <T, A : Allocator> Box.Companion.tryNewZeroedSliceIn(len: Int, alloc:
 public fun <T, A : Allocator> Box<List<T>, A>.intoArray(n: Int = 0): Result<Box<List<T>, A>, Box<List<T>, A>> =
     if (this.len() == n) {
         val (ptr, alloc) = Box.intoRawWithAllocator(this)
-        val ptr1 = mutPtrFromRustCast(ptr)
+        val ptr1 = MutPtr(ptr.rawAddress, ptr.rawMeta)
         // SAFETY: The underlying array of a slice has the exact same layout as an actual array `[T; N]` if `N` is equal to the slice's length.
         val me = Box.fromRawIn(ptr1, alloc)
         Result.Ok<Box<List<T>, A>, Box<List<T>, A>>(me)
@@ -2042,7 +2051,7 @@ public fun <T, A : Allocator> Box.Companion.write(boxed: Box<MaybeUninit<T>, A>,
 public fun <T, A : Allocator> Box<List<MaybeUninit<T>>, A>.assumeInit(): Box<List<T>, A> {
     val (raw, alloc) = Box.intoRawWithAllocator(this)
     // SAFETY: Upheld by caller.
-    return Box.fromRawIn(mutPtrFromRustCast(raw), alloc)
+    return Box.fromRawIn(MutPtr(raw.rawAddress, raw.rawMeta), alloc)
 }
 
 /**

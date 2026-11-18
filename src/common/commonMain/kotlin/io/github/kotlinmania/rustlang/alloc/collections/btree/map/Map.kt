@@ -29,6 +29,7 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.setval.SetValZST
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
@@ -54,11 +55,16 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.iterMut
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -280,7 +286,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
                         while (true) {
                             val matchVal2 = inEdge.rightKv()
                             if (matchVal2 !is Result.Ok<*, *>) break
-                            val kv = (matchVal2 as Result.Ok<*, *>).okValue()
+                            val kv = matchVal2.okValue()
                             val (k, v) = kv.intoKv()
                             inEdge = kv.rightEdge()
                             outNode.push(k.clone(), v.clone())
@@ -299,7 +305,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
                         while (true) {
                             val matchVal3 = inEdge1.rightKv()
                             if (matchVal3 !is Result.Ok<*, *>) break
-                            val kv1 = (matchVal3 as Result.Ok<*, *>).okValue()
+                            val kv1 = matchVal3.okValue()
                             val (k1, v1) = kv1.intoKv()
                             inEdge1 = kv1.rightEdge()
                             val k2 = k1.clone()
@@ -2419,7 +2425,7 @@ public open class ExtractIfInner<K, V, R> internal constructor(
         while (true) {
             val matchVal = (this.curLeafEdge.also { this.curLeafEdge = null } ?: return null).nextKv()
             if (matchVal !is Result.Ok<*, *>) break
-            val kv = (matchVal as Result.Ok<*, *>).okValue()
+            val kv = matchVal.okValue()
             val (k, v) = kv.kvMut()
             // On creation, we navigated directly to the left bound, so we need only check the
             // right bound here to decide whether to stop.

@@ -15,10 +15,15 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.intoInner
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
@@ -91,31 +96,31 @@ public open class StdinRaw(
             value = v
         }
 
-    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = handleEbadf(this.value.read(buf), { Result.Ok(0) })
+    public override fun read(buf: MutableList<UByte>): Result<Int, Error> = handleEbadf(this.value.read(buf), { Result.Ok(0) })
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = handleEbadf(this.value.readBuf(buf), { Result.Ok(Unit) })
+    public override fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = handleEbadf(this.value.readBuf(buf), { Result.Ok(Unit) })
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = handleEbadf(this.value.readVectored(bufs), { Result.Ok(0) })
+    public override fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = handleEbadf(this.value.readVectored(bufs), { Result.Ok(0) })
 
-    public open fun isReadVectored(): Boolean = this.value.isReadVectored()
+    public override fun isReadVectored(): Boolean = this.value.isReadVectored()
 
-    public open fun readExact(buf: MutableList<UByte>): Result<Unit, Error> {
+    public override fun readExact(buf: MutableList<UByte>): Result<Unit, Error> {
         if (buf.isEmpty()) {
             return Result.Ok<Unit, Error>(Unit)
         }
         return handleEbadf(this.value.readExact(buf), { Result.Err(Error.READ_EXACT_EOF) })
     }
 
-    public open fun readBufExact(buf: BorrowedCursor<UByte>): Result<Unit, Error> {
+    public override fun readBufExact(buf: BorrowedCursor<UByte>): Result<Unit, Error> {
         if (buf.capacity() == 0) {
             return Result.Ok<Unit, Error>(Unit)
         }
         return handleEbadf(this.value.readBufExact(buf), { Result.Err(Error.READ_EXACT_EOF) })
     }
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = handleEbadf(this.value.readToEnd(buf), { Result.Ok(0) })
+    public override fun readToEnd(buf: MutableList<UByte>): Result<Int, Error> = handleEbadf(this.value.readToEnd(buf), { Result.Ok(0) })
 
-    public open fun readToString(buf: String): Result<Int, Error> = handleEbadf(this.value.readToString(buf), { Result.Ok(0) })
+    public override fun readToString(buf: String): Result<Int, Error> = handleEbadf(this.value.readToString(buf), { Result.Ok(0) })
 }
 
 /**
@@ -133,22 +138,22 @@ public open class StdoutRaw(
             value = v
         }
 
-    public open fun write(buf: List<UByte>): Result<Int, Error> = handleEbadf(this.value.write(buf), { Result.Ok(buf.size) })
+    public override fun write(buf: List<UByte>): Result<Int, Error> = handleEbadf(this.value.write(buf), { Result.Ok(buf.size) })
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> {
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> {
         val total = { Result.Ok(bufs.map({ b -> b.len() }).sum()) }
         return handleEbadf(this.value.writeVectored(bufs), total)
     }
 
-    public open fun isWriteVectored(): Boolean = this.value.isWriteVectored()
+    public override fun isWriteVectored(): Boolean = this.value.isWriteVectored()
 
-    public open fun flush(): Result<Unit, Error> = handleEbadf(this.value.flush(), { Result.Ok(Unit) })
+    public override fun flush(): Result<Unit, Error> = handleEbadf(this.value.flush(), { Result.Ok(Unit) })
 
-    public open fun writeAll(buf: List<UByte>): Result<Unit, Error> = handleEbadf(this.value.writeAll(buf), { Result.Ok(Unit) })
+    public override fun writeAll(buf: List<UByte>): Result<Unit, Error> = handleEbadf(this.value.writeAll(buf), { Result.Ok(Unit) })
 
-    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = handleEbadf(this.value.writeAllVectored(bufs), { Result.Ok(Unit) })
+    public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = handleEbadf(this.value.writeAllVectored(bufs), { Result.Ok(Unit) })
 
-    public open fun writeFmt(fmt: Arguments): Result<Unit, Error> = handleEbadf(this.value.writeFmt(fmt), { Result.Ok(Unit) })
+    public override fun writeFmt(fmt: Arguments): Result<Unit, Error> = handleEbadf(this.value.writeFmt(fmt), { Result.Ok(Unit) })
 }
 
 /**
@@ -166,22 +171,22 @@ public open class StderrRaw(
             value = v
         }
 
-    public open fun write(buf: List<UByte>): Result<Int, Error> = handleEbadf(this.value.write(buf), { Result.Ok(buf.size) })
+    public override fun write(buf: List<UByte>): Result<Int, Error> = handleEbadf(this.value.write(buf), { Result.Ok(buf.size) })
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> {
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> {
         val total = { Result.Ok(bufs.map({ b -> b.len() }).sum()) }
         return handleEbadf(this.value.writeVectored(bufs), total)
     }
 
-    public open fun isWriteVectored(): Boolean = this.value.isWriteVectored()
+    public override fun isWriteVectored(): Boolean = this.value.isWriteVectored()
 
-    public open fun flush(): Result<Unit, Error> = handleEbadf(this.value.flush(), { Result.Ok(Unit) })
+    public override fun flush(): Result<Unit, Error> = handleEbadf(this.value.flush(), { Result.Ok(Unit) })
 
-    public open fun writeAll(buf: List<UByte>): Result<Unit, Error> = handleEbadf(this.value.writeAll(buf), { Result.Ok(Unit) })
+    public override fun writeAll(buf: List<UByte>): Result<Unit, Error> = handleEbadf(this.value.writeAll(buf), { Result.Ok(Unit) })
 
-    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = handleEbadf(this.value.writeAllVectored(bufs), { Result.Ok(Unit) })
+    public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = handleEbadf(this.value.writeAllVectored(bufs), { Result.Ok(Unit) })
 
-    public open fun writeFmt(fmt: Arguments): Result<Unit, Error> = handleEbadf(this.value.writeFmt(fmt), { Result.Ok(Unit) })
+    public override fun writeFmt(fmt: Arguments): Result<Unit, Error> = handleEbadf(this.value.writeFmt(fmt), { Result.Ok(Unit) })
 }
 
 /**
@@ -366,21 +371,21 @@ public open class Stdin internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "Stdin").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
-    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = this.lock().read(buf)
+    public override fun read(buf: MutableList<UByte>): Result<Int, Error> = this.lock().read(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.lock().readBuf(buf)
+    public override fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.lock().readBuf(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.lock().readVectored(bufs)
+    public override fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.lock().readVectored(bufs)
 
-    public open fun isReadVectored(): Boolean = this.lock().isReadVectored()
+    public override fun isReadVectored(): Boolean = this.lock().isReadVectored()
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = this.lock().readToEnd(buf)
+    public override fun readToEnd(buf: MutableList<UByte>): Result<Int, Error> = this.lock().readToEnd(buf)
 
-    public open fun readToString(buf: String): Result<Int, Error> = this.lock().readToString(buf)
+    public override fun readToString(buf: String): Result<Int, Error> = this.lock().readToString(buf)
 
-    public open fun readExact(buf: MutableList<UByte>): Result<Unit, Error> = this.lock().readExact(buf)
+    public override fun readExact(buf: MutableList<UByte>): Result<Unit, Error> = this.lock().readExact(buf)
 
-    public open fun readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit, Error> = this.lock().readBufExact(cursor)
+    public override fun readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit, Error> = this.lock().readBufExact(cursor)
 
     public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
@@ -441,33 +446,33 @@ public open class StdinLock internal constructor(
         return this::inner
     }
 
-    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = this.inner.read(buf)
+    public override fun read(buf: MutableList<UByte>): Result<Int, Error> = this.inner.read(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.inner.readBuf(buf)
+    public override fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.inner.readBuf(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.inner.readVectored(bufs)
+    public override fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.inner.readVectored(bufs)
 
-    public open fun isReadVectored(): Boolean = this.inner.isReadVectored()
+    public override fun isReadVectored(): Boolean = this.inner.isReadVectored()
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = this.inner.readToEnd(buf)
+    public override fun readToEnd(buf: MutableList<UByte>): Result<Int, Error> = this.inner.readToEnd(buf)
 
-    public open fun readToString(buf: String): Result<Int, Error> = this.inner.readToString(buf)
+    public override fun readToString(buf: String): Result<Int, Error> = this.inner.readToString(buf)
 
-    public open fun readExact(buf: MutableList<UByte>): Result<Unit, Error> = this.inner.readExact(buf)
+    public override fun readExact(buf: MutableList<UByte>): Result<Unit, Error> = this.inner.readExact(buf)
 
-    public open fun readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit, Error> = this.inner.readBufExact(cursor)
+    public override fun readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit, Error> = this.inner.readBufExact(cursor)
 
     public open fun specReadByte(): Result<UByte, Error>? = BufReader.specReadByte(this.inner)
 
-    public open fun fillBuf(): Result<List<UByte>, Error> = this.inner.fillBuf()
+    public override fun fillBuf(): Result<List<UByte>, Error> = this.inner.fillBuf()
 
-    public open fun consume(n: Int) {
+    public override fun consume(n: Int) {
         this.inner.consume(n)
     }
 
-    public open fun readUntil(byte: UByte, buf: List<UByte>): Result<Int, Error> = this.inner.readUntil(byte, buf)
+    public override fun readUntil(byte: UByte, buf: MutableList<UByte>): Result<Int, Error> = this.inner.readUntil(byte, buf)
 
-    public open fun readLine(buf: String): Result<Int, Error> = this.inner.readLine(buf)
+    public override fun readLine(buf: String): Result<Int, Error> = this.inner.readLine(buf)
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "StdinLock").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
@@ -602,19 +607,19 @@ public open class Stdout internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "Stdout").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
-    public open fun write(buf: List<UByte>): Result<Int, Error> = (this).write(buf)
+    public override fun write(buf: List<UByte>): Result<Int, Error> = (this).write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = (this).writeVectored(bufs)
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = (this).writeVectored(bufs)
 
-    public open fun isWriteVectored(): Boolean = Write.isWriteVectored(this)
+    public override fun isWriteVectored(): Boolean = Write.isWriteVectored(this)
 
-    public open fun flush(): Result<Unit, Error> = (this).flush()
+    public override fun flush(): Result<Unit, Error> = (this).flush()
 
-    public open fun writeAll(buf: List<UByte>): Result<Unit, Error> = (this).writeAll(buf)
+    public override fun writeAll(buf: List<UByte>): Result<Unit, Error> = (this).writeAll(buf)
 
-    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = (this).writeAllVectored(bufs)
+    public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = (this).writeAllVectored(bufs)
 
-    public open fun writeFmt(args: Arguments): Result<Unit, Error> = (this).writeFmt(args)
+    public override fun writeFmt(args: Arguments): Result<Unit, Error> = (this).writeFmt(args)
 
     public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
@@ -657,17 +662,17 @@ public open class StdoutLock internal constructor(
     public var inner: ReentrantLockGuard<RefCell<LineWriter<StdoutRaw>>> = innerCtorArg
         internal set
 
-    public open fun write(buf: List<UByte>): Result<Int, Error> = this.inner.borrowMut().write(buf)
+    public override fun write(buf: List<UByte>): Result<Int, Error> = this.inner.borrowMut().write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = this.inner.borrowMut().writeVectored(bufs)
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = this.inner.borrowMut().writeVectored(bufs)
 
-    public open fun isWriteVectored(): Boolean = this.inner.borrowMut().isWriteVectored()
+    public override fun isWriteVectored(): Boolean = this.inner.borrowMut().isWriteVectored()
 
-    public open fun flush(): Result<Unit, Error> = this.inner.borrowMut().flush()
+    public override fun flush(): Result<Unit, Error> = this.inner.borrowMut().flush()
 
-    public open fun writeAll(buf: List<UByte>): Result<Unit, Error> = this.inner.borrowMut().writeAll(buf)
+    public override fun writeAll(buf: List<UByte>): Result<Unit, Error> = this.inner.borrowMut().writeAll(buf)
 
-    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = this.inner.borrowMut().writeAllVectored(bufs)
+    public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = this.inner.borrowMut().writeAllVectored(bufs)
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "StdoutLock").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
@@ -831,19 +836,19 @@ public open class Stderr internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "Stderr").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
-    public open fun write(buf: List<UByte>): Result<Int, Error> = (this).write(buf)
+    public override fun write(buf: List<UByte>): Result<Int, Error> = (this).write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = (this).writeVectored(bufs)
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = (this).writeVectored(bufs)
 
-    public open fun isWriteVectored(): Boolean = Write.isWriteVectored(this)
+    public override fun isWriteVectored(): Boolean = Write.isWriteVectored(this)
 
-    public open fun flush(): Result<Unit, Error> = (this).flush()
+    public override fun flush(): Result<Unit, Error> = (this).flush()
 
-    public open fun writeAll(buf: List<UByte>): Result<Unit, Error> = (this).writeAll(buf)
+    public override fun writeAll(buf: List<UByte>): Result<Unit, Error> = (this).writeAll(buf)
 
-    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = (this).writeAllVectored(bufs)
+    public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = (this).writeAllVectored(bufs)
 
-    public open fun writeFmt(args: Arguments): Result<Unit, Error> = (this).writeFmt(args)
+    public override fun writeFmt(args: Arguments): Result<Unit, Error> = (this).writeFmt(args)
 
     public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
@@ -879,17 +884,17 @@ public open class StderrLock internal constructor(
     public var inner: ReentrantLockGuard<RefCell<StderrRaw>> = innerCtorArg
         internal set
 
-    public open fun write(buf: List<UByte>): Result<Int, Error> = this.inner.borrowMut().write(buf)
+    public override fun write(buf: List<UByte>): Result<Int, Error> = this.inner.borrowMut().write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = this.inner.borrowMut().writeVectored(bufs)
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = this.inner.borrowMut().writeVectored(bufs)
 
-    public open fun isWriteVectored(): Boolean = this.inner.borrowMut().isWriteVectored()
+    public override fun isWriteVectored(): Boolean = this.inner.borrowMut().isWriteVectored()
 
-    public open fun flush(): Result<Unit, Error> = this.inner.borrowMut().flush()
+    public override fun flush(): Result<Unit, Error> = this.inner.borrowMut().flush()
 
-    public open fun writeAll(buf: List<UByte>): Result<Unit, Error> = this.inner.borrowMut().writeAll(buf)
+    public override fun writeAll(buf: List<UByte>): Result<Unit, Error> = this.inner.borrowMut().writeAll(buf)
 
-    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = this.inner.borrowMut().writeAllVectored(bufs)
+    public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = this.inner.borrowMut().writeAllVectored(bufs)
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "StderrLock").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 

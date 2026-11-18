@@ -13,6 +13,7 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.set.entry.VacantEn
 import io.github.kotlinmania.rustlang.alloc.collections.btree.setval.SetValZST
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
@@ -33,6 +34,9 @@ import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.and
 import io.github.kotlinmania.rustlang.core.result.or
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -1061,7 +1065,7 @@ public open class BTreeSet<T, A : AllocatorClone>(
      * check(result == mutableSetOf(1, 2))
      * ```
      */
-    public open fun sub(rhs: BTreeSet<T, A>): BTreeSet<T, A> = BTreeSet.fromSortedIter(this.difference(rhs).cloned(), ManuallyDrop.intoInner(this.map.alloc.clone()))
+    public override fun sub(rhs: BTreeSet<T, A>): BTreeSet<T, A> = BTreeSet.fromSortedIter(this.difference(rhs).cloned(), ManuallyDrop.intoInner(this.map.alloc.clone()))
 
     /**
      * Returns the symmetric difference of `self` and `rhs` as a new `BTreeSet<T>`.
@@ -1075,7 +1079,7 @@ public open class BTreeSet<T, A : AllocatorClone>(
      * check(result == mutableSetOf(1, 4))
      * ```
      */
-    public open fun bitxor(rhs: BTreeSet<T, A>): BTreeSet<T, A> = BTreeSet.fromSortedIter(this.symmetricDifference(rhs).cloned(), ManuallyDrop.intoInner(this.map.alloc.clone()))
+    public override fun bitxor(rhs: BTreeSet<T, A>): BTreeSet<T, A> = BTreeSet.fromSortedIter(this.symmetricDifference(rhs).cloned(), ManuallyDrop.intoInner(this.map.alloc.clone()))
 
     /**
      * Returns the intersection of `self` and `rhs` as a new `BTreeSet<T>`.
@@ -1089,7 +1093,7 @@ public open class BTreeSet<T, A : AllocatorClone>(
      * check(result == mutableSetOf(2, 3))
      * ```
      */
-    public open fun bitand(rhs: BTreeSet<T, A>): BTreeSet<T, A> = BTreeSet.fromSortedIter(this.intersection(rhs).cloned(), ManuallyDrop.intoInner(this.map.alloc.clone()))
+    public override fun bitand(rhs: BTreeSet<T, A>): BTreeSet<T, A> = BTreeSet.fromSortedIter(this.intersection(rhs).cloned(), ManuallyDrop.intoInner(this.map.alloc.clone()))
 
     /**
      * Returns the union of `self` and `rhs` as a new `BTreeSet<T>`.
@@ -1103,7 +1107,7 @@ public open class BTreeSet<T, A : AllocatorClone>(
      * check(result == mutableSetOf(1, 2, 3, 4, 5))
      * ```
      */
-    public open fun bitor(rhs: BTreeSet<T, A>): BTreeSet<T, A> = BTreeSet.fromSortedIter(this.union(rhs).cloned(), ManuallyDrop.intoInner(this.map.alloc.clone()))
+    public override fun bitor(rhs: BTreeSet<T, A>): BTreeSet<T, A> = BTreeSet.fromSortedIter(this.union(rhs).cloned(), ManuallyDrop.intoInner(this.map.alloc.clone()))
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
 

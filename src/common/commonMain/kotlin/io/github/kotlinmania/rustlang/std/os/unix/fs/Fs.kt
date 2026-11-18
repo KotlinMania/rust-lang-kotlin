@@ -143,7 +143,7 @@ public interface FileExt {
                         val e = matchVal.errValue()
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*, *>).errValue()
+                        val e1 = matchVal.errValue()
                         return Result.Err<Unit, Error>(e1)
                     }
                 }
@@ -237,7 +237,7 @@ public interface FileExt {
                         continue
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*, *>).errValue()
+                        val e1 = matchVal.errValue()
                         return Result.Err<Unit, Error>(e1)
                     }
                 }
@@ -377,7 +377,7 @@ public interface FileExt {
                         val e = matchVal.errValue()
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*, *>).errValue()
+                        val e1 = matchVal.errValue()
                         return Result.Err<Unit, Error>(e1)
                     }
                 }

@@ -1,6 +1,7 @@
 // port-lint: source iter/adapters/cycle.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.cycle
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
@@ -111,7 +112,7 @@ public open class Cycle<I>(
                         return e
                     }
                     else -> {
-                        val rem2 = (matchVal1 as Result.Err<*, *>).errValue()
+                        val rem2 = matchVal1.errValue()
                         rem2.get()
                     }
                 }

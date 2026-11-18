@@ -1,6 +1,7 @@
 // port-lint: source option.rs
 package io.github.kotlinmania.rustlang.core.option
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
@@ -38,9 +39,14 @@ import io.github.kotlinmania.rustlang.core.panicking.panicDisplay
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 // Optional values.
 //
@@ -125,9 +131,9 @@ import io.github.kotlinmania.rustlang.core.result.Result
 // It replaces this:
 //
 // ```kotlin
-// fun addLastNumbers(stack: List<Int>): Int? {
-//     val a = stack.pop()
-//     val b = stack.pop()
+// fun addLastNumbers(stack: MutableList<Int>): Int? {
+//     val a = stack.removeLastOrNull()
+//     val b = stack.removeLastOrNull()
 //     return run {
 //         val matchVal = Pair(a, b)
 //         when {
@@ -145,8 +151,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
 // With this:
 //
 // ```kotlin
-// fun addLastNumbers(stack: List<Int>): Int? {
-//     return (stack.pop() ?: return null) + (stack.pop() ?: return null)
+// fun addLastNumbers(stack: MutableList<Int>): Int? {
+//     return (stack.removeLastOrNull() ?: return null) + (stack.removeLastOrNull() ?: return null)
 // }
 // ```
 //
@@ -2200,11 +2206,11 @@ public fun <T> Option<T>.cloned(): Option<T> = this.asDeref().cloned()
 public fun <T, E> Option<Result<T, E>>.transpose(): Result<Option<T>, E> =
     when {
         this is Some<*> && (this as Some<T>).value is Result.Ok<*, *> -> {
-            val x = ((this as Some<T>).value as Result.Ok<*, *>).okValue()
+            val x = ((this as Some<T>).value).okValue()
             Result.Ok<Option<T>, E>(Some(x))
         }
         this is Some<*> && (this as Some<T>).value is Result.Err<*, *> -> {
-            val e = ((this as Some<T>).value as Result.Err<*, *>).errValue()
+            val e = ((this as Some<T>).value).errValue()
             Result.Err<Option<T>, E>(e)
         }
         else -> Result.Ok<Option<T>, E>(None())

@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.core.num.imp.intbits.u128
 
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.num.ilog2
 import io.github.kotlinmania.rustlang.core.num.wrappingAdd
 
 public val STAGES: Int = 128u.ilog2().toInt()

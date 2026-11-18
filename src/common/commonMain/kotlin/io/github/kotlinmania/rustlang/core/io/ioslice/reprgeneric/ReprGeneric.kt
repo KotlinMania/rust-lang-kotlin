@@ -2,7 +2,9 @@
 package io.github.kotlinmania.rustlang.core.io.ioslice.reprgeneric
 
 import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.slice.splitAt
 import io.github.kotlinmania.rustlang.core.slice.splitAtMut
+import io.github.kotlinmania.rustlang.core.str.splitAt
 
 public open class IoSlice(
     public var value: List<UByte>,

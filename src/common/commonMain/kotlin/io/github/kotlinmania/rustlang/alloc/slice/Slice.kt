@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.char.methods.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.methods.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -18,15 +19,23 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asUninitSliceMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.slice.sort.unstable.sort
+import io.github.kotlinmania.rustlang.core.slice.splitAt
+import io.github.kotlinmania.rustlang.core.str.len
+import io.github.kotlinmania.rustlang.core.str.splitAt
 
 // Utilities for the slice primitive type.
 //
@@ -336,7 +345,7 @@ public fun <T, A : Allocator> List<T>.toVecIn(alloc: A, toVecTFn: (List<T>, A) -
     }
     fun <T, A : Allocator> convertVecToVecT(s: List<T>, alloc1: A): List<T> {
         open class DropGuard<T, A : Allocator>(
-            public var vec: List<T>,
+            public var vec: MutableList<T>,
             public var numInit: Int,
         ) {
             public open fun drop() {
@@ -647,10 +656,10 @@ public fun <T, A : Allocator> List<T>.borrowMut(): MutableList<T> = this
 // public in the crate and has the Allocator parameter so that
 // vec.cloneFrom use it too.
 public interface SpecCloneIntoVec<T, A : Allocator> {
-    public fun cloneInto(target: List<T>)
+    public fun cloneInto(target: MutableList<T>)
 }
 
-public fun <T, A : Allocator> List<T>.cloneInto(target: List<T>) {
+public fun <T, A : Allocator> List<T>.cloneInto(target: MutableList<T>) {
     // drop anything in target that will not be overwritten
     target.truncate(this.size)
     // target.len <= self.len due to the truncate above, so the
@@ -658,17 +667,17 @@ public fun <T, A : Allocator> List<T>.cloneInto(target: List<T>) {
     val (init, tail) = this.splitAt(target.size)
     // reuse the contained values' allocations/resources.
     target.cloneFromSlice(init)
-    target.extendFromSlice(tail)
+    target.addAll(tail)
 }
 
-public fun <T : TrivialClone, A : Allocator> List<T>.cloneIntoTA(target: List<T>) {
+public fun <T : TrivialClone, A : Allocator> List<T>.cloneIntoTA(target: MutableList<T>) {
     target.clear()
-    target.extendFromSlice(this)
+    target.addAll(this)
 }
 
 public fun <T> List<T>.toOwned(): List<T> = this.toMutableList()
 
-public fun <T> List<T>.cloneIntoFromTSlice(target: List<T>) {
+public fun <T> List<T>.cloneIntoFromTSlice(target: MutableList<T>) {
     this.cloneInto(target)
 }
 

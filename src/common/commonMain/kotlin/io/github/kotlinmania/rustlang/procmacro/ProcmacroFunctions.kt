@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.procmacro
 
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.procmacro.bridge.client.Symbol
 
 /**
@@ -44,16 +45,16 @@ public fun parseNumber(value: String): Pair<String, Base> {
     val firstDigit = iter.next() ?: return Pair("0", Base.Decimal)
     val secondDigit = iter.next() ?: return Pair(value, Base.Decimal)
     var base = Base.Decimal
-    if (firstDigit == 48u) {
+    if (firstDigit == 48u.toUByte()) {
         // Attempt to parse encoding base.
         when (secondDigit) {
-            98u -> {
+            98u.toUByte() -> {
                 base = Base.Binary
             }
-            111u -> {
+            111u.toUByte() -> {
                 base = Base.Octal
             }
-            120u -> {
+            120u.toUByte() -> {
                 base = Base.Hexadecimal
             }
             else -> {}
@@ -70,12 +71,12 @@ public fun parseNumber(value: String): Pair<String, Base> {
 
 public fun stripUnderscores(valueS: String): String {
     val value = valueS.encodeToByteArray().map { it.toUByte() }
-    if (value.iter().copied().all({ c -> c != 95u && c != 102u })) {
+    if (value.iter().copied().all({ c -> c != 95u.toUByte() && c != 102u.toUByte() })) {
         return valueS
     }
     var output = ""
     for (c in value.iter().copied()) {
-        if (c != 95u) {
+        if (c != 95u.toUByte()) {
             output += c.toInt().toChar()
         }
     }

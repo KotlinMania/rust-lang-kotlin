@@ -1,6 +1,7 @@
 // port-lint: source str/iter.rs
 package io.github.kotlinmania.rustlang.core.str.iter
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.iter.adapters.copied.Copied
 import io.github.kotlinmania.rustlang.core.iter.adapters.filter.Filter
 import io.github.kotlinmania.rustlang.core.iter.adapters.flatten.FlatMap
@@ -13,6 +14,8 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.BytesIsNotEmpty
 import io.github.kotlinmania.rustlang.core.str.CharEscapeDebug
 import io.github.kotlinmania.rustlang.core.str.CharEscapeDefault
@@ -24,6 +27,7 @@ import io.github.kotlinmania.rustlang.core.str.LinesMap
 import io.github.kotlinmania.rustlang.core.str.UnsafeBytesToStr
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
 import io.github.kotlinmania.rustlang.core.str.count.countChars
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.validations.nextCodePoint

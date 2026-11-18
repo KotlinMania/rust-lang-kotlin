@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.alloc.collections
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**

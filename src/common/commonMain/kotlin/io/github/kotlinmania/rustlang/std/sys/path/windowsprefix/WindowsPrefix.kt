@@ -7,6 +7,9 @@ import io.github.kotlinmania.rustlang.core.char.methods.isAsciiAlphabetic
 import io.github.kotlinmania.rustlang.core.char.methods.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.mem.get
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.path.Prefix
 import io.github.kotlinmania.rustlang.std.path.Prefix.DeviceNS
@@ -32,8 +35,8 @@ public open class PrefixParser(
             val prefix = MutableList(len) { 0 }
             // SAFETY: Only ASCII characters are modified.
             for ((i, ch) in path.asEncodedBytes().iter().take(len).mapIndexed { index, item -> Pair(index, item) }) {
-                prefix[i] = if (ch == 47u) {
-                    92u
+                prefix[i] = if (ch == 47u.toUByte()) {
+                    92u.toUByte()
                 } else {
                     ch
                 }
@@ -76,12 +79,12 @@ public fun parsePrefix(path: OsStr): Prefix? {
             val parser2 = matchVal
             // \\
             // It's a POSIX path.
-            if (false && !path.asEncodedBytes().contains(92u)) {
+            if (false && !path.asEncodedBytes().contains(92u.toUByte())) {
                 return null
             }
             // The meaning of verbatim paths can change when they use a different
             // separator.
-            if (parser2.takeIf { it.startsWith("?\\") }?.removePrefix("?\\") != null && (false || !parser2.prefixBytes().contains(47u))) {
+            if (parser2.takeIf { it.startsWith("?\\") }?.removePrefix("?\\") != null && (false || !parser2.prefixBytes().contains(47u.toUByte()))) {
                 // \\?\
                 when (val matchVal2 = parser2.takeIf { it.startsWith("UNC\\") }?.removePrefix("UNC\\")) {
                     null -> {
@@ -142,7 +145,7 @@ public fun parseDrive(path: OsStr): UByte? {
     return run {
         val matchVal = path.asEncodedBytes()
         when {
-            matchVal.size >= 2 && matchVal[1] == 58u && isValidDriveLetter(matchVal[0]) -> {
+            matchVal.size >= 2 && matchVal[1] == 58u.toUByte() && isValidDriveLetter(matchVal[0]) -> {
                 val drive = matchVal[0]
                 drive.toAsciiUppercase()
             }

@@ -1,6 +1,7 @@
 // port-lint: source sys/env/windows.rs
 package io.github.kotlinmania.rustlang.std.sys.env.windows
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -8,8 +9,11 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -143,7 +147,7 @@ public open class EnvIterator internal constructor(
                 // this point (because the empty string terminates the array of
                 // environment variables), we can safely slice.
                 val pos =
-                    when (val matchVal = (((s).subList(1, (s).size)).indexOfFirst({ u -> u == 61u.toUShort() }).takeIf { it >= 0 })?.let({ p1 -> p1 + 1 })) {
+                    when (val matchVal = (((s).subList(1, (s).size)).indexOfFirst({ u -> u == (61u.toUByte()).toUShort() }).takeIf { it >= 0 })?.let({ p1 -> p1 + 1 })) {
                         null -> { continue }
                         else -> {
                             val p1 = matchVal

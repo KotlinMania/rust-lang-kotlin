@@ -17,6 +17,7 @@ import io.github.kotlinmania.rustlang.alloc.vec.sveretain.PanicGuard
 import io.github.kotlinmania.rustlang.alloc.vec.sveretain.chunkedRetain
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Error
@@ -47,6 +48,12 @@ import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.castSlice
+import io.github.kotlinmania.rustlang.core.ptr.constptr.castUninit
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingByteAdd
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dangling
@@ -55,6 +62,7 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.castSlice
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.castUninit
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingByteAdd
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.read
@@ -63,7 +71,9 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts
+import io.github.kotlinmania.rustlang.core.str.len
 
 /**
  * A contiguous growable array type, written as `List<T>`, short for `vector`.
@@ -3857,7 +3867,7 @@ public fun <T> fromVecT(s: List<T>, n: Int = 0): Vec<T, Global> = Vec.from(s.asS
  * # Examples
  *
  * ```kotlin
- * check(Vec.from("123") == mutableListOf(49u, 50u, 51u))
+ * check(Vec.from("123") == mutableListOf(49u.toUByte(), 50u.toUByte(), 51u.toUByte()))
  * ```
  */
 public fun fromVecUByte(s: String): Vec<UByte, Global> = fromUByte(s.encodeToByteArray().map { it.toUByte() })

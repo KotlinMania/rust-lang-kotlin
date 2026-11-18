@@ -7,13 +7,12 @@ import io.github.kotlinmania.rustlang.core.cell.RefMut
 import io.github.kotlinmania.rustlang.core.cell.SyncUnsafeCell
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.char.methods.EscapeDebugExtArgs
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugStruct
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugTuple
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.component10
 import io.github.kotlinmania.rustlang.core.mem.component11
 import io.github.kotlinmania.rustlang.core.mem.component12
@@ -25,12 +24,21 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.exposeProvenance
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.core.ptr.metadata
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.exposeProvenance
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.chars
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public class DebugStruct(
@@ -213,7 +221,7 @@ public fun write(output: Write<*>, fmt: Arguments): Result {
 /**
  * Like `.split(' ')`, but doesn't bloat binary size
  */
-public fun splitStrBySpace(s: String): Any = s.encodeToByteArray().map { it.toUByte() }.split({ b -> b == 32u }).map({ bytes -> String.fromUtf8Unchecked(bytes) })
+public fun splitStrBySpace(s: String): Any = s.encodeToByteArray().map { it.toUByte() }.split({ b -> b == 32u.toUByte() }).map({ bytes -> String.fromUtf8Unchecked(bytes) })
 
 /**
  * Formats an address in `fmt.Pointer` style.
@@ -251,7 +259,7 @@ public fun Nothing.fmt(arg0: Formatter): Result = this
 public fun Boolean.fmt(f: Formatter): Result = f.append((this).toString())
 
 public fun String.fmt(f: Formatter): Result {
-    fun needsEscape(b: UByte): Boolean = b > 0x7Eu.toUByte() || b < 0x20u.toUByte() || b == 92u || b == 34u
+    fun needsEscape(b: UByte): Boolean = b > 0x7Eu.toUByte() || b < 0x20u.toUByte() || b == 92u.toUByte() || b == 34u.toUByte()
     f.append('"')
     // substring we know is printable
     val printableRange = 0 until 0
@@ -293,10 +301,10 @@ public fun Char.fmt(f: Formatter): Result {
     return f.append('\'')
 }
 
-public fun <T> ConstPtr.fmt(f: Formatter, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result {
+public fun ConstPtr.fmt(f: Formatter): Result {
     // Since the formatting will be identical for all pointer types, erase the pointee type and
     // metadata type to reduce the amount of codegen work needed for each distinct type.
-    val ptr: ConstPtr = (typeLayoutT).readNative((this).rawAddress)
+    val ptr: ConstPtr = this
     val ptrAddr = ptr.exposeProvenance()
     return if (Metadata.IS_UNIT) {
         pointerFmtInner(ptrAddr, f)
@@ -305,14 +313,14 @@ public fun <T> ConstPtr.fmt(f: Formatter, typeLayoutT: TypeLayout<T> = Unresolve
     }
 }
 
-public fun <T> MutPtr.fmt(f: Formatter, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result = f.append(((constPtrFromRustCast((typeLayoutT).readNative((this).rawAddress)))).toString())
+public fun MutPtr.fmt(f: Formatter): Result = f.append(((constPtrFromRustCast(this))).toString())
 
 public fun <T> T.fmt(f: Formatter): Result = f.append(((constPtrFromRustCast(this))).toString())
 
 // Implementation of Display/Debug for various core types
-public fun ConstPtr.fmt(f: Formatter): Result = f.append((this).toString())
+public fun ConstPtr.fmtFromConstPtrT(f: Formatter): Result = f.append((this).toString())
 
-public fun MutPtr.fmt(f: Formatter): Result = f.append((this).toString())
+public fun MutPtr.fmtFromMutPtrT(f: Formatter): Result = f.append((this).toString())
 
 public fun <E : Debug, D : Debug, C : Debug, B : Debug, A : Debug, Z : Debug, Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmt(f: Formatter): Result {
     val builder = DebugTuple(f, "")
@@ -477,7 +485,7 @@ public fun <T : Debug> RefCell<T>.fmt(f: Formatter): Result {
     return d.finish()
 }
 
-public fun <T : Debug> Ref<T>.fmt(f: Formatter): Result = f.append(((this).value).toString())
+public fun <T : Debug> Ref<T>.fmt(f: Formatter): Result = f.append((this).toString())
 
 public fun <T : Debug> RefMut<T>.fmt(f: Formatter): Result = f.append((this.deref()).toString())
 

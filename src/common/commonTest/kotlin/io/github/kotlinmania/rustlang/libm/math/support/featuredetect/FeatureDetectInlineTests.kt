@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.libm.math.support.featuredetect
 
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
 import io.github.kotlinmania.rustlang.libm.math.j1.V0
 import io.github.kotlinmania.rustlang.libm.math.lgammar.V1
 import io.github.kotlinmania.rustlang.libm.math.lgammar.V2

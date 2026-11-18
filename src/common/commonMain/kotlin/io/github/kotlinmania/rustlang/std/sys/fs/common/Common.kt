@@ -1,6 +1,7 @@
 // port-lint: source sys/fs/common.rs
 package io.github.kotlinmania.rustlang.std.sys.fs.common
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
@@ -99,7 +100,7 @@ public fun exists(path: Path): Result<Boolean, Error> =
                 Result.Ok<Boolean, Error>(false)
             }
             else -> {
-                val error1 = (matchVal as Result.Err<*, *>).errValue()
+                val error1 = matchVal.errValue()
                 Result.Err<Boolean, Error>(error1)
             }
         }

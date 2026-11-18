@@ -4,6 +4,9 @@ package io.github.kotlinmania.rustlang.hashbrown.rawentry
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.hashbrown.HashMap
 import io.github.kotlinmania.rustlang.hashbrown.makeHash
 import io.github.kotlinmania.rustlang.hashbrown.rawentry.RawEntryMut.Occupied

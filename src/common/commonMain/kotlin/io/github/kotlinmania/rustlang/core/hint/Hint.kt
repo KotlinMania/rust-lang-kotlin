@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 
 // Hints to compiler that affects how code should be emitted or optimized.
@@ -44,7 +45,7 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
  * have a higher chance of occurring if those invariants are upheld by
  * external code that the compiler can't analyze.
  * ```kotlin
- * fun prepareInputs(divisors: List<UInt>) {
+ * fun prepareInputs(divisors: MutableList<UInt>) {
  *     // Note to future-self when making changes: The invariant established
  *     // here is NOT checked in `doComputation()`; if this changes, you HAVE
  *     // to change `doComputation()`.
@@ -694,7 +695,7 @@ public fun coldPath() {}
  * import std.hash.BuildHasher
  * import std.hint
  *
- * fun <Hasher, H : BuildHasher<Hasher>> append(hasher: H, v: Int, bucketOne: List<Int>, bucketTwo: List<Int>) {
+ * fun <Hasher, H : BuildHasher<Hasher>> append(hasher: H, v: Int, bucketOne: MutableList<Int>, bucketTwo: MutableList<Int>) {
  *     val hash = hasher.hashOne(v)
  *     val bucket = hint.selectUnpredictable(hash % 2 == 0, bucketOne, bucketTwo)
  *     bucket.push(v)

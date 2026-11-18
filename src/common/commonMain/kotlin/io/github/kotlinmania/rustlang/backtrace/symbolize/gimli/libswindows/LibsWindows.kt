@@ -24,7 +24,7 @@ public fun nativeLibraries(): List<Library> {
     return ret
 }
 
-public fun addLoadedImages(ret: List<Library>) {
+public fun addLoadedImages(ret: MutableList<Library>) {
     run {
         val snap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0)
         if (snap == INVALID_HANDLE_VALUE) {
@@ -39,7 +39,7 @@ public fun addLoadedImages(ret: List<Library>) {
                     null -> {}
                     else -> {
                         val lib = matchVal
-                        ret.push(lib)
+                        ret.add(lib)
                     }
                 }
                 if (Module32NextW(snap, me) != TRUE) {

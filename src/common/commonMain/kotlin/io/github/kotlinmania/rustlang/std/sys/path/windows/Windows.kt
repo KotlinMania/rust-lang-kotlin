@@ -12,10 +12,15 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.path.Path
@@ -80,7 +85,7 @@ public fun <T> withNativePath(path: Path, f: (WCStr) -> Result<T, Error>): Resul
     return f(path2)
 }
 
-public fun isVerbatimSep(b: UByte): Boolean = (b == 92u).toUByte()
+public fun isVerbatimSep(b: UByte): Boolean = b == 92u.toUByte()
 
 public fun isVerbatim(path: List<UShort>): Boolean = (path.startsWith(utf16("\\\\?\\")) || path.startsWith(utf16("\\??\\"))).toUByte()
 
@@ -147,14 +152,14 @@ public fun getLongPath(path: List<UShort>, preferVerbatim: Boolean): Result<List
     val LEGACY_MAX_PATH: Int = 248
     // UTF-16 encoded code points, used in parsing and building UTF-16 paths.
     // All of these are in the ASCII range so they can be cast directly to `UShort`.
-    val SEP: UShort = 92u.toUShort()
-    val ALT_SEP: UShort = 47u.toUShort()
-    val QUERY: UShort = 63u.toUShort()
-    val COLON: UShort = 58u.toUShort()
-    val DOT: UShort = 46u.toUShort()
-    val U: UShort = 85u.toUShort()
-    val N: UShort = 78u.toUShort()
-    val C: UShort = 67u.toUShort()
+    val SEP: UShort = (92u.toUByte()).toUShort()
+    val ALT_SEP: UShort = (47u.toUByte()).toUShort()
+    val QUERY: UShort = (63u.toUByte()).toUShort()
+    val COLON: UShort = (58u.toUByte()).toUShort()
+    val DOT: UShort = (46u.toUByte()).toUShort()
+    val U: UShort = (85u.toUByte()).toUShort()
+    val N: UShort = (78u.toUByte()).toUShort()
+    val C: UShort = (67u.toUByte()).toUShort()
     // \\?\
     val VERBATIM_PREFIX: List<UShort> = listOf(SEP.toUShort(), SEP.toUShort(), QUERY.toUShort(), SEP.toUShort())
     // \??\

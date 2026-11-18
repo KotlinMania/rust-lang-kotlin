@@ -409,7 +409,7 @@ public var EMPTY_STRING_NULL_TERMINATED: List<UShort> = listOf(0u.toUShort())
 public fun getLogicalDrives(): Any {
     // SAFETY: `GetLogicalDrives` only returns information.
     val drives = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getLogicalDrives()
-    return (65u..90u).filter({ letter -> (drives.toUInt() shr ((letter - 65u).toInt())).toUByte() and 1 == 1 })
+    return (65u.toUByte()..90u.toUByte()).filter({ letter -> (drives.toUInt() shr ((letter - 65u.toUByte()).toInt())).toUByte() and 1 == 1 })
 }
 
 // Note: Use a null-terminated wide string type to assert validity, similar to CStr.

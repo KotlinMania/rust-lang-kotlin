@@ -34,8 +34,8 @@ public fun <Int, F : Lemire<F, Int>> dec2flt(s: String): Result<F, ParseFloatErr
     val s1 = s
     var s2 = s1.encodeToByteArray().map { it.toUByte() }
     val c = s2.first() ?: return Result.Err<F, ParseFloatError>(pfeEmpty())
-    val negative = c == 45u
-    if (c == 45u || c == 43u) {
+    val negative = c == 45u.toUByte()
+    if (c == 45u.toUByte() || c == 43u.toUByte()) {
         s2 = ((s2).subList(1, (s2).size))
     }
     if (s2.isEmpty()) {

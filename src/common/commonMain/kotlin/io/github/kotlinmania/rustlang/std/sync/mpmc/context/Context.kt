@@ -10,6 +10,9 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchange
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Selected
 import io.github.kotlinmania.rustlang.std.sync.mpmc.waker.currentThreadId
 import io.github.kotlinmania.rustlang.std.thread.current.currentOrUnnamed

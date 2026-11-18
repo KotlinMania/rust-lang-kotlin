@@ -13,6 +13,7 @@ import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.stash.Stash
 import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter
 
 public typealias Pe = ImageNtHeaders64
 

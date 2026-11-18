@@ -24,18 +24,29 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.constptr.castMut
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.iter.Iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.std.env.EXE_EXTENSION
 import io.github.kotlinmania.rustlang.std.env.EXE_SUFFIX
 import io.github.kotlinmania.rustlang.std.env.currentExe
@@ -629,7 +640,7 @@ public fun resolveExe(exePath: OsStr, parentPaths: () -> OsString?, childPaths: 
         // From the `CreateProcessW` docs:
         // > If the file name does not contain an extension, .exe is appended.
         // Note that this rule only applies when searching paths.
-        val hasExtension = exePath.asEncodedBytes().contains(46u)
+        val hasExtension = exePath.asEncodedBytes().contains(46u.toUByte())
         // Search the directories given by `searchPaths`.
         val result =
             searchPaths(parentPaths, childPaths, { path2 ->
@@ -970,9 +981,9 @@ public fun makeCommandLine(argv0: OsStr, args: List<Arg>, forceQuotes: Boolean):
     // the child process parses its arguments.
     // Note that quotes aren't escaped here because they can't be used in arg0.
     // But that's ok because file paths can't contain quotes.
-    cmd.add(34u.toUShort())
+    cmd.add((34u.toUByte()).toUShort())
     cmd.extend(argv0.encodeWide())
-    cmd.add(34u.toUShort())
+    cmd.add((34u.toUByte()).toUShort())
     for (arg in args) {
         cmd.add((' ').code.toUShort())
         when (val tryResult = appendArg(cmd, arg, forceQuotes)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.errValue()) }
@@ -1026,12 +1037,12 @@ public fun makeDirp(d: OsString?): Result<Pair<ConstPtr, List<UShort>>, Error> {
                 if (dirStr.startsWith(utf16("\\\\?\\UNC"))) {
                     // Turn the `C` in `UNC` into a `\` so we can then use `\\rest\of\path`.
                     val start = "\\\\?\\UN".len()
-                    dirStr[start] = 92u.toUShort()
+                    dirStr[start] = (92u.toUByte()).toUShort()
                     if (isAbsoluteExact(((dirStr).subList(start, (dirStr).size)))) {
                         ((dirStr).subList(start, (dirStr).size)).asPtr()
                     } else {
                         // Revert the above change.
-                        dirStr[start] = 67u.toUShort()
+                        dirStr[start] = (67u.toUByte()).toUShort()
                         dirStr.asPtr()
                     }
                 } else if (dirStr.startsWith(utf16("\\\\?\\"))) {

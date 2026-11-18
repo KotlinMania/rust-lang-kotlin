@@ -4,6 +4,7 @@ import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.result.and
 import io.github.kotlinmania.rustlang.core.result.andThen
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.test.term.Color
 import io.github.kotlinmania.rustlang.test.term.terminfo.Error.*

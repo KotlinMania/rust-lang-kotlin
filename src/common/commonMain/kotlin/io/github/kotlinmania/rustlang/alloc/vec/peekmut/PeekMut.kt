@@ -37,7 +37,7 @@ public class DebugTuple(
  * [peekMut]: Vec.peekMut
  */
 public open class PeekMut<T, A : Allocator>(
-    public var vec: List<T>,
+    public var vec: MutableList<T>,
 ) {
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "PeekMut").field(this.deref()).finish(); Result.Ok<Unit, Error>(Unit) }
 
@@ -54,7 +54,7 @@ public open class PeekMut<T, A : Allocator>(
     }
 
     public companion object {
-        public fun <T, A : Allocator> new(vec: List<T>): PeekMut<T, A>? =
+        public fun <T, A : Allocator> new(vec: MutableList<T>): PeekMut<T, A>? =
             if (vec.isEmpty()) {
                 null
             } else {

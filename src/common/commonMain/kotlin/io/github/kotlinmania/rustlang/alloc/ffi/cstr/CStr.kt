@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
 import io.github.kotlinmania.rustlang.core.fmt.Error
@@ -21,10 +22,14 @@ import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
 
 // [CString] and its related types.
@@ -150,10 +155,10 @@ public open class CString(
      * val cString = CString.from("foo")
      * val ptr = cString.intoRaw()
      * run {
-     *     check(102u == ptr.toUByte())
-     *     check(111u == ptr.add(1).toUByte())
-     *     check(111u == ptr.add(2).toUByte())
-     *     check(0u == ptr.add(3).toUByte())
+     *     check(102u.toUByte() == ptr.toUByte())
+     *     check(111u.toUByte() == ptr.add(1).toUByte())
+     *     check(111u.toUByte() == ptr.add(2).toUByte())
+     *     check(0u.toUByte() == ptr.add(3).toUByte())
      *     // retake pointer to free memory
      *     CString.fromRaw(ptr)
      * }
@@ -171,10 +176,10 @@ public open class CString(
      * ```kotlin
      * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
      *
-     * val validUtf8 = mutableListOf(102u, 111u, 111u)
+     * val validUtf8 = mutableListOf(102u.toUByte(), 111u.toUByte(), 111u.toUByte())
      * val cstring = CString.new(validUtf8).expect("we provided bytes that do not have a NUL byte, so CString.new should not fail")
      * check(cstring.intoString().expect("we provided bytes that are valid UTF-8, so `intoString` should not fail") == "foo")
-     * val invalidUtf8 = mutableListOf(102u, 0xff, 111u, 111u)
+     * val invalidUtf8 = mutableListOf(102u.toUByte(), 0xff, 111u.toUByte(), 111u.toUByte())
      * val cstring1 = CString.new(invalidUtf8).expect("we provided bytes that do not have a NUL byte, so CString.new should not fail")
      * val err = cstring1.intoString().expectErr("we provided bytes that are invalid UTF-8, so `intoString` should fail")
      * check(err.utf8Error().validUpTo() == 1)
@@ -196,7 +201,7 @@ public open class CString(
      *
      * val cString = CString.from("foo")
      * val bytes = cString.intoBytes()
-     * check(bytes == mutableListOf(102u, 111u, 111u))
+     * check(bytes == mutableListOf(102u.toUByte(), 111u.toUByte(), 111u.toUByte()))
      * ```
      */
     public open fun intoBytes(): List<UByte> {
@@ -217,7 +222,7 @@ public open class CString(
      *
      * val cString = CString.from("foo")
      * val bytes = cString.intoBytesWithNul()
-     * check(bytes == mutableListOf(102u, 111u, 111u, 0u))
+     * check(bytes == mutableListOf(102u.toUByte(), 111u.toUByte(), 111u.toUByte(), 0u.toUByte()))
      * ```
      */
     public open fun intoBytesWithNul(): List<UByte> = this.intoInner().intoVec()
@@ -240,7 +245,7 @@ public open class CString(
      * public fun doctestEntry() {
      *     val cString = CString.from("foo")
      *     val bytes = cString.encodeToByteArray().map { it.toUByte() }
-     *     check(bytes == ubyteArrayOf(102u, 111u, 111u))
+     *     check(bytes == ubyteArrayOf(102u.toUByte(), 111u.toUByte(), 111u.toUByte()))
      * }
      * ```
      */
@@ -263,7 +268,7 @@ public open class CString(
      * public fun doctestEntry() {
      *     val cString = CString.from("foo")
      *     val bytes = cString.asBytesWithNul()
-     *     check(bytes == ubyteArrayOf(102u, 111u, 111u, 0u))
+     *     check(bytes == ubyteArrayOf(102u.toUByte(), 111u.toUByte(), 111u.toUByte(), 0u.toUByte()))
      * }
      * ```
      */

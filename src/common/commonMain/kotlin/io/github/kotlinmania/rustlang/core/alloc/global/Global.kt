@@ -7,6 +7,8 @@ import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
@@ -369,7 +371,7 @@ public fun <A> A.alloc(layout: Layout): MutPtr where A : GlobalAllocator {
                 ptr.cast().asPtr()
             }
             else -> {
-                val AllocError = (matchVal as Result.Err<*, *>).errValue()
+                val AllocError = matchVal.errValue()
                 MutPtr(0L)
             }
         }
@@ -396,7 +398,7 @@ public fun <A> A.allocZeroed(layout: Layout): MutPtr where A : GlobalAllocator {
                 ptr.cast().asPtr()
             }
             else -> {
-                val AllocError = (matchVal as Result.Err<*, *>).errValue()
+                val AllocError = matchVal.errValue()
                 MutPtr(0L)
             }
         }
@@ -432,7 +434,7 @@ public fun <A> A.realloc(ptr: MutPtr, layout: Layout, newSize: Int): MutPtr wher
             ptr3.cast().asPtr()
         }
         else -> {
-            val AllocError = (ptr2 as Result.Err<*, *>).errValue()
+            val AllocError = ptr2.errValue()
             MutPtr(0L)
         }
     }

@@ -22,6 +22,8 @@ import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedNextMultipleOf
 import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.result.andThen
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import kotlin.experimental.or
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
@@ -254,7 +256,7 @@ public interface Read<SelfType> {
      * ```kotlin
      * import io.Result
      *
-     * fun readToEnd(destVec: List<UByte>): Result<Int> {
+     * fun readToEnd(destVec: MutableList<UByte>): Result<Int> {
      *     val initialVecLen = destVec.size
      *     while (true) {
      *         val srcBuf = this.exampleDatasource.fillBuf().getOrElse { return Result.failure(it) }
@@ -262,7 +264,7 @@ public interface Read<SelfType> {
      *             break
      *         }
      *         destVec.tryReserve(srcBuf.len()).getOrElse { return Result.failure(it) }
-     *         destVec.extendFromSlice(srcBuf)
+     *         destVec.addAll(srcBuf)
      *         // Any irreversible side effects should happen after `tryReserve` succeeds,
      *         // to avoid losing data on allocation error.
      *         val read = srcBuf.len()
@@ -285,7 +287,7 @@ public interface Read<SelfType> {
      *
      * [read]: Read.read
      */
-    public fun readToEnd(buf: List<UByte>): Result<Int> = defaultReadToEnd(this, buf, null)
+    public fun readToEnd(buf: MutableList<UByte>): Result<Int> = defaultReadToEnd(this, buf, null)
 
     /**
      * Reads all bytes until EOF in this source, appending them to `buf`.
@@ -589,7 +591,7 @@ public interface Read<SelfType> {
      * }
      * ```
      */
-    public fun readArray(n: Int): Result<UByteArray> {
+    public fun readArray(n: Int = 0): Result<UByteArray> {
         val buf = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Result<UByteArray>>()) }
         val borrowedBuf = BorrowedBuf.from(buf.asMutSlice())
         when (val tryResult = this.readBufExact(borrowedBuf.unfilled())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<UByteArray, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
@@ -755,7 +757,7 @@ public val DEFAULT_BUF_SIZE: Int = 8 * 1024
  *    the function only *appends* bytes to the buffer. We'll get undefined
  *    behavior if existing bytes are overwritten to have non-UTF-8 data.
  */
-public fun appendToString(buf: String, f: (List<UByte>) -> Result<Int>): Result<Int> {
+public fun appendToString(buf: String, f: (MutableList<UByte>) -> Result<Int>): Result<Int> {
     val lenOriginal = buf.length
     // SAFETY: invalid UTF-8 discarded before return or unwind
     val bufVec = buf.asMutVec()
@@ -787,9 +789,9 @@ public fun appendToString(buf: String, f: (List<UByte>) -> Result<Int>): Result<
  *   at the same time, i.e. small reads suffer from syscall overhead, all reads incur costs proportional to buffer size (#110650)
  * - also avoid <4 byte reads as this may split UTF-8 code points, which can be a problem for Windows console reads (#142847)
  */
-public fun <R : Read<R>> defaultReadToEnd(r: R, buf: List<UByte>, sizeHint: Int?): Result<Int> {
+public fun <R : Read<R>> defaultReadToEnd(r: R, buf: MutableList<UByte>, sizeHint: Int?): Result<Int> {
     val PROBE_SIZE: Int = 32
-    fun <R : Read<R>> smallProbeRead(r1: R, buf1: List<UByte>): Result<Int> {
+    fun <R : Read<R>> smallProbeRead(r1: R, buf1: MutableList<UByte>): Result<Int> {
         val probe = UByteArray((PROBE_SIZE).toInt()) { 0u.toUByte() }
         while (true) {
             // Without global OOM handling we must proactively allocate the buffer
@@ -810,7 +812,7 @@ public fun <R : Read<R>> defaultReadToEnd(r: R, buf: List<UByte>, sizeHint: Int?
                         continue
                     }
                     else -> {
-                        val e1 = (matchVal as RustResult.Err<*, *>).errValue()
+                        val e1 = matchVal.errValue()
                         return RustResult.Err(e1)
                     }
                 }
@@ -960,7 +962,7 @@ public fun <R : Read<R>> defaultReadExact(thisRef: R, buf: MutableList<UByte>): 
                     val e = matchVal.errValue()
                 }
                 else -> {
-                    val e1 = (matchVal as RustResult.Err<*, *>).errValue()
+                    val e1 = matchVal.errValue()
                     return RustResult.Err(e1)
                 }
             }
@@ -993,7 +995,7 @@ public fun <R : Read<R>> defaultReadBufExact(thisRef: R, cursor: BorrowedCursor<
                     continue
                 }
                 else -> {
-                    val e1 = (matchVal as RustResult.Err<*, *>).errValue()
+                    val e1 = matchVal.errValue()
                     return RustResult.Err(e1)
                 }
             }

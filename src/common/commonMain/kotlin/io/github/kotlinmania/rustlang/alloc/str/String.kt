@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.char.methods.isAscii
 import io.github.kotlinmania.rustlang.core.char.methods.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.methods.toAsciiUppercase
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
@@ -18,11 +19,15 @@ import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.slice.splitAtMut
 import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.pattern.Utf8Pattern
@@ -451,7 +456,7 @@ public fun String.toLowercase(): String {
     // SAFETY: `toAsciiLowercase` preserves ASCII bytes, so the converted
     // prefix remains valid UTF-8.
     var (s, rest) = convertWhileAscii(this, UByte::toAsciiLowercase)
-    val prefixLen = s.len()
+    val prefixLen = s.length
     for ((i, c) in rest.charIndices()) {
         if (c == '\u03a3') {
             // Σ maps to σ, except at the end of a word where it maps to ς.
@@ -460,28 +465,28 @@ public fun String.toLowercase(): String {
             // so hard-code it rather than have a generic "condition" mechanism.
             // See https://github.com/rust-lang/rust/issues/26035
             val sigmaLowercase = mapUppercaseSigma(this, prefixLen + i)
-            s.push(sigmaLowercase)
+            s += sigmaLowercase
         } else {
             run {
                 val matchVal = toLower(c)
                 when {
                     matchVal.size == 3 && matchVal[1] == '\u0000' -> {
                         val a = matchVal[0]
-                        s.push(a)
+                        s += a
                     }
                     matchVal.size == 3 && matchVal[2] == '\u0000' -> {
                         val a1 = matchVal[0]
                         val b = matchVal[1]
-                        s.push(a1)
-                        s.push(b)
+                        s += a1
+                        s += b
                     }
                     else -> {
                         val a2 = matchVal[0]
                         val b1 = matchVal[1]
                         val c1 = matchVal[2]
-                        s.push(a2)
-                        s.push(b1)
-                        s.push(c1)
+                        s += a2
+                        s += b1
+                        s += c1
                     }
                 }
             }
@@ -597,7 +602,7 @@ public fun String.wordToTitlecase(): String {
     // SAFETY: `toAsciiLowercase` preserves ASCII bytes, so the prefix stays valid UTF-8.
     val (ascii, rest) = convertWhileAscii(remainder, UByte::toAsciiLowercase)
     s += ascii
-    val prefixLen = restStart + ascii.len()
+    val prefixLen = restStart + ascii.length
     for ((i, c1) in rest.charIndices()) {
         if (c1 == '\u03a3') {
             // Σ maps to σ, except at the end of a word where it maps to ς.
@@ -683,21 +688,21 @@ public fun String.toUppercase(): String {
             when {
                 matchVal.size == 3 && matchVal[1] == '\u0000' -> {
                     val a = matchVal[0]
-                    s.push(a)
+                    s += a
                 }
                 matchVal.size == 3 && matchVal[2] == '\u0000' -> {
                     val a1 = matchVal[0]
                     val b = matchVal[1]
-                    s.push(a1)
-                    s.push(b)
+                    s += a1
+                    s += b
                 }
                 else -> {
                     val a2 = matchVal[0]
                     val b1 = matchVal[1]
                     val c1 = matchVal[2]
-                    s.push(a2)
-                    s.push(b1)
-                    s.push(c1)
+                    s += a2
+                    s += b1
+                    s += c1
                 }
             }
         }
@@ -795,21 +800,21 @@ public fun String.toCasefoldUnnormalized(): String {
             when {
                 matchVal.size == 3 && matchVal[1] == '\u0000' -> {
                     val a = matchVal[0]
-                    s.push(a)
+                    s += a
                 }
                 matchVal.size == 3 && matchVal[2] == '\u0000' -> {
                     val a1 = matchVal[0]
                     val b = matchVal[1]
-                    s.push(a1)
-                    s.push(b)
+                    s += a1
+                    s += b
                 }
                 else -> {
                     val a2 = matchVal[0]
                     val b1 = matchVal[1]
                     val c1 = matchVal[2]
-                    s.push(a2)
-                    s.push(b1)
-                    s.push(c1)
+                    s += a2
+                    s += b1
+                    s += c1
                 }
             }
         }

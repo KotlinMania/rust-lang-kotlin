@@ -36,6 +36,7 @@ import io.github.kotlinmania.rustlang.core.ops.function.FnPtr
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
+import io.github.kotlinmania.rustlang.core.ptr.constptr.addr
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawParts
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
@@ -99,7 +100,7 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  * / **
  *  * Moves all the elements of `src` into `dst`, leaving `src` empty.
  *  * /
- * fun <T> append(dst: List<T>, src: List<T>) {
+ * fun <T> append(dst: MutableList<T>, src: MutableList<T>) {
  *     val srcLen = src.size
  *     val dstLen = dst.size
  *     // Ensure that `dst` has enough capacity to hold all of `src`.

@@ -118,7 +118,7 @@ public interface FileExt {
                         offset1 += n.toULong()
                     }
                     else -> {
-                        val e = (matchVal as Result.Err<*, *>).errValue()
+                        val e = matchVal.errValue()
                         return Result.Err<Unit, Error>(e)
                     }
                 }
@@ -308,7 +308,7 @@ public interface FileExt {
                         offset1 += n.toULong()
                     }
                     else -> {
-                        val e = (matchVal as Result.Err<*, *>).errValue()
+                        val e = matchVal.errValue()
                         return Result.Err<Unit, Error>(e)
                     }
                 }

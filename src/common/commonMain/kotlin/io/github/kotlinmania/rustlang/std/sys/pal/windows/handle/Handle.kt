@@ -8,7 +8,6 @@ import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.io.write.defaultWriteVectored
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -17,6 +16,9 @@ import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
@@ -100,7 +102,7 @@ public open class Handle(
                 Result.Ok<Int, Error>(0)
             }
             else -> {
-                val e1 = (res as Result.Err<*, *>).errValue()
+                val e1 = res.errValue()
                 Result.Err<Int, Error>(e1)
             }
         }
@@ -122,7 +124,7 @@ public open class Handle(
                 Result.Ok<Int, Error>(0)
             }
             else -> {
-                val e1 = (res as Result.Err<*, *>).errValue()
+                val e1 = res.errValue()
                 Result.Err<Int, Error>(e1)
             }
         }
@@ -148,7 +150,7 @@ public open class Handle(
                 Result.Ok<Unit, Error>(Unit)
             }
             else -> {
-                val e1 = (res as Result.Err<*, *>).errValue()
+                val e1 = res.errValue()
                 Result.Err<Unit, Error>(e1)
             }
         }
@@ -164,7 +166,7 @@ public open class Handle(
         return Result.Ok<Unit, Error>(Unit)
     }
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int, Error> {
+    public open fun readToEnd(buf: MutableList<UByte>): Result<Int, Error> {
         val me = this
         return Read.readToEnd(me, buf)
     }
@@ -266,7 +268,7 @@ public open class Handle(
                     null -> {}
                     else -> {
                         val out = matchVal
-                        Write.writeFmt(out, "fatal runtime error: " + ("I/O error: operation failed to complete synchronously").toString() + ", aborting\n")
+                        out.writeFmt("fatal runtime error: " + ("I/O error: operation failed to complete synchronously").toString() + ", aborting\n")
                     }
                 }
                 run {
@@ -318,7 +320,7 @@ public open class Handle(
                     null -> {}
                     else -> {
                         val out = matchVal
-                        Write.writeFmt(out, "fatal runtime error: " + ("I/O error: operation failed to complete synchronously").toString() + ", aborting\n")
+                        out.writeFmt("fatal runtime error: " + ("I/O error: operation failed to complete synchronously").toString() + ", aborting\n")
                     }
                 }
                 run {

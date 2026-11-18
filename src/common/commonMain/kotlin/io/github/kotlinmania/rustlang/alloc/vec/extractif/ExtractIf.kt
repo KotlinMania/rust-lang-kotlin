@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
@@ -57,7 +58,7 @@ public class DebugStruct(
  * ```
  */
 public open class ExtractIf<T, F, A : Allocator>(
-    public var vec: List<T>,
+    public var vec: MutableList<T>,
     /**
      * The index of the item that will be inspected by the next call to `next`.
      */
@@ -109,7 +110,7 @@ public open class ExtractIf<T, F, A : Allocator>(
     }
 
     public companion object {
-        public fun <T, F, A : Allocator, R : RangeBounds<Int>> new(vec: List<T>, pred: F, range: R): ExtractIf<T, F, A> {
+        public fun <T, F, A : Allocator, R : RangeBounds<Int>> new(vec: MutableList<T>, pred: F, range: R): ExtractIf<T, F, A> {
             val oldLen = vec.size
             val structVal = Range(range, 0 until oldLen)
             val start = structVal.start

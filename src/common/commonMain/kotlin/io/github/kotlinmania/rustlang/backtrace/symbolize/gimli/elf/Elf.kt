@@ -28,8 +28,13 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 
 public typealias Elf = FileHeader64<NativeEndian>
 
@@ -328,7 +333,7 @@ public open class Object internal constructor(
                     while (true) {
                         val matchVal1 = notes.next()
                         if (!(matchVal1 is Result.Ok<*, *> && matchVal1.okValue() != null)) break
-                        val okValueVal1 = (matchVal1 as Result.Ok<*, *>).okValue()
+                        val okValueVal1 = matchVal1.okValue()
                         val note = okValueVal1
                         if (note.name() == ELF_NOTE_GNU && note.nType(this.endian) == NT_GNU_BUILD_ID) {
                             return note.desc()

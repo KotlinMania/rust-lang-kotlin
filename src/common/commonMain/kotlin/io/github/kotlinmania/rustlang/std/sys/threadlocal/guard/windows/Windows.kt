@@ -2,11 +2,11 @@
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.windows
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.replace
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
@@ -15,7 +15,12 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchange
 import io.github.kotlinmania.rustlang.core.sync.atomic.fence
+import io.github.kotlinmania.rustlang.core.sync.atomic.fetchAdd
+import io.github.kotlinmania.rustlang.core.sync.atomic.fetchSub
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
+import io.github.kotlinmania.rustlang.core.sync.atomic.swap
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.rt.threadCleanup
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS
@@ -56,7 +61,7 @@ public fun create(dtor: PflsCallbackFunction): Key {
                 null -> {}
                 else -> {
                     val out = matchVal
-                    Write.writeFmt(out, "fatal runtime error: " + ("out of FLS keys").toString() + ", aborting\n")
+                    out.writeFmt("fatal runtime error: " + ("out of FLS keys").toString() + ", aborting\n")
                 }
             }
             run {
@@ -76,7 +81,7 @@ public fun set(key: Key, ptr: ConstPtr) {
                 null -> {}
                 else -> {
                     val out = matchVal
-                    Write.writeFmt(out, "fatal runtime error: " + ("failed to set FLS value").toString() + ", aborting\n")
+                    out.writeFmt("fatal runtime error: " + ("failed to set FLS value").toString() + ", aborting\n")
                 }
             }
             run {
@@ -227,7 +232,7 @@ public fun enable() {
                                             null -> {}
                                             else -> {
                                                 val out = matchVal1
-                                                Write.writeFmt(out, "fatal runtime error: " + ("failed to register fls atexit hook").toString() + ", aborting\n")
+                                                out.writeFmt("fatal runtime error: " + ("failed to register fls atexit hook").toString() + ", aborting\n")
                                             }
                                         }
                                         run {

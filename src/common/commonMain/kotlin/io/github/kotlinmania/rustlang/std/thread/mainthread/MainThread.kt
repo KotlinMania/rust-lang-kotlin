@@ -4,7 +4,9 @@ package io.github.kotlinmania.rustlang.std.thread.mainthread
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU64
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Relaxed
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.std.thread.id.ThreadId
 
 // Store the ID of the main thread.

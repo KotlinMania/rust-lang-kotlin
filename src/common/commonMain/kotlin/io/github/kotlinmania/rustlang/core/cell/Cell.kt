@@ -1,6 +1,7 @@
 // port-lint: source cell.rs
 package io.github.kotlinmania.rustlang.core.cell
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -18,6 +19,8 @@ import io.github.kotlinmania.rustlang.core.panic.location.Location
 import io.github.kotlinmania.rustlang.core.pin.PinSafePointer
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingAdd
 import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.ptr.fromMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
@@ -1326,7 +1329,7 @@ public open class Ref<T>(
         return (this).value.value.asRef()
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = (this).value.fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = this.fmt(f)
 
     // The implementations of Deref/DerefMut are not malicious, so we can allow the
     // user to perform unsizing coercions with `Pin<Ref<T>>` pointers if they
@@ -1591,7 +1594,7 @@ public open class RefMut<T>(
         return (this).value.value.asMut()
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = (this).value.fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = this.fmt(f)
 
     // The implementations of Deref/DerefMut are not malicious, so we can allow the
     // user to perform unsizing coercions with `Pin<RefMut<T>>` pointers if they

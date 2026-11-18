@@ -3,6 +3,8 @@
 
 package io.github.kotlinmania.rustlang.core.num.imp.intbits.u16
 
+import io.github.kotlinmania.rustlang.core.num.ilog2
+
 public val STAGES: Int = 16u.ilog2().toInt()
 
 public fun prepare(sparse: UShort): UShortArray {

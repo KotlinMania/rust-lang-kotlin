@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common.is8digits
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.splitFirst
 
 // Arbitrary-precision decimal type used by fallback algorithms.
@@ -282,7 +283,7 @@ public fun parseDecimalSeq(s: List<UByte>): DecimalSeq {
     s1 = s1.parseDigits({ digit -> d.tryAddDigit(digit) })
     run {
         val matchVal1 = s1.splitFirst()
-        if (matchVal1 != null && matchVal1.first == 46u) {
+        if (matchVal1 != null && matchVal1.first == 46u.toUByte()) {
             val sNext1 = matchVal1.second
             s1 = sNext1
             val first = s1
@@ -312,9 +313,9 @@ public fun parseDecimalSeq(s: List<UByte>): DecimalSeq {
         // Ignore the trailing zeros if there are any
         var nTrailingZeros = 0
         for (c in ((start).subList(0, (start.size - s1.size))).iter().rev()) {
-            if (c == 48u) {
+            if (c == 48u.toUByte()) {
                 nTrailingZeros += 1
-            } else if (c != 46u) {
+            } else if (c != 46u.toUByte()) {
                 break
             }
         }
@@ -331,7 +332,7 @@ public fun parseDecimalSeq(s: List<UByte>): DecimalSeq {
         else -> {
             val ch = matchVal3.first
             val sNext3 = matchVal3.second
-            if (ch == 101u || ch == 69u) {
+            if (ch == 101u.toUByte() || ch == 69u.toUByte()) {
                 s1 = sNext3
                 var negExp = false
                 when (val matchVal4 = s1.splitFirst()) {
@@ -339,8 +340,8 @@ public fun parseDecimalSeq(s: List<UByte>): DecimalSeq {
                     else -> {
                         val ch1 = matchVal4.first
                         val sNext4 = matchVal4.second
-                        negExp = ch1 == 45u
-                        if (ch1 == 45u || ch1 == 43u) {
+                        negExp = ch1 == 45u.toUByte()
+                        if (ch1 == 45u.toUByte() || ch1 == 43u.toUByte()) {
                             s1 = sNext4
                         }
                     }

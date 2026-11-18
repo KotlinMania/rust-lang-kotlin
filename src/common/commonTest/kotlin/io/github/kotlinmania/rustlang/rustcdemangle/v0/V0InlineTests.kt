@@ -2,6 +2,8 @@
 package io.github.kotlinmania.rustlang.rustcdemangle.v0
 
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 public class V0InlineTests {
     @kotlin.test.Test

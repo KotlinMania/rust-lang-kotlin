@@ -5,6 +5,8 @@ import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
@@ -122,19 +124,19 @@ public open class JoinPathsError {
 
 public fun <I> joinPaths(paths: I): Result<OsString, JoinPathsError> where I : Iterator<OsStr> {
     val joined = mutableListOf<UShort>()
-    val sep = 59u.toUShort()
+    val sep = (59u.toUByte()).toUShort()
     for ((i, path) in paths.mapIndexed { index, item -> Pair(index, item) }) {
         val path1 = path.asRef()
         if (i > 0) {
             joined.add(sep)
         }
         val v = path1.encodeWide().toMutableList()
-        if (v.contains((34u.toUShort()))) {
+        if (v.contains(((34u.toUByte()).toUShort()))) {
             return Result.Err<OsString, JoinPathsError>(JoinPathsError())
         } else if (v.contains(sep)) {
-            joined.add(34u.toUShort())
+            joined.add((34u.toUByte()).toUShort())
             joined.addAll(v)
-            joined.add(34u.toUShort())
+            joined.add((34u.toUByte()).toUShort())
         } else {
             joined.addAll(v)
         }

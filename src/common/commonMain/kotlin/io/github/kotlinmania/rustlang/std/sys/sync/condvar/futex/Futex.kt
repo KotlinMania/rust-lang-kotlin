@@ -1,8 +1,8 @@
 // port-lint: source sys/sync/condvar/futex.rs
 package io.github.kotlinmania.rustlang.std.sys.sync.condvar.futex
 
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.Futex
 import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWait
 import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWake

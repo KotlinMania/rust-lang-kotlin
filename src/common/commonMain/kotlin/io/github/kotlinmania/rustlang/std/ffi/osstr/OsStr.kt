@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.char.methods.isAscii
 import io.github.kotlinmania.rustlang.core.char.methods.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.methods.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -22,11 +23,18 @@ import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.slice.splitFirst
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
 import io.github.kotlinmania.rustlang.std.rc.Rc
 import io.github.kotlinmania.rustlang.std.sync.Arc
@@ -606,7 +614,7 @@ public open class OsString(
          *
          * val osStr = OsStr.new("Mary had a little lamb")
          * val bytes = osStr.asEncodedBytes()
-         * val words = bytes.split({ b -> b == 32u })
+         * val words = bytes.split({ b -> b == 32u.toUByte() })
          * val words1: List<OsStr> = words.map({ word ->
          *     // SAFETY:
          *     // - Each `word` only contains content that originated from `OsStr.asEncodedBytes`
@@ -978,7 +986,7 @@ public open class OsStr internal constructor(
      * public fun doctestEntry() {
      *     val osStr = OsStr.new("foo=bar")
      *     val bytes = osStr.asEncodedBytes()
-     *     when (val matchVal = bytes.iter().indexOfFirst({ b -> b == 61u }).takeIf { it >= 0 }) {
+     *     when (val matchVal = bytes.iter().indexOfFirst({ b -> b == 61u.toUByte() }).takeIf { it >= 0 }) {
      *         null -> {}
      *         else -> {
      *             val index = matchVal
@@ -1257,7 +1265,7 @@ public open class OsStr internal constructor(
          *
          * val osStr = OsStr.new("Mary had a little lamb")
          * val bytes = osStr.asEncodedBytes()
-         * val words = bytes.split({ b -> b == 32u })
+         * val words = bytes.split({ b -> b == 32u.toUByte() })
          * val words1: List<OsStr> = words.map({ word ->
          *     // SAFETY:
          *     // - Each `word` only contains content that originated from `OsStr.asEncodedBytes`

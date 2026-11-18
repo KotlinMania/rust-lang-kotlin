@@ -1,7 +1,9 @@
 package io.github.kotlinmania.rustlang.getopts
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.getopts.Fail.*
 import io.github.kotlinmania.rustlang.getopts.HasArg.*
 import io.github.kotlinmania.rustlang.getopts.Name.*
@@ -16,7 +18,7 @@ public fun validateNames(shortName: String, longName: String) {
     check(len1 == 0 || len1 > 1) { "the long_name (second argument) should be longer than a single character, or an empty string for none" }
 }
 
-public fun isArg(arg: String): Boolean = arg.encodeToByteArray().map { it.toUByte() }.get(0) == 45u && arg.length > 1
+public fun isArg(arg: String): Boolean = arg.encodeToByteArray().map { it.toUByte() }.get(0) == 45u.toUByte() && arg.length > 1
 
 public fun findOpt(opts: List<Opt>, nm: Name): Int? {
     // Search main options.

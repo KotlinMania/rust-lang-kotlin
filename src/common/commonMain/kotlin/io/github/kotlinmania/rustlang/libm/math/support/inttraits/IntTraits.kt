@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.num.borrowingSub
 import io.github.kotlinmania.rustlang.core.num.carryingAdd
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedSub
+import io.github.kotlinmania.rustlang.core.num.ilog2
 import io.github.kotlinmania.rustlang.core.num.overflowingAdd
 import io.github.kotlinmania.rustlang.core.num.overflowingSub
 import io.github.kotlinmania.rustlang.core.num.wrappingMul

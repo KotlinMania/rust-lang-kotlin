@@ -13,10 +13,14 @@ import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmap
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsStr
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.path.Path
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.stash.Stash
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 public typealias Mach = macho.MachHeader64<NativeEndian>
 
@@ -247,7 +251,7 @@ public open class Object(
             while (true) {
                 val matchVal = commands.next()
                 if (!(matchVal is Result.Ok<*, *> && matchVal.okValue() != null)) break
-                val okValueVal = (matchVal as Result.Ok<*, *>).okValue()
+                val okValueVal = matchVal.okValue()
                 val command = okValueVal
                 when (val matchVal2 = (MachSegment.fromCommand(command).ok() ?: return null)) {
                     null -> {

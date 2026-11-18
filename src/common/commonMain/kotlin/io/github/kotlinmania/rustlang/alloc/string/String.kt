@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.alloc.vec.sveretain.PanicGuard
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.fmt.Arguments
 import io.github.kotlinmania.rustlang.core.hint.unlikely
@@ -21,6 +22,7 @@ import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.num.ilog10
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.num.saturating.Saturating
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
@@ -30,12 +32,19 @@ import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
 import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.castUninit
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.constptr.offset
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.castUninit
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.offset
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -43,10 +52,14 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8UncheckedMut
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
+import io.github.kotlinmania.rustlang.core.str.isCharBoundary
 import io.github.kotlinmania.rustlang.core.str.iter.CharIndices
 import io.github.kotlinmania.rustlang.core.str.iter.Chars
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.pattern.Utf8Pattern
@@ -205,7 +218,7 @@ public class DebugTuple(
  * val s = "hello"
  * check(s.encodeToByteArray().map { it.toUByte() }[0] == 104u.toUByte())
  * // or
- * check(s.encodeToByteArray().map { it.toUByte() }[0] == 104u)
+ * check(s.encodeToByteArray().map { it.toUByte() }[0] == 104u.toUByte())
  * // The first byte is 240 which isn't obviously useful
  * val s1 = "💖💖💖💖💖"
  * check(s1.encodeToByteArray().map { it.toUByte() }[0] == 240u.toUByte())
@@ -1143,7 +1156,7 @@ public open class RustAllocString(
      * check(s == "olleh")
      * ```
      */
-    public open fun asMutVec(): List<UByte> = this.vec
+    public open fun asMutVec(): MutableList<UByte> = this.vec
 
     /**
      * Returns the length of this `String`, in bytes, not [char]s or
@@ -1627,7 +1640,7 @@ public open class RustAllocString(
      * val c = a.toString() + b
      * ```
      */
-    public open fun add(other: kotlin.String): String {
+    public override fun add(other: kotlin.String): String {
         this.pushStr(other)
         return this
     }
@@ -1669,7 +1682,7 @@ public open class RustAllocString(
              *
              * The caller must initialize the number of bytes returned by the closure.
              */
-            fun <T> withSpare(bytes: List<UByte>, then: (List<MaybeUninit<T>>) -> Int, n: Int = 0) {
+            fun <T> withSpare(bytes: MutableList<UByte>, then: (List<MaybeUninit<T>>) -> Int, n: Int = 0) {
                 run {
                     check(sizeOf<T>(typeLayoutT = UnresolvedTypeLayout<T>()) == 1)
                 }

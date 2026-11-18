@@ -16,6 +16,7 @@ import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.num.ilog2
 import io.github.kotlinmania.rustlang.core.ops.arith.Neg
 
 // Conversions from unsigned integers to floats.

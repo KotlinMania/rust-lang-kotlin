@@ -1,11 +1,13 @@
 // port-lint: source quote.rs
 package io.github.kotlinmania.rustlang.procmacro.quote
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.procmacro.Delimiter
 import io.github.kotlinmania.rustlang.procmacro.Group
 import io.github.kotlinmania.rustlang.procmacro.Ident
@@ -34,9 +36,9 @@ import io.github.kotlinmania.rustlang.std.path.Iter
 // unquoting is different: instead of `$ x`, this uses `(@expr)`.
 
 public open class HasIterator : BitOr<ThereIsNoIteratorInRepetition, HasIterator> {
-    public open fun bitor(rhs: ThereIsNoIteratorInRepetition): HasIterator = HasIterator()
+    public override fun bitor(rhs: ThereIsNoIteratorInRepetition): HasIterator = HasIterator()
 
-    public open fun bitor(rhs: HasIterator): HasIterator = HasIterator()
+    public override fun bitor(rhs: HasIterator): HasIterator = HasIterator()
 
     public companion object {
         public fun typeLayout(): TypeLayout<HasIterator> =
@@ -58,9 +60,9 @@ public open class HasIterator : BitOr<ThereIsNoIteratorInRepetition, HasIterator
 // True
 public open class ThereIsNoIteratorInRepetition : BitOr<ThereIsNoIteratorInRepetition, ThereIsNoIteratorInRepetition> {
     // False
-    public open fun bitor(rhs: ThereIsNoIteratorInRepetition): ThereIsNoIteratorInRepetition = ThereIsNoIteratorInRepetition()
+    public override fun bitor(rhs: ThereIsNoIteratorInRepetition): ThereIsNoIteratorInRepetition = ThereIsNoIteratorInRepetition()
 
-    public open fun bitor(rhs: HasIterator): HasIterator = HasIterator()
+    public override fun bitor(rhs: HasIterator): HasIterator = HasIterator()
 
     public companion object {
         public fun typeLayout(): TypeLayout<ThereIsNoIteratorInRepetition> =
@@ -922,7 +924,7 @@ public fun quote(stream: TokenStream): TokenStream {
  * from the given `CONTENTS` stream, preserving their order of appearance.
  */
 public fun collectMetaVars(contentStream: TokenStream): List<Ident> {
-    fun helper(stream: TokenStream, out: List<Ident>) {
+    fun helper(stream: TokenStream, out: MutableList<Ident>) {
         val iter = ArrayDeque((stream).toList()).peekable()
         while (true) {
             val matchVal = iter.removeFirstOrNull()
@@ -934,7 +936,7 @@ public fun collectMetaVars(contentStream: TokenStream): List<Ident> {
                     when (val matchVal1 = iter.peek()) {
                         is Some<*> -> {
                             val (id) = matchVal1 as TokenTree.Ident<*, *, *>
-                            out.push(id.clone())
+                            out.add(id.clone())
                             iter.removeFirstOrNull()
                         }
                         else -> {}

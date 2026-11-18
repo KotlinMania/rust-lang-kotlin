@@ -5,7 +5,9 @@ import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
+import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
@@ -18,10 +20,15 @@ import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv6Addr
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -45,6 +52,7 @@ import io.github.kotlinmania.rustlang.libc.unix.bsd.IPV6_V6ONLY
 import io.github.kotlinmania.rustlang.libc.unix.bsd.IP_MULTICAST_LOOP
 import io.github.kotlinmania.rustlang.libc.unix.bsd.IP_MULTICAST_TTL
 import io.github.kotlinmania.rustlang.libc.unix.bsd.SockaddrIn6
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SOCK_DGRAM
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SOCK_STREAM
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_BROADCAST
@@ -336,7 +344,7 @@ public open class TcpStream(
                         val e1 = matchVal.errValue()
                     }
                     else -> {
-                        val e2 = (matchVal as Result.Err<*, *>).errValue()
+                        val e2 = matchVal.errValue()
                         return Result.Err<TcpStream, Error>(e2)
                     }
                 }
@@ -367,8 +375,9 @@ public open class TcpListener(
         // so we don't need to zero it here.
         // reference: https://linux.die.net/man/2/accept4
         val storage = MaybeUninit.uninit(UnresolvedTypeLayout<SockaddrStorage>())
-        val len = sizeOf<SockaddrStorage>(typeLayoutT = UnresolvedTypeLayout<SockaddrStorage>())
-        val sock = when (val tryResult = this.inner.accept(mutPtrFromRustCast(storage.asMutPtr()), len)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<TcpStream, SocketAddr>, Error>(tryResult.errValue()) }
+        val localStorageL691C8 = AddressableLocal(sizeOf<SockaddrStorage>(typeLayoutT = UnresolvedTypeLayout<SockaddrStorage>()).toInt(), UnresolvedTypeLayout<SocklenT>())
+        val len by localStorageL691C8
+        val sock = when (val tryResult = this.inner.accept(mutPtrFromRustCast(storage.asMutPtr()), RustMutableReference(localStorageL691C8.asMutPtr(), localStorageL691C8.layout))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<TcpStream, SocketAddr>, Error>(tryResult.errValue()) }
         val addr = when (val tryResult = socketAddrFromC(storage.asPtr(), len)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<TcpStream, SocketAddr>, Error>(tryResult.errValue()) }
         return Result.Ok<Pair<TcpStream, SocketAddr>, Error>(Pair(TcpStream(inner = sock), addr))
     }

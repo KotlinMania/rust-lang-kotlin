@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.std.os.darwin.fs.dirs
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind

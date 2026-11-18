@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.os
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -13,11 +12,16 @@ import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -174,7 +178,7 @@ public open class AlignedSystemBox<T> internal constructor(
                             null -> {}
                             else -> {
                                 val out = matchVal1
-                                Write.writeFmt(out, "fatal runtime error: " + ("unwrap failed: Layout :: new ::< Value < T >> () . align_to (ALIGN) = $err1").toString() + ", aborting\n")
+                                out.writeFmt("fatal runtime error: " + ("unwrap failed: Layout :: new ::< Value < T >> () . align_to (ALIGN) = $err1").toString() + ", aborting\n")
                             }
                         }
                         run {
@@ -216,7 +220,7 @@ public open class AlignedSystemBox<T> internal constructor(
                                 null -> {}
                                 else -> {
                                     val out = matchVal1
-                                    Write.writeFmt(out, "fatal runtime error: " + ("unwrap failed: Layout :: new ::< Value < T >> () . align_to (ALIGN) = $err1").toString() + ", aborting\n")
+                                    out.writeFmt("fatal runtime error: " + ("unwrap failed: Layout :: new ::< Value < T >> () . align_to (ALIGN) = $err1").toString() + ", aborting\n")
                                 }
                             }
                             run {
@@ -234,7 +238,7 @@ public open class AlignedSystemBox<T> internal constructor(
         null -> {}
         else -> {
             val out1 = matchVal2
-            Write.writeFmt(out1, "fatal runtime error: " + ("Allocation failure").toString() + ", aborting\n")
+            out1.writeFmt("fatal runtime error: " + ("Allocation failure").toString() + ", aborting\n")
         }
     }
     run {

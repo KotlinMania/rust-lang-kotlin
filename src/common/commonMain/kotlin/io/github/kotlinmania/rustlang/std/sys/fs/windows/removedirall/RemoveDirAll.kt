@@ -2,13 +2,18 @@
 package io.github.kotlinmania.rustlang.std.sys.fs.windows.removedirall
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
 import io.github.kotlinmania.rustlang.core.ptr.constptr.castMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align4
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.asPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.DirBuff
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.File
 import io.github.kotlinmania.rustlang.std.sys.pal.api.unicodeStr
@@ -132,11 +137,11 @@ public fun openLinkNoReparse(parent: File, path: UnicodeStrRef, access: UInt, op
             Result.Ok<File?, WinError>(f)
         }
         result1 is Result.Err<*, *> && (result1.errValue() == WinError.FILE_NOT_FOUND || result1.errValue() == WinError.PATH_NOT_FOUND || result1.errValue() == WinError.BAD_NETPATH || result1.errValue() == WinError.BAD_NET_NAME || result1.errValue() == WinError.DELETE_PENDING) -> {
-            val errValueVal1 = (result1 as Result.Err<*, *>).errValue()
+            val errValueVal1 = result1.errValue()
             Result.Ok<File?, WinError>(null)
         }
         else -> {
-            val e = (result1 as Result.Err<*, *>).errValue()
+            val e = result1.errValue()
             Result.Err<File?, WinError>(e)
         }
     }
@@ -163,7 +168,7 @@ public fun delete(parent: File, name: UnicodeStrRef): Result<Unit, WinError> {
                 Result.Ok<Unit, WinError>(Unit)
             }
             else -> {
-                val e = (matchVal as Result.Err<*, *>).errValue()
+                val e = matchVal.errValue()
                 Result.Err<Unit, WinError>(e)
             }
         }

@@ -15,6 +15,10 @@ import io.github.kotlinmania.rustlang.core.io.seek.Seek
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
 import io.github.kotlinmania.rustlang.core.io.sizehint.SizeHint
 import io.github.kotlinmania.rustlang.core.io.write.Write
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.slice.splitAt
+import io.github.kotlinmania.rustlang.core.str.len
+import io.github.kotlinmania.rustlang.core.str.splitAt
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public fun <T> T.lowerBound(): Int = SizeHint.lowerBound(this)
@@ -127,7 +131,7 @@ public fun List<UByte>.readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit>
     return RustResult.Ok(Unit)
 }
 
-public fun List<UByte>.readToEnd(buf: List<UByte>): Result<Int> {
+public fun List<UByte>.readToEnd(buf: MutableList<UByte>): Result<Int> {
     val len = this.size
     when (val tryResult = buf.tryReserve(len)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     run {
@@ -261,13 +265,13 @@ public fun <A : Allocator> VecDeque<UByte, A>.readBufExact(cursor: BorrowedCurso
     return RustResult.Ok(Unit)
 }
 
-public fun <A : Allocator> VecDeque<UByte, A>.readToEnd(buf: List<UByte>): Result<Int> {
+public fun <A : Allocator> VecDeque<UByte, A>.readToEnd(buf: MutableList<UByte>): Result<Int> {
     // The total len is known upfront so we can reserve it in a single call.
     val len = this.len()
     when (val tryResult = buf.tryReserve(len)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     val (front, back) = this.asSlices()
-    buf.extendFromSlice(front)
-    buf.extendFromSlice(back)
+    buf.addAll(front)
+    buf.addAll(back)
     this.clear()
     return RustResult.Ok(len)
 }

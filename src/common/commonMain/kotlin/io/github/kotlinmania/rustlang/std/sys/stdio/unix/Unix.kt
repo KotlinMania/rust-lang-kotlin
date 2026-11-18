@@ -18,13 +18,13 @@ import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
 import io.github.kotlinmania.rustlang.std.sys.io.DEFAULT_BUF_SIZE
 
 public open class Stdin : Read<Stdin> {
-    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = FileDesc.fromRawFd(STDIN_FILENO).read(buf)
+    public override fun read(buf: MutableList<UByte>): Result<Int, Error> = FileDesc.fromRawFd(STDIN_FILENO).read(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = FileDesc.fromRawFd(STDIN_FILENO).readBuf(buf)
+    public override fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = FileDesc.fromRawFd(STDIN_FILENO).readBuf(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = FileDesc.fromRawFd(STDIN_FILENO).readVectored(bufs)
+    public override fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = FileDesc.fromRawFd(STDIN_FILENO).readVectored(bufs)
 
-    public open fun isReadVectored(): Boolean = true
+    public override fun isReadVectored(): Boolean = true
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stdin> =
@@ -46,13 +46,13 @@ public open class Stdin : Read<Stdin> {
 }
 
 public open class Stdout : Write<Stdout> {
-    public open fun write(buf: List<UByte>): Result<Int, Error> = FileDesc.fromRawFd(STDOUT_FILENO).write(buf)
+    public override fun write(buf: List<UByte>): Result<Int, Error> = FileDesc.fromRawFd(STDOUT_FILENO).write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = FileDesc.fromRawFd(STDOUT_FILENO).writeVectored(bufs)
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = FileDesc.fromRawFd(STDOUT_FILENO).writeVectored(bufs)
 
-    public open fun isWriteVectored(): Boolean = true
+    public override fun isWriteVectored(): Boolean = true
 
-    public open fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
+    public override fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stdout> =
@@ -74,13 +74,13 @@ public open class Stdout : Write<Stdout> {
 }
 
 public open class Stderr : Write<Stderr> {
-    public open fun write(buf: List<UByte>): Result<Int, Error> = FileDesc.fromRawFd(STDERR_FILENO).write(buf)
+    public override fun write(buf: List<UByte>): Result<Int, Error> = FileDesc.fromRawFd(STDERR_FILENO).write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = FileDesc.fromRawFd(STDERR_FILENO).writeVectored(bufs)
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = FileDesc.fromRawFd(STDERR_FILENO).writeVectored(bufs)
 
-    public open fun isWriteVectored(): Boolean = true
+    public override fun isWriteVectored(): Boolean = true
 
-    public open fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
+    public override fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stderr> =

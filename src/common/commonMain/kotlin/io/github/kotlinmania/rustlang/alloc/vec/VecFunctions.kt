@@ -8,8 +8,11 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.trailingZeros
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 public fun <T> dedupSimdChunkSize(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int? {
     // The minimal SIMD width on supported platforms
@@ -164,8 +167,8 @@ public fun <T, A : Allocator> fromBoxTSliceA(v: Vec<T, A>): List<T> = v.intoBoxe
  * v.sort()
  * v.truncate(2)
  * val (a, b) = v.tryInto().unwrap()
- * check(a == 32u)
- * check(b == 100u)
+ * check(a == 32u.toUByte())
+ * check(b == 100u.toUByte())
  * ```
  */
 public fun <T, A : Allocator> tryFromTArrayn(vec: Vec<T, A>, n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<List<T>, Vec<T, A>> {

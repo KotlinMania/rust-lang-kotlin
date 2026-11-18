@@ -57,7 +57,7 @@ public fun cachedPower(alpha: Short, gamma: Short): Pair<Short, Fp> {
     if (false) {
         check(alpha <= e && e <= gamma)
     }
-    return Pair(k, Fp(f = f, e = e.toShort()))
+    return Pair(k, Fp(f = f, e = e))
 }
 
 /**
@@ -193,7 +193,7 @@ public fun formatShortestOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): 
             while (plus1w < plus1vUp && threshold - plus1w >= tenKappa && (plus1w + tenKappa < plus1vUp || plus1vUp - plus1w >= plus1w + tenKappa - plus1vUp)) {
                 last -= 1
                 if (false) {
-                    check(last > 48u)
+                    check(last > 48u.toUByte())
                 }
                 // the shortest repr cannot end with `0`
                 plus1w += tenKappa
@@ -334,7 +334,7 @@ public fun formatShortestOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): 
         if (false) {
             check(q < 10u)
         }
-        buf[i] = MaybeUninit.new(48u + q.toUByte(), PrimitiveLayouts.U8)
+        buf[i] = MaybeUninit.new(48u.toUByte() + q.toUByte(), PrimitiveLayouts.U8)
         i += 1
         val plus1rem = ((r.toULong()) shl e) + plus1frac
         // == (plus1 % 10^kappa) * 2^e
@@ -362,7 +362,7 @@ public fun formatShortestOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): 
             break
         }
         // restore invariants
-        tenKappa /= 10
+        tenKappa /= 10u
         remainder = r
     }
     // render fractional parts, while checking for the accuracy at each step.
@@ -386,7 +386,7 @@ public fun formatShortestOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): 
         if (false) {
             check(q1 < 10)
         }
-        buf[i] = MaybeUninit.new(48u + q1.toUByte(), PrimitiveLayouts.U8)
+        buf[i] = MaybeUninit.new(48u.toUByte() + q1.toUByte(), PrimitiveLayouts.U8)
         i += 1
         if (r1 < threshold) {
             val tenKappa2 = 1 shl e
@@ -620,7 +620,7 @@ public fun formatExactOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limi
         if (false) {
             check(q < 10u)
         }
-        buf[i] = MaybeUninit.new(48u + q.toUByte(), PrimitiveLayouts.U8)
+        buf[i] = MaybeUninit.new(48u.toUByte() + q.toUByte(), PrimitiveLayouts.U8)
         i += 1
         // is the buffer full? run the rounding pass with the remainder.
         if (i == len) {
@@ -660,7 +660,7 @@ public fun formatExactOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limi
         }
         // restore invariants
         kappa -= 1
-        tenKappa /= 10
+        tenKappa /= 10u
         remainder = r
     }
     // render fractional parts.
@@ -693,7 +693,7 @@ public fun formatExactOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limi
         if (false) {
             check(q1 < 10)
         }
-        buf[i] = MaybeUninit.new(48u + q1.toUByte(), PrimitiveLayouts.U8)
+        buf[i] = MaybeUninit.new(48u.toUByte() + q1.toUByte(), PrimitiveLayouts.U8)
         i += 1
         // is the buffer full? run the rounding pass with the remainder.
         if (i == len) {

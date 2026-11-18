@@ -5,17 +5,24 @@ import io.github.kotlinmania.rustlang.alloc.io.buffered.bufreader.BufReader
 import io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter.BufWriter
 import io.github.kotlinmania.rustlang.alloc.io.copy.CopyState
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.util.Take
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.getMut
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.libc.Splice
 import io.github.kotlinmania.rustlang.libc.wasi.EBADF
 import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
@@ -514,7 +521,7 @@ public fun copyRegularFiles(reader: RawFd, writer: RawFd, maxLen: ULong): CopyRe
             val matchVal = cvt(copyFileRange(INVALID_FD, MutPtr(0L), INVALID_FD, MutPtr(0L), 1, 0)).mapErr({ e -> e.rawOsError() })
             when {
                 matchVal is RustResult.Err<*, *> && (matchVal.errValue() != null && (matchVal.errValue() == EPERM || matchVal.errValue() == ENOSYS)) -> {
-                    val errValueVal = (matchVal as RustResult.Err<*, *>).errValue()
+                    val errValueVal = matchVal.errValue()
                     UNAVAILABLE
                 }
                 matchVal is RustResult.Err<*, *> && matchVal.errValue() != null && matchVal.errValue() == EBADF -> {
@@ -567,7 +574,7 @@ public fun copyRegularFiles(reader: RawFd, writer: RawFd, maxLen: ULong): CopyRe
                 written += ret.toULong()
             }
             else -> {
-                val err = (copyResult as RustResult.Err<*, *>).errValue()
+                val err = copyResult.errValue()
                 return run {
                     val matchVal = err.rawOsError()
                     when {
@@ -693,7 +700,7 @@ public fun sendfileSplice(mode: SpliceMode, reader: RawFd, writer: RawFd, len: U
                 written += ret.toULong()
             }
             else -> {
-                val err = (result as RustResult.Err<*, *>).errValue()
+                val err = result.errValue()
                 return run {
                     val matchVal = err.rawOsError()
                     when {

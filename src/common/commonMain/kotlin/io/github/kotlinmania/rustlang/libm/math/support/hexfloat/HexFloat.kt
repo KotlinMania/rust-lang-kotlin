@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.ilog2
 import io.github.kotlinmania.rustlang.core.num.saturatingAddUnsigned
 import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.num.saturatingSubUnsigned
@@ -42,7 +43,7 @@ public fun hf16(s: String): F16 =
                 F16.fromBits(bits.toUShort())
             }
             else -> {
-                val errValueVal = (matchVal as Result.Err<*, *>).errValue()
+                val errValueVal = matchVal.errValue()
                 val (s1) = errValueVal as HexFloatParseError
                 error("$s1")
             }
@@ -61,7 +62,7 @@ public fun hf32(s: String): kotlin.Float =
                 f32FromBits(bits.toUInt())
             }
             else -> {
-                val errValueVal = (matchVal as Result.Err<*, *>).errValue()
+                val errValueVal = matchVal.errValue()
                 val (s1) = errValueVal as HexFloatParseError
                 error("$s1")
             }
@@ -80,7 +81,7 @@ public fun hf64(s: String): Double =
                 f64FromBits(bits.toULong())
             }
             else -> {
-                val errValueVal = (matchVal as Result.Err<*, *>).errValue()
+                val errValueVal = matchVal.errValue()
                 val (s1) = errValueVal as HexFloatParseError
                 error("$s1")
             }
@@ -99,7 +100,7 @@ public fun hf128(s: String): F128 =
                 F128.fromBits(bits)
             }
             else -> {
-                val errValueVal = (matchVal as Result.Err<*, *>).errValue()
+                val errValueVal = matchVal.errValue()
                 val (s1) = errValueVal as HexFloatParseError
                 error("$s1")
             }
@@ -163,7 +164,7 @@ public fun parseAny(s: String, bits: UInt, sigBits: UInt, round: Round): Result<
     }
     val neg =
         when {
-            b.size >= 1 && b[0] == 45u -> true
+            b.size >= 1 && b[0] == 45u.toUByte() -> true
             else -> false
         }
     if (b != null) {
@@ -176,9 +177,9 @@ public fun parseAny(s: String, bits: UInt, sigBits: UInt, round: Round): Result<
     val inf = nan - quietBit
     var (x, status) =
         when {
-            b.size == 3 && (b[0] == 105u || b[0] == 73u) && (b[1] == 110u || b[1] == 78u) && (b[2] == 102u || b[2] == 70u) -> Pair(inf, Status.OK)
-            b.size == 3 && (b[0] == 110u || b[0] == 78u) && (b[1] == 97u || b[1] == 65u) && (b[2] == 110u || b[2] == 78u) -> Pair(nan, Status.OK)
-            b.size >= 2 && b[0] == 48u && (b[1] == 120u || b[1] == 88u) -> {
+            b.size == 3 && (b[0] == 105u.toUByte() || b[0] == 73u.toUByte()) && (b[1] == 110u.toUByte() || b[1] == 78u.toUByte()) && (b[2] == 102u.toUByte() || b[2] == 70u.toUByte()) -> Pair(inf, Status.OK)
+            b.size == 3 && (b[0] == 110u.toUByte() || b[0] == 78u.toUByte()) && (b[1] == 97u.toUByte() || b[1] == 65u.toUByte()) && (b[2] == 110u.toUByte() || b[2] == 78u.toUByte()) -> Pair(nan, Status.OK)
+            b.size >= 2 && b[0] == 48u.toUByte() && (b[1] == 120u.toUByte() || b[1] == 88u.toUByte()) -> {
                 val rest1 = b.subList(2, b.size)
                 val round1 =
                     run {
@@ -229,7 +230,7 @@ public fun parseFinite(b: List<UByte>, bits: UInt, sigBits: UInt, roundingMode: 
                     return Result.Ok<Pair<U128, Status>, HexFloatParseError>(Pair(0, Status.OK))
                 }
                 else -> {
-                    val okValueVal1 = (matchVal as Result.Ok<*, *>).okValue()
+                    val okValueVal1 = matchVal.okValue()
                     val sig = okValueVal1.sig
                     val exp = okValueVal1.exp
                     Pair(sig, exp)
@@ -375,14 +376,14 @@ public fun parseHex(b: List<UByte>): Result<Parsed, HexFloatParseError> {
         val rest = b1.subList(1, b1.size)
         b1 = rest
         when (c) {
-            46u -> {
+            46u.toUByte() -> {
                 if (seenPoint) {
                     return Result.Err<Parsed, HexFloatParseError>(HexFloatParseError("unexpected '.' parsing fractional digits"))
                 }
                 seenPoint = true
                 continue
             }
-            112u, 80u -> { break }
+            112u.toUByte(), 80u.toUByte() -> { break }
             else -> {
                 val c1 = c
                 val digit =
@@ -422,7 +423,7 @@ public fun parseHex(b: List<UByte>): Result<Parsed, HexFloatParseError> {
     someDigits = false
     val negateExp =
         when {
-            b1.size >= 1 && b1[0] == 45u -> true
+            b1.size >= 1 && b1[0] == 45u.toUByte() -> true
             else -> false
         }
     if (b1 != null) {
@@ -459,15 +460,15 @@ public fun parseHex(b: List<UByte>): Result<Parsed, HexFloatParseError> {
 
 public fun decDigit(c: UByte): UByte? =
     when (c) {
-        in 48u..57u -> (c - 48u).toUByte()
+        in 48u.toUByte()..57u.toUByte() -> c - 48u.toUByte()
         else -> null
     }
 
 public fun hexDigit(c: UByte): UByte? =
     when (c) {
-        in 48u..57u -> { (c - 48u).toUByte() }
-        in 97u..102u -> { (c - 97u + 10u).toUByte() }
-        in 65u..70u -> (c - 65u + 10u).toUByte()
+        in 48u.toUByte()..57u.toUByte() -> { c - 48u.toUByte() }
+        in 97u.toUByte()..102u.toUByte() -> { (c - 97u.toUByte() + 10u).toUByte() }
+        in 65u.toUByte()..70u.toUByte() -> (c - 65u.toUByte() + 10u).toUByte()
         else -> null
     }
 

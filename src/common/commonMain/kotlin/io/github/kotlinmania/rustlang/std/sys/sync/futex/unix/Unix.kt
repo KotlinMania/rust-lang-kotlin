@@ -5,6 +5,8 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align4
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.libc.SysFutex
 import io.github.kotlinmania.rustlang.libc.syscall
@@ -14,7 +16,6 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_WAKE
 import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_MONOTONIC
 import io.github.kotlinmania.rustlang.libc.wasi.EINTR
 import io.github.kotlinmania.rustlang.libc.wasi.ETIMEDOUT
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sys.io.Errno
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.Timespec
 

@@ -2,12 +2,14 @@
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.key.windows
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.constptr.castMut
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingSub
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingSub
@@ -16,11 +18,15 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.AcqRel
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Acquire
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Release
+import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchange
+import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchangeWeak
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.AcqRel
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Acquire
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Relaxed
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Release
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.INIT_ONCE_STATIC_INIT
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FALSE
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.InitOnce
@@ -122,7 +128,7 @@ public open class LazyKey internal constructor(
                             null -> {}
                             else -> {
                                 val out = matchVal
-                                Write.writeFmt(out, "fatal runtime error: " + ("out of TLS indexes").toString() + ", aborting\n")
+                                out.writeFmt("fatal runtime error: " + ("out of TLS indexes").toString() + ", aborting\n")
                             }
                         }
                         run {
@@ -157,7 +163,7 @@ public open class LazyKey internal constructor(
                         null -> {}
                         else -> {
                             val out1 = matchVal1
-                            Write.writeFmt(out1, "fatal runtime error: " + ("out of TLS indexes").toString() + ", aborting\n")
+                            out1.writeFmt("fatal runtime error: " + ("out of TLS indexes").toString() + ", aborting\n")
                         }
                     }
                     run {
@@ -208,7 +214,7 @@ public fun fail(): Nothing =
             null -> {}
             else -> {
                 val out = matchVal
-                Write.writeFmt(out, "fatal runtime error: " + ("Unexpected TLS failure").toString() + ", aborting\n")
+                out.writeFmt("fatal runtime error: " + ("Unexpected TLS failure").toString() + ", aborting\n")
             }
         }
         run {
@@ -278,7 +284,7 @@ public fun runDtors() {
                                     null -> {}
                                     else -> {
                                         val out = matchVal1
-                                        Write.writeFmt(out, "fatal runtime error: " + ("unwrap failed: (* cur) . dtor = $err1").toString() + ", aborting\n")
+                                        out.writeFmt("fatal runtime error: " + ("unwrap failed: (* cur) . dtor = $err1").toString() + ", aborting\n")
                                     }
                                 }
                                 run {

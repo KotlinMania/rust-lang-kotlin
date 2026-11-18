@@ -19,6 +19,7 @@ import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.clone.Share
 import io.github.kotlinmania.rustlang.core.clone.UseCloned
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
@@ -47,6 +48,13 @@ import io.github.kotlinmania.rustlang.core.pin.PinSafePointer
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.addrEq
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.byteAdd
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.castSlice
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.constptr.withMetadataOf
+import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingAdd
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.eq
@@ -55,6 +63,7 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteAdd
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.castSlice
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.withMetadataOf
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingAdd
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
@@ -64,6 +73,8 @@ import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 // Single-threaded reference-counting pointers. `Rc` stands for Reference
 // Counted'.
@@ -885,8 +896,8 @@ public open class Rc<T, A : Allocator> internal constructor(
                 // ignore-tidy-undocumented-unchecked
                 run {
                     val (ptr, alloc) = Rc.intoRawWithAllocator(thisRef)
-                    val value = ptr.read()
-                    val allocation = Rc.fromRawIn(ptr.cast(), alloc)
+                    val value = (typeLayoutT).readNative((ptr).rawAddress)
+                    val allocation = Rc.fromRawIn(ConstPtr((ptr).rawAddress), alloc)
                     Rc.getMutUnchecked(allocation).write(f(value))
                     allocation.assumeInit()
                 }
@@ -924,8 +935,8 @@ public open class Rc<T, A : Allocator> internal constructor(
                 // ignore-tidy-undocumented-unchecked
                 run {
                     val (ptr, alloc) = Rc.intoRawWithAllocator(thisRef)
-                    val value = ptr.read()
-                    val allocation = Rc.fromRawIn(ptr.cast(), alloc)
+                    val value = (typeLayoutT).readNative((ptr).rawAddress)
+                    val allocation = Rc.fromRawIn(ConstPtr((ptr).rawAddress), alloc)
                     Rc.getMutUnchecked(allocation).write(when (val tryResult = f(value)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") })
                     allocation.assumeInit()
                 }
@@ -1901,7 +1912,7 @@ public fun <T, A : Allocator> Rc.Companion.newZeroedSliceIn(len: Int, alloc: A, 
 public fun <T, A : Allocator> Rc<List<T>, A>.intoArray(n: Int = 0): Result<Rc<List<T>, A>, Rc<List<T>, A>> =
     if (this.len() == n) {
         val (ptr, alloc) = Rc.intoRawWithAllocator(this)
-        val ptr1 = constPtrFromRustCast(ptr)
+        val ptr1 = ConstPtr(ptr.rawAddress, ptr.rawMeta)
         // SAFETY: The underlying array of a slice has the exact same layout as an actual array `[T; N]` if `N` is equal to the slice's length.
         val me = Rc.fromRawIn(ptr1, alloc)
         Result.Ok<Rc<List<T>, A>, Rc<List<T>, A>>(me)
@@ -2253,7 +2264,7 @@ public fun <T> Rc.Companion.tryAllocateForLayout(valueLayout: Layout, allocate: 
     val inner = memToRcInner(ptr.asNonNullPtr().asPtr())
     // ignore-tidy-undocumented-unchecked
     run {
-        check(Layout.forValueRaw(inner) == layout)
+        check(Layout.forValueRaw((inner).asConstPtr()) == layout)
         (UnresolvedTypeLayout<Cell<Int>>()).writeNative(((addrOfMut((UnresolvedTypeLayout<RcInner<T>>()).readNative((inner).rawAddress).strong))).rawAddress, Cell.new(1))
         (UnresolvedTypeLayout<Cell<Int>>()).writeNative(((addrOfMut((UnresolvedTypeLayout<RcInner<T>>()).readNative((inner).rawAddress).weak))).rawAddress, Cell.new(1))
     }
@@ -2907,7 +2918,7 @@ public open class Weak<T, A : Allocator> internal constructor(
         if (inner1.weak() == 0) {
             // ignore-tidy-undocumented-unchecked
             run {
-                this.alloc.deallocate(this.ptr.cast(), Layout.forValueRaw(this.ptr.asPtr()))
+                this.alloc.deallocate(this.ptr.cast(), Layout.forValueRaw((this.ptr.asPtr()).asConstPtr()))
             }
         }
     }
@@ -3507,7 +3518,7 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
             // remove the implicit "strong weak" pointer now that we've destroyed the contents.
             this.ptr.asRef().decWeak()
             if (this.ptr.asRef().weak() == 0) {
-                this.alloc.deallocate(this.ptr.cast(), Layout.forValueRaw(this.ptr.asPtr()))
+                this.alloc.deallocate(this.ptr.cast(), Layout.forValueRaw((this.ptr.asPtr()).asConstPtr()))
             }
         }
     }
@@ -3561,7 +3572,7 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
             val (dataPtr, alloc) = UniqueRc.intoRawWithAllocator(thisRef)
             // SAFETY: Conceptually moves out of the `UniqueRc`.
             // We do not use the data inside ever again.
-            val value = dataPtr.read()
+            val value = (UnresolvedTypeLayout<T>()).readNative((dataPtr).rawAddress)
             // Drop the strong-weak ref
             (Weak(ptr = innerPtr, alloc = alloc)).let { }
             return Pair(value, alloc)
@@ -3600,8 +3611,8 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
                 // ignore-tidy-undocumented-unchecked
                 run {
                     val (ptr, alloc) = UniqueRc.intoRawWithAllocator(thisRef)
-                    val value = ptr.read()
-                    val allocation = UniqueRc.fromRawWithAllocator(ptr.cast(), alloc)
+                    val value = (typeLayoutT).readNative((ptr).rawAddress)
+                    val allocation = UniqueRc.fromRawWithAllocator(ConstPtr((ptr).rawAddress), alloc)
                     UniqueRc.write(allocation, f(value))
                 }
             } else {
@@ -3638,8 +3649,8 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
                 // ignore-tidy-undocumented-unchecked
                 run {
                     val (ptr, alloc) = UniqueRc.intoRawWithAllocator(thisRef)
-                    val value = ptr.read()
-                    val allocation = UniqueRc.fromRawWithAllocator(ptr.cast(), alloc)
+                    val value = (typeLayoutT).readNative((ptr).rawAddress)
+                    val allocation = UniqueRc.fromRawWithAllocator(ConstPtr((ptr).rawAddress), alloc)
                     UniqueRc.write(allocation, when (val tryResult = f(value)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") })
                 }
             } else {

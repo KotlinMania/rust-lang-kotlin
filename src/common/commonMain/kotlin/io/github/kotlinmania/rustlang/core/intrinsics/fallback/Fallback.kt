@@ -94,7 +94,7 @@ public fun U128.carryingMulAdd(b: U128, c: U128, d: U128): Pair<U128, U128> {
 
 public fun I128.carryingMulAdd(b: I128, c: I128, d: I128): Pair<U128, I128> {
     val (low, high) = wideMulU128(this.toU128(), b.toU128())
-    var high1 = I128.fromLong(high.toLong())
+    var high1 = high.toI128()
     high1 = high1.wrappingAdd((this shr 127).wrappingMul(b))
     high1 = high1.wrappingAdd(this.wrappingMul(b shr 127))
     val (low1, carry) = low.overflowingAdd(c.toU128())

@@ -388,7 +388,7 @@ public fun tryBlock(expr: String = ""): String =
  * import core.fmt.Write
  *
  * open class Example : Write<Example> {
- *     public open fun writeStr(s: String) {
+ *     public override fun writeStr(s: String) {
  *         error("unsupported")
  *     }
  * }

@@ -51,13 +51,13 @@ public fun bitsetSearch(needle: UInt, chunkIdxMap: UByteArray, bitsetChunkIdx: L
         } else {
             val (realIdx, mapping) = bitsetCanonicalized[idx - bitsetCanonical.size]
             var word = bitsetCanonical[realIdx.toInt()]
-            val shouldInvert = mapping and (1 shl 6) != 0
+            val shouldInvert = mapping and ((1u.toUInt() shl 6).toUByte()) != 0u.toUByte()
             if (shouldInvert) {
                 word = word.inv()
             }
             // Lower 6 bits
-            val quantity = mapping and ((1 shl 6) - 1)
-            if (mapping and (1 shl 7) != 0) {
+            val quantity = mapping and (((1u.toUInt() shl 6).toUByte()) - 1u)
+            if (mapping and ((1u.toUInt() shl 7).toUByte()) != 0u.toUByte()) {
                 // shift
                 word = word shr ((quantity.toULong()).toInt())
             } else {

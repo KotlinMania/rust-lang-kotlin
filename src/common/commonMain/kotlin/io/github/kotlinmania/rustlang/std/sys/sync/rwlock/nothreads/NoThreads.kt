@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.std.sys.sync.rwlock.nothreads
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
@@ -25,7 +24,7 @@ public open class RwLock internal constructor(
                     null -> {}
                     else -> {
                         val out = matchVal
-                        Write.writeFmt(out, "fatal runtime error: " + ("rwlock locked for writing").toString() + ", aborting\n")
+                        out.writeFmt("fatal runtime error: " + ("rwlock locked for writing").toString() + ", aborting\n")
                     }
                 }
                 run {
@@ -58,7 +57,7 @@ public open class RwLock internal constructor(
                     null -> {}
                     else -> {
                         val out = matchVal
-                        Write.writeFmt(out, "fatal runtime error: " + ("rwlock locked for reading").toString() + ", aborting\n")
+                        out.writeFmt("fatal runtime error: " + ("rwlock locked for reading").toString() + ", aborting\n")
                     }
                 }
                 run {

@@ -8,14 +8,21 @@ import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.CS_DARWIN_USER_TEMP_DIR
 import io.github.kotlinmania.rustlang.libc.wasi.ERANGE
 import io.github.kotlinmania.rustlang.std.env.varOs
@@ -33,7 +40,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.unix.conf.confstr
 
 // Implementation of `std.os` functionality for unix systems
 
-public val PATH_SEPARATOR: UByte = 58u
+public val PATH_SEPARATOR: UByte = 58u.toUByte()
 
 public fun getcwd(): Result<PathBuf, Error> {
     val buf = ArrayList(512)

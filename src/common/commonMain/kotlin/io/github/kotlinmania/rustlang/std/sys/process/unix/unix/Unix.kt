@@ -8,7 +8,6 @@ import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
@@ -30,16 +29,28 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.iterMut
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.slice.splitAt
+import io.github.kotlinmania.rustlang.core.str.len
+import io.github.kotlinmania.rustlang.core.str.splitAt
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.libc.SysPidfdOpen
 import io.github.kotlinmania.rustlang.libc.WCOREDUMP
@@ -249,7 +260,7 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
                     null -> {}
                     else -> {
                         val out = matchVal1
-                        Write.writeFmt(out, "fatal runtime error: " + ("assertion failed: output . write (& bytes) . is_ok ()").toString() + ", aborting\n")
+                        out.writeFmt("fatal runtime error: " + ("assertion failed: output . write (& bytes) . is_ok ()").toString() + ", aborting\n")
                     }
                 }
                 run {
@@ -546,7 +557,7 @@ public fun Command.sendPidfd(sock: Socket) {
                         null -> {}
                         else -> {
                             val out = matchVal1
-                            Write.writeFmt(out, "fatal runtime error: " + ("failed to communicate with parent process. $other").toString() + ", aborting\n")
+                            out.writeFmt("fatal runtime error: " + ("failed to communicate with parent process. $other").toString() + ", aborting\n")
                         }
                     }
                     run {

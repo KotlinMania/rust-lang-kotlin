@@ -14,10 +14,33 @@ import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.num.isPowerOfTwo
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.addr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.alignOffset
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asUninitSlice
+import io.github.kotlinmania.rustlang.core.ptr.constptr.byteAdd
+import io.github.kotlinmania.rustlang.core.ptr.constptr.byteOffset
+import io.github.kotlinmania.rustlang.core.ptr.constptr.byteOffsetFrom
+import io.github.kotlinmania.rustlang.core.ptr.constptr.byteOffsetFromUnsigned
+import io.github.kotlinmania.rustlang.core.ptr.constptr.byteSub
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.castInit
+import io.github.kotlinmania.rustlang.core.ptr.constptr.castSlice
+import io.github.kotlinmania.rustlang.core.ptr.constptr.exposeProvenance
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isAligned
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isAlignedTo
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.constptr.offset
+import io.github.kotlinmania.rustlang.core.ptr.constptr.offsetFrom
+import io.github.kotlinmania.rustlang.core.ptr.constptr.offsetFromUnsigned
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
+import io.github.kotlinmania.rustlang.core.ptr.constptr.readUnaligned
+import io.github.kotlinmania.rustlang.core.ptr.constptr.readVolatile
+import io.github.kotlinmania.rustlang.core.ptr.constptr.withAddr
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dangling
@@ -45,15 +68,19 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.castSlice
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.exposeProvenance
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isAligned
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isAlignedTo
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.offset
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.offsetFrom
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.offsetFromUnsigned
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.readVolatile
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.replace
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.withAddr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeVolatile
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawParts
@@ -63,7 +90,9 @@ import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeUnaligned
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts
+import io.github.kotlinmania.rustlang.core.str.len
 
 /**
  * `* T` but non-zero and [covariant].

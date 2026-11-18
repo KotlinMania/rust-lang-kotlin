@@ -4,6 +4,8 @@ package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.stash
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmapfake.Mmap
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 /**
  * A simple arena allocator for byte buffers.

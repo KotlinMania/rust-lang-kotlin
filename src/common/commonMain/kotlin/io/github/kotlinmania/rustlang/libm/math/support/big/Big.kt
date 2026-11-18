@@ -42,33 +42,33 @@ public open class U256(
      */
     public open fun signed(): I256 = I256(lo = this.lo, hi = this.hi.toI128())
 
-    public open fun bitor(rhs: U256): U256 {
+    public override fun bitor(rhs: U256): U256 {
         this.lo = this.lo or rhs.lo
         this.hi = this.hi or rhs.hi
         return this
     }
 
-    public open operator fun not(): U256 {
+    public override operator fun not(): U256 {
         this.lo = this.lo.inv()
         this.hi = this.hi.inv()
         return this
     }
 
-    public open fun add(rhs: U256): U256 {
+    public override fun add(rhs: U256): U256 {
         val (lo, carry) = this.lo.overflowingAdd(rhs.lo)
         val (hi, of) = this.hi.carryingAdd(rhs.hi, carry)
         check(!of) { "attempt to add with overflow" }
         return U256(lo = lo, hi = hi)
     }
 
-    public open fun sub(rhs: U256): U256 {
+    public override fun sub(rhs: U256): U256 {
         val (lo, borrow) = this.lo.overflowingSub(rhs.lo)
         val (hi, of) = this.hi.borrowingSub(rhs.hi, borrow)
         check(!of) { "attempt to subtract with overflow" }
         return U256(lo = lo, hi = hi)
     }
 
-    public open infix fun shl(rhs: UInt): U256 {
+    public override infix fun shl(rhs: UInt): U256 {
         check(rhs < U256.BITS) { "attempt to shift left with overflow" }
         val halfBits = U256.BITS / 2
         val lowMask = halfBits - 1
@@ -86,7 +86,7 @@ public open class U256(
         return this
     }
 
-    public open infix fun shr(rhs: UInt): U256 {
+    public override infix fun shr(rhs: UInt): U256 {
         check(rhs < U256.BITS) { "attempt to shift right with overflow" }
         val halfBits = U256.BITS / 2
         val lowMask = halfBits - 1
@@ -173,33 +173,33 @@ public open class I256(
      */
     public open fun unsigned(): U256 = U256(lo = this.lo, hi = this.hi.toU128())
 
-    public open fun bitor(rhs: I256): I256 {
+    public override fun bitor(rhs: I256): I256 {
         this.lo = this.lo or rhs.lo
         this.hi = this.hi or rhs.hi
         return this
     }
 
-    public open operator fun not(): I256 {
+    public override operator fun not(): I256 {
         this.lo = this.lo.inv()
         this.hi = this.hi.inv()
         return this
     }
 
-    public open fun add(rhs: I256): I256 {
+    public override fun add(rhs: I256): I256 {
         val (lo, carry) = this.lo.overflowingAdd(rhs.lo)
         val (hi, of) = this.hi.carryingAdd(rhs.hi, carry)
         check(!of) { "attempt to add with overflow" }
         return I256(lo = lo, hi = hi)
     }
 
-    public open fun sub(rhs: I256): I256 {
+    public override fun sub(rhs: I256): I256 {
         val (lo, borrow) = this.lo.overflowingSub(rhs.lo)
         val (hi, of) = this.hi.borrowingSub(rhs.hi, borrow)
         check(!of) { "attempt to subtract with overflow" }
         return I256(lo = lo, hi = hi)
     }
 
-    public open infix fun shl(rhs: UInt): I256 {
+    public override infix fun shl(rhs: UInt): I256 {
         check(rhs < I256.BITS) { "attempt to shift left with overflow" }
         val halfBits = I256.BITS / 2
         val lowMask = halfBits - 1
@@ -217,7 +217,7 @@ public open class I256(
         return this
     }
 
-    public open infix fun shr(rhs: UInt): I256 {
+    public override infix fun shr(rhs: UInt): I256 {
         check(rhs < I256.BITS) { "attempt to shift right with overflow" }
         val halfBits = I256.BITS / 2
         val lowMask = halfBits - 1

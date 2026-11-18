@@ -17,9 +17,12 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.carryingAdd
 import io.github.kotlinmania.rustlang.core.num.carryingMul
 import io.github.kotlinmania.rustlang.core.num.carryingMulAdd
+import io.github.kotlinmania.rustlang.core.num.ilog2
 import io.github.kotlinmania.rustlang.core.num.trailingZeros
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.iterMut
 
 // Custom arbitrary-precision number (bignum) implementation.
 //
@@ -300,7 +303,7 @@ public open class Big64x20(
         var e1 = e
         val tableIndex = sizeOf<Digit64>(typeLayoutT = PrimitiveLayouts.U64).trailingZeros().toInt()
         val (smallPower, smallE) = SMALL_POW5[tableIndex]
-        val smallPower1 = smallPower.toULong()
+        val smallPower1 = smallPower
         while (e1 >= smallE) {
             this.mulSmall(smallPower1)
             e1 -= smallE

@@ -1,7 +1,6 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.unix
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -135,7 +134,7 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
                             null -> {}
                             else -> {
                                 val out = matchVal
-                                Write.writeFmt(out, "fatal runtime error: " + ("assertion failed: signal (libc :: SIGPIPE , handler) != libc :: SIG_ERR").toString() + ", aborting\n")
+                                out.writeFmt("fatal runtime error: " + ("assertion failed: signal (libc :: SIGPIPE , handler) != libc :: SIG_ERR").toString() + ", aborting\n")
                             }
                         }
                         run {

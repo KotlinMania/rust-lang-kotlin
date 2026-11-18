@@ -9,7 +9,11 @@ import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 /**
  * A buffer type used with `Read.readVectored`.
@@ -76,7 +80,7 @@ public open class IoSliceMut internal constructor(
      * public fun doctestEntry() {
      *     var data = "abcdef".encodeToByteArray()
      *     val ioSlice = IoSliceMut.new(data)
-     *     ioSlice.intoSlice()[0] = 65u
+     *     ioSlice.intoSlice()[0] = 65u.toUByte()
      *     check(data == "Abcdef".encodeToByteArray())
      * }
      * ```

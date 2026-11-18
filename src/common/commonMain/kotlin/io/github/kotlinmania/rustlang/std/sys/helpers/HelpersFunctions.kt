@@ -29,7 +29,7 @@ public fun <T> ignoreNotfound(result: Result<T, Error>): Result<Unit, Error> =
         }
         result is Result.Ok<*, *> -> Result.Ok<Unit, Error>(Unit)
         else -> {
-            val err1 = (result as Result.Err<*, *>).errValue()
+            val err1 = result.errValue()
             Result.Err<Unit, Error>(err1)
         }
     }

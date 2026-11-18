@@ -21,8 +21,12 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public fun Empty.read(buf: MutableList<UByte>): Result<Int> = RustResult.Ok(0)
@@ -51,7 +55,7 @@ public fun Empty.readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit> =
         RustResult.Ok(Unit)
     }
 
-public fun Empty.readToEnd(buf: List<UByte>): Result<Int> = RustResult.Ok(0)
+public fun Empty.readToEnd(buf: MutableList<UByte>): Result<Int> = RustResult.Ok(0)
 
 public fun Empty.readToString(buf: String): Result<Int> = RustResult.Ok(0)
 
@@ -61,7 +65,7 @@ public fun Empty.consume(n: Int) {}
 
 public fun Empty.hasDataLeft(): Result<Boolean> = RustResult.Ok(false)
 
-public fun Empty.readUntil(byte: UByte, buf: List<UByte>): Result<Int> = RustResult.Ok(0)
+public fun Empty.readUntil(byte: UByte, buf: MutableList<UByte>): Result<Int> = RustResult.Ok(0)
 
 public fun Empty.skipUntil(byte: UByte): Result<Int> = RustResult.Ok(0)
 
@@ -90,7 +94,7 @@ public fun Repeat.readBufExact(buf: BorrowedCursor<UByte>): Result<Unit> = this.
 /**
  * This function is not supported by `io.Repeat`, because there's no end of its data
  */
-public fun Repeat.readToEnd(arg0: List<UByte>): Result<Int> = RustResult.Err(Error.from(ErrorKind.OutOfMemory))
+public fun Repeat.readToEnd(arg0: MutableList<UByte>): Result<Int> = RustResult.Err(Error.from(ErrorKind.OutOfMemory))
 
 /**
  * This function is not supported by `io.Repeat`, because there's no end of its data
@@ -141,7 +145,7 @@ public fun <T : Read<T>, U : Read<U>> Chain<T, U>.readVectored(bufs: MutableList
 
 public fun <T : Read<T>, U : Read<U>> Chain<T, U>.isReadVectored(): Boolean = this.first.isReadVectored() || this.second.isReadVectored()
 
-public fun <T : Read<T>, U : Read<U>> Chain<T, U>.readToEnd(buf: List<UByte>): Result<Int> {
+public fun <T : Read<T>, U : Read<U>> Chain<T, U>.readToEnd(buf: MutableList<UByte>): Result<Int> {
     var read = 0
     if (!this.doneFirst) {
         read += when (val tryResult = this.first.readToEnd(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
@@ -196,7 +200,7 @@ public fun <T : BufRead<T>, U : BufRead<U>> Chain<T, U>.consume(amt: Int) {
     }
 }
 
-public fun <T : BufRead<T>, U : BufRead<U>> Chain<T, U>.readUntil(byte: UByte, buf: List<UByte>): Result<Int> {
+public fun <T : BufRead<T>, U : BufRead<U>> Chain<T, U>.readUntil(byte: UByte, buf: MutableList<UByte>): Result<Int> {
     var read = 0
     if (!this.doneFirst) {
         val n = when (val tryResult = this.first.readUntil(byte, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
@@ -359,7 +363,7 @@ public fun <R : Read<R>> inlinedSlowReadByte(reader: R): Result<UByte>? {
                     continue
                 }
                 else -> {
-                    val e1 = (matchVal as RustResult.Err<*, *>).errValue()
+                    val e1 = matchVal.errValue()
                     RustResult.Err(e1)
                 }
             }
@@ -430,7 +434,7 @@ public fun <B : BufRead<B>> Split<B>.next(): Result<List<UByte>>? {
                 RustResult.Ok(buf)
             }
             else -> {
-                val e = (matchVal as RustResult.Err<*, *>).errValue()
+                val e = matchVal.errValue()
                 RustResult.Err(e)
             }
         }
@@ -492,7 +496,7 @@ public fun <B : BufRead<B>> Lines<B>.next(): Result<String>? {
                 RustResult.Ok(buf)
             }
             else -> {
-                val e = (matchVal as RustResult.Err<*, *>).errValue()
+                val e = matchVal.errValue()
                 RustResult.Err(e)
             }
         }

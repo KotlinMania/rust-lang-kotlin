@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.iter.Iter
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
@@ -332,7 +333,7 @@ public open class CommandArgs internal constructor(
 
 public typealias ChildPipe = Pipe
 
-public fun readOutput(out: ChildPipe, stdout: List<UByte>, err: ChildPipe, stderr: List<UByte>): Result<Unit, Error> = when (out.diverge()) {}
+public fun readOutput(out: ChildPipe, stdout: MutableList<UByte>, err: ChildPipe, stderr: MutableList<UByte>): Result<Unit, Error> = when (out.diverge()) {}
 
 public fun getpid(): UInt {
     error("no pids on this platform")

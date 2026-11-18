@@ -6,6 +6,8 @@ import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.fetchAdd
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
 import io.github.kotlinmania.rustlang.procmacro.bridge.fxhash.FxHashMap
 
 // Server-side handles and storage for per-handle data.

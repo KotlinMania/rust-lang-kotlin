@@ -1307,7 +1307,7 @@ public sealed class AsciiChar(
             // so because `d` must be 64 or less the addition can return at most
             // 112 (0x70), which doesn't overflow and is within the ASCII range.
             return run {
-                val byte = 48u.uncheckedAdd(d)
+                val byte = 48u.toUByte().uncheckedAdd(d)
                 AsciiChar.fromU8Unchecked(byte)
             }
         }

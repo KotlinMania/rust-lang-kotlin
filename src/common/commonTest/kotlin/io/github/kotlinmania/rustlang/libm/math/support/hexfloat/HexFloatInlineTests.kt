@@ -31,7 +31,7 @@ public fun roundingProperties(s: String): Result<Unit, HexFloatParseError> {
         check(xd == xz)
         check(xd == xn)
     } else {
-        check(doubleArrayOf(s0, s1, s2, s3).all(Status::inexact))
+        check(listOf(s0, s1, s2, s3).all(Status::inexact))
         val xd1 = F16.fromBits(xd.toUShort())
         val xu1 = F16.fromBits(xu.toUShort())
         val xz1 = F16.fromBits(xz.toUShort())
@@ -128,10 +128,10 @@ public class HexFloatParseTestsInlineTests {
                 val x1 = hf32(String.fromUtf8(s1).unwrap())
                 check(x1.toRawBits().toUInt() == expected.toRawBits().toUInt())
                 for (i in (3 until 10).rev()) {
-                    if (s1[i] == 102u.toByte()) {
-                        s1[i] = 48u
-                    } else if (s1[i] == 57u.toByte()) {
-                        s1[i] = 97u
+                    if (s1[i] == (102u.toUByte()).toByte()) {
+                        s1[i] = 48u.toUByte()
+                    } else if (s1[i] == (57u.toUByte()).toByte()) {
+                        s1[i] = 97u.toUByte()
                         break
                     } else {
                         s1[i] += 1
@@ -140,15 +140,15 @@ public class HexFloatParseTestsInlineTests {
                 }
             }
             for (i1 in (12 until 15).rev()) {
-                if (s1[i1] == 48u.toByte()) {
-                    s1[i1] = 57u
+                if (s1[i1] == (48u.toUByte()).toByte()) {
+                    s1[i1] = 57u.toUByte()
                 } else {
                     s1[i1] -= 1
                     break
                 }
             }
             for (i2 in (3 until 10).rev()) {
-                s1[i2] = 48u
+                s1[i2] = 48u.toUByte()
             }
         }
     }

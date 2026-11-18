@@ -1803,7 +1803,7 @@ public val TUN_PKT_STRIP: CInt = 0x0001
 public val TUN_FLT_ALLMULTI: CInt = 0x0001
 
 // Ioctl operation codes
-public val T_TYPE: UInt = 84u
+public val T_TYPE: UInt = (84u.toUByte()).toUInt()
 
 public val ADFS_SUPER_MAGIC: CLong = 0x0000adf5L
 

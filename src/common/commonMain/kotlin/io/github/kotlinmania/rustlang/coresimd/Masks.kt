@@ -73,7 +73,7 @@ public fun ULong.fixEndianness(): ULong =
  * non-`PartialEq` types in the future.
  */
 public interface PrivateMethods<T, out Unsigned> {
-    public fun <Mask> valid(values: Simd<T>, n: Int): Boolean
+    public fun <Mask> valid(values: Simd<T>, n: Int = 0): Boolean
 
     public fun eq(other: T): Boolean
 
@@ -441,28 +441,28 @@ public open class Mask<T> internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries((0 until N).map({ i -> this.test(i) })).finish(); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun bitand(rhs: Mask<T>): Mask<T> {
+    public override fun bitand(rhs: Mask<T>): Mask<T> {
         // Safety: `self` is an integer vector
         return Mask(run { val simdArg0 = this.value; val simdArg1 = rhs.value; simdArg0 }, fieldLayout = this.fieldLayout)
     }
 
-    public open fun bitand(rhs: Boolean): Mask<T> = this and Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
+    public override fun bitand(rhs: Boolean): Mask<T> = this and Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
 
-    public open fun bitor(rhs: Mask<T>): Mask<T> {
+    public override fun bitor(rhs: Mask<T>): Mask<T> {
         // Safety: `self` is an integer vector
         return Mask(run { val simdArg0 = this.value; val simdArg1 = rhs.value; simdArg0 }, fieldLayout = this.fieldLayout)
     }
 
-    public open fun bitor(rhs: Boolean): Mask<T> = this or Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
+    public override fun bitor(rhs: Boolean): Mask<T> = this or Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
 
-    public open fun bitxor(rhs: Mask<T>): Mask<T> {
+    public override fun bitxor(rhs: Mask<T>): Mask<T> {
         // Safety: `self` is an integer vector
         return Mask(run { val simdArg0 = this.value; val simdArg1 = rhs.value; simdArg0 }, fieldLayout = this.fieldLayout)
     }
 
-    public open fun bitxor(rhs: Boolean): Mask<T> = this xor Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
+    public override fun bitxor(rhs: Boolean): Mask<T> = this xor Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
 
-    public open operator fun not(): Mask<T> = Mask.splat(true, n, fieldLayout = this.fieldLayout) xor this
+    public override operator fun not(): Mask<T> = Mask.splat(true, n, fieldLayout = this.fieldLayout) xor this
 
     public open fun bitandAssign(rhs: Mask<T>) {
         var selfMut = this

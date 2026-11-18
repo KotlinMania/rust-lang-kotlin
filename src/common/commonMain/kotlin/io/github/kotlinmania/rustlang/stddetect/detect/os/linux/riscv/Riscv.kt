@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -235,13 +236,13 @@ public fun detectFeatures(): Initializer {
     // [hwcap]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/riscv/include/uapi/asm/hwcap.h?h=v6.16
     val auxv = auxv().expect("read auxvec")
     // should not fail on RISC-V platform
-    var hasI = test(auxv.hwcap, (105u - 97u).into())
-    enableFeature(Feature.A, test(auxv.hwcap, (97u - 97u).into()))
-    enableFeature(Feature.C, test(auxv.hwcap, (99u - 97u).into()))
-    enableFeature(Feature.D, test(auxv.hwcap, (100u - 97u).into()))
-    enableFeature(Feature.F, test(auxv.hwcap, (102u - 97u).into()))
-    enableFeature(Feature.M, test(auxv.hwcap, (109u - 97u).into()))
-    val hasV = test(auxv.hwcap, (118u - 97u).into())
+    var hasI = test(auxv.hwcap, (105u.toUByte() - 97u.toUByte()).into())
+    enableFeature(Feature.A, test(auxv.hwcap, (97u.toUByte() - 97u.toUByte()).into()))
+    enableFeature(Feature.C, test(auxv.hwcap, (99u.toUByte() - 97u.toUByte()).into()))
+    enableFeature(Feature.D, test(auxv.hwcap, (100u.toUByte() - 97u.toUByte()).into()))
+    enableFeature(Feature.F, test(auxv.hwcap, (102u.toUByte() - 97u.toUByte()).into()))
+    enableFeature(Feature.M, test(auxv.hwcap, (109u.toUByte() - 97u.toUByte()).into()))
+    val hasV = test(auxv.hwcap, (118u.toUByte() - 97u.toUByte()).into())
     var isVSet = false
     // Use riscvHwprobe syscall to query more extensions and
     // performance-related capabilities.
@@ -324,7 +325,7 @@ public fun detectFeatures(): Initializer {
         enableFeature(Feature.A, true)
         // Enable features based on `RISCV_HWPROBE_KEY_IMA_EXT_0`.
         val imaExt0 = t[Indices.Extensions.value.toInt()].get() ?: break
-        val test = { mask -> (imaExt0 and mask) != 0 }
+        val test = { mask -> (imaExt0 and mask) != 0uL }
         enableFeature(Feature.D, test(RISCV_HWPROBE_IMA_FD.toUInt()))
         // F is implied.
         enableFeature(Feature.C, test(RISCV_HWPROBE_IMA_C.toUInt()))

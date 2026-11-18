@@ -2,6 +2,9 @@
 package io.github.kotlinmania.rustlang.core.iter.sources.oncewith
 
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 /**
  * Creates an iterator that lazily generates a value exactly once by invoking

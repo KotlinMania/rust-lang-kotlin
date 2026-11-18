@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.stddetect.detect
 
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.cache.test
 

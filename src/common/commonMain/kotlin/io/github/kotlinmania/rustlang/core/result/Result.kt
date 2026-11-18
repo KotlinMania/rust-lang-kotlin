@@ -1,6 +1,7 @@
 // port-lint: source result.rs
 package io.github.kotlinmania.rustlang.core.result
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.convert.from
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
@@ -24,16 +25,13 @@ import io.github.kotlinmania.rustlang.core.ops.trytrait.Yeet
 //
 // ```kotlin
 // sealed class Result<T, E> {
-//     public data class Ok<T, E>(public var value: T) : Result<T, E>() {
-//         public override fun okValue(): T = value
-//     }
+//     public data class Ok<T, E>(public var value: T) : Result<T, E>()
 //     public data class Err<T, E>(public var value: E) : Result<T, E>() {
 //         public val error: E get() = value
-//         public override fun errValue(): E = value
 //     }
 //
-//     public open fun okValue(): T = error("not Ok")
-//     public open fun errValue(): E = error("not Err")
+//     public fun okValue(): T = when (this) { is Ok -> value; is Err -> error("not Ok") }
+//     public fun errValue(): E = when (this) { is Err -> value; is Ok -> error("not Err") }
 // }
 // ```
 //
@@ -584,19 +582,16 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
     /**
      * Contains the success value
      */
-    public data class Ok<T, E>(public var value: T) : Result<T, E>() {
-        public override fun okValue(): T = value
-    }
+    public data class Ok<T, E>(public var value: T) : Result<T, E>()
     /**
      * Contains the error value
      */
     public data class Err<T, E>(public var value: E) : Result<T, E>() {
         public val error: E get() = value
-        public override fun errValue(): E = value
     }
 
-    public open fun okValue(): T = error("not Ok")
-    public open fun errValue(): E = error("not Err")
+    public fun okValue(): T = when (this) { is Ok -> value; is Err -> error("not Ok") }
+    public fun errValue(): E = when (this) { is Err -> value; is Ok -> error("not Err") }
 
     public fun rustEquals(other: Result<T, E>): Boolean = this == other
 
@@ -1606,13 +1601,13 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
             val matchVal = Pair(this, source)
             when {
                 matchVal.first is Result.Ok<*, *> && matchVal.second is Result.Ok<*, *> -> {
-                    val to = (matchVal.first as Result.Ok<*, *>).okValue()
-                    val from = (matchVal.second as Result.Ok<*, *>).okValue()
+                    val to = matchVal.first.okValue()
+                    val from = matchVal.second.okValue()
                     to.cloneFrom(from)
                 }
                 matchVal.first is Result.Err<*, *> && matchVal.second is Result.Err<*, *> -> {
-                    val to1 = (matchVal.first as Result.Err<*, *>).errValue()
-                    val from1 = (matchVal.second as Result.Err<*, *>).errValue()
+                    val to1 = matchVal.first.errValue()
+                    val from1 = matchVal.second.errValue()
                     to1.cloneFrom(from1)
                 }
                 else -> {
@@ -1716,16 +1711,16 @@ public fun <T, E> Result<T, E>.cloned(): Result<T, E> = this.map({ t -> t.clone(
 public fun <T, E> Result<T?, E>.transpose(): Result<T, E>? =
     when {
         this is Result.Ok<*, *> && (this as Result.Ok<*, *>).okValue() != null -> {
-            val okValueVal = (this as Result.Ok<*, *>).okValue()
+            val okValueVal = this.okValue()
             val x = okValueVal
             Ok(x)
         }
         this is Result.Ok<*, *> && (this as Result.Ok<*, *>).okValue() == null -> {
-            val None = (this as Result.Ok<*, *>).okValue()
+            val None = this.okValue()
             null
         }
         else -> {
-            val e = (this as Result.Err<*, *>).errValue()
+            val e = this.errValue()
             Err(e)
         }
     }

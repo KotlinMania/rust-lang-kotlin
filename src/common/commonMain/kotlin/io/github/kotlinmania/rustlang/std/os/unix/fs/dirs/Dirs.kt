@@ -8,6 +8,9 @@ import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.std.env.SplitPathsRef
 import io.github.kotlinmania.rustlang.std.env.homeDir
 import io.github.kotlinmania.rustlang.std.env.joinPaths
@@ -428,7 +431,7 @@ public fun mediaDirsExtXdgMediaDirs(): Result<MediaDirs, Error> {
                     return Result.Err<MediaDirs, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.NotFound, message = "missing `\$XDG_CONFIG_HOME/user-dirs.dirs`")))
                 }
                 else -> {
-                    val e1 = (matchVal as Result.Err<*, *>).errValue()
+                    val e1 = matchVal.errValue()
                     return Result.Err<MediaDirs, Error>(e1)
                 }
             }
@@ -478,7 +481,7 @@ public fun dirsOr(fallback: Any, env: String): OsString = (dirs(env) ?: fallback
 
 public fun parseUserDirs(spec: List<UByte>, userHome: Path): MediaDirs {
     val dirs = MediaDirs.empty()
-    for ((xdg, path) in spec.split({ b -> b == 10u }).flatMap({ line -> parseUserDirsLine(line, userHome) })) {
+    for ((xdg, path) in spec.split({ b -> b == 10u.toUByte() }).flatMap({ line -> parseUserDirsLine(line, userHome) })) {
         // load the known user directories
         when (xdg) {
             "XDG_DESKTOP_DIR".encodeToByteArray() -> dirs.desktop = path
@@ -504,11 +507,11 @@ public fun parseUserDirsLine(line: List<UByte>, userHome: Path): Pair<List<UByte
     // trim whitespace
     val trimmed = line.trimAscii()
     // skip empty lines and comments
-    if (trimmed.isEmpty() || trimmed.startsWith(ubyteArrayOf(35u))) {
+    if (trimmed.isEmpty() || trimmed.startsWith(ubyteArrayOf(35u.toUByte()))) {
         return null
     }
     // only variable assignment lines are allowed; split on `=`
-    val split = trimmed.splitn(2, { b -> b == 61u })
+    val split = trimmed.splitn(2, { b -> b == 61u.toUByte() })
     // extract assignment parts; ignore lines not in this format
     val variable = (split.next() ?: return null)
     val value = (split.next() ?: return null)
@@ -535,14 +538,14 @@ public fun unquote(bytes: List<UByte>, userHome: Path): PathBuf? {
     if (rest1.startsWith("\$HOME/".encodeToByteArray())) {
         s.addAll(userHome.asOsStr().encodeToByteArray().map { it.toUByte() })
         if (!userHome.hasTrailingSep()) {
-            s.add(47u)
+            s.add(47u.toUByte())
         }
         rest1 = rest1[6 until rest1.size]
     }
     while (true) {
         val i =
             (rest1.iter().indexOfFirst({ b -> when (b) {
-                34u, 92u, 36u, 96u -> true
+                34u.toUByte(), 92u.toUByte(), 36u.toUByte(), 96u.toUByte() -> true
                 else -> false
             } }).takeIf { it >= 0 } ?: rest1.len())
         s.addAll(rest1[0 until i])
@@ -550,14 +553,14 @@ public fun unquote(bytes: List<UByte>, userHome: Path): PathBuf? {
             val matchVal = rest1[i until rest1.size]
             when {
                 matchVal.isEmpty() -> { break }
-                matchVal.size >= 2 && matchVal[0] == 92u && (matchVal[1] == 34u || matchVal[1] == 92u || matchVal[1] == 36u || matchVal[1] == 96u) -> {
+                matchVal.size >= 2 && matchVal[0] == 92u.toUByte() && (matchVal[1] == 34u.toUByte() || matchVal[1] == 92u.toUByte() || matchVal[1] == 36u.toUByte() || matchVal[1] == 96u.toUByte()) -> {
                     val c = matchVal[1]
                     val tail = matchVal.subList(2, matchVal.size)
                     // supported escapes
                     s.add(c)
                     rest1 = tail
                 }
-                matchVal.size >= 1 && (matchVal[0] == 34u || matchVal[0] == 92u || matchVal[0] == 36u || matchVal[0] == 96u) -> {
+                matchVal.size >= 1 && (matchVal[0] == 34u.toUByte() || matchVal[0] == 92u.toUByte() || matchVal[0] == 36u.toUByte() || matchVal[0] == 96u.toUByte()) -> {
                     // unsupported shell syntax
                     return null
                 }

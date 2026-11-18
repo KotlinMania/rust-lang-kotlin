@@ -1,6 +1,7 @@
 // port-lint: source cli.rs
 package io.github.kotlinmania.rustlang.test.cli
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.getopts.Matches
 import io.github.kotlinmania.rustlang.std.path.PathBuf
@@ -271,7 +272,7 @@ public fun getTestThreads(matches: Matches): OptPartRes<Int?> {
                     n
                 }
                 else -> {
-                    val e = (matchVal as Result.Err<*, *>).errValue()
+                    val e = matchVal.errValue()
                     return Result.Err("argument for --test-threads must be a number > 0 (error: $e)")
                 }
             }

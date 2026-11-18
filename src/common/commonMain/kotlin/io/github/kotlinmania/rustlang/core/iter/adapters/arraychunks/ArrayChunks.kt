@@ -13,6 +13,8 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 public typealias Source<I> = I.Source
 
@@ -110,7 +112,7 @@ public open class ArrayChunks<I, Item> internal constructor(
         while (true) {
             val matchVal = this.iter.nextChunkBack()
             if (matchVal !is Result.Ok<*, *>) break
-            val chunk = (matchVal as Result.Ok<*, *>).okValue()
+            val chunk = matchVal.okValue()
             acc = when (val tryResult = f(acc, chunk)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
         }
         return acc

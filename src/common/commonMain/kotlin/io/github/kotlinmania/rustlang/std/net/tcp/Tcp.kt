@@ -569,21 +569,21 @@ public open class TcpStream(
     // `AsRawFd`/`IntoRawFd`/`FromRawFd`, on Unix and WASI, and
     // `AsSocket`/`From<OwnedSocket>`/`Into<OwnedSocket>` and
     // `AsRawSocket`/`IntoRawSocket`/`FromRawSocket` on Windows.
-    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = this.value.read(buf)
+    public override fun read(buf: MutableList<UByte>): Result<Int, Error> = this.value.read(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.value.readBuf(buf)
+    public override fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.value.readBuf(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.value.readVectored(bufs)
+    public override fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.value.readVectored(bufs)
 
-    public open fun isReadVectored(): Boolean = this.value.isReadVectored()
+    public override fun isReadVectored(): Boolean = this.value.isReadVectored()
 
-    public open fun write(buf: List<UByte>): Result<Int, Error> = this.value.write(buf)
+    public override fun write(buf: List<UByte>): Result<Int, Error> = this.value.write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = this.value.writeVectored(bufs)
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = this.value.writeVectored(bufs)
 
-    public open fun isWriteVectored(): Boolean = this.value.isWriteVectored()
+    public override fun isWriteVectored(): Boolean = this.value.isWriteVectored()
 
-    public open fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
+    public override fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
     public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream = this.value
 

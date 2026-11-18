@@ -1,10 +1,12 @@
 // port-lint: source external_trait_impls/rayon/map.rs
 package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.map
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.num.divCeil
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.hashbrown.HashMap
 import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.helpers.collect

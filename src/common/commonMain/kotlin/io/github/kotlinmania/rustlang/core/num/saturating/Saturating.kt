@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.num.isPowerOfTwo
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
@@ -133,7 +134,7 @@ public fun Saturating<Int>.mulAssign(other: Int) {
  * import std.num.Saturating;
  * ```
  */
-public fun Saturating<Int>.div(other: Saturating<Int>): Saturating<Int> = Saturating(this.value.saturatingDiv(other.value), fieldLayout = PrimitiveLayouts.USIZE64)
+public operator fun Saturating<Int>.div(other: Saturating<Int>): Saturating<Int> = Saturating(this.value.saturatingDiv(other.value), fieldLayout = PrimitiveLayouts.USIZE64)
 
 public fun Saturating<Int>.divAssign(other: Saturating<Int>) {
     var selfMut = this
@@ -145,7 +146,7 @@ public fun Saturating<Int>.divAssign(other: Int) {
     selfMut = selfMut / Saturating(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
-public fun Saturating<Int>.rem(other: Saturating<Int>): Saturating<Int> = Saturating(this.value.rem(other.value), fieldLayout = PrimitiveLayouts.USIZE64)
+public operator fun Saturating<Int>.rem(other: Saturating<Int>): Saturating<Int> = Saturating(this.value.rem(other.value), fieldLayout = PrimitiveLayouts.USIZE64)
 
 public fun Saturating<Int>.remAssign(other: Saturating<Int>) {
     var selfMut = this

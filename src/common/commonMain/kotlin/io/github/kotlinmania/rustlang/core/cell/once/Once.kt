@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.core.cell.once
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugTuple(

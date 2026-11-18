@@ -486,21 +486,21 @@ public open class UnixStream(
      */
     public open fun sendVectoredWithAncillary(bufs: List<IoSlice>, ancillary: SocketAncillary): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = sendVectoredWithAncillaryTo(this.value, null, bufs, ancillary)
 
-    public open fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = Read.read(this, buf)
+    public override fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = Read.read(this, buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = Read.readBuf(this, buf)
+    public override fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = Read.readBuf(this, buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = Read.readVectored(this, bufs)
+    public override fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = Read.readVectored(this, bufs)
 
-    public open fun isReadVectored(): Boolean = Read.isReadVectored(this)
+    public override fun isReadVectored(): Boolean = Read.isReadVectored(this)
 
-    public open fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = Write.write(this, buf)
+    public override fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = Write.write(this, buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = Write.writeVectored(this, bufs)
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = Write.writeVectored(this, bufs)
 
-    public open fun isWriteVectored(): Boolean = Write.isWriteVectored(this)
+    public override fun isWriteVectored(): Boolean = Write.isWriteVectored(this)
 
-    public open fun flush(): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = Write.flush(this)
+    public override fun flush(): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = Write.flush(this)
 
     public override fun asRawFd(): RawFd = this.value.asRawFd()
 

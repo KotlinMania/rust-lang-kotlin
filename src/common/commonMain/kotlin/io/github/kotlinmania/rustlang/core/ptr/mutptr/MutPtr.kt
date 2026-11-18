@@ -20,6 +20,7 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.isPowerOfTwo
 import io.github.kotlinmania.rustlang.core.num.overflowingAdd
 import io.github.kotlinmania.rustlang.core.num.overflowingAddSigned
 import io.github.kotlinmania.rustlang.core.num.wrappingNeg
@@ -46,6 +47,7 @@ import io.github.kotlinmania.rustlang.core.ptr.constptr.exposeProvenance
 import io.github.kotlinmania.rustlang.core.ptr.constptr.isAligned
 import io.github.kotlinmania.rustlang.core.ptr.constptr.isAlignedTo
 import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
 import io.github.kotlinmania.rustlang.core.ptr.constptr.mapAddr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.mask
 import io.github.kotlinmania.rustlang.core.ptr.constptr.offset
@@ -75,7 +77,9 @@ import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.writeVolatile
 import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.slice.splitAtMut
+import io.github.kotlinmania.rustlang.core.str.len
 
 /**
  * # Examples
@@ -1933,7 +1937,7 @@ public fun MutPtr.asMutSlice(n: Int = 0): MutPtr = this
 /**
  * For thin pointers, equality is by address, as produced by the [`mut.T.addr`](pointer.addr) method.
  */
-public fun <T> MutPtr.eq(other: MutPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (typeLayoutT).readNative((this).rawAddress) == (typeLayoutT).readNative((other).rawAddress)
+public fun MutPtr.eq(other: MutPtr): Boolean = this == other
 
 /**
  * Pointer equality is an equivalence relation.
@@ -1956,13 +1960,13 @@ public fun MutPtr.cmp(other: MutPtr): Ordering =
  */
 public fun MutPtr.partialCmp(other: MutPtr): Ordering? = this.cmp(other)
 
-public fun <T> MutPtr.lt(other: MutPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) < 0)
+public fun MutPtr.lt(other: MutPtr): Boolean = (kmCompareValues(this, other) < 0)
 
-public fun <T> MutPtr.le(other: MutPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) <= 0)
+public fun MutPtr.le(other: MutPtr): Boolean = (kmCompareValues(this, other) <= 0)
 
-public fun <T> MutPtr.gt(other: MutPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) > 0)
+public fun MutPtr.gt(other: MutPtr): Boolean = (kmCompareValues(this, other) > 0)
 
-public fun <T> MutPtr.ge(other: MutPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) >= 0)
+public fun MutPtr.ge(other: MutPtr): Boolean = (kmCompareValues(this, other) >= 0)
 
 /**
  * Returns the default value of [`nullMut`][ptr.nullMut].

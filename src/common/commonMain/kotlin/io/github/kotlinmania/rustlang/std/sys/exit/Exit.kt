@@ -4,10 +4,11 @@ package io.github.kotlinmania.rustlang.std.sys.exit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Acquire
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
+import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchange
 import io.github.kotlinmania.rustlang.libc.pause
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Acquire
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sys.io.error.unix.errnoLocation
 
 /**

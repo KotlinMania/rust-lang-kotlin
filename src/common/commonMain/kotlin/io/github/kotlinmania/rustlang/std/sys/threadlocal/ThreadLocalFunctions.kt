@@ -1,6 +1,5 @@
 package io.github.kotlinmania.rustlang.std.sys.threadlocal
 
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sys.destructors.run
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
@@ -18,7 +17,7 @@ public fun abortOnDtorUnwind(f: () -> Unit) {
                     null -> {}
                     else -> {
                         val out = matchVal
-                        Write.writeFmt(out, "fatal runtime error: " + ("thread local panicked on drop").toString() + ", aborting\n")
+                        out.writeFmt("fatal runtime error: " + ("thread local panicked on drop").toString() + ", aborting\n")
                     }
                 }
                 run {

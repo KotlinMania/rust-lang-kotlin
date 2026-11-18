@@ -11,6 +11,8 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.nullVal
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
@@ -519,13 +521,13 @@ public open class ChildStdin internal constructor(
     // `AsRawFd`/`IntoRawFd`/`FromRawFd`, on Unix and WASI, and
     // `AsHandle`/`From<OwnedHandle>`/`Into<OwnedHandle>` and
     // `AsRawHandle`/`IntoRawHandle`/`FromRawHandle` on Windows.
-    public open fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).write(buf)
+    public override fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).writeVectored(bufs)
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).writeVectored(bufs)
 
-    public open fun isWriteVectored(): Boolean = Write.isWriteVectored(this)
+    public override fun isWriteVectored(): Boolean = Write.isWriteVectored(this)
 
-    public open fun flush(): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).flush()
+    public override fun flush(): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).flush()
 
     public override fun asInner(): ChildPipe = this.inner
 
@@ -566,15 +568,15 @@ public open class ChildStdout internal constructor(
     // `AsRawFd`/`IntoRawFd`/`FromRawFd`, on Unix and WASI, and
     // `AsHandle`/`From<OwnedHandle>`/`Into<OwnedHandle>` and
     // `AsRawHandle`/`IntoRawHandle`/`FromRawHandle` on Windows.
-    public open fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.read(buf)
+    public override fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.read(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readBuf(buf)
+    public override fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readBuf(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readVectored(bufs)
+    public override fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readVectored(bufs)
 
-    public open fun isReadVectored(): Boolean = this.inner.isReadVectored()
+    public override fun isReadVectored(): Boolean = this.inner.isReadVectored()
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readToEnd(buf)
+    public override fun readToEnd(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readToEnd(buf)
 
     public override fun asInner(): ChildPipe = this.inner
 
@@ -615,15 +617,15 @@ public open class ChildStderr internal constructor(
     // `AsRawFd`/`IntoRawFd`/`FromRawFd`, on Unix and WASI, and
     // `AsHandle`/`From<OwnedHandle>`/`Into<OwnedHandle>` and
     // `AsRawHandle`/`IntoRawHandle`/`FromRawHandle` on Windows.
-    public open fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.read(buf)
+    public override fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.read(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readBuf(buf)
+    public override fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readBuf(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readVectored(bufs)
+    public override fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readVectored(bufs)
 
-    public open fun isReadVectored(): Boolean = this.inner.isReadVectored()
+    public override fun isReadVectored(): Boolean = this.inner.isReadVectored()
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readToEnd(buf)
+    public override fun readToEnd(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readToEnd(buf)
 
     public override fun asInner(): ChildPipe = this.inner
 

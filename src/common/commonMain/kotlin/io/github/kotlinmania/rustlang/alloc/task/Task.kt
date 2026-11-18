@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.alloc.task
 
 import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
 import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.task.wake.LocalWaker

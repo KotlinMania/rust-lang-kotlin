@@ -5,6 +5,10 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.fetchAdd
+import io.github.kotlinmania.rustlang.core.sync.atomic.fetchOr
+import io.github.kotlinmania.rustlang.core.sync.atomic.fetchSub
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
 import kotlin.experimental.and
 import kotlin.experimental.inv
 

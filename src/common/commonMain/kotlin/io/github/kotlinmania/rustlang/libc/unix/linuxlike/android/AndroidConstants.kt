@@ -2041,7 +2041,7 @@ public val SECCOMP_ADDFD_FLAG_SETFD: CUlong = 1uL
 
 public val SECCOMP_ADDFD_FLAG_SEND: CUlong = 2uL
 
-public val SECCOMP_IOC_MAGIC: UInt = 33u
+public val SECCOMP_IOC_MAGIC: UInt = (33u.toUByte()).toUInt()
 
 public val NLA_F_NESTED: CInt = 1 shl 15
 

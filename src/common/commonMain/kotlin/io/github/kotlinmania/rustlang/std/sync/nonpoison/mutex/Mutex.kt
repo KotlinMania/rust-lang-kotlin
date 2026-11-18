@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.needsDrop
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr

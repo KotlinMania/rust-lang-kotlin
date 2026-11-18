@@ -266,7 +266,7 @@ public val SECCOMP_ADDFD_FLAG_SETFD: CUlong = 1uL
 
 public val SECCOMP_ADDFD_FLAG_SEND: CUlong = 2uL
 
-public val SECCOMP_IOC_MAGIC: UInt = 33u
+public val SECCOMP_IOC_MAGIC: UInt = (33u.toUByte()).toUInt()
 
 public val TFD_CLOEXEC: CInt = O_CLOEXEC
 
@@ -2254,7 +2254,7 @@ public val HWTSTAMP_FILTER_NTP_ALL: CUint = 15u
 public val PTP_MAX_SAMPLES: CUint = 25u
 
 // Maximum allowed offset measurement samples.
-public val PTP_CLK_MAGIC: UInt = 61u
+public val PTP_CLK_MAGIC: UInt = (61u.toUByte()).toUInt()
 
 // enum ptpPinFunction
 public val PTP_PF_NONE: CUint = 0u

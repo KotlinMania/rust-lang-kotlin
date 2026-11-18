@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.std.thread.current
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
-import io.github.kotlinmania.rustlang.core.io.write.Write
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
@@ -224,7 +224,7 @@ public fun initCurrent(current: MutPtr): Thread =
                 null -> {}
                 else -> {
                     val out = matchVal
-                    Write.writeFmt(out, "fatal runtime error: " + ("init_current() was re-entrant, which indicates a bug in the Rust threading implementation").toString() + ", aborting\n")
+                    out.writeFmt("fatal runtime error: " + ("init_current() was re-entrant, which indicates a bug in the Rust threading implementation").toString() + ", aborting\n")
                 }
             }
             run {

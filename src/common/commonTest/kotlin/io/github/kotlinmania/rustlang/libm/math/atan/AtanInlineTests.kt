@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.libm.math.atan
 
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf64
+import io.github.kotlinmania.rustlang.core.slice.iter
 
 public class AtanInlineTests {
     @kotlin.test.Test

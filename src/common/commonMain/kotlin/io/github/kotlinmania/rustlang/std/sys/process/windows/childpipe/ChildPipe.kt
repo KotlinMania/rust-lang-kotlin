@@ -17,7 +17,10 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.constptr.castMut
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
@@ -27,7 +30,10 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Relaxed
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
+import io.github.kotlinmania.rustlang.core.sync.atomic.asPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchange
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.unicodeStr
@@ -127,7 +133,7 @@ public open class ChildPipe internal constructor(
                 Result.Err<Unit, Error>(e1)
             }
             else -> {
-                val n = (result as Result.Ok<*, *>).okValue()
+                val n = result.okValue()
                 run {
                     buf.advance(n)
                 }
@@ -140,7 +146,7 @@ public open class ChildPipe internal constructor(
 
     public open fun isReadVectored(): Boolean = this.inner.isReadVectored()
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = this.handle().readToEnd(buf)
+    public open fun readToEnd(buf: MutableList<UByte>): Result<Int, Error> = this.handle().readToEnd(buf)
 
     public open fun write(buf: List<UByte>): Result<Int, Error> =
         run {
@@ -442,7 +448,7 @@ public fun spawnPipeRelay(source: ChildPipe, oursReadable: Boolean, theirHandleI
         while (true) {
             val matchVal = reader.read(buf)
             if (matchVal !is Result.Ok<*, *>) break
-            val len = (matchVal as Result.Ok<*, *>).okValue()
+            val len = matchVal.okValue()
             if (len == 0) {
                 break
             }
@@ -450,7 +456,7 @@ public fun spawnPipeRelay(source: ChildPipe, oursReadable: Boolean, theirHandleI
             while (true) {
                 val matchVal1 = writer.write(((buf).sliceArray(start until len)))
                 if (matchVal1 !is Result.Ok<*, *>) break
-                val written = (matchVal1 as Result.Ok<*, *>).okValue()
+                val written = matchVal1.okValue()
                 start += written
                 if (start == len) {
                     continue
@@ -463,7 +469,7 @@ public fun spawnPipeRelay(source: ChildPipe, oursReadable: Boolean, theirHandleI
     return Result.Ok<ChildPipe, Error>(theirs)
 }
 
-public fun readOutput(p1: ChildPipe, v1: List<UByte>, p2: ChildPipe, v2: List<UByte>): Result<Unit, Error> {
+public fun readOutput(p1: ChildPipe, v1: MutableList<UByte>, p2: ChildPipe, v2: MutableList<UByte>): Result<Unit, Error> {
     val p11 = p1.intoHandle()
     val p21 = p2.intoHandle()
     val p12 = when (val tryResult = AsyncPipe.new(p11, v1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
@@ -498,7 +504,7 @@ public open class AsyncPipe internal constructor(
     eventCtorArg: Handle,
     public var overlapped: Overlapped,
     // needs a stable address
-    public var dst: List<UByte>,
+    public var dst: MutableList<UByte>,
     public var state: State,
 ) {
     public var pipe: Handle = pipeCtorArg
@@ -616,7 +622,7 @@ public open class AsyncPipe internal constructor(
             pipe: Handle,
             event: Handle,
             overlapped: Overlapped,
-            dst: List<UByte>,
+            dst: MutableList<UByte>,
             state: State,
         ): AsyncPipe = AsyncPipe(
             pipeCtorArg = pipe,
@@ -626,7 +632,7 @@ public open class AsyncPipe internal constructor(
             state = state,
         )
 
-        public fun new(pipe: Handle, dst: List<UByte>): Result<AsyncPipe, Error> {
+        public fun new(pipe: Handle, dst: MutableList<UByte>): Result<AsyncPipe, Error> {
             // Create an event which we'll use to coordinate our overlapped
             // operations, this event will be used in WaitForMultipleObjects
             // and passed as part of the OVERLAPPED handle.

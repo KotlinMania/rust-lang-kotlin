@@ -234,4 +234,4 @@ public fun Complex<F16>.mul(rhs: Complex<F16>): Complex<F16> {
     }
 }
 
-public fun Complex<F16>.div(rhs: Complex<F16>): Complex<F16> = rustDivhc3(this.re, this.im, rhs.re, rhs.im)
+public operator fun Complex<F16>.div(rhs: Complex<F16>): Complex<F16> = rustDivhc3(this.re, this.im, rhs.re, rhs.im)

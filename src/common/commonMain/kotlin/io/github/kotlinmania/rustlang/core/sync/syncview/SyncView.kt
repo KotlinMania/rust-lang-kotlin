@@ -1,6 +1,7 @@
 // port-lint: source sync/sync_view.rs
 package io.github.kotlinmania.rustlang.core.sync.syncview
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater

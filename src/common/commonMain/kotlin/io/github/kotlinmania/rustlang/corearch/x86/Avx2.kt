@@ -183,7 +183,7 @@ public fun mm256AlignrEpi8(a: M256i, b: M256i, imm8: Int): M256i {
             Pair(a, b)
         }
     if (imm8 == 16) {
-        return transmuteWithLayouts<Any?, M256i>(a1, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
+        return a1
     }
     return run {
         val r: I8x32 = run { val simdArg0 = b1.asI8x32(); val simdArg1 = a1.asI8x32(); val simdArg2 = SimdShuffleIdx(uintArrayOf(mask(imm8.toUInt(), 0u), mask(imm8.toUInt(), 1u), mask(imm8.toUInt(), 2u), mask(imm8.toUInt(), 3u), mask(imm8.toUInt(), 4u), mask(imm8.toUInt(), 5u), mask(imm8.toUInt(), 6u), mask(imm8.toUInt(), 7u), mask(imm8.toUInt(), 8u), mask(imm8.toUInt(), 9u), mask(imm8.toUInt(), 10u), mask(imm8.toUInt(), 11u), mask(imm8.toUInt(), 12u), mask(imm8.toUInt(), 13u), mask(imm8.toUInt(), 14u), mask(imm8.toUInt(), 15u), mask(imm8.toUInt(), 16u), mask(imm8.toUInt(), 17u), mask(imm8.toUInt(), 18u), mask(imm8.toUInt(), 19u), mask(imm8.toUInt(), 20u), mask(imm8.toUInt(), 21u), mask(imm8.toUInt(), 22u), mask(imm8.toUInt(), 23u), mask(imm8.toUInt(), 24u), mask(imm8.toUInt(), 25u), mask(imm8.toUInt(), 26u), mask(imm8.toUInt(), 27u), mask(imm8.toUInt(), 28u), mask(imm8.toUInt(), 29u), mask(imm8.toUInt(), 30u), mask(imm8.toUInt(), 31u))); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I8x32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x32>()).alignBytes)); val res = (UnresolvedTypeLayout<I8x32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I8x32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x32>()).alignBytes)); res } }

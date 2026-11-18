@@ -10,7 +10,9 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.chars
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.test.TestDesc
 import io.github.kotlinmania.rustlang.test.console.ConsoleTestDiscoveryState
 import io.github.kotlinmania.rustlang.test.console.ConsoleTestState
@@ -196,41 +198,41 @@ public open class EscapedString<S : AsRef<String>>(
         for ((i, byte) in this.value.bytes().mapIndexed { index, item -> Pair(index, item) }) {
             val escaped =
                 when (byte) {
-                    34u -> "\\\""
-                    92u -> "\\\\"
-                    0u -> "\\u0000"
-                    1u -> "\\u0001"
-                    2u -> "\\u0002"
-                    3u -> "\\u0003"
-                    4u -> "\\u0004"
-                    5u -> "\\u0005"
-                    6u -> "\\u0006"
-                    7u -> "\\u0007"
-                    8u -> "\\b"
-                    9u -> "\\t"
-                    10u -> "\\n"
-                    11u -> "\\u000b"
-                    12u -> "\\f"
-                    13u -> "\\r"
-                    14u -> "\\u000e"
-                    15u -> "\\u000f"
-                    16u -> "\\u0010"
-                    17u -> "\\u0011"
-                    18u -> "\\u0012"
-                    19u -> "\\u0013"
-                    20u -> "\\u0014"
-                    21u -> "\\u0015"
-                    22u -> "\\u0016"
-                    23u -> "\\u0017"
-                    24u -> "\\u0018"
-                    25u -> "\\u0019"
-                    26u -> "\\u001a"
-                    27u -> "\\u001b"
-                    28u -> "\\u001c"
-                    29u -> "\\u001d"
-                    30u -> "\\u001e"
-                    31u -> "\\u001f"
-                    127u -> "\\u007f"
+                    34u.toUByte() -> "\\\""
+                    92u.toUByte() -> "\\\\"
+                    0u.toUByte() -> "\\u0000"
+                    1u.toUByte() -> "\\u0001"
+                    2u.toUByte() -> "\\u0002"
+                    3u.toUByte() -> "\\u0003"
+                    4u.toUByte() -> "\\u0004"
+                    5u.toUByte() -> "\\u0005"
+                    6u.toUByte() -> "\\u0006"
+                    7u.toUByte() -> "\\u0007"
+                    8u.toUByte() -> "\\b"
+                    9u.toUByte() -> "\\t"
+                    10u.toUByte() -> "\\n"
+                    11u.toUByte() -> "\\u000b"
+                    12u.toUByte() -> "\\f"
+                    13u.toUByte() -> "\\r"
+                    14u.toUByte() -> "\\u000e"
+                    15u.toUByte() -> "\\u000f"
+                    16u.toUByte() -> "\\u0010"
+                    17u.toUByte() -> "\\u0011"
+                    18u.toUByte() -> "\\u0012"
+                    19u.toUByte() -> "\\u0013"
+                    20u.toUByte() -> "\\u0014"
+                    21u.toUByte() -> "\\u0015"
+                    22u.toUByte() -> "\\u0016"
+                    23u.toUByte() -> "\\u0017"
+                    24u.toUByte() -> "\\u0018"
+                    25u.toUByte() -> "\\u0019"
+                    26u.toUByte() -> "\\u001a"
+                    27u.toUByte() -> "\\u001b"
+                    28u.toUByte() -> "\\u001c"
+                    29u.toUByte() -> "\\u001d"
+                    30u.toUByte() -> "\\u001e"
+                    31u.toUByte() -> "\\u001f"
+                    127u.toUByte() -> "\\u007f"
                     else -> {
                         continue
                     }

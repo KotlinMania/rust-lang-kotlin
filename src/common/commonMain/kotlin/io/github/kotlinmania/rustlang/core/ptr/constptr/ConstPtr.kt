@@ -17,6 +17,7 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.isPowerOfTwo
 import io.github.kotlinmania.rustlang.core.num.overflowingAdd
 import io.github.kotlinmania.rustlang.core.num.overflowingAddSigned
 import io.github.kotlinmania.rustlang.core.num.wrappingNeg
@@ -46,6 +47,7 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.exposeProvenance
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isAligned
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isAlignedTo
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.mapAddr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.mask
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.offset
@@ -66,6 +68,8 @@ import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.readVolatile
 import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawParts
 import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 /**
  * # Examples
@@ -810,8 +814,8 @@ public fun ConstPtr.guaranteedNe(other: ConstPtr): Boolean? =
  * val s: String = "123"
  * val ptr: ConstPtr = s.asPtr()
  * run {
- *     check((PrimitiveLayouts.U8).readNative((ConstPtr((ptr).rawAddress + ((1).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress) == 50u)
- *     check((PrimitiveLayouts.U8).readNative((ConstPtr((ptr).rawAddress + ((2).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress) == 51u)
+ *     check((PrimitiveLayouts.U8).readNative((ConstPtr((ptr).rawAddress + ((1).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress) == 50u.toUByte())
+ *     check((PrimitiveLayouts.U8).readNative((ConstPtr((ptr).rawAddress + ((2).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress) == 51u.toUByte())
  * }
  * ```
  */
@@ -862,8 +866,8 @@ public fun ConstPtr.byteAdd(count: Int): ConstPtr {
  * val s: String = "123"
  * run {
  *     val end: ConstPtr = s.asPtr().add(3)
- *     check((PrimitiveLayouts.U8).readNative((ConstPtr((end).rawAddress - ((1).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress) == 51u)
- *     check((PrimitiveLayouts.U8).readNative((ConstPtr((end).rawAddress - ((2).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress) == 50u)
+ *     check((PrimitiveLayouts.U8).readNative((ConstPtr((end).rawAddress - ((1).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress) == 51u.toUByte())
+ *     check((PrimitiveLayouts.U8).readNative((ConstPtr((end).rawAddress - ((2).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress) == 50u.toUByte())
  * }
  * ```
  */
@@ -1480,7 +1484,7 @@ public fun ConstPtr.asSlice(n: Int = 0): ConstPtr = this
 /**
  * For thin pointers, equality is by address, as produced by the [`const.T.addr`](pointer.addr) method.
  */
-public fun <T> ConstPtr.eq(other: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (typeLayoutT).readNative((this).rawAddress) == (typeLayoutT).readNative((other).rawAddress)
+public fun ConstPtr.eq(other: ConstPtr): Boolean = this == other
 
 /**
  * Pointer equality is an equivalence relation.
@@ -1503,13 +1507,13 @@ public fun ConstPtr.cmp(other: ConstPtr): Ordering =
  */
 public fun ConstPtr.partialCmp(other: ConstPtr): Ordering? = this.cmp(other)
 
-public fun <T> ConstPtr.lt(other: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) < 0)
+public fun ConstPtr.lt(other: ConstPtr): Boolean = (kmCompareValues(this, other) < 0)
 
-public fun <T> ConstPtr.le(other: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) <= 0)
+public fun ConstPtr.le(other: ConstPtr): Boolean = (kmCompareValues(this, other) <= 0)
 
-public fun <T> ConstPtr.gt(other: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) > 0)
+public fun ConstPtr.gt(other: ConstPtr): Boolean = (kmCompareValues(this, other) > 0)
 
-public fun <T> ConstPtr.ge(other: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) >= 0)
+public fun ConstPtr.ge(other: ConstPtr): Boolean = (kmCompareValues(this, other) >= 0)
 
 /**
  * Returns the default value of [`nullVal`][ptr.nullVal].

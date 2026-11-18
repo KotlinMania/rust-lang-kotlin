@@ -2,12 +2,16 @@
 package io.github.kotlinmania.rustlang.std.sync.mpsc
 
 import io.github.kotlinmania.rustlang.core.clone.Share
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.sync.mpmc.SendTimeoutError
 import io.github.kotlinmania.rustlang.std.time.Instant
@@ -143,7 +147,7 @@ import io.github.kotlinmania.rustlang.std.time.Instant
 // while (true) {
 //     val matchVal = rx.recv()
 //     if (matchVal !is Ok) break
-//     val (msg) = matchVal as Ok
+//     val (msg) = matchVal
 //     println("$msg")
 // }
 // println("completed")

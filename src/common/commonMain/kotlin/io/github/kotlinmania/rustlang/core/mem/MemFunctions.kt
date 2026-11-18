@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.typedSwapNonoverlapping
 import io.github.kotlinmania.rustlang.core.intrinsics.writeViaMove
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes

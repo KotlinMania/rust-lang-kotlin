@@ -4,11 +4,12 @@ package io.github.kotlinmania.rustlang.std.thread.thread
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.fmt.Error
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.addrOfMut
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
@@ -150,7 +151,7 @@ public open class Thread internal constructor(
                             null -> {}
                             else -> {
                                 val out = matchVal1
-                                Write.writeFmt(out, "fatal runtime error: " + ("thread OS id already set").toString() + ", aborting\n")
+                                out.writeFmt("fatal runtime error: " + ("thread OS id already set").toString() + ", aborting\n")
                             }
                         }
                         run {

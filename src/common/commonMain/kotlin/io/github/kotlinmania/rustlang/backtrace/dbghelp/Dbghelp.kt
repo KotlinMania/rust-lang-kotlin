@@ -28,12 +28,22 @@ import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.SeqCst
+import io.github.kotlinmania.rustlang.core.sync.atomic.asPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchange
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
 
 // A module to assist in managing dbghelp bindings on Windows
 //
@@ -509,11 +519,11 @@ public fun init(): Result<Init, Unit> {
             name[index - 1] = when (val matchVal = (id and 0xFu).toUByte()) {
                 in 0u.toUByte()..9u.toUByte() -> {
                     val h = matchVal
-                    48u + h
+                    48u.toUByte() + h
                 }
                 else -> {
                     val h1 = matchVal
-                    65u + (h1 - 10u)
+                    65u.toUByte() + (h1 - 10u)
                 }
             }
             id = id shr 4
