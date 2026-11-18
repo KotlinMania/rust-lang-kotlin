@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.num.divCeil
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.hashbrown.HashMap
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.helpers.collect
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.raw.RawIntoParIter
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.raw.RawParDrain
@@ -280,7 +280,7 @@ public fun <K, V, S, A : Allocator> MutableMap<K, V>.parDrain(): ParDrain<K, V, 
  *
  * This method runs in a potentially parallel fashion.
  */
-public fun <K, V, S, A> MutableMap<K, V>.parEq(other: MutableMap<K, V>): Boolean where S : BuildHasher, A : Allocator = this.size == other.size && this.intoParIter().all({ (key, value) -> other.get(key).isSomeAnd({ v -> value == v }) })
+public fun <Hasher, K, V, S, A> MutableMap<K, V>.parEq(other: MutableMap<K, V>): Boolean where S : BuildHasher<Hasher>, A : Allocator = this.size == other.size && this.intoParIter().all({ (key, value) -> other.get(key).isSomeAnd({ v -> value == v }) })
 
 public fun <K, V, S, A : Allocator> MutableMap<K, V>.intoParIter(): IntoParIter<K, V, A> = IntoParIter(inner = this.table.intoParIter())
 
@@ -290,7 +290,7 @@ public fun <K, V, S, A : Allocator> MutableMap<K, V>.intoParIter(): IntoParIter<
  * ones produced earlier in the parallel iterator will be
  * overwritten, just as with a sequential iterator.
  */
-public fun <K, V, S, P> fromParallelIteratorFromParIterHashMapKVSGlobal(parIter: P): MutableMap<K, V> where S : BuildHasher, P : IntoParallelIterator<Pair<K, V>> {
+public fun <Hasher, K, V, S, P> fromParallelIteratorFromParIterHashMapKVSGlobal(parIter: P): MutableMap<K, V> where S : BuildHasher<Hasher>, P : IntoParallelIterator<Pair<K, V>> {
     val map = HashMap.default()
     map.parExtend(parIter)
     return map
@@ -299,19 +299,19 @@ public fun <K, V, S, P> fromParallelIteratorFromParIterHashMapKVSGlobal(parIter:
 /**
  * Extend a hash map with items from a parallel iterator.
  */
-public fun <K, V, S, A, I> MutableMap<K, V>.parExtend(parIter: I) where S : BuildHasher, A : Allocator, I : IntoParallelIterator<Pair<K, V>> {
+public fun <Hasher, K, V, S, A, I> MutableMap<K, V>.parExtend(parIter: I) where S : BuildHasher<Hasher>, A : Allocator, I : IntoParallelIterator<Pair<K, V>> {
     extend(this, parIter)
 }
 
 /**
  * Extend a hash map with copied items from a parallel iterator.
  */
-public fun <K, V, S, A, I> MutableMap<K, V>.parExtendKV(parIter: I) where S : BuildHasher, A : Allocator, I : IntoParallelIterator<Pair<K, V>> {
+public fun <Hasher, K, V, S, A, I> MutableMap<K, V>.parExtendKV(parIter: I) where S : BuildHasher<Hasher>, A : Allocator, I : IntoParallelIterator<Pair<K, V>> {
     extend(this, parIter)
 }
 
 // This is equal to the normal `HashMap` -- no custom advantage.
-public fun <K, V, S, A, I> extend(map: MutableMap<K, V>, parIter: I) where S : BuildHasher, I : IntoParallelIterator, A : Allocator {
+public fun <Hasher, K, V, S, A, I> extend(map: MutableMap<K, V>, parIter: I) where S : BuildHasher<Hasher>, I : IntoParallelIterator, A : Allocator {
     val (list, len) = collect(parIter)
     // Keys may be already present or show multiple times in the iterator.
     // Reserve the entire length if the map is empty.

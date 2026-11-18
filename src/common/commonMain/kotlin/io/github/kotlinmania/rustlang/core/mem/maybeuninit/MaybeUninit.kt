@@ -923,7 +923,7 @@ public open class MaybeUninit<T>(
      * import std.mem.MaybeUninit
      *
      * public fun doctestEntry(): Result<Unit> {
-     *     fun readChunk(reader: io.Read): io.Result<UByteArray> {
+     *     fun readChunk(reader: io.Read<*>): io.Result<UByteArray> {
      *         var buffer = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
      *         reader.readExact(buffer.assumeInitMut()).getOrElse { return Result.failure(it) }
      *         // ^^^^^^^^^^^^^^^^^^^^^^^^

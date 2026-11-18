@@ -1,7 +1,5 @@
 package io.github.kotlinmania.rustlang.std.sys.net.connection.socket
 
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
@@ -64,6 +62,8 @@ import io.github.kotlinmania.rustlang.libc.wasi.EMSGSIZE
 import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
 import io.github.kotlinmania.rustlang.std.net.Shutdown
 import io.github.kotlinmania.rustlang.std.net.socketaddr.ToSocketAddrs
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
+import io.github.kotlinmania.rustlang.std.os.raw.CUchar
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.net.connection.eachAddr

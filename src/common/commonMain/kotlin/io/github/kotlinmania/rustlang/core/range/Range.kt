@@ -75,7 +75,7 @@ public open class Range<Idx>(
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
         when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
-        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        fmt.append("..")
         when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         return Result.Ok<Unit, Unit>(Unit)
     }
@@ -230,7 +230,7 @@ public open class RangeInclusive<Idx>(
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
         when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
-        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        fmt.append("..=")
         when (val tryResult = this.last.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         return Result.Ok<Unit, Unit>(Unit)
     }
@@ -428,7 +428,7 @@ public open class RangeFrom<Idx>(
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
         when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
-        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        fmt.append("..")
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -570,7 +570,7 @@ public open class RangeToInclusive<Idx>(
     public open fun clone(): RangeToInclusive<Idx> = RangeToInclusive(last)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        fmt.append("..=")
         when (val tryResult = this.last.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         return Result.Ok<Unit, Unit>(Unit)
     }

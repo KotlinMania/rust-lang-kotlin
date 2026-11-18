@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.std.sys.pal.unix.conf
 
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -12,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.libc.sysconf
 import io.github.kotlinmania.rustlang.libc.wasi.SC_PAGESIZE
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 
 public fun pageSize(): Int = sysconf(SC_PAGESIZE).toInt()
 

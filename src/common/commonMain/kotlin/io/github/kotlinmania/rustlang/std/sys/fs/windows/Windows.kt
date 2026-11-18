@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
@@ -48,7 +49,6 @@ import io.github.kotlinmania.rustlang.core.slice.splitAtMut
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.TryLockError
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.os.windows.io.AsHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.AsRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
@@ -466,7 +466,7 @@ public open class File internal constructor(
                         listOf(MutPtr(((addrOfMut((UnresolvedTypeLayout<MountPointReparseBuffer>()).readNative((info1).rawAddress).pathBuffer))).rawAddress), (UnresolvedTypeLayout<MountPointReparseBuffer>()).readNative((info1).rawAddress).substituteNameOffset / 2u, (UnresolvedTypeLayout<MountPointReparseBuffer>()).readNative((info1).rawAddress).substituteNameLength / 2u, false)
                     }
                     else -> {
-                        return Result.Err<PathBuf, Error>(constError(ErrorKind.Uncategorized, "Unsupported reparse point type"))
+                        return Result.Err<PathBuf, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.Uncategorized, message = "Unsupported reparse point type")))
                     }
                 }
             // Check that the reparse point offsets and length stay within the data that
@@ -475,7 +475,7 @@ public open class File internal constructor(
             val pathOffset = pathBuffer.addr() - buf.addr()
             val end = pathOffset + (substOff.toInt() * 2) + (substLen.toInt() * 2)
             if (end > bytes.toInt()) {
-                return Result.Err<PathBuf, Error>(constError(ErrorKind.Uncategorized, "Invalid reparse point data"))
+                return Result.Err<PathBuf, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.Uncategorized, message = "Invalid reparse point data")))
             }
             val substPtr = pathBuffer.add(substOff.into())
             val subst = Slice.fromRawPartsMut(substPtr, substLen.toInt())
@@ -501,11 +501,11 @@ public open class File internal constructor(
     public open fun setTimes(times: FileTimes): Result<Unit, Error> {
         val isZero = { t: Filetime -> t.dwLowDateTime == 0 && t.dwHighDateTime == 0 }
         if (times.accessed.isSomeAnd(isZero) || times.modified.isSomeAnd(isZero) || times.created.isSomeAnd(isZero)) {
-            return Result.Err<Unit, Error>(constError(ErrorKind.InvalidInput, "cannot set file timestamp to 0"))
+            return Result.Err<Unit, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "cannot set file timestamp to 0")))
         }
         val isMax = { t: Filetime -> t.dwLowDateTime == UInt.MAX_VALUE && t.dwHighDateTime == UInt.MAX_VALUE }
         if (times.accessed.isSomeAnd(isMax) || times.modified.isSomeAnd(isMax) || times.created.isSomeAnd(isMax)) {
-            return Result.Err<Unit, Error>(constError(ErrorKind.InvalidInput, "cannot set file timestamp to 0xFFFF_FFFF_FFFF_FFFF"))
+            return Result.Err<Unit, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "cannot set file timestamp to 0xFFFF_FFFF_FFFF_FFFF")))
         }
         when (val tryResult = cvt(run {
             val created = (times.created?.let({ a -> constPtrFromRustCast(a) }) ?: ConstPtr(0L))
@@ -1785,7 +1785,7 @@ public fun junctionPoint(original: Path, link: Path): Result<Unit, Error> {
                 val bytes3 = OsStr.fromEncodedBytesUnchecked(absPath[2 until absPath.size])
                 "\\??\\UNC\\".encodeUtf16().chain(bytes3.encodeWide()).toMutableList()
             } else {
-                return Result.Err<Unit, Error>(constError(ErrorKind.InvalidInput, "path is not valid"))
+                return Result.Err<Unit, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "path is not valid")))
             }
         }
     val localStorageL1778C4 = AddressableLocal(MountPointBuffer(reparseTag = IO_REPARSE_TAG_MOUNT_POINT, reparseDataLength = 0u, reserved = 0u, substituteNameOffset = 0u, substituteNameLength = (absPath1.size * 2).toUShort(), printNameOffset = ((absPath1.size + 1) * 2).toUShort(), printNameLength = 0u, pathBuffer = List(MAXIMUM_REPARSE_DATA_BUFFER_SIZE.toInt() / 2) { MaybeUninit.uninit(PrimitiveLayouts.U16) }), UnresolvedTypeLayout<MountPointBuffer>())
@@ -1794,7 +1794,7 @@ public fun junctionPoint(original: Path, link: Path): Result<Unit, Error> {
     // (empty) print name to be null terminated, even though their lengths are
     // explicit. Bounds-check and copy in a single step so an over-long path
     // fails cleanly instead of overflowing the buffer.
-    val pathBuffer = header.pathBuffer.getMut(0 until absPath1.size + 2) ?: return Result.Err<Unit, Error>(constError(ErrorKind.InvalidInput, "`original` path is too long"))
+    val pathBuffer = header.pathBuffer.getMut(0 until absPath1.size + 2) ?: return Result.Err<Unit, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "`original` path is too long")))
     val (substituteName, terminators) = pathBuffer.splitAtMut(absPath1.size)
     substituteName.writeCopyOfSlice(absPath1)
     terminators.writeCopyOfSlice(listOf(0, 0))

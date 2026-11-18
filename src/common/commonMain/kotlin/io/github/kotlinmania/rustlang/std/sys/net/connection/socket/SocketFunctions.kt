@@ -2,9 +2,9 @@
 
 package io.github.kotlinmania.rustlang.std.sys.net.connection.socket
 
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -35,7 +35,7 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Addrinfo
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.InAddr
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SockaddrIn
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SockaddrStorage
-import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runWithCstr
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.Socket
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.cvtGai
@@ -102,7 +102,7 @@ public fun socketAddrFromC(storage: ConstPtr, len: Int): Result<SocketAddr, Erro
             check(len >= sizeOf<SockaddrIn6>(typeLayoutT = UnresolvedTypeLayout<SockaddrIn6>()))
             Result.Ok<SocketAddr, Error>(SocketAddr.v6(socketAddrV6FromC((UnresolvedTypeLayout<SockaddrIn6>()).readNative((((storage).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress))))
         }
-        else -> Result.Err<SocketAddr, Error>(constError(ErrorKind.InvalidInput, "invalid argument"))
+        else -> Result.Err<SocketAddr, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "invalid argument")))
     }
 
 // ///////////////////////////////////////////////////////////////////////////

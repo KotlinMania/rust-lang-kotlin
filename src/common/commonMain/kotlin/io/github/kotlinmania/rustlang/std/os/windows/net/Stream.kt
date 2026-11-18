@@ -82,7 +82,7 @@ public class DebugStruct(
  */
 public open class UnixStream(
     public var value: Socket,
-) : Read, Write, AsSocket, AsRawSocket, FromRawSocket<UnixStream>, IntoRawSocket {
+) : Read<UnixStream>, Write<UnixStream>, AsSocket, AsRawSocket, FromRawSocket<UnixStream>, IntoRawSocket {
     public var field0: Socket
         get() = value
         set(v) {

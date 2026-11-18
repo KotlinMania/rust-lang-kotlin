@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
-public open class Stdin : Read {
+public open class Stdin : Read<Stdin> {
     public open fun read(buf: MutableList<UByte>): Result<Int, Error> = Result.Ok<Int, Error>(0)
 
     public open fun readBuf(cursor: BorrowedCursor<UByte>): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
@@ -61,7 +61,7 @@ public open class Stdin : Read {
     }
 }
 
-public open class Stdout : Write {
+public open class Stdout : Write<Stdout> {
     public open fun write(buf: List<UByte>): Result<Int, Error> = Result.Ok<Int, Error>(buf.size)
 
     public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> {

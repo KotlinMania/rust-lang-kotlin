@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -42,7 +43,6 @@ import io.github.kotlinmania.rustlang.std.env.splitPaths
 import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
 import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
@@ -592,7 +592,7 @@ public sealed class Stdio {
 public fun resolveExe(exePath: OsStr, parentPaths: () -> OsString?, childPaths: OsStr?): Result<List<UShort>, Error> {
     // Early return if there is no filename.
     if (exePath.isEmpty() || hasTrailingSlash(exePath)) {
-        return Result.Err<List<UShort>, Error>(constError(ErrorKind.InvalidInput, "program path has no file name"))
+        return Result.Err<List<UShort>, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "program path has no file name")))
     }
     // Test if the file name has the `exe` extension.
     // This does a case-insensitive `endsWith`.
@@ -645,7 +645,7 @@ public fun resolveExe(exePath: OsStr, parentPaths: () -> OsString?, childPaths: 
         }
     }
     // If we get here then the executable cannot be found.
-    return Result.Err<List<UShort>, Error>(constError(ErrorKind.NotFound, "program not found"))
+    return Result.Err<List<UShort>, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.NotFound, message = "program not found")))
 }
 
 // Calls `f` for every path that should be used to find an executable.

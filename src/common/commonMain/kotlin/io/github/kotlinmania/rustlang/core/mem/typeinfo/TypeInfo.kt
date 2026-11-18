@@ -767,7 +767,7 @@ public open class VariantId(
 ) {
     public open fun clone(): VariantId = VariantId(base, variant)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt("Variant(${this.base.asU128()}-${this.variant})")
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("Variant(${this.base.asU128()}-${this.variant})"); Result.Ok<Unit, Unit>(Unit) }
 
     /**
      * Returns the name of the variant.
@@ -842,7 +842,7 @@ public open class FieldId(
 ) {
     public open fun clone(): FieldId = FieldId(frtTypeId)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt("FieldId(${this.frtTypeId.asU128()})")
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("FieldId(${this.frtTypeId.asU128()})"); Result.Ok<Unit, Unit>(Unit) }
 
     /**
      * Returns the `TypeId` of the actual field type.

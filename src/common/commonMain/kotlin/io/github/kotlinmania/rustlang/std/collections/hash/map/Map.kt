@@ -1164,7 +1164,7 @@ public fun <K, V, S> HashMap.Companion.withHasher(hashBuilder: S): HashMap<K, V,
  */
 public fun <K, V, S> HashMap.Companion.withCapacityAndHasher(capacity: Int, hasher: S): HashMap<K, V, S, Global> = HashMap(base = io.github.kotlinmania.rustlang.hashbrown.HashMap.withCapacityAndHasher(capacity, hasher))
 
-public fun <K, V, S, A> HashMap<K, V, S, A>.eq(other: HashMap<K, V, S, A>): Boolean where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A> HashMap<K, V, S, A>.eq(other: HashMap<K, V, S, A>): Boolean where S : BuildHasher<Hasher>, A : Allocator {
     if (this.len() != other.len()) {
         return false
     }
@@ -1183,7 +1183,7 @@ public fun <K, V, S> defaultHashMapKVS(defaultSFn: () -> S): HashMap<K, V, S, Gl
  *
  * Panics if the key is not present in the `HashMap`.
  */
-public fun <K, Q, V, S, A> HashMap<K, V, S, A>.index(key: Q): V where K : Borrow<Q>, S : BuildHasher, A : Allocator = (this.get(key) ?: error("no entry found for key"))
+public fun <Hasher, K, Q, V, S, A> HashMap<K, V, S, A>.index(key: Q): V where K : Borrow<Q>, S : BuildHasher<Hasher>, A : Allocator = (this.get(key) ?: error("no entry found for key"))
 
 // Note: as what is currently the most convenient built-in way to construct
 // a HashMap, a simple usage of this function must not *require* the user
@@ -2337,7 +2337,7 @@ public fun <K, V> Entry<K, V, Global>.orDefault(defaultVFn: () -> V): V =
  * If the iterator produces any pairs with equal keys,
  * all but one of the corresponding values will be dropped.
  */
-public fun <K, V, S, I : Iterable<Pair<K, V>>> fromIteratorFromIterHashMapKVS(iter: I, defaultSFn: () -> S): HashMap<K, V, S, Global> where S : BuildHasher {
+public fun <Hasher, K, V, S, I : Iterable<Pair<K, V>>> fromIteratorFromIterHashMapKVS(iter: I, defaultSFn: () -> S): HashMap<K, V, S, Global> where S : BuildHasher<Hasher> {
     val map = HashMap.withHasher(defaultSFn())
     map.extend(iter, defaultSFn)
     return map
@@ -2347,29 +2347,29 @@ public fun <K, V, S, I : Iterable<Pair<K, V>>> fromIteratorFromIterHashMapKVS(it
  * Inserts all new key-values from the iterator and replaces values with existing
  * keys with new values returned from the iterator.
  */
-public fun <K, V, S, A, I : Iterable<Pair<K, V>>> HashMap<K, V, S, A>.extend(iter: I) where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A, I : Iterable<Pair<K, V>>> HashMap<K, V, S, A>.extend(iter: I) where S : BuildHasher<Hasher>, A : Allocator {
     this.base.extend(iter)
 }
 
-public fun <K, V, S, A> HashMap<K, V, S, A>.extendOne(tupleArg0: Pair<K, V>) where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A> HashMap<K, V, S, A>.extendOne(tupleArg0: Pair<K, V>) where S : BuildHasher<Hasher>, A : Allocator {
     val (k, v) = tupleArg0
     this.base.insert(k, v)
 }
 
-public fun <K, V, S, A> HashMap<K, V, S, A>.extendReserve(additional: Int) where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A> HashMap<K, V, S, A>.extendReserve(additional: Int) where S : BuildHasher<Hasher>, A : Allocator {
     this.base.extendReserve(additional)
 }
 
-public fun <K, V, S, A, I : Iterable<Pair<K, V>>> HashMap<K, V, S, A>.extendKV(iter: I) where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A, I : Iterable<Pair<K, V>>> HashMap<K, V, S, A>.extendKV(iter: I) where S : BuildHasher<Hasher>, A : Allocator {
     this.base.extend(iter)
 }
 
-public fun <K, V, S, A> HashMap<K, V, S, A>.extendOneKV(tupleArg0: Pair<K, V>) where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A> HashMap<K, V, S, A>.extendOneKV(tupleArg0: Pair<K, V>) where S : BuildHasher<Hasher>, A : Allocator {
     val (k, v) = tupleArg0
     this.base.insert(k, v)
 }
 
-public fun <K, V, S, A> HashMap<K, V, S, A>.extendReserveKV(additional: Int) where S : BuildHasher, A : Allocator {
+public fun <Hasher, K, V, S, A> HashMap<K, V, S, A>.extendReserveKV(additional: Int) where S : BuildHasher<Hasher>, A : Allocator {
     Extend.extendReserve(this, additional)
 }
 

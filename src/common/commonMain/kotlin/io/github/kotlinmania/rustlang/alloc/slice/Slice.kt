@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.char.methods.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.methods.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.kmPartialCompareValues

@@ -120,12 +120,12 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmU128Mul
 import io.github.kotlinmania.rustlang.core.intrinsics.kmU128Shl
 import io.github.kotlinmania.rustlang.core.intrinsics.kmU128Shr
 import io.github.kotlinmania.rustlang.core.intrinsics.kmU128Sub
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.io.util.Empty
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind.*
 import io.github.kotlinmania.rustlang.core.num.error.ParseIntError

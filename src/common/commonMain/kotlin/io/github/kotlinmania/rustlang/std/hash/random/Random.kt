@@ -63,7 +63,7 @@ public class DebugStruct(
 public open class RandomState(
     public var k0: ULong,
     public var k1: ULong,
-) : BuildHasher {
+) : BuildHasher<DefaultHasher> {
     public open fun clone(): RandomState = RandomState(k0, k1)
 
     public open fun buildHasher(): DefaultHasher = DefaultHasher(SipHasher13.newWithKeys(this.k0, this.k1))

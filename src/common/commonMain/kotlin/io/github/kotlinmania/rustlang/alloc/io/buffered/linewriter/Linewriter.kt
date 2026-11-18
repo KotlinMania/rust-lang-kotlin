@@ -84,9 +84,9 @@ public class DebugStruct(
  * }
  * ```
  */
-public open class LineWriter<W : Write> internal constructor(
+public open class LineWriter<W : Write<W>> internal constructor(
     innerCtorArg: BufWriter<W>,
-) : Write {
+) : Write<LineWriter<W>> {
     public var inner: BufWriter<W> = innerCtorArg
         internal set
 
@@ -174,7 +174,7 @@ public open class LineWriter<W : Write> internal constructor(
     public open fun fmt(fmt: StringBuilder): RustResult<Unit, Error> = run { DebugStruct(fmt, "LineWriter").field("writer", this.getRef()).field("buffer", "${this.inner.buffer().len()}/${this.inner.capacity()}").finishNonExhaustive(); RustResult.Ok<Unit, Error>(Unit) }
 
     public companion object {
-        public operator fun <W : Write> invoke(
+        public operator fun <W : Write<W>> invoke(
             inner: BufWriter<W>,
         ): LineWriter<W> = LineWriter<W>(
             innerCtorArg = inner,
@@ -196,7 +196,7 @@ public open class LineWriter<W : Write> internal constructor(
          * }
          * ```
          */
-        public fun <W : Write> new(inner: W): LineWriter<W> {
+        public fun <W : Write<W>> new(inner: W): LineWriter<W> {
             // Lines typically aren't that long, don't use a giant buffer
             return LineWriter.withCapacity(1024, inner)
         }
@@ -218,6 +218,6 @@ public open class LineWriter<W : Write> internal constructor(
          * }
          * ```
          */
-        public fun <W : Write> withCapacity(capacity: Int, inner: W): LineWriter<W> = LineWriter(inner = BufWriter.withCapacity(capacity, inner))
+        public fun <W : Write<W>> withCapacity(capacity: Int, inner: W): LineWriter<W> = LineWriter(inner = BufWriter.withCapacity(capacity, inner))
     }
 }

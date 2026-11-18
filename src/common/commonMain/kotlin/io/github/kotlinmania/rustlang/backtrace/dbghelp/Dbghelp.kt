@@ -33,6 +33,7 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.SeqCst
 
 // A module to assist in managing dbghelp bindings on Windows
 //

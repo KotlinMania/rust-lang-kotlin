@@ -73,7 +73,7 @@ public sealed class CopyState {
  *
  * Note that platform-specific behavior may change in the future.
  */
-public fun <R, W> copy(reader: R, writer: W): Result<ULong> where R : Read<R>, W : Write {
+public fun <R, W> copy(reader: R, writer: W): Result<ULong> where R : Read<R>, W : Write<W> {
     return when (val matchVal = when (val tryResult = reader.copy(writer)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }) {
         is CopyState.Ended -> {
             val (copied) = matchVal

@@ -11,7 +11,6 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmCopy
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
 import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
 import io.github.kotlinmania.rustlang.core.intrinsics.mulWithOverflow
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedRem
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShl
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShr
@@ -26,6 +25,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.sizeOfValRaw
 import io.github.kotlinmania.rustlang.core.mem.transmuteNeo
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts

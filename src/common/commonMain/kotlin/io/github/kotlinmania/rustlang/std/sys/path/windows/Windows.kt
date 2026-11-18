@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.path.windows
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -17,7 +18,6 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.api.utf16
@@ -236,7 +236,7 @@ public fun absolute(path: Path): Result<PathBuf, Error> {
     if (prefix.map({ x -> x.isVerbatim() }).unwrapOr(false)) {
         // NULs in verbatim paths are rejected for consistency.
         if (path1.asEncodedBytes().contains(0)) {
-            return Result.Err<PathBuf, Error>(constError(ErrorKind.InvalidInput, "strings passed to WinAPI cannot contain NULs"))
+            return Result.Err<PathBuf, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "strings passed to WinAPI cannot contain NULs")))
         }
         return Result.Ok<PathBuf, Error>(path1.toOwned().into())
     }

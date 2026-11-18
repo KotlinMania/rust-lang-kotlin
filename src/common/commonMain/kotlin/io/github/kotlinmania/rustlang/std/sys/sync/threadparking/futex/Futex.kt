@@ -5,8 +5,8 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Acquire
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Release
 import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.SmallFutex
 import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.SmallPrimitive
 import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWait

@@ -478,7 +478,7 @@ public sealed class Stdio {
             is Stdio.Fd -> {
                 val (fd) = this as Stdio.Fd
                 if (fd.asRawFd() >= 0 && fd.asRawFd() <= STDERR_FILENO) {
-                    Result.Ok<Pair<ChildStdio, ChildPipe?>, Error>(Pair(ChildStdio.Owned(when (val tryResult = fd.duplicate()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<ChildStdio, ChildPipe?>, Error>(tryResult.errValue()) }), null))
+                    Result.Ok<Pair<ChildStdio, ChildPipe?>, Error>(Pair(ChildStdio.Owned(when (val tryResult = fd.duplicate()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }), null))
                 } else {
                     Result.Ok<Pair<ChildStdio, ChildPipe?>, Error>(Pair(ChildStdio.Explicit(fd.asRawFd()), null))
                 }

@@ -634,9 +634,9 @@ public sealed class FromBytesWithNulError {
         when (this) {
             is InteriorNul -> {
                 val position = (this as InteriorNul).position
-                f.writeFmt("data provided contains an interior nul byte at byte position $position")
+                run { f.append("data provided contains an interior nul byte at byte position $position"); Result.Ok<Unit, Unit>(Unit) }
             }
-            FromBytesWithNulError.NotNulTerminated -> f.writeFmt("data provided is not nul terminated")
+            FromBytesWithNulError.NotNulTerminated -> run { f.append("data provided is not nul terminated"); Result.Ok<Unit, Unit>(Unit) }
         }
 }
 
@@ -659,7 +659,7 @@ public open class FromBytesUntilNulError(
 
     public open fun clone(): FromBytesUntilNulError = FromBytesUntilNulError(value)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt("data provided does not contain a nul")
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("data provided does not contain a nul"); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<FromBytesUntilNulError> =

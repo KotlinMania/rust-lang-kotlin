@@ -2,8 +2,10 @@
 package io.github.kotlinmania.rustlang.test.term.terminfo.parser.compiled
 
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.test.term.terminfo.TermInfo
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
@@ -22,21 +24,21 @@ public var STRINGFNAMES: List<String> = listOf("back_tab", "bell", "carriage_ret
 
 public var STRINGNAMES: List<String> = listOf("cbt", "_", "cr", "csr", "tbc", "clear", "_", "_", "hpa", "cmdch", "cup", "cud1", "home", "civis", "cub1", "mrcup", "cnorm", "cuf1", "ll", "cuu1", "cvvis", "dch1", "dl1", "dsl", "hd", "smacs", "blink", "bold", "smcup", "smdc", "dim", "smir", "invis", "prot", "rev", "smso", "smul", "ech", "rmacs", "sgr0", "rmcup", "rmdc", "rmir", "rmso", "rmul", "flash", "ff", "fsl", "is1", "is2", "is3", "if", "ich1", "il1", "ip", "kbs", "ktbc", "kclr", "kctab", "_", "_", "kcud1", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "khome", "_", "_", "kcub1", "_", "knp", "kpp", "kcuf1", "_", "_", "khts", "_", "rmkx", "smkx", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "rmm", "_", "_", "pad", "dch", "dl", "cud", "ich", "indn", "il", "cub", "cuf", "rin", "cuu", "pfkey", "pfloc", "pfx", "mc0", "mc4", "_", "rep", "rs1", "rs2", "rs3", "rf", "rc", "vpa", "sc", "ind", "ri", "sgr", "_", "wind", "_", "tsl", "uc", "hu", "iprog", "_", "_", "_", "_", "_", "mc5p", "rmp", "acsc", "pln", "kcbt", "smxon", "rmxon", "smam", "rmam", "xonc", "xoffc", "_", "smln", "rmln", "_", "kcan", "kclo", "kcmd", "kcpy", "kcrt", "_", "kent", "kext", "kfnd", "khlp", "kmrk", "kmsg", "kmov", "knxt", "kopn", "kopt", "kprv", "kprt", "krdo", "kref", "krfr", "krpl", "krst", "kres", "ksav", "kspd", "kund", "kBEG", "kCAN", "kCMD", "kCPY", "kCRT", "_", "_", "kslt", "kEND", "kEOL", "kEXT", "kFND", "kHLP", "kHOM", "_", "kLFT", "kMSG", "kMOV", "kNXT", "kOPT", "kPRV", "kPRT", "kRDO", "kRPL", "kRIT", "kRES", "kSAV", "kSPD", "kUND", "rfi", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "dclk", "rmclk", "cwin", "wingo", "_", "dial", "qdial", "_", "_", "hook", "pause", "wait", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "op", "oc", "initc", "initp", "scp", "setf", "setb", "cpi", "lpi", "chr", "cvr", "defc", "swidm", "sdrfq", "sitm", "slm", "smicm", "snlq", "snrmq", "sshm", "ssubm", "ssupm", "sum", "rwidm", "ritm", "rlm", "rmicm", "rshm", "rsubm", "rsupm", "rum", "mhpa", "mcud1", "mcub1", "mcuf1", "mvpa", "mcuu1", "porder", "mcud", "mcub", "mcuf", "mcuu", "scs", "smgb", "smgbp", "smglp", "smgrp", "smgt", "smgtp", "sbim", "scsd", "rbim", "rcsd", "subcs", "supcs", "docr", "zerom", "csnm", "kmous", "minfo", "reqmp", "getm", "setaf", "setab", "pfxl", "devt", "csin", "s0ds", "s1ds", "s2ds", "s3ds", "smglr", "smgtb", "birep", "binel", "bicr", "colornm", "defbi", "endbi", "setcolor", "slines", "dispc", "smpch", "rmpch", "smsc", "rmsc", "pctrm", "scesc", "scesa", "ehhlm", "elhlm", "elohlm", "erhlm", "ethlm", "evhlm", "sgr1", "slength", "OTi2", "OTrs", "OTnl", "OTbs", "OTko", "OTma", "OTG2", "OTG3", "OTG1", "OTG4", "OTGR", "OTGL", "OTGU", "OTGD", "OTGH", "OTGV", "OTGC", "meml", "memu", "box1")
 
-public fun readLeU16(r: Read): Result<UShort> {
+public fun readLeU16(r: Read<*>): Result<UShort> {
     val b = MutableList(2) { 0 }
     when (val tryResult = r.readExact(b)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<UShort, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     return RustResult.Ok((b[0].toUShort()) or (((b[1].toUShort()).toUInt() shl 8).toUShort()))
 }
 
-public fun readLeU32(r: Read): Result<UInt> {
+public fun readLeU32(r: Read<*>): Result<UInt> {
     val b = MutableList(4) { 0 }
     when (val tryResult = r.readExact(b)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<UInt, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     return RustResult.Ok((b[0].toUInt()) or ((b[1].toUInt()) shl 8) or ((b[2].toUInt()) shl 16) or ((b[3].toUInt()) shl 24))
 }
 
-public fun readByte(r: Read): Result<UByte> =
+public fun readByte(r: Read<*>): Result<UByte> =
     when (val matchVal = r.bytes().next()) {
-        null -> RustResult.Err(io.constError(ErrorKind.Other, "end of file"))
+        null -> RustResult.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.Other, message = "end of file")))
         else -> {
             val s = matchVal
             s
@@ -47,7 +49,7 @@ public fun readByte(r: Read): Result<UByte> =
  * Parse a compiled terminfo entry, using long capability names if `longnames`
  * is true
  */
-public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
+public fun parse(file: Read<*>, longnames: Boolean): RustResult<TermInfo, String> {
     // According to the spec, these fields must be >= -1 where -1 means that the feature is not
     // supported. Using 0 instead of -1 works because we skip sections with length 0.
     val (bnames, snames, nnames) =

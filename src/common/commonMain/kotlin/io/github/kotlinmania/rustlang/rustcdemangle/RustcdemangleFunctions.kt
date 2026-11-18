@@ -95,7 +95,7 @@ public fun demangle(s: String): Demangle {
     return Demangle(style = style, original = s1, suffix = suffix)
 }
 
-public fun demangleLine(line: String, output: Write, includeHash: Boolean): Result<Unit, Error> {
+public fun demangleLine(line: String, output: Write<*>, includeHash: Boolean): Result<Unit, Error> {
     var head = 0
     while (head < line.length) {
         // Move to the next potential match
@@ -156,7 +156,7 @@ public fun demangleLine(line: String, output: Write, includeHash: Boolean): Resu
  * output. If the output is expensive to write to (e.g., requires syscalls), consider using
  * `std.io.BufWriter`.
  */
-public fun <R : BufRead, W : Write> demangleStream(input: R, output: W, includeHash: Boolean): Result<Unit, Error> {
+public fun <R : BufRead, W : Write<W>> demangleStream(input: R, output: W, includeHash: Boolean): Result<Unit, Error> {
     var buf = ""
     // We read in lines to reduce the memory usage at any time.
     //

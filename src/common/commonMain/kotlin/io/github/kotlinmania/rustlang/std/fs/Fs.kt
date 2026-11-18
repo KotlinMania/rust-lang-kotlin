@@ -191,7 +191,7 @@ public class DebugTuple(
  */
 public open class File(
     public var inner: io.github.kotlinmania.rustlang.std.sys.fs.unix.File,
-) : AsInner<io.github.kotlinmania.rustlang.std.sys.fs.unix.File>, FromInner<io.github.kotlinmania.rustlang.std.sys.fs.unix.File, File>, IntoInner<io.github.kotlinmania.rustlang.std.sys.fs.unix.File>, Read, Write, Seek, IoHandle {
+) : AsInner<io.github.kotlinmania.rustlang.std.sys.fs.unix.File>, FromInner<io.github.kotlinmania.rustlang.std.sys.fs.unix.File, File>, IntoInner<io.github.kotlinmania.rustlang.std.sys.fs.unix.File>, Read<File>, Write<File>, Seek, IoHandle {
     /**
      * Attempts to sync all OS-internal file content and metadata to disk.
      *

@@ -694,7 +694,7 @@ public fun coldPath() {}
  * import std.hash.BuildHasher
  * import std.hint
  *
- * fun <H : BuildHasher> append(hasher: H, v: Int, bucketOne: List<Int>, bucketTwo: List<Int>) {
+ * fun <Hasher, H : BuildHasher<Hasher>> append(hasher: H, v: Int, bucketOne: List<Int>, bucketTwo: List<Int>) {
  *     val hash = hasher.hashOne(v)
  *     val bucket = hint.selectUnpredictable(hash % 2 == 0, bucketOne, bucketTwo)
  *     bucket.push(v)

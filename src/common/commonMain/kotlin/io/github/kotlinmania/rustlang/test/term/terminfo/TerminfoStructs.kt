@@ -67,7 +67,7 @@ public open class TermInfo(
                 // assume that the standard color codes work (like e.g. the `colored` crate).
                 return Result.Ok<TermInfo, Error>(TermInfo(names = emptyList(), bools = Default.default(), numbers = Default.default(), strings = Default.default()))
             }
-            return (getDbpathForTerm(name)?.let { Result.Ok<Option, Error>(it) } ?: Result.Err<Option, Error>(Error.IoError(io.constError(ErrorKind.NotFound, "terminfo file not found")))).andThen({ p -> TermInfo.fromPath(p) })
+            return (getDbpathForTerm(name)?.let { Result.Ok<Option, Error>(it) } ?: Result.Err<Option, Error>(Error.IoError(io.github.kotlinmania.rustlang.core.io.error.Error.fromStaticMessage(io.github.kotlinmania.rustlang.core.io.error.SimpleMessage(kind = ErrorKind.NotFound, message = "terminfo file not found"))))).andThen({ p -> TermInfo.fromPath(p) })
         }
 
         /**
@@ -134,7 +134,7 @@ public open class TerminfoTerminal<T>(
     }
 }
 
-public fun <T : Write> TerminfoTerminal<T>.fg(color: Color): Result<Boolean> {
+public fun <T : Write<T>> TerminfoTerminal<T>.fg(color: Color): Result<Boolean> {
     val color1 = this.dimIfNecessary(color)
     if (false && color1 < 8u) {
         // The Miri logic for this only works for the most basic 8 colors, which we just assume
@@ -148,7 +148,7 @@ public fun <T : Write> TerminfoTerminal<T>.fg(color: Color): Result<Boolean> {
     return RustResult.Ok(false)
 }
 
-public fun <T : Write> TerminfoTerminal<T>.reset(): Result<Boolean> {
+public fun <T : Write<T>> TerminfoTerminal<T>.reset(): Result<Boolean> {
     if (false) {
         return this.out.append("\u001b[0m").and(RustResult.Ok(true))
     }
@@ -174,6 +174,6 @@ public fun <T : Write> TerminfoTerminal<T>.reset(): Result<Boolean> {
     return this.out.writeAll(cmd1).and(RustResult.Ok(true))
 }
 
-public fun <T : Write> TerminfoTerminal<T>.write(buf: List<UByte>): Result<Int> = this.out.write(buf)
+public fun <T : Write<T>> TerminfoTerminal<T>.write(buf: List<UByte>): Result<Int> = this.out.write(buf)
 
-public fun <T : Write> TerminfoTerminal<T>.flush(): Result<Unit> = this.out.flush()
+public fun <T : Write<T>> TerminfoTerminal<T>.flush(): Result<Unit> = this.out.flush()

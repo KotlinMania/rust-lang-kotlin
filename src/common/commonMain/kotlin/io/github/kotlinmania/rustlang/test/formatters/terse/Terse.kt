@@ -168,13 +168,13 @@ public open class TerseFormatter<T>(
     }
 }
 
-public fun <T : Write> TerseFormatter<T>.writeDiscoveryStart(): Result<Unit> = RustResult.Ok(Unit)
+public fun <T : Write<T>> TerseFormatter<T>.writeDiscoveryStart(): Result<Unit> = RustResult.Ok(Unit)
 
-public fun <T : Write> TerseFormatter<T>.writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit> = this.writePlain("${desc.name}: $testType\n")
+public fun <T : Write<T>> TerseFormatter<T>.writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit> = this.writePlain("${desc.name}: $testType\n")
 
-public fun <T : Write> TerseFormatter<T>.writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit> = RustResult.Ok(Unit)
+public fun <T : Write<T>> TerseFormatter<T>.writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit> = RustResult.Ok(Unit)
 
-public fun <T : Write> TerseFormatter<T>.writeRunStart(testCount: Int, shuffleSeed: ULong?): Result<Unit> {
+public fun <T : Write<T>> TerseFormatter<T>.writeRunStart(testCount: Int, shuffleSeed: ULong?): Result<Unit> {
     this.totalTestCount = testCount
     val noun =
         if (testCount != 1) {
@@ -191,7 +191,7 @@ public fun <T : Write> TerseFormatter<T>.writeRunStart(testCount: Int, shuffleSe
     return this.writePlain("\nrunning $testCount $noun$shuffleSeedMsg\n")
 }
 
-public fun <T : Write> TerseFormatter<T>.writeTestStart(desc: TestDesc): Result<Unit> {
+public fun <T : Write<T>> TerseFormatter<T>.writeTestStart(desc: TestDesc): Result<Unit> {
     // Remnants from old libtest code that used the padding value
     // in order to indicate benchmarks.
     // When running benchmarks, terse-mode should still print their name as if
@@ -202,7 +202,7 @@ public fun <T : Write> TerseFormatter<T>.writeTestStart(desc: TestDesc): Result<
     return RustResult.Ok(Unit)
 }
 
-public fun <T : Write> TerseFormatter<T>.writeResult(desc: TestDesc, result: TestResult, arg2: TestExecTime?, arg3: List<UByte>, arg4: ConsoleTestState): Result<Unit> {
+public fun <T : Write<T>> TerseFormatter<T>.writeResult(desc: TestDesc, result: TestResult, arg2: TestExecTime?, arg3: List<UByte>, arg4: ConsoleTestState): Result<Unit> {
     return when (result) {
         TestResult.TrOk -> this.writeOk()
         TestResult.TrFailed -> {
@@ -226,9 +226,9 @@ public fun <T : Write> TerseFormatter<T>.writeResult(desc: TestDesc, result: Tes
     }
 }
 
-public fun <T : Write> TerseFormatter<T>.writeTimeout(desc: TestDesc): Result<Unit> = this.writePlain("test ${desc.name} has been running for over $TEST_WARN_TIMEOUT_S seconds\n")
+public fun <T : Write<T>> TerseFormatter<T>.writeTimeout(desc: TestDesc): Result<Unit> = this.writePlain("test ${desc.name} has been running for over $TEST_WARN_TIMEOUT_S seconds\n")
 
-public fun <T : Write> TerseFormatter<T>.writeRunFinish(state: ConsoleTestState): Result<Boolean> {
+public fun <T : Write<T>> TerseFormatter<T>.writeRunFinish(state: ConsoleTestState): Result<Boolean> {
     if (state.options.displayOutput) {
         when (val tryResult = this.writeOutputs(state)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     }
@@ -269,4 +269,4 @@ public fun <T : Write> TerseFormatter<T>.writeRunFinish(state: ConsoleTestState)
     return RustResult.Ok(success)
 }
 
-public fun <T : Write> TerseFormatter<T>.writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit> = this.writePlain("all doctests ran in ${totalTime}s; merged doctests compilation took ${compilationTime}s\n")
+public fun <T : Write<T>> TerseFormatter<T>.writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit> = this.writePlain("all doctests ran in ${totalTime}s; merged doctests compilation took ${compilationTime}s\n")

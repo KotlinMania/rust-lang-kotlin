@@ -1,9 +1,9 @@
 // port-lint: source str/count.rs
 package io.github.kotlinmania.rustlang.core.str.count
 
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.intrinsics.unlikely
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.slice.chunks
 import io.github.kotlinmania.rustlang.core.str.validations.utf8IsContByte
 

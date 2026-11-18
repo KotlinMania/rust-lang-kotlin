@@ -56,7 +56,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
 public open class Stdin(
     public var surrogate: UShort,
     public var incompleteUtf8: IncompleteUtf8,
-) : Read {
+) : Read<Stdin> {
     public open fun read(buf: MutableList<UByte>): Result<Int, Error> {
         val handle = when (val tryResult = getHandle(STD_INPUT_HANDLE)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.errValue()) }
         if (!isConsole(handle)) {
@@ -139,7 +139,7 @@ public open class Stdin(
 
 public open class Stdout(
     public var incompleteUtf8: IncompleteUtf8,
-) : Write {
+) : Write<Stdout> {
     public open fun write(buf: List<UByte>): Result<Int, Error> = write(STD_OUTPUT_HANDLE, buf, this.incompleteUtf8)
 
     public open fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
@@ -171,7 +171,7 @@ public open class Stdout(
 
 public open class Stderr(
     public var incompleteUtf8: IncompleteUtf8,
-) : Write {
+) : Write<Stderr> {
     public open fun write(buf: List<UByte>): Result<Int, Error> = write(STD_ERROR_HANDLE, buf, this.incompleteUtf8)
 
     public open fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
@@ -524,4 +524,4 @@ public fun utf8ToUtf16(data: List<UByte>, utf16: MutableList<MaybeUninit<UShort>
 
 public fun isEbadf(err: Error): Boolean = (err.rawOsError() == ERROR_INVALID_HANDLE.toInt()).toUByte()
 
-public fun panicOutput(): Write? = Stderr.new()
+public fun panicOutput(): Write<*>? = Stderr.new()

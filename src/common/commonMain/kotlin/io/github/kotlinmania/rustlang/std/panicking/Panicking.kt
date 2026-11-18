@@ -283,7 +283,7 @@ public fun defaultHook(info: PanicHookInfo) {
     val location = info.location().unwrap()
     val msg = payloadAsStr(info.payload())
     val write =
-        { err: Write ->
+        { err: Write<*> ->
             // Use a lock to prevent mixed output in multithreading context.
             // Some platforms also require it when printing a backtrace, like `SymFromAddr` on Windows.
             var lock = lock()
@@ -295,7 +295,7 @@ public fun defaultHook(info: PanicHookInfo) {
                 var buffer = UByteArray(512) { 0u.toUByte() }
                 var cursor = new(buffer)
                 val writeMsg =
-                    { dst: Write ->
+                    { dst: Write<*> ->
                         // We add a newline to ensure the panic message appears at the start of a line.
                         dst.appendLine("\nthread '$name' ($tid) panicked at $location:\n$msg")
                     }

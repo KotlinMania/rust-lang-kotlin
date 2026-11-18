@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
@@ -140,7 +141,6 @@ import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.Permissions
 import io.github.kotlinmania.rustlang.std.fs.TryLockError
 import io.github.kotlinmania.rustlang.std.fs.metadata
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
 import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
@@ -1325,9 +1325,9 @@ public fun fileTimeToTimespec(time: SystemTime?): RustResult<Timespec, Error> =
         }
         time != null && time > UNIX_EPOCH -> {
             val time2 = time
-            RustResult.Err<Timespec, Error>(constError(ErrorKind.InvalidInput, "timestamp is too large to set as a file time"))
+            RustResult.Err<Timespec, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "timestamp is too large to set as a file time")))
         }
-        time != null -> RustResult.Err<Timespec, Error>(constError(ErrorKind.InvalidInput, "timestamp is too small to set as a file time"))
+        time != null -> RustResult.Err<Timespec, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "timestamp is too small to set as a file time")))
         else -> RustResult.Ok<Timespec, Error>(run {
             val ts = default()
             ts.tvSec = 0
@@ -1594,7 +1594,7 @@ public fun openToAndSetPermissions(to: Path, readerMetadata: Metadata): RustResu
 public open class CachedFileMetadata(
     public var field0: File,
     public var field1: Metadata,
-) : Read, Write {
+) : Read<CachedFileMetadata>, Write<CachedFileMetadata> {
     public open fun read(buf: MutableList<UByte>): Result<Int> = this.field0.read(buf)
 
     public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int> = this.field0.readVectored(bufs)

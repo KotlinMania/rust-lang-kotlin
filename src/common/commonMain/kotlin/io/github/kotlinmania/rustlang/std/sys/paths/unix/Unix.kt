@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.paths.unix
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -21,7 +22,6 @@ import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.readLink
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.OsStringExt
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.asBytes
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromBytes
@@ -131,7 +131,7 @@ public fun currentExe(): Result<PathBuf, Error> =
         when {
             matchVal is Result.Err<*, *> && matchVal.errValue().kind() == ErrorKind.NotFound -> {
                 val e = matchVal.errValue()
-                Result.Err<PathBuf, Error>(constError(ErrorKind.Uncategorized, "no /proc/self/exe available. Is /proc mounted?"))
+                Result.Err<PathBuf, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.Uncategorized, message = "no /proc/self/exe available. Is /proc mounted?")))
             }
             else -> {
                 val other = matchVal

@@ -149,7 +149,7 @@ public interface Write<T> {
      *
      * ```kotlin
      * fun <W : Write> writer(f: W, s: String): Result<Unit, Error> {
-     *     return f.writeFmt("$s")
+     *     return run { f.append("$s"); Result.success(Unit) }
      * }
      * var buf = ""
      * writer(buf, "world").getOrElse { return Result.failure(it) }

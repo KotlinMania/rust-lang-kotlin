@@ -67,7 +67,7 @@ import io.github.kotlinmania.rustlang.std.sys.stdio.windows.panicOutput
  */
 public open class Handle(
     public var value: OwnedHandle,
-) : AsInner<OwnedHandle>, IntoInner<OwnedHandle>, FromInner<OwnedHandle, Handle>, AsHandle, AsRawHandle, IntoRawHandle, FromRawHandle<Handle>, Read {
+) : AsInner<OwnedHandle>, IntoInner<OwnedHandle>, FromInner<OwnedHandle, Handle>, AsHandle, AsRawHandle, IntoRawHandle, FromRawHandle<Handle>, Read<Handle> {
     public var field0: OwnedHandle
         get() = value
         set(v) {

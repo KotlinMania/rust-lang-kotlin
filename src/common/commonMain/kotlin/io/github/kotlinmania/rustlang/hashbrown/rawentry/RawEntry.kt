@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.hashbrown.Equivalent
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.equivalent
 import io.github.kotlinmania.rustlang.hashbrown.makeHash
 import io.github.kotlinmania.rustlang.hashbrown.makeHasher
@@ -99,7 +99,7 @@ public class DebugTuple(
  * import hashbrown.hashmap.HashMap
  * import hashbrown.hashmap.RawEntryMut
  *
- * fun <K, S : BuildHasher> computeHash(hashBuilder: S, key: K): ULong {
+ * fun <Hasher, K, S : BuildHasher<Hasher>> computeHash(hashBuilder: S, key: K): ULong {
  *     var state = hashBuilder.buildHasher()
  *     key.hash(state)
  *     return state.finish()
@@ -181,7 +181,7 @@ public fun <K, V, S, A : Allocator> MutableMap<K, V>.rawEntryMut(): RawEntryBuil
  * import core.hash.BuildHasher
  * import hashbrown.HashMap
  *
- * fun <K, S : BuildHasher> computeHash(hashBuilder: S, key: K): ULong {
+ * fun <Hasher, K, S : BuildHasher<Hasher>> computeHash(hashBuilder: S, key: K): ULong {
  *     var state = hashBuilder.buildHasher()
  *     key.hash(state)
  *     return state.finish()
@@ -217,7 +217,7 @@ public fun <K, V, S, A : Allocator> MutableMap<K, V>.rawEntry(): RawEntryBuilder
  * import hashbrown.hashmap.rawentrymut.Occupied
  * import hashbrown.hashmap.rawentrymut.Vacant
  *
- * fun <K, S : BuildHasher> computeHash(hashBuilder: S, key: K): ULong {
+ * fun <Hasher, K, S : BuildHasher<Hasher>> computeHash(hashBuilder: S, key: K): ULong {
  *     var state = hashBuilder.buildHasher()
  *     key.hash(state)
  *     return state.finish()
@@ -283,7 +283,7 @@ public open class RawEntryBuilderMut<K, V, S, A : Allocator>(
      * check(map["a"] == 100)
      * ```
      */
-    public open fun <Q> fromKey(k: Q): RawEntryMut<K, V, S, A> where Q : Equivalent<K> {
+    public open fun <Hasher, Q> fromKey(k: Q): RawEntryMut<K, V, S, A> where Q : Equivalent<K> {
         val hash = makeHash<Q, S>(this.map.hashBuilder, k)
         return this.fromKeyHashedNocheck(hash, k)
     }
@@ -298,7 +298,7 @@ public open class RawEntryBuilderMut<K, V, S, A : Allocator>(
      * import hashbrown.hashmap.HashMap
      * import hashbrown.hashmap.RawEntryMut
      *
-     * fun <K, S : BuildHasher> computeHash(hashBuilder: S, key: K): ULong {
+     * fun <Hasher, K, S : BuildHasher<Hasher>> computeHash(hashBuilder: S, key: K): ULong {
      *     var state = hashBuilder.buildHasher()
      *     key.hash(state)
      *     return state.finish()
@@ -323,7 +323,7 @@ public open class RawEntryBuilderMut<K, V, S, A : Allocator>(
      * import hashbrown.hashmap.HashMap
      * import hashbrown.hashmap.RawEntryMut
      *
-     * fun <K, S : BuildHasher> computeHash(hashBuilder: S, key: K): ULong {
+     * fun <Hasher, K, S : BuildHasher<Hasher>> computeHash(hashBuilder: S, key: K): ULong {
      *     var state = hashBuilder.buildHasher()
      *     key.hash(state)
      *     return state.finish()
@@ -371,7 +371,7 @@ public open class RawEntryBuilderMut<K, V, S, A : Allocator>(
  * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
  * import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
  *
- * fun <K, S : BuildHasher> computeHash(hashBuilder: S, key: K): ULong {
+ * fun <Hasher, K, S : BuildHasher<Hasher>> computeHash(hashBuilder: S, key: K): ULong {
  *     var state = hashBuilder.buildHasher()
  *     key.hash(state)
  *     return state.finish()
@@ -513,7 +513,7 @@ public sealed class RawEntryMut<K, V, S, A : Allocator> {
      * check(entry.removeEntry() == Pair("horseyland", 37))
      * ```
      */
-    public open fun insert(key: K, value: V): RawOccupiedEntryMut<K, V, S, A> =
+    public open fun <Hasher> insert(key: K, value: V): RawOccupiedEntryMut<K, V, S, A> =
         when (this) {
             is RawEntryMut.Occupied<*, *, *, *> -> {
                 val (entry) = this as RawEntryMut.Occupied<K, V, S, A>
@@ -542,7 +542,7 @@ public sealed class RawEntryMut<K, V, S, A : Allocator> {
      * check(map["poneyland"] == 6)
      * ```
      */
-    public open fun orInsert(defaultKey: K, defaultVal: V): Pair<K, V> =
+    public open fun <Hasher> orInsert(defaultKey: K, defaultVal: V): Pair<K, V> =
         when (this) {
             is RawEntryMut.Occupied<*, *, *, *> -> {
                 val (entry) = this as RawEntryMut.Occupied<K, V, S, A>
@@ -570,7 +570,7 @@ public sealed class RawEntryMut<K, V, S, A : Allocator> {
      * check(map["poneyland"] == "hoho".toString())
      * ```
      */
-    public open fun orInsertWith(default: () -> Pair<K, V>): Pair<K, V> =
+    public open fun <Hasher> orInsertWith(default: () -> Pair<K, V>): Pair<K, V> =
         when (this) {
             is RawEntryMut.Occupied<*, *, *, *> -> {
                 val (entry) = this as RawEntryMut.Occupied<K, V, S, A>
@@ -693,7 +693,7 @@ public sealed class RawEntryMut<K, V, S, A : Allocator> {
  * import hashbrown.hashmap.RawEntryMut
  * import hashbrown.hashmap.RawOccupiedEntryMut
  *
- * fun <K, S : BuildHasher> computeHash(hashBuilder: S, key: K): ULong {
+ * fun <Hasher, K, S : BuildHasher<Hasher>> computeHash(hashBuilder: S, key: K): ULong {
  *     var state = hashBuilder.buildHasher()
  *     key.hash(state)
  *     return state.finish()
@@ -1177,7 +1177,7 @@ public open class RawOccupiedEntryMut<K, V, S, A : Allocator> internal construct
  * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
  * import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
  *
- * fun <K, S : BuildHasher> computeHash(hashBuilder: S, key: K): ULong {
+ * fun <Hasher, K, S : BuildHasher<Hasher>> computeHash(hashBuilder: S, key: K): ULong {
  *     var state = hashBuilder.buildHasher()
  *     key.hash(state)
  *     return state.finish()
@@ -1246,7 +1246,7 @@ public open class RawVacantEntryMut<K, V, S, A : Allocator> internal constructor
      * check(map["c"] == 300)
      * ```
      */
-    public open fun insert(key: K, value: V): Pair<K, V> {
+    public open fun <Hasher> insert(key: K, value: V): Pair<K, V> {
         val hash = makeHash<K, S>(this.hashBuilder, key)
         return this.insertHashedNocheck(hash, key, value)
     }
@@ -1265,7 +1265,7 @@ public open class RawVacantEntryMut<K, V, S, A : Allocator> internal constructor
      * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
      * import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
      *
-     * fun <K, S : BuildHasher> computeHash(hashBuilder: S, key: K): ULong {
+     * fun <Hasher, K, S : BuildHasher<Hasher>> computeHash(hashBuilder: S, key: K): ULong {
      *     var state = hashBuilder.buildHasher()
      *     key.hash(state)
      *     return state.finish()
@@ -1283,7 +1283,7 @@ public open class RawVacantEntryMut<K, V, S, A : Allocator> internal constructor
      * check(map["c"] == 300)
      * ```
      */
-    public open fun insertHashedNocheck(hash: ULong, key: K, value: V): Pair<K, V> {
+    public open fun <Hasher> insertHashedNocheck(hash: ULong, key: K, value: V): Pair<K, V> {
         var (k, v) = this.table.insertEntry(hash, Pair(key, value), makeHasher<V, S>(this.hashBuilder))
         return Pair(k, v)
     }
@@ -1301,7 +1301,7 @@ public open class RawVacantEntryMut<K, V, S, A : Allocator> internal constructor
      * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
      * import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
      *
-     * fun <K, S> makeHasher(hashBuilder: S): (K) -> ULong where S : BuildHasher {
+     * fun <Hasher, K, S> makeHasher(hashBuilder: S): (K) -> ULong where S : BuildHasher<Hasher> {
      *     return { key: K ->
      *
      *         var state = hashBuilder.buildHasher()
@@ -1329,7 +1329,7 @@ public open class RawVacantEntryMut<K, V, S, A : Allocator> internal constructor
         return Pair(k, v)
     }
 
-    public open fun insertEntry(key: K, value: V): RawOccupiedEntryMut<K, V, S, A> {
+    public open fun <Hasher> insertEntry(key: K, value: V): RawOccupiedEntryMut<K, V, S, A> {
         val hash = makeHash<K, S>(this.hashBuilder, key)
         val elem = this.table.insert(hash, Pair(key, value), makeHasher<V, S>(this.hashBuilder))
         return RawOccupiedEntryMut(elem = elem, table = this.table, hashBuilder = this.hashBuilder)
@@ -1362,7 +1362,7 @@ public open class RawVacantEntryMut<K, V, S, A : Allocator> internal constructor
  * import hashbrown.hashmap.HashMap
  * import hashbrown.hashmap.RawEntryBuilder
  *
- * fun <K, S : BuildHasher> computeHash(hashBuilder: S, key: K): ULong {
+ * fun <Hasher, K, S : BuildHasher<Hasher>> computeHash(hashBuilder: S, key: K): ULong {
  *     var state = hashBuilder.buildHasher()
  *     key.hash(state)
  *     return state.finish()
@@ -1397,7 +1397,7 @@ public open class RawEntryBuilder<K, V, S, A : Allocator>(
      * check(map.rawEntry().fromKey(key) == Pair("a", 100))
      * ```
      */
-    public open fun <Q> fromKey(k: Q): Pair<K, V>? where Q : Equivalent<K> {
+    public open fun <Hasher, Q> fromKey(k: Q): Pair<K, V>? where Q : Equivalent<K> {
         val hash = makeHash<Q, S>(this.map.hashBuilder, k)
         return this.fromKeyHashedNocheck(hash, k)
     }
@@ -1411,7 +1411,7 @@ public open class RawEntryBuilder<K, V, S, A : Allocator>(
      * import core.hash.BuildHasher
      * import hashbrown.HashMap
      *
-     * fun <K, S : BuildHasher> computeHash(hashBuilder: S, key: K): ULong {
+     * fun <Hasher, K, S : BuildHasher<Hasher>> computeHash(hashBuilder: S, key: K): ULong {
      *     var state = hashBuilder.buildHasher()
      *     key.hash(state)
      *     return state.finish()
@@ -1443,7 +1443,7 @@ public open class RawEntryBuilder<K, V, S, A : Allocator>(
      * import core.hash.BuildHasher
      * import hashbrown.HashMap
      *
-     * fun <K, S : BuildHasher> computeHash(hashBuilder: S, key: K): ULong {
+     * fun <Hasher, K, S : BuildHasher<Hasher>> computeHash(hashBuilder: S, key: K): ULong {
      *     var state = hashBuilder.buildHasher()
      *     key.hash(state)
      *     return state.finish()

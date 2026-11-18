@@ -10,8 +10,8 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicI8
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Acquire
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Release
 import kotlin.experimental.inv
 
 // Thread parking for Darwin-based systems.

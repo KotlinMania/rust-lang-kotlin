@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.pal.windows
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
@@ -18,7 +19,6 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.getLastError
@@ -89,7 +89,7 @@ public fun unrolledFindU16s(needle: UShort, haystack: List<UShort>): Int? {
 public fun toU16s(s: OsStr): Result<List<UShort>, Error> {
     fun inner(s1: OsStr): Result<List<UShort>, Error> {
         if (s1.asEncodedBytes().contains(0)) {
-            return Result.Err<List<UShort>, Error>(constError(ErrorKind.InvalidInput, "strings passed to WinAPI cannot contain NULs"))
+            return Result.Err<List<UShort>, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "strings passed to WinAPI cannot contain NULs")))
         }
         // Most paths are ASCII, so reserve capacity for as much as there are bytes
         // in the OsStr plus one for the null-terminating character. We are not
@@ -205,7 +205,7 @@ public fun truncateUtf16AtNul(v: List<UShort>): List<UShort> =
 
 public fun ensureNoNuls(s: OsStr): Result<OsStr, Error> =
     if (s.asEncodedBytes().contains(0)) {
-        Result.Err<OsStr, Error>(constError(ErrorKind.InvalidInput, "nul byte found in provided data"))
+        Result.Err<OsStr, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "nul byte found in provided data")))
     } else {
         Result.Ok<OsStr, Error>(s)
     }

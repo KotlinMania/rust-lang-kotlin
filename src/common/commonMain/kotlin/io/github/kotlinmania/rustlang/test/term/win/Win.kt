@@ -281,17 +281,17 @@ public fun bitsToColor(bits: UShort): Color {
     // copy the hi-intensity bit
 }
 
-public fun <T : Write> WinConsole<T>.write(buf: List<UByte>): Result<Int> = this.buf.write(buf)
+public fun <T : Write<T>> WinConsole<T>.write(buf: List<UByte>): Result<Int> = this.buf.write(buf)
 
-public fun <T : Write> WinConsole<T>.flush(): Result<Unit> = this.buf.flush()
+public fun <T : Write<T>> WinConsole<T>.flush(): Result<Unit> = this.buf.flush()
 
-public fun <T : Write> WinConsole<T>.fg(color: Color): Result<Boolean> {
+public fun <T : Write<T>> WinConsole<T>.fg(color: Color): Result<Boolean> {
     this.foreground = color
     this.apply()
     return RustResult.Ok(true)
 }
 
-public fun <T : Write> WinConsole<T>.reset(): Result<Boolean> {
+public fun <T : Write<T>> WinConsole<T>.reset(): Result<Boolean> {
     this.foreground = this.defForeground
     this.background = this.defBackground
     this.apply()

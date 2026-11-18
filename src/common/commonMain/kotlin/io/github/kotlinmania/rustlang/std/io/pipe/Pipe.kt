@@ -92,7 +92,7 @@ public fun pipe(): Result<Pair<PipeReader, PipeWriter>, Error> = io.github.kotli
  */
 public open class PipeReader internal constructor(
     valueCtorArg: Pipe,
-) : FromInner<Pipe, PipeReader>, IntoInner<Pipe>, Read {
+) : FromInner<Pipe, PipeReader>, IntoInner<Pipe>, Read<PipeReader> {
     public var value: Pipe = valueCtorArg
         internal set
 
@@ -179,7 +179,7 @@ public open class PipeReader internal constructor(
  */
 public open class PipeWriter internal constructor(
     valueCtorArg: Pipe,
-) : FromInner<Pipe, PipeWriter>, IntoInner<Pipe>, Write {
+) : FromInner<Pipe, PipeWriter>, IntoInner<Pipe>, Write<PipeWriter> {
     public var value: Pipe = valueCtorArg
         internal set
 

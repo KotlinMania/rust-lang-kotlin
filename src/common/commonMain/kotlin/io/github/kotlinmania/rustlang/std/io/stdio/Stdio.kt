@@ -84,7 +84,7 @@ public var OUTPUT_CAPTURE_USED: Atomic<Boolean, Align1<UByte>> = AtomicBool.new(
  */
 public open class StdinRaw(
     public var value: io.github.kotlinmania.rustlang.std.sys.stdio.unix.Stdin,
-) : Read {
+) : Read<StdinRaw> {
     public var field0: io.github.kotlinmania.rustlang.std.sys.stdio.unix.Stdin
         get() = value
         set(v) {
@@ -126,7 +126,7 @@ public open class StdinRaw(
  */
 public open class StdoutRaw(
     public var value: io.github.kotlinmania.rustlang.std.sys.stdio.unix.Stdout,
-) : Write {
+) : Write<StdoutRaw> {
     public var field0: io.github.kotlinmania.rustlang.std.sys.stdio.unix.Stdout
         get() = value
         set(v) {
@@ -159,7 +159,7 @@ public open class StdoutRaw(
  */
 public open class StderrRaw(
     public var value: io.github.kotlinmania.rustlang.std.sys.stdio.unix.Stderr,
-) : Write {
+) : Write<StderrRaw> {
     public var field0: io.github.kotlinmania.rustlang.std.sys.stdio.unix.Stderr
         get() = value
         set(v) {
@@ -274,7 +274,7 @@ public fun <T> handleEbadf(r: Result<T, Error>, default: () -> Result<T, Error>)
  */
 public open class Stdin internal constructor(
     innerCtorArg: Mutex<BufReader<StdinRaw>>,
-) : Read, IsTerminal {
+) : Read<Stdin>, IsTerminal {
     public var inner: Mutex<BufReader<StdinRaw>> = innerCtorArg
         internal set
 
@@ -432,7 +432,7 @@ public open class Stdin internal constructor(
  */
 public open class StdinLock internal constructor(
     innerCtorArg: MutexGuard<BufReader<StdinRaw>>,
-) : Read, SpecReadByte, BufRead, IsTerminal {
+) : Read<StdinLock>, SpecReadByte, BufRead, IsTerminal {
     public var inner: MutexGuard<BufReader<StdinRaw>> = innerCtorArg
         internal set
 
@@ -567,7 +567,7 @@ public fun stdin(): Stdin {
  */
 public open class Stdout internal constructor(
     innerCtorArg: ReentrantLock<RefCell<LineWriter<StdoutRaw>>>,
-) : Write, IsTerminal {
+) : Write<Stdout>, IsTerminal {
     // Note: this should be LineWriter or BufWriter depending on the state of
     // stdout (tty or not). Note that if this is not line buffered it
     // should also flush-on-panic or some form of flush-on-abort.
@@ -653,7 +653,7 @@ public open class Stdout internal constructor(
  */
 public open class StdoutLock internal constructor(
     innerCtorArg: ReentrantLockGuard<RefCell<LineWriter<StdoutRaw>>>,
-) : Write, IsTerminal {
+) : Write<StdoutLock>, IsTerminal {
     public var inner: ReentrantLockGuard<RefCell<LineWriter<StdoutRaw>>> = innerCtorArg
         internal set
 
@@ -798,7 +798,7 @@ public fun cleanup() {
  */
 public open class Stderr internal constructor(
     innerCtorArg: ReentrantLock<RefCell<StderrRaw>>,
-) : Write, IsTerminal {
+) : Write<Stderr>, IsTerminal {
     public var inner: ReentrantLock<RefCell<StderrRaw>> = innerCtorArg
         internal set
 
@@ -875,7 +875,7 @@ public open class Stderr internal constructor(
  */
 public open class StderrLock internal constructor(
     innerCtorArg: ReentrantLockGuard<RefCell<StderrRaw>>,
-) : Write, IsTerminal {
+) : Write<StderrLock>, IsTerminal {
     public var inner: ReentrantLockGuard<RefCell<StderrRaw>> = innerCtorArg
         internal set
 
@@ -988,7 +988,7 @@ public fun trySetOutputCapture(sink: LocalStream?): Result<LocalStream?, AccessE
  * Writing to non-blocking stdout/stderr can cause an error, which will lead
  * this function to panic.
  */
-public fun <T> printTo(args: Arguments, globalS: () -> T, label: String) where T : Write {
+public fun <T> printTo(args: Arguments, globalS: () -> T, label: String) where T : Write<T> {
     if (printToBufferIfCaptureUsed(args)) {
         // Successfully wrote to capture buffer.
         return

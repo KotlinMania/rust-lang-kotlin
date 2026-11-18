@@ -356,7 +356,7 @@ public open class FormattingOptions(
      *
      * You may alternatively use [Formatter.new].
      */
-    public open fun createFormatter(write: Write): Formatter = Formatter(options = this, buf = write)
+    public open fun createFormatter(write: Write<*>): Formatter = Formatter(options = this, buf = write)
 
     public companion object {
         public fun typeLayout(): TypeLayout<FormattingOptions> =
@@ -422,14 +422,14 @@ public open class FormattingOptions(
  */
 public open class Formatter(
     public var options: FormattingOptions,
-    public var buf: Write,
+    public var buf: Write<*>,
 ) : Write<Formatter> {
     /**
      * Creates a new formatter based on this one with given [FormattingOptions].
      */
     public open fun withOptions(options: FormattingOptions): Formatter = Formatter(options = options, buf = this.buf)
 
-    public open fun wrapBuf(wrap: (Write) -> Write): Formatter = Formatter(buf = wrap(this.buf), options = this.options)
+    public open fun wrapBuf(wrap: (Write<*>) -> Write<*>): Formatter = Formatter(buf = wrap(this.buf), options = this.options)
 
     // Helper methods used for padding and processing formatting arguments that
     // all formatting traits can use.
@@ -691,7 +691,7 @@ public open class Formatter(
      * Any `numfmt.Part.Copy` parts in `formatted` must contain valid UTF-8.
      */
     public open fun writeFormattedParts(formatted: Formatted): Result {
-        fun writeBytes(buf: Write, s: List<UByte>): Result {
+        fun writeBytes(buf: Write<*>, s: List<UByte>): Result {
             // SAFETY: This is used for `numfmt.Part.Num` and `numfmt.Part.Copy`.
             // It's safe to use for `numfmt.Part.Num` since every char `c` is between
             // `b'0'` and `b'9'`, which means `s` is valid UTF-8. It's safe to use for
@@ -786,7 +786,7 @@ public open class Formatter(
      *         }
      *
      *     public open fun fmt(formatter: StringBuilder): Result<Unit> {
-     *         return formatter.writeFmt("Foo ${this.value}")
+     *         return run { formatter.append("Foo ${this.value}"); Result.success(Unit) }
      *     }
      * }
      * check("${Foo(-1)}" == "Foo -1")
@@ -801,8 +801,8 @@ public open class Formatter(
      *
      * open class Hello {
      *     public open fun fmt(formatter: StringBuilder): Result<Unit> {
-     *         formatter.writeFmt("Hello").getOrElse { return Result.failure(it) }
-     *         return formatter.writeFmt(" world")
+     *         formatter.append("Hello")
+     *         return run { formatter.append(" world"); Result.success(Unit) }
      *     }
      * }
      * // A writer that replaces its contents on every write.
@@ -1406,7 +1406,7 @@ public open class Formatter(
          *
          * You may alternatively use [FormattingOptions.createFormatter].
          */
-        public fun new(write: Write, options: FormattingOptions): Formatter = Formatter(options = options, buf = write)
+        public fun new(write: Write<*>, options: FormattingOptions): Formatter = Formatter(options = options, buf = write)
     }
 }
 

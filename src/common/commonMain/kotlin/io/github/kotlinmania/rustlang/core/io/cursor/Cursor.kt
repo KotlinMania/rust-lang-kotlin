@@ -5,9 +5,10 @@ package io.github.kotlinmania.rustlang.core.io.cursor
 
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
-import io.github.kotlinmania.rustlang.core.io.constError
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.io.error.WRITE_ALL_EOF
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
@@ -51,7 +52,7 @@ import io.github.kotlinmania.rustlang.core.result.Result as RustResult
  * import std.io.prelude.*
  *
  * // a library function we've written
- * fun <W> writeTenBytesAtEnd(writer: W): io.Result<Unit> where W : Write, W : Seek {
+ * fun <W> writeTenBytesAtEnd(writer: W): io.Result<Unit> where W : Write<W>, W : Seek {
  *     writer.seek(SeekFrom.End(-10)).getOrElse { return Result.failure(it) }
  *     for (i in 0 until 10) {
  *         writer.write(listOf(i)).getOrElse { return Result.failure(it) }
@@ -392,7 +393,7 @@ public fun Cursor<T>.seek(style: SeekFrom): Result<ULong> {
             }
         }
     return when (val matchVal = basePos.checkedAddSigned(offset)) {
-        null -> RustResult.Err(constError(ErrorKind.InvalidInput, "invalid seek to a negative or overflowing position"))
+        null -> RustResult.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "invalid seek to a negative or overflowing position")))
         else -> {
             val n3 = matchVal
             this.setPosition(n3)

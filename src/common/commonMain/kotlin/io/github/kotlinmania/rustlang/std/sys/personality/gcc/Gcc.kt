@@ -1,12 +1,12 @@
 // port-lint: source sys/personality/gcc.rs
 package io.github.kotlinmania.rustlang.std.sys.personality.gcc
 
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingSub
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sys.personality.dwarf.eh.EHAction
 import io.github.kotlinmania.rustlang.std.sys.personality.dwarf.eh.EHContext
 import io.github.kotlinmania.rustlang.unwind.URC_CONTINUE_UNWIND

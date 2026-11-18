@@ -429,7 +429,7 @@ public open class SocketAddrV4(
         // If there are no alignment requirements, write the socket address directly to `f`.
         // Otherwise, write it to a local buffer and then use `f.pad`.
         return if (f.precision() == null && f.width() == null) {
-            f.writeFmt("${this.ip()}:${this.port()}")
+            run { f.append("${this.ip()}:${this.port()}"); Result.Ok<Unit, Unit>(Unit) }
         } else {
             val LONGEST_IPV4_SOCKET_ADDR: String = "255.255.255.255:65535"
             val buf = DisplayBuffer.buffer(LONGEST_IPV4_SOCKET_ADDR.len())
@@ -684,10 +684,10 @@ public open class SocketAddrV6(
         // Otherwise, write it to a local buffer and then use `f.pad`.
         return if (f.precision() == null && f.width() == null) {
             when (val matchVal = this.scopeId()) {
-                0u -> f.writeFmt("[${this.ip()}]:${this.port()}")
+                0u -> run { f.append("[${this.ip()}]:${this.port()}"); Result.Ok<Unit, Unit>(Unit) }
                 else -> {
                     val scopeId = matchVal
-                    f.writeFmt("[${this.ip()}%$scopeId]:${this.port()}")
+                    run { f.append("[${this.ip()}%$scopeId]:${this.port()}"); Result.Ok<Unit, Unit>(Unit) }
                 }
             }
         } else {

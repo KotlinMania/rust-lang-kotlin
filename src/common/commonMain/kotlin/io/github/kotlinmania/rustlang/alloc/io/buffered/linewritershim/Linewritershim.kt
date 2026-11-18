@@ -23,9 +23,9 @@ import io.github.kotlinmania.rustlang.core.result.Result as RustResult
  * `BufWriters` to be temporarily given line-buffering logic; this is what
  * enables Stdout to be alternately in line-buffered or block-buffered mode.
  */
-public open class LineWriterShim<W : Write> internal constructor(
+public open class LineWriterShim<W : Write<W>> internal constructor(
     bufferCtorArg: BufWriter<W>,
-) : Write {
+) : Write<LineWriterShim<W>> {
     public var buffer: BufWriter<W> = bufferCtorArg
         internal set
 
@@ -323,12 +323,12 @@ public open class LineWriterShim<W : Write> internal constructor(
     }
 
     public companion object {
-        public operator fun <W : Write> invoke(
+        public operator fun <W : Write<W>> invoke(
             buffer: BufWriter<W>,
         ): LineWriterShim<W> = LineWriterShim<W>(
             bufferCtorArg = buffer,
         )
 
-        public fun <W : Write> new(buffer: BufWriter<W>): LineWriterShim<W> = LineWriterShim(buffer = buffer)
+        public fun <W : Write<W>> new(buffer: BufWriter<W>): LineWriterShim<W> = LineWriterShim(buffer = buffer)
     }
 }

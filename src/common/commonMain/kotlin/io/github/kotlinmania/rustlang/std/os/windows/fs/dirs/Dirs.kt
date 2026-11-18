@@ -3,13 +3,13 @@ package io.github.kotlinmania.rustlang.std.os.windows.fs.dirs
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.fs.dirs.HomeDirs
 import io.github.kotlinmania.rustlang.std.fs.dirs.MediaDirs
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Slice
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FOLDERID_DESKTOP
@@ -332,8 +332,8 @@ public interface MediaDirsExt<T> {
 }
 
 public fun homeDirsExtAppdataEnvHomeDirs(): Result<HomeDirs, Error> {
-    val roamingAppData = when (val tryResult = (varOs("APPDATA")?.let(PathBuf::from).filter({ p -> p.isAbsolute() })?.let { Result.Ok<Any, Error>(it) } ?: Result.Err<Any, Error>(constError(ErrorKind.InvalidData, "non-absolute %APPDATA%")))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<HomeDirs, Error>(tryResult.errValue()) }
-    val localAppData = when (val tryResult = (varOs("LOCALAPPDATA")?.let(PathBuf::from).filter({ p -> p.isAbsolute() })?.let { Result.Ok<Any, Error>(it) } ?: Result.Err<Any, Error>(constError(ErrorKind.InvalidData, "non-absolute %LOCALAPPDATA%")))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<HomeDirs, Error>(tryResult.errValue()) }
+    val roamingAppData = when (val tryResult = (varOs("APPDATA")?.let(PathBuf::from).filter({ p -> p.isAbsolute() })?.let { Result.Ok<Any, Error>(it) } ?: Result.Err<Any, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "non-absolute %APPDATA%"))))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<HomeDirs, Error>(tryResult.errValue()) }
+    val localAppData = when (val tryResult = (varOs("LOCALAPPDATA")?.let(PathBuf::from).filter({ p -> p.isAbsolute() })?.let { Result.Ok<Any, Error>(it) } ?: Result.Err<Any, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "non-absolute %LOCALAPPDATA%"))))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<HomeDirs, Error>(tryResult.errValue()) }
     // AppData/Local -- system-local, doesn't make sense to sync to another
     // AppData/Roaming -- data that makes sense to sync across machines
     val dirs = HomeDirs.empty()
@@ -399,7 +399,7 @@ public fun getKnownFolderPath(id: Guid): Result<PathBuf?, Error> {
                 if (false) {
                     error("should not call get_known_folder_path on a virtual folder")
                 } else {
-                    Result.Err<PathBuf?, Error>(constError(ErrorKind.InvalidInput, "virtual known folders do not have paths"))
+                    Result.Err<PathBuf?, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "virtual known folders do not have paths")))
                 }
             }
             E_INVALIDARG -> {

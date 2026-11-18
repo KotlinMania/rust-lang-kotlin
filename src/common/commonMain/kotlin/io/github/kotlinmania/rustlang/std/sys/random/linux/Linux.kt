@@ -17,9 +17,9 @@ import io.github.kotlinmania.rustlang.libc.wasi.ENOSYS
 import io.github.kotlinmania.rustlang.libc.wasi.EPERM
 import io.github.kotlinmania.rustlang.libc.wasi.POLLIN
 import io.github.kotlinmania.rustlang.std.fs.File
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Acquire
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Release
 import io.github.kotlinmania.rustlang.std.sync.oncelock.OnceLock
 import io.github.kotlinmania.rustlang.std.sys.io.Errno
 import io.github.kotlinmania.rustlang.std.sys.pal.weak.syscall

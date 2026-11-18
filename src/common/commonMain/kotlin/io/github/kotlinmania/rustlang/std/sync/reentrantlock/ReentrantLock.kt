@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU64
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex
 import io.github.kotlinmania.rustlang.std.thread.current.currentId
 

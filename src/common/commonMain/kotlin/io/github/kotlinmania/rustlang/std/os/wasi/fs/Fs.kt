@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.os.wasi.fs
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -16,7 +17,6 @@ import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.fs.FileType
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.OpenOptions
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.pal.wasi.err2io
 import io.github.kotlinmania.rustlang.wasip1.ADVICE_DONTNEED
@@ -330,7 +330,7 @@ public fun File.advise(offset: ULong, len: ULong, advice: UByte): Result<Unit, E
                 ADVICE_NOREUSE
             }
             else -> {
-                return Result.Err<Unit, Error>(constError(ErrorKind.InvalidInput, "invalid parameter 'advice'"))
+                return Result.Err<Unit, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "invalid parameter 'advice'")))
             }
         }
     return fdAdvise(((this.asRawFd() as Any?) as Fd), offset, len, advice1).mapErr(err2io)
@@ -470,4 +470,4 @@ public fun symlink(oldPath: Path, fd: File, newPath: Path): Result<Unit, Error> 
  */
 public fun symlinkPath(oldPath: Path, newPath: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.symlink(oldPath, newPath)
 
-public fun osstr2str(f: OsStr): Result<String, Error> = f.toStr().okOrElse({ constError(ErrorKind.Uncategorized, "input must be utf-8") })
+public fun osstr2str(f: OsStr): Result<String, Error> = f.toStr().okOrElse({ Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.Uncategorized, message = "input must be utf-8")) })

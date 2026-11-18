@@ -112,11 +112,11 @@ public open class Utf8Error(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
         when (val matchVal = this.errorLen) {
             null -> {
-                f.writeFmt("incomplete utf-8 byte sequence from index ${this.validUpTo}")
+                run { f.append("incomplete utf-8 byte sequence from index ${this.validUpTo}"); Result.Ok<Unit, Unit>(Unit) }
             }
             else -> {
                 val errorLen = matchVal
-                f.writeFmt("invalid utf-8 sequence of $errorLen bytes from index ${this.validUpTo}")
+                run { f.append("invalid utf-8 sequence of $errorLen bytes from index ${this.validUpTo}"); Result.Ok<Unit, Unit>(Unit) }
             }
         }
 }

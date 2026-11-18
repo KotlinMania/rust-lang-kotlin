@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.needsDrop
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.hashbrown.Guard
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.bridgeUnindexed
 import io.github.kotlinmania.rustlang.hashbrown.raw.Bucket
 import io.github.kotlinmania.rustlang.hashbrown.raw.RawIter

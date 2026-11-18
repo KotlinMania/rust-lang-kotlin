@@ -124,7 +124,7 @@ public open class DecodeUtf16Error(
      */
     public open fun unpairedSurrogate(): UShort = this.code
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt("unpaired surrogate found: ${this.code}")
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("unpaired surrogate found: ${this.code}"); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<DecodeUtf16Error> =

@@ -14,7 +14,7 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_WAKE
 import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_MONOTONIC
 import io.github.kotlinmania.rustlang.libc.wasi.EINTR
 import io.github.kotlinmania.rustlang.libc.wasi.ETIMEDOUT
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sys.io.Errno
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.Timespec
 

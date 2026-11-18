@@ -7,14 +7,14 @@ import io.github.kotlinmania.rustlang.core.ascii.EscapeDefault
 import io.github.kotlinmania.rustlang.core.ascii.escapeDefault
 import io.github.kotlinmania.rustlang.core.char.methods.isAsciiWhitespace
 import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.iter.adapters.filter.Filter
 import io.github.kotlinmania.rustlang.core.iter.adapters.flatten.FlatMap
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mmLoaduSi128
 import io.github.kotlinmania.rustlang.core.mmMovemaskEpi8
 import io.github.kotlinmania.rustlang.core.mmOrSi128

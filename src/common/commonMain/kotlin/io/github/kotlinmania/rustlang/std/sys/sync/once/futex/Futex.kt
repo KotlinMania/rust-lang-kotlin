@@ -3,9 +3,9 @@ package io.github.kotlinmania.rustlang.std.sys.sync.once.futex
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Acquire
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Release
 import io.github.kotlinmania.rustlang.std.sync.once.OnceExclusiveState
 import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.Futex
 import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.Primitive

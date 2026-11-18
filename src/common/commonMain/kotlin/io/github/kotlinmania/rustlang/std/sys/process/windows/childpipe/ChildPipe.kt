@@ -27,7 +27,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.unicodeStr
@@ -566,7 +566,7 @@ public open class AsyncPipe internal constructor(
             when (val matchVal = this.state) {
                 State.NotReading -> { return Result.Ok<Boolean, Error>(true) }
                 State.Reading -> when (val tryResult = this.pipe.overlappedResult(this.overlapped, true)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Boolean, Error>(tryResult.errValue()) }
-                is State.Read -> {
+                is State.Read<*> -> {
                     val (amt) = matchVal
                     amt
                 }

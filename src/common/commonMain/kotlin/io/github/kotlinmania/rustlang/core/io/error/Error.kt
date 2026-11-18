@@ -394,7 +394,7 @@ unreachableUnchecked()
             is ErrorData.Os<*> -> {
                 val (code) = matchVal
                 val detail = fromFn({ fmt1 -> formatOsError(code, fmt1) })
-                fmt.writeFmt("$detail (os error $code)")
+                run { fmt.append("$detail (os error $code)"); RustResult.Ok<Unit, Unit>(Unit) }
             }
             is ErrorData.Custom<*> -> {
                 val (c) = matchVal

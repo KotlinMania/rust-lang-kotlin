@@ -164,4 +164,4 @@ public fun F16.fmt(fmt: Formatter): Result = floatToGeneralDebug(fmt, this)
 // Note(f16): A fallback is used when the backend+target does not support f16 well, in order
 // to avoid ICEs.
 
-public fun F128.fmt(f: Formatter): Result = f.writeFmt("${this.toBits()}")
+public fun F128.fmt(f: Formatter): Result = f.append("${this.toBits()}")

@@ -15,8 +15,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicI8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.hashbrown.Iter
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Global
 import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.Group
 
 public fun <T> rehashInPlace(table: RawTable<T, Global>, hasher: (T) -> ULong, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {

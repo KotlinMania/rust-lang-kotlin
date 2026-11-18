@@ -2105,63 +2105,63 @@ public fun VectorSignedChar.vecFindAnyEqCc(b: VectorSignedChar): Pair<VectorBool
     val structVal = vfaebs(this, b, FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolChar>()), y)
 }
 
 public fun VectorUnsignedChar.vecFindAnyEqCc(b: VectorUnsignedChar): Pair<VectorBoolChar, Int> {
     val structVal = vfaebs(transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()), transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()), FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolChar>()), y)
 }
 
 public fun VectorBoolChar.vecFindAnyEqCc(b: VectorBoolChar): Pair<VectorBoolChar, Int> {
     val structVal = vfaebs(transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()), transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()), FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolChar>()), y)
 }
 
 public fun VectorSignedShort.vecFindAnyEqCc(b: VectorSignedShort): Pair<VectorBoolShort, Int> {
     val structVal = vfaehs(this, b, FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolShort>()), y)
 }
 
 public fun VectorUnsignedShort.vecFindAnyEqCc(b: VectorUnsignedShort): Pair<VectorBoolShort, Int> {
     val structVal = vfaehs(transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>()), transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>()), FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolShort>()), y)
 }
 
 public fun VectorBoolShort.vecFindAnyEqCc(b: VectorBoolShort): Pair<VectorBoolShort, Int> {
     val structVal = vfaehs(transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()), transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()), FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolShort>()), y)
 }
 
 public fun VectorSignedInt.vecFindAnyEqCc(b: VectorSignedInt): Pair<VectorBoolInt, Int> {
     val structVal = vfaefs(this, b, FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolInt>()), y)
 }
 
 public fun VectorUnsignedInt.vecFindAnyEqCc(b: VectorUnsignedInt): Pair<VectorBoolInt, Int> {
     val structVal = vfaefs(transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>()), transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>()), FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolInt>()), y)
 }
 
 public fun VectorBoolInt.vecFindAnyEqCc(b: VectorBoolInt): Pair<VectorBoolInt, Int> {
     val structVal = vfaefs(transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()), transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()), FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolInt>()), y)
 }
 
 public interface VectorFindAnyNeCC<Other, out Result> {
@@ -2172,63 +2172,63 @@ public fun VectorSignedChar.vecFindAnyNeCc(b: VectorSignedChar): Pair<VectorBool
     val structVal = vfaebs(this, b, FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolChar>()), y)
 }
 
 public fun VectorUnsignedChar.vecFindAnyNeCc(b: VectorUnsignedChar): Pair<VectorBoolChar, Int> {
     val structVal = vfaebs(transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()), transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()), FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolChar>()), y)
 }
 
 public fun VectorBoolChar.vecFindAnyNeCc(b: VectorBoolChar): Pair<VectorBoolChar, Int> {
     val structVal = vfaebs(transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()), transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()), FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolChar>()), y)
 }
 
 public fun VectorSignedShort.vecFindAnyNeCc(b: VectorSignedShort): Pair<VectorBoolShort, Int> {
     val structVal = vfaehs(this, b, FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolShort>()), y)
 }
 
 public fun VectorUnsignedShort.vecFindAnyNeCc(b: VectorUnsignedShort): Pair<VectorBoolShort, Int> {
     val structVal = vfaehs(transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>()), transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>()), FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolShort>()), y)
 }
 
 public fun VectorBoolShort.vecFindAnyNeCc(b: VectorBoolShort): Pair<VectorBoolShort, Int> {
     val structVal = vfaehs(transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()), transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()), FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolShort>()), y)
 }
 
 public fun VectorSignedInt.vecFindAnyNeCc(b: VectorSignedInt): Pair<VectorBoolInt, Int> {
     val structVal = vfaefs(this, b, FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolInt>()), y)
 }
 
 public fun VectorUnsignedInt.vecFindAnyNeCc(b: VectorUnsignedInt): Pair<VectorBoolInt, Int> {
     val structVal = vfaefs(transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>()), transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>()), FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolInt>()), y)
 }
 
 public fun VectorBoolInt.vecFindAnyNeCc(b: VectorBoolInt): Pair<VectorBoolInt, Int> {
     val structVal = vfaefs(transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()), transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()), FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolInt>()), y)
 }
 
 public interface VectorFindAnyEqIdxCC<Other, out Result> {
@@ -2239,63 +2239,63 @@ public fun VectorSignedChar.vecFindAnyEqIdxCc(b: VectorSignedChar): Pair<VectorS
     val structVal = vfaebs(this, b, FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedChar>()), y)
 }
 
 public fun VectorUnsignedChar.vecFindAnyEqIdxCc(b: VectorUnsignedChar): Pair<VectorUnsignedChar, Int> {
     val structVal = vfaebs(transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()), transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()), FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorBoolChar.vecFindAnyEqIdxCc(b: VectorBoolChar): Pair<VectorUnsignedChar, Int> {
     val structVal = vfaebs(transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()), transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()), FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorSignedShort.vecFindAnyEqIdxCc(b: VectorSignedShort): Pair<VectorSignedShort, Int> {
     val structVal = vfaehs(this, b, FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedShort>()), y)
 }
 
 public fun VectorUnsignedShort.vecFindAnyEqIdxCc(b: VectorUnsignedShort): Pair<VectorUnsignedShort, Int> {
     val structVal = vfaehs(transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>()), transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>()), FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorBoolShort.vecFindAnyEqIdxCc(b: VectorBoolShort): Pair<VectorUnsignedShort, Int> {
     val structVal = vfaehs(transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()), transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()), FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorSignedInt.vecFindAnyEqIdxCc(b: VectorSignedInt): Pair<VectorSignedInt, Int> {
     val structVal = vfaefs(this, b, FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedInt>()), y)
 }
 
 public fun VectorUnsignedInt.vecFindAnyEqIdxCc(b: VectorUnsignedInt): Pair<VectorUnsignedInt, Int> {
     val structVal = vfaefs(transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>()), transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>()), FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public fun VectorBoolInt.vecFindAnyEqIdxCc(b: VectorBoolInt): Pair<VectorUnsignedInt, Int> {
     val structVal = vfaefs(transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()), transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()), FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public interface VectorFindAnyNeIdxCC<Other, out Result> {
@@ -2306,63 +2306,63 @@ public fun VectorSignedChar.vecFindAnyNeIdxCc(b: VectorSignedChar): Pair<VectorS
     val structVal = vfaebs(this, b, FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedChar>()), y)
 }
 
 public fun VectorUnsignedChar.vecFindAnyNeIdxCc(b: VectorUnsignedChar): Pair<VectorUnsignedChar, Int> {
     val structVal = vfaebs(transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()), transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()), FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorBoolChar.vecFindAnyNeIdxCc(b: VectorBoolChar): Pair<VectorUnsignedChar, Int> {
     val structVal = vfaebs(transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()), transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()), FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorSignedShort.vecFindAnyNeIdxCc(b: VectorSignedShort): Pair<VectorSignedShort, Int> {
     val structVal = vfaehs(this, b, FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedShort>()), y)
 }
 
 public fun VectorUnsignedShort.vecFindAnyNeIdxCc(b: VectorUnsignedShort): Pair<VectorUnsignedShort, Int> {
     val structVal = vfaehs(transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>()), transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>()), FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorBoolShort.vecFindAnyNeIdxCc(b: VectorBoolShort): Pair<VectorUnsignedShort, Int> {
     val structVal = vfaehs(transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()), transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()), FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorSignedInt.vecFindAnyNeIdxCc(b: VectorSignedInt): Pair<VectorSignedInt, Int> {
     val structVal = vfaefs(this, b, FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedInt>()), y)
 }
 
 public fun VectorUnsignedInt.vecFindAnyNeIdxCc(b: VectorUnsignedInt): Pair<VectorUnsignedInt, Int> {
     val structVal = vfaefs(transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>()), transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>()), FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public fun VectorBoolInt.vecFindAnyNeIdxCc(b: VectorBoolInt): Pair<VectorUnsignedInt, Int> {
     val structVal = vfaefs(transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()), transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()), FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public interface VectorFindAnyEqOrZeroIdxCC<Other, out Result> {
@@ -2373,63 +2373,63 @@ public fun VectorSignedChar.vecFindAnyEqOr0IdxCc(b: VectorSignedChar): Pair<Vect
     val structVal = vfaezbs(this, b, FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedChar>()), y)
 }
 
 public fun VectorUnsignedChar.vecFindAnyEqOr0IdxCc(b: VectorUnsignedChar): Pair<VectorUnsignedChar, Int> {
     val structVal = vfaezbs(transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()), transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()), FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorBoolChar.vecFindAnyEqOr0IdxCc(b: VectorBoolChar): Pair<VectorUnsignedChar, Int> {
     val structVal = vfaezbs(transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()), transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()), FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorSignedShort.vecFindAnyEqOr0IdxCc(b: VectorSignedShort): Pair<VectorSignedShort, Int> {
     val structVal = vfaezhs(this, b, FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedShort>()), y)
 }
 
 public fun VectorUnsignedShort.vecFindAnyEqOr0IdxCc(b: VectorUnsignedShort): Pair<VectorUnsignedShort, Int> {
     val structVal = vfaezhs(transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>()), transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>()), FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorBoolShort.vecFindAnyEqOr0IdxCc(b: VectorBoolShort): Pair<VectorUnsignedShort, Int> {
     val structVal = vfaezhs(transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()), transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()), FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorSignedInt.vecFindAnyEqOr0IdxCc(b: VectorSignedInt): Pair<VectorSignedInt, Int> {
     val structVal = vfaezfs(this, b, FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedInt>()), y)
 }
 
 public fun VectorUnsignedInt.vecFindAnyEqOr0IdxCc(b: VectorUnsignedInt): Pair<VectorUnsignedInt, Int> {
     val structVal = vfaezfs(transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>()), transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>()), FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public fun VectorBoolInt.vecFindAnyEqOr0IdxCc(b: VectorBoolInt): Pair<VectorUnsignedInt, Int> {
     val structVal = vfaezfs(transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()), transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()), FindImm.EqIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public interface VectorFindAnyNeOrZeroIdxCC<Other, out Result> {
@@ -2440,63 +2440,63 @@ public fun VectorSignedChar.vecFindAnyNeOr0IdxCc(b: VectorSignedChar): Pair<Vect
     val structVal = vfaezbs(this, b, FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedChar>()), y)
 }
 
 public fun VectorUnsignedChar.vecFindAnyNeOr0IdxCc(b: VectorUnsignedChar): Pair<VectorUnsignedChar, Int> {
     val structVal = vfaezbs(transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()), transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()), FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorBoolChar.vecFindAnyNeOr0IdxCc(b: VectorBoolChar): Pair<VectorUnsignedChar, Int> {
     val structVal = vfaezbs(transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()), transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()), FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorSignedShort.vecFindAnyNeOr0IdxCc(b: VectorSignedShort): Pair<VectorSignedShort, Int> {
     val structVal = vfaezhs(this, b, FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedShort>()), y)
 }
 
 public fun VectorUnsignedShort.vecFindAnyNeOr0IdxCc(b: VectorUnsignedShort): Pair<VectorUnsignedShort, Int> {
     val structVal = vfaezhs(transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>()), transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>()), FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorBoolShort.vecFindAnyNeOr0IdxCc(b: VectorBoolShort): Pair<VectorUnsignedShort, Int> {
     val structVal = vfaezhs(transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()), transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()), FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorSignedInt.vecFindAnyNeOr0IdxCc(b: VectorSignedInt): Pair<VectorSignedInt, Int> {
     val structVal = vfaezfs(this, b, FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedInt>()), y)
 }
 
 public fun VectorUnsignedInt.vecFindAnyNeOr0IdxCc(b: VectorUnsignedInt): Pair<VectorUnsignedInt, Int> {
     val structVal = vfaezfs(transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>()), transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>()), FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public fun VectorBoolInt.vecFindAnyNeOr0IdxCc(b: VectorBoolInt): Pair<VectorUnsignedInt, Int> {
     val structVal = vfaezfs(transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()), transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()), FindImm.NeIdx.value.toInt())
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public fun testVectorLoad(offset: Int, ptr: ConstPtr): VectorSignedInt = (UnresolvedTypeLayout<VectorSignedInt>()).readNative((ConstPtr((ConstPtr((ptr).rawAddress + ((offset).toLong()))).rawAddress)).rawAddress)
@@ -3747,63 +3747,63 @@ public fun VectorSignedChar.vecCpUntilZeroCc(): Pair<VectorSignedChar, Int> {
     val structVal = vecVistrbs(transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(this, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>()))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedChar>()), y)
 }
 
 public fun VectorBoolChar.vecCpUntilZeroCc(): Pair<VectorBoolChar, Int> {
     val structVal = vecVistrbs(transmuteWithLayouts<VectorBoolChar, VectorUnsignedChar>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorUnsignedChar>()))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolChar>()), y)
 }
 
 public fun VectorUnsignedChar.vecCpUntilZeroCc(): Pair<VectorUnsignedChar, Int> {
     val structVal = vecVistrbs(this)
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorSignedShort.vecCpUntilZeroCc(): Pair<VectorSignedShort, Int> {
     val structVal = vecVistrhs(transmuteWithLayouts<VectorSignedShort, VectorUnsignedShort>(this, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorUnsignedShort>()))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedShort>()), y)
 }
 
 public fun VectorBoolShort.vecCpUntilZeroCc(): Pair<VectorBoolShort, Int> {
     val structVal = vecVistrhs(transmuteWithLayouts<VectorBoolShort, VectorUnsignedShort>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorUnsignedShort>()))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolShort>()), y)
 }
 
 public fun VectorUnsignedShort.vecCpUntilZeroCc(): Pair<VectorUnsignedShort, Int> {
     val structVal = vecVistrhs(this)
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorSignedInt.vecCpUntilZeroCc(): Pair<VectorSignedInt, Int> {
     val structVal = vecVistrfs(transmuteWithLayouts<VectorSignedInt, VectorUnsignedInt>(this, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedInt>()))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedInt>()), y)
 }
 
 public fun VectorBoolInt.vecCpUntilZeroCc(): Pair<VectorBoolInt, Int> {
     val structVal = vecVistrfs(transmuteWithLayouts<VectorBoolInt, VectorUnsignedInt>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorUnsignedInt>()))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorBoolInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorBoolInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorBoolInt>()), y)
 }
 
 public fun VectorUnsignedInt.vecCpUntilZeroCc(): Pair<VectorUnsignedInt, Int> {
     val structVal = vecVistrfs(this)
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public interface VectorSrdb<T> {
@@ -4361,28 +4361,28 @@ public fun VectorSignedChar.vecCmpeqIdxCc(other: VectorSignedChar): Pair<VectorS
     val structVal = vfeebs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedChar>()), y)
 }
 
 public fun VectorSignedChar.vecCmpneIdxCc(other: VectorSignedChar): Pair<VectorSignedChar, Int> {
     val structVal = vfenebs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedChar>()), y)
 }
 
 public fun VectorSignedChar.vecCmpeqOr0IdxCc(other: VectorSignedChar): Pair<VectorSignedChar, Int> {
     val structVal = vfeezbs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedChar>()), y)
 }
 
 public fun VectorSignedChar.vecCmpneOr0IdxCc(other: VectorSignedChar): Pair<VectorSignedChar, Int> {
     val structVal = vfenezbs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedChar>()), y)
 }
 
 public fun VectorBoolChar.vecCmpeqIdx(other: VectorBoolChar): VectorUnsignedChar = transmuteWithLayouts<I8x16, VectorUnsignedChar>(vfeeb(transmute(this), transmute(other)), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<VectorUnsignedChar>())
@@ -4397,28 +4397,28 @@ public fun VectorBoolChar.vecCmpeqIdxCc(other: VectorBoolChar): Pair<VectorUnsig
     val structVal = vfeebs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorBoolChar.vecCmpneIdxCc(other: VectorBoolChar): Pair<VectorUnsignedChar, Int> {
     val structVal = vfenebs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorBoolChar.vecCmpeqOr0IdxCc(other: VectorBoolChar): Pair<VectorUnsignedChar, Int> {
     val structVal = vfeezbs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorBoolChar.vecCmpneOr0IdxCc(other: VectorBoolChar): Pair<VectorUnsignedChar, Int> {
     val structVal = vfenezbs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorUnsignedChar.vecCmpeqIdx(other: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<I8x16, VectorUnsignedChar>(vfeeb(transmute(this), transmute(other)), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<VectorUnsignedChar>())
@@ -4433,28 +4433,28 @@ public fun VectorUnsignedChar.vecCmpeqIdxCc(other: VectorUnsignedChar): Pair<Vec
     val structVal = vfeebs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorUnsignedChar.vecCmpneIdxCc(other: VectorUnsignedChar): Pair<VectorUnsignedChar, Int> {
     val structVal = vfenebs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorUnsignedChar.vecCmpeqOr0IdxCc(other: VectorUnsignedChar): Pair<VectorUnsignedChar, Int> {
     val structVal = vfeezbs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorUnsignedChar.vecCmpneOr0IdxCc(other: VectorUnsignedChar): Pair<VectorUnsignedChar, Int> {
     val structVal = vfenezbs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedChar, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedChar, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedChar>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedChar>()), y)
 }
 
 public fun VectorSignedShort.vecCmpeqIdx(other: VectorSignedShort): VectorSignedShort = transmuteWithLayouts<I16x8, VectorSignedShort>(vfeeh(transmute(this), transmute(other)), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<VectorSignedShort>())
@@ -4469,28 +4469,28 @@ public fun VectorSignedShort.vecCmpeqIdxCc(other: VectorSignedShort): Pair<Vecto
     val structVal = vfeehs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedShort>()), y)
 }
 
 public fun VectorSignedShort.vecCmpneIdxCc(other: VectorSignedShort): Pair<VectorSignedShort, Int> {
     val structVal = vfenehs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedShort>()), y)
 }
 
 public fun VectorSignedShort.vecCmpeqOr0IdxCc(other: VectorSignedShort): Pair<VectorSignedShort, Int> {
     val structVal = vfeezhs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedShort>()), y)
 }
 
 public fun VectorSignedShort.vecCmpneOr0IdxCc(other: VectorSignedShort): Pair<VectorSignedShort, Int> {
     val structVal = vfenezhs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedShort>()), y)
 }
 
 public fun VectorBoolShort.vecCmpeqIdx(other: VectorBoolShort): VectorUnsignedShort = transmuteWithLayouts<I16x8, VectorUnsignedShort>(vfeeh(transmute(this), transmute(other)), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<VectorUnsignedShort>())
@@ -4505,28 +4505,28 @@ public fun VectorBoolShort.vecCmpeqIdxCc(other: VectorBoolShort): Pair<VectorUns
     val structVal = vfeehs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorBoolShort.vecCmpneIdxCc(other: VectorBoolShort): Pair<VectorUnsignedShort, Int> {
     val structVal = vfenehs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorBoolShort.vecCmpeqOr0IdxCc(other: VectorBoolShort): Pair<VectorUnsignedShort, Int> {
     val structVal = vfeezhs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorBoolShort.vecCmpneOr0IdxCc(other: VectorBoolShort): Pair<VectorUnsignedShort, Int> {
     val structVal = vfenezhs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorUnsignedShort.vecCmpeqIdx(other: VectorUnsignedShort): VectorUnsignedShort = transmuteWithLayouts<I16x8, VectorUnsignedShort>(vfeeh(transmute(this), transmute(other)), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<VectorUnsignedShort>())
@@ -4541,28 +4541,28 @@ public fun VectorUnsignedShort.vecCmpeqIdxCc(other: VectorUnsignedShort): Pair<V
     val structVal = vfeehs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorUnsignedShort.vecCmpneIdxCc(other: VectorUnsignedShort): Pair<VectorUnsignedShort, Int> {
     val structVal = vfenehs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorUnsignedShort.vecCmpeqOr0IdxCc(other: VectorUnsignedShort): Pair<VectorUnsignedShort, Int> {
     val structVal = vfeezhs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorUnsignedShort.vecCmpneOr0IdxCc(other: VectorUnsignedShort): Pair<VectorUnsignedShort, Int> {
     val structVal = vfenezhs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedShort, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedShort, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedShort>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedShort>()), y)
 }
 
 public fun VectorSignedInt.vecCmpeqIdx(other: VectorSignedInt): VectorSignedInt = transmuteWithLayouts<I32x4, VectorSignedInt>(vfeef(transmute(this), transmute(other)), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<VectorSignedInt>())
@@ -4577,28 +4577,28 @@ public fun VectorSignedInt.vecCmpeqIdxCc(other: VectorSignedInt): Pair<VectorSig
     val structVal = vfeefs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedInt>()), y)
 }
 
 public fun VectorSignedInt.vecCmpneIdxCc(other: VectorSignedInt): Pair<VectorSignedInt, Int> {
     val structVal = vfenefs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedInt>()), y)
 }
 
 public fun VectorSignedInt.vecCmpeqOr0IdxCc(other: VectorSignedInt): Pair<VectorSignedInt, Int> {
     val structVal = vfeezfs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedInt>()), y)
 }
 
 public fun VectorSignedInt.vecCmpneOr0IdxCc(other: VectorSignedInt): Pair<VectorSignedInt, Int> {
     val structVal = vfenezfs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorSignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorSignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorSignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedInt>()), y)
 }
 
 public fun VectorBoolInt.vecCmpeqIdx(other: VectorBoolInt): VectorUnsignedInt = transmuteWithLayouts<I32x4, VectorUnsignedInt>(vfeef(transmute(this), transmute(other)), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<VectorUnsignedInt>())
@@ -4613,28 +4613,28 @@ public fun VectorBoolInt.vecCmpeqIdxCc(other: VectorBoolInt): Pair<VectorUnsigne
     val structVal = vfeefs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public fun VectorBoolInt.vecCmpneIdxCc(other: VectorBoolInt): Pair<VectorUnsignedInt, Int> {
     val structVal = vfenefs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public fun VectorBoolInt.vecCmpeqOr0IdxCc(other: VectorBoolInt): Pair<VectorUnsignedInt, Int> {
     val structVal = vfeezfs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public fun VectorBoolInt.vecCmpneOr0IdxCc(other: VectorBoolInt): Pair<VectorUnsignedInt, Int> {
     val structVal = vfenezfs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public fun VectorUnsignedInt.vecCmpeqIdx(other: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<I32x4, VectorUnsignedInt>(vfeef(transmute(this), transmute(other)), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<VectorUnsignedInt>())
@@ -4649,28 +4649,28 @@ public fun VectorUnsignedInt.vecCmpeqIdxCc(other: VectorUnsignedInt): Pair<Vecto
     val structVal = vfeefs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public fun VectorUnsignedInt.vecCmpneIdxCc(other: VectorUnsignedInt): Pair<VectorUnsignedInt, Int> {
     val structVal = vfenefs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public fun VectorUnsignedInt.vecCmpeqOr0IdxCc(other: VectorUnsignedInt): Pair<VectorUnsignedInt, Int> {
     val structVal = vfeezfs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public fun VectorUnsignedInt.vecCmpneOr0IdxCc(other: VectorUnsignedInt): Pair<VectorUnsignedInt, Int> {
     val structVal = vfenezfs(transmute(this), transmute(other))
     val x = structVal.x
     val y = structVal.y
-    return Pair(transmuteWithLayouts<Any?, Pair<VectorUnsignedInt, Int>>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Pair<VectorUnsignedInt, Int>>()), y)
+    return Pair(transmuteWithLayouts<Any?, VectorUnsignedInt>(x, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorUnsignedInt>()), y)
 }
 
 public interface VectorExtract<T, out ElementType> {

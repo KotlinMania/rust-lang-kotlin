@@ -1005,14 +1005,14 @@ public fun <K, V, A : Allocator> mapEntry(raw: Entry<K, V, A>): Entry<K, V, A> =
         }
     }
 
-public fun <T, S, A> HashSet<T, S, A>.eq(other: HashSet<T, S, A>): Boolean where S : BuildHasher, A : Allocator {
+public fun <Hasher, T, S, A> HashSet<T, S, A>.eq(other: HashSet<T, S, A>): Boolean where S : BuildHasher<Hasher>, A : Allocator {
     if (this.len() != other.len()) {
         return false
     }
     return this.iter().all({ key -> other.contains(key) })
 }
 
-public fun <T, S, I : Iterable<T>> fromIteratorFromIterHashSetTS(iter: I, defaultSFn: () -> S): HashSet<T, S, Global> where S : BuildHasher {
+public fun <Hasher, T, S, I : Iterable<T>> fromIteratorFromIterHashSetTS(iter: I, defaultSFn: () -> S): HashSet<T, S, Global> where S : BuildHasher<Hasher> {
     val set = HashSet.withHasher(defaultSFn())
     set.extend(iter, defaultSFn)
     return set
@@ -1047,27 +1047,27 @@ public fun <T, S, I : Iterable<T>> fromIteratorFromIterHashSetTS(iter: I, defaul
  */
 public fun <T> fromHashSetTRandomState(arr: List<T>, n: Int = 0): HashSet<T, RandomState, Global> = HashSet.fromIter(arr)
 
-public fun <T, S, A, I : Iterable<T>> HashSet<T, S, A>.extend(iter: I) where S : BuildHasher, A : Allocator {
+public fun <Hasher, T, S, A, I : Iterable<T>> HashSet<T, S, A>.extend(iter: I) where S : BuildHasher<Hasher>, A : Allocator {
     this.base.extend(iter)
 }
 
-public fun <T, S, A> HashSet<T, S, A>.extendOne(item: T) where S : BuildHasher, A : Allocator {
+public fun <Hasher, T, S, A> HashSet<T, S, A>.extendOne(item: T) where S : BuildHasher<Hasher>, A : Allocator {
     this.base.add(item)
 }
 
-public fun <T, S, A> HashSet<T, S, A>.extendReserve(additional: Int) where S : BuildHasher, A : Allocator {
+public fun <Hasher, T, S, A> HashSet<T, S, A>.extendReserve(additional: Int) where S : BuildHasher<Hasher>, A : Allocator {
     this.base.extendReserve(additional)
 }
 
-public fun <T, S, A, I : Iterable<T>> HashSet<T, S, A>.extendT(iter: I) where S : BuildHasher, A : Allocator {
+public fun <Hasher, T, S, A, I : Iterable<T>> HashSet<T, S, A>.extendT(iter: I) where S : BuildHasher<Hasher>, A : Allocator {
     this.extend(iter.iterator().cloned())
 }
 
-public fun <T, S, A> HashSet<T, S, A>.extendOneT(item: T) where S : BuildHasher, A : Allocator {
+public fun <Hasher, T, S, A> HashSet<T, S, A>.extendOneT(item: T) where S : BuildHasher<Hasher>, A : Allocator {
     this.base.add(item)
 }
 
-public fun <T, S, A> HashSet<T, S, A>.extendReserveT(additional: Int) where S : BuildHasher, A : Allocator {
+public fun <Hasher, T, S, A> HashSet<T, S, A>.extendReserveT(additional: Int) where S : BuildHasher<Hasher>, A : Allocator {
     Extend.extendReserve(this, additional)
 }
 
@@ -1094,7 +1094,7 @@ public fun <T, S> defaultHashSetTS(defaultSFn: () -> S): HashSet<T, S, Global> =
  * check(i == expected.len())
  * ```
  */
-public fun <T, S> HashSet<T, S, Global>.bitor(rhs: HashSet<T, S, Global>): HashSet<T, S, Global> where S : BuildHasher = this.union(rhs).cloned().toMutableSet()
+public fun <Hasher, T, S> HashSet<T, S, Global>.bitor(rhs: HashSet<T, S, Global>): HashSet<T, S, Global> where S : BuildHasher<Hasher> = this.union(rhs).cloned().toMutableSet()
 
 /**
  * Returns the intersection of `self` and `rhs` as a new `HashSet<T, S>`.
@@ -1114,7 +1114,7 @@ public fun <T, S> HashSet<T, S, Global>.bitor(rhs: HashSet<T, S, Global>): HashS
  * check(i == expected.len())
  * ```
  */
-public fun <T, S> HashSet<T, S, Global>.bitand(rhs: HashSet<T, S, Global>): HashSet<T, S, Global> where S : BuildHasher = this.intersection(rhs).cloned().toMutableSet()
+public fun <Hasher, T, S> HashSet<T, S, Global>.bitand(rhs: HashSet<T, S, Global>): HashSet<T, S, Global> where S : BuildHasher<Hasher> = this.intersection(rhs).cloned().toMutableSet()
 
 /**
  * Returns the symmetric difference of `self` and `rhs` as a new `HashSet<T, S>`.
@@ -1134,7 +1134,7 @@ public fun <T, S> HashSet<T, S, Global>.bitand(rhs: HashSet<T, S, Global>): Hash
  * check(i == expected.len())
  * ```
  */
-public fun <T, S> HashSet<T, S, Global>.bitxor(rhs: HashSet<T, S, Global>): HashSet<T, S, Global> where S : BuildHasher = this.symmetricDifference(rhs).cloned().toMutableSet()
+public fun <Hasher, T, S> HashSet<T, S, Global>.bitxor(rhs: HashSet<T, S, Global>): HashSet<T, S, Global> where S : BuildHasher<Hasher> = this.symmetricDifference(rhs).cloned().toMutableSet()
 
 /**
  * Returns the difference of `self` and `rhs` as a new `HashSet<T, S>`.
@@ -1154,7 +1154,7 @@ public fun <T, S> HashSet<T, S, Global>.bitxor(rhs: HashSet<T, S, Global>): Hash
  * check(i == expected.len())
  * ```
  */
-public fun <T, S> HashSet<T, S, Global>.sub(rhs: HashSet<T, S, Global>): HashSet<T, S, Global> where S : BuildHasher = this.difference(rhs).cloned().toMutableSet()
+public fun <Hasher, T, S> HashSet<T, S, Global>.sub(rhs: HashSet<T, S, Global>): HashSet<T, S, Global> where S : BuildHasher<Hasher> = this.difference(rhs).cloned().toMutableSet()
 
 /**
  * An iterator over the items of a `HashSet`.
@@ -1481,7 +1481,7 @@ public fun <K, A : Allocator> ExtractIf<K, F, A>.next(): K? = this.base.next()
 
 public fun <K, A : Allocator> ExtractIf<K, F, A>.sizeHint(): Pair<Int, Int?> = this.base.sizeHint()
 
-public fun <T, S, A> Intersection<T, S, A>.next(): T? where S : BuildHasher, A : Allocator {
+public fun <Hasher, T, S, A> Intersection<T, S, A>.next(): T? where S : BuildHasher<Hasher>, A : Allocator {
     while (true) {
         val elt = (this.iter.next() ?: return null)
         if (this.other.contains(elt)) {
@@ -1490,21 +1490,21 @@ public fun <T, S, A> Intersection<T, S, A>.next(): T? where S : BuildHasher, A :
     }
 }
 
-public fun <T, S, A> Intersection<T, S, A>.sizeHint(): Pair<Int, Int?> where S : BuildHasher, A : Allocator {
+public fun <Hasher, T, S, A> Intersection<T, S, A>.sizeHint(): Pair<Int, Int?> where S : BuildHasher<Hasher>, A : Allocator {
     val (_, upper) = this.iter.sizeHint()
     return Pair(0, upper)
 }
 
-public fun <T, S, A, B> Intersection<T, S, A>.fold(init: B, f: (B, T) -> B): B where S : BuildHasher, A : Allocator =
+public fun <Hasher, T, S, A, B> Intersection<T, S, A>.fold(init: B, f: (B, T) -> B): B where S : BuildHasher<Hasher>, A : Allocator =
     this.iter.fold(init, { acc, elt -> if (this.other.contains(elt)) {
         f(acc, elt)
     } else {
         acc
     } })
 
-public fun <T, S, A> Intersection<T, S, A>.fmt(f: StringBuilder): Result<Unit, Error> where S : BuildHasher, A : Allocator = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
+public fun <Hasher, T, S, A> Intersection<T, S, A>.fmt(f: StringBuilder): Result<Unit, Error> where S : BuildHasher<Hasher>, A : Allocator = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
 
-public fun <T, S, A> Difference<T, S, A>.next(): T? where S : BuildHasher, A : Allocator {
+public fun <Hasher, T, S, A> Difference<T, S, A>.next(): T? where S : BuildHasher<Hasher>, A : Allocator {
     while (true) {
         val elt = (this.iter.next() ?: return null)
         if (!this.other.contains(elt)) {
@@ -1513,37 +1513,37 @@ public fun <T, S, A> Difference<T, S, A>.next(): T? where S : BuildHasher, A : A
     }
 }
 
-public fun <T, S, A> Difference<T, S, A>.sizeHint(): Pair<Int, Int?> where S : BuildHasher, A : Allocator {
+public fun <Hasher, T, S, A> Difference<T, S, A>.sizeHint(): Pair<Int, Int?> where S : BuildHasher<Hasher>, A : Allocator {
     val (_, upper) = this.iter.sizeHint()
     return Pair(0, upper)
 }
 
-public fun <T, S, A, B> Difference<T, S, A>.fold(init: B, f: (B, T) -> B): B where S : BuildHasher, A : Allocator =
+public fun <Hasher, T, S, A, B> Difference<T, S, A>.fold(init: B, f: (B, T) -> B): B where S : BuildHasher<Hasher>, A : Allocator =
     this.iter.fold(init, { acc, elt -> if (this.other.contains(elt)) {
         acc
     } else {
         f(acc, elt)
     } })
 
-public fun <T, S, A> Difference<T, S, A>.fmt(f: StringBuilder): Result<Unit, Error> where S : BuildHasher, A : Allocator = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
+public fun <Hasher, T, S, A> Difference<T, S, A>.fmt(f: StringBuilder): Result<Unit, Error> where S : BuildHasher<Hasher>, A : Allocator = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
 
-public fun <T, S, A> SymmetricDifference<T, S, A>.next(): T? where S : BuildHasher, A : Allocator = this.iter.next()
+public fun <Hasher, T, S, A> SymmetricDifference<T, S, A>.next(): T? where S : BuildHasher<Hasher>, A : Allocator = this.iter.next()
 
-public fun <T, S, A> SymmetricDifference<T, S, A>.sizeHint(): Pair<Int, Int?> where S : BuildHasher, A : Allocator = this.iter.sizeHint()
+public fun <Hasher, T, S, A> SymmetricDifference<T, S, A>.sizeHint(): Pair<Int, Int?> where S : BuildHasher<Hasher>, A : Allocator = this.iter.sizeHint()
 
-public fun <T, S, A, B> SymmetricDifference<T, S, A>.fold(init: B, f: (B, T) -> B): B where S : BuildHasher, A : Allocator = this.iter.fold(init, f)
+public fun <Hasher, T, S, A, B> SymmetricDifference<T, S, A>.fold(init: B, f: (B, T) -> B): B where S : BuildHasher<Hasher>, A : Allocator = this.iter.fold(init, f)
 
-public fun <T, S, A> SymmetricDifference<T, S, A>.fmt(f: StringBuilder): Result<Unit, Error> where S : BuildHasher, A : Allocator = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
+public fun <Hasher, T, S, A> SymmetricDifference<T, S, A>.fmt(f: StringBuilder): Result<Unit, Error> where S : BuildHasher<Hasher>, A : Allocator = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
 
-public fun <T, S, A : Allocator> Union<T, S, A>.fmt(f: StringBuilder): Result<Unit, Error> where S : BuildHasher, A : Allocator = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
+public fun <Hasher, T, S, A : Allocator> Union<T, S, A>.fmt(f: StringBuilder): Result<Unit, Error> where S : BuildHasher<Hasher>, A : Allocator = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
 
-public fun <T, S, A> Union<T, S, A>.next(): T? where S : BuildHasher, A : Allocator = this.iter.next()
+public fun <Hasher, T, S, A> Union<T, S, A>.next(): T? where S : BuildHasher<Hasher>, A : Allocator = this.iter.next()
 
-public fun <T, S, A> Union<T, S, A>.sizeHint(): Pair<Int, Int?> where S : BuildHasher, A : Allocator = this.iter.sizeHint()
+public fun <Hasher, T, S, A> Union<T, S, A>.sizeHint(): Pair<Int, Int?> where S : BuildHasher<Hasher>, A : Allocator = this.iter.sizeHint()
 
-public fun <T, S, A> Union<T, S, A>.count(): Int where S : BuildHasher, A : Allocator = this.iter.count()
+public fun <Hasher, T, S, A> Union<T, S, A>.count(): Int where S : BuildHasher<Hasher>, A : Allocator = this.iter.count()
 
-public fun <T, S, A, B> Union<T, S, A>.fold(init: B, f: (B, T) -> B): B where S : BuildHasher, A : Allocator = this.iter.fold(init, f)
+public fun <Hasher, T, S, A, B> Union<T, S, A>.fold(init: B, f: (B, T) -> B): B where S : BuildHasher<Hasher>, A : Allocator = this.iter.fold(init, f)
 
 /**
  * A view into a single entry in a set, which may either be vacant or occupied.
@@ -1694,7 +1694,7 @@ public sealed class Entry<T, S, A : Allocator> {
      * }
      * ```
      */
-    public open fun insert(): OccupiedEntry<T, S, A> =
+    public open fun <Hasher> insert(): OccupiedEntry<T, S, A> =
         when (this) {
             is Entry.Occupied<*, *, *> -> {
                 val (entry) = this as Entry.Occupied<T, S, A>
@@ -1725,7 +1725,7 @@ public sealed class Entry<T, S, A : Allocator> {
      * }
      * ```
      */
-    public open fun orInsert() {
+    public open fun <Hasher> orInsert() {
         if (this is Entry.Vacant<*, *, *>) {
             val (entry) = this
             entry.insert()
@@ -1977,11 +1977,11 @@ public open class VacantEntry<T, S, A : Allocator> internal constructor(
      * }
      * ```
      */
-    public open fun insert() {
+    public open fun <Hasher> insert() {
         this.base.insert()
     }
 
-    public open fun insertEntry(): OccupiedEntry<T, S, A> = OccupiedEntry(base = this.base.insert())
+    public open fun <Hasher> insertEntry(): OccupiedEntry<T, S, A> = OccupiedEntry(base = this.base.insert())
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(

@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.core.alloc.layout
 
 import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOfVal
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub
@@ -10,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
+import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.mem.sizeOfValRaw
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.checkedMul

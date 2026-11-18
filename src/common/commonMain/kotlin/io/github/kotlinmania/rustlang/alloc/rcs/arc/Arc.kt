@@ -72,6 +72,9 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Acquire
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Release
 
 /**
  * A soft limit on the amount of references that may be made to an `Arc`.

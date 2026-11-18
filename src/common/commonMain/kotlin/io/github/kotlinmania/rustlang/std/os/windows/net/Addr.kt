@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.os.windows.net
 import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -16,7 +17,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.AF_UNIX
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.copyNonoverlapping
@@ -28,9 +28,9 @@ public fun sockaddrUn(path: Path): Result<Pair<SockaddrUn, Int>, Error> {
     val addr: SockaddrUn  = SockaddrUn()
     addr.sunFamily = AF_UNIX
     // path to UTF-8 bytes
-    val bytes = when (val tryResult = path.toStr().okOr(constError(ErrorKind.InvalidInput, "path must be valid UTF-8"))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<SockaddrUn, Int>, Error>(tryResult.errValue()) }.asBytes()
+    val bytes = when (val tryResult = path.toStr().okOr(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "path must be valid UTF-8")))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<SockaddrUn, Int>, Error>(tryResult.errValue()) }.asBytes()
     if (bytes.size >= addr.sunPath.size) {
-        return Result.Err<Pair<SockaddrUn, Int>, Error>(constError(ErrorKind.InvalidInput, "path too long"))
+        return Result.Err<Pair<SockaddrUn, Int>, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "path too long")))
     }
     // SAFETY: `bytes` and `addr.sunPath` are not overlapping and
     // both point to valid memory.
@@ -140,9 +140,9 @@ public open class SocketAddr(
 
         public fun fromParts(addr: SockaddrUn, len: Int): Result<SocketAddr, Error> =
             if (addr.sunFamily != AF_UNIX) {
-                Result.Err<SocketAddr, Error>(constError(ErrorKind.InvalidInput, "invalid address family"))
+                Result.Err<SocketAddr, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "invalid address family")))
             } else if (len < SUN_PATH_OFFSET || len > sizeOf(SOCKADDR_UN, typeLayoutT = UnresolvedTypeLayout<SockaddrUn>()).toInt()) {
-                Result.Err<SocketAddr, Error>(constError(ErrorKind.InvalidInput, "invalid address length"))
+                Result.Err<SocketAddr, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "invalid address length")))
             } else {
                 Result.Ok<SocketAddr, Error>(SocketAddr(addr = addr, len = len.toUInt()))
             }

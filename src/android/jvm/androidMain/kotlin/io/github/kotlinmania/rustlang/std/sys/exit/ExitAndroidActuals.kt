@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.std.sys.exit
 
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 
 private object SysExitJniBridge {
     init {

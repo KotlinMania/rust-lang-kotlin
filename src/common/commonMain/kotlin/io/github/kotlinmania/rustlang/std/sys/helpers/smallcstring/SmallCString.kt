@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
@@ -15,7 +16,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Slice
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.copyNonoverlapping
@@ -24,7 +24,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription
 // https://docs.rs/compilerBuiltins/latest/compilerBuiltins/probestack/index.html
 public val MAX_STACK_ALLOCATION: Int = 384
 
-public val NUL_ERR: Error = constError(ErrorKind.InvalidInput, "file name contained an unexpected NUL byte")
+public val NUL_ERR: Error = Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "file name contained an unexpected NUL byte"))
 
 public fun <T> runPathWithCstr(path: Path, f: (CStr) -> Result<T, Error>): Result<T, Error> = runWithCstr(path.asOsStr().asEncodedBytes(), f)
 

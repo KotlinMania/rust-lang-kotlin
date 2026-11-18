@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.pal.unix.time
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.castUnsigned
@@ -19,7 +20,6 @@ import io.github.kotlinmania.rustlang.libc.clockGettime
 import io.github.kotlinmania.rustlang.libc.timespec.default
 import io.github.kotlinmania.rustlang.libc.wasi.ClockidT
 import io.github.kotlinmania.rustlang.libc.wasi.TimeT
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 public val NSEC_PER_SEC: ULong = 1000000000uL
@@ -151,7 +151,7 @@ public open class Timespec(
             return if (tvNsec1 >= 0 && tvNsec1 < NSEC_PER_SEC.toLong()) {
                 Result.Ok<Timespec, Error>(Timespec.newUnchecked(tvSec1, tvNsec1))
             } else {
-                Result.Err<Timespec, Error>(constError(ErrorKind.InvalidData, "invalid timestamp"))
+                Result.Err<Timespec, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "invalid timestamp")))
             }
         }
 

@@ -212,7 +212,7 @@ public open class Location internal constructor(
      */
     public open fun column(): UInt = this.col
 
-    public open fun fmtDisplay(formatter: StringBuilder): Result<Unit, Unit> = formatter.writeFmt("${this.file()}:${this.line}:${this.col}")
+    public open fun fmtDisplay(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append("${this.file()}:${this.line}:${this.col}"); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public operator fun invoke(

@@ -510,7 +510,7 @@ public open class StdioPipes internal constructor(
  */
 public open class ChildStdin internal constructor(
     innerCtorArg: ChildPipe,
-) : Write, AsInner<ChildPipe>, IntoInner<ChildPipe>, FromInner<ChildPipe, ChildStdin> {
+) : Write<ChildStdin>, AsInner<ChildPipe>, IntoInner<ChildPipe>, FromInner<ChildPipe, ChildStdin> {
     public var inner: ChildPipe = innerCtorArg
         internal set
 
@@ -557,7 +557,7 @@ public open class ChildStdin internal constructor(
  */
 public open class ChildStdout internal constructor(
     innerCtorArg: ChildPipe,
-) : Read, AsInner<ChildPipe>, IntoInner<ChildPipe>, FromInner<ChildPipe, ChildStdout> {
+) : Read<ChildStdout>, AsInner<ChildPipe>, IntoInner<ChildPipe>, FromInner<ChildPipe, ChildStdout> {
     public var inner: ChildPipe = innerCtorArg
         internal set
 
@@ -606,7 +606,7 @@ public open class ChildStdout internal constructor(
  */
 public open class ChildStderr internal constructor(
     innerCtorArg: ChildPipe,
-) : Read, AsInner<ChildPipe>, IntoInner<ChildPipe>, FromInner<ChildPipe, ChildStderr> {
+) : Read<ChildStderr>, AsInner<ChildPipe>, IntoInner<ChildPipe>, FromInner<ChildPipe, ChildStderr> {
     public var inner: ChildPipe = innerCtorArg
         internal set
 

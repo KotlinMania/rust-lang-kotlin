@@ -42,7 +42,6 @@ import io.github.kotlinmania.rustlang.std.fs.exists
 import io.github.kotlinmania.rustlang.std.fs.metadata
 import io.github.kotlinmania.rustlang.std.fs.readDir
 import io.github.kotlinmania.rustlang.std.fs.symlinkMetadata
-import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.Prefix.*
 import io.github.kotlinmania.rustlang.std.rc.Rc
 import io.github.kotlinmania.rustlang.std.sync.Arc
@@ -3593,7 +3592,7 @@ public fun OsString.partialCmpCowPath(other: Path): Ordering? = Path.partialCmp(
 public fun absolute(path: Path): Result<PathBuf, io.github.kotlinmania.rustlang.core.io.error.Error> {
     val path1 = path
     return if (path1.asOsStr().isEmpty()) {
-        Result.Err<PathBuf, io.github.kotlinmania.rustlang.core.io.error.Error>(constError(ErrorKind.InvalidInput, "cannot make an empty path absolute"))
+        Result.Err<PathBuf, io.github.kotlinmania.rustlang.core.io.error.Error>(io.github.kotlinmania.rustlang.core.io.error.Error.fromStaticMessage(io.github.kotlinmania.rustlang.core.io.error.SimpleMessage(kind = ErrorKind.InvalidInput, message = "cannot make an empty path absolute")))
     } else {
         io.github.kotlinmania.rustlang.std.sys.path.unix.absolute(path1)
     }
