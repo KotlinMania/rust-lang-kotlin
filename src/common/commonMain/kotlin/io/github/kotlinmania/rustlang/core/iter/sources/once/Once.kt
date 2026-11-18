@@ -79,4 +79,6 @@ public open class Once<T>(
     public open fun nextBack(): T? = this.inner.removeLastOrNull()
 
     public open fun len(): Int = this.inner.size
+
+    public companion object
 }

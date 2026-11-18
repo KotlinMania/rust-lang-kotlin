@@ -82,6 +82,8 @@ public open class ParseIntError(
             IntErrorKind.Zero -> "number would be zero for non-zero type"
             IntErrorKind.NotAPowerOfTwo -> "number is not a power of two"
         }.fmt(f)
+
+    public companion object
 }
 
 /**

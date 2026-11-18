@@ -895,6 +895,8 @@ public open class Value<T>(
         set(v) {
             value = v
         }
+
+    public companion object
 }
 
 /**
@@ -908,6 +910,8 @@ public open class MaybeSizedValue<T>(
         set(v) {
             value = v
         }
+
+    public companion object
 }
 
 /**
@@ -922,6 +926,8 @@ public open class Ref<I>(
         set(v) {
             value = v
         }
+
+    public companion object
 }
 
 /**
@@ -973,7 +979,9 @@ public interface Erased
 public open class Tagged<E>(
     public var tagId: RustTypeId,
     public var value: E,
-)
+) {
+    public companion object
+}
 
 /**
  * Returns some reference to the dynamic value if it is tagged with `I`,
@@ -1030,4 +1038,6 @@ public open class Source(
         } else {
             Pair(0, 0)
         }
+
+    public companion object
 }

@@ -807,4 +807,6 @@ public open class Display(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.cStr).toString()); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = run { f.append((ByteStr.fromBytes(this.cStr.toBytes())).toString()); Result.Ok<Unit, Unit>(Unit) }
+
+    public companion object
 }

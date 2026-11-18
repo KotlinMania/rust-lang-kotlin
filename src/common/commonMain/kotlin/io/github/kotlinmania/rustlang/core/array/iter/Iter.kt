@@ -28,7 +28,7 @@ public typealias InnerUnsized<T> = PolymorphicIter<List<MaybeUninit<T>>>
  */
 public open class IntoIter<T>(
     public var inner: InnerSized<T>,
-) : TrustedLen, Iterable<T> {
+) : TrustedLen, Iterable<T>, AutoCloseable {
     public val n: Int = 0
 
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
@@ -41,6 +41,10 @@ public open class IntoIter<T>(
     }
 
     public open fun clone(): IntoIter<T> = IntoIter(inner)
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun unsize(): InnerUnsized<T> = this.inner.deref()
 

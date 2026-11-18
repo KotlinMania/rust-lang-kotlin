@@ -47,6 +47,8 @@ public open class Demangle(
         val printer = Printer(parser = Result.Ok<Parser, ParseError>(Parser(sym = this.inner, next = 0, depth = 0u)), out = f, boundLifetimeDepth = 0u)
         return printer.printPath(true)
     }
+
+    public companion object
 }
 
 public sealed class ParseError {
@@ -291,6 +293,8 @@ public open class Ident(
             }
         })
     }
+
+    public companion object
 }
 
 public val SMALL_PUNYCODE_LEN: Int = 128
@@ -414,6 +418,8 @@ public open class HexNibbles(
             chars.map(Result::unwrap)
         }
     }
+
+    public companion object
 }
 
 public fun basicType(tag: UByte): String? {
@@ -606,6 +612,8 @@ public open class Parser(
             Result.Ok<Ident, ParseError>(Ident(ascii = ident, punycode = ""))
         }
     }
+
+    public companion object
 }
 
 public open class Printer internal constructor(

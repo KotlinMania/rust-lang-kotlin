@@ -2,10 +2,7 @@
 package io.github.kotlinmania.rustlang.test
 
 import io.github.kotlinmania.rustlang.core.clone.clone
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sync.mpsc.Sender
 import io.github.kotlinmania.rustlang.test.bench.Bencher
@@ -440,27 +437,7 @@ public open class TestId(
 
     public open fun clone(): TestId = TestId(value)
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<TestId> =
-            object : TypeLayout<TestId> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 8L
-                override fun readNative(addr: Long): TestId =
-                    TestId(
-                        (PrimitiveLayouts.USIZE64).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: TestId) {
-                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): TestId =
-                    TestId(
-                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: TestId) {
-                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.value)
-                }
-            }
-    }
+    public companion object
 }
 
 // The definition of a single test. A test runner will run a list of
@@ -519,6 +496,8 @@ public open class TestDesc(
         }
         return null
     }
+
+    public companion object
 }
 
 public open class TestDescAndFn(

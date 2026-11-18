@@ -440,9 +440,13 @@ public fun exitCodeExtFromRawExitCode(raw: UInt): ExitCode = ExitCode.fromInner(
 public open class ProcThreadAttributeList internal constructor(
     attributeListCtorArg: List<MaybeUninit<UByte>>,
     public var lifetimeMarker: Unit,
-) {
+) : AutoCloseable {
     public var attributeList: List<MaybeUninit<UByte>> = attributeListCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     /**
      * Returns a pointer to the underling attribute list.

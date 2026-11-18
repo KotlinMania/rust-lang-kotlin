@@ -36,7 +36,9 @@ public open class Counter<C>(
      * The internal channel.
      */
     public var chan: C,
-)
+) {
+    public companion object
+}
 
 /**
  * Wraps a channel into the reference counter.

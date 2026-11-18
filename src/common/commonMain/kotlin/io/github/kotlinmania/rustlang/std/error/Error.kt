@@ -1,14 +1,9 @@
 // port-lint: source error.rs
 package io.github.kotlinmania.rustlang.std.error
 
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.error.requestRef
 import io.github.kotlinmania.rustlang.core.fmt.Write
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.backtrace.Backtrace
 
@@ -338,36 +333,6 @@ public open class Report<E>(
     public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
-        public fun <E> typeLayout(typeLayoutE: TypeLayout<E>): TypeLayout<Report<E>> =
-            object : TypeLayout<Report<E>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutE.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutE.sizeBytes, 1L)
-                private val off2: Long = alignUpBytes((off1 + 1L), 1L)
-                override val sizeBytes: Long = alignUpBytes((off2 + 1L), alignBytes)
-                override fun readNative(addr: Long): Report<E> =
-                    Report(
-                        (typeLayoutE).readNative(addr),
-                        (PrimitiveLayouts.BOOL).readNative(addr + off1),
-                        (PrimitiveLayouts.BOOL).readNative(addr + off2),
-                    )
-                override fun writeNative(addr: Long, value: Report<E>) {
-                    (typeLayoutE).writeNative(addr, value.error)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + off1, value.showBacktrace)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + off2, value.pretty)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Report<E> =
-                    Report(
-                        (typeLayoutE).readBytes(buf, offset),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + off1.toInt()),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + off2.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Report<E>) {
-                    (typeLayoutE).writeBytes(buf, offset, value.error)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + off1.toInt(), value.showBacktrace)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + off2.toInt(), value.pretty)
-                }
-            }
-
         /**
          * Creates a new `Report` from an input error.
          */
@@ -382,7 +347,9 @@ public open class Report<E>(
  */
 public open class Indented<D>(
     public var inner: D,
-)
+) {
+    public companion object
+}
 
 public fun <T> Indented<T>.writeStr(s: String): Result<Unit, Error> where T : Write<T> {
     for ((i, line) in s.split('\n').mapIndexed { index, item -> Pair(index, item) }) {

@@ -309,11 +309,15 @@ import io.github.kotlinmania.rustlang.core.str.len
 public open class Vec<T, A : Allocator> internal constructor(
     bufCtorArg: RawVec<T, A>,
     public var len: Int,
-) : ExtendFromWithinSpec, DerefPure, AsRef<Vec<T, A>>, AsMut<Vec<T, A>>, Iterable<T> {
+) : ExtendFromWithinSpec, DerefPure, AsRef<Vec<T, A>>, AsMut<Vec<T, A>>, Iterable<T>, AutoCloseable {
     public var buf: RawVec<T, A> = bufCtorArg
         internal set
 
     override fun iterator(): Iterator<T> = this.intoIter().iterator()
+
+    override fun close() {
+        this.drop()
+    }
 
     /**
      * Appends an element to the back of a collection.
@@ -487,11 +491,13 @@ public open class Vec<T, A : Allocator> internal constructor(
      * A vector with zero-sized elements will always have a capacity of usize.Max:
      *
      * ```kotlin
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+     *
      * open class ZeroSized {
      *     public open fun clone(): ZeroSized = ZeroSized()
      * }
      * fun main() {
-     *     check(mem.sizeOf<ZeroSized>(typeLayoutT = ZeroSized.typeLayout()) == 0)
+     *     check(mem.sizeOf<ZeroSized>(typeLayoutT = UnresolvedTypeLayout<ZeroSized>()) == 0)
      *     val v = mutableListOf(ZeroSized(), 0)
      *     check(v.capacity() == Int.MAX_VALUE)
      * }
@@ -3023,6 +3029,7 @@ public open class Vec<T, A : Allocator> internal constructor(
         // ignore-tidy-undocumented-unchecked
         this.asMutPtr().castSlice(this.len).dropInPlace()
         // RawVec handles deallocation
+        this.buf.close()
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }

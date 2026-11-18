@@ -844,7 +844,7 @@ public fun <T> List<T>.asMutPtr(): MutPtr = (mutPtrFromRustCast(this)).let { ptr
  *
  * [asPtr]: slice.asPtr
  */
-public fun <T> List<T>.asPtrRange(): io.github.kotlinmania.rustlang.core.range.Range<ConstPtr> {
+public fun <T> List<T>.asPtrRange(): Range<ConstPtr> {
     val start = this.asPtr()
     // SAFETY: The `add` here is safe, because:
     //
@@ -885,7 +885,7 @@ public fun <T> List<T>.asPtrRange(): io.github.kotlinmania.rustlang.core.range.R
  *
  * [asMutPtr]: slice.asMutPtr
  */
-public fun <T> List<T>.asMutPtrRange(): io.github.kotlinmania.rustlang.core.range.Range<MutPtr> {
+public fun <T> List<T>.asMutPtrRange(): Range<MutPtr> {
     val start = this.asMutPtr()
     // SAFETY: See asPtrRange() above for why `add` here is safe.
     val end = MutPtr((start).rawAddress + ((this.size).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
@@ -5232,9 +5232,9 @@ public fun IntRange.isOverlapping(other: IntRange): Boolean = (this.start < othe
 // SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
 
 // SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
-public fun Range<Int>.isInBounds(len: Int): Boolean = Range.from(this).isInBounds(len)
+public fun io.github.kotlinmania.rustlang.core.slice.index.Range<Int>.isInBounds(len: Int): Boolean = Range.from(this).isInBounds(len)
 
-public fun Range<Int>.isOverlapping(other: Range<Int>): Boolean = Range.from(this).isOverlapping(Range.from(other))
+public fun io.github.kotlinmania.rustlang.core.slice.index.Range<Int>.isOverlapping(other: io.github.kotlinmania.rustlang.core.slice.index.Range<Int>): Boolean = Range.from(this).isOverlapping(Range.from(other))
 
 // SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
 public fun RangeInclusive<Int>.isInBounds(len: Int): Boolean = RangeInclusive.from(this).isInBounds(len)

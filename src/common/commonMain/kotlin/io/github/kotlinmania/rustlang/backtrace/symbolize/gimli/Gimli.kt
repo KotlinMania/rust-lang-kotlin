@@ -307,7 +307,9 @@ public open class Library(
      * debuginfo and the symbol table.
      */
     public var bias: Int,
-)
+) {
+    public companion object
+}
 
 public open class LibrarySegment(
     /**

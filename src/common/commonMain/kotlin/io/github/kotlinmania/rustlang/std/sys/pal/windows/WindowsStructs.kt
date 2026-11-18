@@ -32,4 +32,6 @@ public open class Align8<T>(
     public fun pointerLayout(): TypeLayout<Align8<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align8<T>(ptr, layout) }, { it.value })
 
     public open fun clone(): Align8<T> = Align8<T>(value, fieldLayout)
+
+    public companion object
 }

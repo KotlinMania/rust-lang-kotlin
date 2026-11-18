@@ -128,7 +128,7 @@ public open class LookupHost internal constructor(
     originalCtorArg: MutPtr,
     curCtorArg: MutPtr,
     public var port: UShort,
-) : Iterable<SocketAddr> {
+) : Iterable<SocketAddr>, AutoCloseable {
     public var original: MutPtr = originalCtorArg
         internal set
 
@@ -142,6 +142,10 @@ public open class LookupHost internal constructor(
                 else -> setNext(v)
             }
         }
+    }
+
+    override fun close() {
+        this.drop()
     }
 
     public open fun next(): SocketAddr? {

@@ -28,4 +28,6 @@ public open class UCred(
     public var pid: PidT?,
 ) {
     public open fun clone(): UCred = UCred(uid, gid, pid)
+
+    public companion object
 }

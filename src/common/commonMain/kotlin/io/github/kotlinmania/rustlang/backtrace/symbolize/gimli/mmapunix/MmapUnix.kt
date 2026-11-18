@@ -17,9 +17,13 @@ import io.github.kotlinmania.rustlang.libc.mmap as mmap64
 public open class Mmap internal constructor(
     ptrCtorArg: MutPtr,
     public var len: Int,
-) {
+) : AutoCloseable {
     public var ptr: MutPtr = ptrCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun deref(): List<UByte> = Slice.fromRawParts((this.ptr).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.len)
 

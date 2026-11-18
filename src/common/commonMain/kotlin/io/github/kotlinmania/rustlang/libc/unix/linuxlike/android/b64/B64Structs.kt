@@ -60,6 +60,8 @@ public open class Sigaction(
     public var saRestorer: SigactionSaRestorerCallback?,
 ) {
     public open fun clone(): Sigaction = Sigaction(saFlags, saSigaction, saMask, saRestorer)
+
+    public companion object
 }
 
 // Note(1.0,deprecate): lfs binding to be removed
@@ -281,6 +283,8 @@ public open class Statfs(
     public var fSpare: ULongArray,
 ) {
     public open fun clone(): Statfs = Statfs(fType, fBsize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFsid, fNamelen, fFrsize, fFlags, fSpare)
+
+    public companion object
 }
 
 public open class Sysinfo(
@@ -392,6 +396,8 @@ public open class Statfs64(
     public var fSpare: ULongArray,
 ) {
     public open fun clone(): Statfs64 = Statfs64(fType, fBsize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFsid, fNamelen, fFrsize, fFlags, fSpare)
+
+    public companion object
 }
 
 // Note(1.0,deprecate): lfs binding to be removed

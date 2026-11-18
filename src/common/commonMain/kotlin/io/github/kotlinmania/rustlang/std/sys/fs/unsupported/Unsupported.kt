@@ -6,8 +6,6 @@ import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.TryLockError
@@ -19,12 +17,16 @@ import io.github.kotlinmania.rustlang.std.sys.time.unsupported.SystemTime
 
 public open class File(
     public var value: Nothing,
-) {
+) : AutoCloseable {
     public var field0: Nothing
         get() = value
         set(v) {
             value = v
         }
+
+    override fun close() {
+        this.drop()
+    }
 
     // Dummy Drops so that `needsDrop<std.fs.File>()` etc. is true independent of platform,
     // avoiding a portability hazard.
@@ -108,11 +110,13 @@ public open class FileAttr(
     public open fun created(): Result<SystemTime, Error> = this.value
 
     public open fun clone(): FileAttr = this.value
+
+    public companion object
 }
 
 public open class ReadDir(
     public var value: Nothing,
-) : Iterable<Result<DirEntry, Error>> {
+) : Iterable<Result<DirEntry, Error>>, AutoCloseable {
     public var field0: Nothing
         get() = value
         set(v) {
@@ -128,6 +132,10 @@ public open class ReadDir(
         }
     }
 
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         this.value
     }
@@ -137,16 +145,22 @@ public open class ReadDir(
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value
 
     public open fun next(): Result<DirEntry, Error>? = this.value
+
+    public companion object
 }
 
 public open class DirEntry(
     public var value: Nothing,
-) {
+) : AutoCloseable {
     public var field0: Nothing
         get() = value
         set(v) {
             value = v
         }
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun drop() {
         this.value
@@ -159,6 +173,8 @@ public open class DirEntry(
     public open fun metadata(): Result<FileAttr, Error> = this.value
 
     public open fun fileType(): Result<FileType, Error> = this.value
+
+    public companion object
 }
 
 public open class OpenOptions {
@@ -177,20 +193,6 @@ public open class OpenOptions {
     public open fun createNew(createNew: Boolean) {}
 
     public companion object {
-        public fun typeLayout(): TypeLayout<OpenOptions> =
-            object : TypeLayout<OpenOptions> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): OpenOptions =
-                    OpenOptions()
-                override fun writeNative(addr: Long, value: OpenOptions) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): OpenOptions =
-                    OpenOptions()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: OpenOptions) {
-                }
-            }
-
         public fun new(): OpenOptions = OpenOptions()
     }
 }
@@ -202,21 +204,7 @@ public open class FileTimes {
 
     public open fun setModified(t: SystemTime) {}
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<FileTimes> =
-            object : TypeLayout<FileTimes> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): FileTimes =
-                    FileTimes()
-                override fun writeNative(addr: Long, value: FileTimes) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): FileTimes =
-                    FileTimes()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: FileTimes) {
-                }
-            }
-    }
+    public companion object
 }
 
 public open class FilePermissions(
@@ -239,6 +227,8 @@ public open class FilePermissions(
     public open fun eq(other: FilePermissions): Boolean = this.value
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value
+
+    public companion object
 }
 
 public open class FileType(
@@ -266,26 +256,14 @@ public open class FileType(
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value
+
+    public companion object
 }
 
 public open class DirBuilder {
     public open fun mkdir(p: Path): Result<Unit, Error> = unsupported()
 
     public companion object {
-        public fun typeLayout(): TypeLayout<DirBuilder> =
-            object : TypeLayout<DirBuilder> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): DirBuilder =
-                    DirBuilder()
-                override fun writeNative(addr: Long, value: DirBuilder) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): DirBuilder =
-                    DirBuilder()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: DirBuilder) {
-                }
-            }
-
         public fun new(): DirBuilder = DirBuilder()
     }
 }

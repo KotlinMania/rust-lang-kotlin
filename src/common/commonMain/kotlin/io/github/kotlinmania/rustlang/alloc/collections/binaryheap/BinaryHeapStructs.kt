@@ -1187,7 +1187,7 @@ public fun <T, I : Iterable<T>> fromIteratorFromIterBinaryHeapT(iter: I): Binary
 public open class PeekMut<T, A : Allocator> internal constructor(
     heapCtorArg: BinaryHeap<T, A>,
     originalLenCtorArg: NonZero<Int, NonZeroUsizeInner>?,
-) {
+) : AutoCloseable {
     public var heap: BinaryHeap<T, A> = heapCtorArg
         internal set
 
@@ -1195,6 +1195,10 @@ public open class PeekMut<T, A : Allocator> internal constructor(
     // yet been exposed to peekMut()'s caller, it's None.
     public var originalLen: NonZero<Int, NonZeroUsizeInner>? = originalLenCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "PeekMut").field(this.heap.data[0]).finish(); Result.Ok<Unit, Error>(Unit) }
 
@@ -1347,9 +1351,13 @@ public open class PeekMut<T, A : Allocator> internal constructor(
 public open class RebuildOnDrop<T, A : Allocator> internal constructor(
     heapCtorArg: BinaryHeap<T, A>,
     public var rebuildFrom: Int,
-) {
+) : AutoCloseable {
     public var heap: BinaryHeap<T, A> = heapCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun drop() {
         this.heap.rebuildTail(this.rebuildFrom)
@@ -1376,7 +1384,11 @@ public open class Hole<T>(
     public var data: MutableList<T>,
     public var elt: T,
     public var pos: Int,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun pos(): Int = this.pos
 
     /**
@@ -1532,6 +1544,8 @@ public open class IntoIter<T, A : Allocator>(
     // In addition to the SAFETY invariants of the following three unchecked traits
     // also refer to the vec.inPlaceCollect module documentation to get an overview
     public open fun asInner(): IntoIter<T, A> = this
+
+    public companion object
 }
 
 /**
@@ -1643,7 +1657,7 @@ public open class Drain<T, A : Allocator> internal constructor(
  */
 public open class DrainSorted<T, A : Allocator> internal constructor(
     innerCtorArg: BinaryHeap<T, A>,
-) : TrustedLen, Iterable<T> {
+) : TrustedLen, Iterable<T>, AutoCloseable {
     public var inner: BinaryHeap<T, A> = innerCtorArg
         internal set
 
@@ -1654,6 +1668,10 @@ public open class DrainSorted<T, A : Allocator> internal constructor(
                 else -> setNext(v)
             }
         }
+    }
+
+    override fun close() {
+        this.drop()
     }
 
     /**

@@ -1,10 +1,6 @@
 // port-lint: source future/poll_fn.rs
 package io.github.kotlinmania.rustlang.core.future.pollfn
 
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.task.poll.Poll
 import io.github.kotlinmania.rustlang.core.task.wake.Context
@@ -162,27 +158,7 @@ public open class PollFn<F>(
 ) {
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "PollFn").finish(); Result.Ok<Unit, Unit>(Unit) }
 
-    public companion object {
-        public fun <F> typeLayout(typeLayoutF: TypeLayout<F>): TypeLayout<PollFn<F>> =
-            object : TypeLayout<PollFn<F>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutF.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutF.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): PollFn<F> =
-                    PollFn(
-                        (typeLayoutF).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: PollFn<F>) {
-                    (typeLayoutF).writeNative(addr, value.f)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): PollFn<F> =
-                    PollFn(
-                        (typeLayoutF).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: PollFn<F>) {
-                    (typeLayoutF).writeBytes(buf, offset, value.f)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <T> PollFn<F>.poll(cx: Context): Poll<T> {

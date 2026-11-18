@@ -104,7 +104,11 @@ public var KEY: AtomicU32 = AtomicU32.new(FLS_OUT_OF_INDEXES)
  * For miri, these atomic operations cause synchronization that can mask user bugs,
  * and they are not needed as `atexit` is anyway not supported, so we can skip them.
  */
-public open class EnableGuard {
+public open class EnableGuard : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         ACTIVE_ENABLE_CALLS.fetchSub(1u, Ordering.Relaxed)
     }

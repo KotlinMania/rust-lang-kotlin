@@ -3,19 +3,17 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.hint.blackBox
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
-import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.addrOf
 import io.github.kotlinmania.rustlang.core.mem.addrOfMut
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.asMutPtr
 import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.corearch.simd.F32x4
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
 
@@ -922,7 +920,7 @@ public fun testMmLoadPs1() {
 }
 
 public fun testMmLoadPs() {
-    val vals = Memory(data = floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f), fieldLayout = PrimitiveArrayLayouts.floatArray((4).toInt()))
+    val vals = Memory(data = floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f))
     // guaranteed to be aligned to 16 bytes
     val p = vals.data.asPtr()
     val r = mmLoadPs(p)
@@ -938,7 +936,7 @@ public fun testMmLoaduPs() {
 }
 
 public fun testMmLoadrPs() {
-    val vals = Memory(data = floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f), fieldLayout = PrimitiveArrayLayouts.floatArray((4).toInt()))
+    val vals = Memory(data = floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f))
     // guaranteed to be aligned to 16 bytes
     val p = vals.data.asPtr()
     val r = mmLoadrPs(p)
@@ -958,7 +956,7 @@ public fun testMmStoreSs() {
 }
 
 public fun testMmStore1Ps() {
-    val vals = Memory(data = FloatArray(4) { 0.0f }, fieldLayout = PrimitiveArrayLayouts.floatArray((4).toInt()))
+    val vals = Memory(data = FloatArray(4) { 0.0f })
     val a = mmSetrPs(1.0f, 2.0f, 3.0f, 4.0f)
     val p = vals.data.asMutPtr()
     mmStore1Ps(p, blackBox(a))
@@ -966,7 +964,7 @@ public fun testMmStore1Ps() {
 }
 
 public fun testMmStorePs1() {
-    val vals = Memory(data = FloatArray(4) { 0.0f }, fieldLayout = PrimitiveArrayLayouts.floatArray((4).toInt()))
+    val vals = Memory(data = FloatArray(4) { 0.0f })
     val a = mmSetrPs(1.0f, 2.0f, 3.0f, 4.0f)
     val p = vals.data.asMutPtr()
     mmStorePs1(p, blackBox(a))
@@ -974,7 +972,7 @@ public fun testMmStorePs1() {
 }
 
 public fun testMmStorePs() {
-    val vals = Memory(data = FloatArray(4) { 0.0f }, fieldLayout = PrimitiveArrayLayouts.floatArray((4).toInt()))
+    val vals = Memory(data = FloatArray(4) { 0.0f })
     val a = mmSetrPs(1.0f, 2.0f, 3.0f, 4.0f)
     // guaranteed to be aligned to 16 bytes
     val p = vals.data.asMutPtr()
@@ -985,7 +983,7 @@ public fun testMmStorePs() {
 }
 
 public fun testMmStorerPs() {
-    val vals = Memory(data = FloatArray(4) { 0.0f }, fieldLayout = PrimitiveArrayLayouts.floatArray((4).toInt()))
+    val vals = Memory(data = FloatArray(4) { 0.0f })
     val a = mmSetrPs(1.0f, 2.0f, 3.0f, 4.0f)
     // guaranteed to be aligned to 16 bytes
     val p = vals.data.asMutPtr()
@@ -997,19 +995,10 @@ public fun testMmStorerPs() {
 
 public fun testMmStoreuPs() {
     open class Memory8(
-        public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
-    ) {
-        public var data: FloatArray
-            get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
-
-        public fun pointerLayout(): TypeLayout<Memory8> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Memory8(ptr, layout) }, { it.data })
-    }
+        public var data: FloatArray,
+    )
     // guaranteed to be aligned to 16 bytes
-    val vals = Memory8(data = FloatArray(8) { 0.0f }, fieldLayout = PrimitiveArrayLayouts.floatArray((8).toInt()))
+    val vals = Memory8(data = FloatArray(8) { 0.0f })
     val a = mmSetrPs(1.0f, 2.0f, 3.0f, 4.0f)
     // guaranteed to be *not* aligned to 16 bytes
     val p = MutPtr((vals.data.asMutPtr()).rawAddress + ((1).toLong() * (PrimitiveLayouts.F32).strideBytes))
@@ -1051,22 +1040,29 @@ public fun testMmTranspose4Ps() {
     assertEqM128(d, mmSetrPs(4.0f, 8.0f, 12.0f, 16.0f))
 }
 
-public open class Memory internal constructor(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
+public open class Memory(
+    public var data: FloatArray,
 ) {
-    public var data: FloatArray
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-    internal constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
-
-    public fun pointerLayout(): TypeLayout<Memory> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Memory(ptr, layout) }, { it.data })
-
     public companion object {
-        public operator fun invoke(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()): Memory = Memory(data, fieldLayout)
-
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()): Memory = Memory(fieldStorage, fieldLayout)
+        public fun typeLayout(): TypeLayout<Memory> =
+            object : TypeLayout<Memory> {
+                override val alignBytes: Long = 16L
+                override val sizeBytes: Long = 16L
+                override fun readNative(addr: Long): Memory =
+                    Memory(
+                        (PrimitiveArrayLayouts.floatArray(4)).readNative(addr),
+                    )
+                override fun writeNative(addr: Long, value: Memory) {
+                    (PrimitiveArrayLayouts.floatArray(4)).writeNative(addr, value.data)
+                }
+                override fun readBytes(buf: ByteArray, offset: Int): Memory =
+                    Memory(
+                        (PrimitiveArrayLayouts.floatArray(4)).readBytes(buf, offset),
+                    )
+                override fun writeBytes(buf: ByteArray, offset: Int, value: Memory) {
+                    (PrimitiveArrayLayouts.floatArray(4)).writeBytes(buf, offset, value.data)
+                }
+            }
     }
 }
 
@@ -1074,7 +1070,7 @@ public open class Memory internal constructor(
 // (non-temporal store)
 public fun testMmStreamPs() {
     val a = mmSet1Ps(7.0f)
-    val mem = Memory(data = FloatArray(4) { -1.0f }, fieldLayout = PrimitiveArrayLayouts.floatArray((4).toInt()))
+    val mem = Memory(data = FloatArray(4) { -1.0f })
     run {
         mmStreamPs(addrOfMut(mem.data[0]), a)
     }

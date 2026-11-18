@@ -171,6 +171,8 @@ public open class Sigaction(
     public var saRestorer: SigactionSaRestorerCallback?,
 ) {
     public open fun clone(): Sigaction = Sigaction(saSigaction, saMask, saFlags, saRestorer)
+
+    public companion object
 }
 
 // musl's uint64T is an unsigned long instead of an unsigned long long on
@@ -976,6 +978,8 @@ public open class Timex(
     public var padding: IntArray,
 ) {
     public open fun clone(): Timex = Timex(modes, offset, freq, maxerror, esterror, status, constant, precision, tolerance, time, tick, ppsfreq, jitter, shift, stabil, jitcnt, calcnt, errcnt, stbcnt, tai, padding)
+
+    public companion object
 }
 
 public open class Ntptimeval(
@@ -984,6 +988,8 @@ public open class Ntptimeval(
     public var esterror: CLong,
 ) {
     public open fun clone(): Ntptimeval = Ntptimeval(time, maxerror, esterror)
+
+    public companion object
 }
 
 // netinet/tcp.h
@@ -1303,6 +1309,8 @@ public open class Statfs(
     public var fSpare: ULongArray,
 ) {
     public open fun clone(): Statfs = Statfs(fType, fBsize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFsid, fNamelen, fFrsize, fFlags, fSpare)
+
+    public companion object
 }
 
 public open class Statfs64(
@@ -1320,6 +1328,8 @@ public open class Statfs64(
     public var fSpare: ULongArray,
 ) {
     public open fun clone(): Statfs64 = Statfs64(fType, fBsize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFsid, fNamelen, fFrsize, fFlags, fSpare)
+
+    public companion object
 }
 
 public open class Sysinfo(
@@ -1431,4 +1441,6 @@ public open class Utmpx(
     public var unused: UByteArray,
 ) {
     public open fun clone(): Utmpx = Utmpx(utType, utPad1, utPid, utLine, utId, utUser, utHost, utExit, utSession, utPad2, utTv, utAddrV6, unused)
+
+    public companion object
 }

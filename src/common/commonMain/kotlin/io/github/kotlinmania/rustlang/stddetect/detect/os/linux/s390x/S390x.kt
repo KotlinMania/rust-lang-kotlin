@@ -3,10 +3,6 @@
 
 package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x
 
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.s390x.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
@@ -50,114 +46,6 @@ public open class AtHwcap(
     public var sie: Boolean,
 ) {
     public companion object {
-        public fun typeLayout(): TypeLayout<AtHwcap> =
-            object : TypeLayout<AtHwcap> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 23L
-                override fun readNative(addr: Long): AtHwcap =
-                    AtHwcap(
-                        (PrimitiveLayouts.BOOL).readNative(addr),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 1L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 2L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 3L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 4L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 5L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 6L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 7L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 8L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 9L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 10L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 11L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 12L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 13L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 14L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 15L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 16L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 17L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 18L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 19L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 20L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 21L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 22L),
-                    )
-                override fun writeNative(addr: Long, value: AtHwcap) {
-                    (PrimitiveLayouts.BOOL).writeNative(addr, value.esan3)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.zarch)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 2L, value.stfle)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 3L, value.msa)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 4L, value.ldisp)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 5L, value.eimm)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 6L, value.dfp)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 7L, value.hpage)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 8L, value.etf3eh)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 9L, value.highGprs)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 10L, value.te)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 11L, value.vxrs)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 12L, value.vxrsBcd)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 13L, value.vxrsExt)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 14L, value.gs)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 15L, value.vxrsExt2)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 16L, value.vxrsPde)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 17L, value.sort)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 18L, value.dflt)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 19L, value.vxrsPde2)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 20L, value.nnpa)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 21L, value.pciMio)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 22L, value.sie)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): AtHwcap =
-                    AtHwcap(
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 2),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 3),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 4),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 5),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 6),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 7),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 9),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 10),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 11),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 12),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 13),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 14),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 15),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 16),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 17),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 18),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 19),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 20),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 21),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 22),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: AtHwcap) {
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.esan3)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.zarch)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 2, value.stfle)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 3, value.msa)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 4, value.ldisp)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 5, value.eimm)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 6, value.dfp)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 7, value.hpage)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 8, value.etf3eh)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 9, value.highGprs)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 10, value.te)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 11, value.vxrs)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 12, value.vxrsBcd)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 13, value.vxrsExt)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 14, value.gs)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 15, value.vxrsExt2)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 16, value.vxrsPde)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 17, value.sort)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 18, value.dflt)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 19, value.vxrsPde2)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 20, value.nnpa)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 21, value.pciMio)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 22, value.sie)
-                }
-            }
-
         /**
          * Reads AtHwcap from the auxiliary vector.
          */
@@ -180,26 +68,6 @@ public open class ExtendedFacilityList(
     }
 
     public companion object {
-        public fun typeLayout(): TypeLayout<ExtendedFacilityList> =
-            object : TypeLayout<ExtendedFacilityList> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 32L
-                override fun readNative(addr: Long): ExtendedFacilityList =
-                    ExtendedFacilityList(
-                        (PrimitiveArrayLayouts.uLongArray(4)).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: ExtendedFacilityList) {
-                    (PrimitiveArrayLayouts.uLongArray(4)).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): ExtendedFacilityList =
-                    ExtendedFacilityList(
-                        (PrimitiveArrayLayouts.uLongArray(4)).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: ExtendedFacilityList) {
-                    (PrimitiveArrayLayouts.uLongArray(4)).writeBytes(buf, offset, value.value)
-                }
-            }
-
         public fun new(): ExtendedFacilityList {
             val result: ULongArray  = ULongArray(4) { 0uL }
             // SAFETY: rust/llvm only support s390x version with the `stfle` instruction.

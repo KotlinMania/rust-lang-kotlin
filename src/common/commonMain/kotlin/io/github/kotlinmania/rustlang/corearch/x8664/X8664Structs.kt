@@ -33,4 +33,6 @@ public open class Tile1024i(
     public var tile: Tile,
 ) {
     public open fun clone(): Tile1024i = Tile1024i(rows, colsb, tile)
+
+    public companion object
 }

@@ -4,14 +4,9 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
-import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.unix.GidT
@@ -268,23 +263,30 @@ public open class Stat64(
     }
 }
 
-public open class MaxAlignT internal constructor(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
+public open class MaxAlignT(
+    public var priv: FloatArray,
 ) {
-    public var priv: FloatArray
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-    internal constructor(priv: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(priv, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
-
-    public fun pointerLayout(): TypeLayout<MaxAlignT> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MaxAlignT(ptr, layout) }, { it.priv })
-
-    public open fun clone(): MaxAlignT = MaxAlignT(priv, fieldLayout)
+    public open fun clone(): MaxAlignT = MaxAlignT(priv)
 
     public companion object {
-        public operator fun invoke(priv: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()): MaxAlignT = MaxAlignT(priv, fieldLayout)
-
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()): MaxAlignT = MaxAlignT(fieldStorage, fieldLayout)
+        public fun typeLayout(): TypeLayout<MaxAlignT> =
+            object : TypeLayout<MaxAlignT> {
+                override val alignBytes: Long = 16L
+                override val sizeBytes: Long = 32L
+                override fun readNative(addr: Long): MaxAlignT =
+                    MaxAlignT(
+                        (PrimitiveArrayLayouts.floatArray(8)).readNative(addr),
+                    )
+                override fun writeNative(addr: Long, value: MaxAlignT) {
+                    (PrimitiveArrayLayouts.floatArray(8)).writeNative(addr, value.priv)
+                }
+                override fun readBytes(buf: ByteArray, offset: Int): MaxAlignT =
+                    MaxAlignT(
+                        (PrimitiveArrayLayouts.floatArray(8)).readBytes(buf, offset),
+                    )
+                override fun writeBytes(buf: ByteArray, offset: Int, value: MaxAlignT) {
+                    (PrimitiveArrayLayouts.floatArray(8)).writeBytes(buf, offset, value.priv)
+                }
+            }
     }
 }

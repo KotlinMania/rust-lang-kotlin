@@ -2,14 +2,12 @@
 package io.github.kotlinmania.rustlang.std.sys.paths.windows
 
 import io.github.kotlinmania.rustlang.core.fmt.Error
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.add
 import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.env.varOs
@@ -80,6 +78,8 @@ public open class SplitPaths(
             os2path(inProgress)
         }
     }
+
+    public companion object
 }
 
 public fun splitPaths(unparsed: OsStr): SplitPaths = SplitPaths(data = unparsed.encodeWide(), mustYield = true)
@@ -98,6 +98,8 @@ public open class SplitPathsRef(
     }
 
     public open fun next(): Path? = this.field0
+
+    public companion object
 }
 
 public fun splitPathsRef(unparsed: OsStr): SplitPathsRef? = null
@@ -105,21 +107,7 @@ public fun splitPathsRef(unparsed: OsStr): SplitPathsRef? = null
 public open class JoinPathsError {
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("path segment contains `\"`"); Result.Ok<Unit, Error>(Unit) }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<JoinPathsError> =
-            object : TypeLayout<JoinPathsError> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): JoinPathsError =
-                    JoinPathsError()
-                override fun writeNative(addr: Long, value: JoinPathsError) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): JoinPathsError =
-                    JoinPathsError()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: JoinPathsError) {
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <I> joinPaths(paths: I): Result<OsString, JoinPathsError> where I : Iterator<OsStr> {

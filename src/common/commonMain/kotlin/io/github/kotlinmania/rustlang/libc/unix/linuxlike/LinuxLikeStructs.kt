@@ -55,6 +55,8 @@ public open class Timezone(
     public var marker: Unit,
 ) {
     public open fun clone(): Timezone = Timezone(data, marker)
+
+    public companion object
 }
 
 public open class InAddr(
@@ -351,6 +353,8 @@ public open class SockaddrIn6(
     public var sin6ScopeId: UInt,
 ) {
     public open fun clone(): SockaddrIn6 = SockaddrIn6(sin6Family, sin6Port, sin6Flowinfo, sin6Addr, sin6ScopeId)
+
+    public companion object
 }
 
 // The order of the `aiAddr` field in this struct is crucial
@@ -1106,6 +1110,8 @@ public open class In6Rtmsg(
     public var rtmsgIfindex: CInt,
 ) {
     public open fun clone(): In6Rtmsg = In6Rtmsg(rtmsgDst, rtmsgSrc, rtmsgGateway, rtmsgType, rtmsgDstLen, rtmsgSrcLen, rtmsgMetric, rtmsgInfo, rtmsgFlags, rtmsgIfindex)
+
+    public companion object
 }
 
 public open class Arpreq(
@@ -1830,4 +1836,6 @@ public open class Sigevent(
         state = 31 * state + (this.sigevNotifyThreadId).hashCode()
         return state
     }
+
+    public companion object
 }

@@ -1,8 +1,6 @@
 // port-lint: source str/error.rs
 package io.github.kotlinmania.rustlang.core.str.error
 
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // Defines utf8 error type.
@@ -119,6 +117,8 @@ public open class Utf8Error(
                 run { f.append("invalid utf-8 sequence of $errorLen bytes from index ${this.validUpTo}"); Result.Ok<Unit, Unit>(Unit) }
             }
         }
+
+    public companion object
 }
 
 /**
@@ -129,19 +129,5 @@ public open class ParseBoolError {
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("provided string was not `true` or `false`"); Result.Ok<Unit, Unit>(Unit) }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<ParseBoolError> =
-            object : TypeLayout<ParseBoolError> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): ParseBoolError =
-                    ParseBoolError()
-                override fun writeNative(addr: Long, value: ParseBoolError) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): ParseBoolError =
-                    ParseBoolError()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: ParseBoolError) {
-                }
-            }
-    }
+    public companion object
 }

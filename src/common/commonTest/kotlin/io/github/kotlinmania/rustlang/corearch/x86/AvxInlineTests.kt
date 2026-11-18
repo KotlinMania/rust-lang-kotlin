@@ -3,18 +3,12 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.hint.blackBox
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
-import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.addrOf
 import io.github.kotlinmania.rustlang.core.mem.addrOfMut
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmute
-import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
 
@@ -1008,17 +1002,8 @@ public fun testMm256StreamSi256() {
 // Inline asm (for non-temporal store), which is not supported by Miri
 public fun testMm256StreamPd() {
     open class Memory(
-        public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
-    ) {
-        public var data: DoubleArray
-            get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
-
-        public fun pointerLayout(): TypeLayout<Memory> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Memory(ptr, layout) }, { it.data })
-    }
+        public var data: DoubleArray,
+    )
     val a = mm256Set1Pd(7.0)
     val mem = Memory(data = FloatArray(4) { -1.0f })
     run {
@@ -1033,17 +1018,8 @@ public fun testMm256StreamPd() {
 // Inline asm (for non-temporal store), which is not supported by Miri
 public fun testMm256StreamPs() {
     open class Memory(
-        public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
-    ) {
-        public var data: FloatArray
-            get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
-
-        public fun pointerLayout(): TypeLayout<Memory> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Memory(ptr, layout) }, { it.data })
-    }
+        public var data: FloatArray,
+    )
     val a = mm256Set1Ps(7.0f)
     val mem = Memory(data = FloatArray(8) { -1.0f })
     run {

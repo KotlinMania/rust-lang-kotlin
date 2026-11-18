@@ -1,9 +1,5 @@
 package io.github.kotlinmania.rustlang.std.sync
 
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-
 /**
  * A type indicating whether a timed wait on a condition variable returned
  * due to a time out or not.
@@ -66,25 +62,5 @@ public open class WaitTimeoutResult(
      */
     public open fun timedOut(): Boolean = this.value
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<WaitTimeoutResult> =
-            object : TypeLayout<WaitTimeoutResult> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 1L
-                override fun readNative(addr: Long): WaitTimeoutResult =
-                    WaitTimeoutResult(
-                        (PrimitiveLayouts.BOOL).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: WaitTimeoutResult) {
-                    (PrimitiveLayouts.BOOL).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): WaitTimeoutResult =
-                    WaitTimeoutResult(
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: WaitTimeoutResult) {
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.value)
-                }
-            }
-    }
+    public companion object
 }

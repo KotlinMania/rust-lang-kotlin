@@ -10,7 +10,11 @@ import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 public open class ScopeGuard<T, F, Output>(
     public var dropfn: F,
     public var value: T,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun deref(): T = this.value
 
     public open fun derefMut(): T = this.value

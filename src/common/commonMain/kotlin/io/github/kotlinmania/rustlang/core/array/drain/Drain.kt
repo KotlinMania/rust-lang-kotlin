@@ -72,7 +72,11 @@ public open class Drain<T, F>(
     public var endOrLen: MutPtr,
     public var f: F,
     public var l: Unit,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         val slice =
             if (((typeLayoutT).sizeBytes == 0L)) {

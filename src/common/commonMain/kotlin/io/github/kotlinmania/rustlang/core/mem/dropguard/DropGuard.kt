@@ -29,7 +29,11 @@ import io.github.kotlinmania.rustlang.core.result.Result
 public open class DropGuard<T, F, Output>(
     public var inner: T,
     public var f: F,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun deref(): T = this.inner
 
     public open fun derefMut(): T = this.inner

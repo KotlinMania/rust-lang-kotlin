@@ -19,7 +19,11 @@ import io.github.kotlinmania.rustlang.hashbrown.HashMap
 public open class Droppable(
     public var k: Int,
     public var counter: AtomicUsize,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         this.counter.fetchSub(1, Ordering.Relaxed)
     }

@@ -1,17 +1,13 @@
 // port-lint: source iter/adapters/scan.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.scan
 
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 private class DebugStruct(
@@ -60,36 +56,6 @@ public open class Scan<I, St, F>(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Scan").field("iter", this.iter).field("state", this.state).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
-        public fun <I, St, F> typeLayout(typeLayoutI: TypeLayout<I>, typeLayoutF: TypeLayout<F>, typeLayoutSt: TypeLayout<St>): TypeLayout<Scan<I, St, F>> =
-            object : TypeLayout<Scan<I, St, F>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes, typeLayoutF.alignBytes, typeLayoutSt.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, typeLayoutF.alignBytes)
-                private val off2: Long = alignUpBytes((off1 + typeLayoutF.sizeBytes), typeLayoutSt.alignBytes)
-                override val sizeBytes: Long = alignUpBytes((off2 + typeLayoutSt.sizeBytes), alignBytes)
-                override fun readNative(addr: Long): Scan<I, St, F> =
-                    Scan(
-                        (typeLayoutI).readNative(addr),
-                        (typeLayoutF).readNative(addr + off1),
-                        (typeLayoutSt).readNative(addr + off2),
-                    )
-                override fun writeNative(addr: Long, value: Scan<I, St, F>) {
-                    (typeLayoutI).writeNative(addr, value.iter)
-                    (typeLayoutF).writeNative(addr + off1, value.f)
-                    (typeLayoutSt).writeNative(addr + off2, value.state)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Scan<I, St, F> =
-                    Scan(
-                        (typeLayoutI).readBytes(buf, offset),
-                        (typeLayoutF).readBytes(buf, offset + off1.toInt()),
-                        (typeLayoutSt).readBytes(buf, offset + off2.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Scan<I, St, F>) {
-                    (typeLayoutI).writeBytes(buf, offset, value.iter)
-                    (typeLayoutF).writeBytes(buf, offset + off1.toInt(), value.f)
-                    (typeLayoutSt).writeBytes(buf, offset + off2.toInt(), value.state)
-                }
-            }
-
         public fun <I, St, F> new(iter: I, state: St, f: F): Scan<I, St, F> = Scan(iter = iter, state = state, f = f)
     }
 }

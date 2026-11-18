@@ -685,8 +685,12 @@ public open class RawTable<T, A : Allocator>(
     public var alloc: A,
     // Tell dropck that we own instances of T.
     public var marker: Unit,
-) : RawTableClone<RawTable<T, A>>, Iterable<T> {
+) : RawTableClone<RawTable<T, A>>, Iterable<T>, AutoCloseable {
     override fun iterator(): Iterator<T> = this.intoIter().iterator()
+
+    override fun close() {
+        this.drop()
+    }
 
     /**
      * Returns a reference to the underlying allocator.
@@ -3734,7 +3738,7 @@ public open class RawIntoIter<T, A : Allocator> internal constructor(
     public var iter: RawIter<T>,
     allocationCtorArg: Triple<NonNull, Layout, A>?,
     public var marker: Unit,
-) : Iterable<T> {
+) : Iterable<T>, AutoCloseable {
     public var allocation: Triple<NonNull, Layout, A>? = allocationCtorArg
         internal set
 
@@ -3745,6 +3749,10 @@ public open class RawIntoIter<T, A : Allocator> internal constructor(
                 else -> setNext(v)
             }
         }
+    }
+
+    override fun close() {
+        this.drop()
     }
 
     public open fun iter(): RawIter<T> = this.iter.clone()
@@ -3800,7 +3808,7 @@ public open class RawDrain<T, A : Allocator> internal constructor(
     // We don't use a &a mut RawTable<T> because we want RawDrain to be
     // covariant over T.
     public var marker: Unit,
-) : Iterable<T> {
+) : Iterable<T>, AutoCloseable {
     public var origTable: NonNull = origTableCtorArg
         internal set
 
@@ -3811,6 +3819,10 @@ public open class RawDrain<T, A : Allocator> internal constructor(
                 else -> setNext(v)
             }
         }
+    }
+
+    override fun close() {
+        this.drop()
     }
 
     public open fun iter(): RawIter<T> = this.iter.clone()

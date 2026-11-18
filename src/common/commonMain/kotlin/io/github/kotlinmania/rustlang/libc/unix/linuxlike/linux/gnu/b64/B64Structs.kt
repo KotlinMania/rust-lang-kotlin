@@ -151,6 +151,8 @@ public open class MsqidDs(
     public var glibcReserved5: ULong,
 ) {
     public open fun clone(): MsqidDs = MsqidDs(msgPerm, msgStime, msgRtime, msgCtime, msgCbytes, msgQnum, msgQbytes, msgLspid, msgLrpid, glibcReserved4, glibcReserved5)
+
+    public companion object
 }
 
 public open class SemidDs(
@@ -164,6 +166,8 @@ public open class SemidDs(
     public var glibcReserved4: SyscallUlongT,
 ) {
     public open fun clone(): SemidDs = SemidDs(semPerm, semOtime, reserved, semCtime, reserved2, semNsems, glibcReserved3, glibcReserved4)
+
+    public companion object
 }
 
 // net/iucv/iucv.h
@@ -256,4 +260,6 @@ public open class Timex(
     public var unused11: Int,
 ) {
     public open fun clone(): Timex = Timex(modes, offset, freq, maxerror, esterror, status, constant, precision, tolerance, time, tick, ppsfreq, jitter, shift, stabil, jitcnt, calcnt, errcnt, stbcnt, tai, unused1, unused2, unused3, unused4, unused5, unused6, unused7, unused8, unused9, unused10, unused11)
+
+    public companion object
 }

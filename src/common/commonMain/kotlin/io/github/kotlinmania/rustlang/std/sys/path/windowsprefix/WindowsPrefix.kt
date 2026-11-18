@@ -64,6 +64,8 @@ public open class PrefixParserSlice(
         // from ASCII-bounded slices of existing &OsStr values.
         return OsStr.fromEncodedBytesUnchecked(this.path.asEncodedBytes()[this.index until this.path.asEncodedBytes().size])
     }
+
+    public companion object
 }
 
 public fun parsePrefix(path: OsStr): Prefix? {

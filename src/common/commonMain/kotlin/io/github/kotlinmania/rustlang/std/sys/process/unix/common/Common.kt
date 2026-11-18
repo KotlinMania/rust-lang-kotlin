@@ -442,7 +442,9 @@ public open class ChildPipes(
     public var stdin: ChildStdio,
     public var stdout: ChildStdio,
     public var stderr: ChildStdio,
-)
+) {
+    public companion object
+}
 
 public sealed class ChildStdio {
     public data object Inherit : ChildStdio()
@@ -683,6 +685,8 @@ public open class CommandArgs(
     public open fun isEmpty(): Boolean = this.iter.isEmpty()
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter.clone()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
+
+    public companion object
 }
 
 public typealias ChildPipe = Pipe

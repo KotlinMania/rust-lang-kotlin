@@ -392,7 +392,11 @@ public fun completeAll(tail: NonNull) {
 /**
  * A type to guard against the unwinds of stacks that nodes are located on due to panics.
  */
-public open class PanicGuard {
+public open class PanicGuard : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         run {
             when (val matchVal = panicOutput()) {

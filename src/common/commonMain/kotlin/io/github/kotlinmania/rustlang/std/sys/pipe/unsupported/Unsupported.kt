@@ -40,6 +40,8 @@ public open class Pipe(
     public open fun diverge(): Nothing = this.value
 
     public open fun fmt(arg0: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value
+
+    public companion object
 }
 
 public fun pipe(): Result<Pair<Pipe, Pipe>, Error> = Result.Err<Pair<Pipe, Pipe>, Error>(Error.UNSUPPORTED_PLATFORM)

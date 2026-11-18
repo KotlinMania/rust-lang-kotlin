@@ -52,6 +52,8 @@ public open class ParIterProducer<T>(
     }
 
     public open fun <F> foldWith(folder: F): F where F : Folder<Bucket<T>> = folder.consumeIter(this.iter)
+
+    public companion object
 }
 
 /**
@@ -100,11 +102,15 @@ public open class RawIntoParIter<T, A : Allocator> internal constructor(
 public open class RawParDrain<T, A : Allocator> internal constructor(
     tableCtorArg: NonNull,
     public var marker: Unit,
-) : ParallelIterator {
+) : ParallelIterator, AutoCloseable {
     // We don't use a &a mut RawTable<T> because we want RawParDrain to be
     // covariant over T.
     public var table: NonNull = tableCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun parIter(): RawParIter<T> = this.table.asRef().parIter()
 
@@ -143,7 +149,11 @@ public open class RawParDrain<T, A : Allocator> internal constructor(
  */
 public open class ParDrainProducer<T>(
     public var iter: RawIterRange<T>,
-) : UnindexedProducer {
+) : UnindexedProducer, AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun split(): Pair<ParDrainProducer<T>, ParDrainProducer<T>?> {
         val (left, right) = this.iter.clone().split()
         forget(this)
@@ -177,6 +187,8 @@ public open class ParDrainProducer<T>(
             }
         }
     }
+
+    public companion object
 }
 
 /**

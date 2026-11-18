@@ -895,11 +895,13 @@ return null
             }
         }
     }
+
+    public companion object
 }
 
 public open class FindNextFileHandle internal constructor(
     valueCtorArg: Handle,
-) {
+) : AutoCloseable {
     public var value: Handle = valueCtorArg
         internal set
 
@@ -908,6 +910,10 @@ public open class FindNextFileHandle internal constructor(
         set(v) {
             value = v
         }
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun drop() {
         val r = findClose(this.value)
@@ -1148,6 +1154,8 @@ public open class FileTimes(
     public open fun setCreated(t: SystemTime) {
         this.created = t.intoInner()
     }
+
+    public companion object
 }
 
 public fun Filetime.fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {

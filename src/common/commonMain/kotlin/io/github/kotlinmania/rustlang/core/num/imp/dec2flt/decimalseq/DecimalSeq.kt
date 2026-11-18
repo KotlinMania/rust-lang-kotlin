@@ -3,12 +3,7 @@
 
 package io.github.kotlinmania.rustlang.core.num.imp.dec2flt.decimalseq
 
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common.is8digits
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.splitFirst
 
@@ -196,38 +191,6 @@ public open class DecimalSeq(
     }
 
     public companion object {
-        public fun typeLayout(): TypeLayout<DecimalSeq> =
-            object : TypeLayout<DecimalSeq> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = alignUpBytes((13L + ((DecimalSeq.MAX_DIGITS).toLong() * (PrimitiveLayouts.U8).strideBytes)), 8L)
-                override fun readNative(addr: Long): DecimalSeq =
-                    DecimalSeq(
-                        (PrimitiveLayouts.USIZE64).readNative(addr),
-                        (PrimitiveLayouts.I32).readNative(addr + 8L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 12L),
-                        (PrimitiveArrayLayouts.uByteArray((DecimalSeq.MAX_DIGITS).toInt())).readNative(addr + 13L),
-                    )
-                override fun writeNative(addr: Long, value: DecimalSeq) {
-                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.numDigits)
-                    (PrimitiveLayouts.I32).writeNative(addr + 8L, value.decimalPoint)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 12L, value.truncated)
-                    (PrimitiveArrayLayouts.uByteArray((DecimalSeq.MAX_DIGITS).toInt())).writeNative(addr + 13L, value.digits)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): DecimalSeq =
-                    DecimalSeq(
-                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
-                        (PrimitiveLayouts.I32).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 12),
-                        (PrimitiveArrayLayouts.uByteArray((DecimalSeq.MAX_DIGITS).toInt())).readBytes(buf, offset + 13),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: DecimalSeq) {
-                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.numDigits)
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 8, value.decimalPoint)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 12, value.truncated)
-                    (PrimitiveArrayLayouts.uByteArray((DecimalSeq.MAX_DIGITS).toInt())).writeBytes(buf, offset + 13, value.digits)
-                }
-            }
-
         public fun default(): DecimalSeq = DecimalSeq(numDigits = 0, decimalPoint = 0, truncated = false, digits = UByteArray((DecimalSeq.MAX_DIGITS).toInt()) { 0u.toUByte() })
 
         /**

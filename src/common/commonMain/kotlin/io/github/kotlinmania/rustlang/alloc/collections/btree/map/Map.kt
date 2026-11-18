@@ -241,8 +241,12 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
     public var alloc: A,
     // For dropck; the `Holder` avoids making the `Unpin` impl more strict than before
     public var marker: Unit,
-) : Iterable<Pair<K, V>> {
+) : Iterable<Pair<K, V>>, AutoCloseable {
     override fun iterator(): Iterator<Pair<K, V>> = this.intoIter().iterator()
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun drop() {
         when (val matchVal = this.root.also { this.root = null }) {
@@ -1837,7 +1841,7 @@ public open class IntoIter<K, V, A : AllocatorClone> internal constructor(
      * The BTreeMap will outlive this IntoIter so we don't care about drop order for `alloc`.
      */
     public var alloc: A,
-) : TrustedLen, Iterable<Pair<K, V>> {
+) : TrustedLen, Iterable<Pair<K, V>>, AutoCloseable {
     public var range: LazyLeafRange<Dying, K, V> = rangeCtorArg
         internal set
 
@@ -1848,6 +1852,10 @@ public open class IntoIter<K, V, A : AllocatorClone> internal constructor(
                 else -> setNext(v)
             }
         }
+    }
+
+    override fun close() {
+        this.drop()
     }
 
     /**
@@ -2372,6 +2380,8 @@ public open class ExtractIf<K, V, R, F, A : AllocatorClone>(
     public var alloc: A,
 ) {
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "ExtractIf").field("peek", this.inner.peek()).finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
+
+    public companion object
 }
 
 /**
@@ -2816,6 +2826,8 @@ public open class CursorMut<K, V, A>(
      * unchanged (after the removed element).
      */
     public open fun removePrev(): Pair<K, V>? = this.inner.removePrev()
+
+    public companion object
 }
 
 /**

@@ -1,9 +1,6 @@
 // port-lint: source math/support/feature_detect.rs
 package io.github.kotlinmania.rustlang.libm.math.support.featuredetect
 
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.load
@@ -69,26 +66,6 @@ public open class Flags(
     }
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Flags> =
-            object : TypeLayout<Flags> {
-                override val alignBytes: Long = 4L
-                override val sizeBytes: Long = 4L
-                override fun readNative(addr: Long): Flags =
-                    Flags(
-                        (PrimitiveLayouts.U32).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Flags) {
-                    (PrimitiveLayouts.U32).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Flags =
-                    Flags(
-                        (PrimitiveLayouts.U32).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Flags) {
-                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.value)
-                }
-            }
-
         /**
          * No bits set.
          */

@@ -89,7 +89,11 @@ public open class PolymorphicIter<Data>(
      *   elements were already read and must not be touched anymore!)
      */
     public var data: Data,
-) where Data : PartialDrop {
+) : AutoCloseable where Data : PartialDrop {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun len(): Int = this.alive.len()
 
     public open fun drop() {

@@ -54,6 +54,8 @@ public open class BcmMsgHead(
     public var frames: List<CanFrame>,
 ) {
     public open fun clone(): BcmMsgHead = BcmMsgHead(opcode, flags, count, ival1, ival2, canId, nframes, frames)
+
+    public companion object
 }
 
 public val TX_SETUP: UInt = 1u

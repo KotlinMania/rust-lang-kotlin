@@ -1,9 +1,6 @@
 // port-lint: source helpers/shuffle.rs
 package io.github.kotlinmania.rustlang.test.helpers.shuffle
 
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.std.hash.random.DefaultHasher
 import io.github.kotlinmania.rustlang.std.time.SystemTime
 import io.github.kotlinmania.rustlang.std.time.UNIX_EPOCH
@@ -52,30 +49,6 @@ public open class Rng(
     }
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Rng> =
-            object : TypeLayout<Rng> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 16L
-                override fun readNative(addr: Long): Rng =
-                    Rng(
-                        (PrimitiveLayouts.U64).readNative(addr),
-                        (PrimitiveLayouts.U64).readNative(addr + 8L),
-                    )
-                override fun writeNative(addr: Long, value: Rng) {
-                    (PrimitiveLayouts.U64).writeNative(addr, value.state)
-                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.extra)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Rng =
-                    Rng(
-                        (PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Rng) {
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.state)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.extra)
-                }
-            }
-
         public fun new(seed: ULong, extra: ULong): Rng = Rng(state = seed, extra = extra)
     }
 }

@@ -119,6 +119,8 @@ public open class CommandEnv(
         val iter = this.vars.iter()
         return CommandEnvs(iter = iter)
     }
+
+    public companion object
 }
 
 public open class CommandEnvs internal constructor(

@@ -311,6 +311,8 @@ public open class Statfs(
     public var fSpare: ULongArray,
 ) {
     public open fun clone(): Statfs = Statfs(fType, fBsize, fFrsize, fBlocks, fBfree, fFiles, fFfree, fBavail, fFsid, fNamelen, fFlags, fSpare)
+
+    public companion object
 }
 
 // Note(1.0,deprecate): lfs binding to be removed
@@ -329,6 +331,8 @@ public open class Statfs64(
     public var fSpare: ULongArray,
 ) {
     public open fun clone(): Statfs64 = Statfs64(fType, fBsize, fFrsize, fBlocks, fBfree, fFiles, fFfree, fBavail, fFsid, fNamelen, fFlags, fSpare)
+
+    public companion object
 }
 
 public val SIGSTKSZ: SizeT = 8192uL

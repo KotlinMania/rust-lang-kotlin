@@ -1,17 +1,8 @@
 // port-lint: source ops/try_trait.rs
 package io.github.kotlinmania.rustlang.core.ops.trytrait
 
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
-import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 public typealias TryType<T> = NeverShortCircuit<T>
 
@@ -244,22 +235,13 @@ public typealias ChangeOutputType<T : Try<T, Any?, Any?>, V, Output, Residual> =
  * Not currently planned to be exposed publicly, so just `public(crate)`.
  */
 public open class NeverShortCircuit<T>(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
+    public var value: T,
 ) : Try<NeverShortCircuit<T>, T, NeverShortCircuitResidual>, FromResidual<Residual, NeverShortCircuit<T>> {
     public var field0: T
         get() = value
         set(v) {
             value = v
         }
-
-    public var value: T
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-    public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
-
-    public fun pointerLayout(): TypeLayout<NeverShortCircuit<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NeverShortCircuit<T>(ptr, layout) }, { it.value })
 
     public override fun branch(): ControlFlow<NeverShortCircuitResidual, T> = ControlFlow.Continue(this.value)
 
@@ -270,11 +252,11 @@ public open class NeverShortCircuit<T>(
          * This is useful for implementing infallible functions in terms of the `try_` ones,
          * without accidentally capturing extra generic parameters in a closure.
          */
-        public fun <T, A> wrapMut1(f: (A) -> T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()): (A) -> NeverShortCircuit<T> = { a -> NeverShortCircuit(f(a), fieldLayout = fieldLayout) }
+        public fun <T, A> wrapMut1(f: (A) -> T): (A) -> NeverShortCircuit<T> = { a -> NeverShortCircuit(f(a)) }
 
-        public fun <T, A, B> wrapMut2(f: (A, B) -> T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()): (A, B) -> NeverShortCircuit<T> = { a, b -> NeverShortCircuit(f(a, b), fieldLayout = fieldLayout) }
+        public fun <T, A, B> wrapMut2(f: (A, B) -> T): (A, B) -> NeverShortCircuit<T> = { a, b -> NeverShortCircuit(f(a, b)) }
 
-        public fun <T> fromOutput(x: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()): NeverShortCircuit<T> = NeverShortCircuit(x, fieldLayout = fieldLayout)
+        public fun <T> fromOutput(x: T): NeverShortCircuit<T> = NeverShortCircuit(x)
 
         public fun <T> fromResidual(never: NeverShortCircuitResidual): NeverShortCircuit<T> = when (never) {}
     }
@@ -299,25 +281,5 @@ public open class Yeet<T>(
             value = v
         }
 
-    public companion object {
-        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Yeet<T>> =
-            object : TypeLayout<Yeet<T>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): Yeet<T> =
-                    Yeet(
-                        (typeLayoutT).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Yeet<T>) {
-                    (typeLayoutT).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Yeet<T> =
-                    Yeet(
-                        (typeLayoutT).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Yeet<T>) {
-                    (typeLayoutT).writeBytes(buf, offset, value.value)
-                }
-            }
-    }
+    public companion object
 }

@@ -115,7 +115,11 @@ public open class InitializingSlice<T>(
      * Number of elements of `* self.data` that are initialized.
      */
     public var initializedLen: Int,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     /**
      * Push a value onto the end of the initialized part of the slice.
      *

@@ -23,9 +23,13 @@ import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtNz
 
 public open class Mutex internal constructor(
     innerCtorArg: COpaque<PthreadMutexT>,
-) {
+) : AutoCloseable {
     public var inner: COpaque<PthreadMutexT> = innerCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun raw(): MutPtr {
         val inner = this.mapUnchecked({ m -> m.inner })
@@ -145,7 +149,7 @@ public open class Mutex internal constructor(
 
 public open class AttrGuard internal constructor(
     valueCtorArg: Pin<COpaque<PthreadMutexattrT>>,
-) {
+) : AutoCloseable {
     public var value: Pin<COpaque<PthreadMutexattrT>> = valueCtorArg
         internal set
 
@@ -154,6 +158,10 @@ public open class AttrGuard internal constructor(
         set(v) {
             value = v
         }
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun drop() {
         run {

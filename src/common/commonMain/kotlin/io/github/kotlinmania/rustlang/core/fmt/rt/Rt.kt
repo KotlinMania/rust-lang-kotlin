@@ -3,15 +3,9 @@ package io.github.kotlinmania.rustlang.core.fmt.rt
 
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
-import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
-import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.fromRef
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -82,19 +76,10 @@ public sealed class ArgumentType {
  * * A count argument contains a count for dynamic formatting parameters like
  *   precision and width.
  */
-public open class Argument internal constructor(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(),
+public open class Argument(
+    public var ty: ArgumentType,
 ) {
-    public var ty: ArgumentType
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-    internal constructor(ty: ArgumentType, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout()) : this(allocateNativeCell(ty, AlignedTypeLayout(fieldLayout, 2L)), AlignedTypeLayout(fieldLayout, 2L))
-
-    public fun pointerLayout(): TypeLayout<Argument> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Argument(ptr, layout) }, { it.ty })
-
-    public open fun clone(): Argument = Argument(ty, fieldLayout)
+    public open fun clone(): Argument = Argument(ty)
 
     /**
      * Format this Note argument.
@@ -131,75 +116,71 @@ public open class Argument internal constructor(
         }
 
     public companion object {
-        public operator fun invoke(ty: ArgumentType, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout()): Argument = Argument(ty, fieldLayout)
-
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout()): Argument = Argument(fieldStorage, fieldLayout)
-
-        public fun <T> newDisplay(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+        public fun <T> newDisplay(x: T, fmtTFn: (T, Formatter) -> Result): Argument =
             Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
                 val f: (T, Formatter) -> Result = fmtTFn
-                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), AlignedTypeLayout(TransparentTypeLayout(fieldLayout, { ptr, layout -> Argument(ptr, layout) }, { it.ty }), 2L))
-            }, lifetime = Unit), fieldLayout = fieldLayout)
+                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), UnresolvedTypeLayout<Argument>())
+            }, lifetime = Unit))
 
-        public fun <T> newDebug(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+        public fun <T> newDebug(x: T, fmtTFn: (T, Formatter) -> Result): Argument =
             Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
                 val f: (T, Formatter) -> Result = fmtTFn
-                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), AlignedTypeLayout(TransparentTypeLayout(fieldLayout, { ptr, layout -> Argument(ptr, layout) }, { it.ty }), 2L))
-            }, lifetime = Unit), fieldLayout = fieldLayout)
+                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), UnresolvedTypeLayout<Argument>())
+            }, lifetime = Unit))
 
-        public fun <T> newDebugNoop(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout()): Argument =
+        public fun <T> newDebugNoop(x: T): Argument =
             Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
                 val f: (T, Formatter) -> Result = { Result.Ok(Unit) }
-                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), AlignedTypeLayout(TransparentTypeLayout(fieldLayout, { ptr, layout -> Argument(ptr, layout) }, { it.ty }), 2L))
-            }, lifetime = Unit), fieldLayout = fieldLayout)
+                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), UnresolvedTypeLayout<Argument>())
+            }, lifetime = Unit))
 
-        public fun <T> newOctal(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+        public fun <T> newOctal(x: T, fmtTFn: (T, Formatter) -> Result): Argument =
             Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
                 val f: (T, Formatter) -> Result = fmtTFn
-                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), AlignedTypeLayout(TransparentTypeLayout(fieldLayout, { ptr, layout -> Argument(ptr, layout) }, { it.ty }), 2L))
-            }, lifetime = Unit), fieldLayout = fieldLayout)
+                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), UnresolvedTypeLayout<Argument>())
+            }, lifetime = Unit))
 
-        public fun <T> newLowerHex(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+        public fun <T> newLowerHex(x: T, fmtTFn: (T, Formatter) -> Result): Argument =
             Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
                 val f: (T, Formatter) -> Result = fmtTFn
-                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), AlignedTypeLayout(TransparentTypeLayout(fieldLayout, { ptr, layout -> Argument(ptr, layout) }, { it.ty }), 2L))
-            }, lifetime = Unit), fieldLayout = fieldLayout)
+                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), UnresolvedTypeLayout<Argument>())
+            }, lifetime = Unit))
 
-        public fun <T> newUpperHex(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+        public fun <T> newUpperHex(x: T, fmtTFn: (T, Formatter) -> Result): Argument =
             Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
                 val f: (T, Formatter) -> Result = fmtTFn
-                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), AlignedTypeLayout(TransparentTypeLayout(fieldLayout, { ptr, layout -> Argument(ptr, layout) }, { it.ty }), 2L))
-            }, lifetime = Unit), fieldLayout = fieldLayout)
+                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), UnresolvedTypeLayout<Argument>())
+            }, lifetime = Unit))
 
-        public fun <T> newPointer(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+        public fun <T> newPointer(x: T, fmtTFn: (T, Formatter) -> Result): Argument =
             Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
                 val f: (T, Formatter) -> Result = fmtTFn
-                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), AlignedTypeLayout(TransparentTypeLayout(fieldLayout, { ptr, layout -> Argument(ptr, layout) }, { it.ty }), 2L))
-            }, lifetime = Unit), fieldLayout = fieldLayout)
+                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), UnresolvedTypeLayout<Argument>())
+            }, lifetime = Unit))
 
-        public fun <T> newBinary(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+        public fun <T> newBinary(x: T, fmtTFn: (T, Formatter) -> Result): Argument =
             Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
                 val f: (T, Formatter) -> Result = fmtTFn
-                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), AlignedTypeLayout(TransparentTypeLayout(fieldLayout, { ptr, layout -> Argument(ptr, layout) }, { it.ty }), 2L))
-            }, lifetime = Unit), fieldLayout = fieldLayout)
+                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), UnresolvedTypeLayout<Argument>())
+            }, lifetime = Unit))
 
-        public fun <T> newLowerExp(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+        public fun <T> newLowerExp(x: T, fmtTFn: (T, Formatter) -> Result): Argument =
             Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
                 val f: (T, Formatter) -> Result = fmtTFn
-                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), AlignedTypeLayout(TransparentTypeLayout(fieldLayout, { ptr, layout -> Argument(ptr, layout) }, { it.ty }), 2L))
-            }, lifetime = Unit), fieldLayout = fieldLayout)
+                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), UnresolvedTypeLayout<Argument>())
+            }, lifetime = Unit))
 
-        public fun <T> newUpperExp(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+        public fun <T> newUpperExp(x: T, fmtTFn: (T, Formatter) -> Result): Argument =
             Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
                 val f: (T, Formatter) -> Result = fmtTFn
-                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), AlignedTypeLayout(TransparentTypeLayout(fieldLayout, { ptr, layout -> Argument(ptr, layout) }, { it.ty }), 2L))
-            }, lifetime = Unit), fieldLayout = fieldLayout)
+                transmuteWithLayouts<(T, Formatter) -> Result, Argument>(f, UnresolvedTypeLayout<(T, Formatter) -> Result>(), UnresolvedTypeLayout<Argument>())
+            }, lifetime = Unit))
 
-        public fun fromUsize(x: Int, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout()): Argument {
+        public fun fromUsize(x: Int): Argument {
             if (x > UShort.MAX_VALUE.toInt()) {
                 error("Formatting argument out of range")
             }
-            return Argument(ty = ArgumentType.Count(x.toUShort()), fieldLayout = fieldLayout)
+            return Argument(ty = ArgumentType.Count(x.toUShort()))
         }
     }
 }

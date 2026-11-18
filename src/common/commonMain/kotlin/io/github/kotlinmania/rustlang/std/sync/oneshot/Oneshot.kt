@@ -180,6 +180,8 @@ public open class Sender<T>(
     public open fun isClosed(): Boolean = this.inner.isDisconnected()
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Sender").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -425,6 +427,8 @@ public open class Receiver<T>(
         } })
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Receiver").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////

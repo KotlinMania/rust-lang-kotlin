@@ -18,13 +18,9 @@ import io.github.kotlinmania.rustlang.core.io.util.Take
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
@@ -304,27 +300,7 @@ public fun <T : BufRead<T>> Take<T>.consume(amt: Int) {
 public open class Bytes<R>(
     public var inner: R,
 ) {
-    public companion object {
-        public fun <R> typeLayout(typeLayoutR: TypeLayout<R>): TypeLayout<Bytes<R>> =
-            object : TypeLayout<Bytes<R>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutR.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutR.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): Bytes<R> =
-                    Bytes(
-                        (typeLayoutR).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Bytes<R>) {
-                    (typeLayoutR).writeNative(addr, value.inner)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Bytes<R> =
-                    Bytes(
-                        (typeLayoutR).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Bytes<R>) {
-                    (typeLayoutR).writeBytes(buf, offset, value.inner)
-                }
-            }
-    }
+    public companion object
 }
 
 // Not `@inline`. This function gets inlined even without it, but having
@@ -390,32 +366,7 @@ public open class Split<B>(
     public var buf: B,
     public var delim: UByte,
 ) {
-    public companion object {
-        public fun <B> typeLayout(typeLayoutB: TypeLayout<B>): TypeLayout<Split<B>> =
-            object : TypeLayout<Split<B>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutB.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutB.sizeBytes, 1L)
-                override val sizeBytes: Long = alignUpBytes((off1 + 1L), alignBytes)
-                override fun readNative(addr: Long): Split<B> =
-                    Split(
-                        (typeLayoutB).readNative(addr),
-                        (PrimitiveLayouts.U8).readNative(addr + off1),
-                    )
-                override fun writeNative(addr: Long, value: Split<B>) {
-                    (typeLayoutB).writeNative(addr, value.buf)
-                    (PrimitiveLayouts.U8).writeNative(addr + off1, value.delim)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Split<B> =
-                    Split(
-                        (typeLayoutB).readBytes(buf, offset),
-                        (PrimitiveLayouts.U8).readBytes(buf, offset + off1.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Split<B>) {
-                    (typeLayoutB).writeBytes(buf, offset, value.buf)
-                    (PrimitiveLayouts.U8).writeBytes(buf, offset + off1.toInt(), value.delim)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <B : BufRead<B>> Split<B>.next(): Result<List<UByte>>? {
@@ -454,27 +405,7 @@ public fun <B> split(buf: B, delim: UByte): Split<B> = Split(buf = buf, delim = 
 public open class Lines<B>(
     public var buf: B,
 ) {
-    public companion object {
-        public fun <B> typeLayout(typeLayoutB: TypeLayout<B>): TypeLayout<Lines<B>> =
-            object : TypeLayout<Lines<B>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutB.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutB.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): Lines<B> =
-                    Lines(
-                        (typeLayoutB).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Lines<B>) {
-                    (typeLayoutB).writeNative(addr, value.buf)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Lines<B> =
-                    Lines(
-                        (typeLayoutB).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Lines<B>) {
-                    (typeLayoutB).writeBytes(buf, offset, value.buf)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <B : BufRead<B>> Lines<B>.next(): Result<String>? {

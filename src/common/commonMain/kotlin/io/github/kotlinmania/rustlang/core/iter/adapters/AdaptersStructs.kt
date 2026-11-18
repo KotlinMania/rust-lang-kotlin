@@ -55,6 +55,8 @@ public open class GenericShunt<I, R>(
         } }).intoTry()
 
     public open fun <Aaa> fold(init: Aaa, fold: (Aaa, Output) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
+
+    public companion object
 }
 
 public fun <Source, I, R> GenericShunt<I, R>.asInner(): Source where I : SourceIter<Source> {

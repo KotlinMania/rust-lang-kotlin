@@ -31,6 +31,8 @@ public open class SyncDlmalloc(
         set(v) {
             value = v
         }
+
+    public companion object
 }
 
 public var DLMALLOC: SyncUnsafeCell<SyncDlmalloc> = SyncUnsafeCell.new(SyncDlmalloc(Dlmalloc.new()))

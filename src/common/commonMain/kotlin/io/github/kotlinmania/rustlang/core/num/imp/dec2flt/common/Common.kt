@@ -3,9 +3,6 @@
 
 package io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common
 
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.splitFirst
 
 // Common utilities, for internal use only.
@@ -98,30 +95,6 @@ public open class BiasedFp(
     public open fun clone(): BiasedFp = BiasedFp(m, pBiased)
 
     public companion object {
-        public fun typeLayout(): TypeLayout<BiasedFp> =
-            object : TypeLayout<BiasedFp> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 16L
-                override fun readNative(addr: Long): BiasedFp =
-                    BiasedFp(
-                        (PrimitiveLayouts.U64).readNative(addr),
-                        (PrimitiveLayouts.I32).readNative(addr + 8L),
-                    )
-                override fun writeNative(addr: Long, value: BiasedFp) {
-                    (PrimitiveLayouts.U64).writeNative(addr, value.m)
-                    (PrimitiveLayouts.I32).writeNative(addr + 8L, value.pBiased)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): BiasedFp =
-                    BiasedFp(
-                        (PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (PrimitiveLayouts.I32).readBytes(buf, offset + 8),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: BiasedFp) {
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.m)
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 8, value.pBiased)
-                }
-            }
-
         /**
          * Represent `0 ^ p`
          */

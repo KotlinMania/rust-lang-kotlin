@@ -187,7 +187,9 @@ public open class Position<T>(
      * The block in the linked list.
      */
     public var block: AtomicPtr,
-)
+) {
+    public companion object
+}
 
 /**
  * The token type for the list flavor.
@@ -262,7 +264,7 @@ public open class Channel<T> internal constructor(
      * Indicates that dropping a `Channel<T>` may drop messages of type `T`.
      */
     public var marker: Unit,
-) {
+) : AutoCloseable {
     /**
      * The head of the channel.
      */
@@ -274,6 +276,10 @@ public open class Channel<T> internal constructor(
      */
     public var tail: CachePadded<Position<T>> = tailCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     /**
      * Attempts to reserve a slot for sending a message.

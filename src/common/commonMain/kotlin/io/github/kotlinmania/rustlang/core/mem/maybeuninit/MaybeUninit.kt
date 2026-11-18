@@ -1787,7 +1787,11 @@ public fun <T> List<MaybeUninit<T>>.transpose(n: Int = 0, typeLayoutT: TypeLayou
 public open class Guard<T>(
     public var slice: MutableList<MaybeUninit<T>>,
     public var initialized: Int,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         val initializedPart = this.slice.subList(0, this.initialized)
         // SAFETY: this raw sub-slice will contain only initialized objects.
@@ -1795,6 +1799,8 @@ public open class Guard<T>(
             initializedPart.assumeInitDrop()
         }
     }
+
+    public companion object
 }
 
 public interface SpecFill<T> {

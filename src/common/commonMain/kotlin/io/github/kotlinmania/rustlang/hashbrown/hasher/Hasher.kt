@@ -19,6 +19,8 @@ public open class DefaultHashBuilder(
     public open fun clone(): DefaultHashBuilder = DefaultHashBuilder(inner)
 
     public open fun buildHasher(): DefaultHasher = DefaultHasher(inner = this.inner.buildHasher())
+
+    public companion object
 }
 
 /**
@@ -91,4 +93,6 @@ public open class DefaultHasher(
     }
 
     public open fun finish(): ULong = this.inner.finish()
+
+    public companion object
 }

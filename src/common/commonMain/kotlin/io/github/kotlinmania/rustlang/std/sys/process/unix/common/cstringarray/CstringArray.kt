@@ -22,9 +22,13 @@ import io.github.kotlinmania.rustlang.core.slice.iter.Iter
  */
 public open class CStringArray internal constructor(
     ptrsCtorArg: MutableList<ConstPtr>,
-) {
+) : AutoCloseable {
     public var ptrs: MutableList<ConstPtr> = ptrsCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     /**
      * Replace the string at position `index`.

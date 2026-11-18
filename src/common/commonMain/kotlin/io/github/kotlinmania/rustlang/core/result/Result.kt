@@ -1808,6 +1808,8 @@ public open class Iter<T>(
     public open fun nextBack(): T? = this.inner.also { this.inner = null }
 
     public open fun clone(): Iter<T> = Iter(inner = this.inner)
+
+    public companion object
 }
 
 /**
@@ -1840,6 +1842,8 @@ public open class IterMut<T>(
     }
 
     public open fun nextBack(): T? = this.inner.also { this.inner = null }
+
+    public companion object
 }
 
 /**
@@ -1879,6 +1883,8 @@ public open class IntoIter<T>(
     }
 
     public open fun nextBack(): T? = this.inner.also { this.inner = null }
+
+    public companion object
 }
 
 // ////////////////////////////////////////////////////////////////////////

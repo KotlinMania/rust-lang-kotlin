@@ -1,8 +1,6 @@
 // port-lint: source arm_shared/barrier/not_mclass.rs
 package io.github.kotlinmania.rustlang.corearch.armshared.barrier.notmclass
 
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.corearch.armshared.Dmb
 import io.github.kotlinmania.rustlang.corearch.armshared.Dsb
 import io.github.kotlinmania.rustlang.corearch.armshared.dmb
@@ -23,21 +21,7 @@ public open class ST : Dmb, Dsb {
         io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.ST)
     }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<ST> =
-            object : TypeLayout<ST> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): ST =
-                    ST()
-                override fun writeNative(addr: Long, value: ST) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): ST =
-                    ST()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: ST) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -53,21 +37,7 @@ public open class Ish : Dmb, Dsb {
         io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(Ish)
     }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<Ish> =
-            object : TypeLayout<Ish> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): Ish =
-                    Ish()
-                override fun writeNative(addr: Long, value: Ish) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Ish =
-                    Ish()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Ish) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -83,21 +53,7 @@ public open class Ishst : Dmb, Dsb {
         io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(Ishst)
     }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<Ishst> =
-            object : TypeLayout<Ishst> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): Ishst =
-                    Ishst()
-                override fun writeNative(addr: Long, value: Ishst) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Ishst =
-                    Ishst()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Ishst) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -113,21 +69,7 @@ public open class Nsh : Dmb, Dsb {
         io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(Nsh)
     }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<Nsh> =
-            object : TypeLayout<Nsh> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): Nsh =
-                    Nsh()
-                override fun writeNative(addr: Long, value: Nsh) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Nsh =
-                    Nsh()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Nsh) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -143,21 +85,7 @@ public open class Nshst : Dmb, Dsb {
         io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(Nshst)
     }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<Nshst> =
-            object : TypeLayout<Nshst> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): Nshst =
-                    Nshst()
-                override fun writeNative(addr: Long, value: Nshst) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Nshst =
-                    Nshst()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Nshst) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -173,21 +101,7 @@ public open class Osh : Dmb, Dsb {
         io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(Osh)
     }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<Osh> =
-            object : TypeLayout<Osh> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): Osh =
-                    Osh()
-                override fun writeNative(addr: Long, value: Osh) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Osh =
-                    Osh()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Osh) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -203,19 +117,5 @@ public open class Oshst : Dmb, Dsb {
         io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(Oshst)
     }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<Oshst> =
-            object : TypeLayout<Oshst> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): Oshst =
-                    Oshst()
-                override fun writeNative(addr: Long, value: Oshst) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Oshst =
-                    Oshst()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Oshst) {
-                }
-            }
-    }
+    public companion object
 }

@@ -1207,6 +1207,8 @@ public open class BorrowError(
         val res = f.append("RefCell already mutably borrowed; a previous borrow was at ${this.location}")
         return res
     }
+
+    public companion object
 }
 
 /**
@@ -1219,6 +1221,8 @@ public open class BorrowMutError(
         val res = f.append("RefCell already borrowed; a previous borrow was at ${this.location}")
         return res
     }
+
+    public companion object
 }
 
 // This ensures the panicking code is outlined from `borrowMut` for `RefCell`.
@@ -1254,9 +1258,13 @@ public fun isReading(x: BorrowCounter): Boolean = x > UNUSED
 
 public open class BorrowRef internal constructor(
     borrowCtorArg: Cell<BorrowCounter>,
-) {
+) : AutoCloseable {
     public var borrow: Cell<BorrowCounter> = borrowCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun drop() {
         val borrow = this.borrow.get()
@@ -1520,9 +1528,13 @@ public open class Ref<T>(
 
 public open class BorrowRefMut internal constructor(
     borrowCtorArg: Cell<BorrowCounter>,
-) {
+) : AutoCloseable {
     public var borrow: Cell<BorrowCounter> = borrowCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun drop() {
         val borrow = this.borrow.get()

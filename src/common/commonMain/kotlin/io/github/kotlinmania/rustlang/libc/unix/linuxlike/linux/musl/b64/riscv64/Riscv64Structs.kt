@@ -355,6 +355,8 @@ public open class McontextT(
     public var fpregs: RiscvMcFpState,
 ) {
     public open fun clone(): McontextT = McontextT(gregs, fpregs)
+
+    public companion object
 }
 
 public open class RiscvMcFpState(

@@ -581,6 +581,8 @@ public open class PrefixComponent(
         h = 31 * h + (this.parsed).hashCode()
         return h
     }
+
+    public companion object
 }
 
 /**
@@ -1035,6 +1037,8 @@ public open class Components(
     public open fun partialCmp(other: Components): Ordering? = compareComponents(this.clone(), other.clone())
 
     public open fun cmp(other: Components): Ordering = compareComponents(this.clone(), other.clone())
+
+    public companion object
 }
 
 /**
@@ -1097,6 +1101,8 @@ public open class Iter(
     public open fun next(): OsStr? = this.inner.next()?.let({ it.asOsStr() })
 
     public open fun nextBack(): OsStr? = this.inner.nextBack()?.let({ it.asOsStr() })
+
+    public companion object
 }
 
 public fun compareComponents(left: Components, right: Components): Ordering {
@@ -1176,6 +1182,8 @@ public open class Ancestors(
         this.next = next?.let({ it.parent() })
         return next
     }
+
+    public companion object
 }
 
 // ///////////////////////////////////////////////////////////////////////////
@@ -3445,6 +3453,8 @@ public open class Display(
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append((this.inner).toString()); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append((this.inner).toString()); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
+
+    public companion object
 }
 
 public fun String.eq(other: Path): Boolean = (other == this).toUByte()

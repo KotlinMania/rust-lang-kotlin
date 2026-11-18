@@ -352,6 +352,8 @@ public open class OnceState(
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "OnceState").field("poisoned", this.isPoisoned()).finish(); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 /**

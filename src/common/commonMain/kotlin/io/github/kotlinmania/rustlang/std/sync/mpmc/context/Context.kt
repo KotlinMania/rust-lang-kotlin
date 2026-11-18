@@ -156,4 +156,6 @@ public open class Inner(
      * Thread id.
      */
     public var threadId: Int,
-)
+) {
+    public companion object
+}

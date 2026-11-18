@@ -1,11 +1,8 @@
 // port-lint: source bridge/server.rs
 package io.github.kotlinmania.rustlang.procmacro.bridge.server
 
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.procmacro.bridge.ApiTags
@@ -733,38 +730,22 @@ public interface ExecutionStrategy {
  */
 public open class RunningSameThreadGuard(
     public var value: Unit,
-) {
+) : AutoCloseable {
     public var field0: Unit
         get() = value
         set(v) {
             value = v
         }
 
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         ALREADY_RUNNING_SAME_THREAD.set(false)
     }
 
     public companion object {
-        public fun typeLayout(): TypeLayout<RunningSameThreadGuard> =
-            object : TypeLayout<RunningSameThreadGuard> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): RunningSameThreadGuard =
-                    RunningSameThreadGuard(
-                        (PrimitiveLayouts.UNIT).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: RunningSameThreadGuard) {
-                    (PrimitiveLayouts.UNIT).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): RunningSameThreadGuard =
-                    RunningSameThreadGuard(
-                        (PrimitiveLayouts.UNIT).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: RunningSameThreadGuard) {
-                    (PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
-                }
-            }
-
         public fun new(): RunningSameThreadGuard {
             val alreadyRunning = ALREADY_RUNNING_SAME_THREAD.replace(true)
             check(!alreadyRunning) { "same-thread nesting (\"reentrance\") of proc macro executions is not supported" }
@@ -800,27 +781,7 @@ public open class MaybeCrossThread(
             runClient(BridgeConfig(input = input, dispatch = (dispatch).into(), forceShowPanics = forceShowPanics))
         }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<MaybeCrossThread> =
-            object : TypeLayout<MaybeCrossThread> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 1L
-                override fun readNative(addr: Long): MaybeCrossThread =
-                    MaybeCrossThread(
-                        (PrimitiveLayouts.BOOL).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: MaybeCrossThread) {
-                    (PrimitiveLayouts.BOOL).writeNative(addr, value.crossThread)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): MaybeCrossThread =
-                    MaybeCrossThread(
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: MaybeCrossThread) {
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.crossThread)
-                }
-            }
-    }
+    public companion object
 }
 
 public val SAME_THREAD: MaybeCrossThread = MaybeCrossThread(crossThread = false)

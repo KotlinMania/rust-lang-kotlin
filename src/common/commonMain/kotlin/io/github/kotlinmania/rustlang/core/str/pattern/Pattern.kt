@@ -5,16 +5,22 @@ package io.github.kotlinmania.rustlang.core.str.pattern
 
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.add
 import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -733,6 +739,8 @@ public open class CharSearcher(
             }
         }
     }
+
+    public companion object
 }
 
 /**
@@ -869,6 +877,8 @@ public open class MultiCharEqSearcher<C : MultiCharEq>(
         }
         return SearchStep.Done
     }
+
+    public companion object
 }
 
 /**
@@ -900,6 +910,8 @@ public open class CharArraySearcher(
     public override fun nextMatchBack(): Pair<Int, Int>? = this.value.nextMatchBack()
 
     public override fun nextRejectBack(): Pair<Int, Int>? = this.value.nextRejectBack()
+
+    public companion object
 }
 
 /**
@@ -931,6 +943,8 @@ public open class CharArrayRefSearcher(
     public override fun nextMatchBack(): Pair<Int, Int>? = this.value.nextMatchBack()
 
     public override fun nextRejectBack(): Pair<Int, Int>? = this.value.nextRejectBack()
+
+    public companion object
 }
 
 /**
@@ -1009,6 +1023,8 @@ public open class CharSliceSearcher(
     public override fun nextMatchBack(): Pair<Int, Int>? = this.value.nextMatchBack()
 
     public override fun nextRejectBack(): Pair<Int, Int>? = this.value.nextRejectBack()
+
+    public companion object
 }
 
 /**
@@ -1040,8 +1056,9 @@ public fun List<Char>.stripSuffixOf(haystack: String): String? = (MultiCharEqPat
 /**
  * Associated type for `<F as Pattern>.Searcher<>`.
  */
-public open class CharPredicateSearcher<F, Output>(
-    public var value: Searcher,
+public open class CharPredicateSearcher<F, Output> internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<Searcher> = UnresolvedTypeLayout(),
 ) : Searcher, ReverseSearcher, DoubleEndedSearcher {
     public var field0: Searcher
         get() = value
@@ -1049,7 +1066,15 @@ public open class CharPredicateSearcher<F, Output>(
             value = v
         }
 
-    public open fun clone(): CharPredicateSearcher<F, Output> = CharPredicateSearcher(value)
+    public var value: Searcher
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(value: Searcher, fieldLayout: TypeLayout<Searcher> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<CharPredicateSearcher<F, Output>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> CharPredicateSearcher<F, Output>(ptr, layout) }, { it.value })
+
+    public open fun clone(): CharPredicateSearcher<F, Output> = CharPredicateSearcher<F, Output>(value, fieldLayout)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "CharPredicateSearcher").field("haystack", this.value.haystack).field("char_indices", this.value.charIndices).finish(); Result.Ok<Unit, Unit>(Unit) }
 
@@ -1066,6 +1091,12 @@ public open class CharPredicateSearcher<F, Output>(
     public override fun nextMatchBack(): Pair<Int, Int>? = this.value.nextMatchBack()
 
     public override fun nextRejectBack(): Pair<Int, Int>? = this.value.nextRejectBack()
+
+    public companion object {
+        public operator fun <F, Output> invoke(value: Searcher, fieldLayout: TypeLayout<Searcher> = UnresolvedTypeLayout()): CharPredicateSearcher<F, Output> = CharPredicateSearcher<F, Output>(value, fieldLayout)
+
+        public fun <F, Output> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Searcher> = UnresolvedTypeLayout()): CharPredicateSearcher<F, Output> = CharPredicateSearcher<F, Output>(fieldStorage, fieldLayout)
+    }
 }
 
 /**

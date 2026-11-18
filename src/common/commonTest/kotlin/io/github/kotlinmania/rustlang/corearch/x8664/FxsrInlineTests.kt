@@ -3,37 +3,42 @@
 
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
-import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.asMutPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 // FXSR floating-point context fast save and restore.
 
-public open class FxsaveArea internal constructor(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout(),
+public open class FxsaveArea(
+    public var data: UByteArray,
 ) {
-    public var data: UByteArray
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-    internal constructor(data: UByteArray, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
-
-    public fun pointerLayout(): TypeLayout<FxsaveArea> = TransparentTypeLayout(fieldLayout, { ptr, layout -> FxsaveArea(ptr, layout) }, { it.data })
-
     public open fun ptr(): MutPtr = this.data.asMutPtr()
 
     public companion object {
-        public operator fun invoke(data: UByteArray, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()): FxsaveArea = FxsaveArea(data, fieldLayout)
+        public fun typeLayout(): TypeLayout<FxsaveArea> =
+            object : TypeLayout<FxsaveArea> {
+                override val alignBytes: Long = 16L
+                override val sizeBytes: Long = 512L
+                override fun readNative(addr: Long): FxsaveArea =
+                    FxsaveArea(
+                        (PrimitiveArrayLayouts.uByteArray(512)).readNative(addr),
+                    )
+                override fun writeNative(addr: Long, value: FxsaveArea) {
+                    (PrimitiveArrayLayouts.uByteArray(512)).writeNative(addr, value.data)
+                }
+                override fun readBytes(buf: ByteArray, offset: Int): FxsaveArea =
+                    FxsaveArea(
+                        (PrimitiveArrayLayouts.uByteArray(512)).readBytes(buf, offset),
+                    )
+                override fun writeBytes(buf: ByteArray, offset: Int, value: FxsaveArea) {
+                    (PrimitiveArrayLayouts.uByteArray(512)).writeBytes(buf, offset, value.data)
+                }
+            }
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()): FxsaveArea = FxsaveArea(fieldStorage, fieldLayout)
-
-        public fun new(fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()): FxsaveArea = FxsaveArea(data = UByteArray(512) { 0u.toUByte() }, fieldLayout = PrimitiveArrayLayouts.uByteArray((512).toInt()))
+        public fun new(): FxsaveArea = FxsaveArea(data = UByteArray(512) { 0u.toUByte() })
     }
 }
 

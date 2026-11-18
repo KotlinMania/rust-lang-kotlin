@@ -1,10 +1,6 @@
 // port-lint: source escape.rs
 package io.github.kotlinmania.rustlang.procmacro.escape
 
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-
 public open class EscapeOptions(
     /**
      * Produce \'.
@@ -22,35 +18,7 @@ public open class EscapeOptions(
 ) {
     public open fun clone(): EscapeOptions = EscapeOptions(escapeSingleQuote, escapeDoubleQuote, escapeNonascii)
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<EscapeOptions> =
-            object : TypeLayout<EscapeOptions> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 3L
-                override fun readNative(addr: Long): EscapeOptions =
-                    EscapeOptions(
-                        (PrimitiveLayouts.BOOL).readNative(addr),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 1L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 2L),
-                    )
-                override fun writeNative(addr: Long, value: EscapeOptions) {
-                    (PrimitiveLayouts.BOOL).writeNative(addr, value.escapeSingleQuote)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.escapeDoubleQuote)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 2L, value.escapeNonascii)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): EscapeOptions =
-                    EscapeOptions(
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 2),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: EscapeOptions) {
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.escapeSingleQuote)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.escapeDoubleQuote)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 2, value.escapeNonascii)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun escapeBytes(bytes: List<UByte>, opt: EscapeOptions): String {

@@ -1,15 +1,11 @@
 // port-lint: source iter/adapters/map.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.map
 
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
@@ -105,31 +101,6 @@ public open class Map<I, F>(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Map").field("iter", this.iter).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
-        public fun <I, F> typeLayout(typeLayoutI: TypeLayout<I>, typeLayoutF: TypeLayout<F>): TypeLayout<Map<I, F>> =
-            object : TypeLayout<Map<I, F>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes, typeLayoutF.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, typeLayoutF.alignBytes)
-                override val sizeBytes: Long = alignUpBytes((off1 + typeLayoutF.sizeBytes), alignBytes)
-                override fun readNative(addr: Long): Map<I, F> =
-                    Map(
-                        (typeLayoutI).readNative(addr),
-                        (typeLayoutF).readNative(addr + off1),
-                    )
-                override fun writeNative(addr: Long, value: Map<I, F>) {
-                    (typeLayoutI).writeNative(addr, value.iter)
-                    (typeLayoutF).writeNative(addr + off1, value.f)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Map<I, F> =
-                    Map(
-                        (typeLayoutI).readBytes(buf, offset),
-                        (typeLayoutF).readBytes(buf, offset + off1.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Map<I, F>) {
-                    (typeLayoutI).writeBytes(buf, offset, value.iter)
-                    (typeLayoutF).writeBytes(buf, offset + off1.toInt(), value.f)
-                }
-            }
-
         public fun <I, F> new(iter: I, f: F): Map<I, F> = Map(iter = iter, f = f)
     }
 }

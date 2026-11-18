@@ -155,11 +155,15 @@ public fun <T> valueAlign(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): 
  */
 public open class AlignedSystemBox<T> internal constructor(
     ptrCtorArg: NonNull,
-) {
+) : AutoCloseable {
     public var ptr: NonNull = ptrCtorArg
         internal set
 
     public val align: Int = 0
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun deref(): Value<T> = (this.ptr.asPtr())
 

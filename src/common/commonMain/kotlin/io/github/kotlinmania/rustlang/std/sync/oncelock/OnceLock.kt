@@ -142,10 +142,14 @@ public open class OnceLock<T> internal constructor(
      * ```
      */
     public var marker: Unit,
-) {
+) : AutoCloseable {
     // Whether or not the value is initialized is tracked by `once.isCompleted()`.
     public var value: UnsafeCell<MaybeUninit<T>> = valueCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     /**
      * Gets the reference to the underlying value.

@@ -1,7 +1,6 @@
 // port-lint: source io/util.rs
 package io.github.kotlinmania.rustlang.core.io.util
 
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
 import io.github.kotlinmania.rustlang.core.fmt.Arguments
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
@@ -12,12 +11,8 @@ import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
 import io.github.kotlinmania.rustlang.core.io.seek.seek
 import io.github.kotlinmania.rustlang.core.io.sizehint.SizeHint
 import io.github.kotlinmania.rustlang.core.io.write.Write
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedAddSigned
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
@@ -84,21 +79,7 @@ public open class Empty : SizeHint, Write<Empty>, Seek {
 
     public override fun streamPosition(): Result<ULong> = RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(0uL)
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<Empty> =
-            object : TypeLayout<Empty> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): Empty =
-                    Empty()
-                override fun writeNative(addr: Long, value: Empty) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Empty =
-                    Empty()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Empty) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -149,27 +130,7 @@ public open class Repeat(
 
     public open fun fmt(f: StringBuilder): RustResult<Unit, Unit> = run { DebugStruct(f, "Repeat").finishNonExhaustive(); RustResult.Ok<Unit, Unit>(Unit) }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<Repeat> =
-            object : TypeLayout<Repeat> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 1L
-                override fun readNative(addr: Long): Repeat =
-                    Repeat(
-                        (PrimitiveLayouts.U8).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Repeat) {
-                    (PrimitiveLayouts.U8).writeNative(addr, value.byte)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Repeat =
-                    Repeat(
-                        (PrimitiveLayouts.U8).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Repeat) {
-                    (PrimitiveLayouts.U8).writeBytes(buf, offset, value.byte)
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -216,21 +177,7 @@ public open class Sink : Write<Sink> {
 
     public override fun flush(): Result<Unit> = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<Sink> =
-            object : TypeLayout<Sink> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): Sink =
-                    Sink()
-                override fun writeNative(addr: Long, value: Sink) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Sink =
-                    Sink()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Sink) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -352,37 +299,7 @@ public open class Chain<T, U>(
      */
     public open fun getMut(): Pair<T, U> = Pair(this.first, this.second)
 
-    public companion object {
-        public fun <T, U> typeLayout(typeLayoutT: TypeLayout<T>, typeLayoutU: TypeLayout<U>): TypeLayout<Chain<T, U>> =
-            object : TypeLayout<Chain<T, U>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes, typeLayoutU.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutT.sizeBytes, typeLayoutU.alignBytes)
-                private val off2: Long = alignUpBytes((off1 + typeLayoutU.sizeBytes), 1L)
-                override val sizeBytes: Long = alignUpBytes((off2 + 1L), alignBytes)
-                override fun readNative(addr: Long): Chain<T, U> =
-                    Chain(
-                        (typeLayoutT).readNative(addr),
-                        (typeLayoutU).readNative(addr + off1),
-                        (PrimitiveLayouts.BOOL).readNative(addr + off2),
-                    )
-                override fun writeNative(addr: Long, value: Chain<T, U>) {
-                    (typeLayoutT).writeNative(addr, value.first)
-                    (typeLayoutU).writeNative(addr + off1, value.second)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + off2, value.doneFirst)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Chain<T, U> =
-                    Chain(
-                        (typeLayoutT).readBytes(buf, offset),
-                        (typeLayoutU).readBytes(buf, offset + off1.toInt()),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + off2.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Chain<T, U>) {
-                    (typeLayoutT).writeBytes(buf, offset, value.first)
-                    (typeLayoutU).writeBytes(buf, offset + off1.toInt(), value.second)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + off2.toInt(), value.doneFirst)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <T, U> chain(first: T, second: U): Chain<T, U> = Chain(first = first, second = second, doneFirst = false)
@@ -549,37 +466,7 @@ public open class Take<T>(
         return this::inner
     }
 
-    public companion object {
-        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Take<T>> =
-            object : TypeLayout<Take<T>> {
-                override val alignBytes: Long = listOf(8L, typeLayoutT.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutT.sizeBytes, 8L)
-                private val off2: Long = alignUpBytes((off1 + 8L), 8L)
-                override val sizeBytes: Long = alignUpBytes((off2 + 8L), alignBytes)
-                override fun readNative(addr: Long): Take<T> =
-                    Take(
-                        (typeLayoutT).readNative(addr),
-                        (PrimitiveLayouts.U64).readNative(addr + off1),
-                        (PrimitiveLayouts.U64).readNative(addr + off2),
-                    )
-                override fun writeNative(addr: Long, value: Take<T>) {
-                    (typeLayoutT).writeNative(addr, value.inner)
-                    (PrimitiveLayouts.U64).writeNative(addr + off1, value.len)
-                    (PrimitiveLayouts.U64).writeNative(addr + off2, value.limit)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Take<T> =
-                    Take(
-                        (typeLayoutT).readBytes(buf, offset),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + off1.toInt()),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + off2.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Take<T>) {
-                    (typeLayoutT).writeBytes(buf, offset, value.inner)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + off1.toInt(), value.len)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + off2.toInt(), value.limit)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <T : Seek> Take<T>.seek(pos: SeekFrom): Result<ULong> {

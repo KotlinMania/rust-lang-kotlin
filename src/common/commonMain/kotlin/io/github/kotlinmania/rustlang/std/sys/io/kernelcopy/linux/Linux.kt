@@ -232,7 +232,9 @@ public fun safeKernelCopy(source: FdMeta, sink: FdMeta): Boolean =
 public open class CopyParams(
     public var field0: FdMeta,
     public var field1: RawFd?,
-)
+) {
+    public companion object
+}
 
 public open class Copier<R : Read<R>, W : Write<W>>(
     public var read: R,
@@ -325,6 +327,8 @@ public open class Copier<R : Read<R>, W : Write<W>>(
         // fallback if none of the more specialized syscalls wants to work with these file descriptors
         return RustResult.Ok<CopyState, io.github.kotlinmania.rustlang.core.io.error.Error>(CopyState.Fallback(written))
     }
+
+    public companion object
 }
 
 public interface SpecCopy {

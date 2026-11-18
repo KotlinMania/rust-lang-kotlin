@@ -246,9 +246,13 @@ public open class Waiter internal constructor(
 public open class WaiterQueue internal constructor(
     public var stateAndQueue: AtomicPtr,
     setStateOnDropToCtorArg: StateAndQueue,
-) {
+) : AutoCloseable {
     public var setStateOnDropTo: StateAndQueue = setStateOnDropToCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun drop() {
         // Swap out our state with however we finished.
@@ -291,7 +295,11 @@ public fun toState(current: StateAndQueue): Int = current.addr() and STATE_MASK
 /**
  * A type to guard against the unwinds of stacks that nodes are located on due to panics.
  */
-public open class PanicGuard {
+public open class PanicGuard : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         run {
             when (val matchVal = panicOutput()) {

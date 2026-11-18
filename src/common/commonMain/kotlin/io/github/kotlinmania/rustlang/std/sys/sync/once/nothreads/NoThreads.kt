@@ -130,9 +130,13 @@ public sealed class State {
 public open class CompletionGuard internal constructor(
     stateCtorArg: Cell<State>,
     public var setStateOnDropTo: State,
-) {
+) : AutoCloseable {
     public var state: Cell<State> = stateCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun drop() {
         this.state.set(this.setStateOnDropTo)

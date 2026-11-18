@@ -9,13 +9,9 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf32
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -23,7 +19,6 @@ import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.num.divCeil
-import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.simd.F32x4
 import io.github.kotlinmania.rustlang.corearch.simd.F64x2
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8
@@ -810,24 +805,15 @@ public fun testVectorStore() {
 
 public fun testVectorLcbb() {
     open class Align64<T>(
-        public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
+        public var value: T,
     ) {
         public var field0: T
             get() = value
             set(v) {
                 value = v
             }
-
-        public var value: T
-            get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-        public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
-
-        public fun pointerLayout(): TypeLayout<Align64<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align64<T>(ptr, layout) }, { it.value })
     }
-    val ARRAY: Align64<UByteArray>  = Align64(List(128) { 0 }, fieldLayout = UnresolvedTypeLayout<T>())
+    val ARRAY: Align64<UByteArray>  = Align64(List(128) { 0 })
     check(lcbb(ARRAY.first[64 until ARRAY.first.size].asPtr(), 64) == 16u)
     check(lcbb(ARRAY.first[63 until ARRAY.first.size].asPtr(), 64) == 1u)
     check(lcbb(ARRAY.first[56 until ARRAY.first.size].asPtr(), 64) == 8u)

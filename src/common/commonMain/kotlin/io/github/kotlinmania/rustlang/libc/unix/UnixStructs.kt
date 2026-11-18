@@ -45,6 +45,8 @@ public open class DIR(
     public open fun clone(): DIR = DIR(data, marker)
 
     // Deprecated impls: see #5296
+
+    public companion object
 }
 
 // Note(exhaustive): review for 1.0
@@ -911,6 +913,8 @@ public open class FposT(
     public var marker: Unit,
 ) {
     public open fun clone(): FposT = FposT(data, marker)
+
+    public companion object
 }
 
 /**
@@ -930,4 +934,6 @@ public open class FILE(
     public var marker: Unit,
 ) {
     public open fun clone(): FILE = FILE(data, marker)
+
+    public companion object
 }

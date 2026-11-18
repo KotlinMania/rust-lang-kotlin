@@ -102,6 +102,8 @@ public open class Utf8Chunk(
      * [U.Fffd.Replacement.Character]: char.ReplacementCharacter
      */
     public open fun invalid(): List<UByte> = this.invalid
+
+    public companion object
 }
 
 public open class Debug(
@@ -141,6 +143,8 @@ public open class Debug(
         }
         return run { f.append('"'); Result.Ok<Unit, Unit>(Unit) }
     }
+
+    public companion object
 }
 
 /**
@@ -275,4 +279,6 @@ public open class Utf8Chunks(
     }
 
     public open fun fmt(f: Formatter): Result<Unit, Unit> = run { DebugStruct(f, "Utf8Chunks").field("source", this.debug()).finish(); Result.Ok<Unit, Unit>(Unit) }
+
+    public companion object
 }

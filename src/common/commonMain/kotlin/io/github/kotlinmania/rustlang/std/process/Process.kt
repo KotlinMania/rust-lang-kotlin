@@ -1407,6 +1407,8 @@ public open class CommandArgs(
     public open fun len(): Int = this.inner.len()
 
     public open fun isEmpty(): Boolean = this.inner.isEmpty()
+
+    public companion object
 }
 
 public fun <T> assertSend() {}
@@ -1441,6 +1443,8 @@ public open class CommandEnvs(
     public open fun isEmpty(): Boolean = this.iter.isEmpty()
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.iter.fmt(f)
+
+    public companion object
 }
 
 /**
@@ -1524,6 +1528,8 @@ public open class Output(
             } }
         return run { DebugStruct(fmt, "Output").field("status", this.status).field("stdout", stdoutDebug).field("stderr", stderrDebug).finish(); Result.Ok<Unit, Error>(Unit) }
     }
+
+    public companion object
 }
 
 /**
@@ -2020,6 +2026,8 @@ public open class ExitStatusError(
     public open fun intoStatus(): ExitStatus = ExitStatus(this.value.into())
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("process exited unsuccessfully: ${this.intoStatus()}"); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 /**

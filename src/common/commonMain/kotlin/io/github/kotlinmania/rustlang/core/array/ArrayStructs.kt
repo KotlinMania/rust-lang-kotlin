@@ -71,7 +71,11 @@ public open class Guard<T>(
      * The number of items that have been initialized so far.
      */
     public var initialized: Int,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     /**
      * Adds an item to the array and updates the initialized item counter.
      *
@@ -98,6 +102,8 @@ public open class Guard<T>(
             this.arrayMut.getUncheckedMut(0 until this.initialized).assumeInitDrop()
         }
     }
+
+    public companion object
 }
 
 /**
@@ -120,7 +126,11 @@ public open class GuardBack<T>(
      * The number of items that have been initialized so far.
      */
     public var initialized: Int,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     /**
      * Adds an item to the array and updates the initialized item counter.
      *
@@ -150,4 +160,6 @@ public open class GuardBack<T>(
             this.arrayMut.getUncheckedMut(len - this.initialized until len).assumeInitDrop()
         }
     }
+
+    public companion object
 }

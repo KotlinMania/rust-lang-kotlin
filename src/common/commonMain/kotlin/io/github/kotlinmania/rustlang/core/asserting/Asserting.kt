@@ -1,12 +1,8 @@
 // port-lint: source asserting.rs
 package io.github.kotlinmania.rustlang.core.asserting
 
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // ***** TryCapture - Generic *****
@@ -15,21 +11,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * Marker used by [Capture]
  */
 public open class TryCaptureWithoutDebug {
-    public companion object {
-        public fun typeLayout(): TypeLayout<TryCaptureWithoutDebug> =
-            object : TypeLayout<TryCaptureWithoutDebug> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): TryCaptureWithoutDebug =
-                    TryCaptureWithoutDebug()
-                override fun writeNative(addr: Long, value: TryCaptureWithoutDebug) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): TryCaptureWithoutDebug =
-                    TryCaptureWithoutDebug()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: TryCaptureWithoutDebug) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -52,21 +34,7 @@ public fun <E> Capture<E, TryCaptureWithoutDebug>.fmt(f: Formatter): Result<Unit
  * Marker used by [Capture]
  */
 public open class TryCaptureWithDebug {
-    public companion object {
-        public fun typeLayout(): TypeLayout<TryCaptureWithDebug> =
-            object : TypeLayout<TryCaptureWithDebug> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): TryCaptureWithDebug =
-                    TryCaptureWithDebug()
-                override fun writeNative(addr: Long, value: TryCaptureWithDebug) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): TryCaptureWithDebug =
-                    TryCaptureWithDebug()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: TryCaptureWithDebug) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -120,27 +88,7 @@ public open class Wrapper<T>(
             value = v
         }
 
-    public companion object {
-        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Wrapper<T>> =
-            object : TypeLayout<Wrapper<T>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): Wrapper<T> =
-                    Wrapper(
-                        (typeLayoutT).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Wrapper<T>) {
-                    (typeLayoutT).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Wrapper<T> =
-                    Wrapper(
-                        (typeLayoutT).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Wrapper<T>) {
-                    (typeLayoutT).writeBytes(buf, offset, value.value)
-                }
-            }
-    }
+    public companion object
 }
 
 /**

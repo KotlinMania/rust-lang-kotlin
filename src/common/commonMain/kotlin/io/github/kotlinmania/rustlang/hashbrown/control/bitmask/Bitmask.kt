@@ -1,11 +1,8 @@
 // port-lint: source control/bitmask.rs
 package io.github.kotlinmania.rustlang.hashbrown.control.bitmask
 
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.num.trailingZeros
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.BITMASK_ITER_MASK
 import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.BITMASK_STRIDE
 import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.BitMaskWord
@@ -94,26 +91,6 @@ public open class BitMask(
     }
 
     public companion object {
-        public fun typeLayout(): TypeLayout<BitMask> =
-            object : TypeLayout<BitMask> {
-                override val alignBytes: Long = 2L
-                override val sizeBytes: Long = 2L
-                override fun readNative(addr: Long): BitMask =
-                    BitMask(
-                        (PrimitiveLayouts.U16).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: BitMask) {
-                    (PrimitiveLayouts.U16).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): BitMask =
-                    BitMask(
-                        (PrimitiveLayouts.U16).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: BitMask) {
-                    (PrimitiveLayouts.U16).writeBytes(buf, offset, value.value)
-                }
-            }
-
         /**
          * Same as above but takes a `NonZeroBitMaskWord`.
          */
@@ -158,25 +135,5 @@ public open class BitMaskIter(
         return bit
     }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<BitMaskIter> =
-            object : TypeLayout<BitMaskIter> {
-                override val alignBytes: Long = 2L
-                override val sizeBytes: Long = 2L
-                override fun readNative(addr: Long): BitMaskIter =
-                    BitMaskIter(
-                        (BitMask.typeLayout()).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: BitMaskIter) {
-                    (BitMask.typeLayout()).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): BitMaskIter =
-                    BitMaskIter(
-                        (BitMask.typeLayout()).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: BitMaskIter) {
-                    (BitMask.typeLayout()).writeBytes(buf, offset, value.value)
-                }
-            }
-    }
+    public companion object
 }

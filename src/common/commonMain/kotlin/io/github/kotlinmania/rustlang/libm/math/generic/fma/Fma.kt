@@ -1,11 +1,8 @@
 // port-lint: source math/generic/fma.rs
 package io.github.kotlinmania.rustlang.libm.math.generic.fma
 
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.num.overflowingSub
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.libm.math.generic.scalbn.scalbn
 import io.github.kotlinmania.rustlang.libm.math.support.env.FpResult
 import io.github.kotlinmania.rustlang.libm.math.support.env.Round
@@ -225,34 +222,6 @@ public open class Norm<F : Float<F, Int, SignedInt>, Int, SignedInt>(
     }
 
     public companion object {
-        public fun <F : Float<F, Int, SignedInt>, Int, SignedInt> typeLayout(): TypeLayout<Norm<F, Int, SignedInt>> =
-            object : TypeLayout<Norm<F, Int, SignedInt>> {
-                override val alignBytes: Long = 4L
-                override val sizeBytes: Long = 12L
-                override fun readNative(addr: Long): Norm<F, Int, SignedInt> =
-                    Norm(
-                        (PrimitiveLayouts.I32).readNative(addr),
-                        (PrimitiveLayouts.I32).readNative(addr + 4L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 8L),
-                    )
-                override fun writeNative(addr: Long, value: Norm<F, Int, SignedInt>) {
-                    (PrimitiveLayouts.I32).writeNative(addr, value.m)
-                    (PrimitiveLayouts.I32).writeNative(addr + 4L, value.e)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 8L, value.neg)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Norm<F, Int, SignedInt> =
-                    Norm(
-                        (PrimitiveLayouts.I32).readBytes(buf, offset),
-                        (PrimitiveLayouts.I32).readBytes(buf, offset + 4),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 8),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Norm<F, Int, SignedInt>) {
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset, value.m)
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 4, value.e)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 8, value.neg)
-                }
-            }
-
         /**
          * Unbias the exponent and account for the mantissa's precision, including the guard bit.
          */

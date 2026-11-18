@@ -61,6 +61,8 @@ public open class FILE(
     public var marker: Unit,
 ) {
     public open fun clone(): FILE = FILE(data, marker)
+
+    public companion object
 }
 
 /**
@@ -82,6 +84,8 @@ public open class DIR(
     public open fun clone(): DIR = DIR(data, marker)
 
     // Deprecated impls: see #5296
+
+    public companion object
 }
 
 /**
@@ -101,6 +105,8 @@ public open class LocaleStruct(
     public var marker: Unit,
 ) {
     public open fun clone(): LocaleStruct = LocaleStruct(data, marker)
+
+    public companion object
 }
 
 public open class ClockidT internal constructor(

@@ -96,6 +96,8 @@ public open class PropInfo(
     public var marker: Unit,
 ) {
     public open fun clone(): PropInfo = PropInfo(data, marker)
+
+    public companion object
 }
 
 public open class StackT internal constructor(
@@ -778,6 +780,8 @@ public open class Itimerspec(
     public var itValue: Timespec,
 ) {
     public open fun clone(): Itimerspec = Itimerspec(itInterval, itValue)
+
+    public companion object
 }
 
 public open class Genlmsghdr(
@@ -1061,6 +1065,8 @@ public open class In6Pktinfo(
     public var ipi6Ifindex: CInt,
 ) {
     public open fun clone(): In6Pktinfo = In6Pktinfo(ipi6Addr, ipi6Ifindex)
+
+    public companion object
 }
 
 public open class InotifyEvent(
@@ -1822,6 +1828,8 @@ public open class InputEvent(
     public var value: S32,
 ) {
     public open fun clone(): InputEvent = InputEvent(time, type, code, value)
+
+    public companion object
 }
 
 public open class InputId(
@@ -2647,6 +2655,8 @@ public open class In6Ifreq(
     public var ifr6Ifindex: CInt,
 ) {
     public open fun clone(): In6Ifreq = In6Ifreq(ifr6Addr, ifr6Prefixlen, ifr6Ifindex)
+
+    public companion object
 }
 
 public open class SockaddrNl(
@@ -2924,6 +2934,8 @@ public open class Utmp(
     public var unused: UByteArray,
 ) {
     public open fun clone(): Utmp = Utmp(utType, utPid, utLine, utId, utUser, utHost, utExit, utSession, utTv, utAddrV6, unused)
+
+    public companion object
 }
 
 public open class SockaddrAlg(
@@ -3126,6 +3138,8 @@ public open class Mmsghdr(
     public var msgLen: CUint,
 ) {
     public open fun clone(): Mmsghdr = Mmsghdr(msgHdr, msgLen)
+
+    public companion object
 }
 
 public open class AfAlgIv(
@@ -3238,6 +3252,8 @@ public open class Ifreq(
     public var ifrIfru: CAnonymousIfrIfru,
 ) {
     public open fun clone(): Ifreq = Ifreq(ifrName, ifrIfru)
+
+    public companion object
 }
 
 public class CAnonymousIfcIfcu internal constructor(
@@ -3277,6 +3293,8 @@ public open class Ifconf(
     public var ifcIfcu: CAnonymousIfcIfcu,
 ) {
     public open fun clone(): Ifconf = Ifconf(ifcLen, ifcIfcu)
+
+    public companion object
 }
 
 public open class Ethhdr(
@@ -3397,4 +3415,6 @@ public open class SiginfoF(
     public var sifields: Sifields,
 ) {
     public open fun clone(): SiginfoF = SiginfoF(siginfoBase, sifields)
+
+    public companion object
 }

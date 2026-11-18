@@ -20,6 +20,8 @@ public open class Sigaction(
     public var saRestorer: SigactionSaRestorerCallback?,
 ) {
     public open fun clone(): Sigaction = Sigaction(saSigaction, saMask, reserved0, saFlags, saRestorer)
+
+    public companion object
 }
 
 public val SA_NOCLDSTOP: CInt = 0x00000008

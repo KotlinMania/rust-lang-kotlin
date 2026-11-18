@@ -288,7 +288,7 @@ public fun getUserDir(home: Path, kind: SysdirSearchPathDirectoryT): Result<Path
 public open class Iter(
     public var home: Path,
     public var state: SysdirSearchPathEnumerationState,
-) : Iterable<Result<PathBuf, Error>> {
+) : Iterable<Result<PathBuf, Error>>, AutoCloseable {
     override fun iterator(): Iterator<Result<PathBuf, Error>> = object : AbstractIterator<Result<PathBuf, Error>>() {
         override fun computeNext() {
             when (val v = this@Iter.next()) {
@@ -296,6 +296,10 @@ public open class Iter(
                 else -> setNext(v)
             }
         }
+    }
+
+    override fun close() {
+        this.drop()
     }
 
     public open fun drop() {

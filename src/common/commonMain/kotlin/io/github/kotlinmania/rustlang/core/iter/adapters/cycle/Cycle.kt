@@ -2,13 +2,9 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.cycle
 
 import io.github.kotlinmania.rustlang.core.clone.clone
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -122,31 +118,6 @@ public open class Cycle<I>(
     }
 
     public companion object {
-        public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<Cycle<I>> =
-            object : TypeLayout<Cycle<I>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, typeLayoutI.alignBytes)
-                override val sizeBytes: Long = alignUpBytes((off1 + typeLayoutI.sizeBytes), alignBytes)
-                override fun readNative(addr: Long): Cycle<I> =
-                    Cycle(
-                        (typeLayoutI).readNative(addr),
-                        (typeLayoutI).readNative(addr + off1),
-                    )
-                override fun writeNative(addr: Long, value: Cycle<I>) {
-                    (typeLayoutI).writeNative(addr, value.orig)
-                    (typeLayoutI).writeNative(addr + off1, value.iter)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Cycle<I> =
-                    Cycle(
-                        (typeLayoutI).readBytes(buf, offset),
-                        (typeLayoutI).readBytes(buf, offset + off1.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Cycle<I>) {
-                    (typeLayoutI).writeBytes(buf, offset, value.orig)
-                    (typeLayoutI).writeBytes(buf, offset + off1.toInt(), value.iter)
-                }
-            }
-
         public fun <I> new(iter: I, cloneIFn: (I) -> I = { it }): Cycle<I> = Cycle(orig = cloneIFn(iter), iter = iter)
     }
 }

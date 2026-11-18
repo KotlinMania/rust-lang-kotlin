@@ -141,4 +141,6 @@ public open class PanicMessage(
     public open fun fmt(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append(this.message); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun fmtDebug(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append(this.message); Result.Ok<Unit, Unit>(Unit) }
+
+    public companion object
 }

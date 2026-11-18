@@ -53,9 +53,13 @@ public val PARKED: Byte = (-1).toByte()
 public open class Parker internal constructor(
     semaphoreCtorArg: DispatchSemaphoreT,
     public var state: AtomicI8,
-) {
+) : AutoCloseable {
     public var semaphore: DispatchSemaphoreT = semaphoreCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     // Does not need `Pin`, but other implementation do.
     public open fun park() {

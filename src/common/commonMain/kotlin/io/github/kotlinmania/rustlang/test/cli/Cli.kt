@@ -45,6 +45,8 @@ public open class TestOpts(
             ColorConfig.AlwaysColor -> true
             ColorConfig.NeverColor -> false
         }
+
+    public companion object
 }
 
 /**

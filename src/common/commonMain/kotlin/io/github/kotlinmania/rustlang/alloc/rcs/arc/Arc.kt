@@ -282,9 +282,13 @@ public open class Arc<T, A : Allocator> internal constructor(
     ptrCtorArg: NonNull,
     public var phantom: Unit,
     public var alloc: A,
-) : UseCloned, Share, PinSafePointer, DerefPure, ArcEqIdent<T, A>, AsRef<T> {
+) : UseCloned, Share, PinSafePointer, DerefPure, ArcEqIdent<T, A>, AsRef<T>, AutoCloseable {
     public var ptr: NonNull = ptrCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun inner(): ArcInner<T> {
         // SAFETY: While this arc is alive we're guaranteed
@@ -1872,7 +1876,7 @@ public fun <T> Arc.Companion.fromPtr(ptr: MutPtr): Arc<T, Global> {
 public open class Weak<T, A : Allocator> internal constructor(
     ptrCtorArg: NonNull,
     public var alloc: A,
-) : UseCloned {
+) : UseCloned, AutoCloseable {
     // This is a `NonNull` to allow optimizing the size of this type in enums,
     // but it is not necessarily a valid pointer.
     // `Weak.new` sets this to `Int.MAX` so that it doesn’t need
@@ -1880,6 +1884,10 @@ public open class Weak<T, A : Allocator> internal constructor(
     // will ever have because ArcInner has alignment at least 2.
     public var ptr: NonNull = ptrCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("(Weak)"); Result.Ok<Unit, Error>(Unit) }
 
@@ -2313,7 +2321,9 @@ public open class ArcInner<T>(
     // count to keep the two reads consistent.
     public var weak: AtomicUsize,
     public var data: T,
-)
+) {
+    public companion object
+}
 
 /**
  * Calculate layout for `ArcInner<T>` using the inner value's layout
@@ -3133,7 +3143,9 @@ public fun <T> Weak.Companion.new(): Weak<T, Global> = Weak(ptr = NonNull.withou
 public open class WeakInner(
     public var weak: AtomicUsize,
     public var strong: AtomicUsize,
-)
+) {
+    public companion object
+}
 
 /**
  * Converts a raw pointer previously created by [intoRaw] back into `Weak<T>`.
@@ -3588,9 +3600,13 @@ public open class UniqueArcUninit<T, A : Allocator> internal constructor(
     ptrCtorArg: NonNull,
     public var layoutForValue: Layout,
     public var alloc: A?,
-) {
+) : AutoCloseable {
     public var ptr: NonNull = ptrCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     /**
      * Returns the pointer to be written into to initialize the [Arc].
@@ -3710,9 +3726,13 @@ public open class UniqueArc<T, A : Allocator> internal constructor(
     // references exist, we already have a form of shared mutability!
     public var marker2: Unit,
     public var alloc: A,
-) : BorrowMut<T>, AsRef<T>, AsMut<T>, PinSafePointer, DerefPure {
+) : BorrowMut<T>, AsRef<T>, AsMut<T>, PinSafePointer, DerefPure, AutoCloseable {
     public var ptr: NonNull = ptrCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 

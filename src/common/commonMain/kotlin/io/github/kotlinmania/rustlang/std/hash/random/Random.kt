@@ -5,9 +5,6 @@ import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.hash.sip.SipHasher13
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sys.random.hashmapRandomKeys
 
@@ -71,30 +68,6 @@ public open class RandomState(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "RandomState").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
-        public fun typeLayout(): TypeLayout<RandomState> =
-            object : TypeLayout<RandomState> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 16L
-                override fun readNative(addr: Long): RandomState =
-                    RandomState(
-                        (PrimitiveLayouts.U64).readNative(addr),
-                        (PrimitiveLayouts.U64).readNative(addr + 8L),
-                    )
-                override fun writeNative(addr: Long, value: RandomState) {
-                    (PrimitiveLayouts.U64).writeNative(addr, value.k0)
-                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.k1)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): RandomState =
-                    RandomState(
-                        (PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: RandomState) {
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.k0)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.k1)
-                }
-            }
-
         // rand
 
         /**

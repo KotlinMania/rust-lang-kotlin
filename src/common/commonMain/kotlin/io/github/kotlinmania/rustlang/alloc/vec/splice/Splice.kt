@@ -34,7 +34,7 @@ import io.github.kotlinmania.rustlang.core.str.len
 public open class Splice<I, A : Allocator, Item> internal constructor(
     drainCtorArg: Drain<Item, A>,
     public var replaceWith: I,
-) : Iterable<Item> {
+) : Iterable<Item>, AutoCloseable {
     public var drain: Drain<Item, A> = drainCtorArg
         internal set
 
@@ -45,6 +45,10 @@ public open class Splice<I, A : Allocator, Item> internal constructor(
                 else -> setNext(v)
             }
         }
+    }
+
+    override fun close() {
+        this.drop()
     }
 
     public open fun next(): Item? = this.drain.next()

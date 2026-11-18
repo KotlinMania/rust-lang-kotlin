@@ -61,6 +61,8 @@ public open class Bencher(
         val result = f(this)
         return result.map({ this.summary })
     }
+
+    public companion object
 }
 
 public open class BenchSamples(
@@ -68,6 +70,8 @@ public open class BenchSamples(
     public var mbS: Int,
 ) {
     public open fun clone(): BenchSamples = BenchSamples(nsIterSumm, mbS)
+
+    public companion object
 }
 
 public fun fmtBenchSamples(bs: BenchSamples): String {

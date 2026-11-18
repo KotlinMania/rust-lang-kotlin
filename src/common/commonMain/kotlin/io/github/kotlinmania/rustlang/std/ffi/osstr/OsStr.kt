@@ -1456,6 +1456,8 @@ public open class Display(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.osStr).toString()); Result.Ok<Unit, Error>(Unit) }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.osStr.inner).toString()); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 public fun joinSSlice(slice: List<S>, sep: OsStr): OsString {

@@ -151,6 +151,8 @@ public open class ThreadInit(
         }
         return this.rustStart
     }
+
+    public companion object
 }
 
 // This packet is used to communicate the return value between the spawned
@@ -164,9 +166,13 @@ public open class Packet<T> internal constructor(
     public var scope: ScopeData?,
     resultCtorArg: UnsafeCell<Result<T>?>,
     public var marker: Unit,
-) {
+) : AutoCloseable {
     public var result: UnsafeCell<Result<T>?> = resultCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     // Due to the usage of `UnsafeCell` we need to manually implement Sync.
     // The type `T` should already always be Send (otherwise the thread could not
@@ -259,4 +265,6 @@ public open class JoinInner<T>(
     public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread = this.native
 
     public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread = this.native
+
+    public companion object
 }

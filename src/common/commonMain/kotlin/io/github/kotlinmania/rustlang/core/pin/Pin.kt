@@ -1581,6 +1581,8 @@ public open class PinHelper<Ptr>(
     public fun pointerLayout(): TypeLayout<PinHelper<Ptr>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PinHelper<Ptr>(ptr, layout) }, { it.pointer })
 
     public override fun derefMut(): Target = this.pointer
+
+    public companion object
 }
 
 public interface PinDerefMutHelper<Target> {

@@ -5,8 +5,6 @@ import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.fs.createDir
 import io.github.kotlinmania.rustlang.std.fs.metadata
@@ -145,39 +143,11 @@ public open class Dir(
 public open class ExtraHomeDirs {
     public open fun clone(): ExtraHomeDirs = ExtraHomeDirs()
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<ExtraHomeDirs> =
-            object : TypeLayout<ExtraHomeDirs> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): ExtraHomeDirs =
-                    ExtraHomeDirs()
-                override fun writeNative(addr: Long, value: ExtraHomeDirs) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): ExtraHomeDirs =
-                    ExtraHomeDirs()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: ExtraHomeDirs) {
-                }
-            }
-    }
+    public companion object
 }
 
 public open class ExtraMediaDirs {
     public open fun clone(): ExtraMediaDirs = ExtraMediaDirs()
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<ExtraMediaDirs> =
-            object : TypeLayout<ExtraMediaDirs> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): ExtraMediaDirs =
-                    ExtraMediaDirs()
-                override fun writeNative(addr: Long, value: ExtraMediaDirs) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): ExtraMediaDirs =
-                    ExtraMediaDirs()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: ExtraMediaDirs) {
-                }
-            }
-    }
+    public companion object
 }

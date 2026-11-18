@@ -93,64 +93,34 @@ public open class Alignment internal constructor(
      * # Examples
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
-     * import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
-     * import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-     * import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-     * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
      * import std.mem.Alignment
      * import std.ptr.NonNull
      *
      * @feature(ptrAlignmentType, ptrMask)
      * public fun doctestEntry() {
      *     @repr(align(1))
-     *     open class Align1(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()) {
+     *     open class Align1(public var value: UByte) {
      *         public var field0: UByte
      *             get() = value
      *             set(v) {
      *                 value = v
      *             }
-     *
-     *         public var value: UByte
-     *             get() = fieldLayout.readNative(fieldStorage.rawAddress)
-     *             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-     *
-     *         public constructor(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 1L)), AlignedTypeLayout(fieldLayout, 1L))
-     *
-     *         public fun pointerLayout(): TypeLayout<Align1> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align1(ptr, layout) }, { it.value })
      *     }
      *     @repr(align(2))
-     *     open class Align2(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()) {
+     *     open class Align2(public var value: UShort) {
      *         public var field0: UShort
      *             get() = value
      *             set(v) {
      *                 value = v
      *             }
-     *
-     *         public var value: UShort
-     *             get() = fieldLayout.readNative(fieldStorage.rawAddress)
-     *             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-     *
-     *         public constructor(value: UShort, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 2L)), AlignedTypeLayout(fieldLayout, 2L))
-     *
-     *         public fun pointerLayout(): TypeLayout<Align2> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align2(ptr, layout) }, { it.value })
      *     }
      *     @repr(align(4))
-     *     open class Align4(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()) {
+     *     open class Align4(public var value: UInt) {
      *         public var field0: UInt
      *             get() = value
      *             set(v) {
      *                 value = v
      *             }
-     *
-     *         public var value: UInt
-     *             get() = fieldLayout.readNative(fieldStorage.rawAddress)
-     *             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-     *
-     *         public constructor(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
-     *
-     *         public fun pointerLayout(): TypeLayout<Align4> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align4(ptr, layout) }, { it.value })
      *     }
      *     val one = NonNull.dangling().asPtr()
      *     val two = NonNull.dangling().asPtr()

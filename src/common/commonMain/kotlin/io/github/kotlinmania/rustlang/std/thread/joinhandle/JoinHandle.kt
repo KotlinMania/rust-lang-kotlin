@@ -177,4 +177,6 @@ public open class JoinHandle<T>(
     public override fun intoInner(): Thread = this.value.intoInner()
 
     public open fun fmt(f: StringBuilder): RustResult<Unit, Error> = run { DebugStruct(f, "JoinHandle").finishNonExhaustive(); RustResult.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }

@@ -2,9 +2,6 @@
 package io.github.kotlinmania.rustlang.std.sync.poison
 
 import io.github.kotlinmania.rustlang.core.error.Error
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -150,27 +147,7 @@ public open class Guard(
 ) {
     public open fun clone(): Guard = Guard(panicking)
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<Guard> =
-            object : TypeLayout<Guard> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 1L
-                override fun readNative(addr: Long): Guard =
-                    Guard(
-                        (PrimitiveLayouts.BOOL).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Guard) {
-                    (PrimitiveLayouts.BOOL).writeNative(addr, value.panicking)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Guard =
-                    Guard(
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Guard) {
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.panicking)
-                }
-            }
-    }
+    public companion object
 }
 
 /**

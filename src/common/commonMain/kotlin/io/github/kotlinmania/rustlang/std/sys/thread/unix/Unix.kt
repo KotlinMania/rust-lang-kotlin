@@ -75,7 +75,11 @@ public val DEFAULT_MIN_STACK_SIZE: Int = 2 * 1024 * 1024
 // 0 indicates that the stack size configured in the ESP-IDF/NuttX menuconfig system should be used
 public open class Thread(
     public var id: PthreadT,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     // Some platforms may have pthreadT as a pointer in which case we still want
     // a thread to be Send/Sync
 

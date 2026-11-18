@@ -3,11 +3,8 @@
 
 package io.github.kotlinmania.rustlang.core.num.imp.dec2flt.decimal
 
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.Lemire
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 // Representation of a float as the significant digits and exponent.
 
@@ -76,37 +73,5 @@ public open class Decimal(
         }
     }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<Decimal> =
-            object : TypeLayout<Decimal> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 24L
-                override fun readNative(addr: Long): Decimal =
-                    Decimal(
-                        (PrimitiveLayouts.I64).readNative(addr),
-                        (PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 16L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 17L),
-                    )
-                override fun writeNative(addr: Long, value: Decimal) {
-                    (PrimitiveLayouts.I64).writeNative(addr, value.exponent)
-                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.mantissa)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 16L, value.negative)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 17L, value.manyDigits)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Decimal =
-                    Decimal(
-                        (PrimitiveLayouts.I64).readBytes(buf, offset),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 16),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 17),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Decimal) {
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset, value.exponent)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.mantissa)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 16, value.negative)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 17, value.manyDigits)
-                }
-            }
-    }
+    public companion object
 }

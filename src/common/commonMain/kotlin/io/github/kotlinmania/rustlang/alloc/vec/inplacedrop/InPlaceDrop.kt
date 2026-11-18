@@ -23,7 +23,11 @@ import io.github.kotlinmania.rustlang.core.str.len
 public open class InPlaceDrop<T>(
     public var inner: MutPtr,
     public var dst: MutPtr,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun len(): Int {
         // ignore-tidy-undocumented-unchecked
         return this.dst.offsetFromUnsigned((this.inner).asConstPtr())
@@ -69,11 +73,17 @@ public open class InPlaceDstDataSrcBufDrop<Src, Dest>(
     public var len: Int,
     public var srcCap: Int,
     public var src: Unit,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         // ignore-tidy-undocumented-unchecked
         run {
             this.ptr.asPtr().castSlice(this.len).dropInPlace()
         }
     }
+
+    public companion object
 }

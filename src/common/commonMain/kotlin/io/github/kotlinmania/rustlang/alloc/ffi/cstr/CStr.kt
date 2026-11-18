@@ -129,8 +129,12 @@ public open class CString(
     // Invariant 2: the slice contains only one zero byte.
     // Improper usage of unchecked function can break Invariant 2, but not Invariant 1.
     public var inner: List<UByte>,
-) : Borrow<CStr>, FromStr<NulError>, AsRef<CStr> {
+) : Borrow<CStr>, FromStr<NulError>, AsRef<CStr>, AutoCloseable {
     public open fun clone(): CString = CString(inner)
+
+    override fun close() {
+        this.drop()
+    }
 
     /**
      * Consumes the `CString` and transfers ownership of the string to a C caller.
@@ -718,6 +722,8 @@ public open class NulError(
     public open fun intoVec(): List<UByte> = this.field1
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("nul byte found in provided data at position: ${this.field0}"); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 public sealed class FromBytesWithNulErrorKind {
@@ -801,6 +807,8 @@ public open class FromVecWithNulError(
                 run { f.append("data provided is not nul terminated"); Result.Ok<Unit, Error>(Unit) }
             }
         }
+
+    public companion object
 }
 
 /**
@@ -833,6 +841,8 @@ public open class IntoStringError(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("C string contained non-utf8 bytes"); Result.Ok<Unit, Error>(Unit) }
 
     public open fun source(): Any? = this.error
+
+    public companion object
 }
 
 /**

@@ -89,9 +89,13 @@ public fun epsilon(): Duration {
  */
 public open class WaitableTimer internal constructor(
     handleCtorArg: Handle,
-) {
+) : AutoCloseable {
     public var handle: Handle = handleCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun set(duration: Duration): Result<Unit, Unit> {
         // Convert the Duration to a format similar to FILETIME.

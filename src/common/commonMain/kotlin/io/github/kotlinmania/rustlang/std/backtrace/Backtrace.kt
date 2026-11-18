@@ -396,7 +396,9 @@ public sealed class Inner {
 public open class Capture(
     public var actualStart: Int,
     public var frames: List<BacktraceFrame>,
-)
+) {
+    public companion object
+}
 
 public fun assertSendSync() {
     fun <T> assert() {}
@@ -415,6 +417,8 @@ public open class BacktraceFrame(
         dbg.entries(this.symbols)
         return run { dbg.finish(); Result.Ok<Unit, Error>(Unit) }
     }
+
+    public companion object
 }
 
 public sealed class RawFrame {
@@ -466,6 +470,8 @@ public open class BacktraceSymbol(
         }
         return run { fmt.append(" }"); Result.Ok<Unit, Error>(Unit) }
     }
+
+    public companion object
 }
 
 public sealed class BytesOrWide {

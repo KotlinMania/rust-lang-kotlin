@@ -79,7 +79,11 @@ public open class ExtractIf<T, F, A : Allocator>(
      * The filter test predicate.
      */
     public var pred: F,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     /**
      * Returns a reference to the underlying allocator.
      */

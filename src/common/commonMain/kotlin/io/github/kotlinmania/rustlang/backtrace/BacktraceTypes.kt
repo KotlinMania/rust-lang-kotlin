@@ -8,7 +8,7 @@ import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
  */
 public open class LockGuard internal constructor(
     valueCtorArg: MutexGuard<Unit>?,
-) {
+) : AutoCloseable {
     public var value: MutexGuard<Unit>? = valueCtorArg
         internal set
 
@@ -17,6 +17,10 @@ public open class LockGuard internal constructor(
         set(v) {
             value = v
         }
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun drop() {
         // Don't do anything if we're a LockGuard(None)

@@ -107,6 +107,8 @@ public open class Discriminant<T>(
     }
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = run { DebugTuple(fmt, "Discriminant").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
+
+    public companion object
 }
 
 /**
@@ -136,4 +138,6 @@ public open class DiscriminantOrd<T>(
     public open fun partialCmp(other: DiscriminantOrd<T>): Ordering? = this.value.partialCmp(other.value)
 
     public open fun cmp(other: DiscriminantOrd<T>): Ordering = this.value.cmp(other.value)
+
+    public companion object
 }

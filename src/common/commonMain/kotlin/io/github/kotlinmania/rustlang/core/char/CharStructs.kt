@@ -7,11 +7,8 @@ import io.github.kotlinmania.rustlang.core.escape.MaybeEscaped
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
@@ -537,25 +534,5 @@ public open class TryFromCharError(
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append("unicode code point out of range"); Result.Ok<Unit, Unit>(Unit) }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<TryFromCharError> =
-            object : TypeLayout<TryFromCharError> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): TryFromCharError =
-                    TryFromCharError(
-                        (PrimitiveLayouts.UNIT).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: TryFromCharError) {
-                    (PrimitiveLayouts.UNIT).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): TryFromCharError =
-                    TryFromCharError(
-                        (PrimitiveLayouts.UNIT).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: TryFromCharError) {
-                    (PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
-                }
-            }
-    }
+    public companion object
 }

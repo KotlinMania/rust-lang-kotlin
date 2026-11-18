@@ -4,7 +4,6 @@
 package io.github.kotlinmania.rustlang.core.io.cursor
 
 import io.github.kotlinmania.rustlang.core.clone.clone
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
@@ -13,12 +12,8 @@ import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.io.error.WRITE_ALL_EOF
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.checkedAddSigned
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.slice.splitAt
 import io.github.kotlinmania.rustlang.core.slice.splitAtMut
@@ -227,31 +222,6 @@ public open class Cursor<T>(
     }
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Cursor<T>> =
-            object : TypeLayout<Cursor<T>> {
-                override val alignBytes: Long = listOf(8L, typeLayoutT.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutT.sizeBytes, 8L)
-                override val sizeBytes: Long = alignUpBytes((off1 + 8L), alignBytes)
-                override fun readNative(addr: Long): Cursor<T> =
-                    Cursor(
-                        (typeLayoutT).readNative(addr),
-                        (PrimitiveLayouts.U64).readNative(addr + off1),
-                    )
-                override fun writeNative(addr: Long, value: Cursor<T>) {
-                    (typeLayoutT).writeNative(addr, value.inner)
-                    (PrimitiveLayouts.U64).writeNative(addr + off1, value.pos)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Cursor<T> =
-                    Cursor(
-                        (typeLayoutT).readBytes(buf, offset),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + off1.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Cursor<T>) {
-                    (typeLayoutT).writeBytes(buf, offset, value.inner)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + off1.toInt(), value.pos)
-                }
-            }
-
         // Note(#74481): Hard-links required to link from `core` to `alloc`
 
         /**

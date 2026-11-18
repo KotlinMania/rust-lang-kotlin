@@ -3,11 +3,7 @@ package io.github.kotlinmania.rustlang.std.sync.mpsc
 
 import io.github.kotlinmania.rustlang.core.clone.Share
 import io.github.kotlinmania.rustlang.core.clone.clone
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Error
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.len
@@ -564,6 +560,8 @@ public open class Receiver<T>(
     public open fun intoIterIntoIterator(): IntoIter<T> = IntoIter(rx = this)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Receiver").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 /**
@@ -606,6 +604,8 @@ public open class Iter<T>(
     }
 
     public open fun next(): T? = this.rx.recv().ok()
+
+    public companion object
 }
 
 /**
@@ -659,6 +659,8 @@ public open class TryIter<T>(
     }
 
     public open fun next(): T? = this.rx.tryRecv().ok()
+
+    public companion object
 }
 
 /**
@@ -702,6 +704,8 @@ public open class IntoIter<T>(
     }
 
     public open fun next(): T? = this.rx.recv().ok()
+
+    public companion object
 }
 
 /**
@@ -861,6 +865,8 @@ public open class Sender<T>(
     public open fun clone(): Sender<T> = Sender(inner = this.inner.clone())
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Sender").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 /**
@@ -1060,6 +1066,8 @@ public open class SyncSender<T>(
     public open fun clone(): SyncSender<T> = SyncSender(inner = this.inner.clone())
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "SyncSender").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 /**
@@ -1085,27 +1093,7 @@ public open class SendError<T>(
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append("sending on a closed channel"); Result.Ok<Unit, Error>(Unit) }
 
-    public companion object {
-        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<SendError<T>> =
-            object : TypeLayout<SendError<T>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): SendError<T> =
-                    SendError(
-                        (typeLayoutT).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: SendError<T>) {
-                    (typeLayoutT).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): SendError<T> =
-                    SendError(
-                        (typeLayoutT).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: SendError<T>) {
-                    (typeLayoutT).writeBytes(buf, offset, value.value)
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -1122,21 +1110,7 @@ public open class RecvError {
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("receiving on a closed channel"); Result.Ok<Unit, Error>(Unit) }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<RecvError> =
-            object : TypeLayout<RecvError> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): RecvError =
-                    RecvError()
-                override fun writeNative(addr: Long, value: RecvError) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): RecvError =
-                    RecvError()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: RecvError) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**

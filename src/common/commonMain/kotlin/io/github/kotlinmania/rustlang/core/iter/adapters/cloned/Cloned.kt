@@ -2,15 +2,11 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.cloned
 
 import io.github.kotlinmania.rustlang.core.clone.clone
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
 
@@ -31,26 +27,6 @@ public open class Cloned<I>(
     public open fun clone(): Cloned<I> = Cloned(it)
 
     public companion object {
-        public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<Cloned<I>> =
-            object : TypeLayout<Cloned<I>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutI.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): Cloned<I> =
-                    Cloned(
-                        (typeLayoutI).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Cloned<I>) {
-                    (typeLayoutI).writeNative(addr, value.it)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Cloned<I> =
-                    Cloned(
-                        (typeLayoutI).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Cloned<I>) {
-                    (typeLayoutI).writeBytes(buf, offset, value.it)
-                }
-            }
-
         public fun <I> new(it: I): Cloned<I> = Cloned(it = it)
 
         /**

@@ -76,6 +76,8 @@ public open class OnceWith<F>(
         } else {
             run { f.append("OnceWith(None)"); Result.Ok<Unit, Unit>(Unit) }
         }
+
+    public companion object
 }
 
 public fun <A> OnceWith<F>.next(): A? {

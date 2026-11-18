@@ -1,13 +1,9 @@
 // port-lint: source iter/sources/from_coroutine.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.fromcoroutine
 
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ops.coroutine.Coroutine
 import io.github.kotlinmania.rustlang.core.ops.coroutine.CoroutineState
 import io.github.kotlinmania.rustlang.core.pin.Pin
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 private class DebugStruct(
@@ -79,27 +75,7 @@ public open class FromCoroutine<G>(
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "FromCoroutine").finish(); Result.Ok<Unit, Unit>(Unit) }
 
-    public companion object {
-        public fun <G> typeLayout(typeLayoutG: TypeLayout<G>): TypeLayout<FromCoroutine<G>> =
-            object : TypeLayout<FromCoroutine<G>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutG.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutG.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): FromCoroutine<G> =
-                    FromCoroutine(
-                        (typeLayoutG).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: FromCoroutine<G>) {
-                    (typeLayoutG).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): FromCoroutine<G> =
-                    FromCoroutine(
-                        (typeLayoutG).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: FromCoroutine<G>) {
-                    (typeLayoutG).writeBytes(buf, offset, value.value)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <Yield, G : Coroutine<Unit, Yield, Unit>> FromCoroutine<G>.next(): Yield? =

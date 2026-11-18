@@ -31,6 +31,8 @@ public open class Timezone(
     public var marker: Unit,
 ) {
     public open fun clone(): Timezone = Timezone(data, marker)
+
+    public companion object
 }
 
 // note this is the struct called stat64 in Windows. Not stat, nor stati64.
@@ -330,6 +332,8 @@ public open class FILE(
     public var marker: Unit,
 ) {
     public open fun clone(): FILE = FILE(data, marker)
+
+    public companion object
 }
 
 /**
@@ -349,4 +353,6 @@ public open class FposT(
     public var marker: Unit,
 ) {
     public open fun clone(): FposT = FposT(data, marker)
+
+    public companion object
 }

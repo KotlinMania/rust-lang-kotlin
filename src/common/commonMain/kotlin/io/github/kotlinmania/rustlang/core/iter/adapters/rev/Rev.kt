@@ -1,13 +1,9 @@
 // port-lint: source iter/adapters/rev.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.rev
 
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
@@ -46,26 +42,6 @@ public open class Rev<T>(
     public open fun intoInner(): T = this.iter
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Rev<T>> =
-            object : TypeLayout<Rev<T>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): Rev<T> =
-                    Rev(
-                        (typeLayoutT).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Rev<T>) {
-                    (typeLayoutT).writeNative(addr, value.iter)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Rev<T> =
-                    Rev(
-                        (typeLayoutT).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Rev<T>) {
-                    (typeLayoutT).writeBytes(buf, offset, value.iter)
-                }
-            }
-
         public fun <T> new(iter: T): Rev<T> = Rev(iter = iter)
     }
 }

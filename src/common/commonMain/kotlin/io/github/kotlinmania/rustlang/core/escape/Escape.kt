@@ -2,12 +2,10 @@
 package io.github.kotlinmania.rustlang.core.escape
 
 import io.github.kotlinmania.rustlang.core.convert.num.from
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.range.Range
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
@@ -118,21 +116,7 @@ public open class MaybeEscapedCharacter(
 public open class AlwaysEscaped {
     public open fun clone(): AlwaysEscaped = AlwaysEscaped()
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<AlwaysEscaped> =
-            object : TypeLayout<AlwaysEscaped> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): AlwaysEscaped =
-                    AlwaysEscaped()
-                override fun writeNative(addr: Long, value: AlwaysEscaped) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): AlwaysEscaped =
-                    AlwaysEscaped()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: AlwaysEscaped) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -142,21 +126,7 @@ public open class AlwaysEscaped {
 public open class MaybeEscaped {
     public open fun clone(): MaybeEscaped = MaybeEscaped()
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<MaybeEscaped> =
-            object : TypeLayout<MaybeEscaped> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): MaybeEscaped =
-                    MaybeEscaped()
-                override fun writeNative(addr: Long, value: MaybeEscaped) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): MaybeEscaped =
-                    MaybeEscaped()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: MaybeEscaped) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**

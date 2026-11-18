@@ -60,4 +60,6 @@ public open class ByRefSized<I>(
     }
 
     public open fun <Residual, B, R> tryRfold(init: B, f: (B, Item) -> R, tryRfoldIFn: (I, B, (B, Item) -> R) -> R): R where R : Try<R, B, Residual> = tryRfoldIFn(this.value, init, f)
+
+    public companion object
 }

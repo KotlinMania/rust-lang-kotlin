@@ -1,14 +1,10 @@
 // port-lint: source iter/adapters/inspect.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.inspect
 
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
@@ -67,31 +63,6 @@ public open class Inspect<I, F>(
     }
 
     public companion object {
-        public fun <I, F> typeLayout(typeLayoutI: TypeLayout<I>, typeLayoutF: TypeLayout<F>): TypeLayout<Inspect<I, F>> =
-            object : TypeLayout<Inspect<I, F>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes, typeLayoutF.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, typeLayoutF.alignBytes)
-                override val sizeBytes: Long = alignUpBytes((off1 + typeLayoutF.sizeBytes), alignBytes)
-                override fun readNative(addr: Long): Inspect<I, F> =
-                    Inspect(
-                        (typeLayoutI).readNative(addr),
-                        (typeLayoutF).readNative(addr + off1),
-                    )
-                override fun writeNative(addr: Long, value: Inspect<I, F>) {
-                    (typeLayoutI).writeNative(addr, value.iter)
-                    (typeLayoutF).writeNative(addr + off1, value.f)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Inspect<I, F> =
-                    Inspect(
-                        (typeLayoutI).readBytes(buf, offset),
-                        (typeLayoutF).readBytes(buf, offset + off1.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Inspect<I, F>) {
-                    (typeLayoutI).writeBytes(buf, offset, value.iter)
-                    (typeLayoutF).writeBytes(buf, offset + off1.toInt(), value.f)
-                }
-            }
-
         public fun <I, F> new(iter: I, f: F): Inspect<I, F> = Inspect(iter = iter, f = f)
     }
 }

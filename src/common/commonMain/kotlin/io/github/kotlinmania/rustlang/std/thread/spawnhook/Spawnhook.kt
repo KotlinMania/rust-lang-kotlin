@@ -9,8 +9,12 @@ import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 
 public open class SpawnHooks(
     public var first: SpawnHook?,
-) {
+) : AutoCloseable {
     public open fun clone(): SpawnHooks = SpawnHooks(first)
+
+    override fun close() {
+        this.drop()
+    }
 
     // Manually implement drop to prevent deep recursion when dropping linked Arc list.
     public open fun drop() {
@@ -24,12 +28,16 @@ public open class SpawnHooks(
             next = n
         }
     }
+
+    public companion object
 }
 
 public open class SpawnHook(
     public var hook: (Thread) -> () -> Unit,
     public var next: SpawnHook?,
-)
+) {
+    public companion object
+}
 
 /**
  * Registers a function to run for every newly thread spawned.
@@ -147,4 +155,6 @@ public open class ChildSpawnHooks(
             run()
         }
     }
+
+    public companion object
 }

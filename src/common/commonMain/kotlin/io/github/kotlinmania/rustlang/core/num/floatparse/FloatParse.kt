@@ -198,6 +198,8 @@ public open class ParseFloatError(
             FloatErrorKind.Empty -> "cannot parse float from empty string"
             FloatErrorKind.Invalid -> "invalid float literal"
         }.fmt(f)
+
+    public companion object
 }
 
 /**

@@ -346,6 +346,8 @@ public open class Statfs(
     public var fSpare: LongArray,
 ) {
     public open fun clone(): Statfs = Statfs(fType, fBsize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFsid, fNamelen, fFrsize, fFlags, fSpare)
+
+    public companion object
 }
 
 public open class Statfs64(
@@ -363,6 +365,8 @@ public open class Statfs64(
     public var fSpare: LongArray,
 ) {
     public open fun clone(): Statfs64 = Statfs64(fType, fBsize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFsid, fNamelen, fFrsize, fFlags, fSpare)
+
+    public companion object
 }
 
 public open class StackT internal constructor(
@@ -961,6 +965,8 @@ public open class McontextT(
     public var fpregs: RiscvMcFpState,
 ) {
     public open fun clone(): McontextT = McontextT(gregs, fpregs)
+
+    public companion object
 }
 
 public open class RiscvMcFpState(
