@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.simd.I32x16
 import io.github.kotlinmania.rustlang.corearch.simd.I32x4
@@ -82,7 +81,7 @@ public fun mm512ConflictEpi32(a: M512i): M512i = transmuteWithLayouts<I32x16, M5
 public fun mm512MaskConflictEpi32(src: M512i, k: Mmask16, a: M512i): M512i =
     run {
         val conflict = mm512ConflictEpi32(a).asI32x16()
-        transmute(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = src.asI32x16(); simdArg1 })
+        transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = src.asI32x16(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -93,7 +92,7 @@ public fun mm512MaskConflictEpi32(src: M512i, k: Mmask16, a: M512i): M512i =
 public fun mm512MaskzConflictEpi32(k: Mmask16, a: M512i): M512i =
     run {
         val conflict = mm512ConflictEpi32(a).asI32x16()
-        transmute(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = Simd<Int>(List(16) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = Simd<Int>(List(16) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -111,7 +110,7 @@ public fun mm256ConflictEpi32(a: M256i): M256i = transmuteWithLayouts<I32x8, M25
 public fun mm256MaskConflictEpi32(src: M256i, k: Mmask8, a: M256i): M256i =
     run {
         val conflict = mm256ConflictEpi32(a).asI32x8()
-        transmute(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = src.asI32x8(); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = src.asI32x8(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -122,7 +121,7 @@ public fun mm256MaskConflictEpi32(src: M256i, k: Mmask8, a: M256i): M256i =
 public fun mm256MaskzConflictEpi32(k: Mmask8, a: M256i): M256i =
     run {
         val conflict = mm256ConflictEpi32(a).asI32x8()
-        transmute(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = Simd<Int>(List(8) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = Simd<Int>(List(8) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -140,7 +139,7 @@ public fun mmConflictEpi32(a: M128i): M128i = transmuteWithLayouts<I32x4, M128i>
 public fun mmMaskConflictEpi32(src: M128i, k: Mmask8, a: M128i): M128i =
     run {
         val conflict = mmConflictEpi32(a).asI32x4()
-        transmute(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = src.asI32x4(); simdArg1 })
+        transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = src.asI32x4(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -151,7 +150,7 @@ public fun mmMaskConflictEpi32(src: M128i, k: Mmask8, a: M128i): M128i =
 public fun mmMaskzConflictEpi32(k: Mmask8, a: M128i): M128i =
     run {
         val conflict = mmConflictEpi32(a).asI32x4()
-        transmute(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = Simd<Int>(List(4) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = Simd<Int>(List(4) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -169,7 +168,7 @@ public fun mm512ConflictEpi64(a: M512i): M512i = transmuteWithLayouts<I64x8, M51
 public fun mm512MaskConflictEpi64(src: M512i, k: Mmask8, a: M512i): M512i =
     run {
         val conflict = mm512ConflictEpi64(a).asI64x8()
-        transmute(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = src.asI64x8(); simdArg1 })
+        transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = src.asI64x8(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -180,7 +179,7 @@ public fun mm512MaskConflictEpi64(src: M512i, k: Mmask8, a: M512i): M512i =
 public fun mm512MaskzConflictEpi64(k: Mmask8, a: M512i): M512i =
     run {
         val conflict = mm512ConflictEpi64(a).asI64x8()
-        transmute(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = Simd<Long>(List(8) { 0L }); simdArg1 })
+        transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = Simd<Long>(List(8) { 0L }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -198,7 +197,7 @@ public fun mm256ConflictEpi64(a: M256i): M256i = transmuteWithLayouts<I64x4, M25
 public fun mm256MaskConflictEpi64(src: M256i, k: Mmask8, a: M256i): M256i =
     run {
         val conflict = mm256ConflictEpi64(a).asI64x4()
-        transmute(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = src.asI64x4(); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = src.asI64x4(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -209,7 +208,7 @@ public fun mm256MaskConflictEpi64(src: M256i, k: Mmask8, a: M256i): M256i =
 public fun mm256MaskzConflictEpi64(k: Mmask8, a: M256i): M256i =
     run {
         val conflict = mm256ConflictEpi64(a).asI64x4()
-        transmute(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = Simd<Long>(List(4) { 0L }); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = Simd<Long>(List(4) { 0L }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -227,7 +226,7 @@ public fun mmConflictEpi64(a: M128i): M128i = transmuteWithLayouts<I64x2, M128i>
 public fun mmMaskConflictEpi64(src: M128i, k: Mmask8, a: M128i): M128i =
     run {
         val conflict = mmConflictEpi64(a).asI64x2()
-        transmute(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = src.asI64x2(); simdArg1 })
+        transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = src.asI64x2(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -238,7 +237,7 @@ public fun mmMaskConflictEpi64(src: M128i, k: Mmask8, a: M128i): M128i =
 public fun mmMaskzConflictEpi64(k: Mmask8, a: M128i): M128i =
     run {
         val conflict = mmConflictEpi64(a).asI64x2()
-        transmute(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = Simd<Long>(List(2) { 0L }); simdArg1 })
+        transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = k; val simdArg1 = conflict; val simdArg2 = Simd<Long>(List(2) { 0L }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -246,7 +245,7 @@ public fun mmMaskzConflictEpi64(k: Mmask8, a: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_lzcnt_epi32&expand=3491)
  */
-public fun mm512LzcntEpi32(a: M512i): M512i = transmute(run { val simdArg0 = a.asI32x16(); simdArg0 })
+public fun mm512LzcntEpi32(a: M512i): M512i = transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = a.asI32x16(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Counts the number of leading zero bits in each packed 32-bit integer in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -256,7 +255,7 @@ public fun mm512LzcntEpi32(a: M512i): M512i = transmute(run { val simdArg0 = a.a
 public fun mm512MaskLzcntEpi32(src: M512i, k: Mmask16, a: M512i): M512i =
     run {
         val zerocount = mm512LzcntEpi32(a).asI32x16()
-        transmute(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = src.asI32x16(); simdArg1 })
+        transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = src.asI32x16(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -267,7 +266,7 @@ public fun mm512MaskLzcntEpi32(src: M512i, k: Mmask16, a: M512i): M512i =
 public fun mm512MaskzLzcntEpi32(k: Mmask16, a: M512i): M512i =
     run {
         val zerocount = mm512LzcntEpi32(a).asI32x16()
-        transmute(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = Simd<Int>(List(16) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = Simd<Int>(List(16) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -275,7 +274,7 @@ public fun mm512MaskzLzcntEpi32(k: Mmask16, a: M512i): M512i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_lzcnt_epi32&expand=3488)
  */
-public fun mm256LzcntEpi32(a: M256i): M256i = transmute(run { val simdArg0 = a.asI32x8(); simdArg0 })
+public fun mm256LzcntEpi32(a: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI32x8(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Counts the number of leading zero bits in each packed 32-bit integer in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -285,7 +284,7 @@ public fun mm256LzcntEpi32(a: M256i): M256i = transmute(run { val simdArg0 = a.a
 public fun mm256MaskLzcntEpi32(src: M256i, k: Mmask8, a: M256i): M256i =
     run {
         val zerocount = mm256LzcntEpi32(a).asI32x8()
-        transmute(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = src.asI32x8(); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = src.asI32x8(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -296,7 +295,7 @@ public fun mm256MaskLzcntEpi32(src: M256i, k: Mmask8, a: M256i): M256i =
 public fun mm256MaskzLzcntEpi32(k: Mmask8, a: M256i): M256i =
     run {
         val zerocount = mm256LzcntEpi32(a).asI32x8()
-        transmute(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = Simd<Int>(List(8) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = Simd<Int>(List(8) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -304,7 +303,7 @@ public fun mm256MaskzLzcntEpi32(k: Mmask8, a: M256i): M256i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_lzcnt_epi32&expand=3485)
  */
-public fun mmLzcntEpi32(a: M128i): M128i = transmute(run { val simdArg0 = a.asI32x4(); simdArg0 })
+public fun mmLzcntEpi32(a: M128i): M128i = transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = a.asI32x4(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Counts the number of leading zero bits in each packed 32-bit integer in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -314,7 +313,7 @@ public fun mmLzcntEpi32(a: M128i): M128i = transmute(run { val simdArg0 = a.asI3
 public fun mmMaskLzcntEpi32(src: M128i, k: Mmask8, a: M128i): M128i =
     run {
         val zerocount = mmLzcntEpi32(a).asI32x4()
-        transmute(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = src.asI32x4(); simdArg1 })
+        transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = src.asI32x4(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -325,7 +324,7 @@ public fun mmMaskLzcntEpi32(src: M128i, k: Mmask8, a: M128i): M128i =
 public fun mmMaskzLzcntEpi32(k: Mmask8, a: M128i): M128i =
     run {
         val zerocount = mmLzcntEpi32(a).asI32x4()
-        transmute(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = Simd<Int>(List(4) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = Simd<Int>(List(4) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -333,7 +332,7 @@ public fun mmMaskzLzcntEpi32(k: Mmask8, a: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_lzcnt_epi64&expand=3500)
  */
-public fun mm512LzcntEpi64(a: M512i): M512i = transmute(run { val simdArg0 = a.asI64x8(); simdArg0 })
+public fun mm512LzcntEpi64(a: M512i): M512i = transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = a.asI64x8(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Counts the number of leading zero bits in each packed 64-bit integer in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -343,7 +342,7 @@ public fun mm512LzcntEpi64(a: M512i): M512i = transmute(run { val simdArg0 = a.a
 public fun mm512MaskLzcntEpi64(src: M512i, k: Mmask8, a: M512i): M512i =
     run {
         val zerocount = mm512LzcntEpi64(a).asI64x8()
-        transmute(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = src.asI64x8(); simdArg1 })
+        transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = src.asI64x8(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -354,7 +353,7 @@ public fun mm512MaskLzcntEpi64(src: M512i, k: Mmask8, a: M512i): M512i =
 public fun mm512MaskzLzcntEpi64(k: Mmask8, a: M512i): M512i =
     run {
         val zerocount = mm512LzcntEpi64(a).asI64x8()
-        transmute(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = Simd<Long>(List(8) { 0L }); simdArg1 })
+        transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = Simd<Long>(List(8) { 0L }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -362,7 +361,7 @@ public fun mm512MaskzLzcntEpi64(k: Mmask8, a: M512i): M512i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_lzcnt_epi64&expand=3497)
  */
-public fun mm256LzcntEpi64(a: M256i): M256i = transmute(run { val simdArg0 = a.asI64x4(); simdArg0 })
+public fun mm256LzcntEpi64(a: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI64x4(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Counts the number of leading zero bits in each packed 64-bit integer in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -372,7 +371,7 @@ public fun mm256LzcntEpi64(a: M256i): M256i = transmute(run { val simdArg0 = a.a
 public fun mm256MaskLzcntEpi64(src: M256i, k: Mmask8, a: M256i): M256i =
     run {
         val zerocount = mm256LzcntEpi64(a).asI64x4()
-        transmute(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = src.asI64x4(); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = src.asI64x4(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -383,7 +382,7 @@ public fun mm256MaskLzcntEpi64(src: M256i, k: Mmask8, a: M256i): M256i =
 public fun mm256MaskzLzcntEpi64(k: Mmask8, a: M256i): M256i =
     run {
         val zerocount = mm256LzcntEpi64(a).asI64x4()
-        transmute(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = Simd<Long>(List(4) { 0L }); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = Simd<Long>(List(4) { 0L }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -391,7 +390,7 @@ public fun mm256MaskzLzcntEpi64(k: Mmask8, a: M256i): M256i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_lzcnt_epi64&expand=3494)
  */
-public fun mmLzcntEpi64(a: M128i): M128i = transmute(run { val simdArg0 = a.asI64x2(); simdArg0 })
+public fun mmLzcntEpi64(a: M128i): M128i = transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = a.asI64x2(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Counts the number of leading zero bits in each packed 64-bit integer in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -401,7 +400,7 @@ public fun mmLzcntEpi64(a: M128i): M128i = transmute(run { val simdArg0 = a.asI6
 public fun mmMaskLzcntEpi64(src: M128i, k: Mmask8, a: M128i): M128i =
     run {
         val zerocount = mmLzcntEpi64(a).asI64x2()
-        transmute(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = src.asI64x2(); simdArg1 })
+        transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = src.asI64x2(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -412,7 +411,7 @@ public fun mmMaskLzcntEpi64(src: M128i, k: Mmask8, a: M128i): M128i =
 public fun mmMaskzLzcntEpi64(k: Mmask8, a: M128i): M128i =
     run {
         val zerocount = mmLzcntEpi64(a).asI64x2()
-        transmute(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = Simd<Long>(List(2) { 0L }); simdArg1 })
+        transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = k; val simdArg1 = zerocount; val simdArg2 = Simd<Long>(List(2) { 0L }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 public expect fun vpconflictd(a: I32x16): I32x16

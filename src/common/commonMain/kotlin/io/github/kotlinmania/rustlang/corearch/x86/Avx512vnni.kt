@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.simd.I16x16
 import io.github.kotlinmania.rustlang.corearch.simd.I16x32
@@ -36,7 +35,7 @@ public fun mm512DpwssdEpi32(src: M512i, a: M512i, b: M512i): M512i = transmuteWi
 public fun mm512MaskDpwssdEpi32(src: M512i, k: Mmask16, a: M512i, b: M512i): M512i =
     run {
         val r = mm512DpwssdEpi32(src, a, b).asI32x16()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x16(); simdArg1 })
+        transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x16(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -47,7 +46,7 @@ public fun mm512MaskDpwssdEpi32(src: M512i, k: Mmask16, a: M512i, b: M512i): M51
 public fun mm512MaskzDpwssdEpi32(k: Mmask16, src: M512i, a: M512i, b: M512i): M512i =
     run {
         val r = mm512DpwssdEpi32(src, a, b).asI32x16()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(16) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(16) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -72,7 +71,7 @@ public fun mm256DpwssdEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWi
 public fun mm256MaskDpwssdEpi32(src: M256i, k: Mmask8, a: M256i, b: M256i): M256i =
     run {
         val r = mm256DpwssdEpi32(src, a, b).asI32x8()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x8(); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x8(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -83,7 +82,7 @@ public fun mm256MaskDpwssdEpi32(src: M256i, k: Mmask8, a: M256i, b: M256i): M256
 public fun mm256MaskzDpwssdEpi32(k: Mmask8, src: M256i, a: M256i, b: M256i): M256i =
     run {
         val r = mm256DpwssdEpi32(src, a, b).asI32x8()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(8) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(8) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -108,7 +107,7 @@ public fun mmDpwssdEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithL
 public fun mmMaskDpwssdEpi32(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val r = mmDpwssdEpi32(src, a, b).asI32x4()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x4(); simdArg1 })
+        transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x4(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -119,7 +118,7 @@ public fun mmMaskDpwssdEpi32(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzDpwssdEpi32(k: Mmask8, src: M128i, a: M128i, b: M128i): M128i =
     run {
         val r = mmDpwssdEpi32(src, a, b).asI32x4()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(4) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(4) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -137,7 +136,7 @@ public fun mm512DpwssdsEpi32(src: M512i, a: M512i, b: M512i): M512i = transmuteW
 public fun mm512MaskDpwssdsEpi32(src: M512i, k: Mmask16, a: M512i, b: M512i): M512i =
     run {
         val r = mm512DpwssdsEpi32(src, a, b).asI32x16()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x16(); simdArg1 })
+        transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x16(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -148,7 +147,7 @@ public fun mm512MaskDpwssdsEpi32(src: M512i, k: Mmask16, a: M512i, b: M512i): M5
 public fun mm512MaskzDpwssdsEpi32(k: Mmask16, src: M512i, a: M512i, b: M512i): M512i =
     run {
         val r = mm512DpwssdsEpi32(src, a, b).asI32x16()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(16) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(16) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -173,7 +172,7 @@ public fun mm256DpwssdsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteW
 public fun mm256MaskDpwssdsEpi32(src: M256i, k: Mmask8, a: M256i, b: M256i): M256i =
     run {
         val r = mm256DpwssdsEpi32(src, a, b).asI32x8()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x8(); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x8(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -184,7 +183,7 @@ public fun mm256MaskDpwssdsEpi32(src: M256i, k: Mmask8, a: M256i, b: M256i): M25
 public fun mm256MaskzDpwssdsEpi32(k: Mmask8, src: M256i, a: M256i, b: M256i): M256i =
     run {
         val r = mm256DpwssdsEpi32(src, a, b).asI32x8()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(8) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(8) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -209,7 +208,7 @@ public fun mmDpwssdsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWith
 public fun mmMaskDpwssdsEpi32(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val r = mmDpwssdsEpi32(src, a, b).asI32x4()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x4(); simdArg1 })
+        transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x4(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -220,7 +219,7 @@ public fun mmMaskDpwssdsEpi32(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i 
 public fun mmMaskzDpwssdsEpi32(k: Mmask8, src: M128i, a: M128i, b: M128i): M128i =
     run {
         val r = mmDpwssdsEpi32(src, a, b).asI32x4()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(4) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(4) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -238,7 +237,7 @@ public fun mm512DpbusdEpi32(src: M512i, a: M512i, b: M512i): M512i = transmuteWi
 public fun mm512MaskDpbusdEpi32(src: M512i, k: Mmask16, a: M512i, b: M512i): M512i =
     run {
         val r = mm512DpbusdEpi32(src, a, b).asI32x16()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x16(); simdArg1 })
+        transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x16(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -249,7 +248,7 @@ public fun mm512MaskDpbusdEpi32(src: M512i, k: Mmask16, a: M512i, b: M512i): M51
 public fun mm512MaskzDpbusdEpi32(k: Mmask16, src: M512i, a: M512i, b: M512i): M512i =
     run {
         val r = mm512DpbusdEpi32(src, a, b).asI32x16()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(16) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(16) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -274,7 +273,7 @@ public fun mm256DpbusdEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteWi
 public fun mm256MaskDpbusdEpi32(src: M256i, k: Mmask8, a: M256i, b: M256i): M256i =
     run {
         val r = mm256DpbusdEpi32(src, a, b).asI32x8()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x8(); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x8(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -285,7 +284,7 @@ public fun mm256MaskDpbusdEpi32(src: M256i, k: Mmask8, a: M256i, b: M256i): M256
 public fun mm256MaskzDpbusdEpi32(k: Mmask8, src: M256i, a: M256i, b: M256i): M256i =
     run {
         val r = mm256DpbusdEpi32(src, a, b).asI32x8()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(8) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(8) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -310,7 +309,7 @@ public fun mmDpbusdEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWithL
 public fun mmMaskDpbusdEpi32(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val r = mmDpbusdEpi32(src, a, b).asI32x4()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x4(); simdArg1 })
+        transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x4(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -321,7 +320,7 @@ public fun mmMaskDpbusdEpi32(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzDpbusdEpi32(k: Mmask8, src: M128i, a: M128i, b: M128i): M128i =
     run {
         val r = mmDpbusdEpi32(src, a, b).asI32x4()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(4) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(4) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -339,7 +338,7 @@ public fun mm512DpbusdsEpi32(src: M512i, a: M512i, b: M512i): M512i = transmuteW
 public fun mm512MaskDpbusdsEpi32(src: M512i, k: Mmask16, a: M512i, b: M512i): M512i =
     run {
         val r = mm512DpbusdsEpi32(src, a, b).asI32x16()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x16(); simdArg1 })
+        transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x16(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -350,7 +349,7 @@ public fun mm512MaskDpbusdsEpi32(src: M512i, k: Mmask16, a: M512i, b: M512i): M5
 public fun mm512MaskzDpbusdsEpi32(k: Mmask16, src: M512i, a: M512i, b: M512i): M512i =
     run {
         val r = mm512DpbusdsEpi32(src, a, b).asI32x16()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(16) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M512i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(16) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512i>())
     }
 
 /**
@@ -375,7 +374,7 @@ public fun mm256DpbusdsEpi32(src: M256i, a: M256i, b: M256i): M256i = transmuteW
 public fun mm256MaskDpbusdsEpi32(src: M256i, k: Mmask8, a: M256i, b: M256i): M256i =
     run {
         val r = mm256DpbusdsEpi32(src, a, b).asI32x8()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x8(); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x8(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -386,7 +385,7 @@ public fun mm256MaskDpbusdsEpi32(src: M256i, k: Mmask8, a: M256i, b: M256i): M25
 public fun mm256MaskzDpbusdsEpi32(k: Mmask8, src: M256i, a: M256i, b: M256i): M256i =
     run {
         val r = mm256DpbusdsEpi32(src, a, b).asI32x8()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(8) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(8) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -411,7 +410,7 @@ public fun mmDpbusdsEpi32(src: M128i, a: M128i, b: M128i): M128i = transmuteWith
 public fun mmMaskDpbusdsEpi32(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val r = mmDpbusdsEpi32(src, a, b).asI32x4()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x4(); simdArg1 })
+        transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI32x4(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -422,7 +421,7 @@ public fun mmMaskDpbusdsEpi32(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i 
 public fun mmMaskzDpbusdsEpi32(k: Mmask8, src: M128i, a: M128i, b: M128i): M128i =
     run {
         val r = mmDpbusdsEpi32(src, a, b).asI32x4()
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(4) { 0 }); simdArg1 })
+        transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = Simd<Int>(List(4) { 0 }); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**

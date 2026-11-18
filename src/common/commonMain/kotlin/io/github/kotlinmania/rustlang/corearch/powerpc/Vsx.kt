@@ -309,12 +309,12 @@ public interface VectorMergeEo<T> {
 }
 
 public fun mergee(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt {
-    val p = transmute(Simd<UByte>(listOf(0x00u.toUByte(), 0x01u.toUByte(), 0x02u.toUByte(), 0x03u.toUByte(), 0x10u.toUByte(), 0x11u.toUByte(), 0x12u.toUByte(), 0x13u.toUByte(), 0x08u.toUByte(), 0x09u.toUByte(), 0x0Au.toUByte(), 0x0Bu.toUByte(), 0x18u.toUByte(), 0x19u.toUByte(), 0x1Au.toUByte(), 0x1Bu.toUByte())))
+    val p = transmuteWithLayouts<Any?, VectorSignedInt>(Simd<UByte>(listOf(0x00u.toUByte(), 0x01u.toUByte(), 0x02u.toUByte(), 0x03u.toUByte(), 0x10u.toUByte(), 0x11u.toUByte(), 0x12u.toUByte(), 0x13u.toUByte(), 0x08u.toUByte(), 0x09u.toUByte(), 0x0Au.toUByte(), 0x0Bu.toUByte(), 0x18u.toUByte(), 0x19u.toUByte(), 0x1Au.toUByte(), 0x1Bu.toUByte())), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedInt>())
     return vecPerm(a, b, p)
 }
 
 public fun mergeo(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt {
-    val p = transmute(Simd<UByte>(listOf(0x04u.toUByte(), 0x05u.toUByte(), 0x06u.toUByte(), 0x07u.toUByte(), 0x14u.toUByte(), 0x15u.toUByte(), 0x16u.toUByte(), 0x17u.toUByte(), 0x0Cu.toUByte(), 0x0Du.toUByte(), 0x0Eu.toUByte(), 0x0Fu.toUByte(), 0x1Cu.toUByte(), 0x1Du.toUByte(), 0x1Eu.toUByte(), 0x1Fu.toUByte())))
+    val p = transmuteWithLayouts<Any?, VectorSignedInt>(Simd<UByte>(listOf(0x04u.toUByte(), 0x05u.toUByte(), 0x06u.toUByte(), 0x07u.toUByte(), 0x14u.toUByte(), 0x15u.toUByte(), 0x16u.toUByte(), 0x17u.toUByte(), 0x0Cu.toUByte(), 0x0Du.toUByte(), 0x0Eu.toUByte(), 0x0Fu.toUByte(), 0x1Cu.toUByte(), 0x1Du.toUByte(), 0x1Eu.toUByte(), 0x1Fu.toUByte())), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorSignedInt>())
     return vecPerm(a, b, p)
 }
 

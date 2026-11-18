@@ -12,7 +12,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.libc.systemPropertyGet
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.PROP_VALUE_MAX
-import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
+import io.github.kotlinmania.rustlang.stddetect.detect.arch.aarch64.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
 import io.github.kotlinmania.rustlang.stddetect.detect.cache.Initializer
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.AuxVec

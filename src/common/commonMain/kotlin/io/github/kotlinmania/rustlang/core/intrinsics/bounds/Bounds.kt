@@ -4,6 +4,8 @@ package io.github.kotlinmania.rustlang.core.intrinsics.bounds
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.ops.arith.Add
+import io.github.kotlinmania.rustlang.core.ops.arith.Mul
 
 // Various traits used to restrict intrinsics to not-completely-wrong types.
 

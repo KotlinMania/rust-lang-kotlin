@@ -1,5 +1,5 @@
 // port-lint: source detect/arch/s390x.rs
-package io.github.kotlinmania.rustlang.stddetect.detect.arch
+package io.github.kotlinmania.rustlang.stddetect.detect.arch.s390x
 
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.stddetect.detect.checkFor

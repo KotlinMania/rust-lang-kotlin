@@ -3,6 +3,8 @@ package io.github.kotlinmania.rustlang.core.fmt.builders
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.default.Default
+import io.github.kotlinmania.rustlang.core.default.default
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout

@@ -2,8 +2,9 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.windows.c.getthreaddescription
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
@@ -50,7 +51,7 @@ public fun loadFromModule(module: Module?): F =
             else -> {
                 val f = matchVal
                 PTR.store(f.asPtr(), Ordering.Relaxed)
-                transmute(f)
+                transmuteWithLayouts<Any?, F>(f, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<F>())
             }
         }
     }
@@ -63,6 +64,6 @@ public fun fallback(hthread: Handle, lpthreaddescription: MutPtr): Hresult =
 
 public fun call(hthread: Handle, lpthreaddescription: MutPtr): Hresult =
     run {
-        val func: F = transmute(PTR.load(Ordering.Relaxed))
+        val func: F = transmuteWithLayouts<Any?, F>(PTR.load(Ordering.Relaxed), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<F>())
         func(hthread, lpthreaddescription)
     }

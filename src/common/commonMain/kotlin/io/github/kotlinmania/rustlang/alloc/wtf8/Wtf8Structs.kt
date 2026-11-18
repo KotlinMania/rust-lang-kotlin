@@ -4,7 +4,6 @@ import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.core.char.methods.encodeUtf8Raw
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.wtf8.CodePoint
@@ -331,7 +330,7 @@ public open class Wtf8Buf(
         // SAFETY: `Wtf8` is a transparent wrapper around `[UByte]`, and
         // `self.bytes.intoBoxedSlice()` returns a `Holder<[UByte]>`.
         // Therefore, transmuting `Holder<[UByte]>` to `Holder<Wtf8>` is safe.
-        return transmute(this.bytes.intoBoxedSlice())
+        return transmuteWithLayouts<Any?, Wtf8>(this.bytes.intoBoxedSlice(), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Wtf8>())
     }
 
     /**

@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 import io.github.kotlinmania.rustlang.corearch.simd.I8x32
@@ -64,7 +63,7 @@ public fun mm512Gf2p8mulEpi8(a: M512i, b: M512i): M512i = transmuteWithLayouts<I
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_gf2p8mul_epi8)
  */
-public fun mm512MaskGf2p8mulEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i = transmute(run { val simdArg0 = k; val simdArg1 = vgf2p8mulb512(a.asI8x64(), b.asI8x64()); val simdArg2 = src.asI8x64(); simdArg1 })
+public fun mm512MaskGf2p8mulEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i = transmuteWithLayouts<I8x64, M512i>(run { val simdArg0 = k; val simdArg1 = vgf2p8mulb512(a.asI8x64(), b.asI8x64()); val simdArg2 = src.asI8x64(); simdArg1 }, UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Performs a multiplication in GF(2^8) on the packed bytes.
@@ -78,7 +77,7 @@ public fun mm512MaskGf2p8mulEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M5
  */
 public fun mm512MaskzGf2p8mulEpi8(k: Mmask64, a: M512i, b: M512i): M512i {
     val zero = Simd<Byte>(List(64) { 0.toByte() })
-    return transmute(run { val simdArg0 = k; val simdArg1 = vgf2p8mulb512(a.asI8x64(), b.asI8x64()); val simdArg2 = zero; simdArg1 })
+    return transmuteWithLayouts<I8x64, M512i>(run { val simdArg0 = k; val simdArg1 = vgf2p8mulb512(a.asI8x64(), b.asI8x64()); val simdArg2 = zero; simdArg1 }, UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
 }
 
 /**
@@ -100,7 +99,7 @@ public fun mm256Gf2p8mulEpi8(a: M256i, b: M256i): M256i = transmuteWithLayouts<I
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_gf2p8mul_epi8)
  */
-public fun mm256MaskGf2p8mulEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = k; val simdArg1 = vgf2p8mulb256(a.asI8x32(), b.asI8x32()); val simdArg2 = src.asI8x32(); simdArg1 })
+public fun mm256MaskGf2p8mulEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i = transmuteWithLayouts<I8x32, M256i>(run { val simdArg0 = k; val simdArg1 = vgf2p8mulb256(a.asI8x32(), b.asI8x32()); val simdArg2 = src.asI8x32(); simdArg1 }, UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Performs a multiplication in GF(2^8) on the packed bytes.
@@ -114,7 +113,7 @@ public fun mm256MaskGf2p8mulEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M2
  */
 public fun mm256MaskzGf2p8mulEpi8(k: Mmask32, a: M256i, b: M256i): M256i {
     val zero = Simd<Byte>(List(32) { 0.toByte() })
-    return transmute(run { val simdArg0 = k; val simdArg1 = vgf2p8mulb256(a.asI8x32(), b.asI8x32()); val simdArg2 = zero; simdArg1 })
+    return transmuteWithLayouts<I8x32, M256i>(run { val simdArg0 = k; val simdArg1 = vgf2p8mulb256(a.asI8x32(), b.asI8x32()); val simdArg2 = zero; simdArg1 }, UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
 }
 
 /**
@@ -136,7 +135,7 @@ public fun mmGf2p8mulEpi8(a: M128i, b: M128i): M128i = transmuteWithLayouts<I8x1
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_gf2p8mul_epi8)
  */
-public fun mmMaskGf2p8mulEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i = transmute(run { val simdArg0 = k; val simdArg1 = vgf2p8mulb128(a.asI8x16(), b.asI8x16()); val simdArg2 = src.asI8x16(); simdArg1 })
+public fun mmMaskGf2p8mulEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(run { val simdArg0 = k; val simdArg1 = vgf2p8mulb128(a.asI8x16(), b.asI8x16()); val simdArg2 = src.asI8x16(); simdArg1 }, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Performs a multiplication in GF(2^8) on the packed bytes.
@@ -151,7 +150,7 @@ public fun mmMaskGf2p8mulEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i
 public fun mmMaskzGf2p8mulEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val zero = Simd<Byte>(List(16) { 0.toByte() })
-        transmute(run { val simdArg0 = k; val simdArg1 = vgf2p8mulb128(a.asI8x16(), b.asI8x16()); val simdArg2 = zero; simdArg1 })
+        transmuteWithLayouts<I8x16, M128i>(run { val simdArg0 = k; val simdArg1 = vgf2p8mulb128(a.asI8x16(), b.asI8x16()); val simdArg2 = zero; simdArg1 }, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -196,7 +195,7 @@ public fun mm512MaskzGf2p8affineEpi64Epi8(k: Mmask64, x: M512i, a: M512i, b: Int
     val a1 = a.asI8x64()
     return run {
         val r = vgf2p8affineqb512(x1, a1, b)
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = zero; simdArg1 })
+        transmuteWithLayouts<I8x64, M512i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = zero; simdArg1 }, UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
     }
 }
 
@@ -220,7 +219,7 @@ public fun mm512MaskGf2p8affineEpi64Epi8(src: M512i, k: Mmask64, x: M512i, a: M5
     val a1 = a.asI8x64()
     return run {
         val r = vgf2p8affineqb512(x1, a1, b)
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI8x64(); simdArg1 })
+        transmuteWithLayouts<I8x64, M512i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI8x64(); simdArg1 }, UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
     }
 }
 
@@ -266,7 +265,7 @@ public fun mm256MaskzGf2p8affineEpi64Epi8(k: Mmask32, x: M256i, a: M256i, b: Int
     val a1 = a.asI8x32()
     return run {
         val r = vgf2p8affineqb256(x1, a1, b)
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = zero; simdArg1 })
+        transmuteWithLayouts<I8x32, M256i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = zero; simdArg1 }, UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
     }
 }
 
@@ -290,7 +289,7 @@ public fun mm256MaskGf2p8affineEpi64Epi8(src: M256i, k: Mmask32, x: M256i, a: M2
     val a1 = a.asI8x32()
     return run {
         val r = vgf2p8affineqb256(x1, a1, b)
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI8x32(); simdArg1 })
+        transmuteWithLayouts<I8x32, M256i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI8x32(); simdArg1 }, UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
     }
 }
 
@@ -336,7 +335,7 @@ public fun mmMaskzGf2p8affineEpi64Epi8(k: Mmask16, x: M128i, a: M128i, b: Int): 
     val a1 = a.asI8x16()
     return run {
         val r = vgf2p8affineqb128(x1, a1, b)
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = zero; simdArg1 })
+        transmuteWithLayouts<I8x16, M128i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = zero; simdArg1 }, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
     }
 }
 
@@ -360,7 +359,7 @@ public fun mmMaskGf2p8affineEpi64Epi8(src: M128i, k: Mmask16, x: M128i, a: M128i
     val a1 = a.asI8x16()
     return run {
         val r = vgf2p8affineqb128(x1, a1, b)
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI8x16(); simdArg1 })
+        transmuteWithLayouts<I8x16, M128i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI8x16(); simdArg1 }, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
     }
 }
 
@@ -410,7 +409,7 @@ public fun mm512MaskzGf2p8affineinvEpi64Epi8(k: Mmask64, x: M512i, a: M512i, b: 
     val a1 = a.asI8x64()
     return run {
         val r = vgf2p8affineinvqb512(x1, a1, b)
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = zero; simdArg1 })
+        transmuteWithLayouts<I8x64, M512i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = zero; simdArg1 }, UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
     }
 }
 
@@ -436,7 +435,7 @@ public fun mm512MaskGf2p8affineinvEpi64Epi8(src: M512i, k: Mmask64, x: M512i, a:
     val a1 = a.asI8x64()
     return run {
         val r = vgf2p8affineinvqb512(x1, a1, b)
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI8x64(); simdArg1 })
+        transmuteWithLayouts<I8x64, M512i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI8x64(); simdArg1 }, UnresolvedTypeLayout<I8x64>(), UnresolvedTypeLayout<M512i>())
     }
 }
 
@@ -486,7 +485,7 @@ public fun mm256MaskzGf2p8affineinvEpi64Epi8(k: Mmask32, x: M256i, a: M256i, b: 
     val a1 = a.asI8x32()
     return run {
         val r = vgf2p8affineinvqb256(x1, a1, b)
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = zero; simdArg1 })
+        transmuteWithLayouts<I8x32, M256i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = zero; simdArg1 }, UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
     }
 }
 
@@ -512,7 +511,7 @@ public fun mm256MaskGf2p8affineinvEpi64Epi8(src: M256i, k: Mmask32, x: M256i, a:
     val a1 = a.asI8x32()
     return run {
         val r = vgf2p8affineinvqb256(x1, a1, b)
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI8x32(); simdArg1 })
+        transmuteWithLayouts<I8x32, M256i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI8x32(); simdArg1 }, UnresolvedTypeLayout<I8x32>(), UnresolvedTypeLayout<M256i>())
     }
 }
 
@@ -562,7 +561,7 @@ public fun mmMaskzGf2p8affineinvEpi64Epi8(k: Mmask16, x: M128i, a: M128i, b: Int
     val a1 = a.asI8x16()
     return run {
         val r = vgf2p8affineinvqb128(x1, a1, b)
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = zero; simdArg1 })
+        transmuteWithLayouts<I8x16, M128i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = zero; simdArg1 }, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
     }
 }
 
@@ -588,6 +587,6 @@ public fun mmMaskGf2p8affineinvEpi64Epi8(src: M128i, k: Mmask16, x: M128i, a: M1
     val a1 = a.asI8x16()
     return run {
         val r = vgf2p8affineinvqb128(x1, a1, b)
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI8x16(); simdArg1 })
+        transmuteWithLayouts<I8x16, M128i>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src.asI8x16(); simdArg1 }, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
     }
 }

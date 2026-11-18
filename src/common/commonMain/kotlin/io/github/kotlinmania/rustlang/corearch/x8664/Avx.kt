@@ -1,7 +1,8 @@
 // port-lint: source x86_64/avx.rs
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.loongarch64.lasx.M256i
 
 // Advanced Vector Extensions (AVX)
@@ -31,7 +32,7 @@ public fun mm256InsertEpi64(a: M256i, i: Long, index: Int): M256i {
     run {
         check(0 <= index && index < (1 shl 2)) { "INDEX doesn't fit in 2 bits (unsigned)" }
     }
-    return transmute(run { val simdArg0 = a.asI64x4(); val simdArg1 = index.toUInt(); val simdArg2 = i; simdArg0 })
+    return transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI64x4(); val simdArg1 = index.toUInt(); val simdArg2 = i; simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 }
 
 // This intrinsic has no corresponding instruction.

@@ -3080,7 +3080,7 @@ public fun <T, K> List<T>.sortUnstableByKey(f: (T) -> K) {
  *
  * [sortUnstable]: slice.sortUnstable
  */
-public fun <T, R> List<T>.partialSortUnstable(range: R, ltTFn: (T, Rhs) -> Boolean) where R : RangeBounds<Int<R>> {
+public fun <T, R> List<T>.partialSortUnstable(range: R, ltTFn: (T, Rhs) -> Boolean) where R : RangeBounds<Int> {
     partialSort(this, range, ltTFn)
 }
 
@@ -3143,7 +3143,7 @@ public fun <T, R> List<T>.partialSortUnstable(range: R, ltTFn: (T, Rhs) -> Boole
  *
  * [sortUnstableBy]: slice.sortUnstableBy
  */
-public fun <T, R> List<T>.partialSortUnstableBy(range: R, compare: (T, T) -> Ordering) where R : RangeBounds<Int<R>> {
+public fun <T, R> List<T>.partialSortUnstableBy(range: R, compare: (T, T) -> Ordering) where R : RangeBounds<Int> {
     partialSort(this, range, { a, b -> compare(a, b) == Less })
 }
 
@@ -3206,7 +3206,7 @@ public fun <T, R> List<T>.partialSortUnstableBy(range: R, compare: (T, T) -> Ord
  *
  * [sortUnstableByKey]: slice.sortUnstableByKey
  */
-public fun <T, K, R> List<T>.partialSortUnstableByKey(range: R, f: (T) -> K) where R : RangeBounds<Int<R>> {
+public fun <T, K, R> List<T>.partialSortUnstableByKey(range: R, f: (T) -> K) where R : RangeBounds<Int> {
     partialSort(this, range, { a, b -> (kmPartialCompareValues(f(a), f(b))?.let { cmpSign -> cmpSign < 0 } == true) })
 }
 
@@ -4035,7 +4035,7 @@ public fun <T> List<T>.copyFromSlice(src: List<T>) {
  * check(bytes == "Hello, Wello!".encodeToByteArray())
  * ```
  */
-public fun <T, R : RangeBounds<Int<R>>> List<T>.copyWithin(src: R, dest: Int) {
+public fun <T, R : RangeBounds<Int>> List<T>.copyWithin(src: R, dest: Int) {
     val structVal = range(src, 0 until this.size)
     val srcStart = structVal.start
     val srcEnd = structVal.end
@@ -4547,7 +4547,7 @@ public fun <T> List<T>.partitionPoint(pred: (T) -> Boolean): Int =
  * check(expected == slice.splitOff(0 until 4))
  * ```
  */
-public fun <T, R : OneSidedRange<Int<R>>> List<T>.splitOff(range: R): List<T>? {
+public fun <T, R : OneSidedRange<Int>> List<T>.splitOff(range: R): List<T>? {
     var selfMut = this
     val (direction, splitIndex) = (splitPointOf(range) ?: return null)
     if (splitIndex > selfMut.size) {
@@ -4613,7 +4613,7 @@ public fun <T, R : OneSidedRange<Int<R>>> List<T>.splitOff(range: R): List<T>? {
  * check(expected == slice.splitOffMut(0 until 4))
  * ```
  */
-public fun <T, R : OneSidedRange<Int<R>>> List<T>.splitOffMut(range: R): List<T>? {
+public fun <T, R : OneSidedRange<Int>> List<T>.splitOffMut(range: R): List<T>? {
     var selfMut = this
     val (direction, splitIndex) = (splitPointOf(range) ?: return null)
     if (splitIndex > selfMut.size) {

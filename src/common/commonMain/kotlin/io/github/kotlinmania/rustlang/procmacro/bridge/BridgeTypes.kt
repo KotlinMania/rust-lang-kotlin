@@ -173,10 +173,10 @@ public sealed class IdentKind : Mark<IdentKind, IdentKind> {
 }
 
 public sealed class TokenTree<TokenStream, Span, Symbol> {
-    public data class Group<TokenStream, Span, Symbol>(public var value: Group<TokenStream, Span>) : TokenTree<TokenStream, Span, Symbol>()
-    public data class Punct<TokenStream, Span, Symbol>(public var value: Punct<Span>) : TokenTree<TokenStream, Span, Symbol>()
-    public data class Ident<TokenStream, Span, Symbol>(public var value: Ident<Span, Symbol>) : TokenTree<TokenStream, Span, Symbol>()
-    public data class Literal<TokenStream, Span, Symbol>(public var value: Literal<Span, Symbol>) : TokenTree<TokenStream, Span, Symbol>()
+    public data class Group<TokenStream, Span, Symbol>(public var value: io.github.kotlinmania.rustlang.procmacro.bridge.Group<TokenStream, Span>) : TokenTree<TokenStream, Span, Symbol>()
+    public data class Punct<TokenStream, Span, Symbol>(public var value: io.github.kotlinmania.rustlang.procmacro.bridge.Punct<Span>) : TokenTree<TokenStream, Span, Symbol>()
+    public data class Ident<TokenStream, Span, Symbol>(public var value: io.github.kotlinmania.rustlang.procmacro.bridge.Ident<Span, Symbol>) : TokenTree<TokenStream, Span, Symbol>()
+    public data class Literal<TokenStream, Span, Symbol>(public var value: io.github.kotlinmania.rustlang.procmacro.bridge.Literal<Span, Symbol>) : TokenTree<TokenStream, Span, Symbol>()
 }
 
 public fun <Unmarked, TokenStream : Mark<TokenStream, Unmarked>, Span : Mark<Span, Unmarked>, Symbol : Mark<Symbol, Unmarked>> markTokenTreeTokenStreamSpanSymbol(unmarked: TokenTree<Unmarked, Unmarked, Unmarked>): TokenTree<TokenStream, Span, Symbol> =

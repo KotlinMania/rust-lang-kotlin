@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.compilerbuiltins.mem.x8664
 
 import io.github.kotlinmania.rustlang.core.cmp.min
+import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout

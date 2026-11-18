@@ -7,8 +7,10 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
+import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.stddetect.detect.arch.s390x.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
+import io.github.kotlinmania.rustlang.stddetect.detect.cache.Initializer
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.AuxVec
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
 

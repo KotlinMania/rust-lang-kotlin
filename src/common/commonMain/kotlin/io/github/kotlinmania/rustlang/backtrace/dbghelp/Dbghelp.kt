@@ -23,6 +23,7 @@ import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.addrOfMut
 import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -692,7 +693,7 @@ public fun utf16Char(c: Char): UShort {
 public fun enumLoadedModulesCallback(moduleName: Pcwstr, arg1: ULong, arg2: UInt, userContext: ConstPtr): Bool {
     // `moduleName` is an absolute path like `C:\path\to\module.dll`
     // or `C:\path\to\module.exe`
-    val len: Int = lstrlenW(moduleName).tryInto().unwrap()
+    val len: Int = Result.Ok<Int, kotlin.Nothing>(lstrlenW(moduleName)).unwrap()
     if (len == 0) {
         // This should not happen, but if it does, we can just ignore it.
         return TRUE

@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 // Primitive traits and types representing basic properties of types.

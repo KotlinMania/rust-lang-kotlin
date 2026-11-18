@@ -45,7 +45,7 @@ public fun <Int, F : Float<F, Int>> computeFloat(q: Long, w: ULong): BiasedFp {
     // Normalize our significant digits, so the most-significant bit is set.
     val lz = w1.leadingZeros()
     w1 = w1 shl lz.toInt()
-    val (lo, hi) = computeProductApprox(q, w1, F.SIG_BITS.toInt() + 3)
+    val (lo, hi) = computeProductApprox(q, w1, ((F.SIG_BITS as Any?) as kotlin.Int) + 3)
     if (lo == 0xFFFFFFFFFFFFFFFFuL) {
         // If we have failed to approximate w x 5^-q with our 128-bit value.
         // Since the addition of 1 could lead to an overflow which could then
@@ -67,19 +67,19 @@ public fun <Int, F : Float<F, Int>> computeFloat(q: Long, w: ULong): BiasedFp {
             return fpError
         }
     }
-    val upperbit = (hi shr 63).toInt()
-    var mantissa = hi shr (upperbit + 64 - F.SIG_BITS.toInt() - 3)
-    var power2 = power(q.toInt()) + upperbit - lz.toInt() - F.EXP_MIN + 1
+    val upperbit = (((hi shr 63) as Any?) as kotlin.Int)
+    var mantissa = hi shr (upperbit + 64 - ((F.SIG_BITS as Any?) as kotlin.Int) - 3).toInt()
+    var power2 = power(((q as Any?) as kotlin.Int)) + upperbit - ((lz as Any?) as kotlin.Int) - F.EXP_MIN + 1
     if (power2 <= 0) {
         if (-power2 + 1 >= 64) {
             // Have more than 64 bits below the minimum exponent, must be 0.
             return fpZero
         }
         // Have a subnormal value.
-        mantissa = mantissa shr (-power2 + 1)
+        mantissa = mantissa shr ((-power2 + 1).toInt())
         mantissa += mantissa and 1
         mantissa = mantissa shr 1
-        power2 = (if (mantissa >= (1uL shl F.SIG_BITS.toInt())) 1 else 0)
+        power2 = (((mantissa >= (1uL shl F.SIG_BITS.toInt())) as Any?) as kotlin.Int)
         return BiasedFp(m = mantissa, pBiased = power2)
     }
     // Need to handle rounding ties. Normally, we need to round up,
@@ -93,7 +93,7 @@ public fun <Int, F : Float<F, Int>> computeFloat(q: Long, w: ULong): BiasedFp {
     // 3. All the bits truncated when shifting to mantissa bits + 1 are 0.
     //
     // Or, we may fall between two floats: we are exactly halfway.
-    if (lo <= 1 && q >= F.MIN_EXPONENT_ROUND_TO_EVEN.toLong() && q <= F.MAX_EXPONENT_ROUND_TO_EVEN.toLong() && mantissa and 0x3 == 0x1 && (mantissa shl (upperbit + 64 - F.SIG_BITS.toInt() - 3)) == hi) {
+    if (lo <= 1 && q >= F.MIN_EXPONENT_ROUND_TO_EVEN.toLong() && q <= F.MAX_EXPONENT_ROUND_TO_EVEN.toLong() && mantissa and 0x3 == 0x1 && (mantissa shl (upperbit + 64 - ((F.SIG_BITS as Any?) as kotlin.Int) - 3).toInt()) == hi) {
         // Zero the lowest bit, so we don't round up.
         mantissa = mantissa and 1uL.inv()
     }

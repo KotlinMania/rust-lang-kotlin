@@ -1050,7 +1050,7 @@ public open class MaybeUninit<T>(
          *
          * [assumeInit]: MaybeUninit.assumeInit
          */
-        public fun <T> new(value: T): MaybeUninit<T> = MaybeUninit(value = value)
+        public fun <T> new(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MaybeUninit<T> = MaybeUninit(value = value)
 
         /**
          * Creates a new `MaybeUninit<T>` in an uninitialized state.
@@ -1069,7 +1069,7 @@ public open class MaybeUninit<T>(
          * val v: MaybeUninit<String> = MaybeUninit.uninit(UnresolvedTypeLayout<String>())
          * ```
          */
-        public fun <T> uninit(): MaybeUninit<T> = MaybeUninit(uninit = Unit)
+        public fun <T> uninit(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MaybeUninit<T> = MaybeUninit(uninit = Unit)
 
         /**
          * Creates a new `MaybeUninit<T>` in an uninitialized state, with the memory being
@@ -1135,8 +1135,8 @@ public open class MaybeUninit<T>(
          * // This is undefined behavior. ⚠️
          * ```
          */
-        public fun <T> zeroed(): MaybeUninit<T> {
-            val u = MaybeUninit.uninit(UnresolvedTypeLayout<T>())
+        public fun <T> zeroed(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MaybeUninit<T> {
+            val u = MaybeUninit.uninit(typeLayoutT)
             // SAFETY: `u.asMutPtr()` points to allocated memory.
             u.asMutPtr().writeBytes(0u.toUByte(), 1)
             return u

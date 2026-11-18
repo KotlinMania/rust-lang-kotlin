@@ -494,7 +494,7 @@ public actual fun acquireSRWLockShared(srwlock: MutPtr) {
     }
 }
 
-public actual fun addVectoredExceptionHandler(first: UInt, handler: PvectoredExceptionHandler): MutPtr =
+public actual fun addVectoredExceptionHandler(first: kotlin.UInt, handler: PvectoredExceptionHandler): MutPtr =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysAddVectoredExceptionHandler(first.toInt(), 0L.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun cancelIo(hfile: Handle): Bool =
@@ -506,7 +506,7 @@ public actual fun closeHandle(hobject: Handle): Bool =
 public actual fun compareStringOrdinal(lpstring1: ConstPtr, cchcount1: Int, lpstring2: ConstPtr, cchcount2: Int, bignorecase: Bool): Int =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysCompareStringOrdinal(lpstring1.rawAddress.toString(), cchcount1, lpstring2.rawAddress.toString(), cchcount2, bignorecase) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun copyFileExW(lpexistingfilename: Pcwstr, lpnewfilename: Pcwstr, lpprogressroutine: LpprogressRoutine, lpdata: ConstPtr, pbcancel: MutPtr, dwcopyflags: UInt): Bool =
+public actual fun copyFileExW(lpexistingfilename: Pcwstr, lpnewfilename: Pcwstr, lpprogressroutine: LpprogressRoutine, lpdata: ConstPtr, pbcancel: MutPtr, dwcopyflags: kotlin.UInt): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysCopyFileExW(lpexistingfilename.rawAddress.toString(), lpnewfilename.rawAddress.toString(), 0L.toString(), lpdata.rawAddress.toString(), pbcancel.rawAddress.toString(), dwcopyflags.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun createDirectoryW(lppathname: Pcwstr, lpsecurityattributes: ConstPtr): Bool =
@@ -515,28 +515,28 @@ public actual fun createDirectoryW(lppathname: Pcwstr, lpsecurityattributes: Con
 public actual fun createEventW(lpeventattributes: ConstPtr, bmanualreset: Bool, binitialstate: Bool, lpname: Pcwstr): Handle =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysCreateEventW(lpeventattributes.rawAddress.toString(), bmanualreset, binitialstate, lpname.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun createFileW(lpfilename: Pcwstr, dwdesiredaccess: UInt, dwsharemode: UInt, lpsecurityattributes: ConstPtr, dwcreationdisposition: UInt, dwflagsandattributes: UInt, htemplatefile: Handle): Handle =
+public actual fun createFileW(lpfilename: Pcwstr, dwdesiredaccess: kotlin.UInt, dwsharemode: kotlin.UInt, lpsecurityattributes: ConstPtr, dwcreationdisposition: kotlin.UInt, dwflagsandattributes: kotlin.UInt, htemplatefile: Handle): Handle =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysCreateFileW(lpfilename.rawAddress.toString(), dwdesiredaccess.toInt(), dwsharemode.toInt(), lpsecurityattributes.rawAddress.toString(), dwcreationdisposition.toInt(), dwflagsandattributes.toInt(), htemplatefile.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun createHardLinkW(lpfilename: Pcwstr, lpexistingfilename: Pcwstr, lpsecurityattributes: ConstPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysCreateHardLinkW(lpfilename.rawAddress.toString(), lpexistingfilename.rawAddress.toString(), lpsecurityattributes.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun createNamedPipeW(lpname: Pcwstr, dwopenmode: UInt, dwpipemode: UInt, nmaxinstances: UInt, noutbuffersize: UInt, ninbuffersize: UInt, ndefaulttimeout: UInt, lpsecurityattributes: ConstPtr): Handle =
+public actual fun createNamedPipeW(lpname: Pcwstr, dwopenmode: kotlin.UInt, dwpipemode: kotlin.UInt, nmaxinstances: kotlin.UInt, noutbuffersize: kotlin.UInt, ninbuffersize: kotlin.UInt, ndefaulttimeout: kotlin.UInt, lpsecurityattributes: ConstPtr): Handle =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysCreateNamedPipeW(lpname.rawAddress.toString(), dwopenmode.toInt(), dwpipemode.toInt(), nmaxinstances.toInt(), noutbuffersize.toInt(), ninbuffersize.toInt(), ndefaulttimeout.toInt(), lpsecurityattributes.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun createPipe(hreadpipe: MutPtr, hwritepipe: MutPtr, lppipeattributes: ConstPtr, nsize: UInt): Bool =
+public actual fun createPipe(hreadpipe: MutPtr, hwritepipe: MutPtr, lppipeattributes: ConstPtr, nsize: kotlin.UInt): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysCreatePipe(hreadpipe.rawAddress.toString(), hwritepipe.rawAddress.toString(), lppipeattributes.rawAddress.toString(), nsize.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun createProcessW(lpapplicationname: Pcwstr, lpcommandline: Pwstr, lpprocessattributes: ConstPtr, lpthreadattributes: ConstPtr, binherithandles: Bool, dwcreationflags: UInt, lpenvironment: ConstPtr, lpcurrentdirectory: Pcwstr, lpstartupinfo: ConstPtr, lpprocessinformation: MutPtr): Bool =
+public actual fun createProcessW(lpapplicationname: Pcwstr, lpcommandline: Pwstr, lpprocessattributes: ConstPtr, lpthreadattributes: ConstPtr, binherithandles: Bool, dwcreationflags: kotlin.UInt, lpenvironment: ConstPtr, lpcurrentdirectory: Pcwstr, lpstartupinfo: ConstPtr, lpprocessinformation: MutPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysCreateProcessW(lpapplicationname.rawAddress.toString(), lpcommandline.rawAddress.toString(), lpprocessattributes.rawAddress.toString(), lpthreadattributes.rawAddress.toString(), binherithandles, dwcreationflags.toInt(), lpenvironment.rawAddress.toString(), lpcurrentdirectory.rawAddress.toString(), lpstartupinfo.rawAddress.toString(), lpprocessinformation.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun createSymbolicLinkW(lpsymlinkfilename: Pcwstr, lptargetfilename: Pcwstr, dwflags: UInt): Boolean =
+public actual fun createSymbolicLinkW(lpsymlinkfilename: Pcwstr, lptargetfilename: Pcwstr, dwflags: kotlin.UInt): Boolean =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysCreateSymbolicLinkW(lpsymlinkfilename.rawAddress.toString(), lptargetfilename.rawAddress.toString(), dwflags.toInt()).toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun createThread(lpthreadattributes: ConstPtr, dwstacksize: ULong, lpstartaddress: LpthreadStartRoutine, lpparameter: ConstPtr, dwcreationflags: UInt, lpthreadid: MutPtr): Handle =
+public actual fun createThread(lpthreadattributes: ConstPtr, dwstacksize: ULong, lpstartaddress: LpthreadStartRoutine, lpparameter: ConstPtr, dwcreationflags: kotlin.UInt, lpthreadid: MutPtr): Handle =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysCreateThread(lpthreadattributes.rawAddress.toString(), dwstacksize.toString(), 0L.toString(), lpparameter.rawAddress.toString(), dwcreationflags.toInt(), lpthreadid.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun createWaitableTimerExW(lptimerattributes: ConstPtr, lptimername: Pcwstr, dwflags: UInt, dwdesiredaccess: UInt): Handle =
+public actual fun createWaitableTimerExW(lptimerattributes: ConstPtr, lptimername: Pcwstr, dwflags: kotlin.UInt, dwdesiredaccess: kotlin.UInt): Handle =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysCreateWaitableTimerExW(lptimerattributes.rawAddress.toString(), lptimername.rawAddress.toString(), dwflags.toInt(), dwdesiredaccess.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun deleteFileW(lpfilename: Pcwstr): Bool =
@@ -550,13 +550,13 @@ public actual fun deleteProcThreadAttributeList(lpattributelist: MutPtr) {
     }
 }
 
-public actual fun deviceIoControl(hdevice: Handle, dwiocontrolcode: UInt, lpinbuffer: ConstPtr, ninbuffersize: UInt, lpoutbuffer: MutPtr, noutbuffersize: UInt, lpbytesreturned: MutPtr, lpoverlapped: MutPtr): Bool =
+public actual fun deviceIoControl(hdevice: Handle, dwiocontrolcode: kotlin.UInt, lpinbuffer: ConstPtr, ninbuffersize: kotlin.UInt, lpoutbuffer: MutPtr, noutbuffersize: kotlin.UInt, lpbytesreturned: MutPtr, lpoverlapped: MutPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysDeviceIoControl(hdevice.rawAddress.toString(), dwiocontrolcode.toInt(), lpinbuffer.rawAddress.toString(), ninbuffersize.toInt(), lpoutbuffer.rawAddress.toString(), noutbuffersize.toInt(), lpbytesreturned.rawAddress.toString(), lpoverlapped.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun duplicateHandle(hsourceprocesshandle: Handle, hsourcehandle: Handle, htargetprocesshandle: Handle, lptargethandle: MutPtr, dwdesiredaccess: UInt, binherithandle: Bool, dwoptions: UInt): Bool =
+public actual fun duplicateHandle(hsourceprocesshandle: Handle, hsourcehandle: Handle, htargetprocesshandle: Handle, lptargethandle: MutPtr, dwdesiredaccess: kotlin.UInt, binherithandle: Bool, dwoptions: kotlin.UInt): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysDuplicateHandle(hsourceprocesshandle.rawAddress.toString(), hsourcehandle.rawAddress.toString(), htargetprocesshandle.rawAddress.toString(), lptargethandle.rawAddress.toString(), dwdesiredaccess.toInt(), binherithandle, dwoptions.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun exitProcess(uexitcode: UInt): Nothing {
+public actual fun exitProcess(uexitcode: kotlin.UInt): Nothing {
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
         wasmStdSysPalWindowsCWindowssysWindowsSysExitProcess(uexitcode.toInt())
     } else {
@@ -568,34 +568,34 @@ public actual fun exitProcess(uexitcode: UInt): Nothing {
 public actual fun findClose(hfindfile: Handle): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysFindClose(hfindfile.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun findFirstFileExW(lpfilename: Pcwstr, finfolevelid: FindexInfoLevels, lpfindfiledata: MutPtr, fsearchop: FindexSearchOps, lpsearchfilter: ConstPtr, dwadditionalflags: UInt): Handle =
+public actual fun findFirstFileExW(lpfilename: Pcwstr, finfolevelid: FindexInfoLevels, lpfindfiledata: MutPtr, fsearchop: FindexSearchOps, lpsearchfilter: ConstPtr, dwadditionalflags: kotlin.UInt): Handle =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysFindFirstFileExW(lpfilename.rawAddress.toString(), finfolevelid, lpfindfiledata.rawAddress.toString(), fsearchop, lpsearchfilter.rawAddress.toString(), dwadditionalflags.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun findNextFileW(hfindfile: Handle, lpfindfiledata: MutPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysFindNextFileW(hfindfile.rawAddress.toString(), lpfindfiledata.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun flsAlloc(lpcallback: PflsCallbackFunction): UInt =
+public actual fun flsAlloc(lpcallback: PflsCallbackFunction): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysFlsAlloc(0L.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun flsFree(dwflsindex: UInt): Bool =
+public actual fun flsFree(dwflsindex: kotlin.UInt): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysFlsFree(dwflsindex.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun flsGetValue(dwflsindex: UInt): MutPtr =
+public actual fun flsGetValue(dwflsindex: kotlin.UInt): MutPtr =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysFlsGetValue(dwflsindex.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun flsSetValue(dwflsindex: UInt, lpflsdata: ConstPtr): Bool =
+public actual fun flsSetValue(dwflsindex: kotlin.UInt, lpflsdata: ConstPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysFlsSetValue(dwflsindex.toInt(), lpflsdata.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun flushFileBuffers(hfile: Handle): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysFlushFileBuffers(hfile.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun formatMessageW(dwflags: UInt, lpsource: ConstPtr, dwmessageid: UInt, dwlanguageid: UInt, lpbuffer: Pcwstr, nsize: UInt, arguments: ConstPtr): UInt =
+public actual fun formatMessageW(dwflags: kotlin.UInt, lpsource: ConstPtr, dwmessageid: kotlin.UInt, dwlanguageid: kotlin.UInt, lpbuffer: Pcwstr, nsize: kotlin.UInt, arguments: ConstPtr): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysFormatMessageW(dwflags.toInt(), lpsource.rawAddress.toString(), dwmessageid.toInt(), dwlanguageid.toInt(), lpbuffer.rawAddress.toString(), nsize.toInt(), arguments.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun freeEnvironmentStringsW(penv: ConstPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysFreeEnvironmentStringsW(penv.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getActiveProcessorCount(groupnumber: UShort): UInt =
+public actual fun getActiveProcessorCount(groupnumber: kotlin.UShort): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount(groupnumber.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getCommandLineW(): Pwstr =
@@ -604,70 +604,70 @@ public actual fun getCommandLineW(): Pwstr =
 public actual fun getConsoleMode(hconsolehandle: Handle, lpmode: MutPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetConsoleMode(hconsolehandle.rawAddress.toString(), lpmode.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getConsoleOutputCP(): UInt =
+public actual fun getConsoleOutputCP(): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getCurrentDirectoryW(nbufferlength: UInt, lpbuffer: Pwstr): UInt =
+public actual fun getCurrentDirectoryW(nbufferlength: kotlin.UInt, lpbuffer: Pwstr): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentDirectoryW(nbufferlength.toInt(), lpbuffer.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getCurrentProcess(): Handle =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcess().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getCurrentProcessId(): UInt =
+public actual fun getCurrentProcessId(): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getCurrentThread(): Handle =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentThread().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getCurrentThreadId(): UInt =
+public actual fun getCurrentThreadId(): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getEnvironmentStringsW(): Lpwch =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentStringsW().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getEnvironmentVariableW(lpname: Pcwstr, lpbuffer: Pwstr, nsize: UInt): UInt =
+public actual fun getEnvironmentVariableW(lpname: Pcwstr, lpbuffer: Pwstr, nsize: kotlin.UInt): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentVariableW(lpname.rawAddress.toString(), lpbuffer.rawAddress.toString(), nsize.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getExitCodeProcess(hprocess: Handle, lpexitcode: MutPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetExitCodeProcess(hprocess.rawAddress.toString(), lpexitcode.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getFileAttributesW(lpfilename: Pcwstr): UInt =
+public actual fun getFileAttributesW(lpfilename: Pcwstr): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetFileAttributesW(lpfilename.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getFileInformationByHandle(hfile: Handle, lpfileinformation: MutPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandle(hfile.rawAddress.toString(), lpfileinformation.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getFileInformationByHandleEx(hfile: Handle, fileinformationclass: FileInfoByHandleClass, lpfileinformation: MutPtr, dwbuffersize: UInt): Bool =
+public actual fun getFileInformationByHandleEx(hfile: Handle, fileinformationclass: FileInfoByHandleClass, lpfileinformation: MutPtr, dwbuffersize: kotlin.UInt): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandleEx(hfile.rawAddress.toString(), fileinformationclass, lpfileinformation.rawAddress.toString(), dwbuffersize.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getFileSizeEx(hfile: Handle, lpfilesize: MutPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetFileSizeEx(hfile.rawAddress.toString(), lpfilesize.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getFileType(hfile: Handle): UInt =
+public actual fun getFileType(hfile: Handle): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetFileType(hfile.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getFinalPathNameByHandleW(hfile: Handle, lpszfilepath: Pwstr, cchfilepath: UInt, dwflags: UInt): UInt =
+public actual fun getFinalPathNameByHandleW(hfile: Handle, lpszfilepath: Pwstr, cchfilepath: kotlin.UInt, dwflags: kotlin.UInt): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetFinalPathNameByHandleW(hfile.rawAddress.toString(), lpszfilepath.rawAddress.toString(), cchfilepath.toInt(), dwflags.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getFullPathNameW(lpfilename: Pcwstr, nbufferlength: UInt, lpbuffer: Pwstr, lpfilepart: MutPtr): UInt =
+public actual fun getFullPathNameW(lpfilename: Pcwstr, nbufferlength: kotlin.UInt, lpbuffer: Pwstr, lpfilepart: MutPtr): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetFullPathNameW(lpfilename.rawAddress.toString(), nbufferlength.toInt(), lpbuffer.rawAddress.toString(), lpfilepart.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getHostNameW(name: Pwstr, namelen: Int): Int =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetHostNameW(name.rawAddress.toString(), namelen) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getLastError(): UInt =
+public actual fun getLastError(): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetLastError().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getLogicalDrives(): UInt =
+public actual fun getLogicalDrives(): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getModuleFileNameW(hmodule: Hmodule, lpfilename: Pwstr, nsize: UInt): UInt =
+public actual fun getModuleFileNameW(hmodule: Hmodule, lpfilename: Pwstr, nsize: kotlin.UInt): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetModuleFileNameW(hmodule.rawAddress.toString(), lpfilename.rawAddress.toString(), nsize.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getModuleHandleA(lpmodulename: Pcstr): Hmodule =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleA(lpmodulename.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getModuleHandleExW(dwflags: UInt, lpmodulename: Pcwstr, phmodule: MutPtr): Bool =
+public actual fun getModuleHandleExW(dwflags: kotlin.UInt, lpmodulename: Pcwstr, phmodule: MutPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleExW(dwflags.toInt(), lpmodulename.rawAddress.toString(), phmodule.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getModuleHandleW(lpmodulename: Pcwstr): Hmodule =
@@ -679,13 +679,13 @@ public actual fun getOverlappedResult(hfile: Handle, lpoverlapped: ConstPtr, lpn
 public actual fun getProcAddress(hmodule: Hmodule, lpprocname: Pcstr): Farproc =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) null else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getProcessId(process: Handle): UInt =
+public actual fun getProcessId(process: Handle): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetProcessId(process.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getStdHandle(nstdhandle: UInt): Handle =
+public actual fun getStdHandle(nstdhandle: kotlin.UInt): Handle =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysGetStdHandle(nstdhandle.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getSystemDirectoryW(lpbuffer: Pwstr, usize: UInt): UInt =
+public actual fun getSystemDirectoryW(lpbuffer: Pwstr, usize: kotlin.UInt): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetSystemDirectoryW(lpbuffer.rawAddress.toString(), usize.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getSystemInfo(lpsysteminfo: MutPtr) {
@@ -712,64 +712,64 @@ public actual fun getSystemTimePreciseAsFileTime(lpsystemtimeasfiletime: MutPtr)
     }
 }
 
-public actual fun getTempPathW(nbufferlength: UInt, lpbuffer: Pwstr): UInt =
+public actual fun getTempPathW(nbufferlength: kotlin.UInt, lpbuffer: Pwstr): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetTempPathW(nbufferlength.toInt(), lpbuffer.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getUserProfileDirectoryW(htoken: Handle, lpprofiledir: Pwstr, lpcchsize: MutPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetUserProfileDirectoryW(htoken.rawAddress.toString(), lpprofiledir.rawAddress.toString(), lpcchsize.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getWindowsDirectoryW(lpbuffer: Pwstr, usize: UInt): UInt =
+public actual fun getWindowsDirectoryW(lpbuffer: Pwstr, usize: kotlin.UInt): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetWindowsDirectoryW(lpbuffer.rawAddress.toString(), usize.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun initOnceBeginInitialize(lpinitonce: LpinitOnce, dwflags: UInt, fpending: MutPtr, lpcontext: MutPtr): Bool =
+public actual fun initOnceBeginInitialize(lpinitonce: LpinitOnce, dwflags: kotlin.UInt, fpending: MutPtr, lpcontext: MutPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysInitOnceBeginInitialize(lpinitonce.rawAddress.toString(), dwflags.toInt(), fpending.rawAddress.toString(), lpcontext.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun initOnceComplete(lpinitonce: LpinitOnce, dwflags: UInt, lpcontext: ConstPtr): Bool =
+public actual fun initOnceComplete(lpinitonce: LpinitOnce, dwflags: kotlin.UInt, lpcontext: ConstPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysInitOnceComplete(lpinitonce.rawAddress.toString(), dwflags.toInt(), lpcontext.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun initializeProcThreadAttributeList(lpattributelist: MutPtr, dwattributecount: UInt, dwflags: UInt, lpsize: MutPtr): Bool =
+public actual fun initializeProcThreadAttributeList(lpattributelist: MutPtr, dwattributecount: kotlin.UInt, dwflags: kotlin.UInt, lpsize: MutPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysInitializeProcThreadAttributeList(lpattributelist.rawAddress.toString(), dwattributecount.toInt(), dwflags.toInt(), lpsize.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun isThreadAFiber(): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun loadLibraryExA(lplibfilename: Pcstr, hfile: Handle, dwflags: UInt): Hmodule =
+public actual fun loadLibraryExA(lplibfilename: Pcstr, hfile: Handle, dwflags: kotlin.UInt): Hmodule =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysLoadLibraryExA(lplibfilename.rawAddress.toString(), hfile.rawAddress.toString(), dwflags.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun localFree(hmem: Hlocal): Hlocal =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysLocalFree(hmem.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun lockFileEx(hfile: Handle, dwflags: UInt, dwreserved: UInt, nnumberofbytestolocklow: UInt, nnumberofbytestolockhigh: UInt, lpoverlapped: MutPtr): Bool =
+public actual fun lockFileEx(hfile: Handle, dwflags: kotlin.UInt, dwreserved: kotlin.UInt, nnumberofbytestolocklow: kotlin.UInt, nnumberofbytestolockhigh: kotlin.UInt, lpoverlapped: MutPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysLockFileEx(hfile.rawAddress.toString(), dwflags.toInt(), dwreserved.toInt(), nnumberofbytestolocklow.toInt(), nnumberofbytestolockhigh.toInt(), lpoverlapped.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun moveFileExW(lpexistingfilename: Pcwstr, lpnewfilename: Pcwstr, dwflags: UInt): Bool =
+public actual fun moveFileExW(lpexistingfilename: Pcwstr, lpnewfilename: Pcwstr, dwflags: kotlin.UInt): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysMoveFileExW(lpexistingfilename.rawAddress.toString(), lpnewfilename.rawAddress.toString(), dwflags.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun multiByteToWideChar(codepage: UInt, dwflags: UInt, lpmultibytestr: ConstPtr, cbmultibyte: Int, lpwidecharstr: Pwstr, cchwidechar: Int): Int =
+public actual fun multiByteToWideChar(codepage: kotlin.UInt, dwflags: kotlin.UInt, lpmultibytestr: ConstPtr, cbmultibyte: Int, lpwidecharstr: Pwstr, cchwidechar: Int): Int =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysMultiByteToWideChar(codepage.toInt(), dwflags.toInt(), lpmultibytestr.rawAddress.toString(), cbmultibyte, lpwidecharstr.rawAddress.toString(), cchwidechar) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun ntCreateFile(filehandle: MutPtr, desiredaccess: AccessMask, objectattributes: ConstPtr, iostatusblock: MutPtr, allocationsize: ConstPtr, fileattributes: UInt, shareaccess: UInt, createdisposition: UInt, createoptions: UInt, eabuffer: ConstPtr, ealength: UInt): Ntstatus =
+public actual fun ntCreateFile(filehandle: MutPtr, desiredaccess: AccessMask, objectattributes: ConstPtr, iostatusblock: MutPtr, allocationsize: ConstPtr, fileattributes: kotlin.UInt, shareaccess: kotlin.UInt, createdisposition: kotlin.UInt, createoptions: kotlin.UInt, eabuffer: ConstPtr, ealength: kotlin.UInt): Ntstatus =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysNtCreateFile(filehandle.rawAddress.toString(), desiredaccess.toInt(), objectattributes.rawAddress.toString(), iostatusblock.rawAddress.toString(), allocationsize.rawAddress.toString(), fileattributes.toInt(), shareaccess.toInt(), createdisposition.toInt(), createoptions.toInt(), eabuffer.rawAddress.toString(), ealength.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun ntOpenFile(filehandle: MutPtr, desiredaccess: AccessMask, objectattributes: ConstPtr, iostatusblock: MutPtr, shareaccess: UInt, openoptions: UInt): Ntstatus =
+public actual fun ntOpenFile(filehandle: MutPtr, desiredaccess: AccessMask, objectattributes: ConstPtr, iostatusblock: MutPtr, shareaccess: kotlin.UInt, openoptions: kotlin.UInt): Ntstatus =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysNtOpenFile(filehandle.rawAddress.toString(), desiredaccess.toInt(), objectattributes.rawAddress.toString(), iostatusblock.rawAddress.toString(), shareaccess.toInt(), openoptions.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun ntQueryVolumeInformationFile(filehandle: Handle, iostatusblock: MutPtr, fsinformation: MutPtr, length: UInt, fsinformationclass: FsInformationClass): Ntstatus =
+public actual fun ntQueryVolumeInformationFile(filehandle: Handle, iostatusblock: MutPtr, fsinformation: MutPtr, length: kotlin.UInt, fsinformationclass: FsInformationClass): Ntstatus =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysNtQueryVolumeInformationFile(filehandle.rawAddress.toString(), iostatusblock.rawAddress.toString(), fsinformation.rawAddress.toString(), length.toInt(), fsinformationclass) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun ntReadFile(filehandle: Handle, event: Handle, apcroutine: PioApcRoutine, apccontext: ConstPtr, iostatusblock: MutPtr, buffer: MutPtr, length: UInt, byteoffset: ConstPtr, key: ConstPtr): Ntstatus =
+public actual fun ntReadFile(filehandle: Handle, event: Handle, apcroutine: PioApcRoutine, apccontext: ConstPtr, iostatusblock: MutPtr, buffer: MutPtr, length: kotlin.UInt, byteoffset: ConstPtr, key: ConstPtr): Ntstatus =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysNtReadFile(filehandle.rawAddress.toString(), event.rawAddress.toString(), 0L.toString(), apccontext.rawAddress.toString(), iostatusblock.rawAddress.toString(), buffer.rawAddress.toString(), length.toInt(), byteoffset.rawAddress.toString(), key.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun ntSetInformationFile(filehandle: Handle, iostatusblock: MutPtr, fileinformation: ConstPtr, length: UInt, fileinformationclass: FileInformationClass): Ntstatus =
+public actual fun ntSetInformationFile(filehandle: Handle, iostatusblock: MutPtr, fileinformation: ConstPtr, length: kotlin.UInt, fileinformationclass: FileInformationClass): Ntstatus =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysNtSetInformationFile(filehandle.rawAddress.toString(), iostatusblock.rawAddress.toString(), fileinformation.rawAddress.toString(), length.toInt(), fileinformationclass) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun ntWriteFile(filehandle: Handle, event: Handle, apcroutine: PioApcRoutine, apccontext: ConstPtr, iostatusblock: MutPtr, buffer: ConstPtr, length: UInt, byteoffset: ConstPtr, key: ConstPtr): Ntstatus =
+public actual fun ntWriteFile(filehandle: Handle, event: Handle, apcroutine: PioApcRoutine, apccontext: ConstPtr, iostatusblock: MutPtr, buffer: ConstPtr, length: kotlin.UInt, byteoffset: ConstPtr, key: ConstPtr): Ntstatus =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysNtWriteFile(filehandle.rawAddress.toString(), event.rawAddress.toString(), 0L.toString(), apccontext.rawAddress.toString(), iostatusblock.rawAddress.toString(), buffer.rawAddress.toString(), length.toInt(), byteoffset.rawAddress.toString(), key.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun openProcessToken(processhandle: Handle, desiredaccess: UInt, tokenhandle: MutPtr): Bool =
+public actual fun openProcessToken(processhandle: Handle, desiredaccess: kotlin.UInt, tokenhandle: MutPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysOpenProcessToken(processhandle.rawAddress.toString(), desiredaccess.toInt(), tokenhandle.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun queryDosDeviceW(lpdevicename: Pcwstr, lptargetpath: Pwstr, ucchmax: UInt): UInt =
+public actual fun queryDosDeviceW(lpdevicename: Pcwstr, lptargetpath: Pwstr, ucchmax: kotlin.UInt): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysQueryDosDeviceW(lpdevicename.rawAddress.toString(), lptargetpath.rawAddress.toString(), ucchmax.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun queryPerformanceCounter(lpperformancecount: MutPtr): Bool =
@@ -778,13 +778,13 @@ public actual fun queryPerformanceCounter(lpperformancecount: MutPtr): Bool =
 public actual fun queryPerformanceFrequency(lpfrequency: MutPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceFrequency(lpfrequency.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun readConsoleW(hconsoleinput: Handle, lpbuffer: MutPtr, nnumberofcharstoread: UInt, lpnumberofcharsread: MutPtr, pinputcontrol: ConstPtr): Bool =
+public actual fun readConsoleW(hconsoleinput: Handle, lpbuffer: MutPtr, nnumberofcharstoread: kotlin.UInt, lpnumberofcharsread: MutPtr, pinputcontrol: ConstPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysReadConsoleW(hconsoleinput.rawAddress.toString(), lpbuffer.rawAddress.toString(), nnumberofcharstoread.toInt(), lpnumberofcharsread.rawAddress.toString(), pinputcontrol.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun readFile(hfile: Handle, lpbuffer: MutPtr, nnumberofbytestoread: UInt, lpnumberofbytesread: MutPtr, lpoverlapped: MutPtr): Bool =
+public actual fun readFile(hfile: Handle, lpbuffer: MutPtr, nnumberofbytestoread: kotlin.UInt, lpnumberofbytesread: MutPtr, lpoverlapped: MutPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysReadFile(hfile.rawAddress.toString(), lpbuffer.rawAddress.toString(), nnumberofbytestoread.toInt(), lpnumberofbytesread.rawAddress.toString(), lpoverlapped.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun readFileEx(hfile: Handle, lpbuffer: MutPtr, nnumberofbytestoread: UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpoverlappedCompletionRoutine): Bool =
+public actual fun readFileEx(hfile: Handle, lpbuffer: MutPtr, nnumberofbytestoread: kotlin.UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpoverlappedCompletionRoutine): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysReadFileEx(hfile.rawAddress.toString(), lpbuffer.rawAddress.toString(), nnumberofbytestoread.toInt(), lpoverlapped.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun releaseSRWLockExclusive(srwlock: MutPtr) {
@@ -806,10 +806,10 @@ public actual fun releaseSRWLockShared(srwlock: MutPtr) {
 public actual fun removeDirectoryW(lppathname: Pcwstr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysRemoveDirectoryW(lppathname.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun rtlGenRandom(randombuffer: MutPtr, randombufferlength: UInt): Boolean =
+public actual fun rtlGenRandom(randombuffer: MutPtr, randombufferlength: kotlin.UInt): Boolean =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysRtlGenRandom(randombuffer.rawAddress.toString(), randombufferlength.toInt()).toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun rtlNtStatusToDosError(status: Ntstatus): UInt =
+public actual fun rtlNtStatusToDosError(status: Ntstatus): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError(status).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setCurrentDirectoryW(lppathname: Pcwstr): Bool =
@@ -818,22 +818,22 @@ public actual fun setCurrentDirectoryW(lppathname: Pcwstr): Bool =
 public actual fun setEnvironmentVariableW(lpname: Pcwstr, lpvalue: Pcwstr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetEnvironmentVariableW(lpname.rawAddress.toString(), lpvalue.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun setFileAttributesW(lpfilename: Pcwstr, dwfileattributes: UInt): Bool =
+public actual fun setFileAttributesW(lpfilename: Pcwstr, dwfileattributes: kotlin.UInt): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetFileAttributesW(lpfilename.rawAddress.toString(), dwfileattributes.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun setFileInformationByHandle(hfile: Handle, fileinformationclass: FileInfoByHandleClass, lpfileinformation: ConstPtr, dwbuffersize: UInt): Bool =
+public actual fun setFileInformationByHandle(hfile: Handle, fileinformationclass: FileInfoByHandleClass, lpfileinformation: ConstPtr, dwbuffersize: kotlin.UInt): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetFileInformationByHandle(hfile.rawAddress.toString(), fileinformationclass, lpfileinformation.rawAddress.toString(), dwbuffersize.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun setFilePointerEx(hfile: Handle, lidistancetomove: Long, lpnewfilepointer: MutPtr, dwmovemethod: UInt): Bool =
+public actual fun setFilePointerEx(hfile: Handle, lidistancetomove: Long, lpnewfilepointer: MutPtr, dwmovemethod: kotlin.UInt): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetFilePointerEx(hfile.rawAddress.toString(), lidistancetomove.toString(), lpnewfilepointer.rawAddress.toString(), dwmovemethod.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setFileTime(hfile: Handle, lpcreationtime: ConstPtr, lplastaccesstime: ConstPtr, lplastwritetime: ConstPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetFileTime(hfile.rawAddress.toString(), lpcreationtime.rawAddress.toString(), lplastaccesstime.rawAddress.toString(), lplastwritetime.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun setHandleInformation(hobject: Handle, dwmask: UInt, dwflags: UInt): Bool =
+public actual fun setHandleInformation(hobject: Handle, dwmask: kotlin.UInt, dwflags: kotlin.UInt): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetHandleInformation(hobject.rawAddress.toString(), dwmask.toInt(), dwflags.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun setLastError(dwerrcode: UInt) {
+public actual fun setLastError(dwerrcode: kotlin.UInt) {
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
         wasmStdSysPalWindowsCWindowssysWindowsSysSetLastError(dwerrcode.toInt())
     } else {
@@ -841,7 +841,7 @@ public actual fun setLastError(dwerrcode: UInt) {
     }
 }
 
-public actual fun setStdHandle(nstdhandle: UInt, hhandle: Handle): Bool =
+public actual fun setStdHandle(nstdhandle: kotlin.UInt, hhandle: Handle): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetStdHandle(nstdhandle.toInt(), hhandle.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setThreadStackGuarantee(stacksizeinbytes: MutPtr): Bool =
@@ -850,7 +850,7 @@ public actual fun setThreadStackGuarantee(stacksizeinbytes: MutPtr): Bool =
 public actual fun setWaitableTimer(htimer: Handle, lpduetime: ConstPtr, lperiod: Int, pfncompletionroutine: Ptimerapcroutine, lpargtocompletionroutine: ConstPtr, fresume: Bool): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetWaitableTimer(htimer.rawAddress.toString(), lpduetime.rawAddress.toString(), lperiod, 0L.toString(), lpargtocompletionroutine.rawAddress.toString(), fresume) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sleep(dwmilliseconds: UInt) {
+public actual fun sleep(dwmilliseconds: kotlin.UInt) {
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
         wasmStdSysPalWindowsCWindowssysWindowsSysSleep(dwmilliseconds.toInt())
     } else {
@@ -858,28 +858,28 @@ public actual fun sleep(dwmilliseconds: UInt) {
     }
 }
 
-public actual fun sleepConditionVariableSRW(conditionvariable: MutPtr, srwlock: MutPtr, dwmilliseconds: UInt, flags: UInt): Bool =
+public actual fun sleepConditionVariableSRW(conditionvariable: MutPtr, srwlock: MutPtr, dwmilliseconds: kotlin.UInt, flags: kotlin.UInt): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSleepConditionVariableSRW(conditionvariable.rawAddress.toString(), srwlock.rawAddress.toString(), dwmilliseconds.toInt(), flags.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sleepEx(dwmilliseconds: UInt, balertable: Bool): UInt =
+public actual fun sleepEx(dwmilliseconds: kotlin.UInt, balertable: Bool): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSleepEx(dwmilliseconds.toInt(), balertable).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun switchToThread(): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSwitchToThread() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun terminateProcess(hprocess: Handle, uexitcode: UInt): Bool =
+public actual fun terminateProcess(hprocess: Handle, uexitcode: kotlin.UInt): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysTerminateProcess(hprocess.rawAddress.toString(), uexitcode.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun tlsAlloc(): UInt =
+public actual fun tlsAlloc(): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysTlsAlloc().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun tlsFree(dwtlsindex: UInt): Bool =
+public actual fun tlsFree(dwtlsindex: kotlin.UInt): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysTlsFree(dwtlsindex.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun tlsGetValue(dwtlsindex: UInt): MutPtr =
+public actual fun tlsGetValue(dwtlsindex: kotlin.UInt): MutPtr =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysTlsGetValue(dwtlsindex.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun tlsSetValue(dwtlsindex: UInt, lptlsvalue: ConstPtr): Bool =
+public actual fun tlsSetValue(dwtlsindex: kotlin.UInt, lptlsvalue: ConstPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysTlsSetValue(dwtlsindex.toInt(), lptlsvalue.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tryAcquireSRWLockExclusive(srwlock: MutPtr): Boolean =
@@ -888,40 +888,40 @@ public actual fun tryAcquireSRWLockExclusive(srwlock: MutPtr): Boolean =
 public actual fun tryAcquireSRWLockShared(srwlock: MutPtr): Boolean =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockShared(srwlock.rawAddress.toString()).toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun unlockFile(hfile: Handle, dwfileoffsetlow: UInt, dwfileoffsethigh: UInt, nnumberofbytestounlocklow: UInt, nnumberofbytestounlockhigh: UInt): Bool =
+public actual fun unlockFile(hfile: Handle, dwfileoffsetlow: kotlin.UInt, dwfileoffsethigh: kotlin.UInt, nnumberofbytestounlocklow: kotlin.UInt, nnumberofbytestounlockhigh: kotlin.UInt): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysUnlockFile(hfile.rawAddress.toString(), dwfileoffsetlow.toInt(), dwfileoffsethigh.toInt(), nnumberofbytestounlocklow.toInt(), nnumberofbytestounlockhigh.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun updateProcThreadAttribute(lpattributelist: MutPtr, dwflags: UInt, attribute: ULong, lpvalue: ConstPtr, cbsize: ULong, lppreviousvalue: MutPtr, lpreturnsize: ConstPtr): Bool =
+public actual fun updateProcThreadAttribute(lpattributelist: MutPtr, dwflags: kotlin.UInt, attribute: ULong, lpvalue: ConstPtr, cbsize: ULong, lppreviousvalue: MutPtr, lpreturnsize: ConstPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysUpdateProcThreadAttribute(lpattributelist.rawAddress.toString(), dwflags.toInt(), attribute.toString(), lpvalue.rawAddress.toString(), cbsize.toString(), lppreviousvalue.rawAddress.toString(), lpreturnsize.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wSACleanup(): Int =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWSACleanup() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun wSADuplicateSocketW(s: Socket, dwprocessid: UInt, lpprotocolinfo: MutPtr): Int =
+public actual fun wSADuplicateSocketW(s: Socket, dwprocessid: kotlin.UInt, lpprotocolinfo: MutPtr): Int =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWSADuplicateSocketW(s.toString(), dwprocessid.toInt(), lpprotocolinfo.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wSAGetLastError(): Int =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWSAGetLastError() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun wSARecv(s: Socket, lpbuffers: ConstPtr, dwbuffercount: UInt, lpnumberofbytesrecvd: MutPtr, lpflags: MutPtr, lpoverlapped: MutPtr, lpcompletionroutine: LpwsaoverlappedCompletionRoutine): Int =
+public actual fun wSARecv(s: Socket, lpbuffers: ConstPtr, dwbuffercount: kotlin.UInt, lpnumberofbytesrecvd: MutPtr, lpflags: MutPtr, lpoverlapped: MutPtr, lpcompletionroutine: LpwsaoverlappedCompletionRoutine): Int =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWSARecv(s.toString(), lpbuffers.rawAddress.toString(), dwbuffercount.toInt(), lpnumberofbytesrecvd.rawAddress.toString(), lpflags.rawAddress.toString(), lpoverlapped.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun wSASend(s: Socket, lpbuffers: ConstPtr, dwbuffercount: UInt, lpnumberofbytessent: MutPtr, dwflags: UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpwsaoverlappedCompletionRoutine): Int =
+public actual fun wSASend(s: Socket, lpbuffers: ConstPtr, dwbuffercount: kotlin.UInt, lpnumberofbytessent: MutPtr, dwflags: kotlin.UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpwsaoverlappedCompletionRoutine): Int =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWSASend(s.toString(), lpbuffers.rawAddress.toString(), dwbuffercount.toInt(), lpnumberofbytessent.rawAddress.toString(), dwflags.toInt(), lpoverlapped.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun wSASocketW(af: Int, type: Int, protocol: Int, lpprotocolinfo: ConstPtr, g: Group, dwflags: UInt): Socket =
+public actual fun wSASocketW(af: Int, type: Int, protocol: Int, lpprotocolinfo: ConstPtr, g: Group, dwflags: kotlin.UInt): Socket =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWSASocketW(af, type, protocol, lpprotocolinfo.rawAddress.toString(), g.toInt(), dwflags.toInt()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun wSAStartup(wversionrequested: UShort, lpwsadata: MutPtr): Int =
+public actual fun wSAStartup(wversionrequested: kotlin.UShort, lpwsadata: MutPtr): Int =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWSAStartup(wversionrequested.toInt(), lpwsadata.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun waitForMultipleObjects(ncount: UInt, lphandles: ConstPtr, bwaitall: Bool, dwmilliseconds: UInt): UInt =
+public actual fun waitForMultipleObjects(ncount: kotlin.UInt, lphandles: ConstPtr, bwaitall: Bool, dwmilliseconds: kotlin.UInt): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWaitForMultipleObjects(ncount.toInt(), lphandles.rawAddress.toString(), bwaitall, dwmilliseconds.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun waitForSingleObject(hhandle: Handle, dwmilliseconds: UInt): UInt =
+public actual fun waitForSingleObject(hhandle: Handle, dwmilliseconds: kotlin.UInt): kotlin.UInt =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWaitForSingleObject(hhandle.rawAddress.toString(), dwmilliseconds.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun waitOnAddress(address: ConstPtr, compareaddress: ConstPtr, addresssize: ULong, dwmilliseconds: UInt): Bool =
+public actual fun waitOnAddress(address: ConstPtr, compareaddress: ConstPtr, addresssize: ULong, dwmilliseconds: kotlin.UInt): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWaitOnAddress(address.rawAddress.toString(), compareaddress.rawAddress.toString(), addresssize.toString(), dwmilliseconds.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wakeAllConditionVariable(conditionvariable: MutPtr) {
@@ -956,13 +956,13 @@ public actual fun wakeConditionVariable(conditionvariable: MutPtr) {
     }
 }
 
-public actual fun wideCharToMultiByte(codepage: UInt, dwflags: UInt, lpwidecharstr: ConstPtr, cchwidechar: Int, lpmultibytestr: Pstr, cbmultibyte: Int, lpdefaultchar: ConstPtr, lpuseddefaultchar: MutPtr): Int =
+public actual fun wideCharToMultiByte(codepage: kotlin.UInt, dwflags: kotlin.UInt, lpwidecharstr: ConstPtr, cchwidechar: Int, lpmultibytestr: Pstr, cbmultibyte: Int, lpdefaultchar: ConstPtr, lpuseddefaultchar: MutPtr): Int =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWideCharToMultiByte(codepage.toInt(), dwflags.toInt(), lpwidecharstr.rawAddress.toString(), cchwidechar, lpmultibytestr.rawAddress.toString(), cbmultibyte, lpdefaultchar.rawAddress.toString(), lpuseddefaultchar.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun writeConsoleW(hconsoleoutput: Handle, lpbuffer: ConstPtr, nnumberofcharstowrite: UInt, lpnumberofcharswritten: MutPtr, lpreserved: ConstPtr): Bool =
+public actual fun writeConsoleW(hconsoleoutput: Handle, lpbuffer: ConstPtr, nnumberofcharstowrite: kotlin.UInt, lpnumberofcharswritten: MutPtr, lpreserved: ConstPtr): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWriteConsoleW(hconsoleoutput.rawAddress.toString(), lpbuffer.rawAddress.toString(), nnumberofcharstowrite.toInt(), lpnumberofcharswritten.rawAddress.toString(), lpreserved.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun writeFileEx(hfile: Handle, lpbuffer: ConstPtr, nnumberofbytestowrite: UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpoverlappedCompletionRoutine): Bool =
+public actual fun writeFileEx(hfile: Handle, lpbuffer: ConstPtr, nnumberofbytestowrite: kotlin.UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpoverlappedCompletionRoutine): Bool =
     if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWriteFileEx(hfile.rawAddress.toString(), lpbuffer.rawAddress.toString(), nnumberofbytestowrite.toInt(), lpoverlapped.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun accept(s: Socket, addr: MutPtr, addrlen: MutPtr): Socket =

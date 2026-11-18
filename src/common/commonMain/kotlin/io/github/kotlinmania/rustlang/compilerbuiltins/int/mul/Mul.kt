@@ -140,8 +140,8 @@ public fun mulsi3(a: UInt, b: UInt): UInt {
 }
 
 public fun muldi3(a: ULong, b: ULong): ULong {
-    fun muldi3(a1: ULong, b1: ULong): ULong = 0uL
-    return muldi3(a, b)
+    fun externMuldi3(a1: ULong, b1: ULong): ULong = 0uL
+    return externMuldi3(a, b)
 }
 
 public fun multi3(a: I128, b: I128): I128 = a.mul(b)

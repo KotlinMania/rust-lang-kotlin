@@ -7,6 +7,8 @@ import io.github.kotlinmania.rustlang.procmacro.Delimiter
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
 import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.Decode
 import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.Encode
+import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.decode
+import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.encode
 import io.github.kotlinmania.rustlang.procmacro.diagnostic.Level
 
 public fun <Unmarked, T> markVecT(unmarked: List<Unmarked>, markTFn: (List<Unmarked>) -> T): List<T> {

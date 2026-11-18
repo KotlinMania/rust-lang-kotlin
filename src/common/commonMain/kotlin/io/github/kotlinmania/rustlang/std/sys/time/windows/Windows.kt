@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.time.windows
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedSub
@@ -116,7 +117,7 @@ public open class SystemTime(
         // support negatives. In order to tackle this, we try to convert the
         // resulting value into an u64, which should obviously fail in the case
         // that the value is below zero.
-        val intervals: ULong = ((this.intervals().checkedSub(((checkedDur2intervals(other) ?: return null)).toLong()) ?: return null).tryInto().ok() ?: return null)
+        val intervals: ULong = (ULong.tryFrom((this.intervals().checkedSub(((checkedDur2intervals(other) ?: return null)).toLong()) ?: return null)).ok() ?: return null)
         return SystemTime.fromIntervals(intervals.toLong())
     }
 

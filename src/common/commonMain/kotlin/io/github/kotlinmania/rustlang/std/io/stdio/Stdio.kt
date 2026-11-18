@@ -26,7 +26,7 @@ import io.github.kotlinmania.rustlang.std.sync.reentrantlock.ReentrantLock
 import io.github.kotlinmania.rustlang.std.sync.reentrantlock.ReentrantLockGuard
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.STDIN_BUF_SIZE
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.isEbadf
-import io.github.kotlinmania.rustlang.std.thread.AccessError
+import io.github.kotlinmania.rustlang.std.thread.local.AccessError
 
 public fun interface FnCallback {
     public operator fun invoke(): T

@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.procmacro.bridge.handle
 
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.procmacro.bridge.fxhash.FxHashMap

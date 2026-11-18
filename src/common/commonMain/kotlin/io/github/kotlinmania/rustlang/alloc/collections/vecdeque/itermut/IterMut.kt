@@ -43,7 +43,7 @@ public class DebugTuple(
 public open class IterMut<T>(
     public var i1: ArrayDeque<T>,
     public var i2: ArrayDeque<T>,
-) : TrustedLen<Any>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<T> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<T> {
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IterMut.next()) {

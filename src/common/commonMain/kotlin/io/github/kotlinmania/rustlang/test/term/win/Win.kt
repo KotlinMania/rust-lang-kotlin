@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.test.term.win
 
 import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -110,6 +111,8 @@ public open class WinConsole<T>(
         }
     }
 }
+
+public typealias Short = kotlin.Short
 
 public typealias Word = UShort
 

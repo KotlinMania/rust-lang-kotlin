@@ -18,6 +18,7 @@ import io.github.kotlinmania.rustlang.core.char.methods.isAsciiUppercase
 import io.github.kotlinmania.rustlang.core.char.methods.isAsciiWhitespace
 import io.github.kotlinmania.rustlang.core.char.methods.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.methods.toAsciiUppercase
+import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.escape.HEX_DIGITS
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -1311,17 +1312,17 @@ public sealed class AsciiChar(
     }
 }
 
-public fun fromUByte(chr: AsciiChar): UByte = chr.toUByte()
+public fun UByte.Companion.from(chr: AsciiChar): UByte = chr.toUByte()
 
-public fun fromUShort(chr: AsciiChar): UShort = (chr.toUByte()).toUShort()
+public fun UShort.Companion.from(chr: AsciiChar): UShort = (chr.toUByte()).toUShort()
 
-public fun fromUInt(chr: AsciiChar): UInt = (chr.toUByte()).toUInt()
+public fun UInt.Companion.from(chr: AsciiChar): UInt = (chr.toUByte()).toUInt()
 
-public fun fromULong(chr: AsciiChar): ULong = (chr.toUByte()).toULong()
+public fun ULong.Companion.from(chr: AsciiChar): ULong = (chr.toUByte()).toULong()
 
-public fun fromU128(chr: AsciiChar): U128 = U128.fromUByte((chr.toUByte()))
+public fun U128.Companion.from(chr: AsciiChar): U128 = U128.fromUByte((chr.toUByte()))
 
-public fun fromChar(chr: AsciiChar): Char = (chr.toUByte()).toInt().toChar()
+public fun Char.Companion.from(chr: AsciiChar): Char = (chr.toUByte()).toInt().toChar()
 
 /**
  * Views this slice of ASCII characters as a UTF-8 `String`.

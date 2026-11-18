@@ -10,7 +10,6 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -52,8 +51,8 @@ public typealias W = Simd<F16>
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/__crc32b)
  */
 public fun crc32b(crc: UInt, data: UByte): UInt {
-    fun crc32b(crc1: UInt, data1: UInt): UInt = 0u
-    return crc32b(crc, (data.toUInt()).toUByte())
+    fun externCrc32b(crc1: UInt, data1: UInt): UInt = 0u
+    return externCrc32b(crc, data.toUInt())
 }
 
 /**
@@ -61,8 +60,8 @@ public fun crc32b(crc: UInt, data: UByte): UInt {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/__crc32cb)
  */
 public fun crc32cb(crc: UInt, data: UByte): UInt {
-    fun crc32cb(crc1: UInt, data1: UInt): UInt = 0u
-    return crc32cb(crc, (data.toUInt()).toUByte())
+    fun externCrc32cb(crc1: UInt, data1: UInt): UInt = 0u
+    return externCrc32cb(crc, data.toUInt())
 }
 
 /**
@@ -70,8 +69,8 @@ public fun crc32cb(crc: UInt, data: UByte): UInt {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/__crc32ch)
  */
 public fun crc32ch(crc: UInt, data: UShort): UInt {
-    fun crc32ch(crc1: UInt, data1: UInt): UInt = 0u
-    return crc32ch(crc, (data.toUInt()).toUShort())
+    fun externCrc32ch(crc1: UInt, data1: UInt): UInt = 0u
+    return externCrc32ch(crc, data.toUInt())
 }
 
 /**
@@ -79,8 +78,8 @@ public fun crc32ch(crc: UInt, data: UShort): UInt {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/__crc32cw)
  */
 public fun crc32cw(crc: UInt, data: UInt): UInt {
-    fun crc32cw(crc1: UInt, data1: UInt): UInt = 0u
-    return crc32cw(crc, data)
+    fun externCrc32cw(crc1: UInt, data1: UInt): UInt = 0u
+    return externCrc32cw(crc, data)
 }
 
 /**
@@ -88,8 +87,8 @@ public fun crc32cw(crc: UInt, data: UInt): UInt {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/__crc32h)
  */
 public fun crc32h(crc: UInt, data: UShort): UInt {
-    fun crc32h(crc1: UInt, data1: UInt): UInt = 0u
-    return crc32h(crc, (data.toUInt()).toUShort())
+    fun externCrc32h(crc1: UInt, data1: UInt): UInt = 0u
+    return externCrc32h(crc, data.toUInt())
 }
 
 /**
@@ -97,8 +96,8 @@ public fun crc32h(crc: UInt, data: UShort): UInt {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/__crc32w)
  */
 public fun crc32w(crc: UInt, data: UInt): UInt {
-    fun crc32w(crc1: UInt, data1: UInt): UInt = 0u
-    return crc32w(crc, data)
+    fun externCrc32w(crc1: UInt, data1: UInt): UInt = 0u
+    return externCrc32w(crc, data)
 }
 
 /**
@@ -241,8 +240,8 @@ public fun vabaqU8(a: Uint8x16T, b: Uint8x16T, c: Uint8x16T): Uint8x16T = run { 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vabdF16)
  */
 public fun vabdF16(a: Float16x4T, b: Float16x4T): Float16x4T {
-    fun vabdF16(a1: Float16x4T, b1: Float16x4T): Float16x4T = Float16x4T()
-    return vabdF16(a, b)
+    fun externVabdF16(a1: Float16x4T, b1: Float16x4T): Float16x4T = Float16x4T()
+    return externVabdF16(a, b)
 }
 
 /**
@@ -250,8 +249,8 @@ public fun vabdF16(a: Float16x4T, b: Float16x4T): Float16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vabdqF16)
  */
 public fun vabdqF16(a: Float16x8T, b: Float16x8T): Float16x8T {
-    fun vabdqF16(a1: Float16x8T, b1: Float16x8T): Float16x8T = Float16x8T()
-    return vabdqF16(a, b)
+    fun externVabdqF16(a1: Float16x8T, b1: Float16x8T): Float16x8T = Float16x8T()
+    return externVabdqF16(a, b)
 }
 
 /**
@@ -259,8 +258,8 @@ public fun vabdqF16(a: Float16x8T, b: Float16x8T): Float16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vabdF32)
  */
 public fun vabdF32(a: Float32x2T, b: Float32x2T): Float32x2T {
-    fun vabdF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
-    return vabdF32(a, b)
+    fun externVabdF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
+    return externVabdF32(a, b)
 }
 
 /**
@@ -268,8 +267,8 @@ public fun vabdF32(a: Float32x2T, b: Float32x2T): Float32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vabdqF32)
  */
 public fun vabdqF32(a: Float32x4T, b: Float32x4T): Float32x4T {
-    fun vabdqF32(a1: Float32x4T, b1: Float32x4T): Float32x4T = Float32x4T()
-    return vabdqF32(a, b)
+    fun externVabdqF32(a1: Float32x4T, b1: Float32x4T): Float32x4T = Float32x4T()
+    return externVabdqF32(a, b)
 }
 
 /**
@@ -277,8 +276,8 @@ public fun vabdqF32(a: Float32x4T, b: Float32x4T): Float32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vabdS8)
  */
 public fun vabdS8(a: Int8x8T, b: Int8x8T): Int8x8T {
-    fun vabdS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
-    return vabdS8(a, b)
+    fun externVabdS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
+    return externVabdS8(a, b)
 }
 
 /**
@@ -286,8 +285,8 @@ public fun vabdS8(a: Int8x8T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vabdqS8)
  */
 public fun vabdqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
-    fun vabdqS8(a1: Int8x16T, b1: Int8x16T): Int8x16T = Int8x16T()
-    return vabdqS8(a, b)
+    fun externVabdqS8(a1: Int8x16T, b1: Int8x16T): Int8x16T = Int8x16T()
+    return externVabdqS8(a, b)
 }
 
 /**
@@ -295,8 +294,8 @@ public fun vabdqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vabdS16)
  */
 public fun vabdS16(a: Int16x4T, b: Int16x4T): Int16x4T {
-    fun vabdS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
-    return vabdS16(a, b)
+    fun externVabdS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
+    return externVabdS16(a, b)
 }
 
 /**
@@ -304,8 +303,8 @@ public fun vabdS16(a: Int16x4T, b: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vabdqS16)
  */
 public fun vabdqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
-    fun vabdqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
-    return vabdqS16(a, b)
+    fun externVabdqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
+    return externVabdqS16(a, b)
 }
 
 /**
@@ -313,8 +312,8 @@ public fun vabdqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vabdS32)
  */
 public fun vabdS32(a: Int32x2T, b: Int32x2T): Int32x2T {
-    fun vabdS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
-    return vabdS32(a, b)
+    fun externVabdS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
+    return externVabdS32(a, b)
 }
 
 /**
@@ -322,8 +321,8 @@ public fun vabdS32(a: Int32x2T, b: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vabdqS32)
  */
 public fun vabdqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
-    fun vabdqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
-    return vabdqS32(a, b)
+    fun externVabdqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
+    return externVabdqS32(a, b)
 }
 
 /**
@@ -331,8 +330,8 @@ public fun vabdqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vabdU8)
  */
 public fun vabdU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
-    fun vabdU8(a1: Uint8x8T, b1: Uint8x8T): Uint8x8T = Uint8x8T()
-    return vabdU8(a, b)
+    fun externVabdU8(a1: Uint8x8T, b1: Uint8x8T): Uint8x8T = Uint8x8T()
+    return externVabdU8(a, b)
 }
 
 /**
@@ -340,8 +339,8 @@ public fun vabdU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vabdqU8)
  */
 public fun vabdqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T {
-    fun vabdqU8(a1: Uint8x16T, b1: Uint8x16T): Uint8x16T = Uint8x16T()
-    return vabdqU8(a, b)
+    fun externVabdqU8(a1: Uint8x16T, b1: Uint8x16T): Uint8x16T = Uint8x16T()
+    return externVabdqU8(a, b)
 }
 
 /**
@@ -349,8 +348,8 @@ public fun vabdqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vabdU16)
  */
 public fun vabdU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
-    fun vabdU16(a1: Uint16x4T, b1: Uint16x4T): Uint16x4T = Uint16x4T()
-    return vabdU16(a, b)
+    fun externVabdU16(a1: Uint16x4T, b1: Uint16x4T): Uint16x4T = Uint16x4T()
+    return externVabdU16(a, b)
 }
 
 /**
@@ -358,8 +357,8 @@ public fun vabdU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vabdqU16)
  */
 public fun vabdqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T {
-    fun vabdqU16(a1: Uint16x8T, b1: Uint16x8T): Uint16x8T = Uint16x8T()
-    return vabdqU16(a, b)
+    fun externVabdqU16(a1: Uint16x8T, b1: Uint16x8T): Uint16x8T = Uint16x8T()
+    return externVabdqU16(a, b)
 }
 
 /**
@@ -367,8 +366,8 @@ public fun vabdqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vabdU32)
  */
 public fun vabdU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
-    fun vabdU32(a1: Uint32x2T, b1: Uint32x2T): Uint32x2T = Uint32x2T()
-    return vabdU32(a, b)
+    fun externVabdU32(a1: Uint32x2T, b1: Uint32x2T): Uint32x2T = Uint32x2T()
+    return externVabdU32(a, b)
 }
 
 /**
@@ -376,8 +375,8 @@ public fun vabdU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vabdqU32)
  */
 public fun vabdqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T {
-    fun vabdqU32(a1: Uint32x4T, b1: Uint32x4T): Uint32x4T = Uint32x4T()
-    return vabdqU32(a, b)
+    fun externVabdqU32(a1: Uint32x4T, b1: Uint32x4T): Uint32x4T = Uint32x4T()
+    return externVabdqU32(a, b)
 }
 
 /**
@@ -1063,8 +1062,8 @@ public fun vaddwU8(a: Uint16x8T, b: Uint8x8T): Uint16x8T =
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vaesdqU8)
  */
 public fun vaesdqU8(data: Uint8x16T, key: Uint8x16T): Uint8x16T {
-    fun vaesdqU8(data1: Uint8x16T, key1: Uint8x16T): Uint8x16T = Uint8x16T()
-    return vaesdqU8(data, key)
+    fun externVaesdqU8(data1: Uint8x16T, key1: Uint8x16T): Uint8x16T = Uint8x16T()
+    return externVaesdqU8(data, key)
 }
 
 /**
@@ -1072,8 +1071,8 @@ public fun vaesdqU8(data: Uint8x16T, key: Uint8x16T): Uint8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vaeseqU8)
  */
 public fun vaeseqU8(data: Uint8x16T, key: Uint8x16T): Uint8x16T {
-    fun vaeseqU8(data1: Uint8x16T, key1: Uint8x16T): Uint8x16T = Uint8x16T()
-    return vaeseqU8(data, key)
+    fun externVaeseqU8(data1: Uint8x16T, key1: Uint8x16T): Uint8x16T = Uint8x16T()
+    return externVaeseqU8(data, key)
 }
 
 /**
@@ -1081,8 +1080,8 @@ public fun vaeseqU8(data: Uint8x16T, key: Uint8x16T): Uint8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vaesimcqU8)
  */
 public fun vaesimcqU8(data: Uint8x16T): Uint8x16T {
-    fun vaesimcqU8(data1: Uint8x16T): Uint8x16T = Uint8x16T()
-    return vaesimcqU8(data)
+    fun externVaesimcqU8(data1: Uint8x16T): Uint8x16T = Uint8x16T()
+    return externVaesimcqU8(data)
 }
 
 /**
@@ -1090,8 +1089,8 @@ public fun vaesimcqU8(data: Uint8x16T): Uint8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vaesmcqU8)
  */
 public fun vaesmcqU8(data: Uint8x16T): Uint8x16T {
-    fun vaesmcqU8(data1: Uint8x16T): Uint8x16T = Uint8x16T()
-    return vaesmcqU8(data)
+    fun externVaesmcqU8(data1: Uint8x16T): Uint8x16T = Uint8x16T()
+    return externVaesmcqU8(data)
 }
 
 /**
@@ -1268,7 +1267,7 @@ public fun vbicqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
  */
 public fun vbicU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
     val c = Int16x4T.splat(-1)
-    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
+    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmuteWithLayouts<Any?, Uint16x4T>(c, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
 /**
@@ -1277,7 +1276,7 @@ public fun vbicU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
  */
 public fun vbicU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
     val c = Int32x2T.splat(-1)
-    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
+    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmuteWithLayouts<Any?, Uint32x2T>(c, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x2T>()); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
 /**
@@ -1286,7 +1285,7 @@ public fun vbicU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
  */
 public fun vbicU64(a: Uint64x1T, b: Uint64x1T): Uint64x1T {
     val c = Int64x1T.splat(-1)
-    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
+    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmuteWithLayouts<Any?, Uint64x1T>(c, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint64x1T>()); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
 /**
@@ -1295,7 +1294,7 @@ public fun vbicU64(a: Uint64x1T, b: Uint64x1T): Uint64x1T {
  */
 public fun vbicU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
     val c = Int8x8T.splat(-1)
-    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
+    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmuteWithLayouts<Any?, Uint8x8T>(c, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x8T>()); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
 /**
@@ -1304,7 +1303,7 @@ public fun vbicU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
  */
 public fun vbicqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T {
     val c = Int16x8T.splat(-1)
-    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
+    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmuteWithLayouts<Any?, Uint16x8T>(c, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
 /**
@@ -1313,7 +1312,7 @@ public fun vbicqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T {
  */
 public fun vbicqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T {
     val c = Int32x4T.splat(-1)
-    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
+    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmuteWithLayouts<Any?, Uint32x4T>(c, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x4T>()); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
 /**
@@ -1322,7 +1321,7 @@ public fun vbicqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T {
  */
 public fun vbicqU64(a: Uint64x2T, b: Uint64x2T): Uint64x2T {
     val c = Int64x2T.splat(-1)
-    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
+    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmuteWithLayouts<Any?, Uint64x2T>(c, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint64x2T>()); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
 /**
@@ -1331,7 +1330,7 @@ public fun vbicqU64(a: Uint64x2T, b: Uint64x2T): Uint64x2T {
  */
 public fun vbicqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T {
     val c = Int8x16T.splat(-1)
-    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
+    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmuteWithLayouts<Any?, Uint8x16T>(c, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x16T>()); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
 /**
@@ -1340,7 +1339,7 @@ public fun vbicqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T {
  */
 public fun vbslF16(a: Uint16x4T, b: Float16x4T, c: Float16x4T): Float16x4T {
     val not = Int16x4T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float16x4T, Uint16x4T>(b, UnresolvedTypeLayout<Float16x4T>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
+    return transmuteWithLayouts<Uint16x4T, Float16x4T>(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float16x4T, Uint16x4T>(b, UnresolvedTypeLayout<Float16x4T>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint16x4T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; val simdArg1 = transmuteWithLayouts<Float16x4T, Uint16x4T>(c, UnresolvedTypeLayout<Float16x4T>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Uint16x4T>(), UnresolvedTypeLayout<Float16x4T>())
 }
 
 /**
@@ -1349,7 +1348,7 @@ public fun vbslF16(a: Uint16x4T, b: Float16x4T, c: Float16x4T): Float16x4T {
  */
 public fun vbslqF16(a: Uint16x8T, b: Float16x8T, c: Float16x8T): Float16x8T {
     val not = Int16x8T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float16x8T, Uint16x8T>(b, UnresolvedTypeLayout<Float16x8T>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
+    return transmuteWithLayouts<Uint16x8T, Float16x8T>(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float16x8T, Uint16x8T>(b, UnresolvedTypeLayout<Float16x8T>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint16x8T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; val simdArg1 = transmuteWithLayouts<Float16x8T, Uint16x8T>(c, UnresolvedTypeLayout<Float16x8T>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Uint16x8T>(), UnresolvedTypeLayout<Float16x8T>())
 }
 
 /**
@@ -1358,7 +1357,7 @@ public fun vbslqF16(a: Uint16x8T, b: Float16x8T, c: Float16x8T): Float16x8T {
  */
 public fun vbslF32(a: Uint32x2T, b: Float32x2T, c: Float32x2T): Float32x2T {
     val not = Int32x2T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float32x2T, Uint32x2T>(b, UnresolvedTypeLayout<Float32x2T>(), UnresolvedTypeLayout<Uint32x2T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
+    return transmuteWithLayouts<Uint32x2T, Float32x2T>(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float32x2T, Uint32x2T>(b, UnresolvedTypeLayout<Float32x2T>(), UnresolvedTypeLayout<Uint32x2T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint32x2T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x2T>()); simdArg0 }; val simdArg1 = transmuteWithLayouts<Float32x2T, Uint32x2T>(c, UnresolvedTypeLayout<Float32x2T>(), UnresolvedTypeLayout<Uint32x2T>()); simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Uint32x2T>(), UnresolvedTypeLayout<Float32x2T>())
 }
 
 /**
@@ -1367,7 +1366,7 @@ public fun vbslF32(a: Uint32x2T, b: Float32x2T, c: Float32x2T): Float32x2T {
  */
 public fun vbslP16(a: Uint16x4T, b: Poly16x4T, c: Poly16x4T): Poly16x4T {
     val not = Int16x4T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Poly16x4T, Uint16x4T>(b, UnresolvedTypeLayout<Poly16x4T>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
+    return transmuteWithLayouts<Uint16x4T, Poly16x4T>(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Poly16x4T, Uint16x4T>(b, UnresolvedTypeLayout<Poly16x4T>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint16x4T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; val simdArg1 = transmuteWithLayouts<Poly16x4T, Uint16x4T>(c, UnresolvedTypeLayout<Poly16x4T>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Uint16x4T>(), UnresolvedTypeLayout<Poly16x4T>())
 }
 
 /**
@@ -1376,7 +1375,7 @@ public fun vbslP16(a: Uint16x4T, b: Poly16x4T, c: Poly16x4T): Poly16x4T {
  */
 public fun vbslP8(a: Uint8x8T, b: Poly8x8T, c: Poly8x8T): Poly8x8T {
     val not = Int8x8T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Poly8x8T, Uint8x8T>(b, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Uint8x8T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
+    return transmuteWithLayouts<Uint8x8T, Poly8x8T>(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Poly8x8T, Uint8x8T>(b, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Uint8x8T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint8x8T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x8T>()); simdArg0 }; val simdArg1 = transmuteWithLayouts<Poly8x8T, Uint8x8T>(c, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Uint8x8T>()); simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Uint8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
 }
 
 /**
@@ -1385,7 +1384,7 @@ public fun vbslP8(a: Uint8x8T, b: Poly8x8T, c: Poly8x8T): Poly8x8T {
  */
 public fun vbslS16(a: Uint16x4T, b: Int16x4T, c: Int16x4T): Int16x4T {
     val not = Int16x4T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int16x4T, Uint16x4T>(b, UnresolvedTypeLayout<Int16x4T>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
+    return transmuteWithLayouts<Uint16x4T, Int16x4T>(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int16x4T, Uint16x4T>(b, UnresolvedTypeLayout<Int16x4T>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint16x4T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; val simdArg1 = transmuteWithLayouts<Int16x4T, Uint16x4T>(c, UnresolvedTypeLayout<Int16x4T>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Uint16x4T>(), UnresolvedTypeLayout<Int16x4T>())
 }
 
 /**
@@ -1394,7 +1393,7 @@ public fun vbslS16(a: Uint16x4T, b: Int16x4T, c: Int16x4T): Int16x4T {
  */
 public fun vbslS32(a: Uint32x2T, b: Int32x2T, c: Int32x2T): Int32x2T {
     val not = Int32x2T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int32x2T, Uint32x2T>(b, UnresolvedTypeLayout<Int32x2T>(), UnresolvedTypeLayout<Uint32x2T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
+    return transmuteWithLayouts<Uint32x2T, Int32x2T>(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int32x2T, Uint32x2T>(b, UnresolvedTypeLayout<Int32x2T>(), UnresolvedTypeLayout<Uint32x2T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint32x2T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x2T>()); simdArg0 }; val simdArg1 = transmuteWithLayouts<Int32x2T, Uint32x2T>(c, UnresolvedTypeLayout<Int32x2T>(), UnresolvedTypeLayout<Uint32x2T>()); simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Uint32x2T>(), UnresolvedTypeLayout<Int32x2T>())
 }
 
 /**
@@ -1403,7 +1402,7 @@ public fun vbslS32(a: Uint32x2T, b: Int32x2T, c: Int32x2T): Int32x2T {
  */
 public fun vbslS64(a: Uint64x1T, b: Int64x1T, c: Int64x1T): Int64x1T {
     val not = Int64x1T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int64x1T, Uint64x1T>(b, UnresolvedTypeLayout<Int64x1T>(), UnresolvedTypeLayout<Uint64x1T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
+    return transmuteWithLayouts<Uint64x1T, Int64x1T>(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int64x1T, Uint64x1T>(b, UnresolvedTypeLayout<Int64x1T>(), UnresolvedTypeLayout<Uint64x1T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint64x1T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint64x1T>()); simdArg0 }; val simdArg1 = transmuteWithLayouts<Int64x1T, Uint64x1T>(c, UnresolvedTypeLayout<Int64x1T>(), UnresolvedTypeLayout<Uint64x1T>()); simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Uint64x1T>(), UnresolvedTypeLayout<Int64x1T>())
 }
 
 /**
@@ -1412,7 +1411,7 @@ public fun vbslS64(a: Uint64x1T, b: Int64x1T, c: Int64x1T): Int64x1T {
  */
 public fun vbslS8(a: Uint8x8T, b: Int8x8T, c: Int8x8T): Int8x8T {
     val not = Int8x8T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int8x8T, Uint8x8T>(b, UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
+    return transmuteWithLayouts<Uint8x8T, Int8x8T>(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int8x8T, Uint8x8T>(b, UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint8x8T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x8T>()); simdArg0 }; val simdArg1 = transmuteWithLayouts<Int8x8T, Uint8x8T>(c, UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>()); simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Uint8x8T>(), UnresolvedTypeLayout<Int8x8T>())
 }
 
 /**
@@ -1421,7 +1420,7 @@ public fun vbslS8(a: Uint8x8T, b: Int8x8T, c: Int8x8T): Int8x8T {
  */
 public fun vbslqF32(a: Uint32x4T, b: Float32x4T, c: Float32x4T): Float32x4T {
     val not = Int32x4T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float32x4T, Uint32x4T>(b, UnresolvedTypeLayout<Float32x4T>(), UnresolvedTypeLayout<Uint32x4T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
+    return transmuteWithLayouts<Uint32x4T, Float32x4T>(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float32x4T, Uint32x4T>(b, UnresolvedTypeLayout<Float32x4T>(), UnresolvedTypeLayout<Uint32x4T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint32x4T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x4T>()); simdArg0 }; val simdArg1 = transmuteWithLayouts<Float32x4T, Uint32x4T>(c, UnresolvedTypeLayout<Float32x4T>(), UnresolvedTypeLayout<Uint32x4T>()); simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Uint32x4T>(), UnresolvedTypeLayout<Float32x4T>())
 }
 
 /**
@@ -1430,7 +1429,7 @@ public fun vbslqF32(a: Uint32x4T, b: Float32x4T, c: Float32x4T): Float32x4T {
  */
 public fun vbslqP16(a: Uint16x8T, b: Poly16x8T, c: Poly16x8T): Poly16x8T {
     val not = Int16x8T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Poly16x8T, Uint16x8T>(b, UnresolvedTypeLayout<Poly16x8T>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
+    return transmuteWithLayouts<Uint16x8T, Poly16x8T>(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Poly16x8T, Uint16x8T>(b, UnresolvedTypeLayout<Poly16x8T>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint16x8T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; val simdArg1 = transmuteWithLayouts<Poly16x8T, Uint16x8T>(c, UnresolvedTypeLayout<Poly16x8T>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Uint16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
 }
 
 /**
@@ -1439,7 +1438,7 @@ public fun vbslqP16(a: Uint16x8T, b: Poly16x8T, c: Poly16x8T): Poly16x8T {
  */
 public fun vbslqP8(a: Uint8x16T, b: Poly8x16T, c: Poly8x16T): Poly8x16T {
     val not = Int8x16T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Poly8x16T, Uint8x16T>(b, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Uint8x16T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
+    return transmuteWithLayouts<Uint8x16T, Poly8x16T>(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Poly8x16T, Uint8x16T>(b, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Uint8x16T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint8x16T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x16T>()); simdArg0 }; val simdArg1 = transmuteWithLayouts<Poly8x16T, Uint8x16T>(c, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Uint8x16T>()); simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 }
 
 /**
@@ -1448,7 +1447,7 @@ public fun vbslqP8(a: Uint8x16T, b: Poly8x16T, c: Poly8x16T): Poly8x16T {
  */
 public fun vbslqS16(a: Uint16x8T, b: Int16x8T, c: Int16x8T): Int16x8T {
     val not = Int16x8T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int16x8T, Uint16x8T>(b, UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
+    return transmuteWithLayouts<Uint16x8T, Int16x8T>(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int16x8T, Uint16x8T>(b, UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint16x8T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; val simdArg1 = transmuteWithLayouts<Int16x8T, Uint16x8T>(c, UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Uint16x8T>(), UnresolvedTypeLayout<Int16x8T>())
 }
 
 /**
@@ -1457,7 +1456,7 @@ public fun vbslqS16(a: Uint16x8T, b: Int16x8T, c: Int16x8T): Int16x8T {
  */
 public fun vbslqS32(a: Uint32x4T, b: Int32x4T, c: Int32x4T): Int32x4T {
     val not = Int32x4T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int32x4T, Uint32x4T>(b, UnresolvedTypeLayout<Int32x4T>(), UnresolvedTypeLayout<Uint32x4T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
+    return transmuteWithLayouts<Uint32x4T, Int32x4T>(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int32x4T, Uint32x4T>(b, UnresolvedTypeLayout<Int32x4T>(), UnresolvedTypeLayout<Uint32x4T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint32x4T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x4T>()); simdArg0 }; val simdArg1 = transmuteWithLayouts<Int32x4T, Uint32x4T>(c, UnresolvedTypeLayout<Int32x4T>(), UnresolvedTypeLayout<Uint32x4T>()); simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Uint32x4T>(), UnresolvedTypeLayout<Int32x4T>())
 }
 
 /**
@@ -1466,7 +1465,7 @@ public fun vbslqS32(a: Uint32x4T, b: Int32x4T, c: Int32x4T): Int32x4T {
  */
 public fun vbslqS64(a: Uint64x2T, b: Int64x2T, c: Int64x2T): Int64x2T {
     val not = Int64x2T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int64x2T, Uint64x2T>(b, UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Uint64x2T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
+    return transmuteWithLayouts<Uint64x2T, Int64x2T>(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int64x2T, Uint64x2T>(b, UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Uint64x2T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint64x2T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint64x2T>()); simdArg0 }; val simdArg1 = transmuteWithLayouts<Int64x2T, Uint64x2T>(c, UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Uint64x2T>()); simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Uint64x2T>(), UnresolvedTypeLayout<Int64x2T>())
 }
 
 /**
@@ -1475,7 +1474,7 @@ public fun vbslqS64(a: Uint64x2T, b: Int64x2T, c: Int64x2T): Int64x2T {
  */
 public fun vbslqS8(a: Uint8x16T, b: Int8x16T, c: Int8x16T): Int8x16T {
     val not = Int8x16T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int8x16T, Uint8x16T>(b, UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
+    return transmuteWithLayouts<Uint8x16T, Int8x16T>(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Int8x16T, Uint8x16T>(b, UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint8x16T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x16T>()); simdArg0 }; val simdArg1 = transmuteWithLayouts<Int8x16T, Uint8x16T>(c, UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>()); simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>())
 }
 
 /**
@@ -1484,7 +1483,7 @@ public fun vbslqS8(a: Uint8x16T, b: Int8x16T, c: Int8x16T): Int8x16T {
  */
 public fun vbslU16(a: Uint16x4T, b: Uint16x4T, c: Uint16x4T): Uint16x4T {
     val not = Int16x4T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
+    return run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint16x4T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 }
 }
 
 /**
@@ -1493,7 +1492,7 @@ public fun vbslU16(a: Uint16x4T, b: Uint16x4T, c: Uint16x4T): Uint16x4T {
  */
 public fun vbslU32(a: Uint32x2T, b: Uint32x2T, c: Uint32x2T): Uint32x2T {
     val not = Int32x2T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
+    return run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint32x2T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x2T>()); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 }
 }
 
 /**
@@ -1502,7 +1501,7 @@ public fun vbslU32(a: Uint32x2T, b: Uint32x2T, c: Uint32x2T): Uint32x2T {
  */
 public fun vbslU64(a: Uint64x1T, b: Uint64x1T, c: Uint64x1T): Uint64x1T {
     val not = Int64x1T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
+    return run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint64x1T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint64x1T>()); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 }
 }
 
 /**
@@ -1511,7 +1510,7 @@ public fun vbslU64(a: Uint64x1T, b: Uint64x1T, c: Uint64x1T): Uint64x1T {
  */
 public fun vbslU8(a: Uint8x8T, b: Uint8x8T, c: Uint8x8T): Uint8x8T {
     val not = Int8x8T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
+    return run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint8x8T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x8T>()); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 }
 }
 
 /**
@@ -1520,7 +1519,7 @@ public fun vbslU8(a: Uint8x8T, b: Uint8x8T, c: Uint8x8T): Uint8x8T {
  */
 public fun vbslqU16(a: Uint16x8T, b: Uint16x8T, c: Uint16x8T): Uint16x8T {
     val not = Int16x8T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
+    return run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint16x8T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 }
 }
 
 /**
@@ -1529,7 +1528,7 @@ public fun vbslqU16(a: Uint16x8T, b: Uint16x8T, c: Uint16x8T): Uint16x8T {
  */
 public fun vbslqU32(a: Uint32x4T, b: Uint32x4T, c: Uint32x4T): Uint32x4T {
     val not = Int32x4T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
+    return run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint32x4T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x4T>()); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 }
 }
 
 /**
@@ -1538,7 +1537,7 @@ public fun vbslqU32(a: Uint32x4T, b: Uint32x4T, c: Uint32x4T): Uint32x4T {
  */
 public fun vbslqU64(a: Uint64x2T, b: Uint64x2T, c: Uint64x2T): Uint64x2T {
     val not = Int64x2T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
+    return run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint64x2T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint64x2T>()); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 }
 }
 
 /**
@@ -1547,7 +1546,7 @@ public fun vbslqU64(a: Uint64x2T, b: Uint64x2T, c: Uint64x2T): Uint64x2T {
  */
 public fun vbslqU8(a: Uint8x16T, b: Uint8x16T, c: Uint8x16T): Uint8x16T {
     val not = Int8x16T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
+    return run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Any?, Uint8x16T>(not, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x16T>()); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 }
 }
 
 /**
@@ -1555,8 +1554,8 @@ public fun vbslqU8(a: Uint8x16T, b: Uint8x16T, c: Uint8x16T): Uint8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcageF16)
  */
 public fun vcageF16(a: Float16x4T, b: Float16x4T): Uint16x4T {
-    fun vcageF16(a1: Float16x4T, b1: Float16x4T): Uint16x4T = Uint16x4T()
-    return vcageF16(a, b)
+    fun externVcageF16(a1: Float16x4T, b1: Float16x4T): Uint16x4T = Uint16x4T()
+    return externVcageF16(a, b)
 }
 
 /**
@@ -1564,8 +1563,8 @@ public fun vcageF16(a: Float16x4T, b: Float16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcageqF16)
  */
 public fun vcageqF16(a: Float16x8T, b: Float16x8T): Uint16x8T {
-    fun vcageqF16(a1: Float16x8T, b1: Float16x8T): Uint16x8T = Uint16x8T()
-    return vcageqF16(a, b)
+    fun externVcageqF16(a1: Float16x8T, b1: Float16x8T): Uint16x8T = Uint16x8T()
+    return externVcageqF16(a, b)
 }
 
 /**
@@ -1573,8 +1572,8 @@ public fun vcageqF16(a: Float16x8T, b: Float16x8T): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcageF32)
  */
 public fun vcageF32(a: Float32x2T, b: Float32x2T): Uint32x2T {
-    fun vcageF32(a1: Float32x2T, b1: Float32x2T): Uint32x2T = Uint32x2T()
-    return vcageF32(a, b)
+    fun externVcageF32(a1: Float32x2T, b1: Float32x2T): Uint32x2T = Uint32x2T()
+    return externVcageF32(a, b)
 }
 
 /**
@@ -1582,8 +1581,8 @@ public fun vcageF32(a: Float32x2T, b: Float32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcageqF32)
  */
 public fun vcageqF32(a: Float32x4T, b: Float32x4T): Uint32x4T {
-    fun vcageqF32(a1: Float32x4T, b1: Float32x4T): Uint32x4T = Uint32x4T()
-    return vcageqF32(a, b)
+    fun externVcageqF32(a1: Float32x4T, b1: Float32x4T): Uint32x4T = Uint32x4T()
+    return externVcageqF32(a, b)
 }
 
 /**
@@ -1591,8 +1590,8 @@ public fun vcageqF32(a: Float32x4T, b: Float32x4T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcagtF16)
  */
 public fun vcagtF16(a: Float16x4T, b: Float16x4T): Uint16x4T {
-    fun vcagtF16(a1: Float16x4T, b1: Float16x4T): Uint16x4T = Uint16x4T()
-    return vcagtF16(a, b)
+    fun externVcagtF16(a1: Float16x4T, b1: Float16x4T): Uint16x4T = Uint16x4T()
+    return externVcagtF16(a, b)
 }
 
 /**
@@ -1600,8 +1599,8 @@ public fun vcagtF16(a: Float16x4T, b: Float16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcagtqF16)
  */
 public fun vcagtqF16(a: Float16x8T, b: Float16x8T): Uint16x8T {
-    fun vcagtqF16(a1: Float16x8T, b1: Float16x8T): Uint16x8T = Uint16x8T()
-    return vcagtqF16(a, b)
+    fun externVcagtqF16(a1: Float16x8T, b1: Float16x8T): Uint16x8T = Uint16x8T()
+    return externVcagtqF16(a, b)
 }
 
 /**
@@ -1609,8 +1608,8 @@ public fun vcagtqF16(a: Float16x8T, b: Float16x8T): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcagtF32)
  */
 public fun vcagtF32(a: Float32x2T, b: Float32x2T): Uint32x2T {
-    fun vcagtF32(a1: Float32x2T, b1: Float32x2T): Uint32x2T = Uint32x2T()
-    return vcagtF32(a, b)
+    fun externVcagtF32(a1: Float32x2T, b1: Float32x2T): Uint32x2T = Uint32x2T()
+    return externVcagtF32(a, b)
 }
 
 /**
@@ -1618,8 +1617,8 @@ public fun vcagtF32(a: Float32x2T, b: Float32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcagtqF32)
  */
 public fun vcagtqF32(a: Float32x4T, b: Float32x4T): Uint32x4T {
-    fun vcagtqF32(a1: Float32x4T, b1: Float32x4T): Uint32x4T = Uint32x4T()
-    return vcagtqF32(a, b)
+    fun externVcagtqF32(a1: Float32x4T, b1: Float32x4T): Uint32x4T = Uint32x4T()
+    return externVcagtqF32(a, b)
 }
 
 /**
@@ -2125,8 +2124,8 @@ public fun vclezqF16(a: Float16x8T): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vclsS8)
  */
 public fun vclsS8(a: Int8x8T): Int8x8T {
-    fun vclsS8(a1: Int8x8T): Int8x8T = Int8x8T()
-    return vclsS8(a)
+    fun externVclsS8(a1: Int8x8T): Int8x8T = Int8x8T()
+    return externVclsS8(a)
 }
 
 /**
@@ -2134,8 +2133,8 @@ public fun vclsS8(a: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vclsqS8)
  */
 public fun vclsqS8(a: Int8x16T): Int8x16T {
-    fun vclsqS8(a1: Int8x16T): Int8x16T = Int8x16T()
-    return vclsqS8(a)
+    fun externVclsqS8(a1: Int8x16T): Int8x16T = Int8x16T()
+    return externVclsqS8(a)
 }
 
 /**
@@ -2143,8 +2142,8 @@ public fun vclsqS8(a: Int8x16T): Int8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vclsS16)
  */
 public fun vclsS16(a: Int16x4T): Int16x4T {
-    fun vclsS16(a1: Int16x4T): Int16x4T = Int16x4T()
-    return vclsS16(a)
+    fun externVclsS16(a1: Int16x4T): Int16x4T = Int16x4T()
+    return externVclsS16(a)
 }
 
 /**
@@ -2152,8 +2151,8 @@ public fun vclsS16(a: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vclsqS16)
  */
 public fun vclsqS16(a: Int16x8T): Int16x8T {
-    fun vclsqS16(a1: Int16x8T): Int16x8T = Int16x8T()
-    return vclsqS16(a)
+    fun externVclsqS16(a1: Int16x8T): Int16x8T = Int16x8T()
+    return externVclsqS16(a)
 }
 
 /**
@@ -2161,8 +2160,8 @@ public fun vclsqS16(a: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vclsS32)
  */
 public fun vclsS32(a: Int32x2T): Int32x2T {
-    fun vclsS32(a1: Int32x2T): Int32x2T = Int32x2T()
-    return vclsS32(a)
+    fun externVclsS32(a1: Int32x2T): Int32x2T = Int32x2T()
+    return externVclsS32(a)
 }
 
 /**
@@ -2170,8 +2169,8 @@ public fun vclsS32(a: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vclsqS32)
  */
 public fun vclsqS32(a: Int32x4T): Int32x4T {
-    fun vclsqS32(a1: Int32x4T): Int32x4T = Int32x4T()
-    return vclsqS32(a)
+    fun externVclsqS32(a1: Int32x4T): Int32x4T = Int32x4T()
+    return externVclsqS32(a)
 }
 
 /**
@@ -2653,11 +2652,11 @@ public fun vcvtqF32U32(a: Uint32x4T): Float32x4T = run { val simdArg0 = a; Float
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtNF16S16)
  */
 public fun vcvtNF16S16(a: Int16x4T, n: Int): Float16x4T {
-    fun vcvtNF16S16(a1: Int16x4T, n: Int): Float16x4T = Float16x4T()
+    fun externVcvtNF16S16(a1: Int16x4T, n: Int): Float16x4T = Float16x4T()
     run {
         check(n >= 1 && n <= 16)
     }
-    return vcvtNF16S16(a, n)
+    return externVcvtNF16S16(a, n)
 }
 
 /**
@@ -2665,11 +2664,11 @@ public fun vcvtNF16S16(a: Int16x4T, n: Int): Float16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtqNF16S16)
  */
 public fun vcvtqNF16S16(a: Int16x8T, n: Int): Float16x8T {
-    fun vcvtqNF16S16(a1: Int16x8T, n: Int): Float16x8T = Float16x8T()
+    fun externVcvtqNF16S16(a1: Int16x8T, n: Int): Float16x8T = Float16x8T()
     run {
         check(n >= 1 && n <= 16)
     }
-    return vcvtqNF16S16(a, n)
+    return externVcvtqNF16S16(a, n)
 }
 
 /**
@@ -2677,11 +2676,11 @@ public fun vcvtqNF16S16(a: Int16x8T, n: Int): Float16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtNF16U16)
  */
 public fun vcvtNF16U16(a: Uint16x4T, n: Int): Float16x4T {
-    fun vcvtNF16U16(a1: Uint16x4T, n: Int): Float16x4T = Float16x4T()
+    fun externVcvtNF16U16(a1: Uint16x4T, n: Int): Float16x4T = Float16x4T()
     run {
         check(n >= 1 && n <= 16)
     }
-    return vcvtNF16U16(a, n)
+    return externVcvtNF16U16(a, n)
 }
 
 /**
@@ -2689,11 +2688,11 @@ public fun vcvtNF16U16(a: Uint16x4T, n: Int): Float16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtqNF16U16)
  */
 public fun vcvtqNF16U16(a: Uint16x8T, n: Int): Float16x8T {
-    fun vcvtqNF16U16(a1: Uint16x8T, n: Int): Float16x8T = Float16x8T()
+    fun externVcvtqNF16U16(a1: Uint16x8T, n: Int): Float16x8T = Float16x8T()
     run {
         check(n >= 1 && n <= 16)
     }
-    return vcvtqNF16U16(a, n)
+    return externVcvtqNF16U16(a, n)
 }
 
 /**
@@ -2701,11 +2700,11 @@ public fun vcvtqNF16U16(a: Uint16x8T, n: Int): Float16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtNF32S32)
  */
 public fun vcvtNF32S32(a: Int32x2T, n: Int): Float32x2T {
-    fun vcvtNF32S32(a1: Int32x2T, n: Int): Float32x2T = Float32x2T()
+    fun externVcvtNF32S32(a1: Int32x2T, n: Int): Float32x2T = Float32x2T()
     run {
         check(n >= 1 && n <= 32)
     }
-    return vcvtNF32S32(a, n)
+    return externVcvtNF32S32(a, n)
 }
 
 /**
@@ -2713,11 +2712,11 @@ public fun vcvtNF32S32(a: Int32x2T, n: Int): Float32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtqNF32S32)
  */
 public fun vcvtqNF32S32(a: Int32x4T, n: Int): Float32x4T {
-    fun vcvtqNF32S32(a1: Int32x4T, n: Int): Float32x4T = Float32x4T()
+    fun externVcvtqNF32S32(a1: Int32x4T, n: Int): Float32x4T = Float32x4T()
     run {
         check(n >= 1 && n <= 32)
     }
-    return vcvtqNF32S32(a, n)
+    return externVcvtqNF32S32(a, n)
 }
 
 /**
@@ -2725,11 +2724,11 @@ public fun vcvtqNF32S32(a: Int32x4T, n: Int): Float32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtNF32U32)
  */
 public fun vcvtNF32U32(a: Uint32x2T, n: Int): Float32x2T {
-    fun vcvtNF32U32(a1: Uint32x2T, n: Int): Float32x2T = Float32x2T()
+    fun externVcvtNF32U32(a1: Uint32x2T, n: Int): Float32x2T = Float32x2T()
     run {
         check(n >= 1 && n <= 32)
     }
-    return vcvtNF32U32(a, n)
+    return externVcvtNF32U32(a, n)
 }
 
 /**
@@ -2737,11 +2736,11 @@ public fun vcvtNF32U32(a: Uint32x2T, n: Int): Float32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtqNF32U32)
  */
 public fun vcvtqNF32U32(a: Uint32x4T, n: Int): Float32x4T {
-    fun vcvtqNF32U32(a1: Uint32x4T, n: Int): Float32x4T = Float32x4T()
+    fun externVcvtqNF32U32(a1: Uint32x4T, n: Int): Float32x4T = Float32x4T()
     run {
         check(n >= 1 && n <= 32)
     }
-    return vcvtqNF32U32(a, n)
+    return externVcvtqNF32U32(a, n)
 }
 
 /**
@@ -2749,11 +2748,11 @@ public fun vcvtqNF32U32(a: Uint32x4T, n: Int): Float32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtNS16F16)
  */
 public fun vcvtNS16F16(a: Float16x4T, n: Int): Int16x4T {
-    fun vcvtNS16F16(a1: Float16x4T, n: Int): Int16x4T = Int16x4T()
+    fun externVcvtNS16F16(a1: Float16x4T, n: Int): Int16x4T = Int16x4T()
     run {
         check(n >= 1 && n <= 16)
     }
-    return vcvtNS16F16(a, n)
+    return externVcvtNS16F16(a, n)
 }
 
 /**
@@ -2761,11 +2760,11 @@ public fun vcvtNS16F16(a: Float16x4T, n: Int): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtqNS16F16)
  */
 public fun vcvtqNS16F16(a: Float16x8T, n: Int): Int16x8T {
-    fun vcvtqNS16F16(a1: Float16x8T, n: Int): Int16x8T = Int16x8T()
+    fun externVcvtqNS16F16(a1: Float16x8T, n: Int): Int16x8T = Int16x8T()
     run {
         check(n >= 1 && n <= 16)
     }
-    return vcvtqNS16F16(a, n)
+    return externVcvtqNS16F16(a, n)
 }
 
 /**
@@ -2773,11 +2772,11 @@ public fun vcvtqNS16F16(a: Float16x8T, n: Int): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtNS32F32)
  */
 public fun vcvtNS32F32(a: Float32x2T, n: Int): Int32x2T {
-    fun vcvtNS32F32(a1: Float32x2T, n: Int): Int32x2T = Int32x2T()
+    fun externVcvtNS32F32(a1: Float32x2T, n: Int): Int32x2T = Int32x2T()
     run {
         check(n >= 1 && n <= 32)
     }
-    return vcvtNS32F32(a, n)
+    return externVcvtNS32F32(a, n)
 }
 
 /**
@@ -2785,11 +2784,11 @@ public fun vcvtNS32F32(a: Float32x2T, n: Int): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtqNS32F32)
  */
 public fun vcvtqNS32F32(a: Float32x4T, n: Int): Int32x4T {
-    fun vcvtqNS32F32(a1: Float32x4T, n: Int): Int32x4T = Int32x4T()
+    fun externVcvtqNS32F32(a1: Float32x4T, n: Int): Int32x4T = Int32x4T()
     run {
         check(n >= 1 && n <= 32)
     }
-    return vcvtqNS32F32(a, n)
+    return externVcvtqNS32F32(a, n)
 }
 
 /**
@@ -2797,11 +2796,11 @@ public fun vcvtqNS32F32(a: Float32x4T, n: Int): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtNU16F16)
  */
 public fun vcvtNU16F16(a: Float16x4T, n: Int): Uint16x4T {
-    fun vcvtNU16F16(a1: Float16x4T, n: Int): Uint16x4T = Uint16x4T()
+    fun externVcvtNU16F16(a1: Float16x4T, n: Int): Uint16x4T = Uint16x4T()
     run {
         check(n >= 1 && n <= 16)
     }
-    return vcvtNU16F16(a, n)
+    return externVcvtNU16F16(a, n)
 }
 
 /**
@@ -2809,11 +2808,11 @@ public fun vcvtNU16F16(a: Float16x4T, n: Int): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtqNU16F16)
  */
 public fun vcvtqNU16F16(a: Float16x8T, n: Int): Uint16x8T {
-    fun vcvtqNU16F16(a1: Float16x8T, n: Int): Uint16x8T = Uint16x8T()
+    fun externVcvtqNU16F16(a1: Float16x8T, n: Int): Uint16x8T = Uint16x8T()
     run {
         check(n >= 1 && n <= 16)
     }
-    return vcvtqNU16F16(a, n)
+    return externVcvtqNU16F16(a, n)
 }
 
 /**
@@ -2821,11 +2820,11 @@ public fun vcvtqNU16F16(a: Float16x8T, n: Int): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtNU32F32)
  */
 public fun vcvtNU32F32(a: Float32x2T, n: Int): Uint32x2T {
-    fun vcvtNU32F32(a1: Float32x2T, n: Int): Uint32x2T = Uint32x2T()
+    fun externVcvtNU32F32(a1: Float32x2T, n: Int): Uint32x2T = Uint32x2T()
     run {
         check(n >= 1 && n <= 32)
     }
-    return vcvtNU32F32(a, n)
+    return externVcvtNU32F32(a, n)
 }
 
 /**
@@ -2833,11 +2832,11 @@ public fun vcvtNU32F32(a: Float32x2T, n: Int): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtqNU32F32)
  */
 public fun vcvtqNU32F32(a: Float32x4T, n: Int): Uint32x4T {
-    fun vcvtqNU32F32(a1: Float32x4T, n: Int): Uint32x4T = Uint32x4T()
+    fun externVcvtqNU32F32(a1: Float32x4T, n: Int): Uint32x4T = Uint32x4T()
     run {
         check(n >= 1 && n <= 32)
     }
-    return vcvtqNU32F32(a, n)
+    return externVcvtqNU32F32(a, n)
 }
 
 /**
@@ -2857,8 +2856,8 @@ public fun vcvtqS16F16(a: Float16x8T): Int16x8T = run { val simdArg0 = a; Int16x
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtS32F32)
  */
 public fun vcvtS32F32(a: Float32x2T): Int32x2T {
-    fun vcvtS32F32(a1: Float32x2T): Int32x2T = Int32x2T()
-    return vcvtS32F32(a)
+    fun externVcvtS32F32(a1: Float32x2T): Int32x2T = Int32x2T()
+    return externVcvtS32F32(a)
 }
 
 /**
@@ -2866,8 +2865,8 @@ public fun vcvtS32F32(a: Float32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtqS32F32)
  */
 public fun vcvtqS32F32(a: Float32x4T): Int32x4T {
-    fun vcvtqS32F32(a1: Float32x4T): Int32x4T = Int32x4T()
-    return vcvtqS32F32(a)
+    fun externVcvtqS32F32(a1: Float32x4T): Int32x4T = Int32x4T()
+    return externVcvtqS32F32(a)
 }
 
 /**
@@ -2887,8 +2886,8 @@ public fun vcvtqU16F16(a: Float16x8T): Uint16x8T = run { val simdArg0 = a; Uint1
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtU32F32)
  */
 public fun vcvtU32F32(a: Float32x2T): Uint32x2T {
-    fun vcvtU32F32(a1: Float32x2T): Uint32x2T = Uint32x2T()
-    return vcvtU32F32(a)
+    fun externVcvtU32F32(a1: Float32x2T): Uint32x2T = Uint32x2T()
+    return externVcvtU32F32(a)
 }
 
 /**
@@ -2896,8 +2895,8 @@ public fun vcvtU32F32(a: Float32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcvtqU32F32)
  */
 public fun vcvtqU32F32(a: Float32x4T): Uint32x4T {
-    fun vcvtqU32F32(a1: Float32x4T): Uint32x4T = Uint32x4T()
-    return vcvtqU32F32(a)
+    fun externVcvtqU32F32(a1: Float32x4T): Uint32x4T = Uint32x4T()
+    return externVcvtqU32F32(a)
 }
 
 /**
@@ -3009,8 +3008,8 @@ public fun vdotqLaneqU32(a: Uint32x4T, b: Uint8x16T, c: Uint8x16T, lane: Int): U
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdotS32)
  */
 public fun vdotS32(a: Int32x2T, b: Int8x8T, c: Int8x8T): Int32x2T {
-    fun vdotS32(a1: Int32x2T, b1: Int8x8T, c1: Int8x8T): Int32x2T = Int32x2T()
-    return vdotS32(a, b, c)
+    fun externVdotS32(a1: Int32x2T, b1: Int8x8T, c1: Int8x8T): Int32x2T = Int32x2T()
+    return externVdotS32(a, b, c)
 }
 
 /**
@@ -3018,8 +3017,8 @@ public fun vdotS32(a: Int32x2T, b: Int8x8T, c: Int8x8T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdotqS32)
  */
 public fun vdotqS32(a: Int32x4T, b: Int8x16T, c: Int8x16T): Int32x4T {
-    fun vdotqS32(a1: Int32x4T, b1: Int8x16T, c1: Int8x16T): Int32x4T = Int32x4T()
-    return vdotqS32(a, b, c)
+    fun externVdotqS32(a1: Int32x4T, b1: Int8x16T, c1: Int8x16T): Int32x4T = Int32x4T()
+    return externVdotqS32(a, b, c)
 }
 
 /**
@@ -3027,8 +3026,8 @@ public fun vdotqS32(a: Int32x4T, b: Int8x16T, c: Int8x16T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdotU32)
  */
 public fun vdotU32(a: Uint32x2T, b: Uint8x8T, c: Uint8x8T): Uint32x2T {
-    fun vdotU32(a1: Uint32x2T, b1: Uint8x8T, c1: Uint8x8T): Uint32x2T = Uint32x2T()
-    return vdotU32(a, b, c)
+    fun externVdotU32(a1: Uint32x2T, b1: Uint8x8T, c1: Uint8x8T): Uint32x2T = Uint32x2T()
+    return externVdotU32(a, b, c)
 }
 
 /**
@@ -3036,8 +3035,8 @@ public fun vdotU32(a: Uint32x2T, b: Uint8x8T, c: Uint8x8T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vdotqU32)
  */
 public fun vdotqU32(a: Uint32x4T, b: Uint8x16T, c: Uint8x16T): Uint32x4T {
-    fun vdotqU32(a1: Uint32x4T, b1: Uint8x16T, c1: Uint8x16T): Uint32x4T = Uint32x4T()
-    return vdotqU32(a, b, c)
+    fun externVdotqU32(a1: Uint32x4T, b1: Uint8x16T, c1: Uint8x16T): Uint32x4T = Uint32x4T()
+    return externVdotqU32(a, b, c)
 }
 
 /**
@@ -4246,7 +4245,7 @@ public fun vgetHighU8(a: Uint8x16T): Uint8x8T = run { val simdArg0 = a; val simd
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetHighP64)
  */
-public fun vgetHighP64(a: Poly64x2T): Poly64x1T = transmute(Simd<ULong>(listOf((run { val simdArg0 = a; val simdArg1 = 1uL; Poly64x1T() }).toULong())))
+public fun vgetHighP64(a: Poly64x2T): Poly64x1T = transmuteWithLayouts<Any?, Poly64x1T>(Simd<ULong>(listOf((run { val simdArg0 = a; val simdArg1 = 1uL; Poly64x1T() }).toULong())), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly64x1T>())
 
 /**
  * Duplicate vector element to vector or scalar
@@ -4604,7 +4603,7 @@ public fun vgetLowU8(a: Uint8x16T): Uint8x8T = run { val simdArg0 = a; val simdA
  * Duplicate vector element to vector or scalar
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vgetLowP64)
  */
-public fun vgetLowP64(a: Poly64x2T): Poly64x1T = transmute(Simd<ULong>(listOf((run { val simdArg0 = a; val simdArg1 = 0uL; Poly64x1T() }).toULong())))
+public fun vgetLowP64(a: Poly64x2T): Poly64x1T = transmuteWithLayouts<Any?, Poly64x1T>(Simd<ULong>(listOf((run { val simdArg0 = a; val simdArg1 = 0uL; Poly64x1T() }).toULong())), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly64x1T>())
 
 /**
  * Duplicate vector element to vector or scalar
@@ -4623,8 +4622,8 @@ public fun vgetLowU64(a: Uint64x2T): Uint64x1T = Uint64x1T(listOf(run { val simd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhaddS8)
  */
 public fun vhaddS8(a: Int8x8T, b: Int8x8T): Int8x8T {
-    fun vhaddS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
-    return vhaddS8(a, b)
+    fun externVhaddS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
+    return externVhaddS8(a, b)
 }
 
 /**
@@ -4632,8 +4631,8 @@ public fun vhaddS8(a: Int8x8T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhaddqS8)
  */
 public fun vhaddqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
-    fun vhaddqS8(a1: Int8x16T, b1: Int8x16T): Int8x16T = Int8x16T()
-    return vhaddqS8(a, b)
+    fun externVhaddqS8(a1: Int8x16T, b1: Int8x16T): Int8x16T = Int8x16T()
+    return externVhaddqS8(a, b)
 }
 
 /**
@@ -4641,8 +4640,8 @@ public fun vhaddqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhaddS16)
  */
 public fun vhaddS16(a: Int16x4T, b: Int16x4T): Int16x4T {
-    fun vhaddS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
-    return vhaddS16(a, b)
+    fun externVhaddS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
+    return externVhaddS16(a, b)
 }
 
 /**
@@ -4650,8 +4649,8 @@ public fun vhaddS16(a: Int16x4T, b: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhaddqS16)
  */
 public fun vhaddqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
-    fun vhaddqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
-    return vhaddqS16(a, b)
+    fun externVhaddqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
+    return externVhaddqS16(a, b)
 }
 
 /**
@@ -4659,8 +4658,8 @@ public fun vhaddqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhaddS32)
  */
 public fun vhaddS32(a: Int32x2T, b: Int32x2T): Int32x2T {
-    fun vhaddS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
-    return vhaddS32(a, b)
+    fun externVhaddS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
+    return externVhaddS32(a, b)
 }
 
 /**
@@ -4668,8 +4667,8 @@ public fun vhaddS32(a: Int32x2T, b: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhaddqS32)
  */
 public fun vhaddqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
-    fun vhaddqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
-    return vhaddqS32(a, b)
+    fun externVhaddqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
+    return externVhaddqS32(a, b)
 }
 
 /**
@@ -4677,8 +4676,8 @@ public fun vhaddqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhaddU8)
  */
 public fun vhaddU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
-    fun vhaddU8(a1: Uint8x8T, b1: Uint8x8T): Uint8x8T = Uint8x8T()
-    return vhaddU8(a, b)
+    fun externVhaddU8(a1: Uint8x8T, b1: Uint8x8T): Uint8x8T = Uint8x8T()
+    return externVhaddU8(a, b)
 }
 
 /**
@@ -4686,8 +4685,8 @@ public fun vhaddU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhaddqU8)
  */
 public fun vhaddqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T {
-    fun vhaddqU8(a1: Uint8x16T, b1: Uint8x16T): Uint8x16T = Uint8x16T()
-    return vhaddqU8(a, b)
+    fun externVhaddqU8(a1: Uint8x16T, b1: Uint8x16T): Uint8x16T = Uint8x16T()
+    return externVhaddqU8(a, b)
 }
 
 /**
@@ -4695,8 +4694,8 @@ public fun vhaddqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhaddU16)
  */
 public fun vhaddU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
-    fun vhaddU16(a1: Uint16x4T, b1: Uint16x4T): Uint16x4T = Uint16x4T()
-    return vhaddU16(a, b)
+    fun externVhaddU16(a1: Uint16x4T, b1: Uint16x4T): Uint16x4T = Uint16x4T()
+    return externVhaddU16(a, b)
 }
 
 /**
@@ -4704,8 +4703,8 @@ public fun vhaddU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhaddqU16)
  */
 public fun vhaddqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T {
-    fun vhaddqU16(a1: Uint16x8T, b1: Uint16x8T): Uint16x8T = Uint16x8T()
-    return vhaddqU16(a, b)
+    fun externVhaddqU16(a1: Uint16x8T, b1: Uint16x8T): Uint16x8T = Uint16x8T()
+    return externVhaddqU16(a, b)
 }
 
 /**
@@ -4713,8 +4712,8 @@ public fun vhaddqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhaddU32)
  */
 public fun vhaddU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
-    fun vhaddU32(a1: Uint32x2T, b1: Uint32x2T): Uint32x2T = Uint32x2T()
-    return vhaddU32(a, b)
+    fun externVhaddU32(a1: Uint32x2T, b1: Uint32x2T): Uint32x2T = Uint32x2T()
+    return externVhaddU32(a, b)
 }
 
 /**
@@ -4722,8 +4721,8 @@ public fun vhaddU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhaddqU32)
  */
 public fun vhaddqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T {
-    fun vhaddqU32(a1: Uint32x4T, b1: Uint32x4T): Uint32x4T = Uint32x4T()
-    return vhaddqU32(a, b)
+    fun externVhaddqU32(a1: Uint32x4T, b1: Uint32x4T): Uint32x4T = Uint32x4T()
+    return externVhaddqU32(a, b)
 }
 
 /**
@@ -4731,8 +4730,8 @@ public fun vhaddqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhsubS16)
  */
 public fun vhsubS16(a: Int16x4T, b: Int16x4T): Int16x4T {
-    fun vhsubS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
-    return vhsubS16(a, b)
+    fun externVhsubS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
+    return externVhsubS16(a, b)
 }
 
 /**
@@ -4740,8 +4739,8 @@ public fun vhsubS16(a: Int16x4T, b: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhsubqS16)
  */
 public fun vhsubqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
-    fun vhsubqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
-    return vhsubqS16(a, b)
+    fun externVhsubqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
+    return externVhsubqS16(a, b)
 }
 
 /**
@@ -4749,8 +4748,8 @@ public fun vhsubqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhsubS32)
  */
 public fun vhsubS32(a: Int32x2T, b: Int32x2T): Int32x2T {
-    fun vhsubS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
-    return vhsubS32(a, b)
+    fun externVhsubS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
+    return externVhsubS32(a, b)
 }
 
 /**
@@ -4758,8 +4757,8 @@ public fun vhsubS32(a: Int32x2T, b: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhsubqS32)
  */
 public fun vhsubqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
-    fun vhsubqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
-    return vhsubqS32(a, b)
+    fun externVhsubqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
+    return externVhsubqS32(a, b)
 }
 
 /**
@@ -4767,8 +4766,8 @@ public fun vhsubqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhsubS8)
  */
 public fun vhsubS8(a: Int8x8T, b: Int8x8T): Int8x8T {
-    fun vhsubS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
-    return vhsubS8(a, b)
+    fun externVhsubS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
+    return externVhsubS8(a, b)
 }
 
 /**
@@ -4776,8 +4775,8 @@ public fun vhsubS8(a: Int8x8T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhsubqS8)
  */
 public fun vhsubqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
-    fun vhsubqS8(a1: Int8x16T, b1: Int8x16T): Int8x16T = Int8x16T()
-    return vhsubqS8(a, b)
+    fun externVhsubqS8(a1: Int8x16T, b1: Int8x16T): Int8x16T = Int8x16T()
+    return externVhsubqS8(a, b)
 }
 
 /**
@@ -4785,8 +4784,8 @@ public fun vhsubqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhsubU8)
  */
 public fun vhsubU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
-    fun vhsubU8(a1: Uint8x8T, b1: Uint8x8T): Uint8x8T = Uint8x8T()
-    return vhsubU8(a, b)
+    fun externVhsubU8(a1: Uint8x8T, b1: Uint8x8T): Uint8x8T = Uint8x8T()
+    return externVhsubU8(a, b)
 }
 
 /**
@@ -4794,8 +4793,8 @@ public fun vhsubU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhsubqU8)
  */
 public fun vhsubqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T {
-    fun vhsubqU8(a1: Uint8x16T, b1: Uint8x16T): Uint8x16T = Uint8x16T()
-    return vhsubqU8(a, b)
+    fun externVhsubqU8(a1: Uint8x16T, b1: Uint8x16T): Uint8x16T = Uint8x16T()
+    return externVhsubqU8(a, b)
 }
 
 /**
@@ -4803,8 +4802,8 @@ public fun vhsubqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhsubU16)
  */
 public fun vhsubU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
-    fun vhsubU16(a1: Uint16x4T, b1: Uint16x4T): Uint16x4T = Uint16x4T()
-    return vhsubU16(a, b)
+    fun externVhsubU16(a1: Uint16x4T, b1: Uint16x4T): Uint16x4T = Uint16x4T()
+    return externVhsubU16(a, b)
 }
 
 /**
@@ -4812,8 +4811,8 @@ public fun vhsubU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhsubqU16)
  */
 public fun vhsubqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T {
-    fun vhsubqU16(a1: Uint16x8T, b1: Uint16x8T): Uint16x8T = Uint16x8T()
-    return vhsubqU16(a, b)
+    fun externVhsubqU16(a1: Uint16x8T, b1: Uint16x8T): Uint16x8T = Uint16x8T()
+    return externVhsubqU16(a, b)
 }
 
 /**
@@ -4821,8 +4820,8 @@ public fun vhsubqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhsubU32)
  */
 public fun vhsubU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
-    fun vhsubU32(a1: Uint32x2T, b1: Uint32x2T): Uint32x2T = Uint32x2T()
-    return vhsubU32(a, b)
+    fun externVhsubU32(a1: Uint32x2T, b1: Uint32x2T): Uint32x2T = Uint32x2T()
+    return externVhsubU32(a, b)
 }
 
 /**
@@ -4830,8 +4829,8 @@ public fun vhsubU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vhsubqU32)
  */
 public fun vhsubqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T {
-    fun vhsubqU32(a1: Uint32x4T, b1: Uint32x4T): Uint32x4T = Uint32x4T()
-    return vhsubqU32(a, b)
+    fun externVhsubqU32(a1: Uint32x4T, b1: Uint32x4T): Uint32x4T = Uint32x4T()
+    return externVhsubqU32(a, b)
 }
 
 /**
@@ -4841,7 +4840,7 @@ public fun vhsubqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld1DupF16(ptr: ConstPtr): Float16x4T {
-    val x: Float16x4T = vld1LaneF16(ptr, transmute(Simd<F16>(List(4) { F16.fromFloat(0.0f) })), 0)
+    val x: Float16x4T = vld1LaneF16(ptr, transmuteWithLayouts<Any?, Float16x4T>(Simd<F16>(List(4) { F16.fromFloat(0.0f) }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float16x4T>()), 0)
     return run { val simdArg0 = x; val simdArg1 = x; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 0u, 0u, 0u)); Float16x4T() }
 }
 
@@ -4852,7 +4851,7 @@ public fun vld1DupF16(ptr: ConstPtr): Float16x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld1qDupF16(ptr: ConstPtr): Float16x8T {
-    val x: Float16x8T = vld1qLaneF16(ptr, transmute(Simd<F16>(List(8) { F16.fromFloat(0.0f) })), 0)
+    val x: Float16x8T = vld1qLaneF16(ptr, transmuteWithLayouts<Any?, Float16x8T>(Simd<F16>(List(8) { F16.fromFloat(0.0f) }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float16x8T>()), 0)
     return run { val simdArg0 = x; val simdArg1 = x; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)); Float16x8T() }
 }
 
@@ -4862,7 +4861,7 @@ public fun vld1qDupF16(ptr: ConstPtr): Float16x8T {
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupF32(ptr: ConstPtr): Float32x2T = transmute(Simd<Float>(List(2) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.F32).toFloat() }))
+public fun vld1DupF32(ptr: ConstPtr): Float32x2T = transmuteWithLayouts<Any?, Float32x2T>(Simd<Float>(List(2) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.F32).toFloat() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float32x2T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4870,7 +4869,7 @@ public fun vld1DupF32(ptr: ConstPtr): Float32x2T = transmute(Simd<Float>(List(2)
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupP16(ptr: ConstPtr): Poly16x4T = transmute(Simd<UShort>(List(4) { readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P16>()).toUShort() }))
+public fun vld1DupP16(ptr: ConstPtr): Poly16x4T = transmuteWithLayouts<Any?, Poly16x4T>(Simd<UShort>(List(4) { readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P16>()).toUShort() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly16x4T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4878,7 +4877,7 @@ public fun vld1DupP16(ptr: ConstPtr): Poly16x4T = transmute(Simd<UShort>(List(4)
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupP8(ptr: ConstPtr): Poly8x8T = transmute(Simd<UByte>(List(8) { readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P8>()).toUByte() }))
+public fun vld1DupP8(ptr: ConstPtr): Poly8x8T = transmuteWithLayouts<Any?, Poly8x8T>(Simd<UByte>(List(8) { readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P8>()).toUByte() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly8x8T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4886,7 +4885,7 @@ public fun vld1DupP8(ptr: ConstPtr): Poly8x8T = transmute(Simd<UByte>(List(8) { 
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupS16(ptr: ConstPtr): Int16x4T = transmute(Simd<Short>(List(4) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I16).toShort() }))
+public fun vld1DupS16(ptr: ConstPtr): Int16x4T = transmuteWithLayouts<Any?, Int16x4T>(Simd<Short>(List(4) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I16).toShort() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int16x4T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4894,7 +4893,7 @@ public fun vld1DupS16(ptr: ConstPtr): Int16x4T = transmute(Simd<Short>(List(4) {
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupS32(ptr: ConstPtr): Int32x2T = transmute(Simd<Int>(List(2) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I32).toInt() }))
+public fun vld1DupS32(ptr: ConstPtr): Int32x2T = transmuteWithLayouts<Any?, Int32x2T>(Simd<Int>(List(2) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I32).toInt() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int32x2T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4902,7 +4901,7 @@ public fun vld1DupS32(ptr: ConstPtr): Int32x2T = transmute(Simd<Int>(List(2) { r
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupS8(ptr: ConstPtr): Int8x8T = transmute(Simd<Byte>(List(8) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I8).toByte() }))
+public fun vld1DupS8(ptr: ConstPtr): Int8x8T = transmuteWithLayouts<Any?, Int8x8T>(Simd<Byte>(List(8) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I8).toByte() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int8x8T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4910,7 +4909,7 @@ public fun vld1DupS8(ptr: ConstPtr): Int8x8T = transmute(Simd<Byte>(List(8) { re
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupU16(ptr: ConstPtr): Uint16x4T = transmute(Simd<UShort>(List(4) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U16).toUShort() }))
+public fun vld1DupU16(ptr: ConstPtr): Uint16x4T = transmuteWithLayouts<Any?, Uint16x4T>(Simd<UShort>(List(4) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U16).toUShort() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x4T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4918,7 +4917,7 @@ public fun vld1DupU16(ptr: ConstPtr): Uint16x4T = transmute(Simd<UShort>(List(4)
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupU32(ptr: ConstPtr): Uint32x2T = transmute(Simd<UInt>(List(2) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U32).toUInt() }))
+public fun vld1DupU32(ptr: ConstPtr): Uint32x2T = transmuteWithLayouts<Any?, Uint32x2T>(Simd<UInt>(List(2) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U32).toUInt() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x2T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4926,7 +4925,7 @@ public fun vld1DupU32(ptr: ConstPtr): Uint32x2T = transmute(Simd<UInt>(List(2) {
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupU8(ptr: ConstPtr): Uint8x8T = transmute(Simd<UByte>(List(8) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U8).toUByte() }))
+public fun vld1DupU8(ptr: ConstPtr): Uint8x8T = transmuteWithLayouts<Any?, Uint8x8T>(Simd<UByte>(List(8) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U8).toUByte() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x8T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4934,7 +4933,7 @@ public fun vld1DupU8(ptr: ConstPtr): Uint8x8T = transmute(Simd<UByte>(List(8) { 
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupF32(ptr: ConstPtr): Float32x4T = transmute(Simd<Float>(List(4) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.F32).toFloat() }))
+public fun vld1qDupF32(ptr: ConstPtr): Float32x4T = transmuteWithLayouts<Any?, Float32x4T>(Simd<Float>(List(4) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.F32).toFloat() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float32x4T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4942,7 +4941,7 @@ public fun vld1qDupF32(ptr: ConstPtr): Float32x4T = transmute(Simd<Float>(List(4
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupP16(ptr: ConstPtr): Poly16x8T = transmute(Simd<UShort>(List(8) { readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P16>()).toUShort() }))
+public fun vld1qDupP16(ptr: ConstPtr): Poly16x8T = transmuteWithLayouts<Any?, Poly16x8T>(Simd<UShort>(List(8) { readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P16>()).toUShort() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly16x8T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4950,7 +4949,7 @@ public fun vld1qDupP16(ptr: ConstPtr): Poly16x8T = transmute(Simd<UShort>(List(8
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupP8(ptr: ConstPtr): Poly8x16T = transmute(Simd<UByte>(List(16) { readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P8>()).toUByte() }))
+public fun vld1qDupP8(ptr: ConstPtr): Poly8x16T = transmuteWithLayouts<Any?, Poly8x16T>(Simd<UByte>(List(16) { readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P8>()).toUByte() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly8x16T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4958,7 +4957,7 @@ public fun vld1qDupP8(ptr: ConstPtr): Poly8x16T = transmute(Simd<UByte>(List(16)
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupS16(ptr: ConstPtr): Int16x8T = transmute(Simd<Short>(List(8) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I16).toShort() }))
+public fun vld1qDupS16(ptr: ConstPtr): Int16x8T = transmuteWithLayouts<Any?, Int16x8T>(Simd<Short>(List(8) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I16).toShort() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int16x8T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4966,7 +4965,7 @@ public fun vld1qDupS16(ptr: ConstPtr): Int16x8T = transmute(Simd<Short>(List(8) 
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupS32(ptr: ConstPtr): Int32x4T = transmute(Simd<Int>(List(4) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I32).toInt() }))
+public fun vld1qDupS32(ptr: ConstPtr): Int32x4T = transmuteWithLayouts<Any?, Int32x4T>(Simd<Int>(List(4) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I32).toInt() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int32x4T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4974,7 +4973,7 @@ public fun vld1qDupS32(ptr: ConstPtr): Int32x4T = transmute(Simd<Int>(List(4) { 
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupS64(ptr: ConstPtr): Int64x2T = transmute(Simd<Long>(List(2) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I64).toLong() }))
+public fun vld1qDupS64(ptr: ConstPtr): Int64x2T = transmuteWithLayouts<Any?, Int64x2T>(Simd<Long>(List(2) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I64).toLong() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int64x2T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4982,7 +4981,7 @@ public fun vld1qDupS64(ptr: ConstPtr): Int64x2T = transmute(Simd<Long>(List(2) {
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupS8(ptr: ConstPtr): Int8x16T = transmute(Simd<Byte>(List(16) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I8).toByte() }))
+public fun vld1qDupS8(ptr: ConstPtr): Int8x16T = transmuteWithLayouts<Any?, Int8x16T>(Simd<Byte>(List(16) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.I8).toByte() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int8x16T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4990,7 +4989,7 @@ public fun vld1qDupS8(ptr: ConstPtr): Int8x16T = transmute(Simd<Byte>(List(16) {
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupU16(ptr: ConstPtr): Uint16x8T = transmute(Simd<UShort>(List(8) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U16).toUShort() }))
+public fun vld1qDupU16(ptr: ConstPtr): Uint16x8T = transmuteWithLayouts<Any?, Uint16x8T>(Simd<UShort>(List(8) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U16).toUShort() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x8T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4998,7 +4997,7 @@ public fun vld1qDupU16(ptr: ConstPtr): Uint16x8T = transmute(Simd<UShort>(List(8
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupU32(ptr: ConstPtr): Uint32x4T = transmute(Simd<UInt>(List(4) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U32).toUInt() }))
+public fun vld1qDupU32(ptr: ConstPtr): Uint32x4T = transmuteWithLayouts<Any?, Uint32x4T>(Simd<UInt>(List(4) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U32).toUInt() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x4T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -5006,7 +5005,7 @@ public fun vld1qDupU32(ptr: ConstPtr): Uint32x4T = transmute(Simd<UInt>(List(4) 
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupU64(ptr: ConstPtr): Uint64x2T = transmute(Simd<ULong>(List(2) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U64).toULong() }))
+public fun vld1qDupU64(ptr: ConstPtr): Uint64x2T = transmuteWithLayouts<Any?, Uint64x2T>(Simd<ULong>(List(2) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U64).toULong() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint64x2T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -5014,7 +5013,7 @@ public fun vld1qDupU64(ptr: ConstPtr): Uint64x2T = transmute(Simd<ULong>(List(2)
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupU8(ptr: ConstPtr): Uint8x16T = transmute(Simd<UByte>(List(16) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U8).toUByte() }))
+public fun vld1qDupU8(ptr: ConstPtr): Uint8x16T = transmuteWithLayouts<Any?, Uint8x16T>(Simd<UByte>(List(16) { readUnaligned(ptr, typeLayoutT = PrimitiveLayouts.U8).toUByte() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x16T>())
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -6027,7 +6026,7 @@ public fun vld1qP16X4(a: ConstPtr): Poly16x8x4T = readUnaligned(a, typeLayoutT =
  *  * Neon intrinsic unchecked
  */
 public fun vld1qDupP64(ptr: ConstPtr): Poly64x2T {
-    val x = vld1qLaneP64(ptr, transmute(Simd<ULong>(List(2) { 0uL })), 0)
+    val x = vld1qLaneP64(ptr, transmuteWithLayouts<Any?, Poly64x2T>(Simd<ULong>(List(2) { 0uL }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly64x2T>()), 0)
     return run { val simdArg0 = x; val simdArg1 = x; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 0u)); Poly64x2T() }
 }
 
@@ -6038,8 +6037,8 @@ public fun vld1qDupP64(ptr: ConstPtr): Poly64x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2DupF16(a: ConstPtr): Float16x4x2T {
-    fun vld2DupF16(ptr: ConstPtr): Float16x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).alignBytes)); res }
-    return vld2DupF16(a)
+    fun externVld2DupF16(ptr: ConstPtr): Float16x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).alignBytes)); res }
+    return externVld2DupF16(a)
 }
 
 /**
@@ -6049,8 +6048,8 @@ public fun vld2DupF16(a: ConstPtr): Float16x4x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qDupF16(a: ConstPtr): Float16x8x2T {
-    fun vld2qDupF16(ptr: ConstPtr): Float16x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).alignBytes)); res }
-    return vld2qDupF16(a)
+    fun externVld2qDupF16(ptr: ConstPtr): Float16x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).alignBytes)); res }
+    return externVld2qDupF16(a)
 }
 
 /**
@@ -6060,8 +6059,8 @@ public fun vld2qDupF16(a: ConstPtr): Float16x8x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2DupF32(a: ConstPtr): Float32x2x2T {
-    fun vld2DupF32(ptr: ConstPtr): Float32x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).alignBytes)); res }
-    return vld2DupF32(a)
+    fun externVld2DupF32(ptr: ConstPtr): Float32x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).alignBytes)); res }
+    return externVld2DupF32(a)
 }
 
 /**
@@ -6071,8 +6070,8 @@ public fun vld2DupF32(a: ConstPtr): Float32x2x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qDupF32(a: ConstPtr): Float32x4x2T {
-    fun vld2qDupF32(ptr: ConstPtr): Float32x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).alignBytes)); res }
-    return vld2qDupF32(a)
+    fun externVld2qDupF32(ptr: ConstPtr): Float32x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).alignBytes)); res }
+    return externVld2qDupF32(a)
 }
 
 /**
@@ -6082,8 +6081,8 @@ public fun vld2qDupF32(a: ConstPtr): Float32x4x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2DupS8(a: ConstPtr): Int8x8x2T {
-    fun vld2DupS8(ptr: ConstPtr): Int8x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).alignBytes)); res }
-    return vld2DupS8(a)
+    fun externVld2DupS8(ptr: ConstPtr): Int8x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).alignBytes)); res }
+    return externVld2DupS8(a)
 }
 
 /**
@@ -6093,8 +6092,8 @@ public fun vld2DupS8(a: ConstPtr): Int8x8x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qDupS8(a: ConstPtr): Int8x16x2T {
-    fun vld2qDupS8(ptr: ConstPtr): Int8x16x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x16x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).alignBytes)); res }
-    return vld2qDupS8(a)
+    fun externVld2qDupS8(ptr: ConstPtr): Int8x16x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x16x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).alignBytes)); res }
+    return externVld2qDupS8(a)
 }
 
 /**
@@ -6104,8 +6103,8 @@ public fun vld2qDupS8(a: ConstPtr): Int8x16x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2DupS16(a: ConstPtr): Int16x4x2T {
-    fun vld2DupS16(ptr: ConstPtr): Int16x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).alignBytes)); res }
-    return vld2DupS16(a)
+    fun externVld2DupS16(ptr: ConstPtr): Int16x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).alignBytes)); res }
+    return externVld2DupS16(a)
 }
 
 /**
@@ -6115,8 +6114,8 @@ public fun vld2DupS16(a: ConstPtr): Int16x4x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qDupS16(a: ConstPtr): Int16x8x2T {
-    fun vld2qDupS16(ptr: ConstPtr): Int16x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).alignBytes)); res }
-    return vld2qDupS16(a)
+    fun externVld2qDupS16(ptr: ConstPtr): Int16x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).alignBytes)); res }
+    return externVld2qDupS16(a)
 }
 
 /**
@@ -6126,8 +6125,8 @@ public fun vld2qDupS16(a: ConstPtr): Int16x8x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2DupS32(a: ConstPtr): Int32x2x2T {
-    fun vld2DupS32(ptr: ConstPtr): Int32x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).alignBytes)); res }
-    return vld2DupS32(a)
+    fun externVld2DupS32(ptr: ConstPtr): Int32x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).alignBytes)); res }
+    return externVld2DupS32(a)
 }
 
 /**
@@ -6137,8 +6136,8 @@ public fun vld2DupS32(a: ConstPtr): Int32x2x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qDupS32(a: ConstPtr): Int32x4x2T {
-    fun vld2qDupS32(ptr: ConstPtr): Int32x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).alignBytes)); res }
-    return vld2qDupS32(a)
+    fun externVld2qDupS32(ptr: ConstPtr): Int32x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).alignBytes)); res }
+    return externVld2qDupS32(a)
 }
 
 /**
@@ -6156,8 +6155,8 @@ public fun vld2DupP64(a: ConstPtr): Poly64x1x2T = transmuteWithLayouts<Int64x1x2
  *  * Neon intrinsic unchecked
  */
 public fun vld2DupS64(a: ConstPtr): Int64x1x2T {
-    fun vld2DupS64(ptr: ConstPtr): Int64x1x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x1x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).alignBytes)); res }
-    return vld2DupS64(a)
+    fun externVld2DupS64(ptr: ConstPtr): Int64x1x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x1x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).alignBytes)); res }
+    return externVld2DupS64(a)
 }
 
 /**
@@ -6255,8 +6254,8 @@ public fun vld2qDupP16(a: ConstPtr): Poly16x8x2T = transmuteWithLayouts<Int16x8x
  *  * Neon intrinsic unchecked
  */
 public fun vld2F16(a: ConstPtr): Float16x4x2T {
-    fun vld2F16(ptr: ConstPtr): Float16x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).alignBytes)); res }
-    return vld2F16(a)
+    fun externVld2F16(ptr: ConstPtr): Float16x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).alignBytes)); res }
+    return externVld2F16(a)
 }
 
 /**
@@ -6266,8 +6265,8 @@ public fun vld2F16(a: ConstPtr): Float16x4x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qF16(a: ConstPtr): Float16x8x2T {
-    fun vld2qF16(ptr: ConstPtr): Float16x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).alignBytes)); res }
-    return vld2qF16(a)
+    fun externVld2qF16(ptr: ConstPtr): Float16x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).alignBytes)); res }
+    return externVld2qF16(a)
 }
 
 /**
@@ -6277,8 +6276,8 @@ public fun vld2qF16(a: ConstPtr): Float16x8x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2F32(a: ConstPtr): Float32x2x2T {
-    fun vld2F32(ptr: ConstPtr): Float32x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).alignBytes)); res }
-    return vld2F32(ConstPtr(a.rawAddress, a.rawMeta))
+    fun externVld2F32(ptr: ConstPtr): Float32x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).alignBytes)); res }
+    return externVld2F32(ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6288,8 +6287,8 @@ public fun vld2F32(a: ConstPtr): Float32x2x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qF32(a: ConstPtr): Float32x4x2T {
-    fun vld2qF32(ptr: ConstPtr): Float32x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).alignBytes)); res }
-    return vld2qF32(ConstPtr(a.rawAddress, a.rawMeta))
+    fun externVld2qF32(ptr: ConstPtr): Float32x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).alignBytes)); res }
+    return externVld2qF32(ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6299,8 +6298,8 @@ public fun vld2qF32(a: ConstPtr): Float32x4x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2S8(a: ConstPtr): Int8x8x2T {
-    fun vld2S8(ptr: ConstPtr): Int8x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).alignBytes)); res }
-    return vld2S8(ConstPtr(a.rawAddress, a.rawMeta))
+    fun externVld2S8(ptr: ConstPtr): Int8x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).alignBytes)); res }
+    return externVld2S8(ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6310,8 +6309,8 @@ public fun vld2S8(a: ConstPtr): Int8x8x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qS8(a: ConstPtr): Int8x16x2T {
-    fun vld2qS8(ptr: ConstPtr): Int8x16x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x16x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).alignBytes)); res }
-    return vld2qS8(ConstPtr(a.rawAddress, a.rawMeta))
+    fun externVld2qS8(ptr: ConstPtr): Int8x16x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x16x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).alignBytes)); res }
+    return externVld2qS8(ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6321,8 +6320,8 @@ public fun vld2qS8(a: ConstPtr): Int8x16x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2S16(a: ConstPtr): Int16x4x2T {
-    fun vld2S16(ptr: ConstPtr): Int16x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).alignBytes)); res }
-    return vld2S16(ConstPtr(a.rawAddress, a.rawMeta))
+    fun externVld2S16(ptr: ConstPtr): Int16x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).alignBytes)); res }
+    return externVld2S16(ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6332,8 +6331,8 @@ public fun vld2S16(a: ConstPtr): Int16x4x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qS16(a: ConstPtr): Int16x8x2T {
-    fun vld2qS16(ptr: ConstPtr): Int16x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).alignBytes)); res }
-    return vld2qS16(ConstPtr(a.rawAddress, a.rawMeta))
+    fun externVld2qS16(ptr: ConstPtr): Int16x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).alignBytes)); res }
+    return externVld2qS16(ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6343,8 +6342,8 @@ public fun vld2qS16(a: ConstPtr): Int16x8x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2S32(a: ConstPtr): Int32x2x2T {
-    fun vld2S32(ptr: ConstPtr): Int32x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).alignBytes)); res }
-    return vld2S32(ConstPtr(a.rawAddress, a.rawMeta))
+    fun externVld2S32(ptr: ConstPtr): Int32x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).alignBytes)); res }
+    return externVld2S32(ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6354,8 +6353,8 @@ public fun vld2S32(a: ConstPtr): Int32x2x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qS32(a: ConstPtr): Int32x4x2T {
-    fun vld2qS32(ptr: ConstPtr): Int32x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).alignBytes)); res }
-    return vld2qS32(ConstPtr(a.rawAddress, a.rawMeta))
+    fun externVld2qS32(ptr: ConstPtr): Int32x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).alignBytes)); res }
+    return externVld2qS32(ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6365,11 +6364,11 @@ public fun vld2qS32(a: ConstPtr): Int32x4x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2LaneF16(a: ConstPtr, b: Float16x4x2T, lane: Int): Float16x4x2T {
-    fun vld2LaneF16(a1: Float16x4T, b1: Float16x4T, n: Long, ptr: ConstPtr): Float16x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).alignBytes)); res }
+    fun externVld2LaneF16(a1: Float16x4T, b1: Float16x4T, n: Long, ptr: ConstPtr): Float16x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x2T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld2LaneF16(b.field0, b.field1, lane.toLong(), a)
+    return externVld2LaneF16(b.field0, b.field1, lane.toLong(), a)
 }
 
 /**
@@ -6379,11 +6378,11 @@ public fun vld2LaneF16(a: ConstPtr, b: Float16x4x2T, lane: Int): Float16x4x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qLaneF16(a: ConstPtr, b: Float16x8x2T, lane: Int): Float16x8x2T {
-    fun vld2qLaneF16(a1: Float16x8T, b1: Float16x8T, n: Long, ptr: ConstPtr): Float16x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).alignBytes)); res }
+    fun externVld2qLaneF16(a1: Float16x8T, b1: Float16x8T, n: Long, ptr: ConstPtr): Float16x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x2T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return vld2qLaneF16(b.field0, b.field1, lane.toLong(), a)
+    return externVld2qLaneF16(b.field0, b.field1, lane.toLong(), a)
 }
 
 /**
@@ -6393,11 +6392,11 @@ public fun vld2qLaneF16(a: ConstPtr, b: Float16x8x2T, lane: Int): Float16x8x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2LaneF32(a: ConstPtr, b: Float32x2x2T, lane: Int): Float32x2x2T {
-    fun vld2LaneF32(a1: Float32x2T, b1: Float32x2T, n: Long, ptr: ConstPtr): Float32x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).alignBytes)); res }
+    fun externVld2LaneF32(a1: Float32x2T, b1: Float32x2T, n: Long, ptr: ConstPtr): Float32x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x2T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld2LaneF32(b.field0, b.field1, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld2LaneF32(b.field0, b.field1, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6407,11 +6406,11 @@ public fun vld2LaneF32(a: ConstPtr, b: Float32x2x2T, lane: Int): Float32x2x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qLaneF32(a: ConstPtr, b: Float32x4x2T, lane: Int): Float32x4x2T {
-    fun vld2qLaneF32(a1: Float32x4T, b1: Float32x4T, n: Long, ptr: ConstPtr): Float32x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).alignBytes)); res }
+    fun externVld2qLaneF32(a1: Float32x4T, b1: Float32x4T, n: Long, ptr: ConstPtr): Float32x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x2T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld2qLaneF32(b.field0, b.field1, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld2qLaneF32(b.field0, b.field1, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6421,11 +6420,11 @@ public fun vld2qLaneF32(a: ConstPtr, b: Float32x4x2T, lane: Int): Float32x4x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2LaneS8(a: ConstPtr, b: Int8x8x2T, lane: Int): Int8x8x2T {
-    fun vld2LaneS8(a1: Int8x8T, b1: Int8x8T, n: Long, ptr: ConstPtr): Int8x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).alignBytes)); res }
+    fun externVld2LaneS8(a1: Int8x8T, b1: Int8x8T, n: Long, ptr: ConstPtr): Int8x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x2T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return vld2LaneS8(b.field0, b.field1, lane.toLong(), a)
+    return externVld2LaneS8(b.field0, b.field1, lane.toLong(), a)
 }
 
 /**
@@ -6435,11 +6434,11 @@ public fun vld2LaneS8(a: ConstPtr, b: Int8x8x2T, lane: Int): Int8x8x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2LaneS16(a: ConstPtr, b: Int16x4x2T, lane: Int): Int16x4x2T {
-    fun vld2LaneS16(a1: Int16x4T, b1: Int16x4T, n: Long, ptr: ConstPtr): Int16x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).alignBytes)); res }
+    fun externVld2LaneS16(a1: Int16x4T, b1: Int16x4T, n: Long, ptr: ConstPtr): Int16x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x2T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld2LaneS16(b.field0, b.field1, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld2LaneS16(b.field0, b.field1, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6449,11 +6448,11 @@ public fun vld2LaneS16(a: ConstPtr, b: Int16x4x2T, lane: Int): Int16x4x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qLaneS16(a: ConstPtr, b: Int16x8x2T, lane: Int): Int16x8x2T {
-    fun vld2qLaneS16(a1: Int16x8T, b1: Int16x8T, n: Long, ptr: ConstPtr): Int16x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).alignBytes)); res }
+    fun externVld2qLaneS16(a1: Int16x8T, b1: Int16x8T, n: Long, ptr: ConstPtr): Int16x8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x2T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return vld2qLaneS16(b.field0, b.field1, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld2qLaneS16(b.field0, b.field1, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6463,11 +6462,11 @@ public fun vld2qLaneS16(a: ConstPtr, b: Int16x8x2T, lane: Int): Int16x8x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2LaneS32(a: ConstPtr, b: Int32x2x2T, lane: Int): Int32x2x2T {
-    fun vld2LaneS32(a1: Int32x2T, b1: Int32x2T, n: Long, ptr: ConstPtr): Int32x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).alignBytes)); res }
+    fun externVld2LaneS32(a1: Int32x2T, b1: Int32x2T, n: Long, ptr: ConstPtr): Int32x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x2T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return vld2LaneS32(b.field0, b.field1, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld2LaneS32(b.field0, b.field1, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6477,11 +6476,11 @@ public fun vld2LaneS32(a: ConstPtr, b: Int32x2x2T, lane: Int): Int32x2x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qLaneS32(a: ConstPtr, b: Int32x4x2T, lane: Int): Int32x4x2T {
-    fun vld2qLaneS32(a1: Int32x4T, b1: Int32x4T, n: Long, ptr: ConstPtr): Int32x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).alignBytes)); res }
+    fun externVld2qLaneS32(a1: Int32x4T, b1: Int32x4T, n: Long, ptr: ConstPtr): Int32x4x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x4x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x2T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld2qLaneS32(b.field0, b.field1, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld2qLaneS32(b.field0, b.field1, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6603,8 +6602,8 @@ public fun vld2P64(a: ConstPtr): Poly64x1x2T = transmuteWithLayouts<Int64x1x2T, 
  *  * Neon intrinsic unchecked
  */
 public fun vld2S64(a: ConstPtr): Int64x1x2T {
-    fun vld2S64(ptr: ConstPtr): Int64x1x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x1x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).alignBytes)); res }
-    return vld2S64(ConstPtr(a.rawAddress, a.rawMeta))
+    fun externVld2S64(ptr: ConstPtr): Int64x1x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x1x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).alignBytes)); res }
+    return externVld2S64(ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6702,8 +6701,8 @@ public fun vld2qP16(a: ConstPtr): Poly16x8x2T = transmuteWithLayouts<Int16x8x2T,
  *  * Neon intrinsic unchecked
  */
 public fun vld3DupF16(a: ConstPtr): Float16x4x3T {
-    fun vld3DupF16(ptr: ConstPtr): Float16x4x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x4x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x3T>()).alignBytes)); res }
-    return vld3DupF16(a)
+    fun externVld3DupF16(ptr: ConstPtr): Float16x4x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x4x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x3T>()).alignBytes)); res }
+    return externVld3DupF16(a)
 }
 
 /**
@@ -6713,8 +6712,8 @@ public fun vld3DupF16(a: ConstPtr): Float16x4x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3qDupF16(a: ConstPtr): Float16x8x3T {
-    fun vld3qDupF16(ptr: ConstPtr): Float16x8x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x3T>()).alignBytes)); res }
-    return vld3qDupF16(a)
+    fun externVld3qDupF16(ptr: ConstPtr): Float16x8x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x3T>()).alignBytes)); res }
+    return externVld3qDupF16(a)
 }
 
 /**
@@ -6724,8 +6723,8 @@ public fun vld3qDupF16(a: ConstPtr): Float16x8x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3DupF32(a: ConstPtr): Float32x2x3T {
-    fun vld3DupF32(ptr: ConstPtr): Float32x2x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x2x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x3T>()).alignBytes)); res }
-    return vld3DupF32(a)
+    fun externVld3DupF32(ptr: ConstPtr): Float32x2x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x2x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x3T>()).alignBytes)); res }
+    return externVld3DupF32(a)
 }
 
 /**
@@ -6735,8 +6734,8 @@ public fun vld3DupF32(a: ConstPtr): Float32x2x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3qDupF32(a: ConstPtr): Float32x4x3T {
-    fun vld3qDupF32(ptr: ConstPtr): Float32x4x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x4x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x3T>()).alignBytes)); res }
-    return vld3qDupF32(a)
+    fun externVld3qDupF32(ptr: ConstPtr): Float32x4x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x4x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x3T>()).alignBytes)); res }
+    return externVld3qDupF32(a)
 }
 
 /**
@@ -6746,8 +6745,8 @@ public fun vld3qDupF32(a: ConstPtr): Float32x4x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3DupS8(a: ConstPtr): Int8x8x3T {
-    fun vld3DupS8(ptr: ConstPtr): Int8x8x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x3T>()).alignBytes)); res }
-    return vld3DupS8(a)
+    fun externVld3DupS8(ptr: ConstPtr): Int8x8x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x3T>()).alignBytes)); res }
+    return externVld3DupS8(a)
 }
 
 /**
@@ -6757,8 +6756,8 @@ public fun vld3DupS8(a: ConstPtr): Int8x8x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3qDupS8(a: ConstPtr): Int8x16x3T {
-    fun vld3qDupS8(ptr: ConstPtr): Int8x16x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x16x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x16x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x16x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x3T>()).alignBytes)); res }
-    return vld3qDupS8(a)
+    fun externVld3qDupS8(ptr: ConstPtr): Int8x16x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x16x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x16x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x16x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x3T>()).alignBytes)); res }
+    return externVld3qDupS8(a)
 }
 
 /**
@@ -6768,8 +6767,8 @@ public fun vld3qDupS8(a: ConstPtr): Int8x16x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3DupS16(a: ConstPtr): Int16x4x3T {
-    fun vld3DupS16(ptr: ConstPtr): Int16x4x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x4x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x3T>()).alignBytes)); res }
-    return vld3DupS16(a)
+    fun externVld3DupS16(ptr: ConstPtr): Int16x4x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x4x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x3T>()).alignBytes)); res }
+    return externVld3DupS16(a)
 }
 
 /**
@@ -6779,8 +6778,8 @@ public fun vld3DupS16(a: ConstPtr): Int16x4x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3qDupS16(a: ConstPtr): Int16x8x3T {
-    fun vld3qDupS16(ptr: ConstPtr): Int16x8x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x3T>()).alignBytes)); res }
-    return vld3qDupS16(a)
+    fun externVld3qDupS16(ptr: ConstPtr): Int16x8x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x3T>()).alignBytes)); res }
+    return externVld3qDupS16(a)
 }
 
 /**
@@ -6790,8 +6789,8 @@ public fun vld3qDupS16(a: ConstPtr): Int16x8x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3DupS32(a: ConstPtr): Int32x2x3T {
-    fun vld3DupS32(ptr: ConstPtr): Int32x2x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x2x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x3T>()).alignBytes)); res }
-    return vld3DupS32(a)
+    fun externVld3DupS32(ptr: ConstPtr): Int32x2x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x2x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x3T>()).alignBytes)); res }
+    return externVld3DupS32(a)
 }
 
 /**
@@ -6801,8 +6800,8 @@ public fun vld3DupS32(a: ConstPtr): Int32x2x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3qDupS32(a: ConstPtr): Int32x4x3T {
-    fun vld3qDupS32(ptr: ConstPtr): Int32x4x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x4x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x3T>()).alignBytes)); res }
-    return vld3qDupS32(a)
+    fun externVld3qDupS32(ptr: ConstPtr): Int32x4x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x4x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x3T>()).alignBytes)); res }
+    return externVld3qDupS32(a)
 }
 
 /**
@@ -6812,8 +6811,8 @@ public fun vld3qDupS32(a: ConstPtr): Int32x4x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3DupS64(a: ConstPtr): Int64x1x3T {
-    fun vld3DupS64(ptr: ConstPtr): Int64x1x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x1x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x1x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x1x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x3T>()).alignBytes)); res }
-    return vld3DupS64(a)
+    fun externVld3DupS64(ptr: ConstPtr): Int64x1x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x1x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x1x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x1x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x3T>()).alignBytes)); res }
+    return externVld3DupS64(a)
 }
 
 /**
@@ -6925,7 +6924,7 @@ public fun vld3F16(a: ConstPtr): Float16x4x3T =
         val v0: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 0)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(Triple(v0, v1, v2))
+        transmuteWithLayouts<Any?, Float16x4x3T>(Triple(v0, v1, v2), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float16x4x3T>())
     }
 
 /**
@@ -6941,7 +6940,7 @@ public fun vld3qF16(a: ConstPtr): Float16x8x3T =
         val v0: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 0)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(Triple(v0, v1, v2))
+        transmuteWithLayouts<Any?, Float16x8x3T>(Triple(v0, v1, v2), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float16x8x3T>())
     }
 
 /**
@@ -6957,7 +6956,7 @@ public fun vld3F32(a: ConstPtr): Float32x2x3T =
         val v0: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 0)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(Triple(v0, v1, v2))
+        transmuteWithLayouts<Any?, Float32x2x3T>(Triple(v0, v1, v2), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float32x2x3T>())
     }
 
 /**
@@ -6973,7 +6972,7 @@ public fun vld3qF32(a: ConstPtr): Float32x4x3T =
         val v0: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 0)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(Triple(v0, v1, v2))
+        transmuteWithLayouts<Any?, Float32x4x3T>(Triple(v0, v1, v2), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float32x4x3T>())
     }
 
 /**
@@ -6989,7 +6988,7 @@ public fun vld3S8(a: ConstPtr): Int8x8x3T =
         val v0: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 0)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(Triple(v0, v1, v2))
+        transmuteWithLayouts<Any?, Int8x8x3T>(Triple(v0, v1, v2), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int8x8x3T>())
     }
 
 /**
@@ -7005,7 +7004,7 @@ public fun vld3qS8(a: ConstPtr): Int8x16x3T =
         val v0: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(16, 3, 0)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(16, 3, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(16, 3, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(Triple(v0, v1, v2))
+        transmuteWithLayouts<Any?, Int8x16x3T>(Triple(v0, v1, v2), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int8x16x3T>())
     }
 
 /**
@@ -7021,7 +7020,7 @@ public fun vld3S16(a: ConstPtr): Int16x4x3T =
         val v0: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 0)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(Triple(v0, v1, v2))
+        transmuteWithLayouts<Any?, Int16x4x3T>(Triple(v0, v1, v2), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int16x4x3T>())
     }
 
 /**
@@ -7037,7 +7036,7 @@ public fun vld3qS16(a: ConstPtr): Int16x8x3T =
         val v0: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 0)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 3, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(Triple(v0, v1, v2))
+        transmuteWithLayouts<Any?, Int16x8x3T>(Triple(v0, v1, v2), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int16x8x3T>())
     }
 
 /**
@@ -7053,7 +7052,7 @@ public fun vld3S32(a: ConstPtr): Int32x2x3T =
         val v0: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 0)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(Triple(v0, v1, v2))
+        transmuteWithLayouts<Any?, Int32x2x3T>(Triple(v0, v1, v2), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int32x2x3T>())
     }
 
 /**
@@ -7069,7 +7068,7 @@ public fun vld3qS32(a: ConstPtr): Int32x4x3T =
         val v0: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 0)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 3, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(Triple(v0, v1, v2))
+        transmuteWithLayouts<Any?, Int32x4x3T>(Triple(v0, v1, v2), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int32x4x3T>())
     }
 
 /**
@@ -7079,11 +7078,11 @@ public fun vld3qS32(a: ConstPtr): Int32x4x3T =
  *  * Neon intrinsic unchecked
  */
 public fun vld3LaneF16(a: ConstPtr, b: Float16x4x3T, lane: Int): Float16x4x3T {
-    fun vld3LaneF16(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, n: Long, ptr: ConstPtr): Float16x4x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x4x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x3T>()).alignBytes)); res }
+    fun externVld3LaneF16(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, n: Long, ptr: ConstPtr): Float16x4x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x4x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x3T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld3LaneF16(b.field0, b.field1, b.field2, lane.toLong(), a)
+    return externVld3LaneF16(b.field0, b.field1, b.field2, lane.toLong(), a)
 }
 
 /**
@@ -7093,11 +7092,11 @@ public fun vld3LaneF16(a: ConstPtr, b: Float16x4x3T, lane: Int): Float16x4x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3qLaneF16(a: ConstPtr, b: Float16x8x3T, lane: Int): Float16x8x3T {
-    fun vld3qLaneF16(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, n: Long, ptr: ConstPtr): Float16x8x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x3T>()).alignBytes)); res }
+    fun externVld3qLaneF16(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, n: Long, ptr: ConstPtr): Float16x8x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x3T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return vld3qLaneF16(b.field0, b.field1, b.field2, lane.toLong(), a)
+    return externVld3qLaneF16(b.field0, b.field1, b.field2, lane.toLong(), a)
 }
 
 /**
@@ -7107,11 +7106,11 @@ public fun vld3qLaneF16(a: ConstPtr, b: Float16x8x3T, lane: Int): Float16x8x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3LaneF32(a: ConstPtr, b: Float32x2x3T, lane: Int): Float32x2x3T {
-    fun vld3LaneF32(a1: Float32x2T, b1: Float32x2T, c: Float32x2T, n: Long, ptr: ConstPtr): Float32x2x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x2x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x3T>()).alignBytes)); res }
+    fun externVld3LaneF32(a1: Float32x2T, b1: Float32x2T, c: Float32x2T, n: Long, ptr: ConstPtr): Float32x2x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x2x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x3T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return vld3LaneF32(b.field0, b.field1, b.field2, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld3LaneF32(b.field0, b.field1, b.field2, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7121,11 +7120,11 @@ public fun vld3LaneF32(a: ConstPtr, b: Float32x2x3T, lane: Int): Float32x2x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3qLaneF32(a: ConstPtr, b: Float32x4x3T, lane: Int): Float32x4x3T {
-    fun vld3qLaneF32(a1: Float32x4T, b1: Float32x4T, c: Float32x4T, n: Long, ptr: ConstPtr): Float32x4x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x4x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x3T>()).alignBytes)); res }
+    fun externVld3qLaneF32(a1: Float32x4T, b1: Float32x4T, c: Float32x4T, n: Long, ptr: ConstPtr): Float32x4x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x4x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x3T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld3qLaneF32(b.field0, b.field1, b.field2, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld3qLaneF32(b.field0, b.field1, b.field2, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7135,11 +7134,11 @@ public fun vld3qLaneF32(a: ConstPtr, b: Float32x4x3T, lane: Int): Float32x4x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3LaneS8(a: ConstPtr, b: Int8x8x3T, lane: Int): Int8x8x3T {
-    fun vld3LaneS8(a1: Int8x8T, b1: Int8x8T, c: Int8x8T, n: Long, ptr: ConstPtr): Int8x8x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x3T>()).alignBytes)); res }
+    fun externVld3LaneS8(a1: Int8x8T, b1: Int8x8T, c: Int8x8T, n: Long, ptr: ConstPtr): Int8x8x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x3T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return vld3LaneS8(b.field0, b.field1, b.field2, lane.toLong(), a)
+    return externVld3LaneS8(b.field0, b.field1, b.field2, lane.toLong(), a)
 }
 
 /**
@@ -7149,11 +7148,11 @@ public fun vld3LaneS8(a: ConstPtr, b: Int8x8x3T, lane: Int): Int8x8x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3LaneS16(a: ConstPtr, b: Int16x4x3T, lane: Int): Int16x4x3T {
-    fun vld3LaneS16(a1: Int16x4T, b1: Int16x4T, c: Int16x4T, n: Long, ptr: ConstPtr): Int16x4x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x4x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x3T>()).alignBytes)); res }
+    fun externVld3LaneS16(a1: Int16x4T, b1: Int16x4T, c: Int16x4T, n: Long, ptr: ConstPtr): Int16x4x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x4x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x3T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld3LaneS16(b.field0, b.field1, b.field2, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld3LaneS16(b.field0, b.field1, b.field2, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7163,11 +7162,11 @@ public fun vld3LaneS16(a: ConstPtr, b: Int16x4x3T, lane: Int): Int16x4x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3qLaneS16(a: ConstPtr, b: Int16x8x3T, lane: Int): Int16x8x3T {
-    fun vld3qLaneS16(a1: Int16x8T, b1: Int16x8T, c: Int16x8T, n: Long, ptr: ConstPtr): Int16x8x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x3T>()).alignBytes)); res }
+    fun externVld3qLaneS16(a1: Int16x8T, b1: Int16x8T, c: Int16x8T, n: Long, ptr: ConstPtr): Int16x8x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x3T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    return vld3qLaneS16(b.field0, b.field1, b.field2, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld3qLaneS16(b.field0, b.field1, b.field2, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7177,11 +7176,11 @@ public fun vld3qLaneS16(a: ConstPtr, b: Int16x8x3T, lane: Int): Int16x8x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3LaneS32(a: ConstPtr, b: Int32x2x3T, lane: Int): Int32x2x3T {
-    fun vld3LaneS32(a1: Int32x2T, b1: Int32x2T, c: Int32x2T, n: Long, ptr: ConstPtr): Int32x2x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x2x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x3T>()).alignBytes)); res }
+    fun externVld3LaneS32(a1: Int32x2T, b1: Int32x2T, c: Int32x2T, n: Long, ptr: ConstPtr): Int32x2x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x2x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x3T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return vld3LaneS32(b.field0, b.field1, b.field2, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld3LaneS32(b.field0, b.field1, b.field2, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7191,11 +7190,11 @@ public fun vld3LaneS32(a: ConstPtr, b: Int32x2x3T, lane: Int): Int32x2x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3qLaneS32(a: ConstPtr, b: Int32x4x3T, lane: Int): Int32x4x3T {
-    fun vld3qLaneS32(a1: Int32x4T, b1: Int32x4T, c: Int32x4T, n: Long, ptr: ConstPtr): Int32x4x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x4x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x3T>()).alignBytes)); res }
+    fun externVld3qLaneS32(a1: Int32x4T, b1: Int32x4T, c: Int32x4T, n: Long, ptr: ConstPtr): Int32x4x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x4x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x4x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x3T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld3qLaneS32(b.field0, b.field1, b.field2, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld3qLaneS32(b.field0, b.field1, b.field2, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7413,8 +7412,8 @@ public fun vld3qP16(a: ConstPtr): Poly16x8x3T = transmuteWithLayouts<Int16x8x3T,
  *  * Neon intrinsic unchecked
  */
 public fun vld4DupF16(a: ConstPtr): Float16x4x4T {
-    fun vld4DupF16(ptr: ConstPtr): Float16x4x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x4x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x4T>()).alignBytes)); res }
-    return vld4DupF16(a)
+    fun externVld4DupF16(ptr: ConstPtr): Float16x4x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x4x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x4T>()).alignBytes)); res }
+    return externVld4DupF16(a)
 }
 
 /**
@@ -7424,8 +7423,8 @@ public fun vld4DupF16(a: ConstPtr): Float16x4x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4qDupF16(a: ConstPtr): Float16x8x4T {
-    fun vld4qDupF16(ptr: ConstPtr): Float16x8x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x4T>()).alignBytes)); res }
-    return vld4qDupF16(a)
+    fun externVld4qDupF16(ptr: ConstPtr): Float16x8x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x4T>()).alignBytes)); res }
+    return externVld4qDupF16(a)
 }
 
 /**
@@ -7435,8 +7434,8 @@ public fun vld4qDupF16(a: ConstPtr): Float16x8x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4DupF32(a: ConstPtr): Float32x2x4T {
-    fun vld4DupF32(ptr: ConstPtr): Float32x2x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x2x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x4T>()).alignBytes)); res }
-    return vld4DupF32(a)
+    fun externVld4DupF32(ptr: ConstPtr): Float32x2x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x2x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x4T>()).alignBytes)); res }
+    return externVld4DupF32(a)
 }
 
 /**
@@ -7446,8 +7445,8 @@ public fun vld4DupF32(a: ConstPtr): Float32x2x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4qDupF32(a: ConstPtr): Float32x4x4T {
-    fun vld4qDupF32(ptr: ConstPtr): Float32x4x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x4x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x4T>()).alignBytes)); res }
-    return vld4qDupF32(a)
+    fun externVld4qDupF32(ptr: ConstPtr): Float32x4x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x4x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x4T>()).alignBytes)); res }
+    return externVld4qDupF32(a)
 }
 
 /**
@@ -7457,8 +7456,8 @@ public fun vld4qDupF32(a: ConstPtr): Float32x4x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4DupS8(a: ConstPtr): Int8x8x4T {
-    fun vld4DupS8(ptr: ConstPtr): Int8x8x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x4T>()).alignBytes)); res }
-    return vld4DupS8(a)
+    fun externVld4DupS8(ptr: ConstPtr): Int8x8x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x4T>()).alignBytes)); res }
+    return externVld4DupS8(a)
 }
 
 /**
@@ -7468,8 +7467,8 @@ public fun vld4DupS8(a: ConstPtr): Int8x8x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4qDupS8(a: ConstPtr): Int8x16x4T {
-    fun vld4qDupS8(ptr: ConstPtr): Int8x16x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x16x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x16x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x16x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x4T>()).alignBytes)); res }
-    return vld4qDupS8(a)
+    fun externVld4qDupS8(ptr: ConstPtr): Int8x16x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x16x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x16x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x16x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x4T>()).alignBytes)); res }
+    return externVld4qDupS8(a)
 }
 
 /**
@@ -7479,8 +7478,8 @@ public fun vld4qDupS8(a: ConstPtr): Int8x16x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4DupS16(a: ConstPtr): Int16x4x4T {
-    fun vld4DupS16(ptr: ConstPtr): Int16x4x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x4x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x4T>()).alignBytes)); res }
-    return vld4DupS16(a)
+    fun externVld4DupS16(ptr: ConstPtr): Int16x4x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x4x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x4T>()).alignBytes)); res }
+    return externVld4DupS16(a)
 }
 
 /**
@@ -7490,8 +7489,8 @@ public fun vld4DupS16(a: ConstPtr): Int16x4x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4qDupS16(a: ConstPtr): Int16x8x4T {
-    fun vld4qDupS16(ptr: ConstPtr): Int16x8x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x4T>()).alignBytes)); res }
-    return vld4qDupS16(a)
+    fun externVld4qDupS16(ptr: ConstPtr): Int16x8x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x4T>()).alignBytes)); res }
+    return externVld4qDupS16(a)
 }
 
 /**
@@ -7501,8 +7500,8 @@ public fun vld4qDupS16(a: ConstPtr): Int16x8x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4DupS32(a: ConstPtr): Int32x2x4T {
-    fun vld4DupS32(ptr: ConstPtr): Int32x2x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x2x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x4T>()).alignBytes)); res }
-    return vld4DupS32(a)
+    fun externVld4DupS32(ptr: ConstPtr): Int32x2x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x2x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x4T>()).alignBytes)); res }
+    return externVld4DupS32(a)
 }
 
 /**
@@ -7512,8 +7511,8 @@ public fun vld4DupS32(a: ConstPtr): Int32x2x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4qDupS32(a: ConstPtr): Int32x4x4T {
-    fun vld4qDupS32(ptr: ConstPtr): Int32x4x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x4x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x4T>()).alignBytes)); res }
-    return vld4qDupS32(a)
+    fun externVld4qDupS32(ptr: ConstPtr): Int32x4x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x4x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x4T>()).alignBytes)); res }
+    return externVld4qDupS32(a)
 }
 
 /**
@@ -7523,8 +7522,8 @@ public fun vld4qDupS32(a: ConstPtr): Int32x4x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4DupS64(a: ConstPtr): Int64x1x4T {
-    fun vld4DupS64(ptr: ConstPtr): Int64x1x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x1x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x1x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x1x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x4T>()).alignBytes)); res }
-    return vld4DupS64(a)
+    fun externVld4DupS64(ptr: ConstPtr): Int64x1x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x1x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x1x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x1x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x4T>()).alignBytes)); res }
+    return externVld4DupS64(a)
 }
 
 /**
@@ -7636,7 +7635,7 @@ public fun vld4F16(a: ConstPtr): Float16x4x4T =
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v3: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(listOf(v0, v1, v2, v3))
+        transmuteWithLayouts<Any?, Float16x4x4T>(listOf(v0, v1, v2, v3), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float16x4x4T>())
     }
 
 /**
@@ -7652,7 +7651,7 @@ public fun vld4qF16(a: ConstPtr): Float16x8x4T =
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v3: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(listOf(v0, v1, v2, v3))
+        transmuteWithLayouts<Any?, Float16x8x4T>(listOf(v0, v1, v2, v3), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float16x8x4T>())
     }
 
 /**
@@ -7668,7 +7667,7 @@ public fun vld4F32(a: ConstPtr): Float32x2x4T =
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v3: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(listOf(v0, v1, v2, v3))
+        transmuteWithLayouts<Any?, Float32x2x4T>(listOf(v0, v1, v2, v3), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float32x2x4T>())
     }
 
 /**
@@ -7684,7 +7683,7 @@ public fun vld4qF32(a: ConstPtr): Float32x4x4T =
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v3: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(listOf(v0, v1, v2, v3))
+        transmuteWithLayouts<Any?, Float32x4x4T>(listOf(v0, v1, v2, v3), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float32x4x4T>())
     }
 
 /**
@@ -7700,7 +7699,7 @@ public fun vld4S8(a: ConstPtr): Int8x8x4T =
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v3: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(listOf(v0, v1, v2, v3))
+        transmuteWithLayouts<Any?, Int8x8x4T>(listOf(v0, v1, v2, v3), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int8x8x4T>())
     }
 
 /**
@@ -7716,7 +7715,7 @@ public fun vld4qS8(a: ConstPtr): Int8x16x4T =
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(16, 4, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(16, 4, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v3: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(16, 4, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(listOf(v0, v1, v2, v3))
+        transmuteWithLayouts<Any?, Int8x16x4T>(listOf(v0, v1, v2, v3), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int8x16x4T>())
     }
 
 /**
@@ -7732,7 +7731,7 @@ public fun vld4S16(a: ConstPtr): Int16x4x4T =
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v3: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(listOf(v0, v1, v2, v3))
+        transmuteWithLayouts<Any?, Int16x4x4T>(listOf(v0, v1, v2, v3), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int16x4x4T>())
     }
 
 /**
@@ -7748,7 +7747,7 @@ public fun vld4qS16(a: ConstPtr): Int16x8x4T =
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v3: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(8, 4, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(listOf(v0, v1, v2, v3))
+        transmuteWithLayouts<Any?, Int16x8x4T>(listOf(v0, v1, v2, v3), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int16x8x4T>())
     }
 
 /**
@@ -7764,7 +7763,7 @@ public fun vld4S32(a: ConstPtr): Int32x2x4T =
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v3: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(listOf(v0, v1, v2, v3))
+        transmuteWithLayouts<Any?, Int32x2x4T>(listOf(v0, v1, v2, v3), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int32x2x4T>())
     }
 
 /**
@@ -7780,7 +7779,7 @@ public fun vld4qS32(a: ConstPtr): Int32x4x4T =
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v3: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(4, 4, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmute(listOf(v0, v1, v2, v3))
+        transmuteWithLayouts<Any?, Int32x4x4T>(listOf(v0, v1, v2, v3), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int32x4x4T>())
     }
 
 /**
@@ -7790,11 +7789,11 @@ public fun vld4qS32(a: ConstPtr): Int32x4x4T =
  *  * Neon intrinsic unchecked
  */
 public fun vld4LaneF16(a: ConstPtr, b: Float16x4x4T, lane: Int): Float16x4x4T {
-    fun vld4LaneF16(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, d: Float16x4T, n: Long, ptr: ConstPtr): Float16x4x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x4x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x4T>()).alignBytes)); res }
+    fun externVld4LaneF16(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, d: Float16x4T, n: Long, ptr: ConstPtr): Float16x4x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x4x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x4x4T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld4LaneF16(b.field0, b.field1, b.field2, b.field3, lane.toLong(), a)
+    return externVld4LaneF16(b.field0, b.field1, b.field2, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -7804,11 +7803,11 @@ public fun vld4LaneF16(a: ConstPtr, b: Float16x4x4T, lane: Int): Float16x4x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4qLaneF16(a: ConstPtr, b: Float16x8x4T, lane: Int): Float16x8x4T {
-    fun vld4qLaneF16(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, d: Float16x8T, n: Long, ptr: ConstPtr): Float16x8x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x4T>()).alignBytes)); res }
+    fun externVld4qLaneF16(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, d: Float16x8T, n: Long, ptr: ConstPtr): Float16x8x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float16x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float16x8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float16x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float16x8x4T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return vld4qLaneF16(b.field0, b.field1, b.field2, b.field3, lane.toLong(), a)
+    return externVld4qLaneF16(b.field0, b.field1, b.field2, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -7818,11 +7817,11 @@ public fun vld4qLaneF16(a: ConstPtr, b: Float16x8x4T, lane: Int): Float16x8x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4LaneF32(a: ConstPtr, b: Float32x2x4T, lane: Int): Float32x2x4T {
-    fun vld4LaneF32(a1: Float32x2T, b1: Float32x2T, c: Float32x2T, d: Float32x2T, n: Long, ptr: ConstPtr): Float32x2x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x2x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x4T>()).alignBytes)); res }
+    fun externVld4LaneF32(a1: Float32x2T, b1: Float32x2T, c: Float32x2T, d: Float32x2T, n: Long, ptr: ConstPtr): Float32x2x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x2x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x2x4T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return vld4LaneF32(b.field0, b.field1, b.field2, b.field3, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld4LaneF32(b.field0, b.field1, b.field2, b.field3, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7832,11 +7831,11 @@ public fun vld4LaneF32(a: ConstPtr, b: Float32x2x4T, lane: Int): Float32x2x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4qLaneF32(a: ConstPtr, b: Float32x4x4T, lane: Int): Float32x4x4T {
-    fun vld4qLaneF32(a1: Float32x4T, b1: Float32x4T, c: Float32x4T, d: Float32x4T, n: Long, ptr: ConstPtr): Float32x4x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x4x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x4T>()).alignBytes)); res }
+    fun externVld4qLaneF32(a1: Float32x4T, b1: Float32x4T, c: Float32x4T, d: Float32x4T, n: Long, ptr: ConstPtr): Float32x4x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float32x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float32x4x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float32x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float32x4x4T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld4qLaneF32(b.field0, b.field1, b.field2, b.field3, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld4qLaneF32(b.field0, b.field1, b.field2, b.field3, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7846,11 +7845,11 @@ public fun vld4qLaneF32(a: ConstPtr, b: Float32x4x4T, lane: Int): Float32x4x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4LaneS8(a: ConstPtr, b: Int8x8x4T, lane: Int): Int8x8x4T {
-    fun vld4LaneS8(a1: Int8x8T, b1: Int8x8T, c: Int8x8T, d: Int8x8T, n: Long, ptr: ConstPtr): Int8x8x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x4T>()).alignBytes)); res }
+    fun externVld4LaneS8(a1: Int8x8T, b1: Int8x8T, c: Int8x8T, d: Int8x8T, n: Long, ptr: ConstPtr): Int8x8x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x8x4T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return vld4LaneS8(b.field0, b.field1, b.field2, b.field3, lane.toLong(), a)
+    return externVld4LaneS8(b.field0, b.field1, b.field2, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -7860,11 +7859,11 @@ public fun vld4LaneS8(a: ConstPtr, b: Int8x8x4T, lane: Int): Int8x8x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4LaneS16(a: ConstPtr, b: Int16x4x4T, lane: Int): Int16x4x4T {
-    fun vld4LaneS16(a1: Int16x4T, b1: Int16x4T, c: Int16x4T, d: Int16x4T, n: Long, ptr: ConstPtr): Int16x4x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x4x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x4T>()).alignBytes)); res }
+    fun externVld4LaneS16(a1: Int16x4T, b1: Int16x4T, c: Int16x4T, d: Int16x4T, n: Long, ptr: ConstPtr): Int16x4x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x4x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x4x4T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld4LaneS16(b.field0, b.field1, b.field2, b.field3, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld4LaneS16(b.field0, b.field1, b.field2, b.field3, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7874,11 +7873,11 @@ public fun vld4LaneS16(a: ConstPtr, b: Int16x4x4T, lane: Int): Int16x4x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4qLaneS16(a: ConstPtr, b: Int16x8x4T, lane: Int): Int16x8x4T {
-    fun vld4qLaneS16(a1: Int16x8T, b1: Int16x8T, c: Int16x8T, d: Int16x8T, n: Long, ptr: ConstPtr): Int16x8x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x4T>()).alignBytes)); res }
+    fun externVld4qLaneS16(a1: Int16x8T, b1: Int16x8T, c: Int16x8T, d: Int16x8T, n: Long, ptr: ConstPtr): Int16x8x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int16x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int16x8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int16x8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int16x8x4T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return vld4qLaneS16(b.field0, b.field1, b.field2, b.field3, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld4qLaneS16(b.field0, b.field1, b.field2, b.field3, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7888,11 +7887,11 @@ public fun vld4qLaneS16(a: ConstPtr, b: Int16x8x4T, lane: Int): Int16x8x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4LaneS32(a: ConstPtr, b: Int32x2x4T, lane: Int): Int32x2x4T {
-    fun vld4LaneS32(a1: Int32x2T, b1: Int32x2T, c: Int32x2T, d: Int32x2T, n: Long, ptr: ConstPtr): Int32x2x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x2x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x4T>()).alignBytes)); res }
+    fun externVld4LaneS32(a1: Int32x2T, b1: Int32x2T, c: Int32x2T, d: Int32x2T, n: Long, ptr: ConstPtr): Int32x2x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x2x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x2x4T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return vld4LaneS32(b.field0, b.field1, b.field2, b.field3, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld4LaneS32(b.field0, b.field1, b.field2, b.field3, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7902,11 +7901,11 @@ public fun vld4LaneS32(a: ConstPtr, b: Int32x2x4T, lane: Int): Int32x2x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4qLaneS32(a: ConstPtr, b: Int32x4x4T, lane: Int): Int32x4x4T {
-    fun vld4qLaneS32(a1: Int32x4T, b1: Int32x4T, c: Int32x4T, d: Int32x4T, n: Long, ptr: ConstPtr): Int32x4x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x4x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x4T>()).alignBytes)); res }
+    fun externVld4qLaneS32(a1: Int32x4T, b1: Int32x4T, c: Int32x4T, d: Int32x4T, n: Long, ptr: ConstPtr): Int32x4x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int32x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int32x4x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int32x4x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int32x4x4T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return vld4qLaneS32(b.field0, b.field1, b.field2, b.field3, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
+    return externVld4qLaneS32(b.field0, b.field1, b.field2, b.field3, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -8130,8 +8129,8 @@ public fun vldrqP128(a: ConstPtr): P128 = (UnresolvedTypeLayout<P128>()).readNat
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmaxF16)
  */
 public fun vmaxF16(a: Float16x4T, b: Float16x4T): Float16x4T {
-    fun vmaxF16(a1: Float16x4T, b1: Float16x4T): Float16x4T = Float16x4T()
-    return vmaxF16(a, b)
+    fun externVmaxF16(a1: Float16x4T, b1: Float16x4T): Float16x4T = Float16x4T()
+    return externVmaxF16(a, b)
 }
 
 /**
@@ -8139,8 +8138,8 @@ public fun vmaxF16(a: Float16x4T, b: Float16x4T): Float16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmaxqF16)
  */
 public fun vmaxqF16(a: Float16x8T, b: Float16x8T): Float16x8T {
-    fun vmaxqF16(a1: Float16x8T, b1: Float16x8T): Float16x8T = Float16x8T()
-    return vmaxqF16(a, b)
+    fun externVmaxqF16(a1: Float16x8T, b1: Float16x8T): Float16x8T = Float16x8T()
+    return externVmaxqF16(a, b)
 }
 
 /**
@@ -8148,8 +8147,8 @@ public fun vmaxqF16(a: Float16x8T, b: Float16x8T): Float16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmaxF32)
  */
 public fun vmaxF32(a: Float32x2T, b: Float32x2T): Float32x2T {
-    fun vmaxF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
-    return vmaxF32(a, b)
+    fun externVmaxF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
+    return externVmaxF32(a, b)
 }
 
 /**
@@ -8157,8 +8156,8 @@ public fun vmaxF32(a: Float32x2T, b: Float32x2T): Float32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmaxqF32)
  */
 public fun vmaxqF32(a: Float32x4T, b: Float32x4T): Float32x4T {
-    fun vmaxqF32(a1: Float32x4T, b1: Float32x4T): Float32x4T = Float32x4T()
-    return vmaxqF32(a, b)
+    fun externVmaxqF32(a1: Float32x4T, b1: Float32x4T): Float32x4T = Float32x4T()
+    return externVmaxqF32(a, b)
 }
 
 /**
@@ -8286,8 +8285,8 @@ public fun vmaxqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T =
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmaxnmF16)
  */
 public fun vmaxnmF16(a: Float16x4T, b: Float16x4T): Float16x4T {
-    fun vmaxnmF16(a1: Float16x4T, b1: Float16x4T): Float16x4T = Float16x4T()
-    return vmaxnmF16(a, b)
+    fun externVmaxnmF16(a1: Float16x4T, b1: Float16x4T): Float16x4T = Float16x4T()
+    return externVmaxnmF16(a, b)
 }
 
 /**
@@ -8295,8 +8294,8 @@ public fun vmaxnmF16(a: Float16x4T, b: Float16x4T): Float16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmaxnmqF16)
  */
 public fun vmaxnmqF16(a: Float16x8T, b: Float16x8T): Float16x8T {
-    fun vmaxnmqF16(a1: Float16x8T, b1: Float16x8T): Float16x8T = Float16x8T()
-    return vmaxnmqF16(a, b)
+    fun externVmaxnmqF16(a1: Float16x8T, b1: Float16x8T): Float16x8T = Float16x8T()
+    return externVmaxnmqF16(a, b)
 }
 
 /**
@@ -8304,8 +8303,8 @@ public fun vmaxnmqF16(a: Float16x8T, b: Float16x8T): Float16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmaxnmF32)
  */
 public fun vmaxnmF32(a: Float32x2T, b: Float32x2T): Float32x2T {
-    fun vmaxnmF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
-    return vmaxnmF32(a, b)
+    fun externVmaxnmF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
+    return externVmaxnmF32(a, b)
 }
 
 /**
@@ -8313,8 +8312,8 @@ public fun vmaxnmF32(a: Float32x2T, b: Float32x2T): Float32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmaxnmqF32)
  */
 public fun vmaxnmqF32(a: Float32x4T, b: Float32x4T): Float32x4T {
-    fun vmaxnmqF32(a1: Float32x4T, b1: Float32x4T): Float32x4T = Float32x4T()
-    return vmaxnmqF32(a, b)
+    fun externVmaxnmqF32(a1: Float32x4T, b1: Float32x4T): Float32x4T = Float32x4T()
+    return externVmaxnmqF32(a, b)
 }
 
 /**
@@ -8322,8 +8321,8 @@ public fun vmaxnmqF32(a: Float32x4T, b: Float32x4T): Float32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vminF16)
  */
 public fun vminF16(a: Float16x4T, b: Float16x4T): Float16x4T {
-    fun vminF16(a1: Float16x4T, b1: Float16x4T): Float16x4T = Float16x4T()
-    return vminF16(a, b)
+    fun externVminF16(a1: Float16x4T, b1: Float16x4T): Float16x4T = Float16x4T()
+    return externVminF16(a, b)
 }
 
 /**
@@ -8331,8 +8330,8 @@ public fun vminF16(a: Float16x4T, b: Float16x4T): Float16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vminqF16)
  */
 public fun vminqF16(a: Float16x8T, b: Float16x8T): Float16x8T {
-    fun vminqF16(a1: Float16x8T, b1: Float16x8T): Float16x8T = Float16x8T()
-    return vminqF16(a, b)
+    fun externVminqF16(a1: Float16x8T, b1: Float16x8T): Float16x8T = Float16x8T()
+    return externVminqF16(a, b)
 }
 
 /**
@@ -8340,8 +8339,8 @@ public fun vminqF16(a: Float16x8T, b: Float16x8T): Float16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vminF32)
  */
 public fun vminF32(a: Float32x2T, b: Float32x2T): Float32x2T {
-    fun vminF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
-    return vminF32(a, b)
+    fun externVminF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
+    return externVminF32(a, b)
 }
 
 /**
@@ -8349,8 +8348,8 @@ public fun vminF32(a: Float32x2T, b: Float32x2T): Float32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vminqF32)
  */
 public fun vminqF32(a: Float32x4T, b: Float32x4T): Float32x4T {
-    fun vminqF32(a1: Float32x4T, b1: Float32x4T): Float32x4T = Float32x4T()
-    return vminqF32(a, b)
+    fun externVminqF32(a1: Float32x4T, b1: Float32x4T): Float32x4T = Float32x4T()
+    return externVminqF32(a, b)
 }
 
 /**
@@ -8478,8 +8477,8 @@ public fun vminqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T =
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vminnmF16)
  */
 public fun vminnmF16(a: Float16x4T, b: Float16x4T): Float16x4T {
-    fun vminnmF16(a1: Float16x4T, b1: Float16x4T): Float16x4T = Float16x4T()
-    return vminnmF16(a, b)
+    fun externVminnmF16(a1: Float16x4T, b1: Float16x4T): Float16x4T = Float16x4T()
+    return externVminnmF16(a, b)
 }
 
 /**
@@ -8487,8 +8486,8 @@ public fun vminnmF16(a: Float16x4T, b: Float16x4T): Float16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vminnmqF16)
  */
 public fun vminnmqF16(a: Float16x8T, b: Float16x8T): Float16x8T {
-    fun vminnmqF16(a1: Float16x8T, b1: Float16x8T): Float16x8T = Float16x8T()
-    return vminnmqF16(a, b)
+    fun externVminnmqF16(a1: Float16x8T, b1: Float16x8T): Float16x8T = Float16x8T()
+    return externVminnmqF16(a, b)
 }
 
 /**
@@ -8496,8 +8495,8 @@ public fun vminnmqF16(a: Float16x8T, b: Float16x8T): Float16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vminnmF32)
  */
 public fun vminnmF32(a: Float32x2T, b: Float32x2T): Float32x2T {
-    fun vminnmF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
-    return vminnmF32(a, b)
+    fun externVminnmF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
+    return externVminnmF32(a, b)
 }
 
 /**
@@ -8505,8 +8504,8 @@ public fun vminnmF32(a: Float32x2T, b: Float32x2T): Float32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vminnmqF32)
  */
 public fun vminnmqF32(a: Float32x4T, b: Float32x4T): Float32x4T {
-    fun vminnmqF32(a1: Float32x4T, b1: Float32x4T): Float32x4T = Float32x4T()
-    return vminnmqF32(a, b)
+    fun externVminnmqF32(a1: Float32x4T, b1: Float32x4T): Float32x4T = Float32x4T()
+    return externVminnmqF32(a, b)
 }
 
 /**
@@ -9538,8 +9537,8 @@ public fun vmlslU32(a: Uint64x2T, b: Uint32x2T, c: Uint32x2T): Uint64x2T = run {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmmlaqS32)
  */
 public fun vmmlaqS32(a: Int32x4T, b: Int8x16T, c: Int8x16T): Int32x4T {
-    fun vmmlaqS32(a1: Int32x4T, b1: Int8x16T, c1: Int8x16T): Int32x4T = Int32x4T()
-    return vmmlaqS32(a, b, c)
+    fun externVmmlaqS32(a1: Int32x4T, b1: Int8x16T, c1: Int8x16T): Int32x4T = Int32x4T()
+    return externVmmlaqS32(a, b, c)
 }
 
 /**
@@ -9547,8 +9546,8 @@ public fun vmmlaqS32(a: Int32x4T, b: Int8x16T, c: Int8x16T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmmlaqU32)
  */
 public fun vmmlaqU32(a: Uint32x4T, b: Uint8x16T, c: Uint8x16T): Uint32x4T {
-    fun vmmlaqU32(a1: Uint32x4T, b1: Uint8x16T, c1: Uint8x16T): Uint32x4T = Uint32x4T()
-    return vmmlaqU32(a, b, c)
+    fun externVmmlaqU32(a1: Uint32x4T, b1: Uint8x16T, c1: Uint8x16T): Uint32x4T = Uint32x4T()
+    return externVmmlaqU32(a, b, c)
 }
 
 /**
@@ -10110,8 +10109,8 @@ public fun vmulqNU32(a: Uint32x4T, b: UInt): Uint32x4T = run { val simdArg0 = a;
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmulP8)
  */
 public fun vmulP8(a: Poly8x8T, b: Poly8x8T): Poly8x8T {
-    fun vmulP8(a1: Poly8x8T, b1: Poly8x8T): Poly8x8T = Poly8x8T()
-    return vmulP8(a, b)
+    fun externVmulP8(a1: Poly8x8T, b1: Poly8x8T): Poly8x8T = Poly8x8T()
+    return externVmulP8(a, b)
 }
 
 /**
@@ -10119,8 +10118,8 @@ public fun vmulP8(a: Poly8x8T, b: Poly8x8T): Poly8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmulqP8)
  */
 public fun vmulqP8(a: Poly8x16T, b: Poly8x16T): Poly8x16T {
-    fun vmulqP8(a1: Poly8x16T, b1: Poly8x16T): Poly8x16T = Poly8x16T()
-    return vmulqP8(a, b)
+    fun externVmulqP8(a1: Poly8x16T, b1: Poly8x16T): Poly8x16T = Poly8x16T()
+    return externVmulqP8(a, b)
 }
 
 /**
@@ -10312,8 +10311,8 @@ public fun vmullNU32(a: Uint32x2T, b: UInt): Uint64x2T = vmullU32(a, vdupNU32(b)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vmullP8)
  */
 public fun vmullP8(a: Poly8x8T, b: Poly8x8T): Poly16x8T {
-    fun vmullP8(a1: Poly8x8T, b1: Poly8x8T): Poly16x8T = Poly16x8T()
-    return vmullP8(a, b)
+    fun externVmullP8(a1: Poly8x8T, b1: Poly8x8T): Poly16x8T = Poly16x8T()
+    return externVmullP8(a, b)
 }
 
 /**
@@ -10616,7 +10615,7 @@ public fun vornqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
  */
 public fun vornU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
     val c = Int16x4T.splat(-1)
-    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
+    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmuteWithLayouts<Any?, Uint16x4T>(c, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x4T>()); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
 /**
@@ -10625,7 +10624,7 @@ public fun vornU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
  */
 public fun vornU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
     val c = Int32x2T.splat(-1)
-    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
+    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmuteWithLayouts<Any?, Uint32x2T>(c, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x2T>()); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
 /**
@@ -10634,7 +10633,7 @@ public fun vornU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
  */
 public fun vornU64(a: Uint64x1T, b: Uint64x1T): Uint64x1T {
     val c = Int64x1T.splat(-1)
-    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
+    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmuteWithLayouts<Any?, Uint64x1T>(c, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint64x1T>()); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
 /**
@@ -10643,7 +10642,7 @@ public fun vornU64(a: Uint64x1T, b: Uint64x1T): Uint64x1T {
  */
 public fun vornU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
     val c = Int8x8T.splat(-1)
-    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
+    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmuteWithLayouts<Any?, Uint8x8T>(c, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x8T>()); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
 /**
@@ -10652,7 +10651,7 @@ public fun vornU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
  */
 public fun vornqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T {
     val c = Int16x8T.splat(-1)
-    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
+    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmuteWithLayouts<Any?, Uint16x8T>(c, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
 /**
@@ -10661,7 +10660,7 @@ public fun vornqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T {
  */
 public fun vornqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T {
     val c = Int32x4T.splat(-1)
-    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
+    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmuteWithLayouts<Any?, Uint32x4T>(c, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x4T>()); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
 /**
@@ -10670,7 +10669,7 @@ public fun vornqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T {
  */
 public fun vornqU64(a: Uint64x2T, b: Uint64x2T): Uint64x2T {
     val c = Int64x2T.splat(-1)
-    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
+    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmuteWithLayouts<Any?, Uint64x2T>(c, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint64x2T>()); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
 /**
@@ -10679,7 +10678,7 @@ public fun vornqU64(a: Uint64x2T, b: Uint64x2T): Uint64x2T {
  */
 public fun vornqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T {
     val c = Int8x16T.splat(-1)
-    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmute(c); simdArg0 }; val simdArg1 = a; simdArg0 }
+    return run { val simdArg0 = run { val simdArg0 = b; val simdArg1 = transmuteWithLayouts<Any?, Uint8x16T>(c, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x16T>()); simdArg0 }; val simdArg1 = a; simdArg0 }
 }
 
 /**
@@ -10927,8 +10926,8 @@ public fun vpadalqU32(a: Uint64x2T, b: Uint32x4T): Uint64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddF16)
  */
 public fun vpaddF16(a: Float16x4T, b: Float16x4T): Float16x4T {
-    fun vpaddF16(a1: Float16x4T, b1: Float16x4T): Float16x4T = Float16x4T()
-    return vpaddF16(a, b)
+    fun externVpaddF16(a1: Float16x4T, b1: Float16x4T): Float16x4T = Float16x4T()
+    return externVpaddF16(a, b)
 }
 
 /**
@@ -10936,8 +10935,8 @@ public fun vpaddF16(a: Float16x4T, b: Float16x4T): Float16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddF32)
  */
 public fun vpaddF32(a: Float32x2T, b: Float32x2T): Float32x2T {
-    fun vpaddF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
-    return vpaddF32(a, b)
+    fun externVpaddF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
+    return externVpaddF32(a, b)
 }
 
 /**
@@ -10945,8 +10944,8 @@ public fun vpaddF32(a: Float32x2T, b: Float32x2T): Float32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddS8)
  */
 public fun vpaddS8(a: Int8x8T, b: Int8x8T): Int8x8T {
-    fun vpaddS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
-    return vpaddS8(a, b)
+    fun externVpaddS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
+    return externVpaddS8(a, b)
 }
 
 /**
@@ -10954,8 +10953,8 @@ public fun vpaddS8(a: Int8x8T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddS16)
  */
 public fun vpaddS16(a: Int16x4T, b: Int16x4T): Int16x4T {
-    fun vpaddS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
-    return vpaddS16(a, b)
+    fun externVpaddS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
+    return externVpaddS16(a, b)
 }
 
 /**
@@ -10963,8 +10962,8 @@ public fun vpaddS16(a: Int16x4T, b: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddS32)
  */
 public fun vpaddS32(a: Int32x2T, b: Int32x2T): Int32x2T {
-    fun vpaddS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
-    return vpaddS32(a, b)
+    fun externVpaddS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
+    return externVpaddS32(a, b)
 }
 
 /**
@@ -10990,8 +10989,8 @@ public fun vpaddU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T = transmuteWithLayout
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddlS8)
  */
 public fun vpaddlS8(a: Int8x8T): Int16x4T {
-    fun vpaddlS8(a1: Int8x8T): Int16x4T = Int16x4T()
-    return vpaddlS8(a)
+    fun externVpaddlS8(a1: Int8x8T): Int16x4T = Int16x4T()
+    return externVpaddlS8(a)
 }
 
 /**
@@ -10999,8 +10998,8 @@ public fun vpaddlS8(a: Int8x8T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddlqS8)
  */
 public fun vpaddlqS8(a: Int8x16T): Int16x8T {
-    fun vpaddlqS8(a1: Int8x16T): Int16x8T = Int16x8T()
-    return vpaddlqS8(a)
+    fun externVpaddlqS8(a1: Int8x16T): Int16x8T = Int16x8T()
+    return externVpaddlqS8(a)
 }
 
 /**
@@ -11008,8 +11007,8 @@ public fun vpaddlqS8(a: Int8x16T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddlS16)
  */
 public fun vpaddlS16(a: Int16x4T): Int32x2T {
-    fun vpaddlS16(a1: Int16x4T): Int32x2T = Int32x2T()
-    return vpaddlS16(a)
+    fun externVpaddlS16(a1: Int16x4T): Int32x2T = Int32x2T()
+    return externVpaddlS16(a)
 }
 
 /**
@@ -11017,8 +11016,8 @@ public fun vpaddlS16(a: Int16x4T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddlqS16)
  */
 public fun vpaddlqS16(a: Int16x8T): Int32x4T {
-    fun vpaddlqS16(a1: Int16x8T): Int32x4T = Int32x4T()
-    return vpaddlqS16(a)
+    fun externVpaddlqS16(a1: Int16x8T): Int32x4T = Int32x4T()
+    return externVpaddlqS16(a)
 }
 
 /**
@@ -11026,8 +11025,8 @@ public fun vpaddlqS16(a: Int16x8T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddlS32)
  */
 public fun vpaddlS32(a: Int32x2T): Int64x1T {
-    fun vpaddlS32(a1: Int32x2T): Int64x1T = Int64x1T()
-    return vpaddlS32(a)
+    fun externVpaddlS32(a1: Int32x2T): Int64x1T = Int64x1T()
+    return externVpaddlS32(a)
 }
 
 /**
@@ -11035,8 +11034,8 @@ public fun vpaddlS32(a: Int32x2T): Int64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddlqS32)
  */
 public fun vpaddlqS32(a: Int32x4T): Int64x2T {
-    fun vpaddlqS32(a1: Int32x4T): Int64x2T = Int64x2T()
-    return vpaddlqS32(a)
+    fun externVpaddlqS32(a1: Int32x4T): Int64x2T = Int64x2T()
+    return externVpaddlqS32(a)
 }
 
 /**
@@ -11044,8 +11043,8 @@ public fun vpaddlqS32(a: Int32x4T): Int64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddlU8)
  */
 public fun vpaddlU8(a: Uint8x8T): Uint16x4T {
-    fun vpaddlU8(a1: Uint8x8T): Uint16x4T = Uint16x4T()
-    return vpaddlU8(a)
+    fun externVpaddlU8(a1: Uint8x8T): Uint16x4T = Uint16x4T()
+    return externVpaddlU8(a)
 }
 
 /**
@@ -11053,8 +11052,8 @@ public fun vpaddlU8(a: Uint8x8T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddlqU8)
  */
 public fun vpaddlqU8(a: Uint8x16T): Uint16x8T {
-    fun vpaddlqU8(a1: Uint8x16T): Uint16x8T = Uint16x8T()
-    return vpaddlqU8(a)
+    fun externVpaddlqU8(a1: Uint8x16T): Uint16x8T = Uint16x8T()
+    return externVpaddlqU8(a)
 }
 
 /**
@@ -11062,8 +11061,8 @@ public fun vpaddlqU8(a: Uint8x16T): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddlU16)
  */
 public fun vpaddlU16(a: Uint16x4T): Uint32x2T {
-    fun vpaddlU16(a1: Uint16x4T): Uint32x2T = Uint32x2T()
-    return vpaddlU16(a)
+    fun externVpaddlU16(a1: Uint16x4T): Uint32x2T = Uint32x2T()
+    return externVpaddlU16(a)
 }
 
 /**
@@ -11071,8 +11070,8 @@ public fun vpaddlU16(a: Uint16x4T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddlqU16)
  */
 public fun vpaddlqU16(a: Uint16x8T): Uint32x4T {
-    fun vpaddlqU16(a1: Uint16x8T): Uint32x4T = Uint32x4T()
-    return vpaddlqU16(a)
+    fun externVpaddlqU16(a1: Uint16x8T): Uint32x4T = Uint32x4T()
+    return externVpaddlqU16(a)
 }
 
 /**
@@ -11080,8 +11079,8 @@ public fun vpaddlqU16(a: Uint16x8T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddlU32)
  */
 public fun vpaddlU32(a: Uint32x2T): Uint64x1T {
-    fun vpaddlU32(a1: Uint32x2T): Uint64x1T = Uint64x1T()
-    return vpaddlU32(a)
+    fun externVpaddlU32(a1: Uint32x2T): Uint64x1T = Uint64x1T()
+    return externVpaddlU32(a)
 }
 
 /**
@@ -11089,8 +11088,8 @@ public fun vpaddlU32(a: Uint32x2T): Uint64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddlqU32)
  */
 public fun vpaddlqU32(a: Uint32x4T): Uint64x2T {
-    fun vpaddlqU32(a1: Uint32x4T): Uint64x2T = Uint64x2T()
-    return vpaddlqU32(a)
+    fun externVpaddlqU32(a1: Uint32x4T): Uint64x2T = Uint64x2T()
+    return externVpaddlqU32(a)
 }
 
 /**
@@ -11098,8 +11097,8 @@ public fun vpaddlqU32(a: Uint32x4T): Uint64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpmaxF32)
  */
 public fun vpmaxF32(a: Float32x2T, b: Float32x2T): Float32x2T {
-    fun vpmaxF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
-    return vpmaxF32(a, b)
+    fun externVpmaxF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
+    return externVpmaxF32(a, b)
 }
 
 /**
@@ -11107,8 +11106,8 @@ public fun vpmaxF32(a: Float32x2T, b: Float32x2T): Float32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpmaxS8)
  */
 public fun vpmaxS8(a: Int8x8T, b: Int8x8T): Int8x8T {
-    fun vpmaxS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
-    return vpmaxS8(a, b)
+    fun externVpmaxS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
+    return externVpmaxS8(a, b)
 }
 
 /**
@@ -11116,8 +11115,8 @@ public fun vpmaxS8(a: Int8x8T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpmaxS16)
  */
 public fun vpmaxS16(a: Int16x4T, b: Int16x4T): Int16x4T {
-    fun vpmaxS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
-    return vpmaxS16(a, b)
+    fun externVpmaxS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
+    return externVpmaxS16(a, b)
 }
 
 /**
@@ -11125,8 +11124,8 @@ public fun vpmaxS16(a: Int16x4T, b: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpmaxS32)
  */
 public fun vpmaxS32(a: Int32x2T, b: Int32x2T): Int32x2T {
-    fun vpmaxS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
-    return vpmaxS32(a, b)
+    fun externVpmaxS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
+    return externVpmaxS32(a, b)
 }
 
 /**
@@ -11134,8 +11133,8 @@ public fun vpmaxS32(a: Int32x2T, b: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpmaxU8)
  */
 public fun vpmaxU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
-    fun vpmaxU8(a1: Uint8x8T, b1: Uint8x8T): Uint8x8T = Uint8x8T()
-    return vpmaxU8(a, b)
+    fun externVpmaxU8(a1: Uint8x8T, b1: Uint8x8T): Uint8x8T = Uint8x8T()
+    return externVpmaxU8(a, b)
 }
 
 /**
@@ -11143,8 +11142,8 @@ public fun vpmaxU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpmaxU16)
  */
 public fun vpmaxU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
-    fun vpmaxU16(a1: Uint16x4T, b1: Uint16x4T): Uint16x4T = Uint16x4T()
-    return vpmaxU16(a, b)
+    fun externVpmaxU16(a1: Uint16x4T, b1: Uint16x4T): Uint16x4T = Uint16x4T()
+    return externVpmaxU16(a, b)
 }
 
 /**
@@ -11152,8 +11151,8 @@ public fun vpmaxU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpmaxU32)
  */
 public fun vpmaxU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
-    fun vpmaxU32(a1: Uint32x2T, b1: Uint32x2T): Uint32x2T = Uint32x2T()
-    return vpmaxU32(a, b)
+    fun externVpmaxU32(a1: Uint32x2T, b1: Uint32x2T): Uint32x2T = Uint32x2T()
+    return externVpmaxU32(a, b)
 }
 
 /**
@@ -11161,8 +11160,8 @@ public fun vpmaxU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpminF32)
  */
 public fun vpminF32(a: Float32x2T, b: Float32x2T): Float32x2T {
-    fun vpminF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
-    return vpminF32(a, b)
+    fun externVpminF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
+    return externVpminF32(a, b)
 }
 
 /**
@@ -11170,8 +11169,8 @@ public fun vpminF32(a: Float32x2T, b: Float32x2T): Float32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpminS8)
  */
 public fun vpminS8(a: Int8x8T, b: Int8x8T): Int8x8T {
-    fun vpminS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
-    return vpminS8(a, b)
+    fun externVpminS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
+    return externVpminS8(a, b)
 }
 
 /**
@@ -11179,8 +11178,8 @@ public fun vpminS8(a: Int8x8T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpminS16)
  */
 public fun vpminS16(a: Int16x4T, b: Int16x4T): Int16x4T {
-    fun vpminS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
-    return vpminS16(a, b)
+    fun externVpminS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
+    return externVpminS16(a, b)
 }
 
 /**
@@ -11188,8 +11187,8 @@ public fun vpminS16(a: Int16x4T, b: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpminS32)
  */
 public fun vpminS32(a: Int32x2T, b: Int32x2T): Int32x2T {
-    fun vpminS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
-    return vpminS32(a, b)
+    fun externVpminS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
+    return externVpminS32(a, b)
 }
 
 /**
@@ -11197,8 +11196,8 @@ public fun vpminS32(a: Int32x2T, b: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpminU8)
  */
 public fun vpminU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
-    fun vpminU8(a1: Uint8x8T, b1: Uint8x8T): Uint8x8T = Uint8x8T()
-    return vpminU8(a, b)
+    fun externVpminU8(a1: Uint8x8T, b1: Uint8x8T): Uint8x8T = Uint8x8T()
+    return externVpminU8(a, b)
 }
 
 /**
@@ -11206,8 +11205,8 @@ public fun vpminU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpminU16)
  */
 public fun vpminU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
-    fun vpminU16(a1: Uint16x4T, b1: Uint16x4T): Uint16x4T = Uint16x4T()
-    return vpminU16(a, b)
+    fun externVpminU16(a1: Uint16x4T, b1: Uint16x4T): Uint16x4T = Uint16x4T()
+    return externVpminU16(a, b)
 }
 
 /**
@@ -11215,8 +11214,8 @@ public fun vpminU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpminU32)
  */
 public fun vpminU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
-    fun vpminU32(a1: Uint32x2T, b1: Uint32x2T): Uint32x2T = Uint32x2T()
-    return vpminU32(a, b)
+    fun externVpminU32(a1: Uint32x2T, b1: Uint32x2T): Uint32x2T = Uint32x2T()
+    return externVpminU32(a, b)
 }
 
 /**
@@ -11224,8 +11223,8 @@ public fun vpminU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqabsS8)
  */
 public fun vqabsS8(a: Int8x8T): Int8x8T {
-    fun vqabsS8(a1: Int8x8T): Int8x8T = Int8x8T()
-    return vqabsS8(a)
+    fun externVqabsS8(a1: Int8x8T): Int8x8T = Int8x8T()
+    return externVqabsS8(a)
 }
 
 /**
@@ -11233,8 +11232,8 @@ public fun vqabsS8(a: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqabsqS8)
  */
 public fun vqabsqS8(a: Int8x16T): Int8x16T {
-    fun vqabsqS8(a1: Int8x16T): Int8x16T = Int8x16T()
-    return vqabsqS8(a)
+    fun externVqabsqS8(a1: Int8x16T): Int8x16T = Int8x16T()
+    return externVqabsqS8(a)
 }
 
 /**
@@ -11242,8 +11241,8 @@ public fun vqabsqS8(a: Int8x16T): Int8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqabsS16)
  */
 public fun vqabsS16(a: Int16x4T): Int16x4T {
-    fun vqabsS16(a1: Int16x4T): Int16x4T = Int16x4T()
-    return vqabsS16(a)
+    fun externVqabsS16(a1: Int16x4T): Int16x4T = Int16x4T()
+    return externVqabsS16(a)
 }
 
 /**
@@ -11251,8 +11250,8 @@ public fun vqabsS16(a: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqabsqS16)
  */
 public fun vqabsqS16(a: Int16x8T): Int16x8T {
-    fun vqabsqS16(a1: Int16x8T): Int16x8T = Int16x8T()
-    return vqabsqS16(a)
+    fun externVqabsqS16(a1: Int16x8T): Int16x8T = Int16x8T()
+    return externVqabsqS16(a)
 }
 
 /**
@@ -11260,8 +11259,8 @@ public fun vqabsqS16(a: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqabsS32)
  */
 public fun vqabsS32(a: Int32x2T): Int32x2T {
-    fun vqabsS32(a1: Int32x2T): Int32x2T = Int32x2T()
-    return vqabsS32(a)
+    fun externVqabsS32(a1: Int32x2T): Int32x2T = Int32x2T()
+    return externVqabsS32(a)
 }
 
 /**
@@ -11269,8 +11268,8 @@ public fun vqabsS32(a: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqabsqS32)
  */
 public fun vqabsqS32(a: Int32x4T): Int32x4T {
-    fun vqabsqS32(a1: Int32x4T): Int32x4T = Int32x4T()
-    return vqabsqS32(a)
+    fun externVqabsqS32(a1: Int32x4T): Int32x4T = Int32x4T()
+    return externVqabsqS32(a)
 }
 
 /**
@@ -11546,8 +11545,8 @@ public fun vqdmulhqNS32(a: Int32x4T, b: Int): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqdmulhS16)
  */
 public fun vqdmulhS16(a: Int16x4T, b: Int16x4T): Int16x4T {
-    fun vqdmulhS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
-    return vqdmulhS16(a, b)
+    fun externVqdmulhS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
+    return externVqdmulhS16(a, b)
 }
 
 /**
@@ -11555,8 +11554,8 @@ public fun vqdmulhS16(a: Int16x4T, b: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqdmulhqS16)
  */
 public fun vqdmulhqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
-    fun vqdmulhqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
-    return vqdmulhqS16(a, b)
+    fun externVqdmulhqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
+    return externVqdmulhqS16(a, b)
 }
 
 /**
@@ -11564,8 +11563,8 @@ public fun vqdmulhqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqdmulhS32)
  */
 public fun vqdmulhS32(a: Int32x2T, b: Int32x2T): Int32x2T {
-    fun vqdmulhS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
-    return vqdmulhS32(a, b)
+    fun externVqdmulhS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
+    return externVqdmulhS32(a, b)
 }
 
 /**
@@ -11573,8 +11572,8 @@ public fun vqdmulhS32(a: Int32x2T, b: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqdmulhqS32)
  */
 public fun vqdmulhqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
-    fun vqdmulhqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
-    return vqdmulhqS32(a, b)
+    fun externVqdmulhqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
+    return externVqdmulhqS32(a, b)
 }
 
 /**
@@ -11618,8 +11617,8 @@ public fun vqdmullNS32(a: Int32x2T, b: Int): Int64x2T = vqdmullS32(a, vdupNS32(b
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqdmullS16)
  */
 public fun vqdmullS16(a: Int16x4T, b: Int16x4T): Int32x4T {
-    fun vqdmullS16(a1: Int16x4T, b1: Int16x4T): Int32x4T = Int32x4T()
-    return vqdmullS16(a, b)
+    fun externVqdmullS16(a1: Int16x4T, b1: Int16x4T): Int32x4T = Int32x4T()
+    return externVqdmullS16(a, b)
 }
 
 /**
@@ -11627,8 +11626,8 @@ public fun vqdmullS16(a: Int16x4T, b: Int16x4T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqdmullS32)
  */
 public fun vqdmullS32(a: Int32x2T, b: Int32x2T): Int64x2T {
-    fun vqdmullS32(a1: Int32x2T, b1: Int32x2T): Int64x2T = Int64x2T()
-    return vqdmullS32(a, b)
+    fun externVqdmullS32(a1: Int32x2T, b1: Int32x2T): Int64x2T = Int64x2T()
+    return externVqdmullS32(a, b)
 }
 
 /**
@@ -11636,8 +11635,8 @@ public fun vqdmullS32(a: Int32x2T, b: Int32x2T): Int64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqmovnS16)
  */
 public fun vqmovnS16(a: Int16x8T): Int8x8T {
-    fun vqmovnS16(a1: Int16x8T): Int8x8T = Int8x8T()
-    return vqmovnS16(a)
+    fun externVqmovnS16(a1: Int16x8T): Int8x8T = Int8x8T()
+    return externVqmovnS16(a)
 }
 
 /**
@@ -11645,8 +11644,8 @@ public fun vqmovnS16(a: Int16x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqmovnS32)
  */
 public fun vqmovnS32(a: Int32x4T): Int16x4T {
-    fun vqmovnS32(a1: Int32x4T): Int16x4T = Int16x4T()
-    return vqmovnS32(a)
+    fun externVqmovnS32(a1: Int32x4T): Int16x4T = Int16x4T()
+    return externVqmovnS32(a)
 }
 
 /**
@@ -11654,8 +11653,8 @@ public fun vqmovnS32(a: Int32x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqmovnS64)
  */
 public fun vqmovnS64(a: Int64x2T): Int32x2T {
-    fun vqmovnS64(a1: Int64x2T): Int32x2T = Int32x2T()
-    return vqmovnS64(a)
+    fun externVqmovnS64(a1: Int64x2T): Int32x2T = Int32x2T()
+    return externVqmovnS64(a)
 }
 
 /**
@@ -11663,8 +11662,8 @@ public fun vqmovnS64(a: Int64x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqmovnU16)
  */
 public fun vqmovnU16(a: Uint16x8T): Uint8x8T {
-    fun vqmovnU16(a1: Uint16x8T): Uint8x8T = Uint8x8T()
-    return vqmovnU16(a)
+    fun externVqmovnU16(a1: Uint16x8T): Uint8x8T = Uint8x8T()
+    return externVqmovnU16(a)
 }
 
 /**
@@ -11672,8 +11671,8 @@ public fun vqmovnU16(a: Uint16x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqmovnU32)
  */
 public fun vqmovnU32(a: Uint32x4T): Uint16x4T {
-    fun vqmovnU32(a1: Uint32x4T): Uint16x4T = Uint16x4T()
-    return vqmovnU32(a)
+    fun externVqmovnU32(a1: Uint32x4T): Uint16x4T = Uint16x4T()
+    return externVqmovnU32(a)
 }
 
 /**
@@ -11681,8 +11680,8 @@ public fun vqmovnU32(a: Uint32x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqmovnU64)
  */
 public fun vqmovnU64(a: Uint64x2T): Uint32x2T {
-    fun vqmovnU64(a1: Uint64x2T): Uint32x2T = Uint32x2T()
-    return vqmovnU64(a)
+    fun externVqmovnU64(a1: Uint64x2T): Uint32x2T = Uint32x2T()
+    return externVqmovnU64(a)
 }
 
 /**
@@ -11690,8 +11689,8 @@ public fun vqmovnU64(a: Uint64x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqmovunS16)
  */
 public fun vqmovunS16(a: Int16x8T): Uint8x8T {
-    fun vqmovunS16(a1: Int16x8T): Uint8x8T = Uint8x8T()
-    return vqmovunS16(a)
+    fun externVqmovunS16(a1: Int16x8T): Uint8x8T = Uint8x8T()
+    return externVqmovunS16(a)
 }
 
 /**
@@ -11699,8 +11698,8 @@ public fun vqmovunS16(a: Int16x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqmovunS32)
  */
 public fun vqmovunS32(a: Int32x4T): Uint16x4T {
-    fun vqmovunS32(a1: Int32x4T): Uint16x4T = Uint16x4T()
-    return vqmovunS32(a)
+    fun externVqmovunS32(a1: Int32x4T): Uint16x4T = Uint16x4T()
+    return externVqmovunS32(a)
 }
 
 /**
@@ -11708,8 +11707,8 @@ public fun vqmovunS32(a: Int32x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqmovunS64)
  */
 public fun vqmovunS64(a: Int64x2T): Uint32x2T {
-    fun vqmovunS64(a1: Int64x2T): Uint32x2T = Uint32x2T()
-    return vqmovunS64(a)
+    fun externVqmovunS64(a1: Int64x2T): Uint32x2T = Uint32x2T()
+    return externVqmovunS64(a)
 }
 
 /**
@@ -11717,8 +11716,8 @@ public fun vqmovunS64(a: Int64x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqnegS8)
  */
 public fun vqnegS8(a: Int8x8T): Int8x8T {
-    fun vqnegS8(a1: Int8x8T): Int8x8T = Int8x8T()
-    return vqnegS8(a)
+    fun externVqnegS8(a1: Int8x8T): Int8x8T = Int8x8T()
+    return externVqnegS8(a)
 }
 
 /**
@@ -11726,8 +11725,8 @@ public fun vqnegS8(a: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqnegqS8)
  */
 public fun vqnegqS8(a: Int8x16T): Int8x16T {
-    fun vqnegqS8(a1: Int8x16T): Int8x16T = Int8x16T()
-    return vqnegqS8(a)
+    fun externVqnegqS8(a1: Int8x16T): Int8x16T = Int8x16T()
+    return externVqnegqS8(a)
 }
 
 /**
@@ -11735,8 +11734,8 @@ public fun vqnegqS8(a: Int8x16T): Int8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqnegS16)
  */
 public fun vqnegS16(a: Int16x4T): Int16x4T {
-    fun vqnegS16(a1: Int16x4T): Int16x4T = Int16x4T()
-    return vqnegS16(a)
+    fun externVqnegS16(a1: Int16x4T): Int16x4T = Int16x4T()
+    return externVqnegS16(a)
 }
 
 /**
@@ -11744,8 +11743,8 @@ public fun vqnegS16(a: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqnegqS16)
  */
 public fun vqnegqS16(a: Int16x8T): Int16x8T {
-    fun vqnegqS16(a1: Int16x8T): Int16x8T = Int16x8T()
-    return vqnegqS16(a)
+    fun externVqnegqS16(a1: Int16x8T): Int16x8T = Int16x8T()
+    return externVqnegqS16(a)
 }
 
 /**
@@ -11753,8 +11752,8 @@ public fun vqnegqS16(a: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqnegS32)
  */
 public fun vqnegS32(a: Int32x2T): Int32x2T {
-    fun vqnegS32(a1: Int32x2T): Int32x2T = Int32x2T()
-    return vqnegS32(a)
+    fun externVqnegS32(a1: Int32x2T): Int32x2T = Int32x2T()
+    return externVqnegS32(a)
 }
 
 /**
@@ -11762,8 +11761,8 @@ public fun vqnegS32(a: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqnegqS32)
  */
 public fun vqnegqS32(a: Int32x4T): Int32x4T {
-    fun vqnegqS32(a1: Int32x4T): Int32x4T = Int32x4T()
-    return vqnegqS32(a)
+    fun externVqnegqS32(a1: Int32x4T): Int32x4T = Int32x4T()
+    return externVqnegqS32(a)
 }
 
 /**
@@ -11891,8 +11890,8 @@ public fun vqrdmulhqNS32(a: Int32x4T, b: Int): Int32x4T = vqrdmulhqS32(a, vdupqN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrdmulhS16)
  */
 public fun vqrdmulhS16(a: Int16x4T, b: Int16x4T): Int16x4T {
-    fun vqrdmulhS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
-    return vqrdmulhS16(a, b)
+    fun externVqrdmulhS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
+    return externVqrdmulhS16(a, b)
 }
 
 /**
@@ -11900,8 +11899,8 @@ public fun vqrdmulhS16(a: Int16x4T, b: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrdmulhqS16)
  */
 public fun vqrdmulhqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
-    fun vqrdmulhqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
-    return vqrdmulhqS16(a, b)
+    fun externVqrdmulhqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
+    return externVqrdmulhqS16(a, b)
 }
 
 /**
@@ -11909,8 +11908,8 @@ public fun vqrdmulhqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrdmulhS32)
  */
 public fun vqrdmulhS32(a: Int32x2T, b: Int32x2T): Int32x2T {
-    fun vqrdmulhS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
-    return vqrdmulhS32(a, b)
+    fun externVqrdmulhS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
+    return externVqrdmulhS32(a, b)
 }
 
 /**
@@ -11918,8 +11917,8 @@ public fun vqrdmulhS32(a: Int32x2T, b: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrdmulhqS32)
  */
 public fun vqrdmulhqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
-    fun vqrdmulhqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
-    return vqrdmulhqS32(a, b)
+    fun externVqrdmulhqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
+    return externVqrdmulhqS32(a, b)
 }
 
 /**
@@ -11927,8 +11926,8 @@ public fun vqrdmulhqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshlS8)
  */
 public fun vqrshlS8(a: Int8x8T, b: Int8x8T): Int8x8T {
-    fun vqrshlS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
-    return vqrshlS8(a, b)
+    fun externVqrshlS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
+    return externVqrshlS8(a, b)
 }
 
 /**
@@ -11936,8 +11935,8 @@ public fun vqrshlS8(a: Int8x8T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshlqS8)
  */
 public fun vqrshlqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
-    fun vqrshlqS8(a1: Int8x16T, b1: Int8x16T): Int8x16T = Int8x16T()
-    return vqrshlqS8(a, b)
+    fun externVqrshlqS8(a1: Int8x16T, b1: Int8x16T): Int8x16T = Int8x16T()
+    return externVqrshlqS8(a, b)
 }
 
 /**
@@ -11945,8 +11944,8 @@ public fun vqrshlqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshlS16)
  */
 public fun vqrshlS16(a: Int16x4T, b: Int16x4T): Int16x4T {
-    fun vqrshlS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
-    return vqrshlS16(a, b)
+    fun externVqrshlS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
+    return externVqrshlS16(a, b)
 }
 
 /**
@@ -11954,8 +11953,8 @@ public fun vqrshlS16(a: Int16x4T, b: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshlqS16)
  */
 public fun vqrshlqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
-    fun vqrshlqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
-    return vqrshlqS16(a, b)
+    fun externVqrshlqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
+    return externVqrshlqS16(a, b)
 }
 
 /**
@@ -11963,8 +11962,8 @@ public fun vqrshlqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshlS32)
  */
 public fun vqrshlS32(a: Int32x2T, b: Int32x2T): Int32x2T {
-    fun vqrshlS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
-    return vqrshlS32(a, b)
+    fun externVqrshlS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
+    return externVqrshlS32(a, b)
 }
 
 /**
@@ -11972,8 +11971,8 @@ public fun vqrshlS32(a: Int32x2T, b: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshlqS32)
  */
 public fun vqrshlqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
-    fun vqrshlqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
-    return vqrshlqS32(a, b)
+    fun externVqrshlqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
+    return externVqrshlqS32(a, b)
 }
 
 /**
@@ -11981,8 +11980,8 @@ public fun vqrshlqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshlS64)
  */
 public fun vqrshlS64(a: Int64x1T, b: Int64x1T): Int64x1T {
-    fun vqrshlS64(a1: Int64x1T, b1: Int64x1T): Int64x1T = Int64x1T()
-    return vqrshlS64(a, b)
+    fun externVqrshlS64(a1: Int64x1T, b1: Int64x1T): Int64x1T = Int64x1T()
+    return externVqrshlS64(a, b)
 }
 
 /**
@@ -11990,8 +11989,8 @@ public fun vqrshlS64(a: Int64x1T, b: Int64x1T): Int64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshlqS64)
  */
 public fun vqrshlqS64(a: Int64x2T, b: Int64x2T): Int64x2T {
-    fun vqrshlqS64(a1: Int64x2T, b1: Int64x2T): Int64x2T = Int64x2T()
-    return vqrshlqS64(a, b)
+    fun externVqrshlqS64(a1: Int64x2T, b1: Int64x2T): Int64x2T = Int64x2T()
+    return externVqrshlqS64(a, b)
 }
 
 /**
@@ -11999,8 +11998,8 @@ public fun vqrshlqS64(a: Int64x2T, b: Int64x2T): Int64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshlU8)
  */
 public fun vqrshlU8(a: Uint8x8T, b: Int8x8T): Uint8x8T {
-    fun vqrshlU8(a1: Uint8x8T, b1: Int8x8T): Uint8x8T = Uint8x8T()
-    return vqrshlU8(a, b)
+    fun externVqrshlU8(a1: Uint8x8T, b1: Int8x8T): Uint8x8T = Uint8x8T()
+    return externVqrshlU8(a, b)
 }
 
 /**
@@ -12008,8 +12007,8 @@ public fun vqrshlU8(a: Uint8x8T, b: Int8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshlqU8)
  */
 public fun vqrshlqU8(a: Uint8x16T, b: Int8x16T): Uint8x16T {
-    fun vqrshlqU8(a1: Uint8x16T, b1: Int8x16T): Uint8x16T = Uint8x16T()
-    return vqrshlqU8(a, b)
+    fun externVqrshlqU8(a1: Uint8x16T, b1: Int8x16T): Uint8x16T = Uint8x16T()
+    return externVqrshlqU8(a, b)
 }
 
 /**
@@ -12017,8 +12016,8 @@ public fun vqrshlqU8(a: Uint8x16T, b: Int8x16T): Uint8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshlU16)
  */
 public fun vqrshlU16(a: Uint16x4T, b: Int16x4T): Uint16x4T {
-    fun vqrshlU16(a1: Uint16x4T, b1: Int16x4T): Uint16x4T = Uint16x4T()
-    return vqrshlU16(a, b)
+    fun externVqrshlU16(a1: Uint16x4T, b1: Int16x4T): Uint16x4T = Uint16x4T()
+    return externVqrshlU16(a, b)
 }
 
 /**
@@ -12026,8 +12025,8 @@ public fun vqrshlU16(a: Uint16x4T, b: Int16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshlqU16)
  */
 public fun vqrshlqU16(a: Uint16x8T, b: Int16x8T): Uint16x8T {
-    fun vqrshlqU16(a1: Uint16x8T, b1: Int16x8T): Uint16x8T = Uint16x8T()
-    return vqrshlqU16(a, b)
+    fun externVqrshlqU16(a1: Uint16x8T, b1: Int16x8T): Uint16x8T = Uint16x8T()
+    return externVqrshlqU16(a, b)
 }
 
 /**
@@ -12035,8 +12034,8 @@ public fun vqrshlqU16(a: Uint16x8T, b: Int16x8T): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshlU32)
  */
 public fun vqrshlU32(a: Uint32x2T, b: Int32x2T): Uint32x2T {
-    fun vqrshlU32(a1: Uint32x2T, b1: Int32x2T): Uint32x2T = Uint32x2T()
-    return vqrshlU32(a, b)
+    fun externVqrshlU32(a1: Uint32x2T, b1: Int32x2T): Uint32x2T = Uint32x2T()
+    return externVqrshlU32(a, b)
 }
 
 /**
@@ -12044,8 +12043,8 @@ public fun vqrshlU32(a: Uint32x2T, b: Int32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshlqU32)
  */
 public fun vqrshlqU32(a: Uint32x4T, b: Int32x4T): Uint32x4T {
-    fun vqrshlqU32(a1: Uint32x4T, b1: Int32x4T): Uint32x4T = Uint32x4T()
-    return vqrshlqU32(a, b)
+    fun externVqrshlqU32(a1: Uint32x4T, b1: Int32x4T): Uint32x4T = Uint32x4T()
+    return externVqrshlqU32(a, b)
 }
 
 /**
@@ -12053,8 +12052,8 @@ public fun vqrshlqU32(a: Uint32x4T, b: Int32x4T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshlU64)
  */
 public fun vqrshlU64(a: Uint64x1T, b: Int64x1T): Uint64x1T {
-    fun vqrshlU64(a1: Uint64x1T, b1: Int64x1T): Uint64x1T = Uint64x1T()
-    return vqrshlU64(a, b)
+    fun externVqrshlU64(a1: Uint64x1T, b1: Int64x1T): Uint64x1T = Uint64x1T()
+    return externVqrshlU64(a, b)
 }
 
 /**
@@ -12062,8 +12061,8 @@ public fun vqrshlU64(a: Uint64x1T, b: Int64x1T): Uint64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshlqU64)
  */
 public fun vqrshlqU64(a: Uint64x2T, b: Int64x2T): Uint64x2T {
-    fun vqrshlqU64(a1: Uint64x2T, b1: Int64x2T): Uint64x2T = Uint64x2T()
-    return vqrshlqU64(a, b)
+    fun externVqrshlqU64(a1: Uint64x2T, b1: Int64x2T): Uint64x2T = Uint64x2T()
+    return externVqrshlqU64(a, b)
 }
 
 /**
@@ -12071,11 +12070,11 @@ public fun vqrshlqU64(a: Uint64x2T, b: Int64x2T): Uint64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshrnNS16)
  */
 public fun vqrshrnNS16(a: Int16x8T, n: Int): Int8x8T {
-    fun vqrshrnNS16(a1: Int16x8T, n: Int): Int8x8T = Int8x8T()
+    fun externVqrshrnNS16(a1: Int16x8T, n: Int): Int8x8T = Int8x8T()
     run {
         check(n >= 1 && n <= 8)
     }
-    return vqrshrnNS16(a, n)
+    return externVqrshrnNS16(a, n)
 }
 
 /**
@@ -12083,11 +12082,11 @@ public fun vqrshrnNS16(a: Int16x8T, n: Int): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshrnNS32)
  */
 public fun vqrshrnNS32(a: Int32x4T, n: Int): Int16x4T {
-    fun vqrshrnNS32(a1: Int32x4T, n: Int): Int16x4T = Int16x4T()
+    fun externVqrshrnNS32(a1: Int32x4T, n: Int): Int16x4T = Int16x4T()
     run {
         check(n >= 1 && n <= 16)
     }
-    return vqrshrnNS32(a, n)
+    return externVqrshrnNS32(a, n)
 }
 
 /**
@@ -12095,11 +12094,11 @@ public fun vqrshrnNS32(a: Int32x4T, n: Int): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshrnNS64)
  */
 public fun vqrshrnNS64(a: Int64x2T, n: Int): Int32x2T {
-    fun vqrshrnNS64(a1: Int64x2T, n: Int): Int32x2T = Int32x2T()
+    fun externVqrshrnNS64(a1: Int64x2T, n: Int): Int32x2T = Int32x2T()
     run {
         check(n >= 1 && n <= 32)
     }
-    return vqrshrnNS64(a, n)
+    return externVqrshrnNS64(a, n)
 }
 
 /**
@@ -12107,11 +12106,11 @@ public fun vqrshrnNS64(a: Int64x2T, n: Int): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshrnNU16)
  */
 public fun vqrshrnNU16(a: Uint16x8T, n: Int): Uint8x8T {
-    fun vqrshrnNU16(a1: Uint16x8T, n: Int): Uint8x8T = Uint8x8T()
+    fun externVqrshrnNU16(a1: Uint16x8T, n: Int): Uint8x8T = Uint8x8T()
     run {
         check(n >= 1 && n <= 8)
     }
-    return vqrshrnNU16(a, n)
+    return externVqrshrnNU16(a, n)
 }
 
 /**
@@ -12119,11 +12118,11 @@ public fun vqrshrnNU16(a: Uint16x8T, n: Int): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshrnNU32)
  */
 public fun vqrshrnNU32(a: Uint32x4T, n: Int): Uint16x4T {
-    fun vqrshrnNU32(a1: Uint32x4T, n: Int): Uint16x4T = Uint16x4T()
+    fun externVqrshrnNU32(a1: Uint32x4T, n: Int): Uint16x4T = Uint16x4T()
     run {
         check(n >= 1 && n <= 16)
     }
-    return vqrshrnNU32(a, n)
+    return externVqrshrnNU32(a, n)
 }
 
 /**
@@ -12131,11 +12130,11 @@ public fun vqrshrnNU32(a: Uint32x4T, n: Int): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshrnNU64)
  */
 public fun vqrshrnNU64(a: Uint64x2T, n: Int): Uint32x2T {
-    fun vqrshrnNU64(a1: Uint64x2T, n: Int): Uint32x2T = Uint32x2T()
+    fun externVqrshrnNU64(a1: Uint64x2T, n: Int): Uint32x2T = Uint32x2T()
     run {
         check(n >= 1 && n <= 32)
     }
-    return vqrshrnNU64(a, n)
+    return externVqrshrnNU64(a, n)
 }
 
 /**
@@ -12143,11 +12142,11 @@ public fun vqrshrnNU64(a: Uint64x2T, n: Int): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshrunNS16)
  */
 public fun vqrshrunNS16(a: Int16x8T, n: Int): Uint8x8T {
-    fun vqrshrunNS16(a1: Int16x8T, n: Int): Uint8x8T = Uint8x8T()
+    fun externVqrshrunNS16(a1: Int16x8T, n: Int): Uint8x8T = Uint8x8T()
     run {
         check(n >= 1 && n <= 8)
     }
-    return vqrshrunNS16(a, n)
+    return externVqrshrunNS16(a, n)
 }
 
 /**
@@ -12155,11 +12154,11 @@ public fun vqrshrunNS16(a: Int16x8T, n: Int): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshrunNS32)
  */
 public fun vqrshrunNS32(a: Int32x4T, n: Int): Uint16x4T {
-    fun vqrshrunNS32(a1: Int32x4T, n: Int): Uint16x4T = Uint16x4T()
+    fun externVqrshrunNS32(a1: Int32x4T, n: Int): Uint16x4T = Uint16x4T()
     run {
         check(n >= 1 && n <= 16)
     }
-    return vqrshrunNS32(a, n)
+    return externVqrshrunNS32(a, n)
 }
 
 /**
@@ -12167,11 +12166,11 @@ public fun vqrshrunNS32(a: Int32x4T, n: Int): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqrshrunNS64)
  */
 public fun vqrshrunNS64(a: Int64x2T, n: Int): Uint32x2T {
-    fun vqrshrunNS64(a1: Int64x2T, n: Int): Uint32x2T = Uint32x2T()
+    fun externVqrshrunNS64(a1: Int64x2T, n: Int): Uint32x2T = Uint32x2T()
     run {
         check(n >= 1 && n <= 32)
     }
-    return vqrshrunNS64(a, n)
+    return externVqrshrunNS64(a, n)
 }
 
 /**
@@ -12355,8 +12354,8 @@ public fun vqshlqNU64(a: Uint64x2T, n: Int): Uint64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshlS8)
  */
 public fun vqshlS8(a: Int8x8T, b: Int8x8T): Int8x8T {
-    fun vqshlS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
-    return vqshlS8(a, b)
+    fun externVqshlS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
+    return externVqshlS8(a, b)
 }
 
 /**
@@ -12364,8 +12363,8 @@ public fun vqshlS8(a: Int8x8T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshlqS8)
  */
 public fun vqshlqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
-    fun vqshlqS8(a1: Int8x16T, b1: Int8x16T): Int8x16T = Int8x16T()
-    return vqshlqS8(a, b)
+    fun externVqshlqS8(a1: Int8x16T, b1: Int8x16T): Int8x16T = Int8x16T()
+    return externVqshlqS8(a, b)
 }
 
 /**
@@ -12373,8 +12372,8 @@ public fun vqshlqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshlS16)
  */
 public fun vqshlS16(a: Int16x4T, b: Int16x4T): Int16x4T {
-    fun vqshlS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
-    return vqshlS16(a, b)
+    fun externVqshlS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
+    return externVqshlS16(a, b)
 }
 
 /**
@@ -12382,8 +12381,8 @@ public fun vqshlS16(a: Int16x4T, b: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshlqS16)
  */
 public fun vqshlqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
-    fun vqshlqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
-    return vqshlqS16(a, b)
+    fun externVqshlqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
+    return externVqshlqS16(a, b)
 }
 
 /**
@@ -12391,8 +12390,8 @@ public fun vqshlqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshlS32)
  */
 public fun vqshlS32(a: Int32x2T, b: Int32x2T): Int32x2T {
-    fun vqshlS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
-    return vqshlS32(a, b)
+    fun externVqshlS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
+    return externVqshlS32(a, b)
 }
 
 /**
@@ -12400,8 +12399,8 @@ public fun vqshlS32(a: Int32x2T, b: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshlqS32)
  */
 public fun vqshlqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
-    fun vqshlqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
-    return vqshlqS32(a, b)
+    fun externVqshlqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
+    return externVqshlqS32(a, b)
 }
 
 /**
@@ -12409,8 +12408,8 @@ public fun vqshlqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshlS64)
  */
 public fun vqshlS64(a: Int64x1T, b: Int64x1T): Int64x1T {
-    fun vqshlS64(a1: Int64x1T, b1: Int64x1T): Int64x1T = Int64x1T()
-    return vqshlS64(a, b)
+    fun externVqshlS64(a1: Int64x1T, b1: Int64x1T): Int64x1T = Int64x1T()
+    return externVqshlS64(a, b)
 }
 
 /**
@@ -12418,8 +12417,8 @@ public fun vqshlS64(a: Int64x1T, b: Int64x1T): Int64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshlqS64)
  */
 public fun vqshlqS64(a: Int64x2T, b: Int64x2T): Int64x2T {
-    fun vqshlqS64(a1: Int64x2T, b1: Int64x2T): Int64x2T = Int64x2T()
-    return vqshlqS64(a, b)
+    fun externVqshlqS64(a1: Int64x2T, b1: Int64x2T): Int64x2T = Int64x2T()
+    return externVqshlqS64(a, b)
 }
 
 /**
@@ -12427,8 +12426,8 @@ public fun vqshlqS64(a: Int64x2T, b: Int64x2T): Int64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshlU8)
  */
 public fun vqshlU8(a: Uint8x8T, b: Int8x8T): Uint8x8T {
-    fun vqshlU8(a1: Uint8x8T, b1: Int8x8T): Uint8x8T = Uint8x8T()
-    return vqshlU8(a, b)
+    fun externVqshlU8(a1: Uint8x8T, b1: Int8x8T): Uint8x8T = Uint8x8T()
+    return externVqshlU8(a, b)
 }
 
 /**
@@ -12436,8 +12435,8 @@ public fun vqshlU8(a: Uint8x8T, b: Int8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshlqU8)
  */
 public fun vqshlqU8(a: Uint8x16T, b: Int8x16T): Uint8x16T {
-    fun vqshlqU8(a1: Uint8x16T, b1: Int8x16T): Uint8x16T = Uint8x16T()
-    return vqshlqU8(a, b)
+    fun externVqshlqU8(a1: Uint8x16T, b1: Int8x16T): Uint8x16T = Uint8x16T()
+    return externVqshlqU8(a, b)
 }
 
 /**
@@ -12445,8 +12444,8 @@ public fun vqshlqU8(a: Uint8x16T, b: Int8x16T): Uint8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshlU16)
  */
 public fun vqshlU16(a: Uint16x4T, b: Int16x4T): Uint16x4T {
-    fun vqshlU16(a1: Uint16x4T, b1: Int16x4T): Uint16x4T = Uint16x4T()
-    return vqshlU16(a, b)
+    fun externVqshlU16(a1: Uint16x4T, b1: Int16x4T): Uint16x4T = Uint16x4T()
+    return externVqshlU16(a, b)
 }
 
 /**
@@ -12454,8 +12453,8 @@ public fun vqshlU16(a: Uint16x4T, b: Int16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshlqU16)
  */
 public fun vqshlqU16(a: Uint16x8T, b: Int16x8T): Uint16x8T {
-    fun vqshlqU16(a1: Uint16x8T, b1: Int16x8T): Uint16x8T = Uint16x8T()
-    return vqshlqU16(a, b)
+    fun externVqshlqU16(a1: Uint16x8T, b1: Int16x8T): Uint16x8T = Uint16x8T()
+    return externVqshlqU16(a, b)
 }
 
 /**
@@ -12463,8 +12462,8 @@ public fun vqshlqU16(a: Uint16x8T, b: Int16x8T): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshlU32)
  */
 public fun vqshlU32(a: Uint32x2T, b: Int32x2T): Uint32x2T {
-    fun vqshlU32(a1: Uint32x2T, b1: Int32x2T): Uint32x2T = Uint32x2T()
-    return vqshlU32(a, b)
+    fun externVqshlU32(a1: Uint32x2T, b1: Int32x2T): Uint32x2T = Uint32x2T()
+    return externVqshlU32(a, b)
 }
 
 /**
@@ -12472,8 +12471,8 @@ public fun vqshlU32(a: Uint32x2T, b: Int32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshlqU32)
  */
 public fun vqshlqU32(a: Uint32x4T, b: Int32x4T): Uint32x4T {
-    fun vqshlqU32(a1: Uint32x4T, b1: Int32x4T): Uint32x4T = Uint32x4T()
-    return vqshlqU32(a, b)
+    fun externVqshlqU32(a1: Uint32x4T, b1: Int32x4T): Uint32x4T = Uint32x4T()
+    return externVqshlqU32(a, b)
 }
 
 /**
@@ -12481,8 +12480,8 @@ public fun vqshlqU32(a: Uint32x4T, b: Int32x4T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshlU64)
  */
 public fun vqshlU64(a: Uint64x1T, b: Int64x1T): Uint64x1T {
-    fun vqshlU64(a1: Uint64x1T, b1: Int64x1T): Uint64x1T = Uint64x1T()
-    return vqshlU64(a, b)
+    fun externVqshlU64(a1: Uint64x1T, b1: Int64x1T): Uint64x1T = Uint64x1T()
+    return externVqshlU64(a, b)
 }
 
 /**
@@ -12490,8 +12489,8 @@ public fun vqshlU64(a: Uint64x1T, b: Int64x1T): Uint64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshlqU64)
  */
 public fun vqshlqU64(a: Uint64x2T, b: Int64x2T): Uint64x2T {
-    fun vqshlqU64(a1: Uint64x2T, b1: Int64x2T): Uint64x2T = Uint64x2T()
-    return vqshlqU64(a, b)
+    fun externVqshlqU64(a1: Uint64x2T, b1: Int64x2T): Uint64x2T = Uint64x2T()
+    return externVqshlqU64(a, b)
 }
 
 /**
@@ -12499,11 +12498,11 @@ public fun vqshlqU64(a: Uint64x2T, b: Int64x2T): Uint64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshluNS8)
  */
 public fun vqshluNS8(a: Int8x8T, n: Int): Uint8x8T {
-    fun vqshluNS8(a1: Int8x8T, n: Int8x8T): Uint8x8T = Uint8x8T()
+    fun externVqshluNS8(a1: Int8x8T, n: Int8x8T): Uint8x8T = Uint8x8T()
     run {
         check(0 <= n && n < (1 shl 3)) { "N doesn't fit in 3 bits (unsigned)" }
     }
-    return vqshluNS8(a, Int8x8T(ByteArray(8) { n.toByte() }))
+    return externVqshluNS8(a, Int8x8T(ByteArray(8) { n.toByte() }))
 }
 
 /**
@@ -12511,11 +12510,11 @@ public fun vqshluNS8(a: Int8x8T, n: Int): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshluqNS8)
  */
 public fun vqshluqNS8(a: Int8x16T, n: Int): Uint8x16T {
-    fun vqshluqNS8(a1: Int8x16T, n: Int8x16T): Uint8x16T = Uint8x16T()
+    fun externVqshluqNS8(a1: Int8x16T, n: Int8x16T): Uint8x16T = Uint8x16T()
     run {
         check(0 <= n && n < (1 shl 3)) { "N doesn't fit in 3 bits (unsigned)" }
     }
-    return vqshluqNS8(a, Int8x16T(ByteArray(16) { n.toByte() }))
+    return externVqshluqNS8(a, Int8x16T(ByteArray(16) { n.toByte() }))
 }
 
 /**
@@ -12523,11 +12522,11 @@ public fun vqshluqNS8(a: Int8x16T, n: Int): Uint8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshluNS16)
  */
 public fun vqshluNS16(a: Int16x4T, n: Int): Uint16x4T {
-    fun vqshluNS16(a1: Int16x4T, n: Int16x4T): Uint16x4T = Uint16x4T()
+    fun externVqshluNS16(a1: Int16x4T, n: Int16x4T): Uint16x4T = Uint16x4T()
     run {
         check(0 <= n && n < (1 shl 4)) { "N doesn't fit in 4 bits (unsigned)" }
     }
-    return vqshluNS16(a, Int16x4T(ShortArray(4) { n.toShort() }))
+    return externVqshluNS16(a, Int16x4T(ShortArray(4) { n.toShort() }))
 }
 
 /**
@@ -12535,11 +12534,11 @@ public fun vqshluNS16(a: Int16x4T, n: Int): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshluqNS16)
  */
 public fun vqshluqNS16(a: Int16x8T, n: Int): Uint16x8T {
-    fun vqshluqNS16(a1: Int16x8T, n: Int16x8T): Uint16x8T = Uint16x8T()
+    fun externVqshluqNS16(a1: Int16x8T, n: Int16x8T): Uint16x8T = Uint16x8T()
     run {
         check(0 <= n && n < (1 shl 4)) { "N doesn't fit in 4 bits (unsigned)" }
     }
-    return vqshluqNS16(a, Int16x8T(ShortArray(8) { n.toShort() }))
+    return externVqshluqNS16(a, Int16x8T(ShortArray(8) { n.toShort() }))
 }
 
 /**
@@ -12547,11 +12546,11 @@ public fun vqshluqNS16(a: Int16x8T, n: Int): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshluNS32)
  */
 public fun vqshluNS32(a: Int32x2T, n: Int): Uint32x2T {
-    fun vqshluNS32(a1: Int32x2T, n: Int32x2T): Uint32x2T = Uint32x2T()
+    fun externVqshluNS32(a1: Int32x2T, n: Int32x2T): Uint32x2T = Uint32x2T()
     run {
         check(0 <= n && n < (1 shl 5)) { "N doesn't fit in 5 bits (unsigned)" }
     }
-    return vqshluNS32(a, Int32x2T(IntArray(2) { n }))
+    return externVqshluNS32(a, Int32x2T(IntArray(2) { n }))
 }
 
 /**
@@ -12559,11 +12558,11 @@ public fun vqshluNS32(a: Int32x2T, n: Int): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshluqNS32)
  */
 public fun vqshluqNS32(a: Int32x4T, n: Int): Uint32x4T {
-    fun vqshluqNS32(a1: Int32x4T, n: Int32x4T): Uint32x4T = Uint32x4T()
+    fun externVqshluqNS32(a1: Int32x4T, n: Int32x4T): Uint32x4T = Uint32x4T()
     run {
         check(0 <= n && n < (1 shl 5)) { "N doesn't fit in 5 bits (unsigned)" }
     }
-    return vqshluqNS32(a, Int32x4T(IntArray(4) { n }))
+    return externVqshluqNS32(a, Int32x4T(IntArray(4) { n }))
 }
 
 /**
@@ -12571,11 +12570,11 @@ public fun vqshluqNS32(a: Int32x4T, n: Int): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshluNS64)
  */
 public fun vqshluNS64(a: Int64x1T, n: Int): Uint64x1T {
-    fun vqshluNS64(a1: Int64x1T, n: Int64x1T): Uint64x1T = Uint64x1T()
+    fun externVqshluNS64(a1: Int64x1T, n: Int64x1T): Uint64x1T = Uint64x1T()
     run {
         check(0 <= n && n < (1 shl 6)) { "N doesn't fit in 6 bits (unsigned)" }
     }
-    return vqshluNS64(a, Int64x1T(longArrayOf(n.toLong())))
+    return externVqshluNS64(a, Int64x1T(longArrayOf(n.toLong())))
 }
 
 /**
@@ -12583,11 +12582,11 @@ public fun vqshluNS64(a: Int64x1T, n: Int): Uint64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshluqNS64)
  */
 public fun vqshluqNS64(a: Int64x2T, n: Int): Uint64x2T {
-    fun vqshluqNS64(a1: Int64x2T, n: Int64x2T): Uint64x2T = Uint64x2T()
+    fun externVqshluqNS64(a1: Int64x2T, n: Int64x2T): Uint64x2T = Uint64x2T()
     run {
         check(0 <= n && n < (1 shl 6)) { "N doesn't fit in 6 bits (unsigned)" }
     }
-    return vqshluqNS64(a, Int64x2T(LongArray(2) { n.toLong() }))
+    return externVqshluqNS64(a, Int64x2T(LongArray(2) { n.toLong() }))
 }
 
 /**
@@ -12595,11 +12594,11 @@ public fun vqshluqNS64(a: Int64x2T, n: Int): Uint64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshrnNS16)
  */
 public fun vqshrnNS16(a: Int16x8T, n: Int): Int8x8T {
-    fun vqshrnNS16(a1: Int16x8T, n: Int): Int8x8T = Int8x8T()
+    fun externVqshrnNS16(a1: Int16x8T, n: Int): Int8x8T = Int8x8T()
     run {
         check(n >= 1 && n <= 8)
     }
-    return vqshrnNS16(a, n)
+    return externVqshrnNS16(a, n)
 }
 
 /**
@@ -12607,11 +12606,11 @@ public fun vqshrnNS16(a: Int16x8T, n: Int): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshrnNS32)
  */
 public fun vqshrnNS32(a: Int32x4T, n: Int): Int16x4T {
-    fun vqshrnNS32(a1: Int32x4T, n: Int): Int16x4T = Int16x4T()
+    fun externVqshrnNS32(a1: Int32x4T, n: Int): Int16x4T = Int16x4T()
     run {
         check(n >= 1 && n <= 16)
     }
-    return vqshrnNS32(a, n)
+    return externVqshrnNS32(a, n)
 }
 
 /**
@@ -12619,11 +12618,11 @@ public fun vqshrnNS32(a: Int32x4T, n: Int): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshrnNS64)
  */
 public fun vqshrnNS64(a: Int64x2T, n: Int): Int32x2T {
-    fun vqshrnNS64(a1: Int64x2T, n: Int): Int32x2T = Int32x2T()
+    fun externVqshrnNS64(a1: Int64x2T, n: Int): Int32x2T = Int32x2T()
     run {
         check(n >= 1 && n <= 32)
     }
-    return vqshrnNS64(a, n)
+    return externVqshrnNS64(a, n)
 }
 
 /**
@@ -12631,11 +12630,11 @@ public fun vqshrnNS64(a: Int64x2T, n: Int): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshrnNU16)
  */
 public fun vqshrnNU16(a: Uint16x8T, n: Int): Uint8x8T {
-    fun vqshrnNU16(a1: Uint16x8T, n: Int): Uint8x8T = Uint8x8T()
+    fun externVqshrnNU16(a1: Uint16x8T, n: Int): Uint8x8T = Uint8x8T()
     run {
         check(n >= 1 && n <= 8)
     }
-    return vqshrnNU16(a, n)
+    return externVqshrnNU16(a, n)
 }
 
 /**
@@ -12643,11 +12642,11 @@ public fun vqshrnNU16(a: Uint16x8T, n: Int): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshrnNU32)
  */
 public fun vqshrnNU32(a: Uint32x4T, n: Int): Uint16x4T {
-    fun vqshrnNU32(a1: Uint32x4T, n: Int): Uint16x4T = Uint16x4T()
+    fun externVqshrnNU32(a1: Uint32x4T, n: Int): Uint16x4T = Uint16x4T()
     run {
         check(n >= 1 && n <= 16)
     }
-    return vqshrnNU32(a, n)
+    return externVqshrnNU32(a, n)
 }
 
 /**
@@ -12655,11 +12654,11 @@ public fun vqshrnNU32(a: Uint32x4T, n: Int): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshrnNU64)
  */
 public fun vqshrnNU64(a: Uint64x2T, n: Int): Uint32x2T {
-    fun vqshrnNU64(a1: Uint64x2T, n: Int): Uint32x2T = Uint32x2T()
+    fun externVqshrnNU64(a1: Uint64x2T, n: Int): Uint32x2T = Uint32x2T()
     run {
         check(n >= 1 && n <= 32)
     }
-    return vqshrnNU64(a, n)
+    return externVqshrnNU64(a, n)
 }
 
 /**
@@ -12667,11 +12666,11 @@ public fun vqshrnNU64(a: Uint64x2T, n: Int): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshrunNS16)
  */
 public fun vqshrunNS16(a: Int16x8T, n: Int): Uint8x8T {
-    fun vqshrunNS16(a1: Int16x8T, n: Int): Uint8x8T = Uint8x8T()
+    fun externVqshrunNS16(a1: Int16x8T, n: Int): Uint8x8T = Uint8x8T()
     run {
         check(n >= 1 && n <= 8)
     }
-    return vqshrunNS16(a, n)
+    return externVqshrunNS16(a, n)
 }
 
 /**
@@ -12679,11 +12678,11 @@ public fun vqshrunNS16(a: Int16x8T, n: Int): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshrunNS32)
  */
 public fun vqshrunNS32(a: Int32x4T, n: Int): Uint16x4T {
-    fun vqshrunNS32(a1: Int32x4T, n: Int): Uint16x4T = Uint16x4T()
+    fun externVqshrunNS32(a1: Int32x4T, n: Int): Uint16x4T = Uint16x4T()
     run {
         check(n >= 1 && n <= 16)
     }
-    return vqshrunNS32(a, n)
+    return externVqshrunNS32(a, n)
 }
 
 /**
@@ -12691,11 +12690,11 @@ public fun vqshrunNS32(a: Int32x4T, n: Int): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqshrunNS64)
  */
 public fun vqshrunNS64(a: Int64x2T, n: Int): Uint32x2T {
-    fun vqshrunNS64(a1: Int64x2T, n: Int): Uint32x2T = Uint32x2T()
+    fun externVqshrunNS64(a1: Int64x2T, n: Int): Uint32x2T = Uint32x2T()
     run {
         check(n >= 1 && n <= 32)
     }
-    return vqshrunNS64(a, n)
+    return externVqshrunNS64(a, n)
 }
 
 /**
@@ -12856,8 +12855,8 @@ public fun vraddhnHighU64(a: Uint32x2T, b: Uint64x2T, c: Uint64x2T): Uint32x4T =
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vraddhnS16)
  */
 public fun vraddhnS16(a: Int16x8T, b: Int16x8T): Int8x8T {
-    fun vraddhnS16(a1: Int16x8T, b1: Int16x8T): Int8x8T = Int8x8T()
-    return vraddhnS16(a, b)
+    fun externVraddhnS16(a1: Int16x8T, b1: Int16x8T): Int8x8T = Int8x8T()
+    return externVraddhnS16(a, b)
 }
 
 /**
@@ -12865,8 +12864,8 @@ public fun vraddhnS16(a: Int16x8T, b: Int16x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vraddhnS32)
  */
 public fun vraddhnS32(a: Int32x4T, b: Int32x4T): Int16x4T {
-    fun vraddhnS32(a1: Int32x4T, b1: Int32x4T): Int16x4T = Int16x4T()
-    return vraddhnS32(a, b)
+    fun externVraddhnS32(a1: Int32x4T, b1: Int32x4T): Int16x4T = Int16x4T()
+    return externVraddhnS32(a, b)
 }
 
 /**
@@ -12874,8 +12873,8 @@ public fun vraddhnS32(a: Int32x4T, b: Int32x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vraddhnS64)
  */
 public fun vraddhnS64(a: Int64x2T, b: Int64x2T): Int32x2T {
-    fun vraddhnS64(a1: Int64x2T, b1: Int64x2T): Int32x2T = Int32x2T()
-    return vraddhnS64(a, b)
+    fun externVraddhnS64(a1: Int64x2T, b1: Int64x2T): Int32x2T = Int32x2T()
+    return externVraddhnS64(a, b)
 }
 
 /**
@@ -12901,8 +12900,8 @@ public fun vraddhnU64(a: Uint64x2T, b: Uint64x2T): Uint32x2T = transmuteWithLayo
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrecpeF16)
  */
 public fun vrecpeF16(a: Float16x4T): Float16x4T {
-    fun vrecpeF16(a1: Float16x4T): Float16x4T = Float16x4T()
-    return vrecpeF16(a)
+    fun externVrecpeF16(a1: Float16x4T): Float16x4T = Float16x4T()
+    return externVrecpeF16(a)
 }
 
 /**
@@ -12910,8 +12909,8 @@ public fun vrecpeF16(a: Float16x4T): Float16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrecpeqF16)
  */
 public fun vrecpeqF16(a: Float16x8T): Float16x8T {
-    fun vrecpeqF16(a1: Float16x8T): Float16x8T = Float16x8T()
-    return vrecpeqF16(a)
+    fun externVrecpeqF16(a1: Float16x8T): Float16x8T = Float16x8T()
+    return externVrecpeqF16(a)
 }
 
 /**
@@ -12919,8 +12918,8 @@ public fun vrecpeqF16(a: Float16x8T): Float16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrecpeF32)
  */
 public fun vrecpeF32(a: Float32x2T): Float32x2T {
-    fun vrecpeF32(a1: Float32x2T): Float32x2T = Float32x2T()
-    return vrecpeF32(a)
+    fun externVrecpeF32(a1: Float32x2T): Float32x2T = Float32x2T()
+    return externVrecpeF32(a)
 }
 
 /**
@@ -12928,8 +12927,8 @@ public fun vrecpeF32(a: Float32x2T): Float32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrecpeqF32)
  */
 public fun vrecpeqF32(a: Float32x4T): Float32x4T {
-    fun vrecpeqF32(a1: Float32x4T): Float32x4T = Float32x4T()
-    return vrecpeqF32(a)
+    fun externVrecpeqF32(a1: Float32x4T): Float32x4T = Float32x4T()
+    return externVrecpeqF32(a)
 }
 
 /**
@@ -12937,8 +12936,8 @@ public fun vrecpeqF32(a: Float32x4T): Float32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrecpeU32)
  */
 public fun vrecpeU32(a: Uint32x2T): Uint32x2T {
-    fun vrecpeU32(a1: Uint32x2T): Uint32x2T = Uint32x2T()
-    return vrecpeU32(a)
+    fun externVrecpeU32(a1: Uint32x2T): Uint32x2T = Uint32x2T()
+    return externVrecpeU32(a)
 }
 
 /**
@@ -12946,8 +12945,8 @@ public fun vrecpeU32(a: Uint32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrecpeqU32)
  */
 public fun vrecpeqU32(a: Uint32x4T): Uint32x4T {
-    fun vrecpeqU32(a1: Uint32x4T): Uint32x4T = Uint32x4T()
-    return vrecpeqU32(a)
+    fun externVrecpeqU32(a1: Uint32x4T): Uint32x4T = Uint32x4T()
+    return externVrecpeqU32(a)
 }
 
 /**
@@ -12955,8 +12954,8 @@ public fun vrecpeqU32(a: Uint32x4T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrecpsF16)
  */
 public fun vrecpsF16(a: Float16x4T, b: Float16x4T): Float16x4T {
-    fun vrecpsF16(a1: Float16x4T, b1: Float16x4T): Float16x4T = Float16x4T()
-    return vrecpsF16(a, b)
+    fun externVrecpsF16(a1: Float16x4T, b1: Float16x4T): Float16x4T = Float16x4T()
+    return externVrecpsF16(a, b)
 }
 
 /**
@@ -12964,8 +12963,8 @@ public fun vrecpsF16(a: Float16x4T, b: Float16x4T): Float16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrecpsqF16)
  */
 public fun vrecpsqF16(a: Float16x8T, b: Float16x8T): Float16x8T {
-    fun vrecpsqF16(a1: Float16x8T, b1: Float16x8T): Float16x8T = Float16x8T()
-    return vrecpsqF16(a, b)
+    fun externVrecpsqF16(a1: Float16x8T, b1: Float16x8T): Float16x8T = Float16x8T()
+    return externVrecpsqF16(a, b)
 }
 
 /**
@@ -12973,8 +12972,8 @@ public fun vrecpsqF16(a: Float16x8T, b: Float16x8T): Float16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrecpsF32)
  */
 public fun vrecpsF32(a: Float32x2T, b: Float32x2T): Float32x2T {
-    fun vrecpsF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
-    return vrecpsF32(a, b)
+    fun externVrecpsF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
+    return externVrecpsF32(a, b)
 }
 
 /**
@@ -12982,8 +12981,8 @@ public fun vrecpsF32(a: Float32x2T, b: Float32x2T): Float32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrecpsqF32)
  */
 public fun vrecpsqF32(a: Float32x4T, b: Float32x4T): Float32x4T {
-    fun vrecpsqF32(a1: Float32x4T, b1: Float32x4T): Float32x4T = Float32x4T()
-    return vrecpsqF32(a, b)
+    fun externVrecpsqF32(a1: Float32x4T, b1: Float32x4T): Float32x4T = Float32x4T()
+    return externVrecpsqF32(a, b)
 }
 
 /**
@@ -15175,8 +15174,8 @@ public fun vrev64qF16(a: Float16x8T): Float16x8T = run { val simdArg0 = a; val s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrhaddS8)
  */
 public fun vrhaddS8(a: Int8x8T, b: Int8x8T): Int8x8T {
-    fun vrhaddS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
-    return vrhaddS8(a, b)
+    fun externVrhaddS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
+    return externVrhaddS8(a, b)
 }
 
 /**
@@ -15184,8 +15183,8 @@ public fun vrhaddS8(a: Int8x8T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrhaddqS8)
  */
 public fun vrhaddqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
-    fun vrhaddqS8(a1: Int8x16T, b1: Int8x16T): Int8x16T = Int8x16T()
-    return vrhaddqS8(a, b)
+    fun externVrhaddqS8(a1: Int8x16T, b1: Int8x16T): Int8x16T = Int8x16T()
+    return externVrhaddqS8(a, b)
 }
 
 /**
@@ -15193,8 +15192,8 @@ public fun vrhaddqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrhaddS16)
  */
 public fun vrhaddS16(a: Int16x4T, b: Int16x4T): Int16x4T {
-    fun vrhaddS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
-    return vrhaddS16(a, b)
+    fun externVrhaddS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
+    return externVrhaddS16(a, b)
 }
 
 /**
@@ -15202,8 +15201,8 @@ public fun vrhaddS16(a: Int16x4T, b: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrhaddqS16)
  */
 public fun vrhaddqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
-    fun vrhaddqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
-    return vrhaddqS16(a, b)
+    fun externVrhaddqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
+    return externVrhaddqS16(a, b)
 }
 
 /**
@@ -15211,8 +15210,8 @@ public fun vrhaddqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrhaddS32)
  */
 public fun vrhaddS32(a: Int32x2T, b: Int32x2T): Int32x2T {
-    fun vrhaddS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
-    return vrhaddS32(a, b)
+    fun externVrhaddS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
+    return externVrhaddS32(a, b)
 }
 
 /**
@@ -15220,8 +15219,8 @@ public fun vrhaddS32(a: Int32x2T, b: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrhaddqS32)
  */
 public fun vrhaddqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
-    fun vrhaddqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
-    return vrhaddqS32(a, b)
+    fun externVrhaddqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
+    return externVrhaddqS32(a, b)
 }
 
 /**
@@ -15229,8 +15228,8 @@ public fun vrhaddqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrhaddU8)
  */
 public fun vrhaddU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
-    fun vrhaddU8(a1: Uint8x8T, b1: Uint8x8T): Uint8x8T = Uint8x8T()
-    return vrhaddU8(a, b)
+    fun externVrhaddU8(a1: Uint8x8T, b1: Uint8x8T): Uint8x8T = Uint8x8T()
+    return externVrhaddU8(a, b)
 }
 
 /**
@@ -15238,8 +15237,8 @@ public fun vrhaddU8(a: Uint8x8T, b: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrhaddqU8)
  */
 public fun vrhaddqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T {
-    fun vrhaddqU8(a1: Uint8x16T, b1: Uint8x16T): Uint8x16T = Uint8x16T()
-    return vrhaddqU8(a, b)
+    fun externVrhaddqU8(a1: Uint8x16T, b1: Uint8x16T): Uint8x16T = Uint8x16T()
+    return externVrhaddqU8(a, b)
 }
 
 /**
@@ -15247,8 +15246,8 @@ public fun vrhaddqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrhaddU16)
  */
 public fun vrhaddU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
-    fun vrhaddU16(a1: Uint16x4T, b1: Uint16x4T): Uint16x4T = Uint16x4T()
-    return vrhaddU16(a, b)
+    fun externVrhaddU16(a1: Uint16x4T, b1: Uint16x4T): Uint16x4T = Uint16x4T()
+    return externVrhaddU16(a, b)
 }
 
 /**
@@ -15256,8 +15255,8 @@ public fun vrhaddU16(a: Uint16x4T, b: Uint16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrhaddqU16)
  */
 public fun vrhaddqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T {
-    fun vrhaddqU16(a1: Uint16x8T, b1: Uint16x8T): Uint16x8T = Uint16x8T()
-    return vrhaddqU16(a, b)
+    fun externVrhaddqU16(a1: Uint16x8T, b1: Uint16x8T): Uint16x8T = Uint16x8T()
+    return externVrhaddqU16(a, b)
 }
 
 /**
@@ -15265,8 +15264,8 @@ public fun vrhaddqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrhaddU32)
  */
 public fun vrhaddU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
-    fun vrhaddU32(a1: Uint32x2T, b1: Uint32x2T): Uint32x2T = Uint32x2T()
-    return vrhaddU32(a, b)
+    fun externVrhaddU32(a1: Uint32x2T, b1: Uint32x2T): Uint32x2T = Uint32x2T()
+    return externVrhaddU32(a, b)
 }
 
 /**
@@ -15274,8 +15273,8 @@ public fun vrhaddU32(a: Uint32x2T, b: Uint32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrhaddqU32)
  */
 public fun vrhaddqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T {
-    fun vrhaddqU32(a1: Uint32x4T, b1: Uint32x4T): Uint32x4T = Uint32x4T()
-    return vrhaddqU32(a, b)
+    fun externVrhaddqU32(a1: Uint32x4T, b1: Uint32x4T): Uint32x4T = Uint32x4T()
+    return externVrhaddqU32(a, b)
 }
 
 /**
@@ -15283,8 +15282,8 @@ public fun vrhaddqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrndnF16)
  */
 public fun vrndnF16(a: Float16x4T): Float16x4T {
-    fun vrndnF16(a1: Float16x4T): Float16x4T = Float16x4T()
-    return vrndnF16(a)
+    fun externVrndnF16(a1: Float16x4T): Float16x4T = Float16x4T()
+    return externVrndnF16(a)
 }
 
 /**
@@ -15292,8 +15291,8 @@ public fun vrndnF16(a: Float16x4T): Float16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrndnqF16)
  */
 public fun vrndnqF16(a: Float16x8T): Float16x8T {
-    fun vrndnqF16(a1: Float16x8T): Float16x8T = Float16x8T()
-    return vrndnqF16(a)
+    fun externVrndnqF16(a1: Float16x8T): Float16x8T = Float16x8T()
+    return externVrndnqF16(a)
 }
 
 /**
@@ -15301,8 +15300,8 @@ public fun vrndnqF16(a: Float16x8T): Float16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrndnF32)
  */
 public fun vrndnF32(a: Float32x2T): Float32x2T {
-    fun vrndnF32(a1: Float32x2T): Float32x2T = Float32x2T()
-    return vrndnF32(a)
+    fun externVrndnF32(a1: Float32x2T): Float32x2T = Float32x2T()
+    return externVrndnF32(a)
 }
 
 /**
@@ -15310,8 +15309,8 @@ public fun vrndnF32(a: Float32x2T): Float32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrndnqF32)
  */
 public fun vrndnqF32(a: Float32x4T): Float32x4T {
-    fun vrndnqF32(a1: Float32x4T): Float32x4T = Float32x4T()
-    return vrndnqF32(a)
+    fun externVrndnqF32(a1: Float32x4T): Float32x4T = Float32x4T()
+    return externVrndnqF32(a)
 }
 
 /**
@@ -15319,8 +15318,8 @@ public fun vrndnqF32(a: Float32x4T): Float32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshlS8)
  */
 public fun vrshlS8(a: Int8x8T, b: Int8x8T): Int8x8T {
-    fun vrshlS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
-    return vrshlS8(a, b)
+    fun externVrshlS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
+    return externVrshlS8(a, b)
 }
 
 /**
@@ -15328,8 +15327,8 @@ public fun vrshlS8(a: Int8x8T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshlqS8)
  */
 public fun vrshlqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
-    fun vrshlqS8(a1: Int8x16T, b1: Int8x16T): Int8x16T = Int8x16T()
-    return vrshlqS8(a, b)
+    fun externVrshlqS8(a1: Int8x16T, b1: Int8x16T): Int8x16T = Int8x16T()
+    return externVrshlqS8(a, b)
 }
 
 /**
@@ -15337,8 +15336,8 @@ public fun vrshlqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshlS16)
  */
 public fun vrshlS16(a: Int16x4T, b: Int16x4T): Int16x4T {
-    fun vrshlS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
-    return vrshlS16(a, b)
+    fun externVrshlS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
+    return externVrshlS16(a, b)
 }
 
 /**
@@ -15346,8 +15345,8 @@ public fun vrshlS16(a: Int16x4T, b: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshlqS16)
  */
 public fun vrshlqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
-    fun vrshlqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
-    return vrshlqS16(a, b)
+    fun externVrshlqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
+    return externVrshlqS16(a, b)
 }
 
 /**
@@ -15355,8 +15354,8 @@ public fun vrshlqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshlS32)
  */
 public fun vrshlS32(a: Int32x2T, b: Int32x2T): Int32x2T {
-    fun vrshlS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
-    return vrshlS32(a, b)
+    fun externVrshlS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
+    return externVrshlS32(a, b)
 }
 
 /**
@@ -15364,8 +15363,8 @@ public fun vrshlS32(a: Int32x2T, b: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshlqS32)
  */
 public fun vrshlqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
-    fun vrshlqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
-    return vrshlqS32(a, b)
+    fun externVrshlqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
+    return externVrshlqS32(a, b)
 }
 
 /**
@@ -15373,8 +15372,8 @@ public fun vrshlqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshlS64)
  */
 public fun vrshlS64(a: Int64x1T, b: Int64x1T): Int64x1T {
-    fun vrshlS64(a1: Int64x1T, b1: Int64x1T): Int64x1T = Int64x1T()
-    return vrshlS64(a, b)
+    fun externVrshlS64(a1: Int64x1T, b1: Int64x1T): Int64x1T = Int64x1T()
+    return externVrshlS64(a, b)
 }
 
 /**
@@ -15382,8 +15381,8 @@ public fun vrshlS64(a: Int64x1T, b: Int64x1T): Int64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshlqS64)
  */
 public fun vrshlqS64(a: Int64x2T, b: Int64x2T): Int64x2T {
-    fun vrshlqS64(a1: Int64x2T, b1: Int64x2T): Int64x2T = Int64x2T()
-    return vrshlqS64(a, b)
+    fun externVrshlqS64(a1: Int64x2T, b1: Int64x2T): Int64x2T = Int64x2T()
+    return externVrshlqS64(a, b)
 }
 
 /**
@@ -15391,8 +15390,8 @@ public fun vrshlqS64(a: Int64x2T, b: Int64x2T): Int64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshlU8)
  */
 public fun vrshlU8(a: Uint8x8T, b: Int8x8T): Uint8x8T {
-    fun vrshlU8(a1: Uint8x8T, b1: Int8x8T): Uint8x8T = Uint8x8T()
-    return vrshlU8(a, b)
+    fun externVrshlU8(a1: Uint8x8T, b1: Int8x8T): Uint8x8T = Uint8x8T()
+    return externVrshlU8(a, b)
 }
 
 /**
@@ -15400,8 +15399,8 @@ public fun vrshlU8(a: Uint8x8T, b: Int8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshlqU8)
  */
 public fun vrshlqU8(a: Uint8x16T, b: Int8x16T): Uint8x16T {
-    fun vrshlqU8(a1: Uint8x16T, b1: Int8x16T): Uint8x16T = Uint8x16T()
-    return vrshlqU8(a, b)
+    fun externVrshlqU8(a1: Uint8x16T, b1: Int8x16T): Uint8x16T = Uint8x16T()
+    return externVrshlqU8(a, b)
 }
 
 /**
@@ -15409,8 +15408,8 @@ public fun vrshlqU8(a: Uint8x16T, b: Int8x16T): Uint8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshlU16)
  */
 public fun vrshlU16(a: Uint16x4T, b: Int16x4T): Uint16x4T {
-    fun vrshlU16(a1: Uint16x4T, b1: Int16x4T): Uint16x4T = Uint16x4T()
-    return vrshlU16(a, b)
+    fun externVrshlU16(a1: Uint16x4T, b1: Int16x4T): Uint16x4T = Uint16x4T()
+    return externVrshlU16(a, b)
 }
 
 /**
@@ -15418,8 +15417,8 @@ public fun vrshlU16(a: Uint16x4T, b: Int16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshlqU16)
  */
 public fun vrshlqU16(a: Uint16x8T, b: Int16x8T): Uint16x8T {
-    fun vrshlqU16(a1: Uint16x8T, b1: Int16x8T): Uint16x8T = Uint16x8T()
-    return vrshlqU16(a, b)
+    fun externVrshlqU16(a1: Uint16x8T, b1: Int16x8T): Uint16x8T = Uint16x8T()
+    return externVrshlqU16(a, b)
 }
 
 /**
@@ -15427,8 +15426,8 @@ public fun vrshlqU16(a: Uint16x8T, b: Int16x8T): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshlU32)
  */
 public fun vrshlU32(a: Uint32x2T, b: Int32x2T): Uint32x2T {
-    fun vrshlU32(a1: Uint32x2T, b1: Int32x2T): Uint32x2T = Uint32x2T()
-    return vrshlU32(a, b)
+    fun externVrshlU32(a1: Uint32x2T, b1: Int32x2T): Uint32x2T = Uint32x2T()
+    return externVrshlU32(a, b)
 }
 
 /**
@@ -15436,8 +15435,8 @@ public fun vrshlU32(a: Uint32x2T, b: Int32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshlqU32)
  */
 public fun vrshlqU32(a: Uint32x4T, b: Int32x4T): Uint32x4T {
-    fun vrshlqU32(a1: Uint32x4T, b1: Int32x4T): Uint32x4T = Uint32x4T()
-    return vrshlqU32(a, b)
+    fun externVrshlqU32(a1: Uint32x4T, b1: Int32x4T): Uint32x4T = Uint32x4T()
+    return externVrshlqU32(a, b)
 }
 
 /**
@@ -15445,8 +15444,8 @@ public fun vrshlqU32(a: Uint32x4T, b: Int32x4T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshlU64)
  */
 public fun vrshlU64(a: Uint64x1T, b: Int64x1T): Uint64x1T {
-    fun vrshlU64(a1: Uint64x1T, b1: Int64x1T): Uint64x1T = Uint64x1T()
-    return vrshlU64(a, b)
+    fun externVrshlU64(a1: Uint64x1T, b1: Int64x1T): Uint64x1T = Uint64x1T()
+    return externVrshlU64(a, b)
 }
 
 /**
@@ -15454,8 +15453,8 @@ public fun vrshlU64(a: Uint64x1T, b: Int64x1T): Uint64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshlqU64)
  */
 public fun vrshlqU64(a: Uint64x2T, b: Int64x2T): Uint64x2T {
-    fun vrshlqU64(a1: Uint64x2T, b1: Int64x2T): Uint64x2T = Uint64x2T()
-    return vrshlqU64(a, b)
+    fun externVrshlqU64(a1: Uint64x2T, b1: Int64x2T): Uint64x2T = Uint64x2T()
+    return externVrshlqU64(a, b)
 }
 
 /**
@@ -15639,11 +15638,11 @@ public fun vrshrqNU64(a: Uint64x2T, n: Int): Uint64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshrnNS16)
  */
 public fun vrshrnNS16(a: Int16x8T, n: Int): Int8x8T {
-    fun vrshrnNS16(a1: Int16x8T, n: Int): Int8x8T = Int8x8T()
+    fun externVrshrnNS16(a1: Int16x8T, n: Int): Int8x8T = Int8x8T()
     run {
         check(n >= 1 && n <= 8)
     }
-    return vrshrnNS16(a, n)
+    return externVrshrnNS16(a, n)
 }
 
 /**
@@ -15651,11 +15650,11 @@ public fun vrshrnNS16(a: Int16x8T, n: Int): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshrnNS32)
  */
 public fun vrshrnNS32(a: Int32x4T, n: Int): Int16x4T {
-    fun vrshrnNS32(a1: Int32x4T, n: Int): Int16x4T = Int16x4T()
+    fun externVrshrnNS32(a1: Int32x4T, n: Int): Int16x4T = Int16x4T()
     run {
         check(n >= 1 && n <= 16)
     }
-    return vrshrnNS32(a, n)
+    return externVrshrnNS32(a, n)
 }
 
 /**
@@ -15663,11 +15662,11 @@ public fun vrshrnNS32(a: Int32x4T, n: Int): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrshrnNS64)
  */
 public fun vrshrnNS64(a: Int64x2T, n: Int): Int32x2T {
-    fun vrshrnNS64(a1: Int64x2T, n: Int): Int32x2T = Int32x2T()
+    fun externVrshrnNS64(a1: Int64x2T, n: Int): Int32x2T = Int32x2T()
     run {
         check(n >= 1 && n <= 32)
     }
-    return vrshrnNS64(a, n)
+    return externVrshrnNS64(a, n)
 }
 
 /**
@@ -15708,8 +15707,8 @@ public fun vrshrnNU64(a: Uint64x2T, n: Int): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrsqrteF16)
  */
 public fun vrsqrteF16(a: Float16x4T): Float16x4T {
-    fun vrsqrteF16(a1: Float16x4T): Float16x4T = Float16x4T()
-    return vrsqrteF16(a)
+    fun externVrsqrteF16(a1: Float16x4T): Float16x4T = Float16x4T()
+    return externVrsqrteF16(a)
 }
 
 /**
@@ -15717,8 +15716,8 @@ public fun vrsqrteF16(a: Float16x4T): Float16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrsqrteqF16)
  */
 public fun vrsqrteqF16(a: Float16x8T): Float16x8T {
-    fun vrsqrteqF16(a1: Float16x8T): Float16x8T = Float16x8T()
-    return vrsqrteqF16(a)
+    fun externVrsqrteqF16(a1: Float16x8T): Float16x8T = Float16x8T()
+    return externVrsqrteqF16(a)
 }
 
 /**
@@ -15726,8 +15725,8 @@ public fun vrsqrteqF16(a: Float16x8T): Float16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrsqrteF32)
  */
 public fun vrsqrteF32(a: Float32x2T): Float32x2T {
-    fun vrsqrteF32(a1: Float32x2T): Float32x2T = Float32x2T()
-    return vrsqrteF32(a)
+    fun externVrsqrteF32(a1: Float32x2T): Float32x2T = Float32x2T()
+    return externVrsqrteF32(a)
 }
 
 /**
@@ -15735,8 +15734,8 @@ public fun vrsqrteF32(a: Float32x2T): Float32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrsqrteqF32)
  */
 public fun vrsqrteqF32(a: Float32x4T): Float32x4T {
-    fun vrsqrteqF32(a1: Float32x4T): Float32x4T = Float32x4T()
-    return vrsqrteqF32(a)
+    fun externVrsqrteqF32(a1: Float32x4T): Float32x4T = Float32x4T()
+    return externVrsqrteqF32(a)
 }
 
 /**
@@ -15744,8 +15743,8 @@ public fun vrsqrteqF32(a: Float32x4T): Float32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrsqrteU32)
  */
 public fun vrsqrteU32(a: Uint32x2T): Uint32x2T {
-    fun vrsqrteU32(a1: Uint32x2T): Uint32x2T = Uint32x2T()
-    return vrsqrteU32(a)
+    fun externVrsqrteU32(a1: Uint32x2T): Uint32x2T = Uint32x2T()
+    return externVrsqrteU32(a)
 }
 
 /**
@@ -15753,8 +15752,8 @@ public fun vrsqrteU32(a: Uint32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrsqrteqU32)
  */
 public fun vrsqrteqU32(a: Uint32x4T): Uint32x4T {
-    fun vrsqrteqU32(a1: Uint32x4T): Uint32x4T = Uint32x4T()
-    return vrsqrteqU32(a)
+    fun externVrsqrteqU32(a1: Uint32x4T): Uint32x4T = Uint32x4T()
+    return externVrsqrteqU32(a)
 }
 
 /**
@@ -15762,8 +15761,8 @@ public fun vrsqrteqU32(a: Uint32x4T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrsqrtsF16)
  */
 public fun vrsqrtsF16(a: Float16x4T, b: Float16x4T): Float16x4T {
-    fun vrsqrtsF16(a1: Float16x4T, b1: Float16x4T): Float16x4T = Float16x4T()
-    return vrsqrtsF16(a, b)
+    fun externVrsqrtsF16(a1: Float16x4T, b1: Float16x4T): Float16x4T = Float16x4T()
+    return externVrsqrtsF16(a, b)
 }
 
 /**
@@ -15771,8 +15770,8 @@ public fun vrsqrtsF16(a: Float16x4T, b: Float16x4T): Float16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrsqrtsqF16)
  */
 public fun vrsqrtsqF16(a: Float16x8T, b: Float16x8T): Float16x8T {
-    fun vrsqrtsqF16(a1: Float16x8T, b1: Float16x8T): Float16x8T = Float16x8T()
-    return vrsqrtsqF16(a, b)
+    fun externVrsqrtsqF16(a1: Float16x8T, b1: Float16x8T): Float16x8T = Float16x8T()
+    return externVrsqrtsqF16(a, b)
 }
 
 /**
@@ -15780,8 +15779,8 @@ public fun vrsqrtsqF16(a: Float16x8T, b: Float16x8T): Float16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrsqrtsF32)
  */
 public fun vrsqrtsF32(a: Float32x2T, b: Float32x2T): Float32x2T {
-    fun vrsqrtsF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
-    return vrsqrtsF32(a, b)
+    fun externVrsqrtsF32(a1: Float32x2T, b1: Float32x2T): Float32x2T = Float32x2T()
+    return externVrsqrtsF32(a, b)
 }
 
 /**
@@ -15789,8 +15788,8 @@ public fun vrsqrtsF32(a: Float32x2T, b: Float32x2T): Float32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrsqrtsqF32)
  */
 public fun vrsqrtsqF32(a: Float32x4T, b: Float32x4T): Float32x4T {
-    fun vrsqrtsqF32(a1: Float32x4T, b1: Float32x4T): Float32x4T = Float32x4T()
-    return vrsqrtsqF32(a, b)
+    fun externVrsqrtsqF32(a1: Float32x4T, b1: Float32x4T): Float32x4T = Float32x4T()
+    return externVrsqrtsqF32(a, b)
 }
 
 /**
@@ -15974,8 +15973,8 @@ public fun vrsraqNU64(a: Uint64x2T, b: Uint64x2T, n: Int): Uint64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrsubhnS16)
  */
 public fun vrsubhnS16(a: Int16x8T, b: Int16x8T): Int8x8T {
-    fun vrsubhnS16(a1: Int16x8T, b1: Int16x8T): Int8x8T = Int8x8T()
-    return vrsubhnS16(a, b)
+    fun externVrsubhnS16(a1: Int16x8T, b1: Int16x8T): Int8x8T = Int8x8T()
+    return externVrsubhnS16(a, b)
 }
 
 /**
@@ -15983,8 +15982,8 @@ public fun vrsubhnS16(a: Int16x8T, b: Int16x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrsubhnS32)
  */
 public fun vrsubhnS32(a: Int32x4T, b: Int32x4T): Int16x4T {
-    fun vrsubhnS32(a1: Int32x4T, b1: Int32x4T): Int16x4T = Int16x4T()
-    return vrsubhnS32(a, b)
+    fun externVrsubhnS32(a1: Int32x4T, b1: Int32x4T): Int16x4T = Int16x4T()
+    return externVrsubhnS32(a, b)
 }
 
 /**
@@ -15992,8 +15991,8 @@ public fun vrsubhnS32(a: Int32x4T, b: Int32x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrsubhnS64)
  */
 public fun vrsubhnS64(a: Int64x2T, b: Int64x2T): Int32x2T {
-    fun vrsubhnS64(a1: Int64x2T, b1: Int64x2T): Int32x2T = Int32x2T()
-    return vrsubhnS64(a, b)
+    fun externVrsubhnS64(a1: Int64x2T, b1: Int64x2T): Int32x2T = Int32x2T()
+    return externVrsubhnS64(a, b)
 }
 
 /**
@@ -16305,8 +16304,8 @@ public fun vsetqLaneP64(a: P64, b: Poly64x2T, lane: Int): Poly64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsha1cqU32)
  */
 public fun vsha1cqU32(hashAbcd: Uint32x4T, hashE: UInt, wk: Uint32x4T): Uint32x4T {
-    fun vsha1cqU32(hashAbcd1: Uint32x4T, hashE1: UInt, wk1: Uint32x4T): Uint32x4T = Uint32x4T()
-    return vsha1cqU32(hashAbcd, hashE, wk)
+    fun externVsha1cqU32(hashAbcd1: Uint32x4T, hashE1: UInt, wk1: Uint32x4T): Uint32x4T = Uint32x4T()
+    return externVsha1cqU32(hashAbcd, hashE, wk)
 }
 
 /**
@@ -16314,8 +16313,8 @@ public fun vsha1cqU32(hashAbcd: Uint32x4T, hashE: UInt, wk: Uint32x4T): Uint32x4
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsha1hU32)
  */
 public fun vsha1hU32(hashE: UInt): UInt {
-    fun vsha1hU32(hashE1: UInt): UInt = 0u
-    return vsha1hU32(hashE)
+    fun externVsha1hU32(hashE1: UInt): UInt = 0u
+    return externVsha1hU32(hashE)
 }
 
 /**
@@ -16323,8 +16322,8 @@ public fun vsha1hU32(hashE: UInt): UInt {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsha1mqU32)
  */
 public fun vsha1mqU32(hashAbcd: Uint32x4T, hashE: UInt, wk: Uint32x4T): Uint32x4T {
-    fun vsha1mqU32(hashAbcd1: Uint32x4T, hashE1: UInt, wk1: Uint32x4T): Uint32x4T = Uint32x4T()
-    return vsha1mqU32(hashAbcd, hashE, wk)
+    fun externVsha1mqU32(hashAbcd1: Uint32x4T, hashE1: UInt, wk1: Uint32x4T): Uint32x4T = Uint32x4T()
+    return externVsha1mqU32(hashAbcd, hashE, wk)
 }
 
 /**
@@ -16332,8 +16331,8 @@ public fun vsha1mqU32(hashAbcd: Uint32x4T, hashE: UInt, wk: Uint32x4T): Uint32x4
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsha1pqU32)
  */
 public fun vsha1pqU32(hashAbcd: Uint32x4T, hashE: UInt, wk: Uint32x4T): Uint32x4T {
-    fun vsha1pqU32(hashAbcd1: Uint32x4T, hashE1: UInt, wk1: Uint32x4T): Uint32x4T = Uint32x4T()
-    return vsha1pqU32(hashAbcd, hashE, wk)
+    fun externVsha1pqU32(hashAbcd1: Uint32x4T, hashE1: UInt, wk1: Uint32x4T): Uint32x4T = Uint32x4T()
+    return externVsha1pqU32(hashAbcd, hashE, wk)
 }
 
 /**
@@ -16341,8 +16340,8 @@ public fun vsha1pqU32(hashAbcd: Uint32x4T, hashE: UInt, wk: Uint32x4T): Uint32x4
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsha1su0qU32)
  */
 public fun vsha1su0qU32(w03: Uint32x4T, w47: Uint32x4T, w811: Uint32x4T): Uint32x4T {
-    fun vsha1su0qU32(w031: Uint32x4T, w471: Uint32x4T, w8111: Uint32x4T): Uint32x4T = Uint32x4T()
-    return vsha1su0qU32(w03, w47, w811)
+    fun externVsha1su0qU32(w031: Uint32x4T, w471: Uint32x4T, w8111: Uint32x4T): Uint32x4T = Uint32x4T()
+    return externVsha1su0qU32(w03, w47, w811)
 }
 
 /**
@@ -16350,8 +16349,8 @@ public fun vsha1su0qU32(w03: Uint32x4T, w47: Uint32x4T, w811: Uint32x4T): Uint32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsha1su1qU32)
  */
 public fun vsha1su1qU32(tw03: Uint32x4T, w1215: Uint32x4T): Uint32x4T {
-    fun vsha1su1qU32(tw031: Uint32x4T, w12151: Uint32x4T): Uint32x4T = Uint32x4T()
-    return vsha1su1qU32(tw03, w1215)
+    fun externVsha1su1qU32(tw031: Uint32x4T, w12151: Uint32x4T): Uint32x4T = Uint32x4T()
+    return externVsha1su1qU32(tw03, w1215)
 }
 
 /**
@@ -16359,8 +16358,8 @@ public fun vsha1su1qU32(tw03: Uint32x4T, w1215: Uint32x4T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsha256h2qU32)
  */
 public fun vsha256h2qU32(hashAbcd: Uint32x4T, hashEfgh: Uint32x4T, wk: Uint32x4T): Uint32x4T {
-    fun vsha256h2qU32(hashAbcd1: Uint32x4T, hashEfgh1: Uint32x4T, wk1: Uint32x4T): Uint32x4T = Uint32x4T()
-    return vsha256h2qU32(hashAbcd, hashEfgh, wk)
+    fun externVsha256h2qU32(hashAbcd1: Uint32x4T, hashEfgh1: Uint32x4T, wk1: Uint32x4T): Uint32x4T = Uint32x4T()
+    return externVsha256h2qU32(hashAbcd, hashEfgh, wk)
 }
 
 /**
@@ -16368,8 +16367,8 @@ public fun vsha256h2qU32(hashAbcd: Uint32x4T, hashEfgh: Uint32x4T, wk: Uint32x4T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsha256hqU32)
  */
 public fun vsha256hqU32(hashAbcd: Uint32x4T, hashEfgh: Uint32x4T, wk: Uint32x4T): Uint32x4T {
-    fun vsha256hqU32(hashAbcd1: Uint32x4T, hashEfgh1: Uint32x4T, wk1: Uint32x4T): Uint32x4T = Uint32x4T()
-    return vsha256hqU32(hashAbcd, hashEfgh, wk)
+    fun externVsha256hqU32(hashAbcd1: Uint32x4T, hashEfgh1: Uint32x4T, wk1: Uint32x4T): Uint32x4T = Uint32x4T()
+    return externVsha256hqU32(hashAbcd, hashEfgh, wk)
 }
 
 /**
@@ -16377,8 +16376,8 @@ public fun vsha256hqU32(hashAbcd: Uint32x4T, hashEfgh: Uint32x4T, wk: Uint32x4T)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsha256su0qU32)
  */
 public fun vsha256su0qU32(w03: Uint32x4T, w47: Uint32x4T): Uint32x4T {
-    fun vsha256su0qU32(w031: Uint32x4T, w471: Uint32x4T): Uint32x4T = Uint32x4T()
-    return vsha256su0qU32(w03, w47)
+    fun externVsha256su0qU32(w031: Uint32x4T, w471: Uint32x4T): Uint32x4T = Uint32x4T()
+    return externVsha256su0qU32(w03, w47)
 }
 
 /**
@@ -16386,8 +16385,8 @@ public fun vsha256su0qU32(w03: Uint32x4T, w47: Uint32x4T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsha256su1qU32)
  */
 public fun vsha256su1qU32(tw03: Uint32x4T, w811: Uint32x4T, w1215: Uint32x4T): Uint32x4T {
-    fun vsha256su1qU32(tw031: Uint32x4T, w8111: Uint32x4T, w12151: Uint32x4T): Uint32x4T = Uint32x4T()
-    return vsha256su1qU32(tw03, w811, w1215)
+    fun externVsha256su1qU32(tw031: Uint32x4T, w8111: Uint32x4T, w12151: Uint32x4T): Uint32x4T = Uint32x4T()
+    return externVsha256su1qU32(tw03, w811, w1215)
 }
 
 /**
@@ -16571,8 +16570,8 @@ public fun vshlqNU64(a: Uint64x2T, n: Int): Uint64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshlS8)
  */
 public fun vshlS8(a: Int8x8T, b: Int8x8T): Int8x8T {
-    fun vshlS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
-    return vshlS8(a, b)
+    fun externVshlS8(a1: Int8x8T, b1: Int8x8T): Int8x8T = Int8x8T()
+    return externVshlS8(a, b)
 }
 
 /**
@@ -16580,8 +16579,8 @@ public fun vshlS8(a: Int8x8T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshlqS8)
  */
 public fun vshlqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
-    fun vshlqS8(a1: Int8x16T, b1: Int8x16T): Int8x16T = Int8x16T()
-    return vshlqS8(a, b)
+    fun externVshlqS8(a1: Int8x16T, b1: Int8x16T): Int8x16T = Int8x16T()
+    return externVshlqS8(a, b)
 }
 
 /**
@@ -16589,8 +16588,8 @@ public fun vshlqS8(a: Int8x16T, b: Int8x16T): Int8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshlS16)
  */
 public fun vshlS16(a: Int16x4T, b: Int16x4T): Int16x4T {
-    fun vshlS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
-    return vshlS16(a, b)
+    fun externVshlS16(a1: Int16x4T, b1: Int16x4T): Int16x4T = Int16x4T()
+    return externVshlS16(a, b)
 }
 
 /**
@@ -16598,8 +16597,8 @@ public fun vshlS16(a: Int16x4T, b: Int16x4T): Int16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshlqS16)
  */
 public fun vshlqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
-    fun vshlqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
-    return vshlqS16(a, b)
+    fun externVshlqS16(a1: Int16x8T, b1: Int16x8T): Int16x8T = Int16x8T()
+    return externVshlqS16(a, b)
 }
 
 /**
@@ -16607,8 +16606,8 @@ public fun vshlqS16(a: Int16x8T, b: Int16x8T): Int16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshlS32)
  */
 public fun vshlS32(a: Int32x2T, b: Int32x2T): Int32x2T {
-    fun vshlS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
-    return vshlS32(a, b)
+    fun externVshlS32(a1: Int32x2T, b1: Int32x2T): Int32x2T = Int32x2T()
+    return externVshlS32(a, b)
 }
 
 /**
@@ -16616,8 +16615,8 @@ public fun vshlS32(a: Int32x2T, b: Int32x2T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshlqS32)
  */
 public fun vshlqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
-    fun vshlqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
-    return vshlqS32(a, b)
+    fun externVshlqS32(a1: Int32x4T, b1: Int32x4T): Int32x4T = Int32x4T()
+    return externVshlqS32(a, b)
 }
 
 /**
@@ -16625,8 +16624,8 @@ public fun vshlqS32(a: Int32x4T, b: Int32x4T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshlS64)
  */
 public fun vshlS64(a: Int64x1T, b: Int64x1T): Int64x1T {
-    fun vshlS64(a1: Int64x1T, b1: Int64x1T): Int64x1T = Int64x1T()
-    return vshlS64(a, b)
+    fun externVshlS64(a1: Int64x1T, b1: Int64x1T): Int64x1T = Int64x1T()
+    return externVshlS64(a, b)
 }
 
 /**
@@ -16634,8 +16633,8 @@ public fun vshlS64(a: Int64x1T, b: Int64x1T): Int64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshlqS64)
  */
 public fun vshlqS64(a: Int64x2T, b: Int64x2T): Int64x2T {
-    fun vshlqS64(a1: Int64x2T, b1: Int64x2T): Int64x2T = Int64x2T()
-    return vshlqS64(a, b)
+    fun externVshlqS64(a1: Int64x2T, b1: Int64x2T): Int64x2T = Int64x2T()
+    return externVshlqS64(a, b)
 }
 
 /**
@@ -16643,8 +16642,8 @@ public fun vshlqS64(a: Int64x2T, b: Int64x2T): Int64x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshlU8)
  */
 public fun vshlU8(a: Uint8x8T, b: Int8x8T): Uint8x8T {
-    fun vshlU8(a1: Uint8x8T, b1: Int8x8T): Uint8x8T = Uint8x8T()
-    return vshlU8(a, b)
+    fun externVshlU8(a1: Uint8x8T, b1: Int8x8T): Uint8x8T = Uint8x8T()
+    return externVshlU8(a, b)
 }
 
 /**
@@ -16652,8 +16651,8 @@ public fun vshlU8(a: Uint8x8T, b: Int8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshlqU8)
  */
 public fun vshlqU8(a: Uint8x16T, b: Int8x16T): Uint8x16T {
-    fun vshlqU8(a1: Uint8x16T, b1: Int8x16T): Uint8x16T = Uint8x16T()
-    return vshlqU8(a, b)
+    fun externVshlqU8(a1: Uint8x16T, b1: Int8x16T): Uint8x16T = Uint8x16T()
+    return externVshlqU8(a, b)
 }
 
 /**
@@ -16661,8 +16660,8 @@ public fun vshlqU8(a: Uint8x16T, b: Int8x16T): Uint8x16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshlU16)
  */
 public fun vshlU16(a: Uint16x4T, b: Int16x4T): Uint16x4T {
-    fun vshlU16(a1: Uint16x4T, b1: Int16x4T): Uint16x4T = Uint16x4T()
-    return vshlU16(a, b)
+    fun externVshlU16(a1: Uint16x4T, b1: Int16x4T): Uint16x4T = Uint16x4T()
+    return externVshlU16(a, b)
 }
 
 /**
@@ -16670,8 +16669,8 @@ public fun vshlU16(a: Uint16x4T, b: Int16x4T): Uint16x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshlqU16)
  */
 public fun vshlqU16(a: Uint16x8T, b: Int16x8T): Uint16x8T {
-    fun vshlqU16(a1: Uint16x8T, b1: Int16x8T): Uint16x8T = Uint16x8T()
-    return vshlqU16(a, b)
+    fun externVshlqU16(a1: Uint16x8T, b1: Int16x8T): Uint16x8T = Uint16x8T()
+    return externVshlqU16(a, b)
 }
 
 /**
@@ -16679,8 +16678,8 @@ public fun vshlqU16(a: Uint16x8T, b: Int16x8T): Uint16x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshlU32)
  */
 public fun vshlU32(a: Uint32x2T, b: Int32x2T): Uint32x2T {
-    fun vshlU32(a1: Uint32x2T, b1: Int32x2T): Uint32x2T = Uint32x2T()
-    return vshlU32(a, b)
+    fun externVshlU32(a1: Uint32x2T, b1: Int32x2T): Uint32x2T = Uint32x2T()
+    return externVshlU32(a, b)
 }
 
 /**
@@ -16688,8 +16687,8 @@ public fun vshlU32(a: Uint32x2T, b: Int32x2T): Uint32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshlqU32)
  */
 public fun vshlqU32(a: Uint32x4T, b: Int32x4T): Uint32x4T {
-    fun vshlqU32(a1: Uint32x4T, b1: Int32x4T): Uint32x4T = Uint32x4T()
-    return vshlqU32(a, b)
+    fun externVshlqU32(a1: Uint32x4T, b1: Int32x4T): Uint32x4T = Uint32x4T()
+    return externVshlqU32(a, b)
 }
 
 /**
@@ -16697,8 +16696,8 @@ public fun vshlqU32(a: Uint32x4T, b: Int32x4T): Uint32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshlU64)
  */
 public fun vshlU64(a: Uint64x1T, b: Int64x1T): Uint64x1T {
-    fun vshlU64(a1: Uint64x1T, b1: Int64x1T): Uint64x1T = Uint64x1T()
-    return vshlU64(a, b)
+    fun externVshlU64(a1: Uint64x1T, b1: Int64x1T): Uint64x1T = Uint64x1T()
+    return externVshlU64(a, b)
 }
 
 /**
@@ -16706,8 +16705,8 @@ public fun vshlU64(a: Uint64x1T, b: Int64x1T): Uint64x1T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshlqU64)
  */
 public fun vshlqU64(a: Uint64x2T, b: Int64x2T): Uint64x2T {
-    fun vshlqU64(a1: Uint64x2T, b1: Int64x2T): Uint64x2T = Uint64x2T()
-    return vshlqU64(a, b)
+    fun externVshlqU64(a1: Uint64x2T, b1: Int64x2T): Uint64x2T = Uint64x2T()
+    return externVshlqU64(a, b)
 }
 
 /**
@@ -17297,8 +17296,8 @@ public fun vsraqNU64(a: Uint64x2T, b: Uint64x2T, n: Int): Uint64x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vst1F16X2(a: MutPtr, b: Float16x4x2T) {
-    fun vst1F16X2(a1: Float16x4T, b1: Float16x4T, ptr: MutPtr) {}
-    vst1F16X2(b.field0, b.field1, a)
+    fun externVst1F16X2(a1: Float16x4T, b1: Float16x4T, ptr: MutPtr) {}
+    externVst1F16X2(b.field0, b.field1, a)
 }
 
 /**
@@ -17308,8 +17307,8 @@ public fun vst1F16X2(a: MutPtr, b: Float16x4x2T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qF16X2(a: MutPtr, b: Float16x8x2T) {
-    fun vst1qF16X2(a1: Float16x8T, b1: Float16x8T, ptr: MutPtr) {}
-    vst1qF16X2(b.field0, b.field1, a)
+    fun externVst1qF16X2(a1: Float16x8T, b1: Float16x8T, ptr: MutPtr) {}
+    externVst1qF16X2(b.field0, b.field1, a)
 }
 
 /**
@@ -17319,8 +17318,8 @@ public fun vst1qF16X2(a: MutPtr, b: Float16x8x2T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1F16X3(a: MutPtr, b: Float16x4x3T) {
-    fun vst1F16X3(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, ptr: MutPtr) {}
-    vst1F16X3(b.field0, b.field1, b.field2, a)
+    fun externVst1F16X3(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, ptr: MutPtr) {}
+    externVst1F16X3(b.field0, b.field1, b.field2, a)
 }
 
 /**
@@ -17330,8 +17329,8 @@ public fun vst1F16X3(a: MutPtr, b: Float16x4x3T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qF16X3(a: MutPtr, b: Float16x8x3T) {
-    fun vst1qF16X3(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, ptr: MutPtr) {}
-    vst1qF16X3(b.field0, b.field1, b.field2, a)
+    fun externVst1qF16X3(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, ptr: MutPtr) {}
+    externVst1qF16X3(b.field0, b.field1, b.field2, a)
 }
 
 /**
@@ -17341,8 +17340,8 @@ public fun vst1qF16X3(a: MutPtr, b: Float16x8x3T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1F16X4(a: MutPtr, b: Float16x4x4T) {
-    fun vst1F16X4(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, d: Float16x4T, ptr: MutPtr) {}
-    vst1F16X4(b.field0, b.field1, b.field2, b.field3, a)
+    fun externVst1F16X4(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, d: Float16x4T, ptr: MutPtr) {}
+    externVst1F16X4(b.field0, b.field1, b.field2, b.field3, a)
 }
 
 /**
@@ -17352,8 +17351,8 @@ public fun vst1F16X4(a: MutPtr, b: Float16x4x4T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qF16X4(a: MutPtr, b: Float16x8x4T) {
-    fun vst1qF16X4(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, d: Float16x8T, ptr: MutPtr) {}
-    vst1qF16X4(b.field0, b.field1, b.field2, b.field3, a)
+    fun externVst1qF16X4(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, d: Float16x8T, ptr: MutPtr) {}
+    externVst1qF16X4(b.field0, b.field1, b.field2, b.field3, a)
 }
 
 /**
@@ -17363,8 +17362,8 @@ public fun vst1qF16X4(a: MutPtr, b: Float16x8x4T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1F32X2(a: MutPtr, b: Float32x2x2T) {
-    fun vst1F32X2(a1: Float32x2T, b1: Float32x2T, ptr: MutPtr) {}
-    vst1F32X2(b.field0, b.field1, a)
+    fun externVst1F32X2(a1: Float32x2T, b1: Float32x2T, ptr: MutPtr) {}
+    externVst1F32X2(b.field0, b.field1, a)
 }
 
 /**
@@ -17374,8 +17373,8 @@ public fun vst1F32X2(a: MutPtr, b: Float32x2x2T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qF32X2(a: MutPtr, b: Float32x4x2T) {
-    fun vst1qF32X2(a1: Float32x4T, b1: Float32x4T, ptr: MutPtr) {}
-    vst1qF32X2(b.field0, b.field1, a)
+    fun externVst1qF32X2(a1: Float32x4T, b1: Float32x4T, ptr: MutPtr) {}
+    externVst1qF32X2(b.field0, b.field1, a)
 }
 
 /**
@@ -17385,8 +17384,8 @@ public fun vst1qF32X2(a: MutPtr, b: Float32x4x2T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1F32X3(a: MutPtr, b: Float32x2x3T) {
-    fun vst1F32X3(a1: Float32x2T, b1: Float32x2T, c: Float32x2T, ptr: MutPtr) {}
-    vst1F32X3(b.field0, b.field1, b.field2, a)
+    fun externVst1F32X3(a1: Float32x2T, b1: Float32x2T, c: Float32x2T, ptr: MutPtr) {}
+    externVst1F32X3(b.field0, b.field1, b.field2, a)
 }
 
 /**
@@ -17396,8 +17395,8 @@ public fun vst1F32X3(a: MutPtr, b: Float32x2x3T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qF32X3(a: MutPtr, b: Float32x4x3T) {
-    fun vst1qF32X3(a1: Float32x4T, b1: Float32x4T, c: Float32x4T, ptr: MutPtr) {}
-    vst1qF32X3(b.field0, b.field1, b.field2, a)
+    fun externVst1qF32X3(a1: Float32x4T, b1: Float32x4T, c: Float32x4T, ptr: MutPtr) {}
+    externVst1qF32X3(b.field0, b.field1, b.field2, a)
 }
 
 /**
@@ -17407,8 +17406,8 @@ public fun vst1qF32X3(a: MutPtr, b: Float32x4x3T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1F32X4(a: MutPtr, b: Float32x2x4T) {
-    fun vst1F32X4(a1: Float32x2T, b1: Float32x2T, c: Float32x2T, d: Float32x2T, ptr: MutPtr) {}
-    vst1F32X4(b.field0, b.field1, b.field2, b.field3, a)
+    fun externVst1F32X4(a1: Float32x2T, b1: Float32x2T, c: Float32x2T, d: Float32x2T, ptr: MutPtr) {}
+    externVst1F32X4(b.field0, b.field1, b.field2, b.field3, a)
 }
 
 /**
@@ -17418,8 +17417,8 @@ public fun vst1F32X4(a: MutPtr, b: Float32x2x4T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qF32X4(a: MutPtr, b: Float32x4x4T) {
-    fun vst1qF32X4(a1: Float32x4T, b1: Float32x4T, c: Float32x4T, d: Float32x4T, ptr: MutPtr) {}
-    vst1qF32X4(b.field0, b.field1, b.field2, b.field3, a)
+    fun externVst1qF32X4(a1: Float32x4T, b1: Float32x4T, c: Float32x4T, d: Float32x4T, ptr: MutPtr) {}
+    externVst1qF32X4(b.field0, b.field1, b.field2, b.field3, a)
 }
 
 /**
@@ -17814,8 +17813,8 @@ public fun vst1qP64X4(a: MutPtr, b: Poly64x2x4T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1S8X2(a: MutPtr, b: Int8x8x2T) {
-    fun vst1S8X2(a1: Int8x8T, b1: Int8x8T, ptr: MutPtr) {}
-    vst1S8X2(b.field0, b.field1, a)
+    fun externVst1S8X2(a1: Int8x8T, b1: Int8x8T, ptr: MutPtr) {}
+    externVst1S8X2(b.field0, b.field1, a)
 }
 
 /**
@@ -17825,8 +17824,8 @@ public fun vst1S8X2(a: MutPtr, b: Int8x8x2T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qS8X2(a: MutPtr, b: Int8x16x2T) {
-    fun vst1qS8X2(a1: Int8x16T, b1: Int8x16T, ptr: MutPtr) {}
-    vst1qS8X2(b.field0, b.field1, a)
+    fun externVst1qS8X2(a1: Int8x16T, b1: Int8x16T, ptr: MutPtr) {}
+    externVst1qS8X2(b.field0, b.field1, a)
 }
 
 /**
@@ -17836,8 +17835,8 @@ public fun vst1qS8X2(a: MutPtr, b: Int8x16x2T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1S16X2(a: MutPtr, b: Int16x4x2T) {
-    fun vst1S16X2(a1: Int16x4T, b1: Int16x4T, ptr: MutPtr) {}
-    vst1S16X2(b.field0, b.field1, a)
+    fun externVst1S16X2(a1: Int16x4T, b1: Int16x4T, ptr: MutPtr) {}
+    externVst1S16X2(b.field0, b.field1, a)
 }
 
 /**
@@ -17847,8 +17846,8 @@ public fun vst1S16X2(a: MutPtr, b: Int16x4x2T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qS16X2(a: MutPtr, b: Int16x8x2T) {
-    fun vst1qS16X2(a1: Int16x8T, b1: Int16x8T, ptr: MutPtr) {}
-    vst1qS16X2(b.field0, b.field1, a)
+    fun externVst1qS16X2(a1: Int16x8T, b1: Int16x8T, ptr: MutPtr) {}
+    externVst1qS16X2(b.field0, b.field1, a)
 }
 
 /**
@@ -17858,8 +17857,8 @@ public fun vst1qS16X2(a: MutPtr, b: Int16x8x2T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1S32X2(a: MutPtr, b: Int32x2x2T) {
-    fun vst1S32X2(a1: Int32x2T, b1: Int32x2T, ptr: MutPtr) {}
-    vst1S32X2(b.field0, b.field1, a)
+    fun externVst1S32X2(a1: Int32x2T, b1: Int32x2T, ptr: MutPtr) {}
+    externVst1S32X2(b.field0, b.field1, a)
 }
 
 /**
@@ -17869,8 +17868,8 @@ public fun vst1S32X2(a: MutPtr, b: Int32x2x2T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qS32X2(a: MutPtr, b: Int32x4x2T) {
-    fun vst1qS32X2(a1: Int32x4T, b1: Int32x4T, ptr: MutPtr) {}
-    vst1qS32X2(b.field0, b.field1, a)
+    fun externVst1qS32X2(a1: Int32x4T, b1: Int32x4T, ptr: MutPtr) {}
+    externVst1qS32X2(b.field0, b.field1, a)
 }
 
 /**
@@ -17880,8 +17879,8 @@ public fun vst1qS32X2(a: MutPtr, b: Int32x4x2T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1S64X2(a: MutPtr, b: Int64x1x2T) {
-    fun vst1S64X2(a1: Int64x1T, b1: Int64x1T, ptr: MutPtr) {}
-    vst1S64X2(b.field0, b.field1, a)
+    fun externVst1S64X2(a1: Int64x1T, b1: Int64x1T, ptr: MutPtr) {}
+    externVst1S64X2(b.field0, b.field1, a)
 }
 
 /**
@@ -17891,8 +17890,8 @@ public fun vst1S64X2(a: MutPtr, b: Int64x1x2T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qS64X2(a: MutPtr, b: Int64x2x2T) {
-    fun vst1qS64X2(a1: Int64x2T, b1: Int64x2T, ptr: MutPtr) {}
-    vst1qS64X2(b.field0, b.field1, a)
+    fun externVst1qS64X2(a1: Int64x2T, b1: Int64x2T, ptr: MutPtr) {}
+    externVst1qS64X2(b.field0, b.field1, a)
 }
 
 /**
@@ -17902,8 +17901,8 @@ public fun vst1qS64X2(a: MutPtr, b: Int64x2x2T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1S8X3(a: MutPtr, b: Int8x8x3T) {
-    fun vst1S8X3(a1: Int8x8T, b1: Int8x8T, c: Int8x8T, ptr: MutPtr) {}
-    vst1S8X3(b.field0, b.field1, b.field2, a)
+    fun externVst1S8X3(a1: Int8x8T, b1: Int8x8T, c: Int8x8T, ptr: MutPtr) {}
+    externVst1S8X3(b.field0, b.field1, b.field2, a)
 }
 
 /**
@@ -17913,8 +17912,8 @@ public fun vst1S8X3(a: MutPtr, b: Int8x8x3T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qS8X3(a: MutPtr, b: Int8x16x3T) {
-    fun vst1qS8X3(a1: Int8x16T, b1: Int8x16T, c: Int8x16T, ptr: MutPtr) {}
-    vst1qS8X3(b.field0, b.field1, b.field2, a)
+    fun externVst1qS8X3(a1: Int8x16T, b1: Int8x16T, c: Int8x16T, ptr: MutPtr) {}
+    externVst1qS8X3(b.field0, b.field1, b.field2, a)
 }
 
 /**
@@ -17924,8 +17923,8 @@ public fun vst1qS8X3(a: MutPtr, b: Int8x16x3T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1S16X3(a: MutPtr, b: Int16x4x3T) {
-    fun vst1S16X3(a1: Int16x4T, b1: Int16x4T, c: Int16x4T, ptr: MutPtr) {}
-    vst1S16X3(b.field0, b.field1, b.field2, a)
+    fun externVst1S16X3(a1: Int16x4T, b1: Int16x4T, c: Int16x4T, ptr: MutPtr) {}
+    externVst1S16X3(b.field0, b.field1, b.field2, a)
 }
 
 /**
@@ -17935,8 +17934,8 @@ public fun vst1S16X3(a: MutPtr, b: Int16x4x3T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qS16X3(a: MutPtr, b: Int16x8x3T) {
-    fun vst1qS16X3(a1: Int16x8T, b1: Int16x8T, c: Int16x8T, ptr: MutPtr) {}
-    vst1qS16X3(b.field0, b.field1, b.field2, a)
+    fun externVst1qS16X3(a1: Int16x8T, b1: Int16x8T, c: Int16x8T, ptr: MutPtr) {}
+    externVst1qS16X3(b.field0, b.field1, b.field2, a)
 }
 
 /**
@@ -17946,8 +17945,8 @@ public fun vst1qS16X3(a: MutPtr, b: Int16x8x3T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1S32X3(a: MutPtr, b: Int32x2x3T) {
-    fun vst1S32X3(a1: Int32x2T, b1: Int32x2T, c: Int32x2T, ptr: MutPtr) {}
-    vst1S32X3(b.field0, b.field1, b.field2, a)
+    fun externVst1S32X3(a1: Int32x2T, b1: Int32x2T, c: Int32x2T, ptr: MutPtr) {}
+    externVst1S32X3(b.field0, b.field1, b.field2, a)
 }
 
 /**
@@ -17957,8 +17956,8 @@ public fun vst1S32X3(a: MutPtr, b: Int32x2x3T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qS32X3(a: MutPtr, b: Int32x4x3T) {
-    fun vst1qS32X3(a1: Int32x4T, b1: Int32x4T, c: Int32x4T, ptr: MutPtr) {}
-    vst1qS32X3(b.field0, b.field1, b.field2, a)
+    fun externVst1qS32X3(a1: Int32x4T, b1: Int32x4T, c: Int32x4T, ptr: MutPtr) {}
+    externVst1qS32X3(b.field0, b.field1, b.field2, a)
 }
 
 /**
@@ -17968,8 +17967,8 @@ public fun vst1qS32X3(a: MutPtr, b: Int32x4x3T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1S64X3(a: MutPtr, b: Int64x1x3T) {
-    fun vst1S64X3(a1: Int64x1T, b1: Int64x1T, c: Int64x1T, ptr: MutPtr) {}
-    vst1S64X3(b.field0, b.field1, b.field2, a)
+    fun externVst1S64X3(a1: Int64x1T, b1: Int64x1T, c: Int64x1T, ptr: MutPtr) {}
+    externVst1S64X3(b.field0, b.field1, b.field2, a)
 }
 
 /**
@@ -17979,8 +17978,8 @@ public fun vst1S64X3(a: MutPtr, b: Int64x1x3T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qS64X3(a: MutPtr, b: Int64x2x3T) {
-    fun vst1qS64X3(a1: Int64x2T, b1: Int64x2T, c: Int64x2T, ptr: MutPtr) {}
-    vst1qS64X3(b.field0, b.field1, b.field2, a)
+    fun externVst1qS64X3(a1: Int64x2T, b1: Int64x2T, c: Int64x2T, ptr: MutPtr) {}
+    externVst1qS64X3(b.field0, b.field1, b.field2, a)
 }
 
 /**
@@ -17990,8 +17989,8 @@ public fun vst1qS64X3(a: MutPtr, b: Int64x2x3T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1S8X4(a: MutPtr, b: Int8x8x4T) {
-    fun vst1S8X4(a1: Int8x8T, b1: Int8x8T, c: Int8x8T, d: Int8x8T, ptr: MutPtr) {}
-    vst1S8X4(b.field0, b.field1, b.field2, b.field3, a)
+    fun externVst1S8X4(a1: Int8x8T, b1: Int8x8T, c: Int8x8T, d: Int8x8T, ptr: MutPtr) {}
+    externVst1S8X4(b.field0, b.field1, b.field2, b.field3, a)
 }
 
 /**
@@ -18001,8 +18000,8 @@ public fun vst1S8X4(a: MutPtr, b: Int8x8x4T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qS8X4(a: MutPtr, b: Int8x16x4T) {
-    fun vst1qS8X4(a1: Int8x16T, b1: Int8x16T, c: Int8x16T, d: Int8x16T, ptr: MutPtr) {}
-    vst1qS8X4(b.field0, b.field1, b.field2, b.field3, a)
+    fun externVst1qS8X4(a1: Int8x16T, b1: Int8x16T, c: Int8x16T, d: Int8x16T, ptr: MutPtr) {}
+    externVst1qS8X4(b.field0, b.field1, b.field2, b.field3, a)
 }
 
 /**
@@ -18012,8 +18011,8 @@ public fun vst1qS8X4(a: MutPtr, b: Int8x16x4T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1S16X4(a: MutPtr, b: Int16x4x4T) {
-    fun vst1S16X4(a1: Int16x4T, b1: Int16x4T, c: Int16x4T, d: Int16x4T, ptr: MutPtr) {}
-    vst1S16X4(b.field0, b.field1, b.field2, b.field3, a)
+    fun externVst1S16X4(a1: Int16x4T, b1: Int16x4T, c: Int16x4T, d: Int16x4T, ptr: MutPtr) {}
+    externVst1S16X4(b.field0, b.field1, b.field2, b.field3, a)
 }
 
 /**
@@ -18023,8 +18022,8 @@ public fun vst1S16X4(a: MutPtr, b: Int16x4x4T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qS16X4(a: MutPtr, b: Int16x8x4T) {
-    fun vst1qS16X4(a1: Int16x8T, b1: Int16x8T, c: Int16x8T, d: Int16x8T, ptr: MutPtr) {}
-    vst1qS16X4(b.field0, b.field1, b.field2, b.field3, a)
+    fun externVst1qS16X4(a1: Int16x8T, b1: Int16x8T, c: Int16x8T, d: Int16x8T, ptr: MutPtr) {}
+    externVst1qS16X4(b.field0, b.field1, b.field2, b.field3, a)
 }
 
 /**
@@ -18034,8 +18033,8 @@ public fun vst1qS16X4(a: MutPtr, b: Int16x8x4T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1S32X4(a: MutPtr, b: Int32x2x4T) {
-    fun vst1S32X4(a1: Int32x2T, b1: Int32x2T, c: Int32x2T, d: Int32x2T, ptr: MutPtr) {}
-    vst1S32X4(b.field0, b.field1, b.field2, b.field3, a)
+    fun externVst1S32X4(a1: Int32x2T, b1: Int32x2T, c: Int32x2T, d: Int32x2T, ptr: MutPtr) {}
+    externVst1S32X4(b.field0, b.field1, b.field2, b.field3, a)
 }
 
 /**
@@ -18045,8 +18044,8 @@ public fun vst1S32X4(a: MutPtr, b: Int32x2x4T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qS32X4(a: MutPtr, b: Int32x4x4T) {
-    fun vst1qS32X4(a1: Int32x4T, b1: Int32x4T, c: Int32x4T, d: Int32x4T, ptr: MutPtr) {}
-    vst1qS32X4(b.field0, b.field1, b.field2, b.field3, a)
+    fun externVst1qS32X4(a1: Int32x4T, b1: Int32x4T, c: Int32x4T, d: Int32x4T, ptr: MutPtr) {}
+    externVst1qS32X4(b.field0, b.field1, b.field2, b.field3, a)
 }
 
 /**
@@ -18056,8 +18055,8 @@ public fun vst1qS32X4(a: MutPtr, b: Int32x4x4T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1S64X4(a: MutPtr, b: Int64x1x4T) {
-    fun vst1S64X4(a1: Int64x1T, b1: Int64x1T, c: Int64x1T, d: Int64x1T, ptr: MutPtr) {}
-    vst1S64X4(b.field0, b.field1, b.field2, b.field3, a)
+    fun externVst1S64X4(a1: Int64x1T, b1: Int64x1T, c: Int64x1T, d: Int64x1T, ptr: MutPtr) {}
+    externVst1S64X4(b.field0, b.field1, b.field2, b.field3, a)
 }
 
 /**
@@ -18067,8 +18066,8 @@ public fun vst1S64X4(a: MutPtr, b: Int64x1x4T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst1qS64X4(a: MutPtr, b: Int64x2x4T) {
-    fun vst1qS64X4(a1: Int64x2T, b1: Int64x2T, c: Int64x2T, d: Int64x2T, ptr: MutPtr) {}
-    vst1qS64X4(b.field0, b.field1, b.field2, b.field3, a)
+    fun externVst1qS64X4(a1: Int64x2T, b1: Int64x2T, c: Int64x2T, d: Int64x2T, ptr: MutPtr) {}
+    externVst1qS64X4(b.field0, b.field1, b.field2, b.field3, a)
 }
 
 /**
@@ -18451,8 +18450,8 @@ public fun vst1qLaneP64(a: MutPtr, b: Poly64x2T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst2F16(a: MutPtr, b: Float16x4x2T) {
-    fun vst2F16(a1: Float16x4T, b1: Float16x4T, ptr: MutPtr) {}
-    vst2F16(b.field0, b.field1, MutPtr(a.rawAddress, a.rawMeta))
+    fun externVst2F16(a1: Float16x4T, b1: Float16x4T, ptr: MutPtr) {}
+    externVst2F16(b.field0, b.field1, MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -18462,8 +18461,8 @@ public fun vst2F16(a: MutPtr, b: Float16x4x2T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst2qF16(a: MutPtr, b: Float16x8x2T) {
-    fun vst2qF16(a1: Float16x8T, b1: Float16x8T, ptr: MutPtr) {}
-    vst2qF16(b.field0, b.field1, MutPtr(a.rawAddress, a.rawMeta))
+    fun externVst2qF16(a1: Float16x8T, b1: Float16x8T, ptr: MutPtr) {}
+    externVst2qF16(b.field0, b.field1, MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -18577,11 +18576,11 @@ public fun vst2qS32(a: MutPtr, b: Int32x4x2T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst2LaneF16(a: MutPtr, b: Float16x4x2T, lane: Int) {
-    fun vst2LaneF16(a1: Float16x4T, b1: Float16x4T, n: Long, ptr: MutPtr) {}
+    fun externVst2LaneF16(a1: Float16x4T, b1: Float16x4T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst2LaneF16(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst2LaneF16(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -18591,11 +18590,11 @@ public fun vst2LaneF16(a: MutPtr, b: Float16x4x2T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst2qLaneF16(a: MutPtr, b: Float16x8x2T, lane: Int) {
-    fun vst2qLaneF16(a1: Float16x8T, b1: Float16x8T, n: Long, ptr: MutPtr) {}
+    fun externVst2qLaneF16(a1: Float16x8T, b1: Float16x8T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst2qLaneF16(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst2qLaneF16(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -18605,11 +18604,11 @@ public fun vst2qLaneF16(a: MutPtr, b: Float16x8x2T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst2LaneF32(a: MutPtr, b: Float32x2x2T, lane: Int) {
-    fun vst2LaneF32(a1: Float32x2T, b1: Float32x2T, n: Long, ptr: MutPtr) {}
+    fun externVst2LaneF32(a1: Float32x2T, b1: Float32x2T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst2LaneF32(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst2LaneF32(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -18619,11 +18618,11 @@ public fun vst2LaneF32(a: MutPtr, b: Float32x2x2T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst2qLaneF32(a: MutPtr, b: Float32x4x2T, lane: Int) {
-    fun vst2qLaneF32(a1: Float32x4T, b1: Float32x4T, n: Long, ptr: MutPtr) {}
+    fun externVst2qLaneF32(a1: Float32x4T, b1: Float32x4T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst2qLaneF32(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst2qLaneF32(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -18633,11 +18632,11 @@ public fun vst2qLaneF32(a: MutPtr, b: Float32x4x2T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst2LaneS8(a: MutPtr, b: Int8x8x2T, lane: Int) {
-    fun vst2LaneS8(a1: Int8x8T, b1: Int8x8T, n: Long, ptr: MutPtr) {}
+    fun externVst2LaneS8(a1: Int8x8T, b1: Int8x8T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst2LaneS8(b.field0, b.field1, lane.toLong(), a)
+    externVst2LaneS8(b.field0, b.field1, lane.toLong(), a)
 }
 
 /**
@@ -18647,11 +18646,11 @@ public fun vst2LaneS8(a: MutPtr, b: Int8x8x2T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst2LaneS16(a: MutPtr, b: Int16x4x2T, lane: Int) {
-    fun vst2LaneS16(a1: Int16x4T, b1: Int16x4T, n: Long, ptr: MutPtr) {}
+    fun externVst2LaneS16(a1: Int16x4T, b1: Int16x4T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst2LaneS16(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst2LaneS16(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -18661,11 +18660,11 @@ public fun vst2LaneS16(a: MutPtr, b: Int16x4x2T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst2qLaneS16(a: MutPtr, b: Int16x8x2T, lane: Int) {
-    fun vst2qLaneS16(a1: Int16x8T, b1: Int16x8T, n: Long, ptr: MutPtr) {}
+    fun externVst2qLaneS16(a1: Int16x8T, b1: Int16x8T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst2qLaneS16(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst2qLaneS16(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -18675,11 +18674,11 @@ public fun vst2qLaneS16(a: MutPtr, b: Int16x8x2T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst2LaneS32(a: MutPtr, b: Int32x2x2T, lane: Int) {
-    fun vst2LaneS32(a1: Int32x2T, b1: Int32x2T, n: Long, ptr: MutPtr) {}
+    fun externVst2LaneS32(a1: Int32x2T, b1: Int32x2T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst2LaneS32(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst2LaneS32(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -18689,11 +18688,11 @@ public fun vst2LaneS32(a: MutPtr, b: Int32x2x2T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst2qLaneS32(a: MutPtr, b: Int32x4x2T, lane: Int) {
-    fun vst2qLaneS32(a1: Int32x4T, b1: Int32x4T, n: Long, ptr: MutPtr) {}
+    fun externVst2qLaneS32(a1: Int32x4T, b1: Int32x4T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst2qLaneS32(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst2qLaneS32(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -18937,8 +18936,8 @@ public fun vst2qP16(a: MutPtr, b: Poly16x8x2T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst3F16(a: MutPtr, b: Float16x4x3T) {
-    fun vst3F16(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, ptr: MutPtr) {}
-    vst3F16(b.field0, b.field1, b.field2, MutPtr(a.rawAddress, a.rawMeta))
+    fun externVst3F16(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, ptr: MutPtr) {}
+    externVst3F16(b.field0, b.field1, b.field2, MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -18948,8 +18947,8 @@ public fun vst3F16(a: MutPtr, b: Float16x4x3T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst3qF16(a: MutPtr, b: Float16x8x3T) {
-    fun vst3qF16(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, ptr: MutPtr) {}
-    vst3qF16(b.field0, b.field1, b.field2, MutPtr(a.rawAddress, a.rawMeta))
+    fun externVst3qF16(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, ptr: MutPtr) {}
+    externVst3qF16(b.field0, b.field1, b.field2, MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19087,11 +19086,11 @@ public fun vst3qS32(a: MutPtr, b: Int32x4x3T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst3LaneF16(a: MutPtr, b: Float16x4x3T, lane: Int) {
-    fun vst3LaneF16(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, n: Long, ptr: MutPtr) {}
+    fun externVst3LaneF16(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst3LaneF16(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst3LaneF16(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19101,11 +19100,11 @@ public fun vst3LaneF16(a: MutPtr, b: Float16x4x3T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst3qLaneF16(a: MutPtr, b: Float16x8x3T, lane: Int) {
-    fun vst3qLaneF16(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, n: Long, ptr: MutPtr) {}
+    fun externVst3qLaneF16(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst3qLaneF16(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst3qLaneF16(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19115,11 +19114,11 @@ public fun vst3qLaneF16(a: MutPtr, b: Float16x8x3T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst3LaneF32(a: MutPtr, b: Float32x2x3T, lane: Int) {
-    fun vst3LaneF32(a1: Float32x2T, b1: Float32x2T, c: Float32x2T, n: Long, ptr: MutPtr) {}
+    fun externVst3LaneF32(a1: Float32x2T, b1: Float32x2T, c: Float32x2T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst3LaneF32(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst3LaneF32(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19129,11 +19128,11 @@ public fun vst3LaneF32(a: MutPtr, b: Float32x2x3T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst3qLaneF32(a: MutPtr, b: Float32x4x3T, lane: Int) {
-    fun vst3qLaneF32(a1: Float32x4T, b1: Float32x4T, c: Float32x4T, n: Long, ptr: MutPtr) {}
+    fun externVst3qLaneF32(a1: Float32x4T, b1: Float32x4T, c: Float32x4T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst3qLaneF32(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst3qLaneF32(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19143,11 +19142,11 @@ public fun vst3qLaneF32(a: MutPtr, b: Float32x4x3T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst3LaneS8(a: MutPtr, b: Int8x8x3T, lane: Int) {
-    fun vst3LaneS8(a1: Int8x8T, b1: Int8x8T, c: Int8x8T, n: Long, ptr: MutPtr) {}
+    fun externVst3LaneS8(a1: Int8x8T, b1: Int8x8T, c: Int8x8T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst3LaneS8(b.field0, b.field1, b.field2, lane.toLong(), a)
+    externVst3LaneS8(b.field0, b.field1, b.field2, lane.toLong(), a)
 }
 
 /**
@@ -19157,11 +19156,11 @@ public fun vst3LaneS8(a: MutPtr, b: Int8x8x3T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst3LaneS16(a: MutPtr, b: Int16x4x3T, lane: Int) {
-    fun vst3LaneS16(a1: Int16x4T, b1: Int16x4T, c: Int16x4T, n: Long, ptr: MutPtr) {}
+    fun externVst3LaneS16(a1: Int16x4T, b1: Int16x4T, c: Int16x4T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst3LaneS16(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst3LaneS16(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19171,11 +19170,11 @@ public fun vst3LaneS16(a: MutPtr, b: Int16x4x3T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst3qLaneS16(a: MutPtr, b: Int16x8x3T, lane: Int) {
-    fun vst3qLaneS16(a1: Int16x8T, b1: Int16x8T, c: Int16x8T, n: Long, ptr: MutPtr) {}
+    fun externVst3qLaneS16(a1: Int16x8T, b1: Int16x8T, c: Int16x8T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst3qLaneS16(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst3qLaneS16(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19185,11 +19184,11 @@ public fun vst3qLaneS16(a: MutPtr, b: Int16x8x3T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst3LaneS32(a: MutPtr, b: Int32x2x3T, lane: Int) {
-    fun vst3LaneS32(a1: Int32x2T, b1: Int32x2T, c: Int32x2T, n: Long, ptr: MutPtr) {}
+    fun externVst3LaneS32(a1: Int32x2T, b1: Int32x2T, c: Int32x2T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst3LaneS32(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst3LaneS32(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19199,11 +19198,11 @@ public fun vst3LaneS32(a: MutPtr, b: Int32x2x3T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst3qLaneS32(a: MutPtr, b: Int32x4x3T, lane: Int) {
-    fun vst3qLaneS32(a1: Int32x4T, b1: Int32x4T, c: Int32x4T, n: Long, ptr: MutPtr) {}
+    fun externVst3qLaneS32(a1: Int32x4T, b1: Int32x4T, c: Int32x4T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst3qLaneS32(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst3qLaneS32(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19447,8 +19446,8 @@ public fun vst3qP16(a: MutPtr, b: Poly16x8x3T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst4F16(a: MutPtr, b: Float16x4x4T) {
-    fun vst4F16(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, d: Float16x4T, ptr: MutPtr) {}
-    vst4F16(b.field0, b.field1, b.field2, b.field3, MutPtr(a.rawAddress, a.rawMeta))
+    fun externVst4F16(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, d: Float16x4T, ptr: MutPtr) {}
+    externVst4F16(b.field0, b.field1, b.field2, b.field3, MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19458,8 +19457,8 @@ public fun vst4F16(a: MutPtr, b: Float16x4x4T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst4qF16(a: MutPtr, b: Float16x8x4T) {
-    fun vst4qF16(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, d: Float16x8T, ptr: MutPtr) {}
-    vst4qF16(b.field0, b.field1, b.field2, b.field3, MutPtr(a.rawAddress, a.rawMeta))
+    fun externVst4qF16(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, d: Float16x8T, ptr: MutPtr) {}
+    externVst4qF16(b.field0, b.field1, b.field2, b.field3, MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19589,11 +19588,11 @@ public fun vst4qS32(a: MutPtr, b: Int32x4x4T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst4LaneF16(a: MutPtr, b: Float16x4x4T, lane: Int) {
-    fun vst4LaneF16(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, d: Float16x4T, n: Long, ptr: MutPtr) {}
+    fun externVst4LaneF16(a1: Float16x4T, b1: Float16x4T, c: Float16x4T, d: Float16x4T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst4LaneF16(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst4LaneF16(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19603,11 +19602,11 @@ public fun vst4LaneF16(a: MutPtr, b: Float16x4x4T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst4qLaneF16(a: MutPtr, b: Float16x8x4T, lane: Int) {
-    fun vst4qLaneF16(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, d: Float16x8T, n: Long, ptr: MutPtr) {}
+    fun externVst4qLaneF16(a1: Float16x8T, b1: Float16x8T, c: Float16x8T, d: Float16x8T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst4qLaneF16(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst4qLaneF16(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19617,11 +19616,11 @@ public fun vst4qLaneF16(a: MutPtr, b: Float16x8x4T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst4LaneF32(a: MutPtr, b: Float32x2x4T, lane: Int) {
-    fun vst4LaneF32(a1: Float32x2T, b1: Float32x2T, c: Float32x2T, d: Float32x2T, n: Long, ptr: MutPtr) {}
+    fun externVst4LaneF32(a1: Float32x2T, b1: Float32x2T, c: Float32x2T, d: Float32x2T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst4LaneF32(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst4LaneF32(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19631,11 +19630,11 @@ public fun vst4LaneF32(a: MutPtr, b: Float32x2x4T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst4qLaneF32(a: MutPtr, b: Float32x4x4T, lane: Int) {
-    fun vst4qLaneF32(a1: Float32x4T, b1: Float32x4T, c: Float32x4T, d: Float32x4T, n: Long, ptr: MutPtr) {}
+    fun externVst4qLaneF32(a1: Float32x4T, b1: Float32x4T, c: Float32x4T, d: Float32x4T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst4qLaneF32(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst4qLaneF32(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19645,11 +19644,11 @@ public fun vst4qLaneF32(a: MutPtr, b: Float32x4x4T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst4LaneS8(a: MutPtr, b: Int8x8x4T, lane: Int) {
-    fun vst4LaneS8(a1: Int8x8T, b1: Int8x8T, c: Int8x8T, d: Int8x8T, n: Long, ptr: MutPtr) {}
+    fun externVst4LaneS8(a1: Int8x8T, b1: Int8x8T, c: Int8x8T, d: Int8x8T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst4LaneS8(b.field0, b.field1, b.field2, b.field3, lane.toLong(), a)
+    externVst4LaneS8(b.field0, b.field1, b.field2, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -19659,11 +19658,11 @@ public fun vst4LaneS8(a: MutPtr, b: Int8x8x4T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst4LaneS16(a: MutPtr, b: Int16x4x4T, lane: Int) {
-    fun vst4LaneS16(a1: Int16x4T, b1: Int16x4T, c: Int16x4T, d: Int16x4T, n: Long, ptr: MutPtr) {}
+    fun externVst4LaneS16(a1: Int16x4T, b1: Int16x4T, c: Int16x4T, d: Int16x4T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst4LaneS16(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst4LaneS16(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19673,11 +19672,11 @@ public fun vst4LaneS16(a: MutPtr, b: Int16x4x4T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst4qLaneS16(a: MutPtr, b: Int16x8x4T, lane: Int) {
-    fun vst4qLaneS16(a1: Int16x8T, b1: Int16x8T, c: Int16x8T, d: Int16x8T, n: Long, ptr: MutPtr) {}
+    fun externVst4qLaneS16(a1: Int16x8T, b1: Int16x8T, c: Int16x8T, d: Int16x8T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    vst4qLaneS16(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst4qLaneS16(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19687,11 +19686,11 @@ public fun vst4qLaneS16(a: MutPtr, b: Int16x8x4T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst4LaneS32(a: MutPtr, b: Int32x2x4T, lane: Int) {
-    fun vst4LaneS32(a1: Int32x2T, b1: Int32x2T, c: Int32x2T, d: Int32x2T, n: Long, ptr: MutPtr) {}
+    fun externVst4LaneS32(a1: Int32x2T, b1: Int32x2T, c: Int32x2T, d: Int32x2T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst4LaneS32(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst4LaneS32(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -19701,11 +19700,11 @@ public fun vst4LaneS32(a: MutPtr, b: Int32x2x4T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst4qLaneS32(a: MutPtr, b: Int32x4x4T, lane: Int) {
-    fun vst4qLaneS32(a1: Int32x4T, b1: Int32x4T, c: Int32x4T, d: Int32x4T, n: Long, ptr: MutPtr) {}
+    fun externVst4qLaneS32(a1: Int32x4T, b1: Int32x4T, c: Int32x4T, d: Int32x4T, n: Long, ptr: MutPtr) {}
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    vst4qLaneS32(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
+    externVst4qLaneS32(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -20133,7 +20132,7 @@ public fun vsubhnHighU64(a: Uint32x2T, b: Uint64x2T, c: Uint64x2T): Uint32x4T {
  */
 public fun vsubhnS16(a: Int16x8T, b: Int16x8T): Int8x8T {
     val c: I16x8 = Simd<Short>(listOf(8.toShort(), 8.toShort(), 8.toShort(), 8.toShort(), 8.toShort(), 8.toShort(), 8.toShort(), 8.toShort()))
-    return run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; Int8x8T() }
+    return run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = transmuteWithLayouts<I16x8, Int16x8T>(c, UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<Int16x8T>()); simdArg0 }; Int8x8T() }
 }
 
 /**
@@ -20142,7 +20141,7 @@ public fun vsubhnS16(a: Int16x8T, b: Int16x8T): Int8x8T {
  */
 public fun vsubhnS32(a: Int32x4T, b: Int32x4T): Int16x4T {
     val c: I32x4 = Simd<Int>(listOf(16, 16, 16, 16))
-    return run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; Int16x4T() }
+    return run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = transmuteWithLayouts<I32x4, Int32x4T>(c, UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<Int32x4T>()); simdArg0 }; Int16x4T() }
 }
 
 /**
@@ -20151,7 +20150,7 @@ public fun vsubhnS32(a: Int32x4T, b: Int32x4T): Int16x4T {
  */
 public fun vsubhnS64(a: Int64x2T, b: Int64x2T): Int32x2T {
     val c: I64x2 = Simd<Long>(listOf(32L, 32L))
-    return run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; Int32x2T() }
+    return run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = transmuteWithLayouts<I64x2, Int64x2T>(c, UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<Int64x2T>()); simdArg0 }; Int32x2T() }
 }
 
 /**
@@ -20160,7 +20159,7 @@ public fun vsubhnS64(a: Int64x2T, b: Int64x2T): Int32x2T {
  */
 public fun vsubhnU16(a: Uint16x8T, b: Uint16x8T): Uint8x8T {
     val c: U16x8 = Simd<UShort>(listOf(8u.toUShort(), 8u.toUShort(), 8u.toUShort(), 8u.toUShort(), 8u.toUShort(), 8u.toUShort(), 8u.toUShort(), 8u.toUShort()))
-    return run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; Uint8x8T() }
+    return run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = transmuteWithLayouts<U16x8, Uint16x8T>(c, UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<Uint16x8T>()); simdArg0 }; Uint8x8T() }
 }
 
 /**
@@ -20169,7 +20168,7 @@ public fun vsubhnU16(a: Uint16x8T, b: Uint16x8T): Uint8x8T {
  */
 public fun vsubhnU32(a: Uint32x4T, b: Uint32x4T): Uint16x4T {
     val c: U32x4 = Simd<UInt>(listOf(16u, 16u, 16u, 16u))
-    return run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; Uint16x4T() }
+    return run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = transmuteWithLayouts<U32x4, Uint32x4T>(c, UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<Uint32x4T>()); simdArg0 }; Uint16x4T() }
 }
 
 /**
@@ -20178,7 +20177,7 @@ public fun vsubhnU32(a: Uint32x4T, b: Uint32x4T): Uint16x4T {
  */
 public fun vsubhnU64(a: Uint64x2T, b: Uint64x2T): Uint32x2T {
     val c: U64x2 = Simd<ULong>(listOf(32uL, 32uL))
-    return run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; Uint32x2T() }
+    return run { val simdArg0 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }; val simdArg1 = transmuteWithLayouts<U64x2, Uint64x2T>(c, UnresolvedTypeLayout<U64x2>(), UnresolvedTypeLayout<Uint64x2T>()); simdArg0 }; Uint32x2T() }
 }
 
 /**
@@ -20343,7 +20342,7 @@ public fun vtrnF16(a: Float16x4T, b: Float16x4T): Float16x4x2T =
     run {
         val a1: Float16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); Float16x4T() }
         val b1: Float16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); Float16x4T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Float16x4x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float16x4x2T>())
     }
 
 /**
@@ -20354,7 +20353,7 @@ public fun vtrnqF16(a: Float16x8T, b: Float16x8T): Float16x8x2T =
     run {
         val a1: Float16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 2u, 10u, 4u, 12u, 6u, 14u)); Float16x8T() }
         val b1: Float16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 9u, 3u, 11u, 5u, 13u, 7u, 15u)); Float16x8T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Float16x8x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float16x8x2T>())
     }
 
 /**
@@ -20365,7 +20364,7 @@ public fun vtrnF32(a: Float32x2T, b: Float32x2T): Float32x2x2T =
     run {
         val a1: Float32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Float32x2T() }
         val b1: Float32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Float32x2T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Float32x2x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float32x2x2T>())
     }
 
 /**
@@ -20376,7 +20375,7 @@ public fun vtrnS32(a: Int32x2T, b: Int32x2T): Int32x2x2T =
     run {
         val a1: Int32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Int32x2T() }
         val b1: Int32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Int32x2T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Int32x2x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int32x2x2T>())
     }
 
 /**
@@ -20387,7 +20386,7 @@ public fun vtrnU32(a: Uint32x2T, b: Uint32x2T): Uint32x2x2T =
     run {
         val a1: Uint32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Uint32x2T() }
         val b1: Uint32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Uint32x2T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Uint32x2x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x2x2T>())
     }
 
 /**
@@ -20398,7 +20397,7 @@ public fun vtrnqF32(a: Float32x4T, b: Float32x4T): Float32x4x2T =
     run {
         val a1: Float32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); Float32x4T() }
         val b1: Float32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); Float32x4T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Float32x4x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float32x4x2T>())
     }
 
 /**
@@ -20409,7 +20408,7 @@ public fun vtrnS8(a: Int8x8T, b: Int8x8T): Int8x8x2T =
     run {
         val a1: Int8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 2u, 10u, 4u, 12u, 6u, 14u)); Int8x8T() }
         val b1: Int8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 9u, 3u, 11u, 5u, 13u, 7u, 15u)); Int8x8T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Int8x8x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int8x8x2T>())
     }
 
 /**
@@ -20420,7 +20419,7 @@ public fun vtrnqS8(a: Int8x16T, b: Int8x16T): Int8x16x2T =
     run {
         val a1: Int8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 16u, 2u, 18u, 4u, 20u, 6u, 22u, 8u, 24u, 10u, 26u, 12u, 28u, 14u, 30u)); Int8x16T() }
         val b1: Int8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 17u, 3u, 19u, 5u, 21u, 7u, 23u, 9u, 25u, 11u, 27u, 13u, 29u, 15u, 31u)); Int8x16T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Int8x16x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int8x16x2T>())
     }
 
 /**
@@ -20431,7 +20430,7 @@ public fun vtrnS16(a: Int16x4T, b: Int16x4T): Int16x4x2T =
     run {
         val a1: Int16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); Int16x4T() }
         val b1: Int16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); Int16x4T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Int16x4x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int16x4x2T>())
     }
 
 /**
@@ -20442,7 +20441,7 @@ public fun vtrnqS16(a: Int16x8T, b: Int16x8T): Int16x8x2T =
     run {
         val a1: Int16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 2u, 10u, 4u, 12u, 6u, 14u)); Int16x8T() }
         val b1: Int16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 9u, 3u, 11u, 5u, 13u, 7u, 15u)); Int16x8T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Int16x8x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int16x8x2T>())
     }
 
 /**
@@ -20453,7 +20452,7 @@ public fun vtrnqS32(a: Int32x4T, b: Int32x4T): Int32x4x2T =
     run {
         val a1: Int32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); Int32x4T() }
         val b1: Int32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); Int32x4T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Int32x4x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int32x4x2T>())
     }
 
 /**
@@ -20464,7 +20463,7 @@ public fun vtrnU8(a: Uint8x8T, b: Uint8x8T): Uint8x8x2T =
     run {
         val a1: Uint8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 2u, 10u, 4u, 12u, 6u, 14u)); Uint8x8T() }
         val b1: Uint8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 9u, 3u, 11u, 5u, 13u, 7u, 15u)); Uint8x8T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Uint8x8x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x8x2T>())
     }
 
 /**
@@ -20475,7 +20474,7 @@ public fun vtrnqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16x2T =
     run {
         val a1: Uint8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 16u, 2u, 18u, 4u, 20u, 6u, 22u, 8u, 24u, 10u, 26u, 12u, 28u, 14u, 30u)); Uint8x16T() }
         val b1: Uint8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 17u, 3u, 19u, 5u, 21u, 7u, 23u, 9u, 25u, 11u, 27u, 13u, 29u, 15u, 31u)); Uint8x16T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Uint8x16x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x16x2T>())
     }
 
 /**
@@ -20486,7 +20485,7 @@ public fun vtrnU16(a: Uint16x4T, b: Uint16x4T): Uint16x4x2T =
     run {
         val a1: Uint16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); Uint16x4T() }
         val b1: Uint16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); Uint16x4T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Uint16x4x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x4x2T>())
     }
 
 /**
@@ -20497,7 +20496,7 @@ public fun vtrnqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8x2T =
     run {
         val a1: Uint16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 2u, 10u, 4u, 12u, 6u, 14u)); Uint16x8T() }
         val b1: Uint16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 9u, 3u, 11u, 5u, 13u, 7u, 15u)); Uint16x8T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Uint16x8x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x8x2T>())
     }
 
 /**
@@ -20508,7 +20507,7 @@ public fun vtrnqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4x2T =
     run {
         val a1: Uint32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); Uint32x4T() }
         val b1: Uint32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); Uint32x4T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Uint32x4x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x4x2T>())
     }
 
 /**
@@ -20519,7 +20518,7 @@ public fun vtrnP8(a: Poly8x8T, b: Poly8x8T): Poly8x8x2T =
     run {
         val a1: Poly8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 2u, 10u, 4u, 12u, 6u, 14u)); Poly8x8T() }
         val b1: Poly8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 9u, 3u, 11u, 5u, 13u, 7u, 15u)); Poly8x8T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Poly8x8x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly8x8x2T>())
     }
 
 /**
@@ -20530,7 +20529,7 @@ public fun vtrnqP8(a: Poly8x16T, b: Poly8x16T): Poly8x16x2T =
     run {
         val a1: Poly8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 16u, 2u, 18u, 4u, 20u, 6u, 22u, 8u, 24u, 10u, 26u, 12u, 28u, 14u, 30u)); Poly8x16T() }
         val b1: Poly8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 17u, 3u, 19u, 5u, 21u, 7u, 23u, 9u, 25u, 11u, 27u, 13u, 29u, 15u, 31u)); Poly8x16T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Poly8x16x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly8x16x2T>())
     }
 
 /**
@@ -20541,7 +20540,7 @@ public fun vtrnP16(a: Poly16x4T, b: Poly16x4T): Poly16x4x2T =
     run {
         val a1: Poly16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 2u, 6u)); Poly16x4T() }
         val b1: Poly16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 5u, 3u, 7u)); Poly16x4T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Poly16x4x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly16x4x2T>())
     }
 
 /**
@@ -20552,7 +20551,7 @@ public fun vtrnqP16(a: Poly16x8T, b: Poly16x8T): Poly16x8x2T =
     run {
         val a1: Poly16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 2u, 10u, 4u, 12u, 6u, 14u)); Poly16x8T() }
         val b1: Poly16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 9u, 3u, 11u, 5u, 13u, 7u, 15u)); Poly16x8T() }
-        transmute(Pair(a1, b1))
+        transmuteWithLayouts<Any?, Poly16x8x2T>(Pair(a1, b1), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly16x8x2T>())
     }
 
 /**
@@ -20788,8 +20787,8 @@ public fun vusdotqLaneqS32(a: Int32x4T, b: Uint8x16T, c: Int8x16T, lane: Int): I
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vusdotS32)
  */
 public fun vusdotS32(a: Int32x2T, b: Uint8x8T, c: Int8x8T): Int32x2T {
-    fun vusdotS32(a1: Int32x2T, b1: Uint8x8T, c1: Int8x8T): Int32x2T = Int32x2T()
-    return vusdotS32(a, b, c)
+    fun externVusdotS32(a1: Int32x2T, b1: Uint8x8T, c1: Int8x8T): Int32x2T = Int32x2T()
+    return externVusdotS32(a, b, c)
 }
 
 /**
@@ -20797,8 +20796,8 @@ public fun vusdotS32(a: Int32x2T, b: Uint8x8T, c: Int8x8T): Int32x2T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vusdotqS32)
  */
 public fun vusdotqS32(a: Int32x4T, b: Uint8x16T, c: Int8x16T): Int32x4T {
-    fun vusdotqS32(a1: Int32x4T, b1: Uint8x16T, c1: Int8x16T): Int32x4T = Int32x4T()
-    return vusdotqS32(a, b, c)
+    fun externVusdotqS32(a1: Int32x4T, b1: Uint8x16T, c1: Int8x16T): Int32x4T = Int32x4T()
+    return externVusdotqS32(a, b, c)
 }
 
 /**
@@ -20806,8 +20805,8 @@ public fun vusdotqS32(a: Int32x4T, b: Uint8x16T, c: Int8x16T): Int32x4T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vusmmlaqS32)
  */
 public fun vusmmlaqS32(a: Int32x4T, b: Uint8x16T, c: Int8x16T): Int32x4T {
-    fun vusmmlaqS32(a1: Int32x4T, b1: Uint8x16T, c1: Int8x16T): Int32x4T = Int32x4T()
-    return vusmmlaqS32(a, b, c)
+    fun externVusmmlaqS32(a1: Int32x4T, b1: Uint8x16T, c1: Int8x16T): Int32x4T = Int32x4T()
+    return externVusmmlaqS32(a, b, c)
 }
 
 /**
@@ -20818,7 +20817,7 @@ public fun vuzpF16(a: Float16x4T, b: Float16x4T): Float16x4x2T =
     run {
         val a0: Float16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); Float16x4T() }
         val b0: Float16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); Float16x4T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Float16x4x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float16x4x2T>())
     }
 
 /**
@@ -20829,7 +20828,7 @@ public fun vuzpqF16(a: Float16x8T, b: Float16x8T): Float16x8x2T =
     run {
         val a0: Float16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); Float16x8T() }
         val b0: Float16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); Float16x8T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Float16x8x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float16x8x2T>())
     }
 
 /**
@@ -20840,7 +20839,7 @@ public fun vuzpF32(a: Float32x2T, b: Float32x2T): Float32x2x2T =
     run {
         val a0: Float32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Float32x2T() }
         val b0: Float32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Float32x2T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Float32x2x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float32x2x2T>())
     }
 
 /**
@@ -20851,7 +20850,7 @@ public fun vuzpS32(a: Int32x2T, b: Int32x2T): Int32x2x2T =
     run {
         val a0: Int32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Int32x2T() }
         val b0: Int32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Int32x2T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Int32x2x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int32x2x2T>())
     }
 
 /**
@@ -20862,7 +20861,7 @@ public fun vuzpU32(a: Uint32x2T, b: Uint32x2T): Uint32x2x2T =
     run {
         val a0: Uint32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Uint32x2T() }
         val b0: Uint32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Uint32x2T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Uint32x2x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x2x2T>())
     }
 
 /**
@@ -20873,7 +20872,7 @@ public fun vuzpqF32(a: Float32x4T, b: Float32x4T): Float32x4x2T =
     run {
         val a0: Float32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); Float32x4T() }
         val b0: Float32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); Float32x4T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Float32x4x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float32x4x2T>())
     }
 
 /**
@@ -20884,7 +20883,7 @@ public fun vuzpS8(a: Int8x8T, b: Int8x8T): Int8x8x2T =
     run {
         val a0: Int8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); Int8x8T() }
         val b0: Int8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); Int8x8T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Int8x8x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int8x8x2T>())
     }
 
 /**
@@ -20895,7 +20894,7 @@ public fun vuzpqS8(a: Int8x16T, b: Int8x16T): Int8x16x2T =
     run {
         val a0: Int8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u, 16u, 18u, 20u, 22u, 24u, 26u, 28u, 30u)); Int8x16T() }
         val b0: Int8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u, 17u, 19u, 21u, 23u, 25u, 27u, 29u, 31u)); Int8x16T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Int8x16x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int8x16x2T>())
     }
 
 /**
@@ -20906,7 +20905,7 @@ public fun vuzpS16(a: Int16x4T, b: Int16x4T): Int16x4x2T =
     run {
         val a0: Int16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); Int16x4T() }
         val b0: Int16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); Int16x4T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Int16x4x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int16x4x2T>())
     }
 
 /**
@@ -20917,7 +20916,7 @@ public fun vuzpqS16(a: Int16x8T, b: Int16x8T): Int16x8x2T =
     run {
         val a0: Int16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); Int16x8T() }
         val b0: Int16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); Int16x8T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Int16x8x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int16x8x2T>())
     }
 
 /**
@@ -20928,7 +20927,7 @@ public fun vuzpqS32(a: Int32x4T, b: Int32x4T): Int32x4x2T =
     run {
         val a0: Int32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); Int32x4T() }
         val b0: Int32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); Int32x4T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Int32x4x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int32x4x2T>())
     }
 
 /**
@@ -20939,7 +20938,7 @@ public fun vuzpU8(a: Uint8x8T, b: Uint8x8T): Uint8x8x2T =
     run {
         val a0: Uint8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); Uint8x8T() }
         val b0: Uint8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); Uint8x8T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Uint8x8x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x8x2T>())
     }
 
 /**
@@ -20950,7 +20949,7 @@ public fun vuzpqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16x2T =
     run {
         val a0: Uint8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u, 16u, 18u, 20u, 22u, 24u, 26u, 28u, 30u)); Uint8x16T() }
         val b0: Uint8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u, 17u, 19u, 21u, 23u, 25u, 27u, 29u, 31u)); Uint8x16T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Uint8x16x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x16x2T>())
     }
 
 /**
@@ -20961,7 +20960,7 @@ public fun vuzpU16(a: Uint16x4T, b: Uint16x4T): Uint16x4x2T =
     run {
         val a0: Uint16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); Uint16x4T() }
         val b0: Uint16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); Uint16x4T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Uint16x4x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x4x2T>())
     }
 
 /**
@@ -20972,7 +20971,7 @@ public fun vuzpqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8x2T =
     run {
         val a0: Uint16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); Uint16x8T() }
         val b0: Uint16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); Uint16x8T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Uint16x8x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x8x2T>())
     }
 
 /**
@@ -20983,7 +20982,7 @@ public fun vuzpqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4x2T =
     run {
         val a0: Uint32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); Uint32x4T() }
         val b0: Uint32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); Uint32x4T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Uint32x4x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x4x2T>())
     }
 
 /**
@@ -20994,7 +20993,7 @@ public fun vuzpP8(a: Poly8x8T, b: Poly8x8T): Poly8x8x2T =
     run {
         val a0: Poly8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); Poly8x8T() }
         val b0: Poly8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); Poly8x8T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Poly8x8x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly8x8x2T>())
     }
 
 /**
@@ -21005,7 +21004,7 @@ public fun vuzpqP8(a: Poly8x16T, b: Poly8x16T): Poly8x16x2T =
     run {
         val a0: Poly8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u, 16u, 18u, 20u, 22u, 24u, 26u, 28u, 30u)); Poly8x16T() }
         val b0: Poly8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u, 17u, 19u, 21u, 23u, 25u, 27u, 29u, 31u)); Poly8x16T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Poly8x16x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly8x16x2T>())
     }
 
 /**
@@ -21016,7 +21015,7 @@ public fun vuzpP16(a: Poly16x4T, b: Poly16x4T): Poly16x4x2T =
     run {
         val a0: Poly16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); Poly16x4T() }
         val b0: Poly16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); Poly16x4T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Poly16x4x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly16x4x2T>())
     }
 
 /**
@@ -21027,7 +21026,7 @@ public fun vuzpqP16(a: Poly16x8T, b: Poly16x8T): Poly16x8x2T =
     run {
         val a0: Poly16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); Poly16x8T() }
         val b0: Poly16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); Poly16x8T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Poly16x8x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly16x8x2T>())
     }
 
 /**
@@ -21038,7 +21037,7 @@ public fun vzipF16(a: Float16x4T, b: Float16x4T): Float16x4x2T =
     run {
         val a0: Float16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); Float16x4T() }
         val b0: Float16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); Float16x4T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Float16x4x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float16x4x2T>())
     }
 
 /**
@@ -21049,7 +21048,7 @@ public fun vzipqF16(a: Float16x8T, b: Float16x8T): Float16x8x2T =
     run {
         val a0: Float16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 1u, 9u, 2u, 10u, 3u, 11u)); Float16x8T() }
         val b0: Float16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 12u, 5u, 13u, 6u, 14u, 7u, 15u)); Float16x8T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Float16x8x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float16x8x2T>())
     }
 
 /**
@@ -21060,7 +21059,7 @@ public fun vzipF32(a: Float32x2T, b: Float32x2T): Float32x2x2T =
     run {
         val a0: Float32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Float32x2T() }
         val b0: Float32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Float32x2T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Float32x2x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float32x2x2T>())
     }
 
 /**
@@ -21071,7 +21070,7 @@ public fun vzipS32(a: Int32x2T, b: Int32x2T): Int32x2x2T =
     run {
         val a0: Int32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Int32x2T() }
         val b0: Int32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Int32x2T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Int32x2x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int32x2x2T>())
     }
 
 /**
@@ -21082,7 +21081,7 @@ public fun vzipU32(a: Uint32x2T, b: Uint32x2T): Uint32x2x2T =
     run {
         val a0: Uint32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u)); Uint32x2T() }
         val b0: Uint32x2T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u)); Uint32x2T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Uint32x2x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x2x2T>())
     }
 
 /**
@@ -21093,7 +21092,7 @@ public fun vzipS8(a: Int8x8T, b: Int8x8T): Int8x8x2T =
     run {
         val a0: Int8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 1u, 9u, 2u, 10u, 3u, 11u)); Int8x8T() }
         val b0: Int8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 12u, 5u, 13u, 6u, 14u, 7u, 15u)); Int8x8T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Int8x8x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int8x8x2T>())
     }
 
 /**
@@ -21104,7 +21103,7 @@ public fun vzipS16(a: Int16x4T, b: Int16x4T): Int16x4x2T =
     run {
         val a0: Int16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); Int16x4T() }
         val b0: Int16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); Int16x4T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Int16x4x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int16x4x2T>())
     }
 
 /**
@@ -21115,7 +21114,7 @@ public fun vzipU8(a: Uint8x8T, b: Uint8x8T): Uint8x8x2T =
     run {
         val a0: Uint8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 1u, 9u, 2u, 10u, 3u, 11u)); Uint8x8T() }
         val b0: Uint8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 12u, 5u, 13u, 6u, 14u, 7u, 15u)); Uint8x8T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Uint8x8x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x8x2T>())
     }
 
 /**
@@ -21126,7 +21125,7 @@ public fun vzipU16(a: Uint16x4T, b: Uint16x4T): Uint16x4x2T =
     run {
         val a0: Uint16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); Uint16x4T() }
         val b0: Uint16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); Uint16x4T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Uint16x4x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x4x2T>())
     }
 
 /**
@@ -21137,7 +21136,7 @@ public fun vzipP8(a: Poly8x8T, b: Poly8x8T): Poly8x8x2T =
     run {
         val a0: Poly8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 1u, 9u, 2u, 10u, 3u, 11u)); Poly8x8T() }
         val b0: Poly8x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 12u, 5u, 13u, 6u, 14u, 7u, 15u)); Poly8x8T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Poly8x8x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly8x8x2T>())
     }
 
 /**
@@ -21148,7 +21147,7 @@ public fun vzipP16(a: Poly16x4T, b: Poly16x4T): Poly16x4x2T =
     run {
         val a0: Poly16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); Poly16x4T() }
         val b0: Poly16x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); Poly16x4T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Poly16x4x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly16x4x2T>())
     }
 
 /**
@@ -21159,7 +21158,7 @@ public fun vzipqF32(a: Float32x4T, b: Float32x4T): Float32x4x2T =
     run {
         val a0: Float32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); Float32x4T() }
         val b0: Float32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); Float32x4T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Float32x4x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float32x4x2T>())
     }
 
 /**
@@ -21170,7 +21169,7 @@ public fun vzipqS8(a: Int8x16T, b: Int8x16T): Int8x16x2T =
     run {
         val a0: Int8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 16u, 1u, 17u, 2u, 18u, 3u, 19u, 4u, 20u, 5u, 21u, 6u, 22u, 7u, 23u)); Int8x16T() }
         val b0: Int8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 24u, 9u, 25u, 10u, 26u, 11u, 27u, 12u, 28u, 13u, 29u, 14u, 30u, 15u, 31u)); Int8x16T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Int8x16x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int8x16x2T>())
     }
 
 /**
@@ -21181,7 +21180,7 @@ public fun vzipqS16(a: Int16x8T, b: Int16x8T): Int16x8x2T =
     run {
         val a0: Int16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 1u, 9u, 2u, 10u, 3u, 11u)); Int16x8T() }
         val b0: Int16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 12u, 5u, 13u, 6u, 14u, 7u, 15u)); Int16x8T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Int16x8x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int16x8x2T>())
     }
 
 /**
@@ -21192,7 +21191,7 @@ public fun vzipqS32(a: Int32x4T, b: Int32x4T): Int32x4x2T =
     run {
         val a0: Int32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); Int32x4T() }
         val b0: Int32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); Int32x4T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Int32x4x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int32x4x2T>())
     }
 
 /**
@@ -21203,7 +21202,7 @@ public fun vzipqU8(a: Uint8x16T, b: Uint8x16T): Uint8x16x2T =
     run {
         val a0: Uint8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 16u, 1u, 17u, 2u, 18u, 3u, 19u, 4u, 20u, 5u, 21u, 6u, 22u, 7u, 23u)); Uint8x16T() }
         val b0: Uint8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 24u, 9u, 25u, 10u, 26u, 11u, 27u, 12u, 28u, 13u, 29u, 14u, 30u, 15u, 31u)); Uint8x16T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Uint8x16x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint8x16x2T>())
     }
 
 /**
@@ -21214,7 +21213,7 @@ public fun vzipqU16(a: Uint16x8T, b: Uint16x8T): Uint16x8x2T =
     run {
         val a0: Uint16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 1u, 9u, 2u, 10u, 3u, 11u)); Uint16x8T() }
         val b0: Uint16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 12u, 5u, 13u, 6u, 14u, 7u, 15u)); Uint16x8T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Uint16x8x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint16x8x2T>())
     }
 
 /**
@@ -21225,7 +21224,7 @@ public fun vzipqU32(a: Uint32x4T, b: Uint32x4T): Uint32x4x2T =
     run {
         val a0: Uint32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); Uint32x4T() }
         val b0: Uint32x4T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); Uint32x4T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Uint32x4x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Uint32x4x2T>())
     }
 
 /**
@@ -21236,7 +21235,7 @@ public fun vzipqP8(a: Poly8x16T, b: Poly8x16T): Poly8x16x2T =
     run {
         val a0: Poly8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 16u, 1u, 17u, 2u, 18u, 3u, 19u, 4u, 20u, 5u, 21u, 6u, 22u, 7u, 23u)); Poly8x16T() }
         val b0: Poly8x16T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 24u, 9u, 25u, 10u, 26u, 11u, 27u, 12u, 28u, 13u, 29u, 14u, 30u, 15u, 31u)); Poly8x16T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Poly8x16x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly8x16x2T>())
     }
 
 /**
@@ -21247,5 +21246,5 @@ public fun vzipqP16(a: Poly16x8T, b: Poly16x8T): Poly16x8x2T =
     run {
         val a0: Poly16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 8u, 1u, 9u, 2u, 10u, 3u, 11u)); Poly16x8T() }
         val b0: Poly16x8T = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 12u, 5u, 13u, 6u, 14u, 7u, 15u)); Poly16x8T() }
-        transmute(Pair(a0, b0))
+        transmuteWithLayouts<Any?, Poly16x8x2T>(Pair(a0, b0), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Poly16x8x2T>())
     }

@@ -26,7 +26,7 @@ public typealias InnerUnsized<T> = PolymorphicIter<List<MaybeUninit<T>>>
  */
 public open class IntoIter<T>(
     public var inner: InnerSized<T>,
-) : TrustedLen<Any>, Iterable<T> {
+) : TrustedLen, Iterable<T> {
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {

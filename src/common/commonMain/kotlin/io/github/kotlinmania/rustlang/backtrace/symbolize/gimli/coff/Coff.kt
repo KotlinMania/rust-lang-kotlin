@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.gimli
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmap
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.path.Path
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.stash.Stash
+import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public typealias Pe = ImageNtHeaders64

@@ -8,8 +8,9 @@ import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
@@ -387,7 +388,7 @@ public fun takeAllocErrorHook(): SetAllocErrorHookHookCallback {
     return if (hook.isNull()) {
         ::defaultAllocErrorHook
     } else {
-        transmute(hook)
+        transmuteWithLayouts<Any?, SetAllocErrorHookHookCallback>(hook, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<SetAllocErrorHookHookCallback>())
     }
 }
 
@@ -451,7 +452,7 @@ public fun rustOom(layout: Layout): Nothing =
             if (hook.isNull()) {
                 ::defaultAllocErrorHook
             } else {
-                transmute(hook)
+                transmuteWithLayouts<Any?, SetAllocErrorHookHookCallback>(hook, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<SetAllocErrorHookHookCallback>())
             }
         hook1(layout)
         abort()

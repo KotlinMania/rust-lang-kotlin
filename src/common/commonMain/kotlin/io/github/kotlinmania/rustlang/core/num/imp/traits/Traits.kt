@@ -99,8 +99,8 @@ public interface Float<T, out Int> : Div<T, T>, Neg<T>, Mul<T, T>, Add<T, T> {
     /**
      * Signed version of `EXP_SAT` since we convert a lot.
      */
-    public val INFINITE_POWER: Int
-        get() = T.EXP_SAT.toInt()
+    public val INFINITE_POWER: kotlin.Int
+        get() = ((T.EXP_SAT as Any?) as kotlin.Int)
 
     /**
      * The exponent bias value. This is also the maximum value of the exponent.
@@ -111,8 +111,8 @@ public interface Float<T, out Int> : Div<T, T>, Neg<T>, Mul<T, T>, Add<T, T> {
     /**
      * Minimum exponent value of normal values.
      */
-    public val EXP_MIN: Int
-        get() = -(T.EXP_BIAS.toInt() - 1)
+    public val EXP_MIN: kotlin.Int
+        get() = -(((T.EXP_BIAS as Any?) as kotlin.Int) - 1)
 
     /**
      * Round-to-even only happens for negative values of q
@@ -134,9 +134,9 @@ public interface Float<T, out Int> : Div<T, T>, Neg<T>, Mul<T, T>, Add<T, T> {
      * (in the 32-bit case). In both cases,the power of five(5^|q|)
      * fits in a 64-bit word.
      */
-    public val MIN_EXPONENT_ROUND_TO_EVEN: Int
+    public val MIN_EXPONENT_ROUND_TO_EVEN: kotlin.Int
 
-    public val MAX_EXPONENT_ROUND_TO_EVEN: Int
+    public val MAX_EXPONENT_ROUND_TO_EVEN: kotlin.Int
 
     /**
      * Largest decimal exponent for a non-infinite value.
@@ -144,10 +144,10 @@ public interface Float<T, out Int> : Div<T, T>, Neg<T>, Mul<T, T>, Add<T, T> {
      * This is the max exponent in binary converted to the max exponent in decimal. Allows fast
      * pathing anything larger than `10 ^ LARGEST_POWER_OF_TEN`, which will round to infinity.
      */
-    public val LARGEST_POWER_OF_TEN: Int
+    public val LARGEST_POWER_OF_TEN: kotlin.Int
         get() = run {
         val largestPow2 = T.EXP_BIAS + 1
-        pow2ToPow10(largestPow2.toLong()).toInt()
+        ((pow2ToPow10(largestPow2.toLong()) as Any?) as kotlin.Int)
     }
 
     /**
@@ -162,7 +162,7 @@ public interface Float<T, out Int> : Div<T, T>, Neg<T>, Mul<T, T>, Add<T, T> {
      * The values may be calculated using the formula. Unfortunately we cannot calculate them at
      * compile time since intermediates exceed the range of an `Double`.
      */
-    public val SMALLEST_POWER_OF_TEN: Int
+    public val SMALLEST_POWER_OF_TEN: kotlin.Int
 
     /**
      * Returns the category that this number falls into.
@@ -242,11 +242,11 @@ public val EXP_MASK: UShort = F16.EXPONENT_MASK
 
 public val SIG_MASK: UShort = F16.MANTISSA_MASK
 
-public val MIN_EXPONENT_ROUND_TO_EVEN: Int = -22
+public val MIN_EXPONENT_ROUND_TO_EVEN: kotlin.Int = -22
 
-public val MAX_EXPONENT_ROUND_TO_EVEN: Int = 5
+public val MAX_EXPONENT_ROUND_TO_EVEN: kotlin.Int = 5
 
-public val SMALLEST_POWER_OF_TEN: Int = -27
+public val SMALLEST_POWER_OF_TEN: kotlin.Int = -27
 
 public fun F16.toBitsFloat(): UShort = this.toBits()
 
@@ -270,11 +270,11 @@ public val EXP_MASK1: UInt = kotlin.Float.EXPONENT_MASK
 
 public val SIG_MASK1: UInt = kotlin.Float.MANTISSA_MASK
 
-public val MIN_EXPONENT_ROUND_TO_EVEN1: Int = -17
+public val MIN_EXPONENT_ROUND_TO_EVEN1: kotlin.Int = -17
 
-public val MAX_EXPONENT_ROUND_TO_EVEN1: Int = 10
+public val MAX_EXPONENT_ROUND_TO_EVEN1: kotlin.Int = 10
 
-public val SMALLEST_POWER_OF_TEN1: Int = -65
+public val SMALLEST_POWER_OF_TEN1: kotlin.Int = -65
 
 public fun kotlin.Float.toBitsFloat(): UInt = this.toRawBits().toUInt()
 
@@ -298,11 +298,11 @@ public val EXP_MASK2: ULong = Double.EXPONENT_MASK
 
 public val SIG_MASK2: ULong = Double.MANTISSA_MASK
 
-public val MIN_EXPONENT_ROUND_TO_EVEN2: Int = -4
+public val MIN_EXPONENT_ROUND_TO_EVEN2: kotlin.Int = -4
 
-public val MAX_EXPONENT_ROUND_TO_EVEN2: Int = 23
+public val MAX_EXPONENT_ROUND_TO_EVEN2: kotlin.Int = 23
 
-public val SMALLEST_POWER_OF_TEN2: Int = -342
+public val SMALLEST_POWER_OF_TEN2: kotlin.Int = -342
 
 public fun Double.toBitsFloat(): ULong = this.toRawBits().toULong()
 

@@ -8,7 +8,6 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -67,7 +66,7 @@ public fun mm256AbsEpi32(a: M256i): M256i =
     run {
         val a1 = a.asI32x8()
         val r = run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = Simd<Int>(List(8) { 0 }); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<M32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M32x8>()).alignBytes)); val res = (UnresolvedTypeLayout<M32x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<M32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M32x8>()).alignBytes)); res } }; val simdArg1 = run { val simdArg0 = a1; simdArg0 }; val simdArg2 = a1; simdArg1 }
-        transmute(r)
+        transmuteWithLayouts<Any?, M256i>(r, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -79,7 +78,7 @@ public fun mm256AbsEpi16(a: M256i): M256i =
     run {
         val a1 = a.asI16x16()
         val r = run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = Simd<Short>(List(16) { 0.toShort() }); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<M16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M16x16>()).alignBytes)); val res = (UnresolvedTypeLayout<M16x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<M16x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M16x16>()).alignBytes)); res } }; val simdArg1 = run { val simdArg0 = a1; simdArg0 }; val simdArg2 = a1; simdArg1 }
-        transmute(r)
+        transmuteWithLayouts<Any?, M256i>(r, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -91,7 +90,7 @@ public fun mm256AbsEpi8(a: M256i): M256i =
     run {
         val a1 = a.asI8x32()
         val r = run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = Simd<Byte>(List(32) { 0.toByte() }); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<M8x32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M8x32>()).alignBytes)); val res = (UnresolvedTypeLayout<M8x32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<M8x32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M8x32>()).alignBytes)); res } }; val simdArg1 = run { val simdArg0 = a1; simdArg0 }; val simdArg2 = a1; simdArg1 }
-        transmute(r)
+        transmuteWithLayouts<Any?, M256i>(r, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -99,56 +98,56 @@ public fun mm256AbsEpi8(a: M256i): M256i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_add_epi64)
  */
-public fun mm256AddEpi64(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI64x4(); val simdArg1 = b.asI64x4(); simdArg0 })
+public fun mm256AddEpi64(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI64x4(); val simdArg1 = b.asI64x4(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Adds packed 32-bit integers in `a` and `b`.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_add_epi32)
  */
-public fun mm256AddEpi32(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI32x8(); val simdArg1 = b.asI32x8(); simdArg0 })
+public fun mm256AddEpi32(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI32x8(); val simdArg1 = b.asI32x8(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Adds packed 16-bit integers in `a` and `b`.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_add_epi16)
  */
-public fun mm256AddEpi16(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI16x16(); val simdArg1 = b.asI16x16(); simdArg0 })
+public fun mm256AddEpi16(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI16x16(); val simdArg1 = b.asI16x16(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Adds packed 8-bit integers in `a` and `b`.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_add_epi8)
  */
-public fun mm256AddEpi8(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI8x32(); val simdArg1 = b.asI8x32(); simdArg0 })
+public fun mm256AddEpi8(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI8x32(); val simdArg1 = b.asI8x32(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Adds packed 8-bit integers in `a` and `b` using saturation.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_adds_epi8)
  */
-public fun mm256AddsEpi8(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI8x32(); val simdArg1 = b.asI8x32(); simdArg0 })
+public fun mm256AddsEpi8(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI8x32(); val simdArg1 = b.asI8x32(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Adds packed 16-bit integers in `a` and `b` using saturation.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_adds_epi16)
  */
-public fun mm256AddsEpi16(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI16x16(); val simdArg1 = b.asI16x16(); simdArg0 })
+public fun mm256AddsEpi16(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI16x16(); val simdArg1 = b.asI16x16(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Adds packed unsigned 8-bit integers in `a` and `b` using saturation.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_adds_epu8)
  */
-public fun mm256AddsEpu8(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asU8x32(); val simdArg1 = b.asU8x32(); simdArg0 })
+public fun mm256AddsEpu8(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asU8x32(); val simdArg1 = b.asU8x32(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Adds packed unsigned 16-bit integers in `a` and `b` using saturation.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_adds_epu16)
  */
-public fun mm256AddsEpu16(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asU16x16(); val simdArg1 = b.asU16x16(); simdArg0 })
+public fun mm256AddsEpu16(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asU16x16(); val simdArg1 = b.asU16x16(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Concatenates pairs of 16-byte blocks in `a` and `b` into a 32-byte temporary
@@ -183,7 +182,7 @@ public fun mm256AlignrEpi8(a: M256i, b: M256i, imm8: Int): M256i {
             Pair(a, b)
         }
     if (imm8 == 16) {
-        return transmute(a1)
+        return transmuteWithLayouts<Any?, M256i>(a1, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
     return run {
         val r: I8x32 = run { val simdArg0 = b1.asI8x32(); val simdArg1 = a1.asI8x32(); val simdArg2 = SimdShuffleIdx(uintArrayOf(mask(imm8.toUInt(), 0u), mask(imm8.toUInt(), 1u), mask(imm8.toUInt(), 2u), mask(imm8.toUInt(), 3u), mask(imm8.toUInt(), 4u), mask(imm8.toUInt(), 5u), mask(imm8.toUInt(), 6u), mask(imm8.toUInt(), 7u), mask(imm8.toUInt(), 8u), mask(imm8.toUInt(), 9u), mask(imm8.toUInt(), 10u), mask(imm8.toUInt(), 11u), mask(imm8.toUInt(), 12u), mask(imm8.toUInt(), 13u), mask(imm8.toUInt(), 14u), mask(imm8.toUInt(), 15u), mask(imm8.toUInt(), 16u), mask(imm8.toUInt(), 17u), mask(imm8.toUInt(), 18u), mask(imm8.toUInt(), 19u), mask(imm8.toUInt(), 20u), mask(imm8.toUInt(), 21u), mask(imm8.toUInt(), 22u), mask(imm8.toUInt(), 23u), mask(imm8.toUInt(), 24u), mask(imm8.toUInt(), 25u), mask(imm8.toUInt(), 26u), mask(imm8.toUInt(), 27u), mask(imm8.toUInt(), 28u), mask(imm8.toUInt(), 29u), mask(imm8.toUInt(), 30u), mask(imm8.toUInt(), 31u))); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I8x32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x32>()).alignBytes)); val res = (UnresolvedTypeLayout<I8x32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I8x32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x32>()).alignBytes)); res } }
@@ -197,7 +196,7 @@ public fun mm256AlignrEpi8(a: M256i, b: M256i, imm8: Int): M256i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_and_si256)
  */
-public fun mm256AndSi256(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI64x4(); val simdArg1 = b.asI64x4(); simdArg0 })
+public fun mm256AndSi256(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI64x4(); val simdArg1 = b.asI64x4(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Computes the bitwise NOT of 256 bits (representing integer data)
@@ -208,7 +207,7 @@ public fun mm256AndSi256(a: M256i, b: M256i): M256i = transmute(run { val simdAr
 public fun mm256AndnotSi256(a: M256i, b: M256i): M256i =
     run {
         val allOnes = mm256Set1Epi8((-1).toByte())
-        transmute(run { val simdArg0 = run { val simdArg0 = a.asI64x4(); val simdArg1 = allOnes.asI64x4(); simdArg0 }; val simdArg1 = b.asI64x4(); simdArg0 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = run { val simdArg0 = a.asI64x4(); val simdArg1 = allOnes.asI64x4(); simdArg0 }; val simdArg1 = b.asI64x4(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -284,7 +283,7 @@ public fun mm256BlendEpi16(a: M256i, b: M256i, imm8: Int): M256i {
 public fun mm256BlendvEpi8(a: M256i, b: M256i, mask: M256i): M256i =
     run {
         val mask1: I8x32 = run { val simdArg0 = mask.asI8x32(); val simdArg1 = Simd<Byte>(List(32) { 0.toByte() }); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I8x32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x32>()).alignBytes)); val res = (UnresolvedTypeLayout<I8x32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I8x32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x32>()).alignBytes)); res } }
-        transmute(run { val simdArg0 = mask1; val simdArg1 = b.asI8x32(); val simdArg2 = a.asI8x32(); simdArg1 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = mask1; val simdArg1 = b.asI8x32(); val simdArg2 = a.asI8x32(); simdArg1 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -1612,7 +1611,7 @@ public fun mm256MulEpi32(a: M256i, b: M256i): M256i =
     run {
         val a1 = run { val simdArg0 = run { val simdArg0 = a.asI64x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I64x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I64x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I64x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x4>()).alignBytes)); res } }
         val b1 = run { val simdArg0 = run { val simdArg0 = b.asI64x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I64x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I64x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I64x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x4>()).alignBytes)); res } }
-        transmute(run { val simdArg0 = a1; val simdArg1 = b1; simdArg0 })
+        transmuteWithLayouts<I64x4, M256i>(run { val simdArg0 = a1; val simdArg1 = b1; simdArg0 }, UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -1628,7 +1627,7 @@ public fun mm256MulEpu32(a: M256i, b: M256i): M256i =
         val a1 = a.asU64x4()
         val b1 = b.asU64x4()
         val mask = Simd<ULong>(List(4) { UInt.MAX_VALUE.toULong() })
-        transmute(run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = mask; simdArg0 }; val simdArg1 = run { val simdArg0 = b1; val simdArg1 = mask; simdArg0 }; simdArg0 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = mask; simdArg0 }; val simdArg1 = run { val simdArg0 = b1; val simdArg1 = mask; simdArg0 }; simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 
 /**
@@ -1656,7 +1655,7 @@ public fun mm256MulhiEpu16(a: M256i, b: M256i): M256i = transmuteWithLayouts<U16
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mullo_epi16)
  */
-public fun mm256MulloEpi16(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI16x16(); val simdArg1 = b.asI16x16(); simdArg0 })
+public fun mm256MulloEpi16(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI16x16(); val simdArg1 = b.asI16x16(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiplies the packed 32-bit integers in `a` and `b`, producing
@@ -1665,7 +1664,7 @@ public fun mm256MulloEpi16(a: M256i, b: M256i): M256i = transmute(run { val simd
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mullo_epi32)
  */
-public fun mm256MulloEpi32(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI32x8(); val simdArg1 = b.asI32x8(); simdArg0 })
+public fun mm256MulloEpi32(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI32x8(); val simdArg1 = b.asI32x8(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Multiplies packed 16-bit integers in `a` and `b`, producing
@@ -1683,7 +1682,7 @@ public fun mm256MulhrsEpi16(a: M256i, b: M256i): M256i = transmuteWithLayouts<I1
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_or_si256)
  */
-public fun mm256OrSi256(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI32x8(); val simdArg1 = b.asI32x8(); simdArg0 })
+public fun mm256OrSi256(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI32x8(); val simdArg1 = b.asI32x8(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Converts packed 16-bit integers from `a` and `b` to packed 8-bit integers
@@ -1952,7 +1951,7 @@ public fun mm256SlliEpi16(a: M256i, imm8: Int): M256i {
     return if (imm8 >= 16) {
         mm256SetzeroSi256()
     } else {
-        transmute(run { val simdArg0 = a.asU16x16(); val simdArg1 = Simd<UShort>(List(16) { imm8.toUShort() }); simdArg0 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asU16x16(); val simdArg1 = Simd<UShort>(List(16) { imm8.toUShort() }); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 }
 
@@ -1970,7 +1969,7 @@ public fun mm256SlliEpi32(a: M256i, imm8: Int): M256i =
         if (imm8 >= 32) {
             mm256SetzeroSi256()
         } else {
-            transmute(run { val simdArg0 = a.asU32x8(); val simdArg1 = Simd<UInt>(List(8) { imm8.toUInt() }); simdArg0 })
+            transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asU32x8(); val simdArg1 = Simd<UInt>(List(8) { imm8.toUInt() }); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
         }
     }
 
@@ -1988,7 +1987,7 @@ public fun mm256SlliEpi64(a: M256i, imm8: Int): M256i =
         if (imm8 >= 64) {
             mm256SetzeroSi256()
         } else {
-            transmute(run { val simdArg0 = a.asU64x4(); val simdArg1 = Simd<ULong>(List(4) { imm8.toULong() }); simdArg0 })
+            transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asU64x4(); val simdArg1 = Simd<ULong>(List(4) { imm8.toULong() }); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
         }
     }
 
@@ -2090,7 +2089,7 @@ public fun mm256SraiEpi16(a: M256i, imm8: Int): M256i {
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(run { val simdArg0 = a.asI16x16(); val simdArg1 = Simd<Short>(List(16) { imm8.min(15).toShort() }); simdArg0 })
+    return transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI16x16(); val simdArg1 = Simd<Short>(List(16) { imm8.min(15).toShort() }); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 }
 
 /**
@@ -2103,7 +2102,7 @@ public fun mm256SraiEpi32(a: M256i, imm8: Int): M256i {
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute(run { val simdArg0 = a.asI32x8(); val simdArg1 = Simd<Int>(List(8) { imm8.min(31).toInt() }); simdArg0 })
+    return transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI32x8(); val simdArg1 = Simd<Int>(List(8) { imm8.min(31).toInt() }); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 }
 
 /**
@@ -2195,7 +2194,7 @@ public fun mm256SrliEpi16(a: M256i, imm8: Int): M256i {
     return if (imm8 >= 16) {
         mm256SetzeroSi256()
     } else {
-        transmute(run { val simdArg0 = a.asU16x16(); val simdArg1 = Simd<UShort>(List(16) { imm8.toUShort() }); simdArg0 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asU16x16(); val simdArg1 = Simd<UShort>(List(16) { imm8.toUShort() }); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 }
 
@@ -2212,7 +2211,7 @@ public fun mm256SrliEpi32(a: M256i, imm8: Int): M256i {
     return if (imm8 >= 32) {
         mm256SetzeroSi256()
     } else {
-        transmute(run { val simdArg0 = a.asU32x8(); val simdArg1 = Simd<UInt>(List(8) { imm8.toUInt() }); simdArg0 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asU32x8(); val simdArg1 = Simd<UInt>(List(8) { imm8.toUInt() }); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 }
 
@@ -2229,7 +2228,7 @@ public fun mm256SrliEpi64(a: M256i, imm8: Int): M256i {
     return if (imm8 >= 64) {
         mm256SetzeroSi256()
     } else {
-        transmute(run { val simdArg0 = a.asU64x4(); val simdArg1 = Simd<ULong>(List(4) { imm8.toULong() }); simdArg0 })
+        transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asU64x4(); val simdArg1 = Simd<ULong>(List(4) { imm8.toULong() }); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
     }
 }
 
@@ -2283,28 +2282,28 @@ public fun mm256StreamLoadSi256(memAddr: ConstPtr): M256i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_sub_epi16)
  */
-public fun mm256SubEpi16(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI16x16(); val simdArg1 = b.asI16x16(); simdArg0 })
+public fun mm256SubEpi16(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI16x16(); val simdArg1 = b.asI16x16(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Subtract packed 32-bit integers in `b` from packed 32-bit integers in `a`
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_sub_epi32)
  */
-public fun mm256SubEpi32(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI32x8(); val simdArg1 = b.asI32x8(); simdArg0 })
+public fun mm256SubEpi32(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI32x8(); val simdArg1 = b.asI32x8(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Subtract packed 64-bit integers in `b` from packed 64-bit integers in `a`
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_sub_epi64)
  */
-public fun mm256SubEpi64(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI64x4(); val simdArg1 = b.asI64x4(); simdArg0 })
+public fun mm256SubEpi64(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI64x4(); val simdArg1 = b.asI64x4(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Subtract packed 8-bit integers in `b` from packed 8-bit integers in `a`
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_sub_epi8)
  */
-public fun mm256SubEpi8(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI8x32(); val simdArg1 = b.asI8x32(); simdArg0 })
+public fun mm256SubEpi8(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI8x32(); val simdArg1 = b.asI8x32(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Subtract packed 16-bit integers in `b` from packed 16-bit integers in
@@ -2312,7 +2311,7 @@ public fun mm256SubEpi8(a: M256i, b: M256i): M256i = transmute(run { val simdArg
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_subs_epi16)
  */
-public fun mm256SubsEpi16(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI16x16(); val simdArg1 = b.asI16x16(); simdArg0 })
+public fun mm256SubsEpi16(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI16x16(); val simdArg1 = b.asI16x16(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Subtract packed 8-bit integers in `b` from packed 8-bit integers in
@@ -2320,7 +2319,7 @@ public fun mm256SubsEpi16(a: M256i, b: M256i): M256i = transmute(run { val simdA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_subs_epi8)
  */
-public fun mm256SubsEpi8(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI8x32(); val simdArg1 = b.asI8x32(); simdArg0 })
+public fun mm256SubsEpi8(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI8x32(); val simdArg1 = b.asI8x32(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Subtract packed unsigned 16-bit integers in `b` from packed 16-bit
@@ -2328,7 +2327,7 @@ public fun mm256SubsEpi8(a: M256i, b: M256i): M256i = transmute(run { val simdAr
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_subs_epu16)
  */
-public fun mm256SubsEpu16(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asU16x16(); val simdArg1 = b.asU16x16(); simdArg0 })
+public fun mm256SubsEpu16(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asU16x16(); val simdArg1 = b.asU16x16(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Subtract packed unsigned 8-bit integers in `b` from packed 8-bit
@@ -2336,7 +2335,7 @@ public fun mm256SubsEpu16(a: M256i, b: M256i): M256i = transmute(run { val simdA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_subs_epu8)
  */
-public fun mm256SubsEpu8(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asU8x32(); val simdArg1 = b.asU8x32(); simdArg0 })
+public fun mm256SubsEpu8(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asU8x32(); val simdArg1 = b.asU8x32(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Unpacks and interleave 8-bit integers from the high half of each
@@ -2520,7 +2519,7 @@ public fun mm256UnpackloEpi64(a: M256i, b: M256i): M256i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_xor_si256)
  */
-public fun mm256XorSi256(a: M256i, b: M256i): M256i = transmute(run { val simdArg0 = a.asI64x4(); val simdArg1 = b.asI64x4(); simdArg0 })
+public fun mm256XorSi256(a: M256i, b: M256i): M256i = transmuteWithLayouts<Any?, M256i>(run { val simdArg0 = a.asI64x4(); val simdArg1 = b.asI64x4(); simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256i>())
 
 // This intrinsic has no corresponding instruction.
 

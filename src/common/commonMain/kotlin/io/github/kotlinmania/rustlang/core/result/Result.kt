@@ -1,6 +1,8 @@
 // port-lint: source result.rs
 package io.github.kotlinmania.rustlang.core.result
 
+import io.github.kotlinmania.rustlang.core.convert.From
+import io.github.kotlinmania.rustlang.core.convert.from
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
 import io.github.kotlinmania.rustlang.core.mem.forget

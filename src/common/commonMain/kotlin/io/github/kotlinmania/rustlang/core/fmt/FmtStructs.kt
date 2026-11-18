@@ -3,6 +3,8 @@
 package io.github.kotlinmania.rustlang.core.fmt
 
 import io.github.kotlinmania.rustlang.core.cmp.min
+import io.github.kotlinmania.rustlang.core.convert.num.from
+import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugList
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugMap
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugSet
@@ -20,7 +22,6 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.imp.fmt.Formatted
 import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
@@ -1722,7 +1723,7 @@ public open class Arguments internal constructor(
          */
         public fun fromStr(s: String): Arguments {
             // SAFETY: This is the "static str" representation of fmt.Arguments; see above.
-            return Arguments(template = transmuteWithLayouts<ConstPtr, NonNull>(s.asPtr(), PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<NonNull>()), args = transmute(s.length shl 1 or 1))
+            return Arguments(template = transmuteWithLayouts<ConstPtr, NonNull>(s.asPtr(), PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<NonNull>()), args = transmuteWithLayouts<Any?, NonNull>(s.length shl 1 or 1, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<NonNull>()))
         }
     }
 }

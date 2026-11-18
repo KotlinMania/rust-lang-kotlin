@@ -1236,6 +1236,10 @@ public operator fun <T> List<T>.component11(): T = this[10]
 
 public operator fun <T> List<T>.component12(): T = this[11]
 
+public fun <T> addrOf(value: T): ConstPtr = constPtrFromRustCast(value)
+
+public fun <T> addrOfMut(value: T): MutPtr = mutPtrFromRustCast(value)
+
 public object PrimitiveArrayLayouts {
     private fun <A> arrayToBitsU64(
         layout: TypeLayout<A>,

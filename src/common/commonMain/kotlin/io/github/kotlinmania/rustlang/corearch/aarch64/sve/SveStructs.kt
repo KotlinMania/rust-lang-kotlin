@@ -25,9 +25,15 @@ public open class SvboolT(
         return convertFromSvbool(this)
     }
 
-    public open fun sveIntoSvbool4T(): Svbool4T = convertFromSvbool(this)
+    public open fun sveIntoSvbool4T(): Svbool4T {
+        fun convertFromSvbool(b: SvboolT): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (Svbool4T.typeLayout()).sizeBytes), maxOf(1L, (Svbool4T.typeLayout()).alignBytes)); val res = (Svbool4T.typeLayout()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (Svbool4T.typeLayout()).sizeBytes), maxOf(1L, (Svbool4T.typeLayout()).alignBytes)); res }
+        return convertFromSvbool(this)
+    }
 
-    public open fun sveIntoSvbool8T(): Svbool8T = convertFromSvbool(this)
+    public open fun sveIntoSvbool8T(): Svbool8T {
+        fun convertFromSvbool(b: SvboolT): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (Svbool8T.typeLayout()).sizeBytes), maxOf(1L, (Svbool8T.typeLayout()).alignBytes)); val res = (Svbool8T.typeLayout()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (Svbool8T.typeLayout()).sizeBytes), maxOf(1L, (Svbool8T.typeLayout()).alignBytes)); res }
+        return convertFromSvbool(this)
+    }
 
     public companion object {
         public fun typeLayout(): TypeLayout<SvboolT> =
@@ -2078,7 +2084,10 @@ public open class Svbool4T(
 
     public open fun clone(): Svbool4T = Svbool4T(value)
 
-    public override fun sveInto(): SvboolT = convertToSvbool(this)
+    public override fun sveInto(): SvboolT {
+        fun convertToSvbool(b: Svbool4T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (SvboolT.typeLayout()).sizeBytes), maxOf(1L, (SvboolT.typeLayout()).alignBytes)); val res = (SvboolT.typeLayout()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (SvboolT.typeLayout()).sizeBytes), maxOf(1L, (SvboolT.typeLayout()).alignBytes)); res }
+        return convertToSvbool(this)
+    }
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svbool4T> =
@@ -2114,7 +2123,10 @@ public open class Svbool8T(
 
     public open fun clone(): Svbool8T = Svbool8T(value)
 
-    public override fun sveInto(): SvboolT = convertToSvbool(this)
+    public override fun sveInto(): SvboolT {
+        fun convertToSvbool(b: Svbool8T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (SvboolT.typeLayout()).sizeBytes), maxOf(1L, (SvboolT.typeLayout()).alignBytes)); val res = (SvboolT.typeLayout()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (SvboolT.typeLayout()).sizeBytes), maxOf(1L, (SvboolT.typeLayout()).alignBytes)); res }
+        return convertToSvbool(this)
+    }
 
     public companion object {
         public fun typeLayout(): TypeLayout<Svbool8T> =

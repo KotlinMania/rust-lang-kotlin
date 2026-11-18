@@ -88,7 +88,7 @@ public fun <T> fromBoxTSlice(slice: MutableList<T>): List<T> = List.from(slice)
  * println("$boxed")
  * ```
  */
-public fun fromBoxString(s: String): String = Box.cloneFromRef(s)
+public fun String.Companion.from(s: String): String = Box.cloneFromRef(s)
 
 /**
  * Converts a `Holder<String>` into a `Holder<[UByte]>`

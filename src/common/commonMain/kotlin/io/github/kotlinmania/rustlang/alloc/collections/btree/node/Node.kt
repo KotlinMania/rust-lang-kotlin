@@ -8,10 +8,13 @@ import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.Dropper
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.addrOf
+import io.github.kotlinmania.rustlang.core.mem.addrOfMut
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.replace
@@ -1706,9 +1709,9 @@ public fun <K, V> Handle<NodeRef<Mut, K, V, LeafOrInternal>, Edge>.moveSuffix(ri
     }
 }
 
-public sealed class ForceResult<Leaf, Internal> {
-    public data class Leaf<Leaf, Internal>(public var value: Leaf) : ForceResult<Leaf, Internal>()
-    public data class Internal<Leaf, Internal>(public var value: Internal) : ForceResult<Leaf, Internal>()
+public sealed class ForceResult<LeafParam, InternalParam> {
+    public data class Leaf<LeafParam, InternalParam>(public var value: LeafParam) : ForceResult<LeafParam, InternalParam>()
+    public data class Internal<LeafParam, InternalParam>(public var value: InternalParam) : ForceResult<LeafParam, InternalParam>()
 }
 
 /**

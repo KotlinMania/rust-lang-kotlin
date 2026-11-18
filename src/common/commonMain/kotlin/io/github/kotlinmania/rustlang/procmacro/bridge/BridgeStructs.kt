@@ -12,6 +12,8 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream
 import io.github.kotlinmania.rustlang.procmacro.bridge.closure.Closure
 import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.Decode
 import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.Encode
+import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.decode
+import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.encode
 import io.github.kotlinmania.rustlang.procmacro.bridge.symbol.Symbol
 import io.github.kotlinmania.rustlang.procmacro.diagnostic.Level
 

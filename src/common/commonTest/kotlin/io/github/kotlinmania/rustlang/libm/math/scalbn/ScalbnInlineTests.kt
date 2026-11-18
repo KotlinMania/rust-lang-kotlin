@@ -8,7 +8,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 
 // Tests against N3220
-public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> specTest(f: (F, Int) -> F) {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> specTest(f: (F, kotlin.Int) -> F) {
     run {
         val l = f(F.NEG_ZERO, 10)
         val r = F.NEG_ZERO

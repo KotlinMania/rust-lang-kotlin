@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.withAddr
+import io.github.kotlinmania.rustlang.core.result.Result
 
 // A minimal arena allocator inspired by `rustcArena.DroplessArena`.
 //

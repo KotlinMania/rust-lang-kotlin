@@ -7,7 +7,6 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8
@@ -32,7 +31,7 @@ public fun mmAbsEpi8(a: M128i): M128i =
         val a1 = a.asI8x16()
         val zero = Simd<Byte>(List(16) { 0.toByte() })
         val r = run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = zero; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<M8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<M8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<M8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M8x16>()).alignBytes)); res } }; val simdArg1 = run { val simdArg0 = a1; simdArg0 }; val simdArg2 = a1; simdArg1 }
-        transmute(r)
+        transmuteWithLayouts<Any?, M128i>(r, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -47,7 +46,7 @@ public fun mmAbsEpi16(a: M128i): M128i =
         val a1 = a.asI16x8()
         val zero = Simd<Short>(List(8) { 0.toShort() })
         val r = run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = zero; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<M16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<M16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<M16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M16x8>()).alignBytes)); res } }; val simdArg1 = run { val simdArg0 = a1; simdArg0 }; val simdArg2 = a1; simdArg1 }
-        transmute(r)
+        transmuteWithLayouts<Any?, M128i>(r, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**
@@ -62,7 +61,7 @@ public fun mmAbsEpi32(a: M128i): M128i =
         val a1 = a.asI32x4()
         val zero = Simd<Int>(List(4) { 0 })
         val r = run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = zero; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<M32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<M32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<M32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M32x4>()).alignBytes)); res } }; val simdArg1 = run { val simdArg0 = a1; simdArg0 }; val simdArg2 = a1; simdArg1 }
-        transmute(r)
+        transmuteWithLayouts<Any?, M128i>(r, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
     }
 
 /**

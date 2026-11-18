@@ -22,6 +22,7 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asUninitSliceMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.sort.unstable.sort

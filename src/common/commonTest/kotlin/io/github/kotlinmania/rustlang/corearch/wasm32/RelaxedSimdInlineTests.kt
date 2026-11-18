@@ -3,8 +3,8 @@
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
+import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.corearch.simd.F32x4
 import io.github.kotlinmania.rustlang.corearch.simd.F64x2
@@ -16,7 +16,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 public fun compareBytes(a: V128, b: List<V128>) {
     val a1: UByteArray = transmuteWithLayouts<V128, UByteArray>(a, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
     if (b.any({ b1 ->
-        val b2: UByteArray = transmute(b1)
+        val b2: UByteArray = transmuteWithLayouts<Any?, UByteArray>(b1, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<UByteArray>())
         a1.contentEquals(b2)
     })) {
         return

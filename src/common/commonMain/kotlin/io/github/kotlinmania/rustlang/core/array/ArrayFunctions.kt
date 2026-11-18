@@ -3,11 +3,14 @@ package io.github.kotlinmania.rustlang.core.array
 import io.github.kotlinmania.rustlang.core.array.drain.Drain
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.hash.hash
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatn.repeatN
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.addrOf
+import io.github.kotlinmania.rustlang.core.mem.addrOfMut
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
@@ -17,6 +20,8 @@ import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
+import io.github.kotlinmania.rustlang.core.ops.index.index
+import io.github.kotlinmania.rustlang.core.ops.index.indexMut
 import io.github.kotlinmania.rustlang.core.ops.trytrait.ChangeOutputType
 import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
@@ -835,7 +840,7 @@ public fun <I : Iterator<T>, T> I.specNextChunk(n: Int): Result<List<T>, IntoIte
     } }
 }
 
-public fun <Item, I, T> I.specNextChunkTN(n: Int): Result<List<T>, IntoIter<T>> where I : Iterator<T>, I : TrustedLen<Item> {
+public fun <I, T> I.specNextChunkTN(n: Int): Result<List<T>, IntoIter<T>> where I : Iterator<T>, I : TrustedLen {
     val len = this.sizeHint().first
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     return if (len < n) {
@@ -864,7 +869,7 @@ public fun <I, T> I.specNextChunkBack(n: Int): Result<List<T>, IntoIter<T>> {
     } }
 }
 
-public fun <Item, I : TrustedLen<Item>, T> I.specNextChunkBackTN(n: Int): Result<List<T>, IntoIter<T>> {
+public fun <I : TrustedLen, T> I.specNextChunkBackTN(n: Int): Result<List<T>, IntoIter<T>> {
     val len = this.sizeHint().first
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     return if (len < n) {

@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.iter.traits.iterator
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.array.iterNextChunk
 import io.github.kotlinmania.rustlang.core.cmp.KeyAndValue
+import io.github.kotlinmania.rustlang.core.cmp.Ord
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
@@ -44,6 +45,7 @@ import io.github.kotlinmania.rustlang.core.iter.traits.accum.Product
 import io.github.kotlinmania.rustlang.core.iter.traits.accum.Sum
 import io.github.kotlinmania.rustlang.core.iter.traits.accum.product
 import io.github.kotlinmania.rustlang.core.iter.traits.accum.sum
+import io.github.kotlinmania.rustlang.core.iter.traits.collect.FromIterator
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -3426,7 +3428,7 @@ public interface SpecIterEq<B : Iterator<B, Item>, Item, T, Item> : Iterator<T, 
 
 public fun <Item, A : Iterator<A, Item>, B : Iterator<B, Item>> A.specIterEq(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean = iterEq(this, b, f)
 
-public fun <Item, A, B> A.specIterEqB(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean where A : Iterator<A, Item>, A : TrustedLen<Item>, B : Iterator<B, Item>, B : TrustedLen<Item> {
+public fun <Item, A, B> A.specIterEqB(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean where A : Iterator<A, Item>, A : TrustedLen, B : Iterator<B, Item>, B : TrustedLen {
     // we *can't* short-circuit if:
     run {
         val matchVal = Pair(this.sizeHint(), b.sizeHint())

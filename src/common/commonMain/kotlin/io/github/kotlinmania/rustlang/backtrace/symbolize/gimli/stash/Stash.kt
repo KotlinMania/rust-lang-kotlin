@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.stash
 
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmapfake.Mmap
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
  * A simple arena allocator for byte buffers.

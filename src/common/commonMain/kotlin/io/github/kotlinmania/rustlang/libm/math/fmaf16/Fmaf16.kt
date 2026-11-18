@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.libm.math.fmaf16
 
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopysignf32
 import io.github.kotlinmania.rustlang.core.num.f16.isSignNegative
 import io.github.kotlinmania.rustlang.core.num.leadingZeros

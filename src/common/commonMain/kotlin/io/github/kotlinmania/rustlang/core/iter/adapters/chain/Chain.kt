@@ -1,6 +1,7 @@
 // port-lint: source iter/adapters/chain.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.chain
 
+import io.github.kotlinmania.rustlang.core.default.default
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try

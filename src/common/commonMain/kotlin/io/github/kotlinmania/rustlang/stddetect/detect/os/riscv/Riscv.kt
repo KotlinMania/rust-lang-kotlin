@@ -3,7 +3,7 @@
 
 package io.github.kotlinmania.rustlang.stddetect.detect.os.riscv
 
-import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
+import io.github.kotlinmania.rustlang.stddetect.detect.arch.riscv.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.cache.Initializer
 
 // Run-time feature detection utility for RISC-V.

@@ -1,6 +1,7 @@
 // port-lint: source io/impls.rs
 package io.github.kotlinmania.rustlang.core.io.impls
 
+import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.error.WRITE_ALL_EOF
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice

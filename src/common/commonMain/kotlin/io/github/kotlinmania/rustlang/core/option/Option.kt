@@ -5,9 +5,11 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.convert.identity
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
 import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
+import io.github.kotlinmania.rustlang.core.iter.traits.collect.IntoIterator
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -2240,7 +2242,7 @@ public fun <T> fromOptionT(o: Option<T>): Option<T> = o.asRef()
 // ////////////////////////////////////////////////////////////////////////
 public open class Item<A>(
     public var opt: Option<A>,
-) : TrustedLen<Any>, Iterable<A> {
+) : TrustedLen, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@Item.next()) {
@@ -2273,7 +2275,7 @@ public open class Item<A>(
  */
 public open class Iter<A>(
     public var inner: Item<A>,
-) : TrustedLen<Any>, Iterable<A> {
+) : TrustedLen, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@Iter.next()) {
@@ -2301,7 +2303,7 @@ public open class Iter<A>(
  */
 public open class IterMut<A>(
     public var inner: Item<A>,
-) : TrustedLen<Any>, Iterable<A> {
+) : TrustedLen, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@IterMut.next()) {
@@ -2327,7 +2329,7 @@ public open class IterMut<A>(
  */
 public open class IntoIter<A>(
     public var inner: Item<A>,
-) : TrustedLen<Any>, Iterable<A> {
+) : TrustedLen, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {

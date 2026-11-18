@@ -179,10 +179,10 @@ public val FALSE4: Int = 0
  * `N` cannot be 0 and may be at most 64. This limit may be increased in
  * the future.
  */
-public open class Mask<T, Mask, Unsigned> internal constructor(
+public open class Mask<T> internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(),
-) : BitAnd<Mask<T, Mask, Unsigned>, Mask<T, Mask, Unsigned>>, BitOr<Mask<T, Mask, Unsigned>, Mask<T, Mask, Unsigned>>, BitXor<Mask<T, Mask, Unsigned>, Mask<T, Mask, Unsigned>>, Not<Mask<T, Mask, Unsigned>>, BitAndAssign<Mask<T, Mask, Unsigned>>, BitOrAssign<Mask<T, Mask, Unsigned>>, BitXorAssign<Mask<T, Mask, Unsigned>> {
+) : BitAnd<Mask<T>, Mask<T>>, BitOr<Mask<T>, Mask<T>>, BitXor<Mask<T>, Mask<T>>, Not<Mask<T>>, BitAndAssign<Mask<T>>, BitOrAssign<Mask<T>>, BitXorAssign<Mask<T>> {
     public var field0: Simd<T>
         get() = value
         set(v) {
@@ -195,9 +195,9 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
 
     internal constructor(value: Simd<T>, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
-    public fun pointerLayout(): TypeLayout<Mask<T, Mask, Unsigned>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Mask<T, Mask, Unsigned>(ptr, layout) }, { it.value })
+    public fun pointerLayout(): TypeLayout<Mask<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Mask<T>(ptr, layout) }, { it.value })
 
-    public open fun clone(): Mask<T, Mask, Unsigned> = Mask(this.value)
+    public open fun clone(): Mask<T> = Mask(this.value)
 
     /**
      * Converts a SIMD mask to an array of bools.
@@ -229,9 +229,9 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
     /**
      * Converts the mask to a mask of any other element size.
      */
-    public open fun <Mask, Unsigned, U> cast(): Mask<U, Mask, Unsigned> {
+    public open fun <U> cast(): Mask<U> {
         // Safety: mask elements are integers
-        return Mask(run { val simdArg0 = this.value; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask<U, Mask, Unsigned>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask<U, Mask, Unsigned>>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask<U, Mask, Unsigned>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask<U, Mask, Unsigned>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask<U, Mask, Unsigned>>()).alignBytes)); res } }, fieldLayout = this.fieldLayout)
+        return Mask(run { val simdArg0 = this.value; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask<U>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask<U>>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask<U>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask<U>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask<U>>()).alignBytes)); res } }, fieldLayout = this.fieldLayout)
     }
 
     /**
@@ -304,7 +304,7 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
      * Each bit is set if the corresponding element in the mask is `true`.
      */
     public open fun toBitmask(): ULong {
-        fun <Mask, Unsigned, T, U : FixEndianness<U>> toBitmaskImpl(mask: Mask<T, Mask, Unsigned>, m: Int, n: Int): U {
+        fun <T, U : FixEndianness<U>> toBitmaskImpl(mask: Mask<T>, m: Int, n: Int): U {
             val resized = mask.resize(false)
             // Safety: `resized` is an integer vector with length M, which must match T
             val bitmask: U = run { val simdArg0 = resized.first; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U>()).alignBytes)); val res = (UnresolvedTypeLayout<U>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U>()).alignBytes)); res } }
@@ -430,36 +430,36 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
         }
     }
 
-    public open fun eq(other: Mask<T, Mask, Unsigned>): Boolean = this.value == other.value
+    public open fun eq(other: Mask<T>): Boolean = this.value == other.value
 
-    public open fun partialCmp(other: Mask<T, Mask, Unsigned>): Ordering? = this.value.partialCmp(other.value)
+    public open fun partialCmp(other: Mask<T>): Ordering? = this.value.partialCmp(other.value)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries((0 until N).map({ i -> this.test(i) })).finish(); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun bitand(rhs: Mask<T, Mask, Unsigned>): Mask<T, Mask, Unsigned> {
+    public open fun bitand(rhs: Mask<T>): Mask<T> {
         // Safety: `self` is an integer vector
         return Mask(run { val simdArg0 = this.value; val simdArg1 = rhs.value; simdArg0 }, fieldLayout = this.fieldLayout)
     }
 
-    public open fun bitand(rhs: Boolean): Mask<T, Mask, Unsigned> = this and Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
+    public open fun bitand(rhs: Boolean): Mask<T> = this and Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
 
-    public open fun bitor(rhs: Mask<T, Mask, Unsigned>): Mask<T, Mask, Unsigned> {
+    public open fun bitor(rhs: Mask<T>): Mask<T> {
         // Safety: `self` is an integer vector
         return Mask(run { val simdArg0 = this.value; val simdArg1 = rhs.value; simdArg0 }, fieldLayout = this.fieldLayout)
     }
 
-    public open fun bitor(rhs: Boolean): Mask<T, Mask, Unsigned> = this or Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
+    public open fun bitor(rhs: Boolean): Mask<T> = this or Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
 
-    public open fun bitxor(rhs: Mask<T, Mask, Unsigned>): Mask<T, Mask, Unsigned> {
+    public open fun bitxor(rhs: Mask<T>): Mask<T> {
         // Safety: `self` is an integer vector
         return Mask(run { val simdArg0 = this.value; val simdArg1 = rhs.value; simdArg0 }, fieldLayout = this.fieldLayout)
     }
 
-    public open fun bitxor(rhs: Boolean): Mask<T, Mask, Unsigned> = this xor Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
+    public open fun bitxor(rhs: Boolean): Mask<T> = this xor Mask.splat(rhs, n, fieldLayout = this.fieldLayout)
 
-    public open operator fun not(): Mask<T, Mask, Unsigned> = Mask.splat(true, n, fieldLayout = this.fieldLayout) xor this
+    public open operator fun not(): Mask<T> = Mask.splat(true, n, fieldLayout = this.fieldLayout) xor this
 
-    public open fun bitandAssign(rhs: Mask<T, Mask, Unsigned>) {
+    public open fun bitandAssign(rhs: Mask<T>) {
         var selfMut = this
         selfMut = selfMut and rhs
     }
@@ -468,7 +468,7 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
         (this and Mask.splat(rhs, n, fieldLayout = this.fieldLayout)).let {}
     }
 
-    public open fun bitorAssign(rhs: Mask<T, Mask, Unsigned>) {
+    public open fun bitorAssign(rhs: Mask<T>) {
         var selfMut = this
         selfMut = selfMut or rhs
     }
@@ -477,7 +477,7 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
         (this or Mask.splat(rhs, n, fieldLayout = this.fieldLayout)).let {}
     }
 
-    public open fun bitxorAssign(rhs: Mask<T, Mask, Unsigned>) {
+    public open fun bitxorAssign(rhs: Mask<T>) {
         var selfMut = this
         selfMut = selfMut xor rhs
     }
@@ -487,14 +487,14 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
     }
 
     public companion object {
-        public operator fun <T, Mask, Unsigned> invoke(value: Simd<T>, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout()): Mask<T, Mask, Unsigned> = Mask<T, Mask, Unsigned>(value, fieldLayout)
+        public operator fun <T> invoke(value: Simd<T>, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout()): Mask<T> = Mask<T>(value, fieldLayout)
 
-        public fun <T, Mask, Unsigned> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout()): Mask<T, Mask, Unsigned> = Mask<T, Mask, Unsigned>(fieldStorage, fieldLayout)
+        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout()): Mask<T> = Mask<T>(fieldStorage, fieldLayout)
 
         /**
          * Constructs a mask by setting all elements to the given value.
          */
-        public fun <Mask, Unsigned, T> splat(value: Boolean, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T, Mask, Unsigned> =
+        public fun <T> splat(value: Boolean, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T> =
             Mask(Simd.splat(if (value) {
                 T.TRUE
             } else {
@@ -504,7 +504,7 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
         /**
          * Converts an array of bools to a SIMD mask.
          */
-        public fun <Mask, Unsigned, T> fromArray(array: BooleanArray, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T, Mask, Unsigned> {
+        public fun <T> fromArray(array: BooleanArray, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T> {
             // SAFETY: Rust's bool has a layout of 1 byte (u8) with a value of
             // true:    0b00000001
             // false:   0b00000000
@@ -514,7 +514,7 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
             return run {
                 val bytes: UByteArray = transmuteCopy(array)
                 val bools: Simd<Byte> = run { val simdArg0 = Simd.fromArray(bytes, n); val simdArg1 = Simd.splat(0u.toUByte(), n); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Byte>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Byte>>()).alignBytes)); res } }
-                fromSimdUnchecked(run { val simdArg0 = bools; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask<T, Mask, Unsigned>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask<T, Mask, Unsigned>>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask<T, Mask, Unsigned>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask<T, Mask, Unsigned>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask<T, Mask, Unsigned>>()).alignBytes)); res } })
+                Mask.fromSimdUnchecked(run { val simdArg0 = bools; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask<T>>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask<T>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask<T>>()).alignBytes)); res } }, n, fieldLayout = fieldLayout)
             }
         }
 
@@ -525,7 +525,7 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
          * # Safety
          * All elements must be either 0 or -1.
          */
-        public fun <Mask, Unsigned, T> fromSimdUnchecked(value: Simd<T>, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int, validTFn: (Simd<T>) -> Boolean): Mask<T, Mask, Unsigned> {
+        public fun <T> fromSimdUnchecked(value: Simd<T>, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int, validTFn: (Simd<T>) -> Boolean): Mask<T> {
             // Safety: the caller must confirm this invariant
             run {}
             return Mask(value, fieldLayout = fieldLayout)
@@ -538,10 +538,10 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
          * # Panics
          * Panics if any element is not 0 or -1.
          */
-        public fun <Mask, Unsigned, T> fromSimd(value: Simd<T>, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T, Mask, Unsigned> {
+        public fun <T> fromSimd(value: Simd<T>, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T> {
             check(valid(value)) { "all values must be either 0 or -1" }
             // Safety: the validity has been checked
-            return fromSimdUnchecked(value)
+            return Mask.fromSimdUnchecked(value, n, fieldLayout = fieldLayout)
         }
 
         /**
@@ -550,27 +550,27 @@ public open class Mask<T, Mask, Unsigned> internal constructor(
          * For each bit, if it is set, the corresponding element in the mask is set to `true`.
          * If the mask contains more than 64 elements, the remainder are set to `false`.
          */
-        public fun <Mask, Unsigned, T> fromBitmask(bitmask: ULong, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T, Mask, Unsigned> = Mask(bitmask.select(Simd.splat(T.TRUE, n), Simd.splat(T.FALSE, n)), fieldLayout = fieldLayout)
+        public fun <T> fromBitmask(bitmask: ULong, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T> = Mask(bitmask.select(Simd.splat(T.TRUE, n), Simd.splat(T.FALSE, n)), fieldLayout = fieldLayout)
 
         // vector/array conversion
-        public fun <Mask, Unsigned, T> from(array: BooleanArray, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T, Mask, Unsigned> = fromArray(array)
+        public fun <T> from(array: BooleanArray, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T> = Mask.fromArray(array, n, fieldLayout = fieldLayout)
 
-        public fun <Mask, Unsigned, T> default(fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T, Mask, Unsigned> = splat(false)
+        public fun <T> default(fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T> = Mask.splat(false, n, fieldLayout = fieldLayout)
     }
 }
 
-public fun <Mask, Unsigned, T> fromBooleanArrayn(vector: Mask<T, Mask, Unsigned>, n: Int): BooleanArray = vector.toArray()
+public fun <T> fromBooleanArrayn(vector: Mask<T>, n: Int): BooleanArray = vector.toArray()
 
-public fun <Mask, Unsigned, T> Boolean.bitand(rhs: Mask<T, Mask, Unsigned>, n: Int): Mask<T, Mask, Unsigned> = splat(this) and rhs
+public fun <T> Boolean.bitand(rhs: Mask<T>, n: Int): Mask<T> = Mask.splat(this, n, fieldLayout = UnresolvedTypeLayout<Simd<T>>()) and rhs
 
-public fun <Mask, Unsigned, T> Boolean.bitor(rhs: Mask<T, Mask, Unsigned>, n: Int): Mask<T, Mask, Unsigned> = splat(this) or rhs
+public fun <T> Boolean.bitor(rhs: Mask<T>, n: Int): Mask<T> = Mask.splat(this, n, fieldLayout = UnresolvedTypeLayout<Simd<T>>()) or rhs
 
-public fun <Mask, Unsigned, T> Boolean.bitxor(rhs: Mask<T, Mask, Unsigned>, n: Int): Mask<T, Mask, Unsigned> = splat(this) xor rhs
+public fun <T> Boolean.bitxor(rhs: Mask<T>, n: Int): Mask<T> = Mask.splat(this, n, fieldLayout = UnresolvedTypeLayout<Simd<T>>()) xor rhs
 
-public fun fromMaskShortN(value: Mask<Byte, Mask, Unsigned>, n: Int): Mask<Short, Mask, Unsigned> = value.cast()
+public fun fromMaskShortN(value: Mask<Byte>, n: Int): Mask<Short> = value.cast()
 
-public fun fromMaskIntN(value: Mask<Byte, Mask, Unsigned>, n: Int): Mask<Int, Mask, Unsigned> = value.cast()
+public fun fromMaskIntN(value: Mask<Byte>, n: Int): Mask<Int> = value.cast()
 
-public fun fromMaskLongN(value: Mask<Byte, Mask, Unsigned>, n: Int): Mask<Long, Mask, Unsigned> = value.cast()
+public fun fromMaskLongN(value: Mask<Byte>, n: Int): Mask<Long> = value.cast()
 
-public fun fromMaskByteN(value: Mask<Short, Mask, Unsigned>, n: Int): Mask<Byte, Mask, Unsigned> = value.cast()
+public fun fromMaskByteN(value: Mask<Short>, n: Int): Mask<Byte> = value.cast()

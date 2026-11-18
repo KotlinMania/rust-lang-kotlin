@@ -269,19 +269,19 @@ public sealed class TokenTree {
     /**
      * A token stream surrounded by bracket delimiters.
      */
-    public data class Group(public var value: Group) : TokenTree()
+    public data class Group(public var value: io.github.kotlinmania.rustlang.procmacro.Group) : TokenTree()
     /**
      * An identifier.
      */
-    public data class Ident(public var value: Ident) : TokenTree()
+    public data class Ident(public var value: io.github.kotlinmania.rustlang.procmacro.Ident) : TokenTree()
     /**
      * A single punctuation character (`+`, `,`, `$`, etc.).
      */
-    public data class Punct(public var value: Punct) : TokenTree()
+    public data class Punct(public var value: io.github.kotlinmania.rustlang.procmacro.Punct) : TokenTree()
     /**
      * A literal character (``a``), string (`"hello"`), number (`2.3`), etc.
      */
-    public data class Literal(public var value: Literal) : TokenTree()
+    public data class Literal(public var value: io.github.kotlinmania.rustlang.procmacro.Literal) : TokenTree()
 
     /**
      * Returns the span of this tree, delegating to the `span` method of
@@ -395,13 +395,13 @@ public sealed class TokenTree {
         }
 
     public companion object {
-        public fun from(g: Group): TokenTree = TokenTree.Group(g)
+        public fun from(g: io.github.kotlinmania.rustlang.procmacro.Group): TokenTree = TokenTree.Group(g)
 
-        public fun from(g: Ident): TokenTree = TokenTree.Ident(g)
+        public fun from(g: io.github.kotlinmania.rustlang.procmacro.Ident): TokenTree = TokenTree.Ident(g)
 
-        public fun from(g: Punct): TokenTree = TokenTree.Punct(g)
+        public fun from(g: io.github.kotlinmania.rustlang.procmacro.Punct): TokenTree = TokenTree.Punct(g)
 
-        public fun from(g: Literal): TokenTree = TokenTree.Literal(g)
+        public fun from(g: io.github.kotlinmania.rustlang.procmacro.Literal): TokenTree = TokenTree.Literal(g)
     }
 }
 

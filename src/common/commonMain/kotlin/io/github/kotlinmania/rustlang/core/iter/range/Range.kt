@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
+import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedStep
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
@@ -267,25 +268,25 @@ public interface Step<T> {
     public fun backwardUnchecked(start: T, count: Int): T
 }
 
-public fun stepForwardUByte(start: UByte, n: Int): UByte {
+public fun UByte.Companion.forward(start: UByte, n: Int): UByte {
     if (UByte.forwardChecked(start, n) == null) {
         UByte.MAX_VALUE + 1
     }
     return (start + (n.toUByte())).toUByte()
 }
 
-public fun stepBackwardUByte(start: UByte, n: Int): UByte {
+public fun UByte.Companion.backward(start: UByte, n: Int): UByte {
     if (UByte.backwardChecked(start, n) == null) {
         UByte.MIN_VALUE - 1
     }
     return (start - (n.toUByte())).toUByte()
 }
 
-public fun stepForwardUncheckedUByte(start: UByte, n: Int): UByte = start.uncheckedAdd(n.toUByte())
+public fun UByte.Companion.forwardUnchecked(start: UByte, n: Int): UByte = start.uncheckedAdd(n.toUByte())
 
-public fun stepBackwardUncheckedUByte(start: UByte, n: Int): UByte = start.uncheckedSub(n.toUByte())
+public fun UByte.Companion.backwardUnchecked(start: UByte, n: Int): UByte = start.uncheckedSub(n.toUByte())
 
-public fun stepStepsBetweenUByte(start: UByte, end: UByte): Pair<Int, Int?> =
+public fun UByte.Companion.stepsBetween(start: UByte, end: UByte): Pair<Int, Int?> =
     if (start <= end) {
         val steps = (end - start).toInt()
         Pair(steps, steps)
@@ -293,7 +294,7 @@ public fun stepStepsBetweenUByte(start: UByte, end: UByte): Pair<Int, Int?> =
         Pair(0, null)
     }
 
-public fun stepForwardCheckedUByte(start: UByte, n: Int): UByte? =
+public fun UByte.Companion.forwardChecked(start: UByte, n: Int): UByte? =
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -304,7 +305,7 @@ public fun stepForwardCheckedUByte(start: UByte, n: Int): UByte? =
         } }
     }
 
-public fun stepBackwardCheckedUByte(start: UByte, n: Int): UByte? =
+public fun UByte.Companion.backwardChecked(start: UByte, n: Int): UByte? =
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -315,7 +316,7 @@ public fun stepBackwardCheckedUByte(start: UByte, n: Int): UByte? =
         } }
     }
 
-public fun stepForwardOverflowingUByte(start: UByte, n: Int): Pair<UByte, Boolean> =
+public fun UByte.Companion.forwardOverflowing(start: UByte, n: Int): Pair<UByte, Boolean> =
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -326,7 +327,7 @@ public fun stepForwardOverflowingUByte(start: UByte, n: Int): Pair<UByte, Boolea
         } }
     }
 
-public fun stepBackwardOverflowingUByte(start: UByte, n: Int): Pair<UByte, Boolean> =
+public fun UByte.Companion.backwardOverflowing(start: UByte, n: Int): Pair<UByte, Boolean> =
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -337,25 +338,25 @@ public fun stepBackwardOverflowingUByte(start: UByte, n: Int): Pair<UByte, Boole
         } }
     }
 
-public fun stepForwardByte(start: Byte, n: Int): Byte {
+public fun Byte.Companion.forward(start: Byte, n: Int): Byte {
     if (Byte.forwardChecked(start, n) == null) {
         Byte.MAX_VALUE + 1
     }
     return (start + (n.toByte())).toByte()
 }
 
-public fun stepBackwardByte(start: Byte, n: Int): Byte {
+public fun Byte.Companion.backward(start: Byte, n: Int): Byte {
     if (Byte.backwardChecked(start, n) == null) {
         Byte.MIN_VALUE - 1
     }
     return (start - (n.toByte())).toByte()
 }
 
-public fun stepForwardUncheckedByte(start: Byte, n: Int): Byte = start.checkedAddUnsigned(n.toUByte()).unwrapUnchecked()
+public fun Byte.Companion.forwardUnchecked(start: Byte, n: Int): Byte = start.checkedAddUnsigned(n.toUByte()).unwrapUnchecked()
 
-public fun stepBackwardUncheckedByte(start: Byte, n: Int): Byte = start.checkedSubUnsigned(n.toUByte()).unwrapUnchecked()
+public fun Byte.Companion.backwardUnchecked(start: Byte, n: Int): Byte = start.checkedSubUnsigned(n.toUByte()).unwrapUnchecked()
 
-public fun stepStepsBetweenByte(start: Byte, end: Byte): Pair<Int, Int?> =
+public fun Byte.Companion.stepsBetween(start: Byte, end: Byte): Pair<Int, Int?> =
     if (start <= end) {
         val steps = ((end.toInt()) - (start.toInt()))
         Pair(steps, steps)
@@ -363,7 +364,7 @@ public fun stepStepsBetweenByte(start: Byte, end: Byte): Pair<Int, Int?> =
         Pair(0, null)
     }
 
-public fun stepForwardCheckedByte(start: Byte, n: Int): Byte? =
+public fun Byte.Companion.forwardChecked(start: Byte, n: Int): Byte? =
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -379,7 +380,7 @@ public fun stepForwardCheckedByte(start: Byte, n: Int): Byte? =
         } }
     }
 
-public fun stepBackwardCheckedByte(start: Byte, n: Int): Byte? =
+public fun Byte.Companion.backwardChecked(start: Byte, n: Int): Byte? =
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -395,7 +396,7 @@ public fun stepBackwardCheckedByte(start: Byte, n: Int): Byte? =
         } }
     }
 
-public fun stepForwardOverflowingByte(start: Byte, n: Int): Pair<Byte, Boolean> =
+public fun Byte.Companion.forwardOverflowing(start: Byte, n: Int): Pair<Byte, Boolean> =
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -406,7 +407,7 @@ public fun stepForwardOverflowingByte(start: Byte, n: Int): Pair<Byte, Boolean> 
         } }
     }
 
-public fun stepBackwardOverflowingByte(start: Byte, n: Int): Pair<Byte, Boolean> =
+public fun Byte.Companion.backwardOverflowing(start: Byte, n: Int): Pair<Byte, Boolean> =
     run {
         val matchVal = UByte.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -417,25 +418,25 @@ public fun stepBackwardOverflowingByte(start: Byte, n: Int): Pair<Byte, Boolean>
         } }
     }
 
-public fun stepForwardUShort(start: UShort, n: Int): UShort {
+public fun UShort.Companion.forward(start: UShort, n: Int): UShort {
     if (UShort.forwardChecked(start, n) == null) {
         UShort.MAX_VALUE + 1
     }
     return (start + (n.toUShort())).toUShort()
 }
 
-public fun stepBackwardUShort(start: UShort, n: Int): UShort {
+public fun UShort.Companion.backward(start: UShort, n: Int): UShort {
     if (UShort.backwardChecked(start, n) == null) {
         UShort.MIN_VALUE - 1
     }
     return (start - (n.toUShort())).toUShort()
 }
 
-public fun stepForwardUncheckedUShort(start: UShort, n: Int): UShort = start.uncheckedAdd(n.toUShort())
+public fun UShort.Companion.forwardUnchecked(start: UShort, n: Int): UShort = start.uncheckedAdd(n.toUShort())
 
-public fun stepBackwardUncheckedUShort(start: UShort, n: Int): UShort = start.uncheckedSub(n.toUShort())
+public fun UShort.Companion.backwardUnchecked(start: UShort, n: Int): UShort = start.uncheckedSub(n.toUShort())
 
-public fun stepStepsBetweenUShort(start: UShort, end: UShort): Pair<Int, Int?> =
+public fun UShort.Companion.stepsBetween(start: UShort, end: UShort): Pair<Int, Int?> =
     if (start <= end) {
         val steps = (end - start).toInt()
         Pair(steps, steps)
@@ -443,7 +444,7 @@ public fun stepStepsBetweenUShort(start: UShort, end: UShort): Pair<Int, Int?> =
         Pair(0, null)
     }
 
-public fun stepForwardCheckedUShort(start: UShort, n: Int): UShort? =
+public fun UShort.Companion.forwardChecked(start: UShort, n: Int): UShort? =
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -454,7 +455,7 @@ public fun stepForwardCheckedUShort(start: UShort, n: Int): UShort? =
         } }
     }
 
-public fun stepBackwardCheckedUShort(start: UShort, n: Int): UShort? =
+public fun UShort.Companion.backwardChecked(start: UShort, n: Int): UShort? =
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -465,7 +466,7 @@ public fun stepBackwardCheckedUShort(start: UShort, n: Int): UShort? =
         } }
     }
 
-public fun stepForwardOverflowingUShort(start: UShort, n: Int): Pair<UShort, Boolean> =
+public fun UShort.Companion.forwardOverflowing(start: UShort, n: Int): Pair<UShort, Boolean> =
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -476,7 +477,7 @@ public fun stepForwardOverflowingUShort(start: UShort, n: Int): Pair<UShort, Boo
         } }
     }
 
-public fun stepBackwardOverflowingUShort(start: UShort, n: Int): Pair<UShort, Boolean> =
+public fun UShort.Companion.backwardOverflowing(start: UShort, n: Int): Pair<UShort, Boolean> =
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -487,25 +488,25 @@ public fun stepBackwardOverflowingUShort(start: UShort, n: Int): Pair<UShort, Bo
         } }
     }
 
-public fun stepForwardShort(start: Short, n: Int): Short {
+public fun Short.Companion.forward(start: Short, n: Int): Short {
     if (Short.forwardChecked(start, n) == null) {
         Short.MAX_VALUE + 1
     }
     return (start + (n.toShort())).toShort()
 }
 
-public fun stepBackwardShort(start: Short, n: Int): Short {
+public fun Short.Companion.backward(start: Short, n: Int): Short {
     if (Short.backwardChecked(start, n) == null) {
         Short.MIN_VALUE - 1
     }
     return (start - (n.toShort())).toShort()
 }
 
-public fun stepForwardUncheckedShort(start: Short, n: Int): Short = start.checkedAddUnsigned(n.toUShort()).unwrapUnchecked()
+public fun Short.Companion.forwardUnchecked(start: Short, n: Int): Short = start.checkedAddUnsigned(n.toUShort()).unwrapUnchecked()
 
-public fun stepBackwardUncheckedShort(start: Short, n: Int): Short = start.checkedSubUnsigned(n.toUShort()).unwrapUnchecked()
+public fun Short.Companion.backwardUnchecked(start: Short, n: Int): Short = start.checkedSubUnsigned(n.toUShort()).unwrapUnchecked()
 
-public fun stepStepsBetweenShort(start: Short, end: Short): Pair<Int, Int?> =
+public fun Short.Companion.stepsBetween(start: Short, end: Short): Pair<Int, Int?> =
     if (start <= end) {
         val steps = ((end.toInt()) - (start.toInt()))
         Pair(steps, steps)
@@ -513,7 +514,7 @@ public fun stepStepsBetweenShort(start: Short, end: Short): Pair<Int, Int?> =
         Pair(0, null)
     }
 
-public fun stepForwardCheckedShort(start: Short, n: Int): Short? =
+public fun Short.Companion.forwardChecked(start: Short, n: Int): Short? =
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -529,7 +530,7 @@ public fun stepForwardCheckedShort(start: Short, n: Int): Short? =
         } }
     }
 
-public fun stepBackwardCheckedShort(start: Short, n: Int): Short? =
+public fun Short.Companion.backwardChecked(start: Short, n: Int): Short? =
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -545,7 +546,7 @@ public fun stepBackwardCheckedShort(start: Short, n: Int): Short? =
         } }
     }
 
-public fun stepForwardOverflowingShort(start: Short, n: Int): Pair<Short, Boolean> =
+public fun Short.Companion.forwardOverflowing(start: Short, n: Int): Pair<Short, Boolean> =
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -556,7 +557,7 @@ public fun stepForwardOverflowingShort(start: Short, n: Int): Pair<Short, Boolea
         } }
     }
 
-public fun stepBackwardOverflowingShort(start: Short, n: Int): Pair<Short, Boolean> =
+public fun Short.Companion.backwardOverflowing(start: Short, n: Int): Pair<Short, Boolean> =
     run {
         val matchVal = UShort.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -567,25 +568,25 @@ public fun stepBackwardOverflowingShort(start: Short, n: Int): Pair<Short, Boole
         } }
     }
 
-public fun stepForwardUInt(start: UInt, n: Int): UInt {
+public fun UInt.Companion.forward(start: UInt, n: Int): UInt {
     if (UInt.forwardChecked(start, n) == null) {
         UInt.MAX_VALUE + 1
     }
     return (start + (n.toUInt()))
 }
 
-public fun stepBackwardUInt(start: UInt, n: Int): UInt {
+public fun UInt.Companion.backward(start: UInt, n: Int): UInt {
     if (UInt.backwardChecked(start, n) == null) {
         UInt.MIN_VALUE - 1
     }
     return (start - (n.toUInt()))
 }
 
-public fun stepForwardUncheckedUInt(start: UInt, n: Int): UInt = start.uncheckedAdd(n.toUInt())
+public fun UInt.Companion.forwardUnchecked(start: UInt, n: Int): UInt = start.uncheckedAdd(n.toUInt())
 
-public fun stepBackwardUncheckedUInt(start: UInt, n: Int): UInt = start.uncheckedSub(n.toUInt())
+public fun UInt.Companion.backwardUnchecked(start: UInt, n: Int): UInt = start.uncheckedSub(n.toUInt())
 
-public fun stepStepsBetweenUInt(start: UInt, end: UInt): Pair<Int, Int?> =
+public fun UInt.Companion.stepsBetween(start: UInt, end: UInt): Pair<Int, Int?> =
     if (start <= end) {
         val steps = (end - start).toInt()
         Pair(steps, steps)
@@ -593,7 +594,7 @@ public fun stepStepsBetweenUInt(start: UInt, end: UInt): Pair<Int, Int?> =
         Pair(0, null)
     }
 
-public fun stepForwardCheckedUInt(start: UInt, n: Int): UInt? =
+public fun UInt.Companion.forwardChecked(start: UInt, n: Int): UInt? =
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -604,7 +605,7 @@ public fun stepForwardCheckedUInt(start: UInt, n: Int): UInt? =
         } }
     }
 
-public fun stepBackwardCheckedUInt(start: UInt, n: Int): UInt? =
+public fun UInt.Companion.backwardChecked(start: UInt, n: Int): UInt? =
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -615,7 +616,7 @@ public fun stepBackwardCheckedUInt(start: UInt, n: Int): UInt? =
         } }
     }
 
-public fun stepForwardOverflowingUInt(start: UInt, n: Int): Pair<UInt, Boolean> =
+public fun UInt.Companion.forwardOverflowing(start: UInt, n: Int): Pair<UInt, Boolean> =
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -626,7 +627,7 @@ public fun stepForwardOverflowingUInt(start: UInt, n: Int): Pair<UInt, Boolean> 
         } }
     }
 
-public fun stepBackwardOverflowingUInt(start: UInt, n: Int): Pair<UInt, Boolean> =
+public fun UInt.Companion.backwardOverflowing(start: UInt, n: Int): Pair<UInt, Boolean> =
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -637,25 +638,25 @@ public fun stepBackwardOverflowingUInt(start: UInt, n: Int): Pair<UInt, Boolean>
         } }
     }
 
-public fun stepForwardInt(start: Int, n: Int): Int {
+public fun Int.Companion.forward(start: Int, n: Int): Int {
     if (Int.forwardChecked(start, n) == null) {
         Int.MAX_VALUE + 1
     }
     return (start + ((n).toInt()))
 }
 
-public fun stepBackwardInt(start: Int, n: Int): Int {
+public fun Int.Companion.backward(start: Int, n: Int): Int {
     if (Int.backwardChecked(start, n) == null) {
         Int.MIN_VALUE - 1
     }
     return (start - ((n).toInt()))
 }
 
-public fun stepForwardUncheckedInt(start: Int, n: Int): Int = start.checkedAddUnsigned(n.toUInt()).unwrapUnchecked()
+public fun Int.Companion.forwardUnchecked(start: Int, n: Int): Int = start.checkedAddUnsigned(n.toUInt()).unwrapUnchecked()
 
-public fun stepBackwardUncheckedInt(start: Int, n: Int): Int = start.checkedSubUnsigned(n.toUInt()).unwrapUnchecked()
+public fun Int.Companion.backwardUnchecked(start: Int, n: Int): Int = start.checkedSubUnsigned(n.toUInt()).unwrapUnchecked()
 
-public fun stepStepsBetweenInt(start: Int, end: Int): Pair<Int, Int?> =
+public fun Int.Companion.stepsBetween(start: Int, end: Int): Pair<Int, Int?> =
     if (start <= end) {
         val steps = ((end) - ((start).toInt()))
         Pair(steps, steps)
@@ -663,7 +664,7 @@ public fun stepStepsBetweenInt(start: Int, end: Int): Pair<Int, Int?> =
         Pair(0, null)
     }
 
-public fun stepForwardCheckedInt(start: Int, n: Int): Int? =
+public fun Int.Companion.forwardChecked(start: Int, n: Int): Int? =
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -679,7 +680,7 @@ public fun stepForwardCheckedInt(start: Int, n: Int): Int? =
         } }
     }
 
-public fun stepBackwardCheckedInt(start: Int, n: Int): Int? =
+public fun Int.Companion.backwardChecked(start: Int, n: Int): Int? =
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -695,7 +696,7 @@ public fun stepBackwardCheckedInt(start: Int, n: Int): Int? =
         } }
     }
 
-public fun stepForwardOverflowingInt(start: Int, n: Int): Pair<Int, Boolean> =
+public fun Int.Companion.forwardOverflowing(start: Int, n: Int): Pair<Int, Boolean> =
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -706,7 +707,7 @@ public fun stepForwardOverflowingInt(start: Int, n: Int): Pair<Int, Boolean> =
         } }
     }
 
-public fun stepBackwardOverflowingInt(start: Int, n: Int): Pair<Int, Boolean> =
+public fun Int.Companion.backwardOverflowing(start: Int, n: Int): Pair<Int, Boolean> =
     run {
         val matchVal = UInt.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -717,25 +718,25 @@ public fun stepBackwardOverflowingInt(start: Int, n: Int): Pair<Int, Boolean> =
         } }
     }
 
-public fun stepForwardULong(start: ULong, n: Int): ULong {
+public fun ULong.Companion.forward(start: ULong, n: Int): ULong {
     if (ULong.forwardChecked(start, n) == null) {
         ULong.MAX_VALUE + 1
     }
     return (start + (n.toULong()))
 }
 
-public fun stepBackwardULong(start: ULong, n: Int): ULong {
+public fun ULong.Companion.backward(start: ULong, n: Int): ULong {
     if (ULong.backwardChecked(start, n) == null) {
         ULong.MIN_VALUE - 1
     }
     return (start - (n.toULong()))
 }
 
-public fun stepForwardUncheckedULong(start: ULong, n: Int): ULong = start.uncheckedAdd(n.toULong())
+public fun ULong.Companion.forwardUnchecked(start: ULong, n: Int): ULong = start.uncheckedAdd(n.toULong())
 
-public fun stepBackwardUncheckedULong(start: ULong, n: Int): ULong = start.uncheckedSub(n.toULong())
+public fun ULong.Companion.backwardUnchecked(start: ULong, n: Int): ULong = start.uncheckedSub(n.toULong())
 
-public fun stepStepsBetweenULong(start: ULong, end: ULong): Pair<Int, Int?> =
+public fun ULong.Companion.stepsBetween(start: ULong, end: ULong): Pair<Int, Int?> =
     if (start <= end) {
         val steps = (end - start).toInt()
         Pair(steps, steps)
@@ -743,7 +744,7 @@ public fun stepStepsBetweenULong(start: ULong, end: ULong): Pair<Int, Int?> =
         Pair(0, null)
     }
 
-public fun stepForwardCheckedULong(start: ULong, n: Int): ULong? =
+public fun ULong.Companion.forwardChecked(start: ULong, n: Int): ULong? =
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -754,7 +755,7 @@ public fun stepForwardCheckedULong(start: ULong, n: Int): ULong? =
         } }
     }
 
-public fun stepBackwardCheckedULong(start: ULong, n: Int): ULong? =
+public fun ULong.Companion.backwardChecked(start: ULong, n: Int): ULong? =
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -765,7 +766,7 @@ public fun stepBackwardCheckedULong(start: ULong, n: Int): ULong? =
         } }
     }
 
-public fun stepForwardOverflowingULong(start: ULong, n: Int): Pair<ULong, Boolean> =
+public fun ULong.Companion.forwardOverflowing(start: ULong, n: Int): Pair<ULong, Boolean> =
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -776,7 +777,7 @@ public fun stepForwardOverflowingULong(start: ULong, n: Int): Pair<ULong, Boolea
         } }
     }
 
-public fun stepBackwardOverflowingULong(start: ULong, n: Int): Pair<ULong, Boolean> =
+public fun ULong.Companion.backwardOverflowing(start: ULong, n: Int): Pair<ULong, Boolean> =
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -787,25 +788,25 @@ public fun stepBackwardOverflowingULong(start: ULong, n: Int): Pair<ULong, Boole
         } }
     }
 
-public fun stepForwardLong(start: Long, n: Int): Long {
+public fun Long.Companion.forward(start: Long, n: Int): Long {
     if (Long.forwardChecked(start, n) == null) {
         Long.MAX_VALUE + 1
     }
     return (start + (n.toLong()))
 }
 
-public fun stepBackwardLong(start: Long, n: Int): Long {
+public fun Long.Companion.backward(start: Long, n: Int): Long {
     if (Long.backwardChecked(start, n) == null) {
         Long.MIN_VALUE - 1
     }
     return (start - (n.toLong()))
 }
 
-public fun stepForwardUncheckedLong(start: Long, n: Int): Long = start.checkedAddUnsigned(n.toULong()).unwrapUnchecked()
+public fun Long.Companion.forwardUnchecked(start: Long, n: Int): Long = start.checkedAddUnsigned(n.toULong()).unwrapUnchecked()
 
-public fun stepBackwardUncheckedLong(start: Long, n: Int): Long = start.checkedSubUnsigned(n.toULong()).unwrapUnchecked()
+public fun Long.Companion.backwardUnchecked(start: Long, n: Int): Long = start.checkedSubUnsigned(n.toULong()).unwrapUnchecked()
 
-public fun stepStepsBetweenLong(start: Long, end: Long): Pair<Int, Int?> =
+public fun Long.Companion.stepsBetween(start: Long, end: Long): Pair<Int, Int?> =
     if (start <= end) {
         val steps = ((end.toInt()) - (start.toInt()))
         Pair(steps, steps)
@@ -813,7 +814,7 @@ public fun stepStepsBetweenLong(start: Long, end: Long): Pair<Int, Int?> =
         Pair(0, null)
     }
 
-public fun stepForwardCheckedLong(start: Long, n: Int): Long? =
+public fun Long.Companion.forwardChecked(start: Long, n: Int): Long? =
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -829,7 +830,7 @@ public fun stepForwardCheckedLong(start: Long, n: Int): Long? =
         } }
     }
 
-public fun stepBackwardCheckedLong(start: Long, n: Int): Long? =
+public fun Long.Companion.backwardChecked(start: Long, n: Int): Long? =
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -845,7 +846,7 @@ public fun stepBackwardCheckedLong(start: Long, n: Int): Long? =
         } }
     }
 
-public fun stepForwardOverflowingLong(start: Long, n: Int): Pair<Long, Boolean> =
+public fun Long.Companion.forwardOverflowing(start: Long, n: Int): Pair<Long, Boolean> =
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -856,7 +857,7 @@ public fun stepForwardOverflowingLong(start: Long, n: Int): Pair<Long, Boolean> 
         } }
     }
 
-public fun stepBackwardOverflowingLong(start: Long, n: Int): Pair<Long, Boolean> =
+public fun Long.Companion.backwardOverflowing(start: Long, n: Int): Pair<Long, Boolean> =
     run {
         val matchVal = ULong.tryFrom(n)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -867,25 +868,25 @@ public fun stepBackwardOverflowingLong(start: Long, n: Int): Pair<Long, Boolean>
         } }
     }
 
-public fun stepForwardU128(start: U128, n: Int): U128 {
+public fun U128.Companion.forward(start: U128, n: Int): U128 {
     if (U128.forwardChecked(start, n) == null) {
         U128.MAX_VALUE + 1
     }
     return start.wrappingAdd(U128.fromInt(n))
 }
 
-public fun stepBackwardU128(start: U128, n: Int): U128 {
+public fun U128.Companion.backward(start: U128, n: Int): U128 {
     if (U128.backwardChecked(start, n) == null) {
         U128.MIN_VALUE - 1
     }
     return start.wrappingSub(U128.fromInt(n))
 }
 
-public fun stepForwardUncheckedU128(start: U128, n: Int): U128 = start.uncheckedAdd(U128.fromInt(n))
+public fun U128.Companion.forwardUnchecked(start: U128, n: Int): U128 = start.uncheckedAdd(U128.fromInt(n))
 
-public fun stepBackwardUncheckedU128(start: U128, n: Int): U128 = start.uncheckedSub(U128.fromInt(n))
+public fun U128.Companion.backwardUnchecked(start: U128, n: Int): U128 = start.uncheckedSub(U128.fromInt(n))
 
-public fun stepStepsBetweenU128(start: U128, end: U128): Pair<Int, Int?> =
+public fun U128.Companion.stepsBetween(start: U128, end: U128): Pair<Int, Int?> =
     if (start <= end) {
         when (val matchVal = Int.tryFrom(end - start)) {
             is Result.Ok<*, *> -> {
@@ -900,33 +901,33 @@ public fun stepStepsBetweenU128(start: U128, end: U128): Pair<Int, Int?> =
         Pair(0, null)
     }
 
-public fun stepForwardCheckedU128(start: U128, n: Int): U128? = start.checkedAdd(U128.fromInt(n))
+public fun U128.Companion.forwardChecked(start: U128, n: Int): U128? = start.checkedAdd(U128.fromInt(n))
 
-public fun stepBackwardCheckedU128(start: U128, n: Int): U128? = start.checkedSub(U128.fromInt(n))
+public fun U128.Companion.backwardChecked(start: U128, n: Int): U128? = start.checkedSub(U128.fromInt(n))
 
-public fun stepForwardOverflowingU128(start: U128, n: Int): Pair<U128, Boolean> = start.overflowingAdd(U128.fromInt(n))
+public fun U128.Companion.forwardOverflowing(start: U128, n: Int): Pair<U128, Boolean> = start.overflowingAdd(U128.fromInt(n))
 
-public fun stepBackwardOverflowingU128(start: U128, n: Int): Pair<U128, Boolean> = start.overflowingSub(U128.fromInt(n))
+public fun U128.Companion.backwardOverflowing(start: U128, n: Int): Pair<U128, Boolean> = start.overflowingSub(U128.fromInt(n))
 
-public fun stepForwardI128(start: I128, n: Int): I128 {
+public fun I128.Companion.forward(start: I128, n: Int): I128 {
     if (I128.forwardChecked(start, n) == null) {
         I128.MAX_VALUE + 1
     }
     return start.wrappingAdd(I128.fromInt(n))
 }
 
-public fun stepBackwardI128(start: I128, n: Int): I128 {
+public fun I128.Companion.backward(start: I128, n: Int): I128 {
     if (I128.backwardChecked(start, n) == null) {
         I128.MIN_VALUE - 1
     }
     return start.wrappingSub(I128.fromInt(n))
 }
 
-public fun stepForwardUncheckedI128(start: I128, n: Int): I128 = start.checkedAddUnsigned(U128.fromInt(n)).unwrapUnchecked()
+public fun I128.Companion.forwardUnchecked(start: I128, n: Int): I128 = start.checkedAddUnsigned(U128.fromInt(n)).unwrapUnchecked()
 
-public fun stepBackwardUncheckedI128(start: I128, n: Int): I128 = start.checkedSubUnsigned(U128.fromInt(n)).unwrapUnchecked()
+public fun I128.Companion.backwardUnchecked(start: I128, n: Int): I128 = start.checkedSubUnsigned(U128.fromInt(n)).unwrapUnchecked()
 
-public fun stepStepsBetweenI128(start: I128, end: I128): Pair<Int, Int?> =
+public fun I128.Companion.stepsBetween(start: I128, end: I128): Pair<Int, Int?> =
     if (start <= end) {
         when (val matchVal = end.checkedSub(start)) {
             null -> Pair(Int.MAX_VALUE, null)
@@ -947,13 +948,13 @@ public fun stepStepsBetweenI128(start: I128, end: I128): Pair<Int, Int?> =
         Pair(0, null)
     }
 
-public fun stepForwardCheckedI128(start: I128, n: Int): I128? = start.checkedAdd(I128.fromInt(n))
+public fun I128.Companion.forwardChecked(start: I128, n: Int): I128? = start.checkedAdd(I128.fromInt(n))
 
-public fun stepBackwardCheckedI128(start: I128, n: Int): I128? = start.checkedSub(I128.fromInt(n))
+public fun I128.Companion.backwardChecked(start: I128, n: Int): I128? = start.checkedSub(I128.fromInt(n))
 
-public fun stepForwardOverflowingI128(start: I128, n: Int): Pair<I128, Boolean> = start.overflowingAddUnsigned(U128.fromInt(n))
+public fun I128.Companion.forwardOverflowing(start: I128, n: Int): Pair<I128, Boolean> = start.overflowingAddUnsigned(U128.fromInt(n))
 
-public fun stepBackwardOverflowingI128(start: I128, n: Int): Pair<I128, Boolean> = start.overflowingSubUnsigned(U128.fromInt(n))
+public fun I128.Companion.backwardOverflowing(start: I128, n: Int): Pair<I128, Boolean> = start.overflowingSubUnsigned(U128.fromInt(n))
 
 public fun stepForwardUncheckedNonZeroUByte(start: NonZero<UByte, NonZeroU8Inner>, n: Int): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked<NonZeroU8Inner, UByte>(start.get().uncheckedAdd(n.toUByte()))
 
@@ -1399,7 +1400,7 @@ public fun stepForwardCheckedNonZeroU128(start: NonZero<U128, NonZeroU128Inner>,
 
 public fun stepBackwardCheckedNonZeroU128(start: NonZero<U128, NonZeroU128Inner>, n: Int): NonZero<U128, NonZeroU128Inner>? = start.get().checkedSub(U128.fromInt(n))?.let(NonZero::new)
 
-public fun stepStepsBetweenChar(start: Char, end: Char): Pair<Int, Int?> {
+public fun Char.Companion.stepsBetween(start: Char, end: Char): Pair<Int, Int?> {
     val start1 = start.toUInt()
     val end1 = end.toUInt()
     return if (start1 <= end1) {
@@ -1430,7 +1431,7 @@ public fun stepStepsBetweenChar(start: Char, end: Char): Pair<Int, Int?> {
     }
 }
 
-public fun stepForwardCheckedChar(start: Char, count: Int): Char? {
+public fun Char.Companion.forwardChecked(start: Char, count: Int): Char? {
     val start1 = start.toUInt()
     var res = (Step.forwardChecked(start1, count) ?: return null)
     if (start1 < 0xD800u && 0xD800 <= res) {
@@ -1445,7 +1446,7 @@ public fun stepForwardCheckedChar(start: Char, count: Int): Char? {
     }
 }
 
-public fun stepBackwardCheckedChar(start: Char, count: Int): Char? {
+public fun Char.Companion.backwardChecked(start: Char, count: Int): Char? {
     val start1 = start.toUInt()
     var res = (Step.backwardChecked(start1, count) ?: return null)
     if (start1 >= 0xE000u && 0xE000 > res) {
@@ -1460,7 +1461,7 @@ public fun stepBackwardCheckedChar(start: Char, count: Int): Char? {
 // code simplicity. Alternative impls were examined, and some
 // yielded marginally simpler assembly, but none resulted in the same
 // loop -> arithmetic optimizations seen with the bare integers.
-public fun stepForwardOverflowingChar(start: Char, count: Int): Pair<Char, Boolean> =
+public fun Char.Companion.forwardOverflowing(start: Char, count: Int): Pair<Char, Boolean> =
     when (val matchVal = Step.forwardChecked(start, count)) {
         null -> {
             Pair(Char.MAX, true)
@@ -1471,7 +1472,7 @@ public fun stepForwardOverflowingChar(start: Char, count: Int): Pair<Char, Boole
         }
     }
 
-public fun stepBackwardOverflowingChar(start: Char, count: Int): Pair<Char, Boolean> =
+public fun Char.Companion.backwardOverflowing(start: Char, count: Int): Pair<Char, Boolean> =
     when (val matchVal = Step.backwardChecked(start, count)) {
         null -> {
             Pair(Char.MIN, true)
@@ -1482,7 +1483,7 @@ public fun stepBackwardOverflowingChar(start: Char, count: Int): Pair<Char, Bool
         }
     }
 
-public fun stepForwardUncheckedChar(start: Char, count: Int): Char {
+public fun Char.Companion.forwardUnchecked(start: Char, count: Int): Char {
     val start1 = start.toUInt()
     // SAFETY: the caller must guarantee that this doesn't overflow
     // the range of values for a char.
@@ -1497,7 +1498,7 @@ public fun stepForwardUncheckedChar(start: Char, count: Int): Char {
     return Char.fromU32Unchecked(res)
 }
 
-public fun stepBackwardUncheckedChar(start: Char, count: Int): Char {
+public fun Char.Companion.backwardUnchecked(start: Char, count: Int): Char {
     val start1 = start.toUInt()
     // SAFETY: the caller must guarantee that this doesn't overflow
     // the range of values for a char.

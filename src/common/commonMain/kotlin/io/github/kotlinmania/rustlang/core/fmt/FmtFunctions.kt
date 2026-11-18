@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.cell.RefMut
 import io.github.kotlinmania.rustlang.core.cell.SyncUnsafeCell
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.char.methods.EscapeDebugExtArgs
+import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugStruct
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugTuple
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
@@ -24,6 +25,7 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.metadata
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.exposeProvenance

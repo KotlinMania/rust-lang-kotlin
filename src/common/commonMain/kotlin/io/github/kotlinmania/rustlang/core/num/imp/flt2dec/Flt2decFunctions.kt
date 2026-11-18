@@ -1,6 +1,7 @@
 package io.github.kotlinmania.rustlang.core.num.imp.flt2dec
 
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder.DecodableFloat
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder.Decoded
@@ -221,7 +222,7 @@ public fun determineSign(sign: Sign, decoded: FullDecoded, negative: Boolean): S
  * There should be at least 4 parts available, due to the worst case like
  * `[+][0.][0000][2][0000]` with `fracDigits = 10`.
  */
-public fun <Int, T> toShortestStr(formatShortest: (Decoded, MutableList<MaybeUninit<UByte>>) -> Pair<List<UByte>, Short>, v: T, sign: Sign, fracDigits: Int, buf: MutableList<MaybeUninit<UByte>>, parts: MutableList<MaybeUninit<Part>>): Formatted where T : DecodableFloat<T, Int> {
+public fun <Int, T> toShortestStr(formatShortest: (Decoded, MutableList<MaybeUninit<UByte>>) -> Pair<List<UByte>, Short>, v: T, sign: Sign, fracDigits: kotlin.Int, buf: MutableList<MaybeUninit<UByte>>, parts: MutableList<MaybeUninit<Part>>): Formatted where T : DecodableFloat<T, Int> {
     check(parts.size >= 4)
     check(buf.size >= MAX_SIG_DIGITS)
     val (negative, fullDecoded) = decode(v)
@@ -238,7 +239,7 @@ public fun <Int, T> toShortestStr(formatShortest: (Decoded, MutableList<MaybeUni
             Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
         }
         FullDecoded.Zero -> {
-            if (fracDigits > 0) {
+            if ((kmCompareValues(fracDigits, 0) > 0)) {
                 // [0.][0000]
                 parts[0] = MaybeUninit.new(Part.Copy("0.".encodeToByteArray()), UnresolvedTypeLayout<Part>())
                 parts[1] = MaybeUninit.new(Part.Zero(fracDigits), UnresolvedTypeLayout<Part>())
@@ -311,9 +312,9 @@ public fun <Int, T> toShortestExpStr(formatShortest: (Decoded, MutableList<Maybe
         is FullDecoded.Finite -> {
             val (decoded) = fullDecoded
             val (buf1, exp) = formatShortest(decoded, buf)
-            val visExp = exp.toInt() - 1
+            val visExp = ((exp as Any?) as kotlin.Int) - 1
             val parts1 =
-                if (decBounds.first.toInt() <= visExp && visExp < decBounds.second.toInt()) {
+                if ((kmCompareValues(((decBounds.first as Any?) as kotlin.Int), visExp) <= 0) && (kmCompareValues(visExp, ((decBounds.second as Any?) as kotlin.Int)) < 0)) {
                     digitsToDecStr(buf1, exp, 0, parts)
                 } else {
                     digitsToExpStr(buf1, exp, 0, upper, parts)
@@ -373,7 +374,7 @@ public fun estimateMaxBufLen(exp: Short): Int =
  * There should be at least 6 parts available, due to the worst case like
  * `[+][1][.][2345][e][-][6]`.
  */
-public fun <Int, T> toExactExpStr(formatExact: (Decoded, MutableList<MaybeUninit<UByte>>, Short) -> Pair<List<UByte>, Short>, v: T, sign: Sign, fracDigits: Int, upper: Boolean, buf: MutableList<MaybeUninit<UByte>>, parts: MutableList<MaybeUninit<Part>>): Formatted where T : DecodableFloat<T, Int> {
+public fun <Int, T> toExactExpStr(formatExact: (Decoded, MutableList<MaybeUninit<UByte>>, Short) -> Pair<List<UByte>, Short>, v: T, sign: Sign, fracDigits: kotlin.Int, upper: Boolean, buf: MutableList<MaybeUninit<UByte>>, parts: MutableList<MaybeUninit<Part>>): Formatted where T : DecodableFloat<T, Int> {
     check(parts.size >= 6)
     val (negative, fullDecoded) = decode(v)
     val sign1 = determineSign(sign, fullDecoded, negative)
@@ -389,7 +390,7 @@ public fun <Int, T> toExactExpStr(formatExact: (Decoded, MutableList<MaybeUninit
             Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
         }
         FullDecoded.Zero -> {
-            if (fracDigits > 0) {
+            if ((kmCompareValues(fracDigits, 0) > 0)) {
                 // [0.][0000][e0]
                 parts[0] = MaybeUninit.new(Part.Copy("0.".encodeToByteArray()), UnresolvedTypeLayout<Part>())
                 parts[1] = MaybeUninit.new(Part.Zero(fracDigits), UnresolvedTypeLayout<Part>())
@@ -415,7 +416,7 @@ public fun <Int, T> toExactExpStr(formatExact: (Decoded, MutableList<MaybeUninit
             // actually generate. Any remaining requested fractional precision becomes a trailing
             // `Part.Zero`.
             val sigDigits =
-                if (fracDigits < maxlen) {
+                if ((kmCompareValues(fracDigits, maxlen) < 0)) {
                     fracDigits + 1
                 } else {
                     maxlen
@@ -445,7 +446,7 @@ public fun <Int, T> toExactExpStr(formatExact: (Decoded, MutableList<MaybeUninit
  * There should be at least 4 parts available, due to the worst case like
  * `[+][0.][0000][2][0000]` with `fracDigits = 10`.
  */
-public fun <Int, T> toExactFixedStr(formatExact: (Decoded, MutableList<MaybeUninit<UByte>>, Short) -> Pair<List<UByte>, Short>, v: T, sign: Sign, fracDigits: Int, buf: MutableList<MaybeUninit<UByte>>, parts: MutableList<MaybeUninit<Part>>): Formatted where T : DecodableFloat<T, Int> {
+public fun <Int, T> toExactFixedStr(formatExact: (Decoded, MutableList<MaybeUninit<UByte>>, Short) -> Pair<List<UByte>, Short>, v: T, sign: Sign, fracDigits: kotlin.Int, buf: MutableList<MaybeUninit<UByte>>, parts: MutableList<MaybeUninit<Part>>): Formatted where T : DecodableFloat<T, Int> {
     check(parts.size >= 4)
     val (negative, fullDecoded) = decode(v)
     val sign1 = determineSign(sign, fullDecoded, negative)
@@ -461,7 +462,7 @@ public fun <Int, T> toExactFixedStr(formatExact: (Decoded, MutableList<MaybeUnin
             Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
         }
         FullDecoded.Zero -> {
-            if (fracDigits > 0) {
+            if ((kmCompareValues(fracDigits, 0) > 0)) {
                 // [0.][0000]
                 parts[0] = MaybeUninit.new(Part.Copy("0.".encodeToByteArray()), UnresolvedTypeLayout<Part>())
                 parts[1] = MaybeUninit.new(Part.Zero(fracDigits), UnresolvedTypeLayout<Part>())
@@ -479,7 +480,7 @@ public fun <Int, T> toExactFixedStr(formatExact: (Decoded, MutableList<MaybeUnin
             // `formatExact` will end rendering digits much earlier in this case,
             // because we are strictly limited by `maxlen`.
             val limit =
-                if (fracDigits < 0x8000) {
+                if ((kmCompareValues(fracDigits, 0x8000) < 0)) {
                     -(fracDigits.toShort())
                 } else {
                     Short.MIN_VALUE
@@ -498,7 +499,7 @@ public fun <Int, T> toExactFixedStr(formatExact: (Decoded, MutableList<MaybeUnin
                         }
                     }
                 }
-                if (fracDigits > 0) {
+                if ((kmCompareValues(fracDigits, 0) > 0)) {
                     // [0.][0000]
                     parts[0] = MaybeUninit.new(Part.Copy("0.".encodeToByteArray()), UnresolvedTypeLayout<Part>())
                     parts[1] = MaybeUninit.new(Part.Zero(fracDigits), UnresolvedTypeLayout<Part>())

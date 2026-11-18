@@ -114,7 +114,7 @@ public fun <R : Read, W : Write> specCopyCopyCachedFileMetadata(read: R, write: 
  * type may be wrong.
  */
 public sealed class FdMeta {
-    public data class Metadata(public var value: Metadata) : FdMeta()
+    public data class Metadata(public var value: io.github.kotlinmania.rustlang.std.fs.Metadata) : FdMeta()
     public data object Socket : FdMeta()
     public data object Pipe : FdMeta()
     /**

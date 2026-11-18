@@ -23,7 +23,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.floattraits.IntTy
  * > If the calculation does not overflow or underflow, the returned value is exact and
  * > independent of the current rounding direction mode.
  */
-public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> scalbn(x: F, n: Int, fromPartsFFn: (Boolean, UInt, Int) -> F): F {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> scalbn(x: F, n: kotlin.Int, fromPartsFFn: (Boolean, UInt, Int) -> F): F {
     var x1 = x
     var n1 = n
     val zero = IntTy.ZERO
@@ -47,7 +47,7 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> scalbn(x: F, n: Int, f
     if (n1 > expMax) {
         // Worse case positive `n`: `x`  is the minimum subnormal value, the result is `F.MAX`.
         // This can be reached by three scaling multiplications (two here and one final).
-        check(-expMin + F.SIG_BITS.toInt() + expMax <= expMax * 3)
+        check(-expMin + ((F.SIG_BITS as Any?) as kotlin.Int) + expMax <= expMax * 3)
         x1 *= fExpMax
         n1 -= expMax
         if (n1 > expMax) {
@@ -63,10 +63,10 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> scalbn(x: F, n: Int, f
         if (F.BITS > 16) {
             // `mul` s.t. `!(x * mul).isSubnormal() ∀ x`
             val mul = fExpMin * fPowSubnorm
-            val add = -expMin - sigTotalBits.toInt()
+            val add = -expMin - ((sigTotalBits as Any?) as kotlin.Int)
             // Worse case negative `n`: `x`  is the maximum positive value, the result is `F.MIN`.
             // This must be reachable by three scaling multiplications (two here and one final).
-            check(-expMin + F.SIG_BITS.toInt() + expMax <= add * 2 + -expMin)
+            check(-expMin + ((F.SIG_BITS as Any?) as kotlin.Int) + expMax <= add * 2 + -expMin)
             x1 *= mul
             n1 += add
             if (n1 < expMin) {
@@ -87,13 +87,13 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> scalbn(x: F, n: Int, f
             // Work aroudn this by using a different algorithm that calculates the prescale
             // dynamically based on the maximum possible value. This adds more operations per round
             // since it needs to construct the scale, but works better in the general case.
-            val add1 = -(n1 + sigTotalBits.toInt()).max(expMin)
-            val mul1 = fromPartsFFn(false, (F.EXP_BIAS.toInt() - add1).toUInt(), zero)
+            val add1 = -(n1 + ((sigTotalBits as Any?) as kotlin.Int)).max(expMin)
+            val mul1 = fromPartsFFn(false, (((F.EXP_BIAS as Any?) as kotlin.Int) - add1).toUInt(), zero)
             x1 *= mul1
             n1 += add1
             if (n1 < expMin) {
-                val add2 = -(n1 + sigTotalBits.toInt()).max(expMin)
-                val mul2 = fromPartsFFn(false, (F.EXP_BIAS.toInt() - add2).toUInt(), zero)
+                val add2 = -(n1 + ((sigTotalBits as Any?) as kotlin.Int)).max(expMin)
+                val mul2 = fromPartsFFn(false, (((F.EXP_BIAS as Any?) as kotlin.Int) - add2).toUInt(), zero)
                 x1 *= mul2
                 n1 += add2
                 if (n1 < expMin) {
@@ -102,6 +102,6 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> scalbn(x: F, n: Int, f
             }
         }
     }
-    val scale = fromPartsFFn(false, (F.EXP_BIAS.toInt() + n1).toUInt(), zero)
+    val scale = fromPartsFFn(false, (((F.EXP_BIAS as Any?) as kotlin.Int) + n1).toUInt(), zero)
     return x1 * scale
 }

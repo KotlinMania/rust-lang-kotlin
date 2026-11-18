@@ -15,6 +15,8 @@ import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.fs
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.path.Path
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.path.PathBuf
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.stash.Stash
+import io.github.kotlinmania.rustlang.core.convert.num.from
+import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.get

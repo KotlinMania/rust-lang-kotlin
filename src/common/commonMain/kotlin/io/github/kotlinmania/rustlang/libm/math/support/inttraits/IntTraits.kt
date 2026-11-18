@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.num.overflowingAdd
@@ -62,7 +63,7 @@ public interface MinInt<T, out OtherSign, out Unsigned> : BitOr<T, T>, Not<T>, S
 /**
  * Trait for some basic operations on integers
  */
-public interface Int<T, out OtherSign, Unsigned> : DisplayHex, AddAssign<T>, SubAssign<T>, MulAssign<T>, DivAssign<T>, RemAssign<T>, BitAndAssign<T>, BitOrAssign<T>, BitXorAssign<T>, ShlAssign<Int<T, OtherSign, Unsigned>>, ShrAssign<UInt>, Add<T, T>, Sub<T, T>, Mul<T, T>, Div<T, T>, Rem<T, T>, Shl<Int<T, OtherSign, Unsigned>, T>, Shr<Int<T, OtherSign, Unsigned>, T>, BitXor<T, T>, BitAnd<T, T>, CastFrom<Int<T, OtherSign, Unsigned>, T>, CastInto<Int<T, OtherSign, Unsigned>> {
+public interface Int<T, out OtherSign, Unsigned> : DisplayHex, AddAssign<T>, SubAssign<T>, MulAssign<T>, DivAssign<T>, RemAssign<T>, BitAndAssign<T>, BitOrAssign<T>, BitXorAssign<T>, ShlAssign<kotlin.Int>, ShrAssign<UInt>, Add<T, T>, Sub<T, T>, Mul<T, T>, Div<T, T>, Rem<T, T>, Shl<kotlin.Int, T>, Shr<kotlin.Int, T>, BitXor<T, T>, BitAnd<T, T>, CastFrom<kotlin.Int, T>, CastInto<kotlin.Int> {
     public fun signed(): OtherSign<Unsigned>
 
     public fun unsigned(): Unsigned
@@ -122,97 +123,97 @@ public interface Int<T, out OtherSign, Unsigned> : DisplayHex, AddAssign<T>, Sub
     public fun ilog2(): UInt
 }
 
-public val BITS: UInt = Int.ZERO.countZeros()
+public val BITS: UInt = kotlin.Int.ZERO.countZeros()
 
-public val SIGNED: Boolean = Int.MIN_VALUE != Int.ZERO
+public val SIGNED: Boolean = kotlin.Int.MIN != kotlin.Int.ZERO
 
-public val ZERO: Int = 0
+public val ZERO: kotlin.Int = 0
 
-public val ONE: Int = 1
+public val ONE: kotlin.Int = 1
 
-public val MIN: Int = Int.MIN
+public val MIN: kotlin.Int = kotlin.Int.MIN
 
-public val MAX: Int = Int.MAX
+public val MAX: kotlin.Int = kotlin.Int.MAX
 
-public fun Int.signed(): Int = this
+public fun kotlin.Int.signed(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
-public fun Int.unsigned(): Int = this
+public fun kotlin.Int.unsigned(): kotlin.Int = this
 
-public fun Int.abs(): Int {
+public fun kotlin.Int.abs(): kotlin.Int {
     error("unsupported")
 }
 
-public fun Int.unsignedAbs(): Int {
+public fun kotlin.Int.unsignedAbs(): kotlin.Int {
     error("unsupported")
 }
 
-public fun intFromUnsignedInt(me: Int): Int = me
+public fun intFromUnsignedInt(me: kotlin.Int): kotlin.Int = me
 
-public fun Int.absDiffInt(other: Int): Int = this.absDiff(other)
+public fun kotlin.Int.absDiffInt(other: kotlin.Int): kotlin.Int = this.absDiff(other)
 
-public fun intFromBoolInt(b: Boolean): Int = b.toInt()
+public fun intFromBoolInt(b: Boolean): kotlin.Int = ((b as Any?) as kotlin.Int)
 
-public fun Int.logicalShr(other: UInt): Int = Int.fromUnsigned(this.unsigned().wrappingShr(other))
+public fun kotlin.Int.logicalShr(other: UInt): kotlin.Int = kotlin.Int.fromUnsigned(this.unsigned().wrappingShr(other))
 
-public fun Int.isZero(): Boolean = this == Int.ZERO
+public fun kotlin.Int.isZero(): Boolean = this == kotlin.Int.ZERO
 
-public fun Int.checkedAddInt(other: Int): Int? = this.checkedAdd(other)
+public fun kotlin.Int.checkedAddInt(other: kotlin.Int): kotlin.Int? = this.checkedAdd(other)
 
-public fun Int.checkedSubInt(other: Int): Int? = this.checkedSub(other)
+public fun kotlin.Int.checkedSubInt(other: kotlin.Int): kotlin.Int? = this.checkedSub(other)
 
-public fun Int.wrappingNeg(): Int = this.wrappingNeg()
+public fun kotlin.Int.wrappingNeg(): kotlin.Int = this.wrappingNeg()
 
-public fun Int.wrappingAdd(other: Int): Int = this.wrappingAdd(other)
+public fun kotlin.Int.wrappingAdd(other: kotlin.Int): kotlin.Int = this.wrappingAdd(other)
 
-public fun Int.wrappingMul(other: Int): Int = this.wrappingMul(other)
+public fun kotlin.Int.wrappingMul(other: kotlin.Int): kotlin.Int = this.wrappingMul(other)
 
-public fun Int.wrappingSub(other: Int): Int = this.wrappingSub(other)
+public fun kotlin.Int.wrappingSub(other: kotlin.Int): kotlin.Int = this.wrappingSub(other)
 
-public fun Int.wrappingShl(other: UInt): Int = this.wrappingShl(other)
+public fun kotlin.Int.wrappingShl(other: UInt): kotlin.Int = this.wrappingShl(other)
 
-public fun Int.wrappingShr(other: UInt): Int = this.wrappingShr(other)
+public fun kotlin.Int.wrappingShr(other: UInt): kotlin.Int = this.wrappingShr(other)
 
-public fun Int.rotateLeft(other: UInt): Int = this.rotateLeft(other)
+public fun kotlin.Int.rotateLeft(other: UInt): kotlin.Int = this.rotateLeft(other)
 
-public fun Int.overflowingAdd(other: Int): Pair<Int, Boolean> = this.overflowingAdd(other)
+public fun kotlin.Int.overflowingAdd(other: kotlin.Int): Pair<kotlin.Int, Boolean> = this.overflowingAdd(other)
 
-public fun Int.overflowingSub(other: Int): Pair<Int, Boolean> = this.overflowingSub(other)
+public fun kotlin.Int.overflowingSub(other: kotlin.Int): Pair<kotlin.Int, Boolean> = this.overflowingSub(other)
 
-public fun Int.leadingZeros(): UInt = this.leadingZeros()
+public fun kotlin.Int.leadingZeros(): UInt = this.leadingZeros()
 
-public fun Int.trailingZeros(): UInt = this.trailingZeros()
+public fun kotlin.Int.trailingZeros(): UInt = this.trailingZeros()
 
-public fun Int.countOnes(): UInt = this.countOnes()
+public fun kotlin.Int.countOnes(): UInt = this.countOnes()
 
-public fun Int.ilog2(): UInt = this.ilog2()
+public fun kotlin.Int.ilog2(): UInt = this.ilog2()
 
-public fun Int.carryingAdd(other: Int, carry: Boolean): Pair<Int, Boolean> {
+public fun kotlin.Int.carryingAdd(other: kotlin.Int, carry: Boolean): Pair<kotlin.Int, Boolean> {
     val (ab, of1) = this.overflowingAdd(other)
-    val (abc, of2) = ab.overflowingAdd(Int.fromBool(carry))
+    val (abc, of2) = ab.overflowingAdd(kotlin.Int.fromBool(carry))
     return Pair(abc, of1 xor of2)
 }
 
-public fun Int.borrowingSub(other: Int, borrow: Boolean): Pair<Int, Boolean> {
+public fun kotlin.Int.borrowingSub(other: kotlin.Int, borrow: Boolean): Pair<kotlin.Int, Boolean> {
     val (ab, of1) = this.overflowingSub(other)
-    val (abc, of2) = ab.overflowingSub(Int.fromBool(borrow))
+    val (abc, of2) = ab.overflowingSub(kotlin.Int.fromBool(borrow))
     return Pair(abc, of1 xor of2)
 }
 
-public val BITS1: UInt = Int.ZERO.countZeros()
+public val BITS1: UInt = kotlin.Int.ZERO.countZeros()
 
-public val SIGNED1: Boolean = Int.MIN_VALUE != Int.ZERO
+public val SIGNED1: Boolean = kotlin.Int.MIN != kotlin.Int.ZERO
 
-public val ZERO1: Int = 0
+public val ZERO1: kotlin.Int = 0
 
-public val ONE1: Int = 1
+public val ONE1: kotlin.Int = 1
 
-public val MIN1: Int = Int.MIN
+public val MIN1: kotlin.Int = kotlin.Int.MIN
 
-public val MAX1: Int = Int.MAX
+public val MAX1: kotlin.Int = kotlin.Int.MAX
 
-public fun Int.absInt(): Int = this.abs()
+public fun kotlin.Int.absInt(): kotlin.Int = this.abs()
 
-public fun Int.unsignedAbsInt(): Int = this.unsignedAbs()
+public fun kotlin.Int.unsignedAbsInt(): kotlin.Int = this.unsignedAbs()
 
 public val BITS2: UInt = UByte.ZERO.countZeros()
 
@@ -522,7 +523,7 @@ public val MIN6: UInt = UInt.MIN
 
 public val MAX6: UInt = UInt.MAX
 
-public fun UInt.signed(): Int = this.toInt()
+public fun UInt.signed(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
 public fun UInt.unsigned(): UInt = this
 
@@ -586,19 +587,19 @@ public fun UInt.borrowingSub(other: UInt, borrow: Boolean): Pair<UInt, Boolean> 
     return Pair(abc, of1 xor of2)
 }
 
-public val BITS7: UInt = Int.ZERO.countZeros()
+public val BITS7: UInt = kotlin.Int.ZERO.countZeros()
 
-public val SIGNED7: Boolean = Int.MIN_VALUE != Int.ZERO
+public val SIGNED7: Boolean = kotlin.Int.MIN != kotlin.Int.ZERO
 
-public val ZERO7: Int = 0
+public val ZERO7: kotlin.Int = 0
 
-public val ONE7: Int = 1
+public val ONE7: kotlin.Int = 1
 
-public val MIN7: Int = Int.MIN
+public val MIN7: kotlin.Int = kotlin.Int.MIN
 
-public val MAX7: Int = Int.MAX
+public val MAX7: kotlin.Int = kotlin.Int.MAX
 
-public fun intFromUnsignedInt(me: UInt): Int = me.toInt()
+public fun intFromUnsignedInt(me: UInt): kotlin.Int = ((me as Any?) as kotlin.Int)
 
 public val BITS8: UInt = ULong.ZERO.countZeros()
 
@@ -974,13 +975,13 @@ public fun Short.lo(): Byte = this.toByte()
 
 public fun Short.hi(): Byte = ((this.toInt() shr (minIntBitsByte.toInt())).toShort()).toByte()
 
-public fun Int.lo(): Short = this.toShort()
+public fun kotlin.Int.lo(): Short = this.toShort()
 
-public fun Int.hi(): Short = (this shr minIntBitsShort.toInt()).toShort()
+public fun kotlin.Int.hi(): Short = (this shr minIntBitsShort.toInt()).toShort()
 
-public fun Long.lo(): Int = this.toInt()
+public fun Long.lo(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
-public fun Long.hi(): Int = (this shr minIntBitsInt.toInt()).toInt()
+public fun Long.hi(): kotlin.Int = (((this shr minIntBitsInt.toInt()) as Any?) as kotlin.Int)
 
 public fun I128.lo(): Long = this.toLong()
 
@@ -1036,25 +1037,25 @@ public fun Byte.widenMul(rhs: Byte): Short = (this.widen() * rhs.widen().toShort
 
 public fun Byte.widenHi(): Short = ((this.toShort()).toInt() shl (Byte.BITS.toInt())).toShort()
 
-public fun Short.widen(): Int = this.toInt()
+public fun Short.widen(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
-public fun Short.zeroWiden(): Int = (this.toUShort()).toInt()
+public fun Short.zeroWiden(): kotlin.Int = (((this.toUShort()) as Any?) as kotlin.Int)
 
-public fun Short.zeroWidenMul(rhs: Short): Int = (this.zeroWiden() * rhs.zeroWiden().toInt())
+public fun Short.zeroWidenMul(rhs: Short): kotlin.Int = this.zeroWiden().wrappingMul(rhs.zeroWiden())
 
-public fun Short.widenMul(rhs: Short): Int = (this.widen() * rhs.widen().toInt())
+public fun Short.widenMul(rhs: Short): kotlin.Int = this.widen().wrappingMul(rhs.widen())
 
-public fun Short.widenHi(): Int = (this.toInt()) shl Short.BITS.toInt()
+public fun Short.widenHi(): kotlin.Int = (((this as Any?) as kotlin.Int)) shl Short.BITS.toInt()
 
-public fun Int.widen(): Long = this.toLong()
+public fun kotlin.Int.widen(): Long = this.toLong()
 
-public fun Int.zeroWiden(): Long = (this.toUInt()).toLong()
+public fun kotlin.Int.zeroWiden(): Long = (this.toUInt()).toLong()
 
-public fun Int.zeroWidenMul(rhs: Int): Long = (this.zeroWiden() * rhs.zeroWiden().toLong())
+public fun kotlin.Int.zeroWidenMul(rhs: kotlin.Int): Long = (this.zeroWiden() * rhs.zeroWiden().toLong())
 
-public fun Int.widenMul(rhs: Int): Long = (this.widen() * rhs.widen().toLong())
+public fun kotlin.Int.widenMul(rhs: kotlin.Int): Long = (this.widen() * rhs.widen().toLong())
 
-public fun Int.widenHi(): Long = (this.toLong()) shl Int.BITS.toInt()
+public fun kotlin.Int.widenHi(): Long = (this.toLong()) shl kotlin.Int.BITS.toInt()
 
 public fun Long.widen(): I128 = I128.fromLong(this)
 
@@ -1100,96 +1101,96 @@ public fun <T, U : CastInto<T>> castFromT(value: U): T = value.cast()
 
 public fun <T, U : CastInto<T>> castFromCastFromLossyT(value: U): T = value.castLossy()
 
-public fun Int.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this
+public fun kotlin.Int.cast(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun Int.castLossy(): Int = this
+public fun kotlin.Int.castLossy(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
-public fun Int.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this
+public fun kotlin.Int.castInt(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun Int.castLossyInt(): Int = this
+public fun kotlin.Int.castLossyInt(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
-public fun Int.castUByte(): UByte {
+public fun kotlin.Int.castUByte(): UByte {
     check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUByte()
 }
 
-public fun Int.castLossyUByte(): UByte = this.toUByte()
+public fun kotlin.Int.castLossyUByte(): UByte = this.toUByte()
 
-public fun Int.castByte(): Byte {
+public fun kotlin.Int.castByte(): Byte {
     check(Byte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toByte()
 }
 
-public fun Int.castLossyByte(): Byte = this.toByte()
+public fun kotlin.Int.castLossyByte(): Byte = this.toByte()
 
-public fun Int.castUShort(): UShort {
+public fun kotlin.Int.castUShort(): UShort {
     check(UShort.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUShort()
 }
 
-public fun Int.castLossyUShort(): UShort = this.toUShort()
+public fun kotlin.Int.castLossyUShort(): UShort = this.toUShort()
 
-public fun Int.castShort(): Short {
+public fun kotlin.Int.castShort(): Short {
     check(Short.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toShort()
 }
 
-public fun Int.castLossyShort(): Short = this.toShort()
+public fun kotlin.Int.castLossyShort(): Short = this.toShort()
 
-public fun Int.castUInt(): UInt {
+public fun kotlin.Int.castUInt(): UInt {
     check(UInt.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUInt()
 }
 
-public fun Int.castLossyUInt(): UInt = this.toUInt()
+public fun kotlin.Int.castLossyUInt(): UInt = this.toUInt()
 
-public fun Int.castULong(): ULong {
+public fun kotlin.Int.castULong(): ULong {
     check(ULong.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toULong()
 }
 
-public fun Int.castLossyULong(): ULong = this.toULong()
+public fun kotlin.Int.castLossyULong(): ULong = this.toULong()
 
-public fun Int.castLong(): Long {
+public fun kotlin.Int.castLong(): Long {
     check(Long.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toLong()
 }
 
-public fun Int.castLossyLong(): Long = this.toLong()
+public fun kotlin.Int.castLossyLong(): Long = this.toLong()
 
-public fun Int.castU128(): U128 {
+public fun kotlin.Int.castU128(): U128 {
     check(U128.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return U128.fromInt(this)
+    return U128.fromLong(this.toLong())
 }
 
-public fun Int.castLossyU128(): U128 = U128.fromInt(this)
+public fun kotlin.Int.castLossyU128(): U128 = U128.fromLong(this.toLong())
 
-public fun Int.castI128(): I128 {
+public fun kotlin.Int.castI128(): I128 {
     check(I128.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return I128.fromInt(this)
+    return I128.fromLong(this.toLong())
 }
 
-public fun Int.castLossyI128(): I128 = I128.fromInt(this)
+public fun kotlin.Int.castLossyI128(): I128 = I128.fromLong(this.toLong())
 
-public fun UByte.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun UByte.cast(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun UByte.castLossy(): Int = this.toInt()
+public fun UByte.castLossy(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
-public fun UByte.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun UByte.castInt(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun UByte.castLossyInt(): Int = this.toInt()
+public fun UByte.castLossyInt(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
 public fun UByte.castUByte(): UByte {
     check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
@@ -1254,19 +1255,19 @@ public fun UByte.castI128(): I128 {
 
 public fun UByte.castLossyI128(): I128 = I128.fromUByte(this)
 
-public fun Byte.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun Byte.cast(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun Byte.castLossy(): Int = this.toInt()
+public fun Byte.castLossy(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
-public fun Byte.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun Byte.castInt(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun Byte.castLossyInt(): Int = this.toInt()
+public fun Byte.castLossyInt(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
 public fun Byte.castUByte(): UByte {
     check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
@@ -1331,19 +1332,19 @@ public fun Byte.castI128(): I128 {
 
 public fun Byte.castLossyI128(): I128 = I128.fromByte(this)
 
-public fun UShort.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun UShort.cast(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun UShort.castLossy(): Int = this.toInt()
+public fun UShort.castLossy(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
-public fun UShort.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun UShort.castInt(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun UShort.castLossyInt(): Int = this.toInt()
+public fun UShort.castLossyInt(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
 public fun UShort.castUByte(): UByte {
     check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
@@ -1408,19 +1409,19 @@ public fun UShort.castI128(): I128 {
 
 public fun UShort.castLossyI128(): I128 = I128.fromUShort(this)
 
-public fun Short.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun Short.cast(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun Short.castLossy(): Int = this.toInt()
+public fun Short.castLossy(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
-public fun Short.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun Short.castInt(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun Short.castLossyInt(): Int = this.toInt()
+public fun Short.castLossyInt(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
 public fun Short.castUByte(): UByte {
     check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
@@ -1485,19 +1486,19 @@ public fun Short.castI128(): I128 {
 
 public fun Short.castLossyI128(): I128 = I128.fromShort(this)
 
-public fun UInt.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun UInt.cast(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun UInt.castLossy(): Int = this.toInt()
+public fun UInt.castLossy(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
-public fun UInt.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun UInt.castInt(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun UInt.castLossyInt(): Int = this.toInt()
+public fun UInt.castLossyInt(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
 public fun UInt.castUByte(): UByte {
     check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
@@ -1562,19 +1563,19 @@ public fun UInt.castI128(): I128 {
 
 public fun UInt.castLossyI128(): I128 = I128.fromUInt(this)
 
-public fun ULong.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun ULong.cast(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun ULong.castLossy(): Int = this.toInt()
+public fun ULong.castLossy(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
-public fun ULong.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun ULong.castInt(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun ULong.castLossyInt(): Int = this.toInt()
+public fun ULong.castLossyInt(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
 public fun ULong.castUByte(): UByte {
     check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
@@ -1639,19 +1640,19 @@ public fun ULong.castI128(): I128 {
 
 public fun ULong.castLossyI128(): I128 = I128.fromULong(this)
 
-public fun Long.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun Long.cast(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun Long.castLossy(): Int = this.toInt()
+public fun Long.castLossy(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
-public fun Long.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun Long.castInt(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun Long.castLossyInt(): Int = this.toInt()
+public fun Long.castLossyInt(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
 public fun Long.castUByte(): UByte {
     check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
@@ -1716,19 +1717,19 @@ public fun Long.castI128(): I128 {
 
 public fun Long.castLossyI128(): I128 = I128.fromLong(this)
 
-public fun U128.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun U128.cast(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun U128.castLossy(): Int = this.toInt()
+public fun U128.castLossy(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
-public fun U128.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun U128.castInt(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun U128.castLossyInt(): Int = this.toInt()
+public fun U128.castLossyInt(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
 public fun U128.castUByte(): UByte {
     check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
@@ -1793,19 +1794,19 @@ public fun U128.castI128(): I128 {
 
 public fun U128.castLossyI128(): I128 = this.toI128()
 
-public fun I128.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun I128.cast(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun I128.castLossy(): Int = this.toInt()
+public fun I128.castLossy(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
-public fun I128.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
-    return this.toInt()
+public fun I128.castInt(): kotlin.Int {
+    check(kotlin.Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun I128.castLossyInt(): Int = this.toInt()
+public fun I128.castLossyInt(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
 public fun I128.castUByte(): UByte {
     check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
@@ -1926,33 +1927,33 @@ public fun Short.castF128(): F128 {
 
 public fun Short.castLossyF128(): F128 = F128.fromShort(this)
 
-public fun Int.castF16(): F16 {
-    check((F16.fromInt(this)).toInt() == this)
-    return F16.fromInt(this)
+public fun kotlin.Int.castF16(): F16 {
+    check(((F16.fromDouble(this.toDouble()) as Any?) as kotlin.Int) == this)
+    return F16.fromDouble(this.toDouble())
 }
 
-public fun Int.castLossyF16(): F16 = F16.fromInt(this)
+public fun kotlin.Int.castLossyF16(): F16 = F16.fromDouble(this.toDouble())
 
-public fun Int.castFloat(): kotlin.Float {
-    check((this.toFloat()).toInt() == this)
+public fun kotlin.Int.castFloat(): kotlin.Float {
+    check(((this.toFloat() as Any?) as kotlin.Int) == this)
     return this.toFloat()
 }
 
-public fun Int.castLossyFloat(): kotlin.Float = this.toFloat()
+public fun kotlin.Int.castLossyFloat(): kotlin.Float = this.toFloat()
 
-public fun Int.castDouble(): Double {
-    check((this.toDouble()).toInt() == this)
+public fun kotlin.Int.castDouble(): Double {
+    check(((this.toDouble() as Any?) as kotlin.Int) == this)
     return this.toDouble()
 }
 
-public fun Int.castLossyDouble(): Double = this.toDouble()
+public fun kotlin.Int.castLossyDouble(): Double = this.toDouble()
 
-public fun Int.castF128(): F128 {
-    check((F128.fromInt(this)).toInt() == this)
-    return F128.fromInt(this)
+public fun kotlin.Int.castF128(): F128 {
+    check(((F128.fromDouble(this.toDouble()) as Any?) as kotlin.Int) == this)
+    return F128.fromDouble(this.toDouble())
 }
 
-public fun Int.castLossyF128(): F128 = F128.fromInt(this)
+public fun kotlin.Int.castLossyF128(): F128 = F128.fromDouble(this.toDouble())
 
 public fun Long.castF16(): F16 {
     check((F16.fromLong(this)).toLong() == this)
@@ -2024,12 +2025,12 @@ public fun Double.cast(): kotlin.Float {
 
 public fun Double.castLossy(): kotlin.Float = this.toFloat()
 
-public fun Double.castInt(): Int {
-    check((this.toInt()).toDouble() == this)
-    return this.toInt()
+public fun Double.castInt(): kotlin.Int {
+    check((((this as Any?) as kotlin.Int)).toDouble() == this)
+    return ((this as Any?) as kotlin.Int)
 }
 
-public fun Double.castLossyInt(): Int = this.toInt()
+public fun Double.castLossyInt(): kotlin.Int = ((this as Any?) as kotlin.Int)
 
 public fun Double.castLong(): Long {
     check((this.toLong()).toDouble() == this)

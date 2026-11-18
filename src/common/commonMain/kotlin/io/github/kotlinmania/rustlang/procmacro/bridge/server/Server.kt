@@ -10,9 +10,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.procmacro.bridge.ApiTags
 import io.github.kotlinmania.rustlang.procmacro.bridge.BridgeConfig
-import io.github.kotlinmania.rustlang.procmacro.bridge.Decode
 import io.github.kotlinmania.rustlang.procmacro.bridge.Diagnostic
-import io.github.kotlinmania.rustlang.procmacro.bridge.Encode
 import io.github.kotlinmania.rustlang.procmacro.bridge.ExpnGlobals
 import io.github.kotlinmania.rustlang.procmacro.bridge.Literal
 import io.github.kotlinmania.rustlang.procmacro.bridge.Mark
@@ -23,13 +21,15 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.client.Client
 import io.github.kotlinmania.rustlang.procmacro.bridge.client.Span
 import io.github.kotlinmania.rustlang.procmacro.bridge.client.Symbol
 import io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream
-import io.github.kotlinmania.rustlang.procmacro.bridge.decode
-import io.github.kotlinmania.rustlang.procmacro.bridge.encode
 import io.github.kotlinmania.rustlang.procmacro.bridge.handle.Handle
 import io.github.kotlinmania.rustlang.procmacro.bridge.handle.InternedStore
 import io.github.kotlinmania.rustlang.procmacro.bridge.handle.OwnedStore
 import io.github.kotlinmania.rustlang.procmacro.bridge.mark
 import io.github.kotlinmania.rustlang.procmacro.bridge.panicmessage.PanicMessage
+import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.Decode
+import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.Encode
+import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.decode
+import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.encode
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.sync.mpsc.Receiver
 import io.github.kotlinmania.rustlang.std.sync.mpsc.SyncSender

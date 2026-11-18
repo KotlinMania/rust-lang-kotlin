@@ -1,6 +1,7 @@
 // port-lint: source math/generic/trunc.rs
 package io.github.kotlinmania.rustlang.libm.math.generic.trunc
 
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.libm.math.support.env.FpResult
 import io.github.kotlinmania.rustlang.libm.math.support.env.Status
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
@@ -9,13 +10,13 @@ import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> truncStatus(x: F, fromBitsFFn: (Int) -> F): FpResult<F> {
     val xi: Int = x.toBits().toInt()
-    val e: Int = x.expUnbiased()
+    val e: kotlin.Int = x.expUnbiased()
     // The represented value has no fractional part, so no truncation is needed
-    if (e >= F.SIG_BITS.toInt()) {
+    if ((kmCompareValues(e, ((F.SIG_BITS as Any?) as kotlin.Int)) >= 0)) {
         return FpResult.ok(x)
     }
     val clearMask =
-        if (e < 0) {
+        if ((kmCompareValues(e, 0) < 0)) {
             // If the exponent is negative, the result will be zero so we clear everything
             // except the sign.
             F.SIGN_MASK.inv()

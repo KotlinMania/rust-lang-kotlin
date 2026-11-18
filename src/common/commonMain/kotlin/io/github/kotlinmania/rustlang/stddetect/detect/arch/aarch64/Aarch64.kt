@@ -1,5 +1,5 @@
 // port-lint: source detect/arch/aarch64.rs
-package io.github.kotlinmania.rustlang.stddetect.detect.arch
+package io.github.kotlinmania.rustlang.stddetect.detect.arch.aarch64
 
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.stddetect.detect.checkFor

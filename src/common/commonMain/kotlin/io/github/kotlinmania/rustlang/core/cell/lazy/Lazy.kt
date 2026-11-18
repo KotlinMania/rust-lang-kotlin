@@ -6,8 +6,9 @@ import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.Read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
+import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugTuple(
@@ -253,7 +254,7 @@ unreachableUnchecked()
                 // SAFETY: We never drop the state after we read `f`, and we write a valid value back
                 // in any case, panic or success. `f` can't access the `LazyCell` because it is mutably
                 // borrowed.
-                val f1 = read(f, typeLayoutT = UnresolvedTypeLayout<State<T, () -> T>>())
+                val f1 = Read(f, typeLayoutT = UnresolvedTypeLayout<State<T, () -> T>>())
                 // INVARIANT: Initiated from mutable reference, don't drop because we read it.
                 val guard = PoisonOnPanic(state)
                 val data = f1()

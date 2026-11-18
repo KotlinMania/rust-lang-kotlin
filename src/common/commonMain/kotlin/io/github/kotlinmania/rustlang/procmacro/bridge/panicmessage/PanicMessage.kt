@@ -10,11 +10,11 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
  * types other than `String` and `String`.
  */
 public sealed class PanicMessage {
-    public data class StaticStr(public var value: String) : PanicMessage()
+    public data class StaticStr(public var value: kotlin.String) : PanicMessage()
     public data class String(public var value: String) : PanicMessage()
     public data object Unknown : PanicMessage()
 
-    public open fun asStr(): String? =
+    public open fun asStr(): kotlin.String? =
         when (this) {
             is PanicMessage.StaticStr -> {
                 val (s) = this as PanicMessage.StaticStr
@@ -42,7 +42,7 @@ public sealed class PanicMessage {
 
     public companion object {
         public fun from(payload: RustAny): PanicMessage {
-            when (val matchVal = payload.downcastRef<String>()) {
+            when (val matchVal = payload.downcastRef<kotlin.String>()) {
                 null -> {}
                 else -> {
                     val s = matchVal

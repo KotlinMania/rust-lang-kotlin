@@ -15,6 +15,7 @@ import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.addrOf
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -88,7 +89,7 @@ public open class IntoIter<T, A : Allocator>(
      * For non-ZSTs the pointer is treated as `NonNull<T>`
      */
     public var end: ConstPtr,
-) : AsRef<List<T>>, TrustedFused, TrustedLen<Any>, InPlaceIterable, SourceIter, Iterable<T> {
+) : AsRef<List<T>>, TrustedFused, TrustedLen, InPlaceIterable, SourceIter, Iterable<T> {
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {

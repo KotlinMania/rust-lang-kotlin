@@ -41,7 +41,7 @@ public interface Lemire<T, out Int> : FloatExt<T, Int> {
     /**
      * Gets a small power-of-ten for fast-path multiplication.
      */
-    public fun pow10FastPath(exponent: Int): T
+    public fun pow10FastPath(exponent: kotlin.Int): T
 
     /**
      * Converts integer into float through an as cast.

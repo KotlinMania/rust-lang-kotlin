@@ -564,7 +564,7 @@ public interface SpecFold {
     public fun <B> specFold(init: B, f: (B, Item) -> B): B
 }
 
-public fun <Item, A : TrustedLen<Item>, B : TrustedLen<Item>, Acc> Zip<A, B>.specFold(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc {
+public fun <A : TrustedLen, B : TrustedLen, Acc> Zip<A, B>.specFold(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc {
     var accum = init
     while (true) {
         val (upper1, more) =

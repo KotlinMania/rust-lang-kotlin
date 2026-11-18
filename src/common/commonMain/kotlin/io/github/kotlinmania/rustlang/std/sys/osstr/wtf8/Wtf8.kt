@@ -14,7 +14,6 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
@@ -98,7 +97,7 @@ public open class Buf internal constructor(
         // SAFETY: Slice is just a wrapper for Wtf8,
         // and self.inner.asSlice() returns &Wtf8.
         // Therefore, transmuting &Wtf8 to &Slice is safe.
-        return transmute(this.inner.asSlice())
+        return transmuteWithLayouts<Any?, Slice>(this.inner.asSlice(), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Slice>())
     }
 
     public open fun asMutSlice(): RustMutableReference<Slice> {
@@ -107,12 +106,12 @@ public open class Buf internal constructor(
         // Therefore, transmuting Wtf8 to Slice is safe.
         // Additionally, care should be taken to ensure the slice
         // is always valid Wtf8.
-        return transmute(this.inner.asMutSlice())
+        return transmuteWithLayouts<Any?, RustMutableReference<Slice>>(this.inner.asMutSlice(), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<RustMutableReference<Slice>>())
     }
 
-    public open fun leak(): RustMutableReference<Slice> = transmute(this.inner.leak())
+    public open fun leak(): RustMutableReference<Slice> = transmuteWithLayouts<Any?, RustMutableReference<Slice>>(this.inner.leak(), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<RustMutableReference<Slice>>())
 
-    public open fun intoBox(): Slice = transmute(this.inner.intoBox())
+    public open fun intoBox(): Slice = transmuteWithLayouts<Any?, Slice>(this.inner.intoBox(), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Slice>())
 
     public open fun intoArc(): Slice = this.asSlice().intoArc()
 
@@ -241,10 +240,10 @@ public open class Slice internal constructor(
 
         public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Wtf8> = UnresolvedTypeLayout()): Slice = Slice(fieldStorage, fieldLayout)
 
-        public fun fromEncodedBytesUnchecked(s: List<UByte>): Slice = transmute(Wtf8.fromBytesUnchecked(s))
+        public fun fromEncodedBytesUnchecked(s: List<UByte>): Slice = transmuteWithLayouts<Any?, Slice>(Wtf8.fromBytesUnchecked(s), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Slice>())
 
-        public fun fromStr(s: String): Slice = transmute(Wtf8.fromStr(s))
+        public fun fromStr(s: String): Slice = transmuteWithLayouts<Any?, Slice>(Wtf8.fromStr(s), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Slice>())
 
-        public fun emptyBox(): Slice = transmute(Wtf8.emptyBox())
+        public fun emptyBox(): Slice = transmuteWithLayouts<Any?, Slice>(Wtf8.emptyBox(), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Slice>())
     }
 }

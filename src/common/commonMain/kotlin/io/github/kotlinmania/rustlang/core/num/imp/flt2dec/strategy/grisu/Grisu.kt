@@ -18,6 +18,7 @@ import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 
 // Rust adaptation of the Grisu3 algorithm described in "Printing Floating-Point Numbers Quickly
 // and Accurately with Integers"[^1]. It uses about 1KB of precomputed table, and in turn, it's

@@ -1,6 +1,7 @@
 // port-lint: source os/unix/net/ancillary.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net.ancillary
 
+import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
@@ -9,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.addrOfMut
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -345,8 +347,8 @@ public sealed class AncillaryError {
  * This enum represent one control message of variable type.
  */
 public sealed class AncillaryData {
-    public data class ScmRights(public var value: ScmRights) : AncillaryData()
-    public data class ScmCredentials(public var value: ScmCredentials) : AncillaryData()
+    public data class ScmRights(public var value: io.github.kotlinmania.rustlang.std.os.unix.net.ancillary.ScmRights) : AncillaryData()
+    public data class ScmCredentials(public var value: io.github.kotlinmania.rustlang.std.os.unix.net.ancillary.ScmCredentials) : AncillaryData()
 
     public companion object {
         /**

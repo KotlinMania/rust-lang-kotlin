@@ -1135,7 +1135,7 @@ public open class BTreeSet<T, A : AllocatorClone>(
  */
 public open class Iter<T> internal constructor(
     iterCtorArg: Keys<T, SetValZST>,
-) : TrustedLen<Any>, Iterable<T> {
+) : TrustedLen, Iterable<T> {
     public var iter: Keys<T, SetValZST> = iterCtorArg
         internal set
 
@@ -1197,7 +1197,7 @@ public open class Iter<T> internal constructor(
  */
 public open class IntoIter<T, A : AllocatorClone> internal constructor(
     iterCtorArg: io.github.kotlinmania.rustlang.alloc.collections.btree.map.IntoIter<T, SetValZST, A>,
-) : TrustedLen<Any>, Iterable<T> {
+) : TrustedLen, Iterable<T> {
     public var iter: io.github.kotlinmania.rustlang.alloc.collections.btree.map.IntoIter<T, SetValZST, A> = iterCtorArg
         internal set
 
