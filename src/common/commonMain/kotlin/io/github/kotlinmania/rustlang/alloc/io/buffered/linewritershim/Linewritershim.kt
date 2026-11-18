@@ -7,8 +7,13 @@ import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memrchr
+import io.github.kotlinmania.rustlang.core.slice.splitAt
+import io.github.kotlinmania.rustlang.core.str.len
+import io.github.kotlinmania.rustlang.core.str.splitAt
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 /**
@@ -55,7 +60,7 @@ public open class LineWriterShim<W : Write<W>> internal constructor(
      */
     public open fun flushIfCompletedLine(): Result<Unit> =
         when (val matchVal = this.buffered().last()) {
-            10u -> this.buffer.flushBuf()
+            10u.toUByte() -> this.buffer.flushBuf()
             else -> RustResult.Ok(Unit)
         }
 
@@ -71,7 +76,7 @@ public open class LineWriterShim<W : Write<W>> internal constructor(
      */
     public open fun writeVectoredScanned(bufs: List<IoSlice>): Result<Int> {
         // Find the buffer containing the last newline.
-        val lastNewlineBufIdx = bufs.mapIndexed { index, item -> Pair(index, item) }.rev().findMap({ (i, buf) -> memchr(10u, buf)?.let({ i }) })
+        val lastNewlineBufIdx = bufs.mapIndexed { index, item -> Pair(index, item) }.rev().findMap({ (i, buf) -> memchr(10u.toUByte(), buf)?.let({ i }) })
         // If there are no new newlines (that is, if this write is less than
         // one line), just do a regular buffered write.
         val lastNewlineBufIdx1 =
@@ -136,9 +141,9 @@ public open class LineWriterShim<W : Write<W>> internal constructor(
      * writer, it will also flush the existing buffer if it ends with a
      * newline, even if the incoming data does not contain any newlines.
      */
-    public open fun write(buf: List<UByte>): Result<Int> {
+    public override fun write(buf: List<UByte>): Result<Int> {
         val newlineIdx1 =
-            when (val matchVal = memrchr(10u, buf)) {
+            when (val matchVal = memrchr(10u.toUByte(), buf)) {
                 // If there are no new newlines (that is, if this write is less than
                 // one line), just do a regular buffered write (which may flush if
                 // we exceed the inner buffer's size)
@@ -201,7 +206,7 @@ public open class LineWriterShim<W : Write<W>> internal constructor(
             } else {
                 val scanArea = ((buf).subList(flushed, (buf).size))
                 val scanArea1 = ((scanArea).subList(0, this.buffer.capacity()))
-                when (val matchVal1 = memrchr(10u, scanArea1)) {
+                when (val matchVal1 = memrchr(10u.toUByte(), scanArea1)) {
                     null -> scanArea1
                     else -> {
                         val newlineIdx2 = matchVal1
@@ -213,7 +218,7 @@ public open class LineWriterShim<W : Write<W>> internal constructor(
         return RustResult.Ok(flushed + buffered)
     }
 
-    public open fun flush(): Result<Unit> = this.buffer.flush()
+    public override fun flush(): Result<Unit> = this.buffer.flush()
 
     /**
      * Writes some vectored data into this BufWriter with line buffering.
@@ -246,7 +251,7 @@ public open class LineWriterShim<W : Write<W>> internal constructor(
      * get the benefits of more granular partial-line handling without losing
      * anything in efficiency
      */
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> {
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int> {
         // Only scan (and operate on) the first MAX_BUFS_TO_SCAN slices. The cap
         // is what keeps writeAllVectored() from going quadratic when callers
         // pass many newline-free slices -- without it, every iteration of the
@@ -280,7 +285,7 @@ public open class LineWriterShim<W : Write<W>> internal constructor(
         return this.writeVectoredScanned(((bufs).subList(0, bufs.size.min(MAX_BUFS_TO_SCAN))))
     }
 
-    public open fun isWriteVectored(): Boolean = this.inner().isWriteVectored()
+    public override fun isWriteVectored(): Boolean = this.inner().isWriteVectored()
 
     /**
      * Writes some data into this BufWriter with line buffering.
@@ -293,8 +298,8 @@ public open class LineWriterShim<W : Write<W>> internal constructor(
      * writer, it will also flush the existing buffer if it contains any
      * newlines, even if the incoming data does not contain any newlines.
      */
-    public open fun writeAll(buf: List<UByte>): Result<Unit> {
-        return when (val matchVal = memrchr(10u, buf)) {
+    public override fun writeAll(buf: List<UByte>): Result<Unit> {
+        return when (val matchVal = memrchr(10u.toUByte(), buf)) {
             // If there are no new newlines (that is, if this write is less than
             // one line), just do a regular buffered write (which may flush if
             // we exceed the inner buffer's size)

@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -14,6 +15,8 @@ import io.github.kotlinmania.rustlang.core.num.fromStrRadix
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
 import io.github.kotlinmania.rustlang.procmacro.bridge.DelimSpan
 import io.github.kotlinmania.rustlang.procmacro.bridge.IdentKind
@@ -997,7 +1000,7 @@ public open class Literal internal constructor(
                         buf.add(b.get())
                     }
                     else -> {
-                        val err = (res as Result.Err<*, *>).errValue()
+                        val err = res.errValue()
                         if (err.isFatal()) {
                             error = ConversionErrorKind.FailedToUnescape(err.into())
                         }

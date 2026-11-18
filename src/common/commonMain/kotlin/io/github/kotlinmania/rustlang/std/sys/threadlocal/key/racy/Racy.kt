@@ -1,13 +1,14 @@
 // port-lint: source sys/thread_local/key/racy.rs
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy
 
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchange
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
 import io.github.kotlinmania.rustlang.libc.PTHREAD_KEYS_MAX
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
@@ -82,7 +83,7 @@ public open class LazyKey internal constructor(
                     null -> {}
                     else -> {
                         val out = matchVal
-                        Write.writeFmt(out, "fatal runtime error: " + ("assertion failed: key as usize != KEY_SENTVAL").toString() + ", aborting\n")
+                        out.writeFmt("fatal runtime error: " + ("assertion failed: key as usize != KEY_SENTVAL").toString() + ", aborting\n")
                     }
                 }
                 run {

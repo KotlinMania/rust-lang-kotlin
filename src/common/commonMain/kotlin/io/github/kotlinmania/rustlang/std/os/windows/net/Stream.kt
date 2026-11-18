@@ -345,15 +345,15 @@ public open class UnixStream(
      */
     public open fun writeTimeout(): Result<Duration?, io.github.kotlinmania.rustlang.core.io.error.Error> = this.value.timeout(SO_SNDTIMEO)
 
-    public open fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = Read.read(this, buf)
+    public override fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = Read.read(this, buf)
 
-    public open fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = Write.write(this, buf)
+    public override fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = Write.write(this, buf)
 
-    public open fun flush(): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = Write.flush(this)
+    public override fun flush(): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = Write.flush(this)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.value.writeVectored(bufs)
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.value.writeVectored(bufs)
 
-    public open fun isWriteVectored(): Boolean = this.value.isWriteVectored()
+    public override fun isWriteVectored(): Boolean = this.value.isWriteVectored()
 
     public override fun asSocket(): BorrowedSocket = this.value.asSocket()
 

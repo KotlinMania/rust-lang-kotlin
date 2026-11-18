@@ -2,6 +2,7 @@
 
 package io.github.kotlinmania.rustlang.core.fmt
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
@@ -28,12 +29,16 @@ import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
 import io.github.kotlinmania.rustlang.core.ptr.constptr.offset
 import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import io.github.kotlinmania.rustlang.core.slice.iterMut
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.asPtr
 import io.github.kotlinmania.rustlang.core.str.chars
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 /**
@@ -719,7 +724,7 @@ public open class Formatter(
                     var s = MutableList(5) { 0 }
                     val len = part.len()
                     for (c in s[0 until len].iterMut().rev()) {
-                        c = 48u + (v % 10).toUByte()
+                        c = 48u.toUByte() + (v % 10).toUByte()
                         v /= 10
                     }
                     // SAFETY: Per the precondition.
@@ -1194,7 +1199,7 @@ public open class Formatter(
         // or just "Point" for a tuple struct like `Point(UInt, UInt)`. If there are no field names
         // (and therefore no space separator), we assume we format a tuple struct.
         // `.asBytes()` is to avoid bringing in UTF-8 code bloat
-        val isTuple = !names.encodeToByteArray().map { it.toUByte() }.contains(32u)
+        val isTuple = !names.encodeToByteArray().map { it.toUByte() }.contains(32u.toUByte())
         return if (isTuple) {
             val builder = debugTupleNew(this, names)
             for (value in values) {
@@ -1381,11 +1386,11 @@ public open class Formatter(
      */
     public open fun options(): FormattingOptions = this.options
 
-    public open fun writeStrWrite(s: String): Result = this.buf.append(s)
+    public override fun writeStrWrite(s: String): Result = this.buf.append(s)
 
     public override fun writeChar(c: Char): Result = this.buf.append(c)
 
-    public open fun writeFmtWrite(args: Arguments): Result =
+    public override fun writeFmtWrite(args: Arguments): Result =
         when (val matchVal = args.asStaticallyKnownStr()) {
             null -> {
                 write(this.buf, args)

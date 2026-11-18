@@ -2,13 +2,16 @@
 package io.github.kotlinmania.rustlang.core.fmt.num.imp
 
 import io.github.kotlinmania.rustlang.core.char.methods.isAsciiAlphabetic
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.fmt.num.DECIMAL_PAIRS
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.num.checkedIlog10
 import io.github.kotlinmania.rustlang.core.num.checkedPow
+import io.github.kotlinmania.rustlang.core.num.ilog10
 import io.github.kotlinmania.rustlang.core.num.imp.fmt.Formatted
 import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
 import io.github.kotlinmania.rustlang.core.num.pow
@@ -17,6 +20,8 @@ import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import kotlin.experimental.and
 
 public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: UByte): Result<Unit, Error> {
@@ -90,13 +95,13 @@ public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: U
         if (coefPrec == 0 && morePrec == 0) {
             Pair(coef, 1)
         } else {
-            buf[1].write(46u)
+            buf[1].write(46u.toUByte())
             val fractionRange = 2 until (2 + coefPrec)
             var remain = coef
             for (i in fractionRange.clone().rev()) {
                 val digit = (remain % 10uL).toInt()
                 remain /= 10uL
-                buf[i].write(48u + digit.toUByte())
+                buf[i].write(48u.toUByte() + digit.toUByte())
             }
             run {
                 for (i1 in fractionRange.clone().skip(1).rev().stepBy(2)) {
@@ -108,30 +113,30 @@ public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: U
                 if (coefPrec and 1 != 0) {
                     val digit1 = (remain % 10uL).toInt()
                     remain /= 10uL
-                    buf[fractionRange.start].write(48u + digit1.toUByte())
+                    buf[fractionRange.start].write(48u.toUByte() + digit1.toUByte())
                 }
             }
             Pair(remain, fractionRange.end)
         }
     if (false) {
-        check(leadDec < 10)
+        check(leadDec < 10uL)
     }
     if (false) {
-        check(leadDec != 0 || coef == 0uL) { "significant digits only" }
+        check(leadDec != 0uL || coef == 0uL) { "significant digits only" }
     }
-    buf[0].write(48u + leadDec.toUByte())
+    buf[0].write(48u.toUByte() + leadDec.toUByte())
     assertUnchecked(coefLen <= MAX_COEF_LEN)
     buf[coefLen].write(letterE)
     val textLen: Int =
         when {
             exp < 10 -> {
-                buf[coefLen + 1].write(48u + exp.toUByte())
+                buf[coefLen + 1].write(48u.toUByte() + exp.toUByte())
                 coefLen + 2
             }
             exp in 10 until 100 -> {
                 run {
-                    buf[coefLen + 1].write(48u + (exp / 10).toUByte())
-                    buf[coefLen + 2].write(48u + (exp % 10).toUByte())
+                    buf[coefLen + 1].write(48u.toUByte() + (exp / 10).toUByte())
+                    buf[coefLen + 2].write(48u.toUByte() + (exp % 10).toUByte())
                 }
                 run {
                     buf[coefLen + 1].write(DECIMAL_PAIRS[exp * 2 + 0])
@@ -162,18 +167,18 @@ public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: U
     }
 }
 
-public fun Byte.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.unsignedAbs().toULong(), this >= 0.toByte(), 101u)
+public fun Byte.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.unsignedAbs().toULong(), this >= 0.toByte(), 101u.toUByte())
 
-public fun UByte.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.toULong(), true, 101u)
+public fun UByte.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.toULong(), true, 101u.toUByte())
 
-public fun Short.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.unsignedAbs().toULong(), this >= 0.toShort(), 101u)
+public fun Short.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.unsignedAbs().toULong(), this >= 0.toShort(), 101u.toUByte())
 
-public fun UShort.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.toULong(), true, 101u)
+public fun UShort.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.toULong(), true, 101u.toUByte())
 
-public fun Int.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.unsignedAbs().toULong(), this >= 0, 101u)
+public fun Int.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.unsignedAbs().toULong(), this >= 0, 101u.toUByte())
 
-public fun UInt.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.toULong(), true, 101u)
+public fun UInt.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.toULong(), true, 101u.toUByte())
 
-public fun Long.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.unsignedAbs().toULong(), this >= 0L, 101u)
+public fun Long.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.unsignedAbs().toULong(), this >= 0L, 101u.toUByte())
 
-public fun ULong.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this, true, 101u)
+public fun ULong.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this, true, 101u.toUByte())

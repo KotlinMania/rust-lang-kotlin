@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
@@ -38,7 +39,7 @@ public val MIN_SVE_SIZE_8: Int = 64
  * 3. Sets the Vec length.
  */
 public open class PanicGuard<T, A : Allocator>(
-    public var v: List<T>,
+    public var v: MutableList<T>,
     /**
      * Start index of the current chunk within the Vec.
      */
@@ -92,7 +93,7 @@ public open class PanicGuard<T, A : Allocator>(
  * - `sizeOf<T>() == 1 / 2 / 4 / 8`
  * - Called on aarch64 + SVE target.
  */
-public fun <T, A : Allocator> chunkedRetain(v: List<T>, f: (T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
+public fun <T, A : Allocator> chunkedRetain(v: MutableList<T>, f: (T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     val originalLen = v.size
     val guard = PanicGuard(v = v, read = 0, write = 0, decided = 0, mask = BooleanArray(CHUNK_SIZE) { false }, originalLen = originalLen)
     while (guard.read < guard.originalLen) {

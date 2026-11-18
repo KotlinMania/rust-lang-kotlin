@@ -8,6 +8,9 @@ import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.num.isPowerOfTwo
+import io.github.kotlinmania.rustlang.core.num.nextPowerOfTwo
+import io.github.kotlinmania.rustlang.core.num.wrappingNextPowerOfTwo
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.sub
@@ -150,7 +153,7 @@ public fun Wrapping<Int>.mulAssign(other: Int) {
     selfMut = selfMut * Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
-public fun Wrapping<Int>.div(other: Wrapping<Int>): Wrapping<Int> = Wrapping(this.value.wrappingDiv(other.value), fieldLayout = PrimitiveLayouts.USIZE64)
+public operator fun Wrapping<Int>.div(other: Wrapping<Int>): Wrapping<Int> = Wrapping(this.value.wrappingDiv(other.value), fieldLayout = PrimitiveLayouts.USIZE64)
 
 public fun Wrapping<Int>.divAssign(other: Wrapping<Int>) {
     var selfMut = this
@@ -162,7 +165,7 @@ public fun Wrapping<Int>.divAssign(other: Int) {
     selfMut = selfMut / Wrapping(other, fieldLayout = PrimitiveLayouts.USIZE64)
 }
 
-public fun Wrapping<Int>.rem(other: Wrapping<Int>): Wrapping<Int> = Wrapping(this.value.wrappingRem(other.value), fieldLayout = PrimitiveLayouts.USIZE64)
+public operator fun Wrapping<Int>.rem(other: Wrapping<Int>): Wrapping<Int> = Wrapping(this.value.wrappingRem(other.value), fieldLayout = PrimitiveLayouts.USIZE64)
 
 public fun Wrapping<Int>.remAssign(other: Wrapping<Int>) {
     var selfMut = this

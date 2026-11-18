@@ -7,6 +7,8 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
@@ -39,7 +41,7 @@ public fun env(): Env {
         if (input.isEmpty()) {
             return null
         }
-        val pos = memchr(61u, ((input).subList(1, (input).size)))?.let({ p -> p + 1 })
+        val pos = memchr(61u.toUByte(), ((input).subList(1, (input).size)))?.let({ p -> p + 1 })
         return pos?.let({ p ->
             Pair(OsStringExt.fromVec(((input).subList(0, p)).toMutableList()), OsStringExt.fromVec(((input).subList(p + 1, (input).size)).toMutableList()))
         })

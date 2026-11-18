@@ -2087,7 +2087,7 @@ public fun Byte.wrappingPow(exp: UInt): Byte {
  */
 public fun Byte.overflowingAdd(rhs: Byte): Pair<Byte, Boolean> {
     val (a, b) = kmAddWithOverflowI8(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toByte(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -2168,7 +2168,7 @@ public fun Byte.overflowingAddUnsigned(rhs: UByte): Pair<Byte, Boolean> {
  */
 public fun Byte.overflowingSub(rhs: Byte): Pair<Byte, Boolean> {
     val (a, b) = kmSubWithOverflowI8(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toByte(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -2249,7 +2249,7 @@ public fun Byte.overflowingSubUnsigned(rhs: UByte): Pair<Byte, Boolean> {
  */
 public fun Byte.overflowingMul(rhs: Byte): Pair<Byte, Boolean> {
     val (a, b) = kmMulWithOverflowI8(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toByte(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -5249,7 +5249,7 @@ public fun Short.wrappingPow(exp: UInt): Short {
  */
 public fun Short.overflowingAdd(rhs: Short): Pair<Short, Boolean> {
     val (a, b) = kmAddWithOverflowI16(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toShort(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -5330,7 +5330,7 @@ public fun Short.overflowingAddUnsigned(rhs: UShort): Pair<Short, Boolean> {
  */
 public fun Short.overflowingSub(rhs: Short): Pair<Short, Boolean> {
     val (a, b) = kmSubWithOverflowI16(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toShort(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -5411,7 +5411,7 @@ public fun Short.overflowingSubUnsigned(rhs: UShort): Pair<Short, Boolean> {
  */
 public fun Short.overflowingMul(rhs: Short): Pair<Short, Boolean> {
     val (a, b) = kmMulWithOverflowI16(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toShort(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -8381,7 +8381,7 @@ public fun Int.wrappingPow(exp: UInt): Int {
  */
 public fun Int.overflowingAdd(rhs: Int): Pair<Int, Boolean> {
     val (a, b) = kmAddWithOverflowI32(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toInt(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -8462,7 +8462,7 @@ public fun Int.overflowingAddUnsigned(rhs: UInt): Pair<Int, Boolean> {
  */
 public fun Int.overflowingSub(rhs: Int): Pair<Int, Boolean> {
     val (a, b) = kmSubWithOverflowI32(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toInt(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -8543,7 +8543,7 @@ public fun Int.overflowingSubUnsigned(rhs: UInt): Pair<Int, Boolean> {
  */
 public fun Int.overflowingMul(rhs: Int): Pair<Int, Boolean> {
     val (a, b) = kmMulWithOverflowI32(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toInt(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -11513,7 +11513,7 @@ public fun Long.wrappingPow(exp: UInt): Long {
  */
 public fun Long.overflowingAdd(rhs: Long): Pair<Long, Boolean> {
     val (a, b) = kmAddWithOverflowI64(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toLong(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -11594,7 +11594,7 @@ public fun Long.overflowingAddUnsigned(rhs: ULong): Pair<Long, Boolean> {
  */
 public fun Long.overflowingSub(rhs: Long): Pair<Long, Boolean> {
     val (a, b) = kmSubWithOverflowI64(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toLong(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -11675,7 +11675,7 @@ public fun Long.overflowingSubUnsigned(rhs: ULong): Pair<Long, Boolean> {
  */
 public fun Long.overflowingMul(rhs: Long): Pair<Long, Boolean> {
     val (a, b) = kmMulWithOverflowI64(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toLong(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -14653,7 +14653,7 @@ public fun I128.wrappingPow(exp: UInt): I128 {
  */
 public fun I128.overflowingAdd(rhs: I128): Pair<I128, Boolean> {
     val (a, b) = run { val lhs = this; val rhs = rhs; kmAddWithOverflowI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { Pair(I128(it.hi.toLong(), it.lo), it.overflowed) } }
-    return Pair(I128.fromLong(a.toLong()), b)
+    return Pair(a, b)
 }
 
 /**
@@ -14734,7 +14734,7 @@ public fun I128.overflowingAddUnsigned(rhs: U128): Pair<I128, Boolean> {
  */
 public fun I128.overflowingSub(rhs: I128): Pair<I128, Boolean> {
     val (a, b) = run { val lhs = this; val rhs = rhs; kmSubWithOverflowI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { Pair(I128(it.hi.toLong(), it.lo), it.overflowed) } }
-    return Pair(I128.fromLong(a.toLong()), b)
+    return Pair(a, b)
 }
 
 /**
@@ -14815,7 +14815,7 @@ public fun I128.overflowingSubUnsigned(rhs: U128): Pair<I128, Boolean> {
  */
 public fun I128.overflowingMul(rhs: I128): Pair<I128, Boolean> {
     val (a, b) = run { val lhs = this; val rhs = rhs; kmMulWithOverflowI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { Pair(I128(it.hi.toLong(), it.lo), it.overflowed) } }
-    return Pair(I128.fromLong(a.toLong()), b)
+    return Pair(a, b)
 }
 
 /**
@@ -18254,7 +18254,7 @@ public fun UByte.wrappingPow(exp: UInt): UByte {
  */
 public fun UByte.overflowingAdd(rhs: UByte): Pair<UByte, Boolean> {
     val (a, b) = kmAddWithOverflowU8(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toUByte(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -18321,7 +18321,7 @@ public fun UByte.overflowingAddSigned(rhs: Byte): Pair<UByte, Boolean> {
  */
 public fun UByte.overflowingSub(rhs: UByte): Pair<UByte, Boolean> {
     val (a, b) = kmSubWithOverflowU8(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toUByte(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -18408,7 +18408,7 @@ public fun UByte.absDiff(other: UByte): UByte =
  */
 public fun UByte.overflowingMul(rhs: UByte): Pair<UByte, Boolean> {
     val (a, b) = kmMulWithOverflowU8(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toUByte(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -18439,13 +18439,13 @@ public fun UByte.overflowingMul(rhs: UByte): Pair<UByte, Boolean> {
  * implementing it for wider-than-native types.
  *
  * ```kotlin
- * fun scalarMulEq(littleEndianDigits: List<UShort>, multiplicand: UShort) {
+ * fun scalarMulEq(littleEndianDigits: MutableList<UShort>, multiplicand: UShort) {
  *     var carry = 0
  *     for (d in littleEndianDigits) {
  *         run { val (destructVal0, destructVal1) = d.carryingMul(multiplicand, carry); d = destructVal0; carry = destructVal1 }
  *     }
  *     if (carry != 0) {
- *         littleEndianDigits.push(carry)
+ *         littleEndianDigits.add(carry)
  *     }
  * }
  * var v = mutableListOf(10, 20)
@@ -19437,9 +19437,9 @@ public fun UByte.eqIgnoreAsciiCase(other: UByte): Boolean = this.toAsciiLowercas
  * # Examples
  *
  * ```kotlin
- * var byte = 97u
+ * var byte = 97u.toUByte()
  * byte.makeAsciiUppercase()
- * check(65u == byte)
+ * check(65u.toUByte() == byte)
  * ```
  *
  * [toAsciiUppercase]: Self.toAsciiUppercase
@@ -19461,9 +19461,9 @@ public fun UByte.makeAsciiUppercase() {
  * # Examples
  *
  * ```kotlin
- * var byte = 65u
+ * var byte = 65u.toUByte()
  * byte.makeAsciiLowercase()
- * check(97u == byte)
+ * check(97u.toUByte() == byte)
  * ```
  *
  * [toAsciiLowercase]: Self.toAsciiLowercase
@@ -19482,15 +19482,15 @@ public fun UByte.makeAsciiLowercase() {
  * # Examples
  *
  * ```kotlin
- * val uppercaseA = 65u
- * val uppercaseG = 71u
- * val a = 97u
- * val g = 103u
- * val zero = 48u
- * val percent = 37u
- * val space = 32u
- * val lf = 10u
- * val esc = 27u
+ * val uppercaseA = 65u.toUByte()
+ * val uppercaseG = 71u.toUByte()
+ * val a = 97u.toUByte()
+ * val g = 103u.toUByte()
+ * val zero = 48u.toUByte()
+ * val percent = 37u.toUByte()
+ * val space = 32u.toUByte()
+ * val lf = 10u.toUByte()
+ * val esc = 27u.toUByte()
  * check(uppercaseA.isAsciiAlphabetic())
  * check(uppercaseG.isAsciiAlphabetic())
  * check(a.isAsciiAlphabetic())
@@ -19504,7 +19504,7 @@ public fun UByte.makeAsciiLowercase() {
  */
 public fun UByte.isAsciiAlphabetic(): Boolean =
     when (this) {
-        in 65u..90u, in 97u..122u -> true
+        in 65u.toUByte()..90u.toUByte(), in 97u.toUByte()..122u.toUByte() -> true
         else -> false
     }
 
@@ -19515,15 +19515,15 @@ public fun UByte.isAsciiAlphabetic(): Boolean =
  * # Examples
  *
  * ```kotlin
- * val uppercaseA = 65u
- * val uppercaseG = 71u
- * val a = 97u
- * val g = 103u
- * val zero = 48u
- * val percent = 37u
- * val space = 32u
- * val lf = 10u
- * val esc = 27u
+ * val uppercaseA = 65u.toUByte()
+ * val uppercaseG = 71u.toUByte()
+ * val a = 97u.toUByte()
+ * val g = 103u.toUByte()
+ * val zero = 48u.toUByte()
+ * val percent = 37u.toUByte()
+ * val space = 32u.toUByte()
+ * val lf = 10u.toUByte()
+ * val esc = 27u.toUByte()
  * check(uppercaseA.isAsciiUppercase())
  * check(uppercaseG.isAsciiUppercase())
  * check(!a.isAsciiUppercase())
@@ -19537,7 +19537,7 @@ public fun UByte.isAsciiAlphabetic(): Boolean =
  */
 public fun UByte.isAsciiUppercase(): Boolean =
     when (this) {
-        in 65u..90u -> true
+        in 65u.toUByte()..90u.toUByte() -> true
         else -> false
     }
 
@@ -19548,15 +19548,15 @@ public fun UByte.isAsciiUppercase(): Boolean =
  * # Examples
  *
  * ```kotlin
- * val uppercaseA = 65u
- * val uppercaseG = 71u
- * val a = 97u
- * val g = 103u
- * val zero = 48u
- * val percent = 37u
- * val space = 32u
- * val lf = 10u
- * val esc = 27u
+ * val uppercaseA = 65u.toUByte()
+ * val uppercaseG = 71u.toUByte()
+ * val a = 97u.toUByte()
+ * val g = 103u.toUByte()
+ * val zero = 48u.toUByte()
+ * val percent = 37u.toUByte()
+ * val space = 32u.toUByte()
+ * val lf = 10u.toUByte()
+ * val esc = 27u.toUByte()
  * check(!uppercaseA.isAsciiLowercase())
  * check(!uppercaseG.isAsciiLowercase())
  * check(a.isAsciiLowercase())
@@ -19570,7 +19570,7 @@ public fun UByte.isAsciiUppercase(): Boolean =
  */
 public fun UByte.isAsciiLowercase(): Boolean =
     when (this) {
-        in 97u..122u -> true
+        in 97u.toUByte()..122u.toUByte() -> true
         else -> false
     }
 
@@ -19584,15 +19584,15 @@ public fun UByte.isAsciiLowercase(): Boolean =
  * # Examples
  *
  * ```kotlin
- * val uppercaseA = 65u
- * val uppercaseG = 71u
- * val a = 97u
- * val g = 103u
- * val zero = 48u
- * val percent = 37u
- * val space = 32u
- * val lf = 10u
- * val esc = 27u
+ * val uppercaseA = 65u.toUByte()
+ * val uppercaseG = 71u.toUByte()
+ * val a = 97u.toUByte()
+ * val g = 103u.toUByte()
+ * val zero = 48u.toUByte()
+ * val percent = 37u.toUByte()
+ * val space = 32u.toUByte()
+ * val lf = 10u.toUByte()
+ * val esc = 27u.toUByte()
  * check(uppercaseA.isAsciiAlphanumeric())
  * check(uppercaseG.isAsciiAlphanumeric())
  * check(a.isAsciiAlphanumeric())
@@ -19606,15 +19606,15 @@ public fun UByte.isAsciiLowercase(): Boolean =
  */
 public fun UByte.isAsciiAlphanumeric(): Boolean =
     when (this) {
-        in 48u..57u -> true
+        in 48u.toUByte()..57u.toUByte() -> true
         else -> false
     } or
         when (this) {
-            in 65u..90u -> true
+            in 65u.toUByte()..90u.toUByte() -> true
             else -> false
         } or
         when (this) {
-            in 97u..122u -> true
+            in 97u.toUByte()..122u.toUByte() -> true
             else -> false
         }
 
@@ -19625,15 +19625,15 @@ public fun UByte.isAsciiAlphanumeric(): Boolean =
  * # Examples
  *
  * ```kotlin
- * val uppercaseA = 65u
- * val uppercaseG = 71u
- * val a = 97u
- * val g = 103u
- * val zero = 48u
- * val percent = 37u
- * val space = 32u
- * val lf = 10u
- * val esc = 27u
+ * val uppercaseA = 65u.toUByte()
+ * val uppercaseG = 71u.toUByte()
+ * val a = 97u.toUByte()
+ * val g = 103u.toUByte()
+ * val zero = 48u.toUByte()
+ * val percent = 37u.toUByte()
+ * val space = 32u.toUByte()
+ * val lf = 10u.toUByte()
+ * val esc = 27u.toUByte()
  * check(!uppercaseA.isAsciiDigit())
  * check(!uppercaseG.isAsciiDigit())
  * check(!a.isAsciiDigit())
@@ -19647,7 +19647,7 @@ public fun UByte.isAsciiAlphanumeric(): Boolean =
  */
 public fun UByte.isAsciiDigit(): Boolean =
     when (this) {
-        in 48u..57u -> true
+        in 48u.toUByte()..57u.toUByte() -> true
         else -> false
     }
 
@@ -19660,13 +19660,13 @@ public fun UByte.isAsciiDigit(): Boolean =
  * ```kotlin
  * @feature(isAsciiOctdigit)
  * public fun doctestEntry() {
- *     val uppercaseA = 65u
- *     val a = 97u
- *     val zero = 48u
- *     val seven = 55u
- *     val nine = 57u
- *     val percent = 37u
- *     val lf = 10u
+ *     val uppercaseA = 65u.toUByte()
+ *     val a = 97u.toUByte()
+ *     val zero = 48u.toUByte()
+ *     val seven = 55u.toUByte()
+ *     val nine = 57u.toUByte()
+ *     val percent = 37u.toUByte()
+ *     val lf = 10u.toUByte()
  *     check(!uppercaseA.isAsciiOctdigit())
  *     check(!a.isAsciiOctdigit())
  *     check(zero.isAsciiOctdigit())
@@ -19679,7 +19679,7 @@ public fun UByte.isAsciiDigit(): Boolean =
  */
 public fun UByte.isAsciiOctdigit(): Boolean =
     when (this) {
-        in 48u..55u -> true
+        in 48u.toUByte()..55u.toUByte() -> true
         else -> false
     }
 
@@ -19693,15 +19693,15 @@ public fun UByte.isAsciiOctdigit(): Boolean =
  * # Examples
  *
  * ```kotlin
- * val uppercaseA = 65u
- * val uppercaseG = 71u
- * val a = 97u
- * val g = 103u
- * val zero = 48u
- * val percent = 37u
- * val space = 32u
- * val lf = 10u
- * val esc = 27u
+ * val uppercaseA = 65u.toUByte()
+ * val uppercaseG = 71u.toUByte()
+ * val a = 97u.toUByte()
+ * val g = 103u.toUByte()
+ * val zero = 48u.toUByte()
+ * val percent = 37u.toUByte()
+ * val space = 32u.toUByte()
+ * val lf = 10u.toUByte()
+ * val esc = 27u.toUByte()
  * check(uppercaseA.isAsciiHexdigit())
  * check(!uppercaseG.isAsciiHexdigit())
  * check(a.isAsciiHexdigit())
@@ -19715,15 +19715,15 @@ public fun UByte.isAsciiOctdigit(): Boolean =
  */
 public fun UByte.isAsciiHexdigit(): Boolean =
     when (this) {
-        in 48u..57u -> true
+        in 48u.toUByte()..57u.toUByte() -> true
         else -> false
     } or
         when (this) {
-            in 65u..70u -> true
+            in 65u.toUByte()..70u.toUByte() -> true
             else -> false
         } or
         when (this) {
-            in 97u..102u -> true
+            in 97u.toUByte()..102u.toUByte() -> true
             else -> false
         }
 
@@ -19739,15 +19739,15 @@ public fun UByte.isAsciiHexdigit(): Boolean =
  * # Examples
  *
  * ```kotlin
- * val uppercaseA = 65u
- * val uppercaseG = 71u
- * val a = 97u
- * val g = 103u
- * val zero = 48u
- * val percent = 37u
- * val space = 32u
- * val lf = 10u
- * val esc = 27u
+ * val uppercaseA = 65u.toUByte()
+ * val uppercaseG = 71u.toUByte()
+ * val a = 97u.toUByte()
+ * val g = 103u.toUByte()
+ * val zero = 48u.toUByte()
+ * val percent = 37u.toUByte()
+ * val space = 32u.toUByte()
+ * val lf = 10u.toUByte()
+ * val esc = 27u.toUByte()
  * check(!uppercaseA.isAsciiPunctuation())
  * check(!uppercaseG.isAsciiPunctuation())
  * check(!a.isAsciiPunctuation())
@@ -19761,19 +19761,19 @@ public fun UByte.isAsciiHexdigit(): Boolean =
  */
 public fun UByte.isAsciiPunctuation(): Boolean =
     when (this) {
-        in 33u..47u -> true
+        in 33u.toUByte()..47u.toUByte() -> true
         else -> false
     } or
         when (this) {
-            in 58u..64u -> true
+            in 58u.toUByte()..64u.toUByte() -> true
             else -> false
         } or
         when (this) {
-            in 91u..96u -> true
+            in 91u.toUByte()..96u.toUByte() -> true
             else -> false
         } or
         when (this) {
-            in 123u..126u -> true
+            in 123u.toUByte()..126u.toUByte() -> true
             else -> false
         }
 
@@ -19785,15 +19785,15 @@ public fun UByte.isAsciiPunctuation(): Boolean =
  * # Examples
  *
  * ```kotlin
- * val uppercaseA = 65u
- * val uppercaseG = 71u
- * val a = 97u
- * val g = 103u
- * val zero = 48u
- * val percent = 37u
- * val space = 32u
- * val lf = 10u
- * val esc = 27u
+ * val uppercaseA = 65u.toUByte()
+ * val uppercaseG = 71u.toUByte()
+ * val a = 97u.toUByte()
+ * val g = 103u.toUByte()
+ * val zero = 48u.toUByte()
+ * val percent = 37u.toUByte()
+ * val space = 32u.toUByte()
+ * val lf = 10u.toUByte()
+ * val esc = 27u.toUByte()
  * check(uppercaseA.isAsciiGraphic())
  * check(uppercaseG.isAsciiGraphic())
  * check(a.isAsciiGraphic())
@@ -19807,7 +19807,7 @@ public fun UByte.isAsciiPunctuation(): Boolean =
  */
 public fun UByte.isAsciiGraphic(): Boolean =
     when (this) {
-        in 33u..126u -> true
+        in 33u.toUByte()..126u.toUByte() -> true
         else -> false
     }
 
@@ -19838,15 +19838,15 @@ public fun UByte.isAsciiGraphic(): Boolean =
  * # Examples
  *
  * ```kotlin
- * val uppercaseA = 65u
- * val uppercaseG = 71u
- * val a = 97u
- * val g = 103u
- * val zero = 48u
- * val percent = 37u
- * val space = 32u
- * val lf = 10u
- * val esc = 27u
+ * val uppercaseA = 65u.toUByte()
+ * val uppercaseG = 71u.toUByte()
+ * val a = 97u.toUByte()
+ * val g = 103u.toUByte()
+ * val zero = 48u.toUByte()
+ * val percent = 37u.toUByte()
+ * val space = 32u.toUByte()
+ * val lf = 10u.toUByte()
+ * val esc = 27u.toUByte()
  * check(!uppercaseA.isAsciiWhitespace())
  * check(!uppercaseG.isAsciiWhitespace())
  * check(!a.isAsciiWhitespace())
@@ -19860,7 +19860,7 @@ public fun UByte.isAsciiGraphic(): Boolean =
  */
 public fun UByte.isAsciiWhitespace(): Boolean =
     when (this) {
-        9u, 10u, 12u, 13u, 32u -> true
+        9u.toUByte(), 10u.toUByte(), 12u.toUByte(), 13u.toUByte(), 32u.toUByte() -> true
         else -> false
     }
 
@@ -19873,15 +19873,15 @@ public fun UByte.isAsciiWhitespace(): Boolean =
  * # Examples
  *
  * ```kotlin
- * val uppercaseA = 65u
- * val uppercaseG = 71u
- * val a = 97u
- * val g = 103u
- * val zero = 48u
- * val percent = 37u
- * val space = 32u
- * val lf = 10u
- * val esc = 27u
+ * val uppercaseA = 65u.toUByte()
+ * val uppercaseG = 71u.toUByte()
+ * val a = 97u.toUByte()
+ * val g = 103u.toUByte()
+ * val zero = 48u.toUByte()
+ * val percent = 37u.toUByte()
+ * val space = 32u.toUByte()
+ * val lf = 10u.toUByte()
+ * val esc = 27u.toUByte()
  * check(!uppercaseA.isAsciiControl())
  * check(!uppercaseG.isAsciiControl())
  * check(!a.isAsciiControl())
@@ -19895,7 +19895,7 @@ public fun UByte.isAsciiWhitespace(): Boolean =
  */
 public fun UByte.isAsciiControl(): Boolean =
     when (this) {
-        in 0u..31u, 127u -> true
+        in 0u.toUByte()..31u.toUByte(), 127u.toUByte() -> true
         else -> false
     }
 
@@ -22065,7 +22065,7 @@ public fun UShort.wrappingPow(exp: UInt): UShort {
  */
 public fun UShort.overflowingAdd(rhs: UShort): Pair<UShort, Boolean> {
     val (a, b) = kmAddWithOverflowU16(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toUShort(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -22132,7 +22132,7 @@ public fun UShort.overflowingAddSigned(rhs: Short): Pair<UShort, Boolean> {
  */
 public fun UShort.overflowingSub(rhs: UShort): Pair<UShort, Boolean> {
     val (a, b) = kmSubWithOverflowU16(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toUShort(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -22219,7 +22219,7 @@ public fun UShort.absDiff(other: UShort): UShort =
  */
 public fun UShort.overflowingMul(rhs: UShort): Pair<UShort, Boolean> {
     val (a, b) = kmMulWithOverflowU16(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toUShort(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -22250,13 +22250,13 @@ public fun UShort.overflowingMul(rhs: UShort): Pair<UShort, Boolean> {
  * implementing it for wider-than-native types.
  *
  * ```kotlin
- * fun scalarMulEq(littleEndianDigits: List<UShort>, multiplicand: UShort) {
+ * fun scalarMulEq(littleEndianDigits: MutableList<UShort>, multiplicand: UShort) {
  *     var carry = 0
  *     for (d in littleEndianDigits) {
  *         run { val (destructVal0, destructVal1) = d.carryingMul(multiplicand, carry); d = destructVal0; carry = destructVal1 }
  *     }
  *     if (carry != 0) {
- *         littleEndianDigits.push(carry)
+ *         littleEndianDigits.add(carry)
  *     }
  * }
  * var v = mutableListOf(10, 20)
@@ -25284,7 +25284,7 @@ public fun UInt.wrappingPow(exp: UInt): UInt {
  */
 public fun UInt.overflowingAdd(rhs: UInt): Pair<UInt, Boolean> {
     val (a, b) = kmAddWithOverflowU32(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toUInt(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -25351,7 +25351,7 @@ public fun UInt.overflowingAddSigned(rhs: Int): Pair<UInt, Boolean> {
  */
 public fun UInt.overflowingSub(rhs: UInt): Pair<UInt, Boolean> {
     val (a, b) = kmSubWithOverflowU32(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toUInt(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -25438,7 +25438,7 @@ public fun UInt.absDiff(other: UInt): UInt =
  */
 public fun UInt.overflowingMul(rhs: UInt): Pair<UInt, Boolean> {
     val (a, b) = kmMulWithOverflowU32(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toUInt(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -25469,13 +25469,13 @@ public fun UInt.overflowingMul(rhs: UInt): Pair<UInt, Boolean> {
  * implementing it for wider-than-native types.
  *
  * ```kotlin
- * fun scalarMulEq(littleEndianDigits: List<UShort>, multiplicand: UShort) {
+ * fun scalarMulEq(littleEndianDigits: MutableList<UShort>, multiplicand: UShort) {
  *     var carry = 0
  *     for (d in littleEndianDigits) {
  *         run { val (destructVal0, destructVal1) = d.carryingMul(multiplicand, carry); d = destructVal0; carry = destructVal1 }
  *     }
  *     if (carry != 0) {
- *         littleEndianDigits.push(carry)
+ *         littleEndianDigits.add(carry)
  *     }
  * }
  * var v = mutableListOf(10, 20)
@@ -28478,7 +28478,7 @@ public fun ULong.wrappingPow(exp: UInt): ULong {
  */
 public fun ULong.overflowingAdd(rhs: ULong): Pair<ULong, Boolean> {
     val (a, b) = kmAddWithOverflowU64(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toULong(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -28545,7 +28545,7 @@ public fun ULong.overflowingAddSigned(rhs: Long): Pair<ULong, Boolean> {
  */
 public fun ULong.overflowingSub(rhs: ULong): Pair<ULong, Boolean> {
     val (a, b) = kmSubWithOverflowU64(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toULong(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -28632,7 +28632,7 @@ public fun ULong.absDiff(other: ULong): ULong =
  */
 public fun ULong.overflowingMul(rhs: ULong): Pair<ULong, Boolean> {
     val (a, b) = kmMulWithOverflowU64(this, rhs).let { Pair(it.value, it.overflowed) }
-    return Pair(a.toULong(), b)
+    return Pair(a, b)
 }
 
 /**
@@ -28663,13 +28663,13 @@ public fun ULong.overflowingMul(rhs: ULong): Pair<ULong, Boolean> {
  * implementing it for wider-than-native types.
  *
  * ```kotlin
- * fun scalarMulEq(littleEndianDigits: List<UShort>, multiplicand: UShort) {
+ * fun scalarMulEq(littleEndianDigits: MutableList<UShort>, multiplicand: UShort) {
  *     var carry = 0
  *     for (d in littleEndianDigits) {
  *         run { val (destructVal0, destructVal1) = d.carryingMul(multiplicand, carry); d = destructVal0; carry = destructVal1 }
  *     }
  *     if (carry != 0) {
- *         littleEndianDigits.push(carry)
+ *         littleEndianDigits.add(carry)
  *     }
  * }
  * var v = mutableListOf(10, 20)
@@ -31672,7 +31672,7 @@ public fun U128.wrappingPow(exp: UInt): U128 {
  */
 public fun U128.overflowingAdd(rhs: U128): Pair<U128, Boolean> {
     val (a, b) = run { val lhs = this; val rhs = rhs; kmAddWithOverflowU128(lhs.low, lhs.high, rhs.low, rhs.high).let { Pair(U128(it.hi, it.lo), it.overflowed) } }
-    return Pair(U128.fromLong(a.toLong()), b)
+    return Pair(a, b)
 }
 
 /**
@@ -31739,7 +31739,7 @@ public fun U128.overflowingAddSigned(rhs: I128): Pair<U128, Boolean> {
  */
 public fun U128.overflowingSub(rhs: U128): Pair<U128, Boolean> {
     val (a, b) = run { val lhs = this; val rhs = rhs; kmSubWithOverflowU128(lhs.low, lhs.high, rhs.low, rhs.high).let { Pair(U128(it.hi, it.lo), it.overflowed) } }
-    return Pair(U128.fromLong(a.toLong()), b)
+    return Pair(a, b)
 }
 
 /**
@@ -31826,7 +31826,7 @@ public fun U128.absDiff(other: U128): U128 =
  */
 public fun U128.overflowingMul(rhs: U128): Pair<U128, Boolean> {
     val (a, b) = run { val lhs = this; val rhs = rhs; kmMulWithOverflowU128(lhs.low, lhs.high, rhs.low, rhs.high).let { Pair(U128(it.hi, it.lo), it.overflowed) } }
-    return Pair(U128.fromLong(a.toLong()), b)
+    return Pair(a, b)
 }
 
 /**
@@ -31857,13 +31857,13 @@ public fun U128.overflowingMul(rhs: U128): Pair<U128, Boolean> {
  * implementing it for wider-than-native types.
  *
  * ```kotlin
- * fun scalarMulEq(littleEndianDigits: List<UShort>, multiplicand: UShort) {
+ * fun scalarMulEq(littleEndianDigits: MutableList<UShort>, multiplicand: UShort) {
  *     var carry = 0
  *     for (d in littleEndianDigits) {
  *         run { val (destructVal0, destructVal1) = d.carryingMul(multiplicand, carry); d = destructVal0; carry = destructVal1 }
  *     }
  *     if (carry != 0) {
- *         littleEndianDigits.push(carry)
+ *         littleEndianDigits.add(carry)
  *     }
  * }
  * var v = mutableListOf(10, 20)
@@ -33466,14 +33466,14 @@ public fun Int.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt):
     val isSignedTy = 0 > Int.MIN_VALUE
     var (isPositive, digits) =
         when {
-            src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
+            src.size == 1 && (src[0] == 43u.toUByte() || src[0] == 45u.toUByte()) -> {
                 return Result.Err<Int, ParseIntError>(Pie(kind = InvalidDigit))
             }
-            src.size >= 1 && src[0] == 43u -> {
+            src.size >= 1 && src[0] == 43u.toUByte() -> {
                 val rest = src.subList(1, src.size)
                 Pair(true, rest)
             }
-            src.size >= 1 && src[0] == 45u && isSignedTy -> {
+            src.size >= 1 && src[0] == 45u.toUByte() && isSignedTy -> {
                 val rest1 = src.subList(1, src.size)
                 Pair(false, rest1)
             }
@@ -33698,14 +33698,14 @@ public fun Byte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
     val isSignedTy = 0.toByte() > Byte.MIN_VALUE
     var (isPositive, digits) =
         when {
-            src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
+            src.size == 1 && (src[0] == 43u.toUByte() || src[0] == 45u.toUByte()) -> {
                 return Result.Err<Byte, ParseIntError>(Pie(kind = InvalidDigit))
             }
-            src.size >= 1 && src[0] == 43u -> {
+            src.size >= 1 && src[0] == 43u.toUByte() -> {
                 val rest = src.subList(1, src.size)
                 Pair(true, rest)
             }
-            src.size >= 1 && src[0] == 45u && isSignedTy -> {
+            src.size >= 1 && src[0] == 45u.toUByte() && isSignedTy -> {
                 val rest1 = src.subList(1, src.size)
                 Pair(false, rest1)
             }
@@ -33930,14 +33930,14 @@ public fun Short.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
     val isSignedTy = 0.toShort() > Short.MIN_VALUE
     var (isPositive, digits) =
         when {
-            src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
+            src.size == 1 && (src[0] == 43u.toUByte() || src[0] == 45u.toUByte()) -> {
                 return Result.Err<Short, ParseIntError>(Pie(kind = InvalidDigit))
             }
-            src.size >= 1 && src[0] == 43u -> {
+            src.size >= 1 && src[0] == 43u.toUByte() -> {
                 val rest = src.subList(1, src.size)
                 Pair(true, rest)
             }
-            src.size >= 1 && src[0] == 45u && isSignedTy -> {
+            src.size >= 1 && src[0] == 45u.toUByte() && isSignedTy -> {
                 val rest1 = src.subList(1, src.size)
                 Pair(false, rest1)
             }
@@ -34162,14 +34162,14 @@ public fun Long.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
     val isSignedTy = 0L > Long.MIN_VALUE
     var (isPositive, digits) =
         when {
-            src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
+            src.size == 1 && (src[0] == 43u.toUByte() || src[0] == 45u.toUByte()) -> {
                 return Result.Err<Long, ParseIntError>(Pie(kind = InvalidDigit))
             }
-            src.size >= 1 && src[0] == 43u -> {
+            src.size >= 1 && src[0] == 43u.toUByte() -> {
                 val rest = src.subList(1, src.size)
                 Pair(true, rest)
             }
-            src.size >= 1 && src[0] == 45u && isSignedTy -> {
+            src.size >= 1 && src[0] == 45u.toUByte() && isSignedTy -> {
                 val rest1 = src.subList(1, src.size)
                 Pair(false, rest1)
             }
@@ -34394,14 +34394,14 @@ public fun I128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
     val isSignedTy = I128(0x0L, 0x0uL) > I128.MIN_VALUE
     var (isPositive, digits) =
         when {
-            src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
+            src.size == 1 && (src[0] == 43u.toUByte() || src[0] == 45u.toUByte()) -> {
                 return Result.Err<I128, ParseIntError>(Pie(kind = InvalidDigit))
             }
-            src.size >= 1 && src[0] == 43u -> {
+            src.size >= 1 && src[0] == 43u.toUByte() -> {
                 val rest = src.subList(1, src.size)
                 Pair(true, rest)
             }
-            src.size >= 1 && src[0] == 45u && isSignedTy -> {
+            src.size >= 1 && src[0] == 45u.toUByte() && isSignedTy -> {
                 val rest1 = src.subList(1, src.size)
                 Pair(false, rest1)
             }
@@ -34626,14 +34626,14 @@ public fun UByte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
     val isSignedTy = 0u.toUByte() > UByte.MIN_VALUE
     var (isPositive, digits) =
         when {
-            src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
+            src.size == 1 && (src[0] == 43u.toUByte() || src[0] == 45u.toUByte()) -> {
                 return Result.Err<UByte, ParseIntError>(Pie(kind = InvalidDigit))
             }
-            src.size >= 1 && src[0] == 43u -> {
+            src.size >= 1 && src[0] == 43u.toUByte() -> {
                 val rest = src.subList(1, src.size)
                 Pair(true, rest)
             }
-            src.size >= 1 && src[0] == 45u && isSignedTy -> {
+            src.size >= 1 && src[0] == 45u.toUByte() && isSignedTy -> {
                 val rest1 = src.subList(1, src.size)
                 Pair(false, rest1)
             }
@@ -34858,14 +34858,14 @@ public fun UShort.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UIn
     val isSignedTy = 0u.toUShort() > UShort.MIN_VALUE
     var (isPositive, digits) =
         when {
-            src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
+            src.size == 1 && (src[0] == 43u.toUByte() || src[0] == 45u.toUByte()) -> {
                 return Result.Err<UShort, ParseIntError>(Pie(kind = InvalidDigit))
             }
-            src.size >= 1 && src[0] == 43u -> {
+            src.size >= 1 && src[0] == 43u.toUByte() -> {
                 val rest = src.subList(1, src.size)
                 Pair(true, rest)
             }
-            src.size >= 1 && src[0] == 45u && isSignedTy -> {
+            src.size >= 1 && src[0] == 45u.toUByte() && isSignedTy -> {
                 val rest1 = src.subList(1, src.size)
                 Pair(false, rest1)
             }
@@ -35090,14 +35090,14 @@ public fun UInt.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
     val isSignedTy = 0u > UInt.MIN_VALUE
     var (isPositive, digits) =
         when {
-            src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
+            src.size == 1 && (src[0] == 43u.toUByte() || src[0] == 45u.toUByte()) -> {
                 return Result.Err<UInt, ParseIntError>(Pie(kind = InvalidDigit))
             }
-            src.size >= 1 && src[0] == 43u -> {
+            src.size >= 1 && src[0] == 43u.toUByte() -> {
                 val rest = src.subList(1, src.size)
                 Pair(true, rest)
             }
-            src.size >= 1 && src[0] == 45u && isSignedTy -> {
+            src.size >= 1 && src[0] == 45u.toUByte() && isSignedTy -> {
                 val rest1 = src.subList(1, src.size)
                 Pair(false, rest1)
             }
@@ -35322,14 +35322,14 @@ public fun ULong.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
     val isSignedTy = 0uL > ULong.MIN_VALUE
     var (isPositive, digits) =
         when {
-            src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
+            src.size == 1 && (src[0] == 43u.toUByte() || src[0] == 45u.toUByte()) -> {
                 return Result.Err<ULong, ParseIntError>(Pie(kind = InvalidDigit))
             }
-            src.size >= 1 && src[0] == 43u -> {
+            src.size >= 1 && src[0] == 43u.toUByte() -> {
                 val rest = src.subList(1, src.size)
                 Pair(true, rest)
             }
-            src.size >= 1 && src[0] == 45u && isSignedTy -> {
+            src.size >= 1 && src[0] == 45u.toUByte() && isSignedTy -> {
                 val rest1 = src.subList(1, src.size)
                 Pair(false, rest1)
             }
@@ -35554,14 +35554,14 @@ public fun U128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
     val isSignedTy = U128(0x0uL, 0x0uL) > U128.MIN_VALUE
     var (isPositive, digits) =
         when {
-            src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
+            src.size == 1 && (src[0] == 43u.toUByte() || src[0] == 45u.toUByte()) -> {
                 return Result.Err<U128, ParseIntError>(Pie(kind = InvalidDigit))
             }
-            src.size >= 1 && src[0] == 43u -> {
+            src.size >= 1 && src[0] == 43u.toUByte() -> {
                 val rest = src.subList(1, src.size)
                 Pair(true, rest)
             }
-            src.size >= 1 && src[0] == 45u && isSignedTy -> {
+            src.size >= 1 && src[0] == 45u.toUByte() && isSignedTy -> {
                 val rest1 = src.subList(1, src.size)
                 Pair(false, rest1)
             }

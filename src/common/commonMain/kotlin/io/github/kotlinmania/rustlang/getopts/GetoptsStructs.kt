@@ -1,6 +1,9 @@
 package io.github.kotlinmania.rustlang.getopts
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.iter.sources.repeat.repeat
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
 import io.github.kotlinmania.rustlang.getopts.Fail.*
 import io.github.kotlinmania.rustlang.getopts.HasArg.*
@@ -248,9 +251,9 @@ public open class Options(
                 var name = null
                 var iArg = null
                 var wasLong = true
-                if (cur.encodeToByteArray().map { it.toUByte() }[1] == 45u || this.longOnly) {
+                if (cur.encodeToByteArray().map { it.toUByte() }[1] == 45u.toUByte() || this.longOnly) {
                     val tail =
-                        if (cur.encodeToByteArray().map { it.toUByte() }[1] == 45u) {
+                        if (cur.encodeToByteArray().map { it.toUByte() }[1] == 45u.toUByte()) {
                             cur[2 until cur.size]
                         } else {
                             check(this.longOnly)

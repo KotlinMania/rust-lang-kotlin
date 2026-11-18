@@ -4,8 +4,11 @@ package io.github.kotlinmania.rustlang.alloc.collections.btree.append
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.CAPACITY
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Root
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 /**
  * Pushes all key-value pairs to the end of the tree, incrementing a

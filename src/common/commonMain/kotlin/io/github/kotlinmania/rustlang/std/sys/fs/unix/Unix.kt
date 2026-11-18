@@ -29,9 +29,13 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.zeroed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -40,6 +44,9 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.asPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.libc.chmod
 import io.github.kotlinmania.rustlang.libc.closedir
 import io.github.kotlinmania.rustlang.libc.dirfd
@@ -1305,7 +1312,7 @@ public fun debugAssertFdIsOpen(fd: RawFd) {
                     null -> {}
                     else -> {
                         val out = matchVal
-                        Write.writeFmt(out, "fatal runtime error: " + ("IO Safety violation: owned file descriptor already closed").toString() + ", aborting\n")
+                        out.writeFmt("fatal runtime error: " + ("IO Safety violation: owned file descriptor already closed").toString() + ", aborting\n")
                     }
                 }
                 run {
@@ -1595,25 +1602,25 @@ public open class CachedFileMetadata(
     public var field0: File,
     public var field1: Metadata,
 ) : Read<CachedFileMetadata>, Write<CachedFileMetadata> {
-    public open fun read(buf: MutableList<UByte>): Result<Int> = this.field0.read(buf)
+    public override fun read(buf: MutableList<UByte>): Result<Int> = this.field0.read(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int> = this.field0.readVectored(bufs)
+    public override fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int> = this.field0.readVectored(bufs)
 
-    public open fun readBuf(cursor: BorrowedCursor<UByte>): Result<Unit> = this.field0.readBuf(cursor)
+    public override fun readBuf(cursor: BorrowedCursor<UByte>): Result<Unit> = this.field0.readBuf(cursor)
 
-    public open fun isReadVectored(): Boolean = this.field0.isReadVectored()
+    public override fun isReadVectored(): Boolean = this.field0.isReadVectored()
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int> = this.field0.readToEnd(buf)
+    public override fun readToEnd(buf: MutableList<UByte>): Result<Int> = this.field0.readToEnd(buf)
 
-    public open fun readToString(buf: String): Result<Int> = this.field0.readToString(buf)
+    public override fun readToString(buf: String): Result<Int> = this.field0.readToString(buf)
 
-    public open fun write(buf: List<UByte>): Result<Int> = this.field0.write(buf)
+    public override fun write(buf: List<UByte>): Result<Int> = this.field0.write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> = this.field0.writeVectored(bufs)
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int> = this.field0.writeVectored(bufs)
 
-    public open fun isWriteVectored(): Boolean = this.field0.isWriteVectored()
+    public override fun isWriteVectored(): Boolean = this.field0.isWriteVectored()
 
-    public open fun flush(): Result<Unit> = this.field0.flush()
+    public override fun flush(): Result<Unit> = this.field0.flush()
 }
 
 public fun copy(from: Path, to: Path): RustResult<ULong, Error> {

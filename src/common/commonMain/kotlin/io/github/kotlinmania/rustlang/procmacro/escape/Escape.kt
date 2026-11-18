@@ -73,9 +73,9 @@ public fun escapeBytes(bytes: List<UByte>, opt: EscapeOptions): String {
 }
 
 public fun escapeSingleByte(byte: UByte, opt: EscapeOptions, repr: String) {
-    if (byte == 0u) {
+    if (byte == 0u.toUByte()) {
         repr += "\\0"
-    } else if ((byte == 39u && !opt.escapeSingleQuote) || (byte == 34u && !opt.escapeDoubleQuote)) {
+    } else if ((byte == 39u.toUByte() && !opt.escapeSingleQuote) || (byte == 34u.toUByte() && !opt.escapeDoubleQuote)) {
         repr += byte.toInt().toChar()
     } else {
         // Escapes \t, \r, \n, \\, \', \", and uses \x## for non-ASCII and

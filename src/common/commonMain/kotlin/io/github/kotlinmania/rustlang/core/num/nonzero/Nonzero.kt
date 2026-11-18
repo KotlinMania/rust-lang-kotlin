@@ -27,13 +27,18 @@ import io.github.kotlinmania.rustlang.core.num.checkedAbs
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.checkedNeg
+import io.github.kotlinmania.rustlang.core.num.checkedNextPowerOfTwo
 import io.github.kotlinmania.rustlang.core.num.checkedPow
 import io.github.kotlinmania.rustlang.core.num.countOnes
 import io.github.kotlinmania.rustlang.core.num.divCeil
 import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind
 import io.github.kotlinmania.rustlang.core.num.error.ParseIntError
 import io.github.kotlinmania.rustlang.core.num.error.TryFromIntError
+import io.github.kotlinmania.rustlang.core.num.ilog10
+import io.github.kotlinmania.rustlang.core.num.ilog2
 import io.github.kotlinmania.rustlang.core.num.imp.intlog10.u8
+import io.github.kotlinmania.rustlang.core.num.isPowerOfTwo
+import io.github.kotlinmania.rustlang.core.num.isqrt
 import io.github.kotlinmania.rustlang.core.num.midpoint
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroCharInner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI128Inner
@@ -1287,7 +1292,7 @@ public fun fromStrNonZeroUByte(src: String): Result<NonZero<UByte, NonZeroU8Inne
  * This operation rounds towards zero, truncating any fractional
  * part of the exact result, and cannot panic.
  */
-public fun UByte.div(other: NonZero<UByte, NonZeroU8Inner>): UByte = (((this) / (other.get()))).toUByte()
+public operator fun UByte.div(other: NonZero<UByte, NonZeroU8Inner>): UByte = (((this) / (other.get()))).toUByte()
 
 /**
  * Same as `self /= other.get()`, but because `other` is a `NonZero<_>`,
@@ -1304,7 +1309,7 @@ public fun UByte.divAssign(other: NonZero<UByte, NonZeroU8Inner>) {
 /**
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
-public fun UByte.rem(other: NonZero<UByte, NonZeroU8Inner>): UByte = (((this) % (other.get()))).toUByte()
+public operator fun UByte.rem(other: NonZero<UByte, NonZeroU8Inner>): UByte = (((this) % (other.get()))).toUByte()
 
 /**
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
@@ -1496,7 +1501,7 @@ public fun fromStrNonZeroUShort(src: String): Result<NonZero<UShort, NonZeroU16I
  * This operation rounds towards zero, truncating any fractional
  * part of the exact result, and cannot panic.
  */
-public fun UShort.div(other: NonZero<UShort, NonZeroU16Inner>): UShort = (((this) / (other.get()))).toUShort()
+public operator fun UShort.div(other: NonZero<UShort, NonZeroU16Inner>): UShort = (((this) / (other.get()))).toUShort()
 
 /**
  * Same as `self /= other.get()`, but because `other` is a `NonZero<_>`,
@@ -1513,7 +1518,7 @@ public fun UShort.divAssign(other: NonZero<UShort, NonZeroU16Inner>) {
 /**
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
-public fun UShort.rem(other: NonZero<UShort, NonZeroU16Inner>): UShort = (((this) % (other.get()))).toUShort()
+public operator fun UShort.rem(other: NonZero<UShort, NonZeroU16Inner>): UShort = (((this) % (other.get()))).toUShort()
 
 /**
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
@@ -1705,7 +1710,7 @@ public fun fromStrNonZeroUInt(src: String): Result<NonZero<UInt, NonZeroU32Inner
  * This operation rounds towards zero, truncating any fractional
  * part of the exact result, and cannot panic.
  */
-public fun UInt.div(other: NonZero<UInt, NonZeroU32Inner>): UInt = ((this) / (other.get()))
+public operator fun UInt.div(other: NonZero<UInt, NonZeroU32Inner>): UInt = ((this) / (other.get()))
 
 /**
  * Same as `self /= other.get()`, but because `other` is a `NonZero<_>`,
@@ -1722,7 +1727,7 @@ public fun UInt.divAssign(other: NonZero<UInt, NonZeroU32Inner>) {
 /**
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
-public fun UInt.rem(other: NonZero<UInt, NonZeroU32Inner>): UInt = ((this) % (other.get()))
+public operator fun UInt.rem(other: NonZero<UInt, NonZeroU32Inner>): UInt = ((this) % (other.get()))
 
 /**
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
@@ -1914,7 +1919,7 @@ public fun fromStrNonZeroULong(src: String): Result<NonZero<ULong, NonZeroU64Inn
  * This operation rounds towards zero, truncating any fractional
  * part of the exact result, and cannot panic.
  */
-public fun ULong.div(other: NonZero<ULong, NonZeroU64Inner>): ULong = ((this) / (other.get()))
+public operator fun ULong.div(other: NonZero<ULong, NonZeroU64Inner>): ULong = ((this) / (other.get()))
 
 /**
  * Same as `self /= other.get()`, but because `other` is a `NonZero<_>`,
@@ -1931,7 +1936,7 @@ public fun ULong.divAssign(other: NonZero<ULong, NonZeroU64Inner>) {
 /**
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
-public fun ULong.rem(other: NonZero<ULong, NonZeroU64Inner>): ULong = ((this) % (other.get()))
+public operator fun ULong.rem(other: NonZero<ULong, NonZeroU64Inner>): ULong = ((this) % (other.get()))
 
 /**
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
@@ -2123,7 +2128,7 @@ public fun fromStrNonZeroU128(src: String): Result<NonZero<U128, NonZeroU128Inne
  * This operation rounds towards zero, truncating any fractional
  * part of the exact result, and cannot panic.
  */
-public fun U128.div(other: NonZero<U128, NonZeroU128Inner>): U128 = ((this) / (other.get()))
+public operator fun U128.div(other: NonZero<U128, NonZeroU128Inner>): U128 = ((this) / (other.get()))
 
 /**
  * Same as `self /= other.get()`, but because `other` is a `NonZero<_>`,
@@ -2140,7 +2145,7 @@ public fun U128.divAssign(other: NonZero<U128, NonZeroU128Inner>) {
 /**
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
-public fun U128.rem(other: NonZero<U128, NonZeroU128Inner>): U128 = ((this) % (other.get()))
+public operator fun U128.rem(other: NonZero<U128, NonZeroU128Inner>): U128 = ((this) % (other.get()))
 
 /**
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
@@ -2332,7 +2337,7 @@ public fun fromStrNonZeroInt(src: String): Result<NonZero<Int, NonZeroUsizeInner
  * This operation rounds towards zero, truncating any fractional
  * part of the exact result, and cannot panic.
  */
-public fun Int.div(other: NonZero<Int, NonZeroUsizeInner>): Int = ((this) / (other.get()))
+public operator fun Int.div(other: NonZero<Int, NonZeroUsizeInner>): Int = ((this) / (other.get()))
 
 /**
  * Same as `self /= other.get()`, but because `other` is a `NonZero<_>`,
@@ -2349,7 +2354,7 @@ public fun Int.divAssign(other: NonZero<Int, NonZeroUsizeInner>) {
 /**
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
  */
-public fun Int.rem(other: NonZero<Int, NonZeroUsizeInner>): Int = ((this) % (other.get()))
+public operator fun Int.rem(other: NonZero<Int, NonZeroUsizeInner>): Int = ((this) % (other.get()))
 
 /**
  * This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.

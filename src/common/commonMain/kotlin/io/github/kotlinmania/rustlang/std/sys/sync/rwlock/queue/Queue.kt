@@ -2,13 +2,18 @@
 package io.github.kotlinmania.rustlang.std.sys.sync.rwlock.queue
 
 import io.github.kotlinmania.rustlang.core.cell.once.OnceCell
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.hint.spinLoop
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.addr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.mapAddr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.mask
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
@@ -23,11 +28,16 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.AcqRel
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Acquire
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Release
+import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchange
+import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchangeWeak
+import io.github.kotlinmania.rustlang.core.sync.atomic.fetchOr
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.AcqRel
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Acquire
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Relaxed
-import io.github.kotlinmania.rustlang.std.sync.atomic.Ordering.Release
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.thread.current.currentOrUnnamed
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
@@ -403,7 +413,7 @@ public open class PanicGuard {
                 null -> {}
                 else -> {
                     val out = matchVal
-                    Write.writeFmt(out, "fatal runtime error: " + ("tried to drop node in intrusive list.").toString() + ", aborting\n")
+                    out.writeFmt("fatal runtime error: " + ("tried to drop node in intrusive list.").toString() + ", aborting\n")
                 }
             }
             run {

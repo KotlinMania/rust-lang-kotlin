@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.std.rt
 
 import io.github.kotlinmania.rustlang.core.RustAny
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -39,7 +38,7 @@ public inline fun <reified T> handleRtPanic(e: RustAny): T {
             null -> {}
             else -> {
                 val out = matchVal
-                Write.writeFmt(out, "fatal runtime error: " + ("initialization or cleanup bug").toString() + ", aborting\n")
+                out.writeFmt("fatal runtime error: " + ("initialization or cleanup bug").toString() + ", aborting\n")
             }
         }
         run {
@@ -137,7 +136,7 @@ public fun langStartInternal(main: () -> Int, argc: Int, argv: ConstPtr, sigpipe
                             null -> {}
                             else -> {
                                 val out = matchVal
-                                Write.writeFmt(out, "fatal runtime error: " + ("drop of the panic payload panicked").toString() + ", aborting\n")
+                                out.writeFmt("fatal runtime error: " + ("drop of the panic payload panicked").toString() + ", aborting\n")
                             }
                         }
                         run {

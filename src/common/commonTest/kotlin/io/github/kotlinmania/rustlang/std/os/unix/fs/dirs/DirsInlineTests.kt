@@ -36,7 +36,7 @@ public class DirsInlineTests {
                         return
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*, *>).errValue()
+                        val e1 = matchVal.errValue()
                         error("failed to fetch xdg user dirs: $e")
                     }
                 }

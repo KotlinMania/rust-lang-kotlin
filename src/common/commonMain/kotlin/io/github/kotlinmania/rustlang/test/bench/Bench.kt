@@ -1,6 +1,7 @@
 // port-lint: source bench.rs
 package io.github.kotlinmania.rustlang.test.bench
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.num.checkedMul
@@ -183,7 +184,7 @@ public fun benchmark(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest
             // bs.bench(f) (
             result is Result.Ok<*, *> && result.okValue() is Result.Ok<*, *> && (result.okValue() as Result.Ok<*, *>).okValue() != null -> {
                 val okValueVal = result.okValue()
-                val okValueVal1 = (okValueVal as Result.Ok<*, *>).okValue()
+                val okValueVal1 = okValueVal.okValue()
                 val nsIterSumm = okValueVal1
                 val nsIter = max(nsIterSumm.median.toULong(), 1)
                 val mbS = bs.bytes * 1000uL / nsIter
@@ -192,7 +193,7 @@ public fun benchmark(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest
             }
             result is Result.Ok<*, *> && result.okValue() is Result.Ok<*, *> && (result.okValue() as Result.Ok<*, *>).okValue() == null -> {
                 val okValueVal2 = result.okValue()
-                val None = (okValueVal2 as Result.Ok<*, *>).okValue()
+                val None = okValueVal2.okValue()
                 // iter not called, so no data.
                 // Note: error in this case?
                 val samples: MutableList<Double> = MutableList(1) { 0.0 }
@@ -201,7 +202,7 @@ public fun benchmark(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest
             }
             result is Result.Err<*, *> -> TestResult.TrFailed
             else -> {
-                val okValueVal3 = (result as Result.Ok<*, *>).okValue()
+                val okValueVal3 = result.okValue()
                 TestResult.TrFailed
             }
         }

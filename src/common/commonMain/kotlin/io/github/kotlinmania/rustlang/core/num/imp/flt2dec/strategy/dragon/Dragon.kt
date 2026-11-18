@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.core.num.imp.flt2dec.strategy.dragon
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
@@ -196,7 +197,7 @@ public fun formatShortest(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): Pai
         if (false) {
             check(d1 < 10)
         }
-        buf[i] = MaybeUninit.new(48u + d1, PrimitiveLayouts.U8)
+        buf[i] = MaybeUninit.new(48u.toUByte() + d1, PrimitiveLayouts.U8)
         i += 1
         // this is a simplified description of the modified Dragon algorithm.
         // many intermediate derivations and completeness arguments are omitted for convenience.
@@ -329,7 +330,7 @@ public fun formatExact(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limit: 
                 // following digits are all zeroes, we stop here
                 // do *not* try to perform rounding! rather, fill remaining digits.
                 for (idx in ((buf).subList(i, len)).indices) {
-                    ((buf).subList(i, len))[idx] = MaybeUninit.new(48u, UnresolvedTypeLayout<Pair<List<UByte>, Short>>())
+                    ((buf).subList(i, len))[idx] = MaybeUninit.new(48u.toUByte(), UnresolvedTypeLayout<Pair<List<UByte>, Short>>())
                 }
                 // SAFETY: we initialized that memory above.
                 return Pair(((buf).subList(0, len)).assumeInitRef(), k)
@@ -357,7 +358,7 @@ public fun formatExact(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limit: 
             if (false) {
                 check(d2 < 10)
             }
-            buf[i] = MaybeUninit.new(48u + d2, PrimitiveLayouts.U8)
+            buf[i] = MaybeUninit.new(48u.toUByte() + d2, PrimitiveLayouts.U8)
             mant.mulSmall(10)
         }
     }

@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.num.f16.nextDown
 import io.github.kotlinmania.rustlang.core.num.f16.nextUp
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int

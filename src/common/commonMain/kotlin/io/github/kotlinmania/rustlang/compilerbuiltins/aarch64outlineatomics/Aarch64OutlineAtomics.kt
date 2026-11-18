@@ -3,6 +3,8 @@ package io.github.kotlinmania.rustlang.compilerbuiltins.aarch64outlineatomics
 
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 
 // Aarch64 targets have two possible implementations for atomics:
 // 1. Load-Locked, Store-Conditional (LL/SC), older and slower.

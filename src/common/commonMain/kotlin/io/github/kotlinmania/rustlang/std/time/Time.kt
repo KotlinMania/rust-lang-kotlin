@@ -289,14 +289,14 @@ public open class Instant(
      * This function may panic if the resulting point in time cannot be represented by the
      * underlying data structure. See [Instant.checkedAdd] for a version without panic.
      */
-    public open fun add(other: Duration): Instant = (this.checkedAdd(other) ?: error("overflow when adding duration to instant"))
+    public override fun add(other: Duration): Instant = (this.checkedAdd(other) ?: error("overflow when adding duration to instant"))
 
     public open fun addAssign(other: Duration) {
         var selfMut = this
         selfMut = selfMut + other
     }
 
-    public open fun sub(other: Duration): Instant = (this.checkedSub(other) ?: error("overflow when subtracting duration from instant"))
+    public override fun sub(other: Duration): Instant = (this.checkedSub(other) ?: error("overflow when subtracting duration from instant"))
 
     public open fun subAssign(other: Duration) {
         var selfMut = this
@@ -315,7 +315,7 @@ public open class Instant(
      *
      * [Monotonicity]: Instant#monotonicity
      */
-    public open fun sub(other: Instant): Duration = this.durationSince(other)
+    public override fun sub(other: Instant): Duration = this.durationSince(other)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.value.fmt(f)
 
@@ -567,14 +567,14 @@ public open class SystemTime(
      * This function may panic if the resulting point in time cannot be represented by the
      * underlying data structure. See [SystemTime.checkedAdd] for a version without panic.
      */
-    public open fun add(dur: Duration): SystemTime = (this.checkedAdd(dur) ?: error("overflow when adding duration to `SystemTime`"))
+    public override fun add(dur: Duration): SystemTime = (this.checkedAdd(dur) ?: error("overflow when adding duration to `SystemTime`"))
 
     public open fun addAssign(other: Duration) {
         var selfMut = this
         selfMut = selfMut + other
     }
 
-    public open fun sub(dur: Duration): SystemTime = (this.checkedSub(dur) ?: error("overflow when subtracting duration from `SystemTime`"))
+    public override fun sub(dur: Duration): SystemTime = (this.checkedSub(dur) ?: error("overflow when subtracting duration from `SystemTime`"))
 
     public open fun subAssign(other: Duration) {
         var selfMut = this

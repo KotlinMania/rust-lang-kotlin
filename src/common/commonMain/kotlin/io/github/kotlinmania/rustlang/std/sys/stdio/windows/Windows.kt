@@ -18,14 +18,24 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.slice.splitAt
 import io.github.kotlinmania.rustlang.core.slice.splitFirst
+import io.github.kotlinmania.rustlang.core.str.len
+import io.github.kotlinmania.rustlang.core.str.splitAt
 import io.github.kotlinmania.rustlang.core.str.validations.utf8CharWidth
 import io.github.kotlinmania.rustlang.std.alloc.System
 import io.github.kotlinmania.rustlang.std.min
@@ -57,7 +67,7 @@ public open class Stdin(
     public var surrogate: UShort,
     public var incompleteUtf8: IncompleteUtf8,
 ) : Read<Stdin> {
-    public open fun read(buf: MutableList<UByte>): Result<Int, Error> {
+    public override fun read(buf: MutableList<UByte>): Result<Int, Error> {
         val handle = when (val tryResult = getHandle(STD_INPUT_HANDLE)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.errValue()) }
         if (!isConsole(handle)) {
             run {
@@ -140,9 +150,9 @@ public open class Stdin(
 public open class Stdout(
     public var incompleteUtf8: IncompleteUtf8,
 ) : Write<Stdout> {
-    public open fun write(buf: List<UByte>): Result<Int, Error> = write(STD_OUTPUT_HANDLE, buf, this.incompleteUtf8)
+    public override fun write(buf: List<UByte>): Result<Int, Error> = write(STD_OUTPUT_HANDLE, buf, this.incompleteUtf8)
 
-    public open fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
+    public override fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stdout> =
@@ -172,9 +182,9 @@ public open class Stdout(
 public open class Stderr(
     public var incompleteUtf8: IncompleteUtf8,
 ) : Write<Stderr> {
-    public open fun write(buf: List<UByte>): Result<Int, Error> = write(STD_ERROR_HANDLE, buf, this.incompleteUtf8)
+    public override fun write(buf: List<UByte>): Result<Int, Error> = write(STD_ERROR_HANDLE, buf, this.incompleteUtf8)
 
-    public open fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
+    public override fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stderr> =

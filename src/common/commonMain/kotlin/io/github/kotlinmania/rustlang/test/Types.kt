@@ -1,6 +1,7 @@
 // port-lint: source types.rs
 package io.github.kotlinmania.rustlang.test
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.saturatingSub

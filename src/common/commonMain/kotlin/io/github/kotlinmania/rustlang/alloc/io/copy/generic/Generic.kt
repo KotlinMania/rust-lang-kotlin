@@ -15,6 +15,8 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 /**
@@ -112,7 +114,7 @@ public fun <I> BufReader<I>.copyTo(to: Write<*>): Result<ULong> {
                     continue
                 }
                 else -> {
-                    val e1 = (matchVal as RustResult.Err<*, *>).errValue()
+                    val e1 = matchVal.errValue()
                     return RustResult.Err(e1)
                 }
             }
@@ -188,7 +190,7 @@ public fun <I : Write<I>, R : Read<R>> BufWriter<I>.copyFrom(reader: R): Result<
                         val e = matchVal.errValue()
                     }
                     else -> {
-                        val e1 = (matchVal as RustResult.Err<*, *>).errValue()
+                        val e1 = matchVal.errValue()
                         return RustResult.Err(e1)
                     }
                 }
@@ -222,7 +224,7 @@ public fun <R : Read<R>, W : Write<W>> stackBufferCopy(reader: R, writer: W): Re
                     continue
                 }
                 else -> {
-                    val e1 = (matchVal as RustResult.Err<*, *>).errValue()
+                    val e1 = matchVal.errValue()
                     return RustResult.Err(e1)
                 }
             }

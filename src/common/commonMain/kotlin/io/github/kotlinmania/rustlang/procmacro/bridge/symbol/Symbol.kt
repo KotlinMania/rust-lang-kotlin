@@ -113,11 +113,11 @@ public open class Symbol internal constructor(
          */
         public fun isValidAsciiIdent(bytes: List<UByte>): Boolean =
             when (val matchVal = bytes.first()) {
-                95u, in 97u..122u, in 65u..90u -> true
+                95u.toUByte(), in 97u.toUByte()..122u.toUByte(), in 65u.toUByte()..90u.toUByte() -> true
                 else -> false
             } &&
                 ((bytes).subList(1, (bytes).size)).all({ b -> when (b) {
-                    95u, in 97u..122u, in 65u..90u, in 48u..57u -> true
+                    95u.toUByte(), in 97u.toUByte()..122u.toUByte(), in 65u.toUByte()..90u.toUByte(), in 48u.toUByte()..57u.toUByte() -> true
                     else -> false
                 } })
 

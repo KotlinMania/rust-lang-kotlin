@@ -61,9 +61,12 @@ import io.github.kotlinmania.rustlang.core.ops.trytrait.ChangeOutputType
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Residual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 public fun assertIsDynCompatible(arg0: Iterator<Unit>) {}
 
@@ -139,7 +142,7 @@ public interface Iterator<SelfType, Item> {
      * }
      * ```
      */
-    public fun nextChunk(n: Int): Result<List<Item>, IntoIter<Item>> = iterNextChunk(this, n)
+    public fun nextChunk(n: Int = 0): Result<List<Item>, IntoIter<Item>> = iterNextChunk(this, n)
 
     /**
      * Returns the bounds on the remaining length of the iterator.
@@ -1516,7 +1519,7 @@ public interface Iterator<SelfType, Item> {
      * }
      * ```
      */
-    public fun <R> mapWindows(f: (List<Item>) -> R, n: Int): MapWindows<SelfType, (List<Item>) -> R> = MapWindows.new(this, f, n)
+    public fun <R> mapWindows(f: (List<Item>) -> R, n: Int = 0): MapWindows<SelfType, (List<Item>) -> R> = MapWindows.new(this, f, n)
 
     /**
      * Creates an iterator which ends after the first [None].
@@ -3022,7 +3025,7 @@ public interface Iterator<SelfType, Item> {
      * }
      * ```
      */
-    public fun arrayChunks(n: Int): ArrayChunks<SelfType> = ArrayChunks.new(this, n)
+    public fun arrayChunks(n: Int = 0): ArrayChunks<SelfType> = ArrayChunks.new(this, n)
 
     /**
      * Sums the elements of an iterator.

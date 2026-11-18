@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.char.methods.isAscii
 import io.github.kotlinmania.rustlang.core.char.methods.isAsciiAlphabetic
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.fmt.numbuffer.NumBuffer
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
@@ -15,7 +16,10 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.carryingMul
 import io.github.kotlinmania.rustlang.core.num.castUnsigned
+import io.github.kotlinmania.rustlang.core.num.checkedIlog10
 import io.github.kotlinmania.rustlang.core.num.checkedPow
+import io.github.kotlinmania.rustlang.core.num.ilog
+import io.github.kotlinmania.rustlang.core.num.ilog10
 import io.github.kotlinmania.rustlang.core.num.imp.fmt.Formatted
 import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
 import io.github.kotlinmania.rustlang.core.num.pow
@@ -24,6 +28,8 @@ import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import kotlin.experimental.and
 
 // Integer and floating-point number formatting
@@ -310,13 +316,13 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
         if (coefPrec == 0 && morePrec == 0) {
             Pair(coef, 1)
         } else {
-            buf[1].write(46u)
+            buf[1].write(46u.toUByte())
             val fractionRange = 2 until (2 + coefPrec)
             var remain = coef
             for (i in fractionRange.clone().rev()) {
                 val digit = (remain % U128(0x0uL, 0xauL)).toInt()
                 remain /= U128(0x0uL, 0xauL)
-                buf[i].write(48u + digit.toUByte())
+                buf[i].write(48u.toUByte() + digit.toUByte())
             }
             run {
                 for (i1 in fractionRange.clone().skip(1).rev().stepBy(2)) {
@@ -328,30 +334,30 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
                 if (coefPrec and 1 != 0) {
                     val digit1 = (remain % U128(0x0uL, 0xauL)).toInt()
                     remain /= U128(0x0uL, 0xauL)
-                    buf[fractionRange.start].write(48u + digit1.toUByte())
+                    buf[fractionRange.start].write(48u.toUByte() + digit1.toUByte())
                 }
             }
             Pair(remain, fractionRange.end)
         }
     if (false) {
-        check(leadDec < 10)
+        check(leadDec < U128(0x0uL, 0xauL))
     }
     if (false) {
-        check(leadDec != 0 || coef == U128(0x0uL, 0x0uL)) { "significant digits only" }
+        check(leadDec != U128(0x0uL, 0x0uL) || coef == U128(0x0uL, 0x0uL)) { "significant digits only" }
     }
-    buf[0].write(48u + leadDec.toUByte())
+    buf[0].write(48u.toUByte() + leadDec.toUByte())
     assertUnchecked(coefLen <= MAX_COEF_LEN)
     buf[coefLen].write(letterE)
     val textLen: Int =
         when {
             exp < 10 -> {
-                buf[coefLen + 1].write(48u + exp.toUByte())
+                buf[coefLen + 1].write(48u.toUByte() + exp.toUByte())
                 coefLen + 2
             }
             exp in 10 until 100 -> {
                 run {
-                    buf[coefLen + 1].write(48u + (exp / 10).toUByte())
-                    buf[coefLen + 2].write(48u + (exp % 10).toUByte())
+                    buf[coefLen + 1].write(48u.toUByte() + (exp / 10).toUByte())
+                    buf[coefLen + 2].write(48u.toUByte() + (exp % 10).toUByte())
                 }
                 run {
                     buf[coefLen + 1].write(DECIMAL_PAIRS[exp * 2 + 0])
@@ -400,13 +406,13 @@ public fun U128.fmtInner(buf: MutableList<MaybeUninit<UByte>>): Int {
     // its "leading" zero.
     if (this == U128(0x0uL, 0x0uL)) {
         val offset = buf.size - 1
-        buf[offset].write(48u)
+        buf[offset].write(48u.toUByte())
         return offset
     }
     // Take the 16 least-significant decimals.
     val (quot1e16, mod1e16) = divRem1e16(this)
     var (remain, offset1) =
-        if (quot1e16 == 0) {
+        if (quot1e16 == U128(0x0uL, 0x0uL)) {
             Pair(mod1e16, U128_MAX_DEC_N)
         } else {
             // Write digits at buf[23..39].
@@ -415,7 +421,7 @@ public fun U128.fmtInner(buf: MutableList<MaybeUninit<UByte>>): Int {
             enc16lsd(buf, mod1e16, U128_MAX_DEC_N - 16)
             // Take another 16 decimals.
             val (quot2, mod2) = divRem1e16(quot1e16)
-            if (quot2 == 0) {
+            if (quot2 == U128(0x0uL, 0x0uL)) {
                 Pair(mod2, U128_MAX_DEC_N - 16)
             } else {
                 // Write digits at buf[7..23].
@@ -427,7 +433,7 @@ public fun U128.fmtInner(buf: MutableList<MaybeUninit<UByte>>): Int {
             }
         }
     // Format per four digits from the lookup table.
-    while (remain > 999) {
+    while (remain > 999uL) {
         // SAFETY: All of the decimals fit in buf due to U128_MAX_DEC_N
         // and the while condition ensures at least 4 more decimals.
         assertUnchecked(offset1 >= 4)
@@ -435,8 +441,8 @@ public fun U128.fmtInner(buf: MutableList<MaybeUninit<UByte>>): Int {
         // without underflow due to the previous precondition.
         assertUnchecked(offset1 <= buf.size)
         offset1 -= 4
-        val quad = remain % 10000
-        remain /= 10000
+        val quad = remain % 10000uL
+        remain /= 10000uL
         // SAFETY: quad is a remainder modulo 10_000. The offset checks
         // above reserve exactly four bytes in buf.
         run {
@@ -444,7 +450,7 @@ public fun U128.fmtInner(buf: MutableList<MaybeUninit<UByte>>): Int {
         }
     }
     // Format per two digits from the lookup table.
-    if (remain > 9) {
+    if (remain > 9uL) {
         // SAFETY: All of the decimals fit in buf due to U128_MAX_DEC_N
         // and the if condition ensures at least 2 more decimals.
         assertUnchecked(offset1 >= 2)
@@ -452,13 +458,13 @@ public fun U128.fmtInner(buf: MutableList<MaybeUninit<UByte>>): Int {
         // without underflow due to the previous precondition.
         assertUnchecked(offset1 <= buf.size)
         offset1 -= 2
-        val pair = (remain % 100).toInt()
-        remain /= 100
+        val pair = (remain % 100uL).toInt()
+        remain /= 100uL
         buf[offset1 + 0].write(DECIMAL_PAIRS[pair * 2 + 0])
         buf[offset1 + 1].write(DECIMAL_PAIRS[pair * 2 + 1])
     }
     // Format the last remaining digit, if any.
-    if (remain != 0) {
+    if (remain != 0uL) {
         // SAFETY: All of the decimals fit in buf due to U128_MAX_DEC_N
         // and the if condition ensures (at least) 1 more decimals.
         assertUnchecked(offset1 >= 1)
@@ -468,7 +474,7 @@ public fun U128.fmtInner(buf: MutableList<MaybeUninit<UByte>>): Int {
         offset1 -= 1
         // Either the compiler sees that remain < 10, or it prevents
         // a boundary check up next.
-        val last = (remain and 15).toInt()
+        val last = (remain and 15uL).toInt()
         buf[offset1].write(DECIMAL_PAIRS[last * 2 + 1])
         // not used: remain = 0;
     }
@@ -547,7 +553,7 @@ public fun I128.formatInto(buf: NumBuffer<I128>): String {
         offset -= 1
         // SAFETY: `buf` will always be big enough to contain all digits plus the minus sign.
         run {
-            buf.buf.getUncheckedMut(offset).write(45u)
+            buf.buf.getUncheckedMut(offset).write(45u.toUByte())
         }
     }
     // SAFETY: Starting from `offset`, all elements of the slice have been set.

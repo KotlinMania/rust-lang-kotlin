@@ -4,7 +4,7 @@ import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public interface SpecArrayClone<T> {
-    public fun clone(array: List<T>, n: Int): List<T>
+    public fun clone(array: List<T>, n: Int = 0): List<T>
 }
 
 public interface SpecNextChunk<T> : Iterator<T> {

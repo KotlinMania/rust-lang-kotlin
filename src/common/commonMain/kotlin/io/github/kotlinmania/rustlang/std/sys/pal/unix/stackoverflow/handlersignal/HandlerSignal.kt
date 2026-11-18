@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlersig
 
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.io.error.Error
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
@@ -11,6 +10,9 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.zeroed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.addr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.mapAddr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.mapAddr
@@ -22,6 +24,8 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.libc.getauxval
 import io.github.kotlinmania.rustlang.libc.mprotect
 import io.github.kotlinmania.rustlang.libc.munmap
@@ -118,7 +122,7 @@ public fun signalHandler(signum: CInt, info: MutPtr, data: MutPtr) {
                     null -> {}
                     else -> {
                         val out = matchVal
-                        Write.writeFmt(out, "\nthread '$name' ($tid) has overflowed its stack\n")
+                        out.writeFmt("\nthread '$name' ($tid) has overflowed its stack\n")
                     }
                 }
                 run {
@@ -129,7 +133,7 @@ public fun signalHandler(signum: CInt, info: MutPtr, data: MutPtr) {
                         null -> {}
                         else -> {
                             val out1 = matchVal1
-                            Write.writeFmt(out1, "fatal runtime error: " + ("stack overflow").toString() + ", aborting\n")
+                            out1.writeFmt("fatal runtime error: " + ("stack overflow").toString() + ", aborting\n")
                         }
                     }
                     run {

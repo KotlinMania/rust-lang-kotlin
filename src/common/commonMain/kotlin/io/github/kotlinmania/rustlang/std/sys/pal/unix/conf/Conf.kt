@@ -86,8 +86,8 @@ public fun parseGlibcVersion(version: String): Pair<Int, Int>? {
         val matchVal = Pair(parsedInts.next(), parsedInts.next())
         when {
             matchVal.first != null && matchVal.first is Result.Ok<*, *> && matchVal.second != null && matchVal.second is Result.Ok<*, *> -> {
-                val major = (matchVal.first as Result.Ok<*, *>).okValue()
-                val minor = (matchVal.second as Result.Ok<*, *>).okValue()
+                val major = matchVal.first.okValue()
+                val minor = matchVal.second.okValue()
                 Pair(major, minor)
             }
             else -> null

@@ -1,6 +1,9 @@
 // port-lint: tests math/arch/x86/detect.rs
 package io.github.kotlinmania.rustlang.libm.math.arch.x86.detect
 
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
+
 // Using runtime feature detection requires atomics. Currently there are no x86 targets
 // that support sse but not `AtomicPtr`.
 

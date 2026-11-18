@@ -77,7 +77,7 @@ public fun <Int, F : Float<F, Int>> computeFloat(q: Long, w: ULong): BiasedFp {
         }
         // Have a subnormal value.
         mantissa = mantissa shr ((-power2 + 1).toInt())
-        mantissa += mantissa and 1
+        mantissa += mantissa and 1uL
         mantissa = mantissa shr 1
         power2 = (((mantissa >= (1uL shl F.SIG_BITS.toInt())) as Any?) as kotlin.Int)
         return BiasedFp(m = mantissa, pBiased = power2)
@@ -93,12 +93,12 @@ public fun <Int, F : Float<F, Int>> computeFloat(q: Long, w: ULong): BiasedFp {
     // 3. All the bits truncated when shifting to mantissa bits + 1 are 0.
     //
     // Or, we may fall between two floats: we are exactly halfway.
-    if (lo <= 1 && q >= F.MIN_EXPONENT_ROUND_TO_EVEN.toLong() && q <= F.MAX_EXPONENT_ROUND_TO_EVEN.toLong() && mantissa and 0x3 == 0x1 && (mantissa shl (upperbit + 64 - ((F.SIG_BITS as Any?) as kotlin.Int) - 3).toInt()) == hi) {
+    if (lo <= 1uL && q >= F.MIN_EXPONENT_ROUND_TO_EVEN.toLong() && q <= F.MAX_EXPONENT_ROUND_TO_EVEN.toLong() && mantissa and 0x3uL == 0x1uL && (mantissa shl (upperbit + 64 - ((F.SIG_BITS as Any?) as kotlin.Int) - 3).toInt()) == hi) {
         // Zero the lowest bit, so we don't round up.
         mantissa = mantissa and 1uL.inv()
     }
     // Round-to-even, then shift the significant digits into place.
-    mantissa += mantissa and 1
+    mantissa += mantissa and 1uL
     mantissa = mantissa shr 1
     if (mantissa >= (2uL shl F.SIG_BITS.toInt())) {
         // Rounding up overflowed, so the carry bit is set. Set the
@@ -164,9 +164,9 @@ public fun computeProductApprox(q: Long, w: ULong, precision: Int): Pair<ULong, 
         // where q is < 55, since 5^55 < 2^128. If this wraps,
         // then we need to round up the hi product.
         val (_, secondHi) = fullMultiplication(w, hi5)
-        firstLo = firstLo.wrappingAdd(secondHi)
+        firstLo = (firstLo + (secondHi.toULong()))
         if (secondHi > firstLo) {
-            firstHi += 1
+            firstHi += 1uL
         }
     }
     return Pair(firstLo, firstHi)

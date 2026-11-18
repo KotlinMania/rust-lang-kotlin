@@ -1,6 +1,7 @@
 // port-lint: source iter/sources/repeat_n.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.repeatn
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI32Inner
@@ -8,6 +9,8 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -167,7 +170,7 @@ public open class RepeatN<A>(
 
     public open fun advanceBy(skip: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val inner = this.inner ?: return ((NonZero.new<NonZeroUsizeInner, Int>(skip))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
-        val len = inner!!.count.get()
+        val len = inner.count.get()
         when (val matchVal = len.checkedSub(skip)?.let(NonZero::new)) {
             null -> {}
             else -> {

@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.traits.accum.Sum
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedDiv
+import io.github.kotlinmania.rustlang.core.num.checkedIlog10
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.num.divCeil
@@ -813,7 +814,7 @@ public open class Duration(
         selfMut = selfMut * rhs
     }
 
-    public override fun div(rhs: UInt): Duration = (this.checkedDiv(rhs) ?: error("divisor should not be zero"))
+    public override operator fun div(rhs: UInt): Duration = (this.checkedDiv(rhs) ?: error("divisor should not be zero"))
 
     public override fun divAssign(rhs: UInt) {
         var selfMut = this
@@ -1669,14 +1670,14 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
     // only need to hold 9 elements, because `fractionalPart` has to
     // be smaller than 10^9. The buffer is prefilled with '0' digits
     // to simplify the code below.
-    val buf = UByteArray(9) { 48u }
+    val buf = UByteArray(9) { 48u.toUByte() }
     // The next digit is written at this position
     var pos = 0
     // We keep writing digits into the buffer while there are non-zero
     // digits left and we haven't written enough digits yet.
     while (fractionalPart1 > 0u && pos < f.precision().unwrapOr(9)) {
         // Write new digit into the buffer
-        buf[pos] = 48u + (fractionalPart1 / divisor1).toUByte()
+        buf[pos] = 48u.toUByte() + (fractionalPart1 / divisor1).toUByte()
         fractionalPart1 %= divisor1
         divisor1 /= 10u
         pos += 1
@@ -1695,7 +1696,7 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
             val isTie = fractionalPart1 == divisor1 * 5u
             val lastDigitIsOdd =
                 if (pos > 0) {
-                    (buf[pos - 1] - 48u) % 2u == 1u.toUByte()
+                    (buf[pos - 1] - 48u.toUByte()) % 2u == 1u.toUByte()
                 } else {
                     // No fractional digits - check the integer part
                     (integerPart % 2uL) == 1uL
@@ -1713,11 +1714,11 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
                     // increment it and can stop then (since we don't have a
                     // carry anymore). Otherwise, we set it to '0' (overflow)
                     // and continue.
-                    if (buf[revPos] < 57u) {
+                    if (buf[revPos] < 57u.toUByte()) {
                         buf[revPos] += 1u
                         carry = false
                     } else {
-                        buf[revPos] = 48u
+                        buf[revPos] = 48u.toUByte()
                     }
                 }
                 // If we still have the carry bit set, that means that we set

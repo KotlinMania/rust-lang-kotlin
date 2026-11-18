@@ -3,6 +3,8 @@
 
 package io.github.kotlinmania.rustlang.core.num.imp.intbits.u8
 
+import io.github.kotlinmania.rustlang.core.num.ilog2
+
 public val STAGES: Int = 8u.ilog2().toInt()
 
 public fun prepare(sparse: UByte): UByteArray {

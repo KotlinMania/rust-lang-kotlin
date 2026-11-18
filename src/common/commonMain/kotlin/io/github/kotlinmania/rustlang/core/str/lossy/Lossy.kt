@@ -4,8 +4,10 @@ package io.github.kotlinmania.rustlang.core.str.lossy
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.char.EscapeDebugExtArgs
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.str.validations.utf8CharWidth
 
 public class DebugStruct(

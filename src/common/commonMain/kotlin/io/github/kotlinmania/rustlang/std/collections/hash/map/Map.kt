@@ -7,8 +7,13 @@ import io.github.kotlinmania.rustlang.alloc.collections.TryReserveErrorKind
 import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.iterMut
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.hashbrown.rustcentry.RustcEntry
 import io.github.kotlinmania.rustlang.hashbrown.rustcentry.RustcOccupiedEntry
 import io.github.kotlinmania.rustlang.hashbrown.rustcentry.RustcVacantEntry
@@ -906,7 +911,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
                     Result.Ok<V, OccupiedError<K, V, A>>(value1)
                 }
                 else -> {
-                    val errValueVal = (matchVal as Result.Err<*, *>).errValue()
+                    val errValueVal = matchVal.errValue()
                     val entry = errValueVal.entry
                     val key1 = errValueVal.key
                     val value2 = errValueVal.value

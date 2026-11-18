@@ -1,6 +1,7 @@
 // port-lint: source raw_entry.rs
 package io.github.kotlinmania.rustlang.hashbrown.rawentry
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.result.Result

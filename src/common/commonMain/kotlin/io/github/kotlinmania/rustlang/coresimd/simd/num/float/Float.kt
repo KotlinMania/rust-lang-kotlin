@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.coresimd.Mask
 import io.github.kotlinmania.rustlang.coresimd.Simd
 import io.github.kotlinmania.rustlang.coresimd.SimdCast

@@ -11,10 +11,12 @@ import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU16Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.path.Iter
@@ -71,10 +73,10 @@ public fun args(): Args {
  * <https://github.com/ChrisDenton/winarg/tree/std>.
  */
 public fun parseLpCmdLine(lpCmdLine: WStrUnits?, exeName: () -> OsString): List<OsString> {
-    val BACKSLASH: NonZero<UShort, NonZeroU16Inner> = (NonZero.new<NonZeroU16Inner, UShort>(92u.toUShort()))!!
-    val QUOTE: NonZero<UShort, NonZeroU16Inner> = (NonZero.new<NonZeroU16Inner, UShort>(34u.toUShort()))!!
-    val TAB: NonZero<UShort, NonZeroU16Inner> = (NonZero.new<NonZeroU16Inner, UShort>(9u.toUShort()))!!
-    val SPACE: NonZero<UShort, NonZeroU16Inner> = (NonZero.new<NonZeroU16Inner, UShort>(32u.toUShort()))!!
+    val BACKSLASH: NonZero<UShort, NonZeroU16Inner> = (NonZero.new<NonZeroU16Inner, UShort>((92u.toUByte()).toUShort()))!!
+    val QUOTE: NonZero<UShort, NonZeroU16Inner> = (NonZero.new<NonZeroU16Inner, UShort>((34u.toUByte()).toUShort()))!!
+    val TAB: NonZero<UShort, NonZeroU16Inner> = (NonZero.new<NonZeroU16Inner, UShort>((9u.toUByte()).toUShort()))!!
+    val SPACE: NonZero<UShort, NonZeroU16Inner> = (NonZero.new<NonZeroU16Inner, UShort>((32u.toUByte()).toUShort()))!!
     val retVal = mutableListOf<OsString>()
     // If the cmd line pointer is null or it points to an empty string then
     // return the name of the executable as argv[0].
@@ -214,7 +216,7 @@ public sealed class Quote {
     public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
-public fun appendArg(cmd: List<UShort>, arg: Arg, forceQuotes: Boolean): Result<Unit, Error> {
+public fun appendArg(cmd: MutableList<UShort>, arg: Arg, forceQuotes: Boolean): Result<Unit, Error> {
     val (arg3, quote) =
         when (arg) {
             is Arg.Regular -> {
@@ -239,12 +241,12 @@ public fun appendArg(cmd: List<UShort>, arg: Arg, forceQuotes: Boolean): Result<
         when (quote) {
             Quote.Always -> Pair(true, true)
             Quote.Auto -> {
-                Pair(argBytes.iter().any({ c -> c == 32u || c == 9u }) || argBytes.isEmpty(), true)
+                Pair(argBytes.iter().any({ c -> c == 32u.toUByte() || c == 9u.toUByte() }) || argBytes.isEmpty(), true)
             }
             Quote.Never -> Pair(false, false)
         }
     if (quote1) {
-        cmd.push('"'.code.toUShort())
+        cmd.add('"'.code.toUShort())
     }
     var backslashes: Int = 0
     for (x in arg3.encodeWide()) {
@@ -259,17 +261,17 @@ public fun appendArg(cmd: List<UShort>, arg: Arg, forceQuotes: Boolean): Result<
                 backslashes = 0
             }
         }
-        cmd.push(x)
+        cmd.add(x)
     }
     if (quote1) {
         // Add n backslashes to total 2n before ending '"'.
         cmd.extend((0 until backslashes).map({ ('\\').code.toUShort() }))
-        cmd.push('"'.code.toUShort())
+        cmd.add('"'.code.toUShort())
     }
     return Result.Ok<Unit, Error>(Unit)
 }
 
-public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<Unit, Error> {
+public fun appendBatArg(cmd: MutableList<UShort>, arg: OsStr, quote: Boolean): Result<Unit, Error> {
     var quote1 = quote
     when (val tryResult = ensureNoNuls(arg)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
     // If an argument has 0 characters then we need to quote it to ensure
@@ -279,7 +281,7 @@ public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<U
     // We also need to quote the argument if it ends with `\` to guard against
     // bat usage such as `"%~2"` (i.e. force quote arguments) otherwise a
     // trailing slash will escape the closing quote.
-    if (arg.isEmpty() || arg.asEncodedBytes().last() == 92u) {
+    if (arg.isEmpty() || arg.asEncodedBytes().last() == 92u.toUByte()) {
         quote1 = true
     }
     for (cp in arg.asInner().inner.codePoints()) {
@@ -300,7 +302,7 @@ public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<U
         }
     }
     if (quote1) {
-        cmd.push('"'.code.toUShort())
+        cmd.add('"'.code.toUShort())
     }
     // Loop through the string, escaping `\` only if followed by `"`.
     // And escaping `"` by doubling them.
@@ -313,7 +315,7 @@ public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<U
                 // Add n backslashes to total 2n before internal `"`.
                 cmd.extend((0 until backslashes).map({ ('\\').code.toUShort() }))
                 // Appending an additional double-quote acts as an escape.
-                cmd.push(34u.toUShort())
+                cmd.add((34u.toUByte()).toUShort())
             } else if (x == ('%').code.toUShort() || x == ('\r').code.toUShort()) {
                 // yt-dlp Note: replaces `%` with `% % cd: ~, %` to stop %VAR% being expanded as an environment variable.
                 //
@@ -328,16 +330,16 @@ public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<U
                 //
                 // Therefore it all resolves to nothing. However, by doing this no-op we distract cmd.exe
                 // from potentially expanding %variables% in the argument.
-                cmd.extendFromSlice(ushortArrayOf(('%').code.toUShort(), ('%').code.toUShort(), 'c'.code.toUShort(), 'd'.code.toUShort(), (':').code.toUShort(), ('~').code.toUShort(), (',').code.toUShort()))
+                cmd.addAll(ushortArrayOf(('%').code.toUShort(), ('%').code.toUShort(), 'c'.code.toUShort(), 'd'.code.toUShort(), (':').code.toUShort(), ('~').code.toUShort(), (',').code.toUShort()))
             }
             backslashes = 0
         }
-        cmd.push(x)
+        cmd.add(x)
     }
     if (quote1) {
         // Add n backslashes to total 2n before ending `"`.
         cmd.extend((0 until backslashes).map({ ('\\').code.toUShort() }))
-        cmd.push('"'.code.toUShort())
+        cmd.add('"'.code.toUShort())
     }
     return Result.Ok<Unit, Error>(Unit)
 }
@@ -347,7 +349,7 @@ public fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes
     // Windows file names cannot contain a `"` character or end with `\\`.
     // If the script name does then return an error.
     // Also we disallow `^` and `%` to prevent escaping or environment variable substitution.
-    val INVALID: List<UShort> = listOf(34u.toUShort(), 94u.toUShort(), 37u.toUShort())
+    val INVALID: List<UShort> = listOf((34u.toUByte()).toUShort(), (94u.toUByte()).toUShort(), (37u.toUByte()).toUShort())
     // Set the start of the command line to `cmd.exe /c "`
     // It is necessary to surround the command in an extra pair of quotes,
     // hence the trailing quote here. It will be closed after all arguments
@@ -355,12 +357,12 @@ public fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes
     // Using /e:ON enables "command extensions" which is essential for the `%` Note to work.
     val cmd: List<UShort>  = "cmd.exe /e:ON /v:OFF /d /c \"".encodeUtf16().toMutableList()
     // Push the script name surrounded by its quote pair.
-    cmd.add(34u.toUShort())
-    if (script.any({ c -> INVALID.contains(c) }) || script.last() == (92u.toUShort())) {
+    cmd.add((34u.toUByte()).toUShort())
+    if (script.any({ c -> INVALID.contains(c) }) || script.last() == ((92u.toUByte()).toUShort())) {
         return Result.Err<List<UShort>, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "`Command` rejects batch scripts that contain contain `\"`, `^` or `%` or end with `\\`")))
     }
     cmd.addAll((script.stripSuffix(listOf(0)) ?: script))
-    cmd.add(34u.toUShort())
+    cmd.add((34u.toUByte()).toUShort())
     // Append the arguments.
     // Note: This needs tests to ensure that the arguments are properly
     // reconstructed by the batch script by default.
@@ -385,7 +387,7 @@ public fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes
         }
     }
     // Close the quote we left opened earlier.
-    cmd.add(34u.toUShort())
+    cmd.add((34u.toUByte()).toUShort())
     return Result.Ok<List<UShort>, Error>(cmd)
 }
 
@@ -401,12 +403,12 @@ public fun toUserPath(path: Path): Result<List<UShort>, Error> {
 public fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>, Error> {
     // UTF-16 encoded code points, used in parsing and building UTF-16 paths.
     // All of these are in the ASCII range so they can be cast directly to `UShort`.
-    val SEP: UShort = 92u.toUShort()
-    val QUERY: UShort = 63u.toUShort()
-    val COLON: UShort = 58u.toUShort()
-    val U: UShort = 85u.toUShort()
-    val N: UShort = 78u.toUShort()
-    val C: UShort = 67u.toUShort()
+    val SEP: UShort = (92u.toUByte()).toUShort()
+    val QUERY: UShort = (63u.toUByte()).toUShort()
+    val COLON: UShort = (58u.toUByte()).toUShort()
+    val U: UShort = (85u.toUByte()).toUShort()
+    val N: UShort = (78u.toUByte()).toUShort()
+    val C: UShort = (67u.toUByte()).toUShort()
     // Early return if the path is too long to remove the verbatim prefix.
     val LEGACY_MAX_PATH: Int = 260
     if (path.size > LEGACY_MAX_PATH) {
@@ -429,7 +431,7 @@ public fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>, Error> {
         // `\\?\UNC\...` => `\\...`
         path.size >= 8 && path[0] == SEP && path[1] == SEP && path[2] == QUERY && path[3] == SEP && path[4] == U && path[5] == N && path[6] == C && path[7] == SEP -> run {
             // Change the `C` in `UNC\` to `\` so we can get a slice that starts with `\\`.
-            path[6] = 92u.toUShort()
+            path[6] = (92u.toUByte()).toUShort()
             val lpfilename1 = ((path).subList(6, (path).size)).asPtr()
             fillUtf16Buf({ buffer, size -> getFullPathNameW(lpfilename1, size, buffer, MutPtr(0L)) }, { fullPath: List<UShort> ->
                 if (fullPath == ((path).subList(6, path.size - 1))) {
@@ -438,7 +440,7 @@ public fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>, Error> {
                     path1
                 } else {
                     // Restore the `C` in "UNC".
-                    path[6] = 67u.toUShort()
+                    path[6] = (67u.toUByte()).toUShort()
                     path
                 }
             })

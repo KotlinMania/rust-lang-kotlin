@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.nothreads
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -113,7 +112,7 @@ public open class LazyStorage<T> internal constructor(
                     null -> {}
                     else -> {
                         val out = matchVal
-                        Write.writeFmt(out, "fatal runtime error: " + ("Attempted to initialize thread-local while it is being dropped").toString() + ", aborting\n")
+                        out.writeFmt("fatal runtime error: " + ("Attempted to initialize thread-local while it is being dropped").toString() + ", aborting\n")
                     }
                 }
                 run {

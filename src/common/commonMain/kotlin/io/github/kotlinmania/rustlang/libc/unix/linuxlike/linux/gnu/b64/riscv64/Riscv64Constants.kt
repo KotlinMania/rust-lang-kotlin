@@ -564,19 +564,19 @@ public val REG_S2: Int = 18
 
 public val REG_NARGS: Int = 8
 
-public val COMPAT_HWCAP_ISA_I: CUlong = (1uL.toUInt() shl ((73u - 65u).toInt())).toUByte()
+public val COMPAT_HWCAP_ISA_I: CUlong = (1uL.toUInt() shl ((73u.toUByte() - 65u.toUByte()).toInt())).toUByte()
 
-public val COMPAT_HWCAP_ISA_M: CUlong = (1uL.toUInt() shl ((77u - 65u).toInt())).toUByte()
+public val COMPAT_HWCAP_ISA_M: CUlong = (1uL.toUInt() shl ((77u.toUByte() - 65u.toUByte()).toInt())).toUByte()
 
-public val COMPAT_HWCAP_ISA_A: CUlong = (1uL.toUInt() shl ((65u - 65u).toInt())).toUByte()
+public val COMPAT_HWCAP_ISA_A: CUlong = (1uL.toUInt() shl ((65u.toUByte() - 65u.toUByte()).toInt())).toUByte()
 
-public val COMPAT_HWCAP_ISA_F: CUlong = (1uL.toUInt() shl ((70u - 65u).toInt())).toUByte()
+public val COMPAT_HWCAP_ISA_F: CUlong = (1uL.toUInt() shl ((70u.toUByte() - 65u.toUByte()).toInt())).toUByte()
 
-public val COMPAT_HWCAP_ISA_D: CUlong = (1uL.toUInt() shl ((68u - 65u).toInt())).toUByte()
+public val COMPAT_HWCAP_ISA_D: CUlong = (1uL.toUInt() shl ((68u.toUByte() - 65u.toUByte()).toInt())).toUByte()
 
-public val COMPAT_HWCAP_ISA_C: CUlong = (1uL.toUInt() shl ((67u - 65u).toInt())).toUByte()
+public val COMPAT_HWCAP_ISA_C: CUlong = (1uL.toUInt() shl ((67u.toUByte() - 65u.toUByte()).toInt())).toUByte()
 
-public val COMPAT_HWCAP_ISA_V: CUlong = (1uL.toUInt() shl ((86u - 65u).toInt())).toUByte()
+public val COMPAT_HWCAP_ISA_V: CUlong = (1uL.toUInt() shl ((86u.toUByte() - 65u.toUByte()).toInt())).toUByte()
 
 public val SYS_READ: CLong = 63L
 

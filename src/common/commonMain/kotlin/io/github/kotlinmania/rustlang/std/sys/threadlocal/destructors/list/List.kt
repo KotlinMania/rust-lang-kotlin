@@ -2,10 +2,12 @@
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.destructors.list
 
 import io.github.kotlinmania.rustlang.core.cell.RefCell
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.std.alloc.System
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
@@ -23,7 +25,7 @@ public fun register(t: MutPtr, dtor: FnCallback) {
         null -> {}
         else -> {
             val out = matchVal
-            Write.writeFmt(out, "fatal runtime error: " + ("the System allocator may not use TLS with destructors").toString() + ", aborting\n")
+            out.writeFmt("fatal runtime error: " + ("the System allocator may not use TLS with destructors").toString() + ", aborting\n")
         }
     }
     run {
@@ -39,7 +41,7 @@ public fun register(t: MutPtr, dtor: FnCallback) {
                 null -> {}
                 else -> {
                     val out1 = matchVal1
-                    Write.writeFmt(out1, "fatal runtime error: " + ("Failed to grow TLS destructor list").toString() + ", aborting\n")
+                    out1.writeFmt("fatal runtime error: " + ("Failed to grow TLS destructor list").toString() + ", aborting\n")
                 }
             }
             run {

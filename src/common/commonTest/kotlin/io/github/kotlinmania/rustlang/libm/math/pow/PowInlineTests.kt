@@ -1,6 +1,7 @@
 // port-lint: tests math/pow.rs
 package io.github.kotlinmania.rustlang.libm.math.pow
 
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.libm.math.pow.core.f64.consts.E
 import io.github.kotlinmania.rustlang.libm.math.pow.core.f64.consts.PI
 

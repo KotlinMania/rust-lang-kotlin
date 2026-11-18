@@ -9,6 +9,8 @@ import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 // Helper code for character escaping.
 
@@ -62,12 +64,12 @@ public fun verbatim(a: io.github.kotlinmania.rustlang.core.ascii.Char, n: Int = 
 public fun escapeAscii(byte: UByte, n: Int = 0): Pair<List<io.github.kotlinmania.rustlang.core.ascii.Char>, Range<UByte>> {
     check(n >= 4)
     return when (byte) {
-        9u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.SmallT, n)
-        13u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.SmallR, n)
-        10u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.SmallN, n)
-        92u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.ReverseSolidus, n)
-        39u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.Apostrophe, n)
-        34u -> { backslash(io.github.kotlinmania.rustlang.core.ascii.Char.QuotationMark, n) }
+        9u.toUByte() -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.SmallT, n)
+        13u.toUByte() -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.SmallR, n)
+        10u.toUByte() -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.SmallN, n)
+        92u.toUByte() -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.ReverseSolidus, n)
+        39u.toUByte() -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.Apostrophe, n)
+        34u.toUByte() -> { backslash(io.github.kotlinmania.rustlang.core.ascii.Char.QuotationMark, n) }
         in 0x00u.toUByte()..0x1Fu.toUByte(), 0x7Fu.toUByte() -> hexEscape(byte, n)
         else -> when (val matchVal = io.github.kotlinmania.rustlang.core.ascii.Char.fromU8(byte)) {
             null -> hexEscape(byte, n)

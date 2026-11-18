@@ -14,6 +14,7 @@ import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.splice.Splice
 import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
@@ -39,10 +40,15 @@ import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.castSlice
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.constptr.sub
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.castSlice
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.sub
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
 import io.github.kotlinmania.rustlang.core.ptr.read
@@ -51,6 +57,12 @@ import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.iterMut
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.slice.splitAt
+import io.github.kotlinmania.rustlang.core.str.len
+import io.github.kotlinmania.rustlang.core.str.splitAt
 
 /**
  * A double-ended queue implemented with a growable ring buffer.
@@ -3340,7 +3352,7 @@ public fun <T, U, A : Allocator> VecDeque<T, A>.eq(other: List<U>): Boolean {
         return false
     }
     val (sa, sb) = this.asSlices()
-    val (oa, ob) = other.splitAt(sa.len())
+    val (oa, ob) = other.splitAt(sa.size)
     return sa == oa && sb == ob
 }
 
@@ -3349,7 +3361,7 @@ public fun <T, U, A : Allocator> VecDeque<T, A>.eqUSlice(other: List<U>): Boolea
         return false
     }
     val (sa, sb) = this.asSlices()
-    val (oa, ob) = other.splitAt(sa.len())
+    val (oa, ob) = other.splitAt(sa.size)
     return sa == oa && sb == ob
 }
 
@@ -3358,7 +3370,7 @@ public fun <T, U, A : Allocator> VecDeque<T, A>.eq(other: MutableList<U>): Boole
         return false
     }
     val (sa, sb) = this.asSlices()
-    val (oa, ob) = other.splitAt(sa.len())
+    val (oa, ob) = other.splitAt(sa.size)
     return sa == oa && sb == ob
 }
 
@@ -3367,7 +3379,7 @@ public fun <T, U, A : Allocator> VecDeque<T, A>.eq(other: List<U>, n: Int = 0): 
         return false
     }
     val (sa, sb) = this.asSlices()
-    val (oa, ob) = other.splitAt(sa.len())
+    val (oa, ob) = other.splitAt(sa.size)
     return sa == oa && sb == ob
 }
 
@@ -3376,7 +3388,7 @@ public fun <T, U, A : Allocator> VecDeque<T, A>.eqUArrayn(other: List<U>, n: Int
         return false
     }
     val (sa, sb) = this.asSlices()
-    val (oa, ob) = other.splitAt(sa.len())
+    val (oa, ob) = other.splitAt(sa.size)
     return sa == oa && sb == ob
 }
 

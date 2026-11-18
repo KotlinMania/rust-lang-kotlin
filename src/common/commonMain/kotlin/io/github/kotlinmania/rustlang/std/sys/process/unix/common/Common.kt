@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.process.unix.common
 
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
 import io.github.kotlinmania.rustlang.core.io.error.Error
@@ -16,12 +17,17 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.nullVal
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.libc.Poll
 import io.github.kotlinmania.rustlang.libc.unix.GidT
 import io.github.kotlinmania.rustlang.libc.unix.PidT
@@ -281,7 +287,7 @@ public open class Command internal constructor(
 
     public open fun envSawPath(): Boolean = this.env.haveChangedPath()
 
-    public open fun programIsPath(): Boolean = this.program.toBytes().contains(47u)
+    public open fun programIsPath(): Boolean = this.program.toBytes().contains(47u.toUByte())
 
     public open fun setupIo(default: Stdio, needsStdin: Boolean): Result<Pair<StdioPipes, ChildPipes>, Error> {
         val nullVal = Stdio.Null
@@ -574,7 +580,7 @@ public sealed class ProgramKind {
         public fun new(program: OsStr): ProgramKind =
             if (program.asEncodedBytes().startsWith("/".encodeToByteArray())) {
                 ProgramKind.Absolute
-            } else if (program.asEncodedBytes().contains(47u)) {
+            } else if (program.asEncodedBytes().contains(47u.toUByte())) {
                 // If the program has more than one component in it, it is a relative path.
                 ProgramKind.Relative
             } else {
@@ -682,13 +688,13 @@ public open class CommandArgs(
 
 public typealias ChildPipe = Pipe
 
-public fun readOutput(out: ChildPipe, stdout: List<UByte>, err: ChildPipe, stderr: List<UByte>): Result<Unit, Error> {
+public fun readOutput(out: ChildPipe, stdout: MutableList<UByte>, err: ChildPipe, stderr: MutableList<UByte>): Result<Unit, Error> {
     // Read as much as we can from each pipe, ignoring EWOULDBLOCK or
     // EAGAIN. If we hit EOF, then this will happen because the underlying
     // reader will return Ok(0), in which case we'll see `Ok` ourselves. In
     // this case we flip the other fd back into blocking mode and read
     // whatever's leftover on that file descriptor.
-    fun read(fd: FileDesc, dst: List<UByte>): Result<Boolean, Error> =
+    fun read(fd: FileDesc, dst: MutableList<UByte>): Result<Boolean, Error> =
         run {
             val matchVal = fd.readToEnd(dst)
             when (matchVal) { is Result.Ok<*, *> -> {

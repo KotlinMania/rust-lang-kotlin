@@ -221,7 +221,7 @@ public fun parse(file: Read<*>, longnames: Boolean): RustResult<TermInfo, String
             val e15 = matchVal13.errValue()
             return RustResult.Err<TermInfo, String>(e15.toString())
         } }
-    } != 0u) {
+    } != 0u.toUByte()) {
         return RustResult.Err<TermInfo, String>("incompatible file: missing null terminator for names section".toString())
     }
     val boolsMap: MutableMap<String, Boolean> =
@@ -280,7 +280,7 @@ public fun parse(file: Read<*>, longnames: Boolean): RustResult<TermInfo, String
                     RustResult.Ok(Pair(nnames[i].toString(), n5))
                 }
                 else -> {
-                    val e20 = (number as RustResult.Err<*, *>).errValue()
+                    val e20 = number.errValue()
                     RustResult.Err(e20)
                 }
             }

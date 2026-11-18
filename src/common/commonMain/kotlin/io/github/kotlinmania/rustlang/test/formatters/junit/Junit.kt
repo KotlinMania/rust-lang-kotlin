@@ -1,6 +1,7 @@
 // port-lint: source formatters/junit.rs
 package io.github.kotlinmania.rustlang.test.formatters.junit
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.fmt.Write
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind

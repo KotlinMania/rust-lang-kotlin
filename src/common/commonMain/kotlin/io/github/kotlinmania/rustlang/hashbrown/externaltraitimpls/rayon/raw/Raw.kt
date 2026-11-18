@@ -1,9 +1,11 @@
 // port-lint: source external_trait_impls/rayon/raw.rs
 package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.raw
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.needsDrop
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.hashbrown.Guard
 import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.bridgeUnindexed

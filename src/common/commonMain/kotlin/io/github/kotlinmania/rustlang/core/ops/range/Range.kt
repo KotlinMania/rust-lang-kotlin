@@ -1136,28 +1136,28 @@ public interface IntoBounds<T> : RangeBounds<T> {
             run {
                 val matchVal = Pair(selfStart, otherStart)
                 when {
-                    matchVal.first is IntoBounds.Included<*> && matchVal.second is IntoBounds.Included<*> -> {
-                        val (a) = matchVal.first as IntoBounds.Included<T>
-                        val (b) = matchVal.second as IntoBounds.Included<T>
+                    matchVal.first is Included<*> && matchVal.second is Included<*> -> {
+                        val (a) = matchVal.first as Included<T>
+                        val (b) = matchVal.second as Included<T>
                         Included(a.max(b))
                     }
-                    matchVal.first is IntoBounds.Excluded<*> && matchVal.second is IntoBounds.Excluded<*> -> {
-                        val (a1) = matchVal.first as IntoBounds.Excluded<T>
-                        val (b1) = matchVal.second as IntoBounds.Excluded<T>
+                    matchVal.first is Excluded<*> && matchVal.second is Excluded<*> -> {
+                        val (a1) = matchVal.first as Excluded<T>
+                        val (b1) = matchVal.second as Excluded<T>
                         Excluded(a1.max(b1))
                     }
-                    matchVal.first is IntoBounds.Unbounded<*> && matchVal.second is IntoBounds.Unbounded<*> -> Unbounded()
-                    matchVal.second is IntoBounds.Unbounded<*> -> {
+                    matchVal.first is Unbounded<*> && matchVal.second is Unbounded<*> -> Unbounded()
+                    matchVal.second is Unbounded<*> -> {
                         val x = matchVal.first
                         x
                     }
-                    matchVal.first is IntoBounds.Unbounded<*> -> {
+                    matchVal.first is Unbounded<*> -> {
                         val x1 = matchVal.second
                         x1
                     }
-                    matchVal.first is IntoBounds.Included<*> && matchVal.second is IntoBounds.Excluded<*> -> {
-                        val (i) = matchVal.first as IntoBounds.Included<T>
-                        val (e) = matchVal.second as IntoBounds.Excluded<T>
+                    matchVal.first is Included<*> && matchVal.second is Excluded<*> -> {
+                        val (i) = matchVal.first as Included<T>
+                        val (e) = matchVal.second as Excluded<T>
                         if (i > e) {
                             Included(i)
                         } else {
@@ -1165,8 +1165,8 @@ public interface IntoBounds<T> : RangeBounds<T> {
                         }
                     }
                     else -> {
-                        val (e1) = matchVal.first as IntoBounds.Excluded<T>
-                        val (i1) = matchVal.second as IntoBounds.Included<T>
+                        val (e1) = matchVal.first as Excluded<T>
+                        val (i1) = matchVal.second as Included<T>
                         if (i1 > e1) {
                             Included(i1)
                         } else {
@@ -1179,28 +1179,28 @@ public interface IntoBounds<T> : RangeBounds<T> {
             run {
                 val matchVal1 = Pair(selfEnd, otherEnd)
                 when {
-                    matchVal1.first is IntoBounds.Included<*> && matchVal1.second is IntoBounds.Included<*> -> {
-                        val (a2) = matchVal1.first as IntoBounds.Included<T>
-                        val (b2) = matchVal1.second as IntoBounds.Included<T>
+                    matchVal1.first is Included<*> && matchVal1.second is Included<*> -> {
+                        val (a2) = matchVal1.first as Included<T>
+                        val (b2) = matchVal1.second as Included<T>
                         Included(a2.min(b2))
                     }
-                    matchVal1.first is IntoBounds.Excluded<*> && matchVal1.second is IntoBounds.Excluded<*> -> {
-                        val (a3) = matchVal1.first as IntoBounds.Excluded<T>
-                        val (b3) = matchVal1.second as IntoBounds.Excluded<T>
+                    matchVal1.first is Excluded<*> && matchVal1.second is Excluded<*> -> {
+                        val (a3) = matchVal1.first as Excluded<T>
+                        val (b3) = matchVal1.second as Excluded<T>
                         Excluded(a3.min(b3))
                     }
-                    matchVal1.first is IntoBounds.Unbounded<*> && matchVal1.second is IntoBounds.Unbounded<*> -> Unbounded()
-                    matchVal1.second is IntoBounds.Unbounded<*> -> {
+                    matchVal1.first is Unbounded<*> && matchVal1.second is Unbounded<*> -> Unbounded()
+                    matchVal1.second is Unbounded<*> -> {
                         val x2 = matchVal1.first
                         x2
                     }
-                    matchVal1.first is IntoBounds.Unbounded<*> -> {
+                    matchVal1.first is Unbounded<*> -> {
                         val x3 = matchVal1.second
                         x3
                     }
-                    matchVal1.first is IntoBounds.Included<*> && matchVal1.second is IntoBounds.Excluded<*> -> {
-                        val (i2) = matchVal1.first as IntoBounds.Included<T>
-                        val (e2) = matchVal1.second as IntoBounds.Excluded<T>
+                    matchVal1.first is Included<*> && matchVal1.second is Excluded<*> -> {
+                        val (i2) = matchVal1.first as Included<T>
+                        val (e2) = matchVal1.second as Excluded<T>
                         if (i2 < e2) {
                             Included(i2)
                         } else {
@@ -1208,8 +1208,8 @@ public interface IntoBounds<T> : RangeBounds<T> {
                         }
                     }
                     else -> {
-                        val (e3) = matchVal1.first as IntoBounds.Excluded<T>
-                        val (i3) = matchVal1.second as IntoBounds.Included<T>
+                        val (e3) = matchVal1.first as Excluded<T>
+                        val (i3) = matchVal1.second as Included<T>
                         if (i3 < e3) {
                             Included(i3)
                         } else {

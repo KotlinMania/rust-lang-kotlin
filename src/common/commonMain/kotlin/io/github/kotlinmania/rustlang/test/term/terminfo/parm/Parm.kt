@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.test.term.terminfo.parm
 import io.github.kotlinmania.rustlang.core.char.methods.isAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.methods.isAsciiUppercase
 import io.github.kotlinmania.rustlang.core.char.methods.toDigit
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatn.repeatN
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -11,6 +12,9 @@ import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.test.term.terminfo.parm.Param.*
 import io.github.kotlinmania.rustlang.test.term.terminfo.parm.States.*
 import kotlin.experimental.and
@@ -290,7 +294,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                         }
                         else -> {
                             val arg1 = matchVal9
-                            val idx = (cur.toUByte()) - 65u
+                            val idx = (cur.toUByte()) - 65u.toUByte()
                             vars.staVa[idx.toInt()] = arg1
                         }
                     }
@@ -301,7 +305,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                         }
                         else -> {
                             val arg2 = matchVal10
-                            val idx1 = (cur.toUByte()) - 97u
+                            val idx1 = (cur.toUByte()) - 97u.toUByte()
                             vars.dynVa[idx1.toInt()] = arg2
                         }
                     }
@@ -311,10 +315,10 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
             }
             GetVar -> {
                 if (cur.isAsciiUppercase()) {
-                    val idx2 = (cur.toUByte()) - 65u
+                    val idx2 = (cur.toUByte()) - 65u.toUByte()
                     stack.add(vars.staVa[idx2.toInt()].clone())
                 } else if (cur.isAsciiLowercase()) {
-                    val idx3 = (cur.toUByte()) - 97u
+                    val idx3 = (cur.toUByte()) - 97u.toUByte()
                     stack.add(vars.dynVa[idx3.toInt()].clone())
                 } else {
                     return Result.Err<List<UByte>, String>("bad variable name in %g".toString())
@@ -662,10 +666,10 @@ public fun format(value: Param, op: FormatOp, flags: Flags): Result<List<UByte>,
     if (flags.width > s.len()) {
         val n = flags.width - s.len()
         if (flags.left) {
-            s.extend(repeatN(32u, n))
+            s.extend(repeatN(32u.toUByte(), n))
         } else {
             var s = ArrayList<UByte>(flags.width)
-            s.extend(repeatN(32u, n))
+            s.extend(repeatN(32u.toUByte(), n))
             s.extend(s)
             s = s
         }

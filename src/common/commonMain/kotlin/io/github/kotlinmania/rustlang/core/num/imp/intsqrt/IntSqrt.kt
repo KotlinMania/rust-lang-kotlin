@@ -86,7 +86,7 @@ public fun u16Stages(n: UShort): UShort {
         }
         val n1 = (n.toUInt() shr (N_SHIFT.toInt())).toUShort()
         val (s, r) = U8_ISQRT_WITH_REMAINDER[n1.toInt()]
-        assertUnchecked(s != 0)
+        assertUnchecked(s != 0u.toUByte())
         Pair(s, r)
     }
     return run {
@@ -125,7 +125,7 @@ public fun u32Stages(n: UInt): UInt {
         }
         val n1 = n shr N_SHIFT.toInt()
         val (s, r) = U8_ISQRT_WITH_REMAINDER[n1.toInt()]
-        assertUnchecked(s != 0)
+        assertUnchecked(s != 0u.toUByte())
         Pair(s, r)
     }
     val (s3, r3) = run {
@@ -146,7 +146,7 @@ public fun u32Stages(n: UInt): UInt {
         var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
         var (r2, overflow) = (((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)).overflowingSub(q * q)
         if (overflow) {
-            r2 = r2.wrappingAdd(2u * s2 - 1u)
+            r2 = (r2 + ((2u * s2 - 1u).toUShort())).toUShort()
             s2 -= 1u
         }
         assertUnchecked(s2 != 0u.toUShort())
@@ -188,7 +188,7 @@ public fun u64Stages(n: ULong): ULong {
         }
         val n1 = n shr N_SHIFT.toInt()
         val (s, r) = U8_ISQRT_WITH_REMAINDER[n1.toInt()]
-        assertUnchecked(s != 0)
+        assertUnchecked(s != 0u.toUByte())
         Pair(s, r)
     }
     val (s3, r3) = run {
@@ -209,7 +209,7 @@ public fun u64Stages(n: ULong): ULong {
         var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
         var (r2, overflow) = (((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)).overflowingSub(q * q)
         if (overflow) {
-            r2 = r2.wrappingAdd(2u * s2 - 1u)
+            r2 = (r2 + ((2u * s2 - 1u).toUShort())).toUShort()
             s2 -= 1u
         }
         assertUnchecked(s2 != 0u.toUShort())
@@ -233,7 +233,7 @@ public fun u64Stages(n: ULong): ULong {
         var s4 = (s3 shl QUARTER_BITS.toInt()).toUInt() + q1
         var (r4, overflow1) = ((u1 shl QUARTER_BITS.toInt()) or (lo1 and LOWEST_QUARTER_1_BITS)).overflowingSub(q1 * q1)
         if (overflow1) {
-            r4 = r4.wrappingAdd(2u * s4 - 1u)
+            r4 = (r4 + (2u * s4 - 1u))
             s4 -= 1u
         }
         assertUnchecked(s4 != 0u)
@@ -275,7 +275,7 @@ public fun u128Stages(n: U128): U128 {
         }
         val n1 = n shr N_SHIFT.toInt()
         val (s, r) = U8_ISQRT_WITH_REMAINDER[n1.toInt()]
-        assertUnchecked(s != 0)
+        assertUnchecked(s != 0u.toUByte())
         Pair(s, r)
     }
     val (s3, r3) = run {
@@ -296,7 +296,7 @@ public fun u128Stages(n: U128): U128 {
         var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
         var (r2, overflow) = (((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)).overflowingSub(q * q)
         if (overflow) {
-            r2 = r2.wrappingAdd(2u * s2 - 1u)
+            r2 = (r2 + ((2u * s2 - 1u).toUShort())).toUShort()
             s2 -= 1u
         }
         assertUnchecked(s2 != 0u.toUShort())
@@ -320,7 +320,7 @@ public fun u128Stages(n: U128): U128 {
         var s4 = (s3 shl QUARTER_BITS.toInt()).toUInt() + q1
         var (r4, overflow1) = ((u1 shl QUARTER_BITS.toInt()) or (lo1 and LOWEST_QUARTER_1_BITS)).overflowingSub(q1 * q1)
         if (overflow1) {
-            r4 = r4.wrappingAdd(2u * s4 - 1u)
+            r4 = (r4 + (2u * s4 - 1u))
             s4 -= 1u
         }
         assertUnchecked(s4 != 0u)
@@ -344,7 +344,7 @@ public fun u128Stages(n: U128): U128 {
         var s6 = (s5 shl QUARTER_BITS.toInt()).toULong() + q2
         var (r6, overflow2) = ((u2 shl QUARTER_BITS.toInt()) or (lo2 and LOWEST_QUARTER_1_BITS)).overflowingSub(q2 * q2)
         if (overflow2) {
-            r6 = r6.wrappingAdd(2uL * s6 - 1uL)
+            r6 = (r6 + (2uL * s6 - 1uL))
             s6 -= 1uL
         }
         assertUnchecked(s6 != 0uL)

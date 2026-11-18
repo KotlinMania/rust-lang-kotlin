@@ -9,7 +9,9 @@ import io.github.kotlinmania.rustlang.core.mem.asMutPtr
 import io.github.kotlinmania.rustlang.core.num.error.ParseIntError
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.constptr.castMut
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -18,6 +20,9 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.asPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.libc.sysctlbyname
 import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.fs.read
@@ -277,7 +282,7 @@ public fun stringVersionKey(cfHandle: CFHandle, plist: CFDictionaryRef, lookupKe
  * Parse an OS version from a bytestring like b"10.1" or b"14.3.7".
  */
 public fun parseOsVersion(version: List<UByte>): Result<OSVersion, ParseIntError> {
-    return when (val matchVal = version.splitOnce({ b -> b == 46u })) {
+    return when (val matchVal = version.splitOnce({ b -> b == 46u.toUByte() })) {
         null -> {
             val major = when (val tryResult = UShort.fromAsciiBytes(version)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.errValue()) }
             Result.Ok<OSVersion, ParseIntError>(packOsVersion(major, 0u, 0u))
@@ -286,7 +291,7 @@ public fun parseOsVersion(version: List<UByte>): Result<OSVersion, ParseIntError
             val major1 = matchVal.first
             val minor = matchVal.second
             val major2 = when (val tryResult = UShort.fromAsciiBytes(major1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.errValue()) }
-            when (val matchVal1 = minor.let { s -> val d = { b -> b == 46u }; val idx = s.indexOf(d); if (idx < 0) null else Pair(s.substring(0, idx), s.substring(idx + d.length)) }) {
+            when (val matchVal1 = minor.let { s -> val d = { b -> b == 46u.toUByte() }; val idx = s.indexOf(d); if (idx < 0) null else Pair(s.substring(0, idx), s.substring(idx + d.length)) }) {
                 null -> {
                     val minor1 = when (val tryResult = UByte.fromAsciiBytes(minor)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.errValue()) }
                     Result.Ok<OSVersion, ParseIntError>(packOsVersion(major2, minor1, 0u))

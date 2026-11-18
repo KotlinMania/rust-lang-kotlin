@@ -370,9 +370,9 @@ public fun fromDigit(num: UInt, radix: UInt): Char? {
     return if (num < radix) {
         val num1 = num.toUByte()
         if (num1 < 10u.toUByte()) {
-            (48u + num1).toInt().toChar()
+            (48u.toUByte() + num1).toInt().toChar()
         } else {
-            (97u + num1 - 10u).toInt().toChar()
+            (97u.toUByte() + num1 - 10u).toInt().toChar()
         }
     } else {
         null

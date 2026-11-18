@@ -18,14 +18,25 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingAdd
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.castConst
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingAdd
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.slice.splitAt
+import io.github.kotlinmania.rustlang.core.str.len
+import io.github.kotlinmania.rustlang.core.str.splitAt
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.gimli.NativeEndian as Endian
 
 // Support for symbolication using the `gimli` crate on crates.io
@@ -395,7 +406,7 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
                     while (true) {
                         val matchVal3 = frames.next()
                         if (!(matchVal3 is Result.Ok<*, *> && matchVal3.okValue() != null)) break
-                        val okValueVal = (matchVal3 as Result.Ok<*, *>).okValue()
+                        val okValueVal = matchVal3.okValue()
                         val frame = okValueVal
                         anyFrames = true
                         val name =
@@ -423,7 +434,7 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
                                 while (true) {
                                     val matchVal7 = frames1.next()
                                     if (!(matchVal7 is Result.Ok<*, *> && matchVal7.okValue() != null)) break
-                                    val okValueVal1 = (matchVal7 as Result.Ok<*, *>).okValue()
+                                    val okValueVal1 = matchVal7.okValue()
                                     val frame1 = okValueVal1
                                     anyFrames = true
                                     call(Symbol.Frame(addr = mutPtrFromRustCast(addr1), location = frame1.location, name = frame1.function.map({ f1 -> f1.name.slice() })))

@@ -77,7 +77,7 @@ public open class Demangle(
                             "C" -> ","
                             else -> {
                                 if (escape.startsWith('u')) {
-                                    val digits = escape[1 until escape.size]
+                                    val digits = escape.substring(1)
                                     val allLowerHex =
                                         digits.chars().all({ c -> when (c) {
                                             in '0'..'9', in 'a'..'f' -> true

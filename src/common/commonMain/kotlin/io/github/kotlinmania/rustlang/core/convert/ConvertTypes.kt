@@ -174,10 +174,10 @@ public interface AsRef<T> {
  * fun <T : AsMut<List<UByte>>> nullTerminate(data: T) {
  *     // Using a non-generic inner function, which contains most of the
  *     // functionality, helps to minimize monomorphization overhead.
- *     fun doit(data1: List<UByte>) {
+ *     fun doit(data1: MutableList<UByte>) {
  *         val len = data1.size
  *         if (len == 0 || data1[len - 1] != 0u.toUByte()) {
- *             data1.push(0)
+ *             data1.add(0)
  *         }
  *     }
  *     doit(data.asMut())

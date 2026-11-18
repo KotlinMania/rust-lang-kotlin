@@ -81,7 +81,7 @@ public open class PidFd(
                     return Result.Err<UInt, Error>(e)
                 }
                 else -> {
-                    val e1 = (matchVal as Result.Err<*, *>).errValue()
+                    val e1 = matchVal.errValue()
                     return Result.Err<UInt, Error>(e1)
                 }
             }

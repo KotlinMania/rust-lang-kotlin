@@ -1,6 +1,7 @@
 // port-lint: source range.rs
 package io.github.kotlinmania.rustlang.core.range
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes

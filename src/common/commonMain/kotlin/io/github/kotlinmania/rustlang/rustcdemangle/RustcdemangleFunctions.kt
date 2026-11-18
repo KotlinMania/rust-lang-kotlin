@@ -4,7 +4,9 @@ import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.fmt.Write
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.chars
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.rustcdemangle.v0.ParseError
 
 /**
@@ -74,7 +76,7 @@ public fun demangle(s: String): Demangle {
                             null
                         }
                         else -> {
-                            val errValueVal1 = (matchVal2 as Result.Err<*, *>).errValue()
+                            val errValueVal1 = matchVal2.errValue()
                             null
                         }
                     }

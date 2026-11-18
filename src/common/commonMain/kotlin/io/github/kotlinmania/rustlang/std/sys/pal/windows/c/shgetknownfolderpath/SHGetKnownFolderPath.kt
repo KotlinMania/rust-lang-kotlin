@@ -11,6 +11,8 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.asPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_CALL_NOT_IMPLEMENTED
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.SHELL32
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.E_NOTIMPL

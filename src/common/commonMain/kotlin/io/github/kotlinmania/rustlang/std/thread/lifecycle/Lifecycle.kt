@@ -2,8 +2,8 @@
 package io.github.kotlinmania.rustlang.std.thread.lifecycle
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.io.error.Error
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.maybedangling.MaybeDangling
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
@@ -12,6 +12,10 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.getMut
+import io.github.kotlinmania.rustlang.core.sync.atomic.intoInner
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.process.abort
@@ -19,7 +23,6 @@ import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.backtrace.rustBeginShortBacktrace
-import io.github.kotlinmania.rustlang.std.sys.intoInner
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.thread.unix.DEFAULT_MIN_STACK_SIZE
 import io.github.kotlinmania.rustlang.std.sys.thread.unix.setName
@@ -128,7 +131,7 @@ public open class ThreadInit(
                         null -> {}
                         else -> {
                             val out = matchVal1
-                            Write.writeFmt(out, "fatal runtime error: " + ("current thread handle already set during thread spawn").toString() + ", aborting\n")
+                            out.writeFmt("fatal runtime error: " + ("current thread handle already set during thread spawn").toString() + ", aborting\n")
                         }
                     }
                     run {
@@ -201,7 +204,7 @@ public open class Packet<T> internal constructor(
                         null -> {}
                         else -> {
                             val out = matchVal2
-                            Write.writeFmt(out, "fatal runtime error: " + ("thread result panicked on drop").toString() + ", aborting\n")
+                            out.writeFmt("fatal runtime error: " + ("thread result panicked on drop").toString() + ", aborting\n")
                         }
                     }
                     run {

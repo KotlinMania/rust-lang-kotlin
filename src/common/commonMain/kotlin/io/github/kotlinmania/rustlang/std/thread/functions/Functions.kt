@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.std.thread.functions
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
@@ -377,7 +376,7 @@ public open class PanicGuard {
                 null -> {}
                 else -> {
                     val out = matchVal
-                    Write.writeFmt(out, "fatal runtime error: " + ("an irrecoverable error occurred while synchronizing threads").toString() + ", aborting\n")
+                    out.writeFmt("fatal runtime error: " + ("an irrecoverable error occurred while synchronizing threads").toString() + ", aborting\n")
                 }
             }
             run {

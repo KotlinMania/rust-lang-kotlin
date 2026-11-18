@@ -29,7 +29,7 @@ public open class Pipe(
 
     public open fun isReadVectored(): Boolean = this.value
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = this.value
+    public open fun readToEnd(buf: MutableList<UByte>): Result<Int, Error> = this.value
 
     public open fun write(buf: List<UByte>): Result<Int, Error> = this.value
 

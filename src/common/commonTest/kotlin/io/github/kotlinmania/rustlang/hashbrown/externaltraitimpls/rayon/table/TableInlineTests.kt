@@ -3,6 +3,8 @@ package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.table
 
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.fetchOr
+import io.github.kotlinmania.rustlang.core.sync.atomic.intoInner
 import io.github.kotlinmania.rustlang.hashbrown.HashTable
 import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
 import io.github.kotlinmania.rustlang.hashbrown.makeHash

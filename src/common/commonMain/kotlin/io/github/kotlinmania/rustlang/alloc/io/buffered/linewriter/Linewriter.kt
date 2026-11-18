@@ -9,6 +9,8 @@ import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.write.Write
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public class DebugStruct(
@@ -157,19 +159,19 @@ public open class LineWriter<W : Write<W>> internal constructor(
      */
     public open fun getRef(): W = this.inner.getRef()
 
-    public open fun write(buf: List<UByte>): Result<Int> = LineWriterShim.new(this.inner).write(buf)
+    public override fun write(buf: List<UByte>): Result<Int> = LineWriterShim.new(this.inner).write(buf)
 
-    public open fun flush(): Result<Unit> = this.inner.flush()
+    public override fun flush(): Result<Unit> = this.inner.flush()
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> = LineWriterShim.new(this.inner).writeVectored(bufs)
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int> = LineWriterShim.new(this.inner).writeVectored(bufs)
 
-    public open fun isWriteVectored(): Boolean = this.inner.isWriteVectored()
+    public override fun isWriteVectored(): Boolean = this.inner.isWriteVectored()
 
-    public open fun writeAll(buf: List<UByte>): Result<Unit> = LineWriterShim.new(this.inner).writeAll(buf)
+    public override fun writeAll(buf: List<UByte>): Result<Unit> = LineWriterShim.new(this.inner).writeAll(buf)
 
-    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = LineWriterShim.new(this.inner).writeAllVectored(bufs)
+    public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = LineWriterShim.new(this.inner).writeAllVectored(bufs)
 
-    public open fun writeFmt(fmt: Arguments): Result<Unit> = LineWriterShim.new(this.inner).writeFmt(fmt)
+    public override fun writeFmt(fmt: Arguments): Result<Unit> = LineWriterShim.new(this.inner).writeFmt(fmt)
 
     public open fun fmt(fmt: StringBuilder): RustResult<Unit, Error> = run { DebugStruct(fmt, "LineWriter").field("writer", this.getRef()).field("buffer", "${this.inner.buffer().len()}/${this.inner.capacity()}").finishNonExhaustive(); RustResult.Ok<Unit, Error>(Unit) }
 

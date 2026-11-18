@@ -20,9 +20,13 @@ import io.github.kotlinmania.rustlang.core.ops.index.index
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -491,7 +495,7 @@ public open class CStr internal constructor(
          *         // Here we might call an unchecked C function that writes a string
          *         // into the buffer.
          *         val bufPtr = localStorageL5C0.elementMutPtr(0)
-         *         kmWriteBytes((bufPtr).rawAddress, (65u).toUByte(), (8).toLong() * (PrimitiveLayouts.U8).sizeBytes)
+         *         kmWriteBytes((bufPtr).rawAddress, (65u.toUByte()).toUByte(), (8).toLong() * (PrimitiveLayouts.U8).sizeBytes)
          *     }
          *     // Attempt to extract a C nul-terminated string from the buffer.
          *     val cStr = CStr.fromBytesUntilNul(buffer).unwrap()

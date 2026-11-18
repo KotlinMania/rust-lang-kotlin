@@ -51,7 +51,7 @@ import kotlin.experimental.xor
  *
  *         public fun toULong(): ULong = kmDiscriminant().toULong()
  *
- *         public open operator fun not(): Answer {
+ *         public override operator fun not(): Answer {
  *             return when (this) {
  *                 Answer.Yes -> Answer.No
  *                 Answer.No -> Answer.Yes
@@ -132,7 +132,7 @@ public operator fun Nothing.not(): Nothing = when (this) {}
  *             }
  *
  *         // rhs is the "right-hand side" of the expression `a & b`
- *         public open fun bitand(rhs: Scalar): Scalar {
+ *         public override fun bitand(rhs: Scalar): Scalar {
  *             return Scalar(this.value and rhs.value)
  *         }
  *     }
@@ -158,7 +158,7 @@ public operator fun Nothing.not(): Nothing = when (this) {}
  *                 value = v
  *             }
  *
- *         public open fun bitand(destructuredArg0: BooleanVector): BooleanVector {
+ *         public override fun bitand(destructuredArg0: BooleanVector): BooleanVector {
  *             val rhs = destructuredArg0.value
  *             val lhs = this.value
  *             check(lhs.size == rhs.size)
@@ -233,7 +233,7 @@ public fun I128.bitand(rhs: I128): I128 = this and rhs
  *             }
  *
  *         // rhs is the "right-hand side" of the expression `a | b`
- *         public open fun bitor(rhs: Scalar): Scalar {
+ *         public override fun bitor(rhs: Scalar): Scalar {
  *             return Scalar(this.value or rhs.value)
  *         }
  *     }
@@ -259,7 +259,7 @@ public fun I128.bitand(rhs: I128): I128 = this and rhs
  *                 value = v
  *             }
  *
- *         public open fun bitor(destructuredArg0: BooleanVector): BooleanVector {
+ *         public override fun bitor(destructuredArg0: BooleanVector): BooleanVector {
  *             val rhs = destructuredArg0.value
  *             val lhs = this.value
  *             check(lhs.size == rhs.size)
@@ -334,7 +334,7 @@ public fun I128.bitor(rhs: I128): I128 = this or rhs
  *             }
  *
  *         // rhs is the "right-hand side" of the expression `a ^ b`
- *         public open fun bitxor(rhs: Scalar): Scalar {
+ *         public override fun bitxor(rhs: Scalar): Scalar {
  *             return Scalar(this.value xor rhs.value)
  *         }
  *     }
@@ -360,7 +360,7 @@ public fun I128.bitor(rhs: I128): I128 = this or rhs
  *                 value = v
  *             }
  *
- *         public open fun bitxor(destructuredArg0: BooleanVector): BooleanVector {
+ *         public override fun bitxor(destructuredArg0: BooleanVector): BooleanVector {
  *             val rhs = destructuredArg0.value
  *             val lhs = this.value
  *             check(lhs.size == rhs.size)
@@ -438,7 +438,7 @@ public fun I128.bitxor(other: I128): I128 = this xor other
  *                 value = v
  *             }
  *
- *         public open infix fun shl(destructuredArg0: Scalar): Scalar {
+ *         public override infix fun shl(destructuredArg0: Scalar): Scalar {
  *             val rhs = destructuredArg0.value
  *             val lhs = this.value
  *             return Scalar(lhs shl rhs)
@@ -457,7 +457,7 @@ public fun I128.bitxor(other: I128): I128 = this xor other
  *
  * public fun doctestEntry() {
  *     open class SpinVector<T>(public var vec: List<T>) : Shl<Int, SpinVector<T>> {
- *         public open infix fun shl(rhs: Int): SpinVector<T> {
+ *         public override infix fun shl(rhs: Int): SpinVector<T> {
  *             // Rotate the vector by `rhs` places.
  *             val (a, b) = this.vec.splitAt(rhs)
  *             var spunVector = mutableListOf<T>()
@@ -748,7 +748,7 @@ public infix fun I128.shl(other: I128): I128 = this shl other.toInt()
  *                 value = v
  *             }
  *
- *         public open infix fun shr(destructuredArg0: Scalar): Scalar {
+ *         public override infix fun shr(destructuredArg0: Scalar): Scalar {
  *             val rhs = destructuredArg0.value
  *             val lhs = this.value
  *             return Scalar(lhs shr rhs)
@@ -767,7 +767,7 @@ public infix fun I128.shl(other: I128): I128 = this shl other.toInt()
  *
  * public fun doctestEntry() {
  *     open class SpinVector<T>(public var vec: List<T>) : Shr<Int, SpinVector<T>> {
- *         public open infix fun shr(rhs: Int): SpinVector<T> {
+ *         public override infix fun shr(rhs: Int): SpinVector<T> {
  *             // Rotate the vector by `rhs` places.
  *             val (a, b) = this.vec.splitAt(this.vec.size - rhs)
  *             var spunVector = mutableListOf<T>()

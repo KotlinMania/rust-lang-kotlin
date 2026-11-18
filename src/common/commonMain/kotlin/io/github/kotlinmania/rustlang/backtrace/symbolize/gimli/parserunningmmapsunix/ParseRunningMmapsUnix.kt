@@ -59,14 +59,14 @@ public open class MapsEntry(
             fun parseStart(state: String): String {
                 var state1 = state
                 // Unsafe is unfortunately necessary to get the bounds check removed (for code size).
-                val startIdx = state1.bytes().indexOfFirst({ b -> b != 32u }).takeIf { it >= 0 }
+                val startIdx = state1.bytes().indexOfFirst({ b -> b != 32u.toUByte() }).takeIf { it >= 0 }
                 if (startIdx != null) {
                     val startIdx1 = startIdx
                     // SAFETY: It comes from position, so it's in bounds.
                     // It must be on a UTF-8 boundary as it's the first byte that isn't ' '.
                     state1 = state1.getUnchecked(startIdx1 until Int.MAX_VALUE)
                 }
-                val matchIdx = state1.bytes().indexOfFirst({ b -> b == 32u }).takeIf { it >= 0 }
+                val matchIdx = state1.bytes().indexOfFirst({ b -> b == 32u.toUByte() }).takeIf { it >= 0 }
                 return when (matchIdx) {
                     null -> {
                         val result = state1
@@ -139,7 +139,7 @@ public fun parseMaps(): Result<List<MapsEntry>, String> {
     val v = mutableListOf<MapsEntry>()
     var buf1 = buf
     while (true) {
-        val matchVal = buf1.bytes().indexOfFirst({ b -> b == 10u }).takeIf { it >= 0 }
+        val matchVal = buf1.bytes().indexOfFirst({ b -> b == 10u.toUByte() }).takeIf { it >= 0 }
         if (matchVal == null) break
         val matchIdx = matchVal
         // Unsafe is unfortunately necessary to get the bounds check removed (for code size).

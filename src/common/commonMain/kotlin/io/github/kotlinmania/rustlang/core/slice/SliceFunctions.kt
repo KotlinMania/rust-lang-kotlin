@@ -2,6 +2,7 @@ package io.github.kotlinmania.rustlang.core.slice
 
 import io.github.kotlinmania.rustlang.core.Simd
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
@@ -48,12 +49,19 @@ import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.alignOffset
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
+import io.github.kotlinmania.rustlang.core.ptr.constptr.sub
+import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingSub
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.metadata.metadata
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.copyFromNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.splitAtMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.sub
@@ -95,6 +103,8 @@ import io.github.kotlinmania.rustlang.core.slice.sort.select.partitionAtIndex
 import io.github.kotlinmania.rustlang.core.slice.sort.unstable.partialSort
 import io.github.kotlinmania.rustlang.core.slice.sort.unstable.sort
 import io.github.kotlinmania.rustlang.core.slice.specialize.specFill
+import io.github.kotlinmania.rustlang.core.str.len
+import io.github.kotlinmania.rustlang.core.str.splitAt
 
 /**
  * Calculates the direction and split point of a one-sided range.

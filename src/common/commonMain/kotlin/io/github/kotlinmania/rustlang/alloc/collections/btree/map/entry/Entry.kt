@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.node.LeafOrInterna
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Mut
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.NodeRef
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.result.Result
 

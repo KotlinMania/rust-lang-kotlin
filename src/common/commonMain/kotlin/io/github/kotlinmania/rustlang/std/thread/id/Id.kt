@@ -9,6 +9,8 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU64
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchangeWeak
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
 
 /**
  * A unique identifier for a running thread.

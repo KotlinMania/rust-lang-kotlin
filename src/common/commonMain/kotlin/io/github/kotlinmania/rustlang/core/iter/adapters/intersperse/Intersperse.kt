@@ -1,6 +1,7 @@
 // port-lint: source iter/adapters/intersperse.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.intersperse
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.num.saturatingSub

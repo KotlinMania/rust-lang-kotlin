@@ -202,7 +202,7 @@ public fun u128DivRem(duo: U128, div: U128): Pair<U128, U128> {
     }
     if (duoLz >= n) {
         val (quo, rem) = u64ByU64DivRem(duo1.toULong(), div.toULong())
-        return Pair(U128.fromLong(quo.toLong()), U128.fromLong(rem.toLong()))
+        return Pair(U128.fromULong(quo), U128.fromULong(rem))
     }
     if (divLz >= (n + 32u)) {
         val duoHi = (duo1 shr n.toInt()).toULong()
@@ -212,7 +212,7 @@ public fun u128DivRem(duo: U128, div: U128): Pair<U128, U128> {
         val (quo1, rem2) = u64ByU64DivRem(duoMid, div0)
         val duoLo = ((duo1.toUInt()).toULong()) or (rem2 shl 32)
         val (quo0, rem1) = u64ByU64DivRem(duoLo, div0)
-        return Pair((U128.fromLong(quo0.toLong())) or ((U128.fromLong(quo1.toLong())) shl 32) or ((U128.fromLong(quoHi.toLong())) shl n.toInt()), U128.fromLong(rem1.toLong()))
+        return Pair((U128.fromULong(quo0)) or ((U128.fromULong(quo1)) shl 32) or ((U128.fromULong(quoHi)) shl n.toInt()), U128.fromULong(rem1))
     }
     val lzDiff = divLz - duoLz
     if (lzDiff < 32u) {
@@ -224,8 +224,8 @@ public fun u128DivRem(duo: U128, div: U128): Pair<U128, U128> {
         val divHi = (div shr n.toInt()).toULong()
         val (tmpLo, carry) = carryingMul(quo1, divLo)
         val (tmpHi, overflow) = carryingMulAdd(quo1, divHi, carry)
-        val tmp = (U128.fromLong(tmpLo.toLong())) or ((U128.fromLong(tmpHi.toLong())) shl n.toInt())
-        if ((overflow != 0) || (duo1 < tmp)) {
+        val tmp = (U128.fromULong(tmpLo)) or ((U128.fromULong(tmpHi)) shl n.toInt())
+        if ((overflow != 0uL) || (duo1 < tmp)) {
             return Pair(U128.fromULong((quo1 - 1uL)), duo1.wrappingAdd(div).wrappingSub(tmp))
         } else {
             return Pair(U128.fromULong(quo1), duo1 - tmp)
@@ -253,7 +253,7 @@ public fun u128DivRem(duo: U128, div: U128): Pair<U128, U128> {
             val divHi1 = (div shr n.toInt()).toULong()
             val (tmpLo1, carry1) = carryingMul(quoPart1, divLo1)
             val (tmpHi1, _) = carryingMulAdd(quoPart1, divHi1, carry1)
-            val tmp1 = (U128.fromLong(tmpLo1.toLong())) or ((U128.fromLong(tmpHi1.toLong())) shl n.toInt())
+            val tmp1 = (U128.fromULong(tmpLo1)) or ((U128.fromULong(tmpHi1)) shl n.toInt())
             if (duo2 < tmp1) {
                 return Pair(quo2 + (U128.fromULong((quoPart1 - 1uL))), duo2.wrappingAdd(div).wrappingSub(tmp1))
             } else {

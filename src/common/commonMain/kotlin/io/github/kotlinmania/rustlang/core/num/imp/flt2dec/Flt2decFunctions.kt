@@ -19,24 +19,24 @@ import io.github.kotlinmania.rustlang.core.panicking.assertFailed
  */
 public fun roundUp(d: MutableList<UByte>): UByte? =
     run {
-        val matchVal = ArrayDeque(d).indexOfLast({ c -> c != 57u }).takeIf { it >= 0 }
+        val matchVal = ArrayDeque(d).indexOfLast({ c -> c != 57u.toUByte() }).takeIf { it >= 0 }
         when {
             matchVal != null -> {
                 val i = matchVal
                 // d[i+1..n] is all nines
                 d[i] += 1u
-                ((d).subList(i + 1, (d).size)).fill(48u)
+                ((d).subList(i + 1, (d).size)).fill(48u.toUByte())
                 null
             }
             matchVal == null && d.isEmpty() -> {
                 // an empty buffer rounds up (a bit strange but reasonable)
-                49u
+                49u.toUByte()
             }
             else -> {
                 // 999..999 rounds to 1000..000 with an increased exponent
-                d[0] = 49u
-                ((d).subList(1, (d).size)).fill(48u)
-                48u
+                d[0] = 49u.toUByte()
+                ((d).subList(1, (d).size)).fill(48u.toUByte())
+                48u.toUByte()
             }
         }
     }
@@ -53,7 +53,7 @@ public fun roundUp(d: MutableList<UByte>): UByte? =
  */
 public fun digitsToDecStr(buf: List<UByte>, exp: Short, fracDigits: Int, parts: MutableList<MaybeUninit<Part>>): List<Part> {
     check(!buf.isEmpty())
-    check(buf[0] > 48u)
+    check(buf[0] > 48u.toUByte())
     check(parts.size >= 4)
     // if there is the restriction on the last digit position, `buf` is assumed to be
     // left-padded with the virtual zeroes. the number of virtual zeroes, `nzeroes`,
@@ -129,7 +129,7 @@ public fun digitsToDecStr(buf: List<UByte>, exp: Short, fracDigits: Int, parts: 
  */
 public fun digitsToExpStr(buf: List<UByte>, exp: Short, fracDigits: Int, upper: Boolean, parts: MutableList<MaybeUninit<Part>>): List<Part> {
     check(!buf.isEmpty())
-    check(buf[0] > 48u)
+    check(buf[0] > 48u.toUByte())
     check(parts.size >= 6)
     var n = 0
     parts[n] = MaybeUninit.new(Part.Copy(((buf).subList(0, 1))), UnresolvedTypeLayout<Part>())
@@ -488,7 +488,7 @@ public fun <Int, T> toExactFixedStr(formatExact: (Decoded, MutableList<MaybeUnin
             val (buf1, exp) = formatExact(decoded, buf.subList(0, maxlen), limit)
             if (exp <= limit) {
                 if (false) {
-                    when (val matchVal = Pair(buf1.len(), 0)) {
+                    when (val matchVal = Pair(buf1.size, 0)) {
                         else -> {
                             val leftVal = matchVal.first
                             val rightVal = matchVal.second

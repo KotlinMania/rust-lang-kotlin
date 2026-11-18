@@ -8,6 +8,8 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.copied.Copied
 import io.github.kotlinmania.rustlang.core.iter.adapters.rev.Rev
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 // Specialization trait used for VecDeque.extend
 public interface SpecExtend<T, I> {

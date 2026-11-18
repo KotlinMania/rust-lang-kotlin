@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo
 
 import io.github.kotlinmania.rustlang.core.hint.spinLoop
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -13,6 +12,8 @@ import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchange
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.libc.pause
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
@@ -106,7 +107,7 @@ public fun <R> withCurrentInfo(f: (ThreadInfo?) -> R): R {
                     null -> {}
                     else -> {
                         val out = matchVal
-                        Write.writeFmt(out, "deadlock in SIGSEGV handler")
+                        out.writeFmt("deadlock in SIGSEGV handler")
                     }
                 }
                 run {
@@ -125,7 +126,7 @@ public fun <R> withCurrentInfo(f: (ThreadInfo?) -> R): R {
                                 null -> {}
                                 else -> {
                                     val out1 = matchVal2
-                                    Write.writeFmt(out1, "fatal runtime error: " + ("a thread received SIGSEGV while modifying its stack overflow information").toString() + ", aborting\n")
+                                    out1.writeFmt("fatal runtime error: " + ("a thread received SIGSEGV while modifying its stack overflow information").toString() + ", aborting\n")
                                 }
                             }
                             run {

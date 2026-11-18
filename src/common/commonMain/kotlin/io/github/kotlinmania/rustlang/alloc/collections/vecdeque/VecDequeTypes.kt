@@ -85,7 +85,7 @@ public open class WrappedIndex internal constructor(
 
     public open fun isZero(): Boolean = this.value == 0
 
-    public open fun addInt(rhs: Int): Int = this.value + rhs
+    public override fun addInt(rhs: Int): Int = this.value + rhs
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.value.fmt(f)
 

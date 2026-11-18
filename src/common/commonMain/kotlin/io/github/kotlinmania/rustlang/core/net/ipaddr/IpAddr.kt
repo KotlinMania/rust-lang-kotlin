@@ -23,7 +23,9 @@ import io.github.kotlinmania.rustlang.core.ops.bit.BitOrAssign
 import io.github.kotlinmania.rustlang.core.ops.bit.Not
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.slice.splitFirst
+import io.github.kotlinmania.rustlang.core.str.len
 import kotlin.experimental.and
 import kotlin.experimental.inv
 import kotlin.experimental.or

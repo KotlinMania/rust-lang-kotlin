@@ -28,7 +28,7 @@ import io.github.kotlinmania.rustlang.core.U128
  *     open class Point(public var x: Int, public var y: Int) : Add<Point, Point> {
  *         public open fun clone(): Point = Point(x, y)
  *
- *         public open fun add(other: Point): Point {
+ *         public override fun add(other: Point): Point {
  *             return Point(x = this.x + other.x, y = this.y + other.y)
  *         }
  *     }
@@ -121,7 +121,7 @@ public fun F128.add(other: F128): F128 = this + other
  *     open class Point(public var x: Int, public var y: Int) : Sub<Point, Point> {
  *         public open fun clone(): Point = Point(x, y)
  *
- *         public open fun sub(other: Point): Point {
+ *         public override fun sub(other: Point): Point {
  *             return Point(x = this.x - other.x, y = this.y - other.y)
  *         }
  *     }
@@ -233,7 +233,7 @@ public fun F128.sub(other: F128): F128 = this - other
  *             return Rational(numerator = numerator / gcd, denominator = denominator / gcd)
  *         }
  *
- *         public open fun mul(rhs: Rational): Rational {
+ *         public override fun mul(rhs: Rational): Rational {
  *             val numerator = this.numerator * rhs.numerator
  *             val denominator = this.denominator * rhs.denominator
  *             return Rational.new(numerator, denominator)
@@ -254,7 +254,7 @@ public fun F128.sub(other: F128): F128 = this - other
  * public fun doctestEntry() {
  *     open class Scalar(public var value: Int)
  *     open class Vector(public var value: List<Int>) : Mul<Scalar, Vector> {
- *         public open fun mul(rhs: Scalar): Vector {
+ *         public override fun mul(rhs: Scalar): Vector {
  *             return Vector(value = this.value.map({ v -> v * rhs.value }).toMutableList())
  *         }
  *     }
@@ -348,7 +348,7 @@ public fun F128.mul(other: F128): F128 = this * other
  *             return Rational(numerator = numerator / gcd, denominator = denominator / gcd)
  *         }
  *
- *         public open fun div(rhs: Rational): Rational {
+ *         public override operator fun div(rhs: Rational): Rational {
  *             if (rhs.numerator == 0) {
  *                 error("Cannot divide by zero-valued `Rational`!")
  *             }
@@ -372,7 +372,7 @@ public fun F128.mul(other: F128): F128 = this * other
  * public fun doctestEntry() {
  *     open class Scalar(public var value: Float)
  *     open class Vector(public var value: List<Float>) : Div<Scalar, Vector> {
- *         public open fun div(rhs: Scalar): Vector {
+ *         public override operator fun div(rhs: Scalar): Vector {
  *             return Vector(value = this.value.map({ v -> v / rhs.value }).toMutableList())
  *         }
  *     }
@@ -392,7 +392,7 @@ public interface Div<Rhs, out Output> {
      * check(12 / 2 == 6)
      * ```
      */
-    public fun div(rhs: Rhs): Output
+    public operator fun div(rhs: Rhs): Output
 }
 
 /**
@@ -453,7 +453,7 @@ public fun ULong.div(other: ULong): ULong = this / other
  *
  * This operation will panic if `other == 0`.
  */
-public fun U128.div(other: U128): U128 = this / other
+public operator fun U128.div(other: U128): U128 = this / other
 
 /**
  * This operation rounds towards zero, truncating any
@@ -511,15 +511,15 @@ public fun Long.div(other: Long): Long = this / other
  *
  * This operation will panic if `other == 0` or the division results in overflow.
  */
-public fun I128.div(other: I128): I128 = this / other
+public operator fun I128.div(other: I128): I128 = this / other
 
-public fun F16.div(other: F16): F16 = this / other
+public operator fun F16.div(other: F16): F16 = this / other
 
-public fun kotlin.Float.div(other: kotlin.Float): kotlin.Float = this / other
+public operator fun kotlin.Float.div(other: kotlin.Float): kotlin.Float = this / other
 
 public fun Double.div(other: Double): Double = this / other
 
-public fun F128.div(other: F128): F128 = this / other
+public operator fun F128.div(other: F128): F128 = this / other
 
 /**
  * The remainder operator `%`.
@@ -540,7 +540,7 @@ public fun F128.div(other: F128): F128 = this / other
  *
  * public fun doctestEntry() {
  *     open class SplitSlice<T>(public var slice: List<T>) : Rem<Int, SplitSlice<T>> {
- *         public open fun rem(modulus: Int): SplitSlice<T> {
+ *         public override operator fun rem(modulus: Int): SplitSlice<T> {
  *             val len = this.slice.size
  *             val rem = len % modulus
  *             val start = len - rem
@@ -563,7 +563,7 @@ public interface Rem<Rhs, out Output> {
      * check(12 % 10 == 2)
      * ```
      */
-    public fun rem(rhs: Rhs): Output
+    public operator fun rem(rhs: Rhs): Output
 }
 
 /**
@@ -624,7 +624,7 @@ public fun ULong.rem(other: ULong): ULong = this % other
  *
  * This operation will panic if `other == 0`.
  */
-public fun U128.rem(other: U128): U128 = this % other
+public operator fun U128.rem(other: U128): U128 = this % other
 
 /**
  * This operation satisfies `n % d == n - (n / d) * d`. The
@@ -682,7 +682,7 @@ public fun Long.rem(other: Long): Long = this % other
  *
  * This operation will panic if `other == 0` or if `self / other` results in overflow.
  */
-public fun I128.rem(other: I128): I128 = this % other
+public operator fun I128.rem(other: I128): I128 = this % other
 
 /**
  * The remainder from the division of two floats.
@@ -699,7 +699,7 @@ public fun I128.rem(other: I128): I128 = this % other
  * check(x % y == remainder)
  * ```
  */
-public fun F16.rem(other: F16): F16 = this % other
+public operator fun F16.rem(other: F16): F16 = this % other
 
 /**
  * The remainder from the division of two floats.
@@ -716,7 +716,7 @@ public fun F16.rem(other: F16): F16 = this % other
  * check(x % y == remainder)
  * ```
  */
-public fun kotlin.Float.rem(other: kotlin.Float): kotlin.Float = this % other
+public operator fun kotlin.Float.rem(other: kotlin.Float): kotlin.Float = this % other
 
 /**
  * The remainder from the division of two floats.
@@ -750,7 +750,7 @@ public fun Double.rem(other: Double): Double = this % other
  * check(x % y == remainder)
  * ```
  */
-public fun F128.rem(other: F128): F128 = this % other
+public operator fun F128.rem(other: F128): F128 = this % other
 
 /**
  * The unary negation operator `-`.
@@ -796,7 +796,7 @@ public fun F128.rem(other: F128): F128 = this % other
  *
  *         public fun toULong(): ULong = kmDiscriminant().toULong()
  *
- *         public open fun neg(): Sign {
+ *         public override fun neg(): Sign {
  *             return when (this) {
  *                 Sign.Negative -> Sign.Positive
  *                 Sign.Zero -> Sign.Zero

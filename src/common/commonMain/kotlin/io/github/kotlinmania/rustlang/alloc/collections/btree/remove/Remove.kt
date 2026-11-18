@@ -11,7 +11,10 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.node.LeftOrRight.*
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Mut
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.NodeRef
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 /**
  * Removes a key-value pair from the tree, and returns that pair, as well as
@@ -66,7 +69,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, io.github.kotlin
                     }
                     // ignore-tidy-undocumented-unchecked
                     else -> {
-                        val pos1 = (matchVal as Result.Err<*, *>).errValue()
+                        val pos1 = matchVal.errValue()
                         Handle.newEdge(pos1, idx)
                     }
                 }

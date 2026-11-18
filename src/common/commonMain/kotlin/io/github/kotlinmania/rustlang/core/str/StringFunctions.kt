@@ -16,10 +16,17 @@ import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.splitAtMut
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.slice.splitAt
 import io.github.kotlinmania.rustlang.core.slice.splitAtMut
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Mut
@@ -1003,10 +1010,10 @@ public fun String.charIndices(): CharIndices = CharIndices(frontOffset = 0, iter
  *
  * ```kotlin
  * var bytes = "bors".bytes()
- * check(98u == bytes.next())
- * check(111u == bytes.next())
- * check(114u == bytes.next())
- * check(115u == bytes.next())
+ * check(98u.toUByte() == bytes.next())
+ * check(111u.toUByte() == bytes.next())
+ * check(114u.toUByte() == bytes.next())
+ * check(115u.toUByte() == bytes.next())
  * check(null == bytes.next())
  * ```
  */
@@ -2608,7 +2615,7 @@ public fun String.makeAsciiLowercase() {
  *     var string = "Abcde"
  *     run {
  *         val (left, right) = string.splitAtMut(2)
- *         left.copyFromStr(right[1 until right.size])
+ *         left.copyFromStr(right.substring(1))
  *     }
  *     check(string == "decde")
  * }

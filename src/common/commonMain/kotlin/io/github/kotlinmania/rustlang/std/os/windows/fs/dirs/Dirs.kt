@@ -1,6 +1,7 @@
 // port-lint: source os/windows/fs/dirs.rs
 package io.github.kotlinmania.rustlang.std.os.windows.fs.dirs
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage

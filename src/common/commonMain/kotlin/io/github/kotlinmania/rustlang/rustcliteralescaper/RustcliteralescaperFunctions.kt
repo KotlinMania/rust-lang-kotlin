@@ -1,13 +1,16 @@
 package io.github.kotlinmania.rustlang.rustcliteralescaper
 
 import io.github.kotlinmania.rustlang.core.char.methods.isAscii
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroCharInner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU8Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.splitAt
 import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.str.iter.Chars
+import io.github.kotlinmania.rustlang.core.str.splitAt
 
 /**
  * Check a raw string literal for validity
@@ -116,12 +119,12 @@ public fun unescapeCStr(src: String, callback: (IntRange, Result<MixedUnit, Esca
 public fun simpleEscape(c: Char): Result<NonZero<UByte, NonZeroU8Inner>, Char> {
     // Previous character was '\\', unescape what follows.
     return Result.Ok<NonZero<UByte, NonZeroU8Inner>, Char>((NonZero.new<NonZeroU8Inner, UByte>(when (c) {
-        '"' -> 34u
-        'n' -> 10u
-        'r' -> 13u
-        't' -> 9u
-        '\\' -> 92u
-        '\'' -> 39u
+        '"' -> 34u.toUByte()
+        'n' -> 10u.toUByte()
+        'r' -> 13u.toUByte()
+        't' -> 9u.toUByte()
+        '\\' -> 92u.toUByte()
+        '\'' -> 39u.toUByte()
         else -> when (val tryResult = Result.Err<NonZero<UByte, NonZeroU8Inner>, Char>(c)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonZero<UByte, NonZeroU8Inner>, Char>(tryResult.errValue()) }
     }))!!)
 }
@@ -205,7 +208,7 @@ public fun unicodeEscape(chars: Any): Result<UInt, EscapeError> {
 public fun skipAsciiWhitespace(chars: Chars, start: Int, callback: (IntRange, EscapeError) -> Unit) {
     var chars1 = chars
     val rest = chars1.asStr()
-    val firstNonSpace = (rest.bytes().indexOfFirst({ b -> b != 32u && b != 9u && b != 10u && b != 13u }).takeIf { it >= 0 } ?: rest.length)
+    val firstNonSpace = (rest.bytes().indexOfFirst({ b -> b != 32u.toUByte() && b != 9u.toUByte() && b != 10u.toUByte() && b != 13u.toUByte() }).takeIf { it >= 0 } ?: rest.length)
     val (space, rest1) = rest.splitAt(firstNonSpace)
     // backslash newline adds 2 bytes
     val end = start + 2 + firstNonSpace
@@ -316,7 +319,7 @@ public fun unescapeHex2unitString(b: UByte): Result<Char, EscapeError> =
 
 public fun unescapeUnicode2unitString(r: Result<Char, EscapeError>): Result<Char, EscapeError> = r
 
-public val ZERO_RESULT1: Result<UByte, EscapeError> = Result.Ok(0u)
+public val ZERO_RESULT1: Result<UByte, EscapeError> = Result.Ok(0u.toUByte())
 
 public fun unescapeNonzeroByte2unitUByteSlice(b: NonZero<UByte, NonZeroU8Inner>): UByte = b.get()
 

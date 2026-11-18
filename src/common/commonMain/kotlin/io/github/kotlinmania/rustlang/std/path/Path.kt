@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.char.methods.isAscii
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.min
@@ -24,16 +25,25 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.num.rotateRight
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.and
 import io.github.kotlinmania.rustlang.core.result.or
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.slice.splitLast
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
@@ -193,10 +203,10 @@ public typealias Owned = PathBuf
  * if (false) {
  *     check(Verbatim(OsStr.new("pictures")) == getPathPrefix("\\\\?\\pictures\\kittens"))
  *     check(VerbatimUNC(OsStr.new("server"), OsStr.new("share")) == getPathPrefix("\\\\?\\UNC\\server\\share"))
- *     check(VerbatimDisk(67u) == getPathPrefix("\\\\?\\c:\\"))
+ *     check(VerbatimDisk(67u.toUByte()) == getPathPrefix("\\\\?\\c:\\"))
  *     check(DeviceNS(OsStr.new("BrainInterface")) == getPathPrefix("\\\\.\\BrainInterface"))
  *     check(unc(OsStr.new("server"), OsStr.new("share")) == getPathPrefix("\\\\server\\share"))
- *     check(Disk(67u) == getPathPrefix("C:\\Users\\Rust\\Pictures\\Ferris"))
+ *     check(Disk(67u.toUByte()) == getPathPrefix("C:\\Users\\Rust\\Pictures\\Ferris"))
  * }
  * ```
  */
@@ -289,10 +299,10 @@ public sealed class Prefix {
      *
      * check(Verbatim(OsStr.new("pictures")).isVerbatim())
      * check(VerbatimUNC(OsStr.new("server"), OsStr.new("share")).isVerbatim())
-     * check(VerbatimDisk(67u).isVerbatim())
+     * check(VerbatimDisk(67u.toUByte()).isVerbatim())
      * check(!DeviceNS(OsStr.new("BrainInterface")).isVerbatim())
      * check(!unc(OsStr.new("server"), OsStr.new("share")).isVerbatim())
-     * check(!Disk(67u).isVerbatim())
+     * check(!Disk(67u.toUByte()).isVerbatim())
      * ```
      */
     public open fun isVerbatim(): Boolean =
@@ -413,7 +423,7 @@ public fun rsplitFileAtDot(file: OsStr): Pair<OsStr?, OsStr?> {
     // and back. This is safe to do because (1) we only look at ASCII
     // contents of the encoding and (2) new &OsStr values are produced
     // only from ASCII-bounded slices of existing &OsStr values.
-    val iter = file.asEncodedBytes().rsplitn(2, { b -> b == 46u })
+    val iter = file.asEncodedBytes().rsplitn(2, { b -> b == 46u.toUByte() })
     val after = iter.next()
     val before = iter.next()
     return if (before == "".encodeToByteArray()) {
@@ -433,7 +443,7 @@ public fun splitFileAtDot(file: OsStr): Pair<OsStr, OsStr?> {
     // contents of the encoding and (2) new &OsStr values are produced
     // only from ASCII-bounded slices of existing &OsStr values.
     val i1 =
-        when (val matchVal = slice[1 until slice.size].indexOfFirst({ b -> b == 46u }).takeIf { it >= 0 }) {
+        when (val matchVal = slice[1 until slice.size].indexOfFirst({ b -> b == 46u.toUByte() }).takeIf { it >= 0 }) {
             null -> { return Pair(file, null) }
             else -> {
                 val i = matchVal
@@ -524,7 +534,7 @@ public sealed class State(
  *     when (val matchVal = path.components().next()!!) {
  *         is Component.Prefix -> {
  *             val (prefixComponent) = matchVal
- *             check(Prefix.Disk(67u) == prefixComponent.kind())
+ *             check(Prefix.Disk(67u.toUByte()) == prefixComponent.kind())
  *             check(OsStr.new("c:") == prefixComponent.asOsStr())
  *         }
  *         else -> error("unreachable")
@@ -825,8 +835,8 @@ public open class Components(
         }
         val slice = ((this.path).subList(this.prefixRemaining(), (this.path).size))
         return when {
-            slice.size == 1 && slice[0] == 46u -> true
-            slice.size >= 2 && slice[0] == 46u -> {
+            slice.size == 1 && slice[0] == 46u.toUByte() -> true
+            slice.size >= 2 && slice[0] == 46u.toUByte() -> {
                 val b = slice[1]
                 this.isSepByte(b)
             }
@@ -3208,8 +3218,8 @@ public open class Path internal constructor(
                 if (!verbatim) {
                     componentStart +=
                         when {
-                            tail.size == 1 && tail[0] == 46u -> 1
-                            tail.size >= 2 && tail[0] == 46u && isSepByte(tail[1]) -> {
+                            tail.size == 1 && tail[0] == 46u.toUByte() -> 1
+                            tail.size >= 2 && tail[0] == 46u.toUByte() && isSepByte(tail[1]) -> {
                                 val sep = tail[1]
                                 1
                             }

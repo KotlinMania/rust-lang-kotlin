@@ -17,6 +17,8 @@ import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.defaultReadToEnd
 import io.github.kotlinmania.rustlang.std.io.defaultReadToString
@@ -739,7 +741,7 @@ public open class File(
      *
      * [changes]: io#platform-specific-behavior
      */
-    public open fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.read(buf)
+    public override fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.read(buf)
 
     /**
      * Like `read`, except that it reads into a slice of buffers.
@@ -754,9 +756,9 @@ public open class File(
      *
      * [changes]: io#platform-specific-behavior
      */
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readVectored(bufs)
+    public override fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readVectored(bufs)
 
-    public open fun readBuf(cursor: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readBuf(cursor)
+    public override fun readBuf(cursor: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.readBuf(cursor)
 
     /**
      * Determines if `File` has an efficient `readVectored` implementation.
@@ -770,17 +772,17 @@ public open class File(
      *
      * [changes]: io#platform-specific-behavior
      */
-    public open fun isReadVectored(): Boolean = this.inner.isReadVectored()
+    public override fun isReadVectored(): Boolean = this.inner.isReadVectored()
 
     // Reserves space in the buffer based on the file size when available.
-    public open fun readToEnd(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> {
+    public override fun readToEnd(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> {
         val size = bufferCapacityRequired(this)
         when (val tryResult = buf.tryReserve((size ?: 0))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         return defaultReadToEnd(this, buf, size)
     }
 
     // Reserves space in the buffer based on the file size when available.
-    public open fun readToString(buf: String): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> {
+    public override fun readToString(buf: String): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> {
         val size = bufferCapacityRequired(this)
         when (val tryResult = buf.tryReserve((size ?: 0))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         return defaultReadToString(this, buf, size)
@@ -799,7 +801,7 @@ public open class File(
      *
      * [changes]: io#platform-specific-behavior
      */
-    public open fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.write(buf)
+    public override fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.write(buf)
 
     /**
      * Like `write`, except that it writes into a slice of buffers.
@@ -814,7 +816,7 @@ public open class File(
      *
      * [changes]: io#platform-specific-behavior
      */
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.writeVectored(bufs)
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.writeVectored(bufs)
 
     /**
      * Determines if `File` has an efficient `writeVectored` implementation.
@@ -828,7 +830,7 @@ public open class File(
      *
      * [changes]: io#platform-specific-behavior
      */
-    public open fun isWriteVectored(): Boolean = this.inner.isWriteVectored()
+    public override fun isWriteVectored(): Boolean = this.inner.isWriteVectored()
 
     /**
      * Flushes the file, ensuring that all intermediately buffered contents
@@ -844,7 +846,7 @@ public open class File(
      *
      * [changes]: io#platform-specific-behavior
      */
-    public open fun flush(): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.flush()
+    public override fun flush(): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.flush()
 
     /**
      * Seek to an offset, in bytes in a file.
@@ -859,7 +861,7 @@ public open class File(
      *
      * [changes]: io#platform-specific-behavior
      */
-    public open fun seek(pos: SeekFrom): Result<ULong, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.seek(pos)
+    public override fun seek(pos: SeekFrom): Result<ULong, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.seek(pos)
 
     /**
      * Returns the length of this file (in bytes).
@@ -874,7 +876,7 @@ public open class File(
      *
      * [changes]: io#platform-specific-behavior
      */
-    public open fun streamLen(): Result<ULong, io.github.kotlinmania.rustlang.core.io.error.Error> {
+    public override fun streamLen(): Result<ULong, io.github.kotlinmania.rustlang.core.io.error.Error> {
         when (val matchVal = this.inner.size()) {
             null -> {}
             else -> {
@@ -885,27 +887,27 @@ public open class File(
         return streamLenDefault(this)
     }
 
-    public open fun streamPosition(): Result<ULong, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.tell()
+    public override fun streamPosition(): Result<ULong, io.github.kotlinmania.rustlang.core.io.error.Error> = this.inner.tell()
 
-    public open fun readVectoredRead(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).readVectored(bufs)
+    public override fun readVectoredRead(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).readVectored(bufs)
 
-    public open fun readBufRead(cursor: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).readBuf(cursor)
+    public override fun readBufRead(cursor: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).readBuf(cursor)
 
-    public open fun isReadVectoredRead(): Boolean = (this).isReadVectored()
+    public override fun isReadVectoredRead(): Boolean = (this).isReadVectored()
 
-    public open fun readToEndRead(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).readToEnd(buf)
+    public override fun readToEndRead(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).readToEnd(buf)
 
-    public open fun readToStringRead(buf: String): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).readToString(buf)
+    public override fun readToStringRead(buf: String): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).readToString(buf)
 
-    public open fun writeVectoredWrite(bufs: List<IoSlice>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).writeVectored(bufs)
+    public override fun writeVectoredWrite(bufs: List<IoSlice>): Result<Int, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).writeVectored(bufs)
 
-    public open fun isWriteVectoredWrite(): Boolean = (this).isWriteVectored()
+    public override fun isWriteVectoredWrite(): Boolean = (this).isWriteVectored()
 
-    public open fun flushWrite(): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).flush()
+    public override fun flushWrite(): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).flush()
 
-    public open fun streamLenSeek(): Result<ULong, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).streamLen()
+    public override fun streamLenSeek(): Result<ULong, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).streamLen()
 
-    public open fun streamPositionSeek(): Result<ULong, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).streamPosition()
+    public override fun streamPositionSeek(): Result<ULong, io.github.kotlinmania.rustlang.core.io.error.Error> = (this).streamPosition()
 
     public companion object {
         /**
@@ -2805,7 +2807,7 @@ public open class DirBuilder(
                         break
                     }
                     else -> {
-                        val e2 = (matchVal as Result.Err<*, *>).errValue()
+                        val e2 = matchVal.errValue()
                         return Result.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(e2)
                     }
                 }

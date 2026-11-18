@@ -1,7 +1,6 @@
 // port-lint: source sys/thread_local/guard/retained.rs
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.retained
 
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 
@@ -21,7 +20,7 @@ public fun cleanupPending(): Boolean =
             null -> {}
             else -> {
                 val out = matchVal
-                Write.writeFmt(out, "fatal runtime error: " + ("`cleanup_pending` called although `LOCAL_POINTER_NEEDS_DTOR` is false").toString() + ", aborting\n")
+                out.writeFmt("fatal runtime error: " + ("`cleanup_pending` called although `LOCAL_POINTER_NEEDS_DTOR` is false").toString() + ", aborting\n")
             }
         }
         run {

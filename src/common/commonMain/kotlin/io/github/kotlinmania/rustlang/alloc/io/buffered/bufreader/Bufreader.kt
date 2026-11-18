@@ -21,7 +21,9 @@ import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.result.andThen
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public class DebugStruct(
@@ -427,7 +429,7 @@ public fun <R : Read<R>> BufReader<R>.isReadVectored(): Boolean = this.inner.isR
 
 // The inner reader might have an optimized `readToEnd`. Drain our buffer and then
 // delegate to the inner implementation.
-public fun <R : Read<R>> BufReader<R>.readToEnd(buf: List<UByte>): Result<Int> {
+public fun <R : Read<R>> BufReader<R>.readToEnd(buf: MutableList<UByte>): Result<Int> {
     val innerBuf = this.buffer()
     when (val tryResult = buf.tryReserve(innerBuf.size)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     when (val tryResult = buf.tryExtendFromSliceOfBytes(innerBuf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }

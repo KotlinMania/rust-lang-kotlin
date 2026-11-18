@@ -58,7 +58,7 @@ public fun List<UByte>.parseDigits(func: (UByte) -> Unit): List<UByte> {
         if (matchVal == null) break
         val c = matchVal.first
         val rest = matchVal.second
-        val c1 = c.wrappingSub(48u)
+        val c1 = c.wrappingSub(48u.toUByte())
         if (c1 < 10) {
             func(c1)
             s = rest

@@ -6,6 +6,7 @@ package io.github.kotlinmania.rustlang.core.slice.ascii
 import io.github.kotlinmania.rustlang.core.ascii.EscapeDefault
 import io.github.kotlinmania.rustlang.core.ascii.escapeDefault
 import io.github.kotlinmania.rustlang.core.char.methods.isAsciiWhitespace
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.iter.adapters.filter.Filter
 import io.github.kotlinmania.rustlang.core.iter.adapters.flatten.FlatMap
@@ -26,16 +27,20 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.add
 import io.github.kotlinmania.rustlang.core.ptr.constptr.alignOffset
 import io.github.kotlinmania.rustlang.core.ptr.constptr.isAlignedTo
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.iter.Iter
 import io.github.kotlinmania.rustlang.core.slice.iter.Split
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.BytesIsNotEmpty
 import io.github.kotlinmania.rustlang.core.str.IsAsciiWhitespace
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
 import io.github.kotlinmania.rustlang.core.str.count.USIZE_SIZE
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.str.validations.NONASCII_MASK
 import io.github.kotlinmania.rustlang.core.vld1qU8
 import io.github.kotlinmania.rustlang.core.vmaxvqU8
@@ -544,7 +549,7 @@ public open class EscapeAscii internal constructor(
     public open fun nextBack(): UByte? = this.inner.nextBack()
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
-        fun needsEscape(b: UByte): Boolean = b > 0x7Eu.toUByte() || b < 0x20u.toUByte() || b == 92u || b == 39u || b == 34u
+        fun needsEscape(b: UByte): Boolean = b > 0x7Eu.toUByte() || b < 0x20u.toUByte() || b == 92u.toUByte() || b == 39u.toUByte() || b == 34u.toUByte()
         // disassemble iterator, including front/back parts of flatmap in case it has been partially consumed
         val (front, slice, back) = this.clone().inner.intoParts()
         val front1 = front.unwrapOr(EscapeDefault.empty())

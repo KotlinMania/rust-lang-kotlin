@@ -1,6 +1,7 @@
 // port-lint: source thread/scoped.rs
 package io.github.kotlinmania.rustlang.std.thread.scoped
 
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
@@ -9,6 +10,10 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.fetchAdd
+import io.github.kotlinmania.rustlang.core.sync.atomic.fetchSub
+import io.github.kotlinmania.rustlang.core.sync.atomic.load
+import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.panic.resumeUnwind
 import io.github.kotlinmania.rustlang.std.thread.Result
@@ -312,7 +317,7 @@ public fun <T> scope(f: (Scope) -> T): T {
             error("a scoped thread panicked")
         }
         else -> {
-            val result1 = (result as RustResult.Ok<*, *>).okValue()
+            val result1 = result.okValue()
             result1
         }
     }

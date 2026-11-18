@@ -42,7 +42,7 @@ public open class Demangle(
                     val matchVal1 = Pair(fmtResult, sizeLimitResult)
                     when {
                         matchVal1.first is Result.Err<*, *> && matchVal1.second is Result.Err<*, *> && (matchVal1.second as Result.Err<*, *>).errValue() is SizeLimitExhausted -> {
-                            val SizeLimitExhausted = (matchVal1.second as Result.Err<*, *>).errValue()
+                            val SizeLimitExhausted = matchVal1.second.errValue()
                             f.append("{size limit reached}")
                         }
                         else -> {
@@ -135,7 +135,7 @@ public fun <F : Appendable> SizeLimitedFmtAdapter<F>.writeStr(s: String): Result
         when {
             matchVal is Result.Ok<*, *> -> run { this.inner.append(s); Result.Ok<Unit, Error>(Unit) }
             else -> {
-                val SizeLimitExhausted = (matchVal as Result.Err<*, *>).errValue()
+                val SizeLimitExhausted = matchVal.errValue()
                 Result.Err<Unit, Error>(Error())
             }
         }

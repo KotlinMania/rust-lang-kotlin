@@ -1,7 +1,11 @@
 // port-lint: source num/imp/fmt.rs
 package io.github.kotlinmania.rustlang.core.num.imp.fmt
 
+import io.github.kotlinmania.rustlang.core.num.checkedIlog10
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
+import io.github.kotlinmania.rustlang.core.slice.iterMut
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 // Shared utilities used by both float and integer formatting.
 
@@ -55,13 +59,13 @@ public sealed class Part {
                 is Part.Zero -> {
                     val (nzeroes) = this as Part.Zero
                     for (idx in ((out).subList(0, nzeroes)).indices) {
-                        ((out).subList(0, nzeroes))[idx] = 48u
+                        ((out).subList(0, nzeroes))[idx] = 48u.toUByte()
                     }
                 }
                 is Part.Num -> {
                     val (v) = this as Part.Num
                     for (c in ((out).subList(0, len)).iterMut().rev()) {
-                        c = 48u + (v % 10u).toUByte()
+                        c = 48u.toUByte() + (v % 10u).toUByte()
                         v /= 10u
                     }
                 }

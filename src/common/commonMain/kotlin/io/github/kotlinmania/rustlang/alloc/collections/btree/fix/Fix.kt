@@ -11,8 +11,11 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Mut
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.NodeRef
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Root
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 /**
  * Stocks up a possibly underfull node by merging with or stealing from a
@@ -51,7 +54,7 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
                     }
                 }
                 else -> {
-                    val root = (matchVal as Result.Err<*, *>).errValue()
+                    val root = matchVal.errValue()
                     if (len > 0) {
                         Result.Ok<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
                     } else {
@@ -136,7 +139,7 @@ public fun <K, V> Root<K, V>.fixRightBorderOfPlentiful() {
     while (true) {
         val matchVal = curNode.force()
         if (matchVal !is Internal) break
-        val (internal) = matchVal as Internal
+        val (internal) = matchVal
         // Check if rightmost child is underfull.
         val lastKv = internal.lastKv().considerForBalancing()
         check(lastKv.leftChildLen() >= MIN_LEN * 2)
@@ -155,7 +158,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>,
     while (true) {
         val matchVal = selfMut.force()
         if (matchVal !is Internal) break
-        val (internalKv) = matchVal as Internal
+        val (internalKv) = matchVal
         selfMut = internalKv.fixLeftChild(alloc.clone()).firstKv()
         check(selfMut.reborrow().intoNode().len() > MIN_LEN)
     }
@@ -166,7 +169,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>,
     while (true) {
         val matchVal = selfMut.force()
         if (matchVal !is Internal) break
-        val (internalKv) = matchVal as Internal
+        val (internalKv) = matchVal
         selfMut = internalKv.fixRightChild(alloc.clone()).lastKv()
         check(selfMut.reborrow().intoNode().len() > MIN_LEN)
     }

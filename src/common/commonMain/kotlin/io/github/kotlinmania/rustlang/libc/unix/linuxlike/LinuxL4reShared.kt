@@ -21,6 +21,7 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.unix.CMSG_ALIGN
@@ -2405,15 +2406,15 @@ public val ELFMAG0: UByte = 0x7fu
 
 public val EI_MAG1: Int = 1
 
-public val ELFMAG1: UByte = 69u
+public val ELFMAG1: UByte = 69u.toUByte()
 
 public val EI_MAG2: Int = 2
 
-public val ELFMAG2: UByte = 76u
+public val ELFMAG2: UByte = 76u.toUByte()
 
 public val EI_MAG3: Int = 3
 
-public val ELFMAG3: UByte = 70u
+public val ELFMAG3: UByte = 70u.toUByte()
 
 public val SELFMAG: Int = 4
 

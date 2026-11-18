@@ -6,6 +6,8 @@ import io.github.kotlinmania.rustlang.core.escape.EscapeIterInner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 
 // Operations on ASCII strings and characters.
 //
@@ -129,31 +131,31 @@ public open class EscapeDefault internal constructor(
  * ```kotlin
  * import std.ascii
  *
- * val escaped = ascii.escapeDefault(48u).next()!!
- * check(48u == escaped)
- * var escaped1 = ascii.escapeDefault(9u)
- * check(92u == escaped1.next()!!)
- * check(116u == escaped1.next()!!)
- * var escaped2 = ascii.escapeDefault(13u)
- * check(92u == escaped2.next()!!)
- * check(114u == escaped2.next()!!)
- * var escaped3 = ascii.escapeDefault(10u)
- * check(92u == escaped3.next()!!)
- * check(110u == escaped3.next()!!)
- * var escaped4 = ascii.escapeDefault(39u)
- * check(92u == escaped4.next()!!)
- * check(39u == escaped4.next()!!)
- * var escaped5 = ascii.escapeDefault(34u)
- * check(92u == escaped5.next()!!)
- * check(34u == escaped5.next()!!)
- * var escaped6 = ascii.escapeDefault(92u)
- * check(92u == escaped6.next()!!)
- * check(92u == escaped6.next()!!)
- * var escaped7 = ascii.escapeDefault(157u)
- * check(92u == escaped7.next()!!)
- * check(120u == escaped7.next()!!)
- * check(57u == escaped7.next()!!)
- * check(100u == escaped7.next()!!)
+ * val escaped = ascii.escapeDefault(48u.toUByte()).next()!!
+ * check(48u.toUByte() == escaped)
+ * var escaped1 = ascii.escapeDefault(9u.toUByte())
+ * check(92u.toUByte() == escaped1.next()!!)
+ * check(116u.toUByte() == escaped1.next()!!)
+ * var escaped2 = ascii.escapeDefault(13u.toUByte())
+ * check(92u.toUByte() == escaped2.next()!!)
+ * check(114u.toUByte() == escaped2.next()!!)
+ * var escaped3 = ascii.escapeDefault(10u.toUByte())
+ * check(92u.toUByte() == escaped3.next()!!)
+ * check(110u.toUByte() == escaped3.next()!!)
+ * var escaped4 = ascii.escapeDefault(39u.toUByte())
+ * check(92u.toUByte() == escaped4.next()!!)
+ * check(39u.toUByte() == escaped4.next()!!)
+ * var escaped5 = ascii.escapeDefault(34u.toUByte())
+ * check(92u.toUByte() == escaped5.next()!!)
+ * check(34u.toUByte() == escaped5.next()!!)
+ * var escaped6 = ascii.escapeDefault(92u.toUByte())
+ * check(92u.toUByte() == escaped6.next()!!)
+ * check(92u.toUByte() == escaped6.next()!!)
+ * var escaped7 = ascii.escapeDefault(157u.toUByte())
+ * check(92u.toUByte() == escaped7.next()!!)
+ * check(120u.toUByte() == escaped7.next()!!)
+ * check(57u.toUByte() == escaped7.next()!!)
+ * check(100u.toUByte() == escaped7.next()!!)
  * ```
  */
 public fun escapeDefault(c: UByte): EscapeDefault = EscapeDefault.new(c)

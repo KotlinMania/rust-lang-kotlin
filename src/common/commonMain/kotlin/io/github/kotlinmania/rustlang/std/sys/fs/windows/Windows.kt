@@ -6,6 +6,7 @@ package io.github.kotlinmania.rustlang.std.sys.fs.windows
 import io.github.kotlinmania.rustlang.alloc.alloc.alloc
 import io.github.kotlinmania.rustlang.alloc.alloc.dealloc
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.Error
@@ -32,20 +33,34 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.mem.zeroed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.addr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isAligned
+import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isAligned
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.splitAtMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.orElse
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.slice.splitAtMut
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.TryLockError
@@ -127,6 +142,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.MountPointReparseBuf
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.OPEN_ALWAYS
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.OPEN_EXISTING
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.PROGRESS_CONTINUE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ReparseDataBuffer
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.SECURITY_SQOS_PRESENT
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.SYMBOLIC_LINK_FLAG_DIRECTORY
@@ -306,7 +322,7 @@ public open class File internal constructor(
                 Result.Err<Unit, TryLockError>(TryLockError.WouldBlock)
             }
             else -> {
-                val err1 = (result as Result.Err<*, *>).errValue()
+                val err1 = result.errValue()
                 Result.Err<Unit, TryLockError>(TryLockError.Error(err1))
             }
         }
@@ -325,7 +341,7 @@ public open class File internal constructor(
                 Result.Err<Unit, TryLockError>(TryLockError.WouldBlock)
             }
             else -> {
-                val err1 = (result as Result.Err<*, *>).errValue()
+                val err1 = result.errValue()
                 Result.Err<Unit, TryLockError>(TryLockError.Error(err1))
             }
         }
@@ -345,7 +361,7 @@ public open class File internal constructor(
                 Result.Ok<Unit, Error>(Unit)
             }
             else -> {
-                val err1 = (result as Result.Err<*, *>).errValue()
+                val err1 = result.errValue()
                 Result.Err<Unit, Error>(err1)
             }
         }
@@ -454,14 +470,14 @@ public open class File internal constructor(
         val (bytes, buf) = when (val tryResult = this.reparsePoint(space)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<PathBuf, Error>(tryResult.errValue()) }
         return run {
             val (pathBuffer, substOff, substLen, relative) =
-                when (buf.reparseTag) {
+                when ((UnresolvedTypeLayout<ReparseDataBuffer>()).readNative((buf).rawAddress).reparseTag) {
                     IO_REPARSE_TAG_SYMLINK -> {
-                        val info: MutPtr = (addrOfMut(buf.rest)).cast()
+                        val info: MutPtr = MutPtr(((addrOfMut((UnresolvedTypeLayout<ReparseDataBuffer>()).readNative((buf).rawAddress).rest))).rawAddress)
                         check(info.isAligned())
                         listOf(MutPtr(((addrOfMut((UnresolvedTypeLayout<SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).pathBuffer))).rawAddress), (UnresolvedTypeLayout<SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).substituteNameOffset / 2u, (UnresolvedTypeLayout<SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).substituteNameLength / 2u, (UnresolvedTypeLayout<SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).flags and SYMLINK_FLAG_RELATIVE != 0uL)
                     }
                     IO_REPARSE_TAG_MOUNT_POINT -> {
-                        val info1: MutPtr = (addrOfMut(buf.rest)).cast()
+                        val info1: MutPtr = MutPtr(((addrOfMut((UnresolvedTypeLayout<ReparseDataBuffer>()).readNative((buf).rawAddress).rest))).rawAddress)
                         check(info1.isAligned())
                         listOf(MutPtr(((addrOfMut((UnresolvedTypeLayout<MountPointReparseBuffer>()).readNative((info1).rawAddress).pathBuffer))).rawAddress), (UnresolvedTypeLayout<MountPointReparseBuffer>()).readNative((info1).rawAddress).substituteNameOffset / 2u, (UnresolvedTypeLayout<MountPointReparseBuffer>()).readNative((info1).rawAddress).substituteNameLength / 2u, false)
                     }
@@ -472,7 +488,7 @@ public open class File internal constructor(
             // Check that the reparse point offsets and length stay within the data that
             // was actually returned, before the slice is built from them. This keeps
             // malformed filesystem data from causing an out-of-bounds access.
-            val pathOffset = pathBuffer.addr() - buf.addr()
+            val pathOffset = pathBuffer.addr() - (buf).rawAddress.toInt()
             val end = pathOffset + (substOff.toInt() * 2) + (substLen.toInt() * 2)
             if (end > bytes.toInt()) {
                 return Result.Err<PathBuf, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.Uncategorized, message = "Invalid reparse point data")))
@@ -483,7 +499,7 @@ public open class File internal constructor(
             // We should not let it leak through.
             if (!relative && subst.startsWith(ushortArrayOf(92u.toUShort(), 63u.toUShort(), 63u.toUShort(), 92u.toUShort()))) {
                 // Turn `\??\` into `\\?\` (a verbatim path).
-                subst[1] = 92u.toUShort()
+                subst[1] = (92u.toUByte()).toUShort()
                 // Attempt to convert to a more user-friendly path.
                 val user = when (val tryResult = fromWideToUserPath(subst.iter().copied().chain(listOf(0)).collect())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<PathBuf, Error>(tryResult.errValue()) }
                 Result.Ok<PathBuf, Error>(PathBuf.from(OsString.fromWide((user.takeIf { it.endsWith(listOf(0)) }?.removeSuffix(listOf(0)) ?: user))))
@@ -860,7 +876,7 @@ return null
         run {
             val wfd = MaybeUninit.zeroed(UnresolvedTypeLayout<Result<DirEntry, Error>>()).assumeInit()
             while (true) {
-                if (findNextFileW(handle!!.value, wfd) == 0) {
+                if (findNextFileW(handle.value, wfd) == 0) {
                     this.handle = null
                     when (val matchVal2 = getLastError()) {
                         WinError.noMoreFiles -> { return null }
@@ -1222,7 +1238,7 @@ public open class DirBuffIter internal constructor(
 
     public open fun next(): Pair<List<UShort>, Boolean>? {
         // Skip `.` and `..` pseudo entries.
-        val DOT: UShort = 46u.toUShort()
+        val DOT: UShort = (46u.toUByte()).toUShort()
         val buffer = (((this.buffer ?: return null)).subList(this.cursor, ((this.buffer ?: return null)).size))
         // Get the name and next entry from the buffer.
         // SAFETY:
@@ -1599,7 +1615,7 @@ public fun metadata(path: WCStr, reparse: ReparsePoint): Result<FileAttr, Error>
                 }
             }
             else -> {
-                val e1 = (matchVal as Result.Err<*, *>).errValue()
+                val e1 = matchVal.errValue()
                 Result.Err<FileAttr, Error>(e1)
             }
         }
@@ -1689,7 +1705,7 @@ public fun getPathFallback(handle: Handle): PathBuf? {
     return fillUtf16Buf({ buf, sz -> getFinalPathNameByHandleW(handle, buf, sz, VOLUME_NAME_NT) }, closure@{ ntPath ->
         var buf = UShortArray(MAX_PATH.toInt()) { 0u.toUShort() }
         for (letter in getLogicalDrives()) {
-            val deviceName = ushortArrayOf(letter.toUShort(), 58u.toUShort(), 0u)
+            val deviceName = ushortArrayOf(letter.toUShort(), (58u.toUByte()).toUShort(), 0u)
             // SAFETY: `deviceName` is a null terminated u16 string
             when (val matchVal = queryDosDevice(deviceName, buf)) {
                 null -> {}

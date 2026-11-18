@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.backtrace.capture
 
 import io.github.kotlinmania.rustlang.backtrace.backtrace.trace
+import io.github.kotlinmania.rustlang.core.clone.clone
 
 public class CaptureInlineTests {
     @kotlin.test.Test

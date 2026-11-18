@@ -1,7 +1,6 @@
 // port-lint: source sys/pal/windows/stack_overflow.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.windows.stackoverflow
 
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -41,7 +40,7 @@ public fun vectoredHandler(exceptionInfo: MutPtr): Int {
                     null -> {}
                     else -> {
                         val out = matchVal
-                        Write.writeFmt(out, "\nthread '$name' ($tid) has overflowed its stack\n")
+                        out.writeFmt("\nthread '$name' ($tid) has overflowed its stack\n")
                     }
                 }
                 run {

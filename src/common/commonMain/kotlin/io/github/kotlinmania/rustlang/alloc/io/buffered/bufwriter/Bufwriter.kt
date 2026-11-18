@@ -17,12 +17,18 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.len
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.iter
+import io.github.kotlinmania.rustlang.core.slice.len
+import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public class DebugStruct(
@@ -220,7 +226,7 @@ public open class BufWriter<W : Write<W>>(
             public var buffer: MutableList<UByte>,
             public var written: Int,
         ) {
-            public open fun new(buffer: List<UByte>): BufGuard = BufGuard(buffer = buffer, written = 0)
+            public open fun new(buffer: MutableList<UByte>): BufGuard = BufGuard(buffer = buffer, written = 0)
 
             /**
              * The unwritten part of the buffer
@@ -272,7 +278,7 @@ public open class BufWriter<W : Write<W>>(
                     val e = r.errValue()
                 }
                 else -> {
-                    val e1 = (r as RustResult.Err<*, *>).errValue()
+                    val e1 = r.errValue()
                     return RustResult.Err(e1)
                 }
             }
@@ -464,7 +470,7 @@ public open class BufWriter<W : Write<W>>(
 
     public open fun spareCapacity(): Int = this.buf.capacity() - this.buf.size
 
-    public open fun write(buf: List<UByte>): Result<Int> {
+    public override fun write(buf: List<UByte>): Result<Int> {
         // Use < instead of <= to avoid a needless trip through the buffer in some cases.
         // See `writeCold` for details.
         return if (buf.size < this.spareCapacity()) {
@@ -478,7 +484,7 @@ public open class BufWriter<W : Write<W>>(
         }
     }
 
-    public open fun writeAll(buf: List<UByte>): Result<Unit> {
+    public override fun writeAll(buf: List<UByte>): Result<Unit> {
         // Use < instead of <= to avoid a needless trip through the buffer in some cases.
         // See `writeAllCold` for details.
         return if (buf.size < this.spareCapacity()) {
@@ -492,7 +498,7 @@ public open class BufWriter<W : Write<W>>(
         }
     }
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> {
+    public override fun writeVectored(bufs: List<IoSlice>): Result<Int> {
         // Note: Consider applying `@inline` / `@inline(never)` optimizations already applied
         // to `write` and `writeAll`. The performance benefits can be significant. See #79930.
         return if (this.getRef().isWriteVectored()) {
@@ -578,9 +584,9 @@ public open class BufWriter<W : Write<W>>(
         }
     }
 
-    public open fun isWriteVectored(): Boolean = true
+    public override fun isWriteVectored(): Boolean = true
 
-    public open fun flush(): Result<Unit> {
+    public override fun flush(): Result<Unit> {
         when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         return this.getMut().flush()
     }
@@ -592,7 +598,7 @@ public open class BufWriter<W : Write<W>>(
      *
      * Seeking always writes out the internal buffer before seeking.
      */
-    public open fun seek(pos: SeekFrom): Result<ULong> {
+    public override fun seek(pos: SeekFrom): Result<ULong> {
         when (val tryResult = this.flushBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         return this.getMut().seek(pos)
     }
@@ -664,11 +670,11 @@ public open class BufWriter<W : Write<W>>(
  * import std.panic.catchUnwind
  *
  * open class PanickingWriter : Write<PanickingWriter> {
- *     public open fun write(buf: List<UByte>): io.Result<Int> {
+ *     public override fun write(buf: List<UByte>): io.Result<Int> {
  *         return error("panic")
  *     }
  *
- *     public open fun flush(): io.Result<Unit> {
+ *     public override fun flush(): io.Result<Unit> {
  *         return error("panic")
  *     }
  * }

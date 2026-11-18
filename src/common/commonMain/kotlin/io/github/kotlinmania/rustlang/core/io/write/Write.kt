@@ -224,7 +224,7 @@ public interface Write<T> {
                         val e = matchVal.errValue()
                     }
                     else -> {
-                        val e1 = (matchVal as RustResult.Err<*, *>).errValue()
+                        val e1 = matchVal.errValue()
                         return RustResult.Err(e1)
                     }
                 }
@@ -297,7 +297,7 @@ public interface Write<T> {
                         val e = matchVal.errValue()
                     }
                     else -> {
-                        val e1 = (matchVal as RustResult.Err<*, *>).errValue()
+                        val e1 = matchVal.errValue()
                         return RustResult.Err(e1)
                     }
                 }

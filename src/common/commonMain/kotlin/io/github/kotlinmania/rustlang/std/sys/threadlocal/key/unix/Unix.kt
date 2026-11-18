@@ -1,14 +1,13 @@
 // port-lint: source sys/thread_local/key/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix
 
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.os.raw.CUint
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
@@ -21,7 +20,7 @@ public fun interface CreateDtorCallback {
     public operator fun invoke(arg0: MutPtr)
 }
 
-public typealias PthreadKeyT = io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+public typealias PthreadKeyT = CUint
 
 public expect fun pthreadKeyCreate(key: MutPtr, destructor: PthreadKeyCreateDestructorCallback): CInt
 
@@ -42,7 +41,7 @@ public fun create(dtor: CreateDtorCallback?): Key {
                 null -> {}
                 else -> {
                     val out = matchVal
-                    Write.writeFmt(out, "fatal runtime error: " + ("out of TLS keys").toString() + ", aborting\n")
+                    out.writeFmt("fatal runtime error: " + ("out of TLS keys").toString() + ", aborting\n")
                 }
             }
             run {
@@ -60,7 +59,7 @@ public fun fail(): Nothing =
             null -> {}
             else -> {
                 val out = matchVal
-                Write.writeFmt(out, "fatal runtime error: " + ("Unexpected TLS failure").toString() + ", aborting\n")
+                out.writeFmt("fatal runtime error: " + ("Unexpected TLS failure").toString() + ", aborting\n")
             }
         }
         run {

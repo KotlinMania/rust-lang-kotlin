@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
@@ -64,7 +65,7 @@ public open class FileDesc(
 
     public open fun isReadVectored(): Boolean = true
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int, Error> {
+    public open fun readToEnd(buf: MutableList<UByte>): Result<Int, Error> {
         val me = this
         return (me).readToEnd(buf)
     }

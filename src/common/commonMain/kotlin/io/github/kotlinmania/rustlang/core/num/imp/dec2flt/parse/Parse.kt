@@ -79,7 +79,7 @@ public fun tryParse19digits(sRef: List<UByte>, x: RustMutableReference<ULong>) {
             else -> {
                 val c = matchVal.first
                 val sNext = matchVal.second
-                val digit = c.wrappingSub(48u)
+                val digit = c.wrappingSub(48u.toUByte())
                 if (digit < 10) {
                     (x1).write(((x1).read() * 10uL) + digit.toULong())
                     // no overflows here
@@ -106,8 +106,8 @@ public fun parseScientific(sRef: List<UByte>): Long? {
         else -> {
             val c = matchVal.first
             val sNext = matchVal.second
-            negative = c == 45u
-            if (c == 45u || c == 43u) {
+            negative = c == 45u.toUByte()
+            if (c == 45u.toUByte() || c == 43u.toUByte()) {
                 s = sNext
             }
         }
@@ -164,7 +164,7 @@ public fun parsePartialNumber(s: List<UByte>): Pair<Decimal, Int>? {
     val intEnd = s1
     run {
         val matchVal = s1.splitFirst()
-        if (matchVal != null && matchVal.first == 46u) {
+        if (matchVal != null && matchVal.first == 46u.toUByte()) {
             val sNext = matchVal.second
             s1 = sNext
             val before = s1
@@ -186,7 +186,7 @@ public fun parsePartialNumber(s: List<UByte>): Pair<Decimal, Int>? {
         else -> {
             val c = matchVal1.first
             val sNext1 = matchVal1.second
-            if (c == 101u || c == 69u) {
+            if (c == 101u.toUByte() || c == 69u.toUByte()) {
                 s1 = sNext1
                 // If None, we have no trailing digits after exponent, or an invalid float.
                 expNumber = (parseScientific(s1) ?: return null)
@@ -207,8 +207,8 @@ public fun parsePartialNumber(s: List<UByte>): Pair<Decimal, Int>? {
         if (matchVal2 == null) break
         val c1 = matchVal2.first
         val pNext = matchVal2.second
-        if (c1 == 46u || c1 == 48u) {
-            nDigits -= c1.saturatingSub(48u - 1u).toInt()
+        if (c1 == 46u.toUByte() || c1 == 48u.toUByte()) {
+            nDigits -= c1.saturatingSub(48u.toUByte() - 1u).toInt()
             p = pNext
         } else {
             break

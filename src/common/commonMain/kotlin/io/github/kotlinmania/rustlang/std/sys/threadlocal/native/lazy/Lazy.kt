@@ -3,13 +3,13 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.native.lazy
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.constptr.castMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.replace
@@ -95,7 +95,7 @@ public open class Storage<T, D> internal constructor(
                     null -> {}
                     else -> {
                         val out = matchVal2
-                        Write.writeFmt(out, "fatal runtime error: " + ("unreachable").toString() + ", aborting\n")
+                        out.writeFmt("fatal runtime error: " + ("unreachable").toString() + ", aborting\n")
                     }
                 }
                 run {
