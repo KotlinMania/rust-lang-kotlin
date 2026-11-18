@@ -3,6 +3,13 @@ package io.github.kotlinmania.rustlang.core.cell.once
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.clone.clone
+import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.result.Result
 
 private class DebugTuple(
@@ -56,10 +63,18 @@ private class DebugTuple(
  * check(cell.get() != null)
  * ```
  */
-public open class OnceCell<T>(
-    // Invariant: written to at most once.
-    public var inner: UnsafeCell<T?>,
+public open class OnceCell<T> internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<UnsafeCell<T?>> = UnresolvedTypeLayout(),
 ) {
+    public var inner: UnsafeCell<T?>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(inner: UnsafeCell<T?>, fieldLayout: TypeLayout<UnsafeCell<T?>> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<OnceCell<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> OnceCell<T>(ptr, layout) }, { it.inner })
+
     /**
      * Gets the reference to the underlying value.
      *
@@ -373,10 +388,10 @@ public open class OnceCell<T>(
 
     public open fun clone(): OnceCell<T> =
         when (val matchVal = this.get()) {
-            null -> OnceCell.new()
+            null -> OnceCell.new(fieldLayout = this.inner.fieldLayout)
             else -> {
                 val value = matchVal
-                OnceCell.from(value.clone())
+                OnceCell.from(value.clone(), fieldLayout = this.inner.fieldLayout)
             }
         }
 
@@ -385,10 +400,14 @@ public open class OnceCell<T>(
     // Just like for `Cell<T>` this isn't needed, but results in nicer error messages.
 
     public companion object {
+        public operator fun <T> invoke(inner: UnsafeCell<T?>, fieldLayout: TypeLayout<UnsafeCell<T?>> = UnresolvedTypeLayout()): OnceCell<T> = OnceCell<T>(inner, fieldLayout)
+
+        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<T?>> = UnresolvedTypeLayout()): OnceCell<T> = OnceCell<T>(fieldStorage, fieldLayout)
+
         /**
          * Creates a new uninitialized cell.
          */
-        public fun <T> new(): OnceCell<T> = OnceCell(inner = UnsafeCell.new(null))
+        public fun <T> new(fieldLayout: TypeLayout<T?> = UnresolvedTypeLayout()): OnceCell<T> = OnceCell(inner = UnsafeCell.new(null), fieldLayout = TransparentTypeLayout(fieldLayout, { ptr, layout -> UnsafeCell<T?>(ptr, layout) }, { it.value }))
 
         /**
          * Creates a new initialized cell.
@@ -411,13 +430,13 @@ public open class OnceCell<T>(
          * }
          * ```
          */
-        public fun <T> newInit(initValue: T): OnceCell<T> = OnceCell(inner = UnsafeCell.new(initValue))
+        public fun <T> newInit(initValue: T, fieldLayout: TypeLayout<T?> = UnresolvedTypeLayout()): OnceCell<T> = OnceCell(inner = UnsafeCell.new(initValue), fieldLayout = TransparentTypeLayout(fieldLayout, { ptr, layout -> UnsafeCell<T?>(ptr, layout) }, { it.value }))
 
-        public fun <T> default(): OnceCell<T> = OnceCell.new()
+        public fun <T> default(fieldLayout: TypeLayout<T?> = UnresolvedTypeLayout()): OnceCell<T> = OnceCell.new(fieldLayout = fieldLayout)
 
         /**
          * Creates a new `OnceCell<T>` which already contains the given `value`.
          */
-        public fun <T> from(value: T): OnceCell<T> = OnceCell(inner = UnsafeCell.new(value))
+        public fun <T> from(value: T, fieldLayout: TypeLayout<T?> = UnresolvedTypeLayout()): OnceCell<T> = OnceCell(inner = UnsafeCell.new(value), fieldLayout = TransparentTypeLayout(fieldLayout, { ptr, layout -> UnsafeCell<T?>(ptr, layout) }, { it.value }))
     }
 }

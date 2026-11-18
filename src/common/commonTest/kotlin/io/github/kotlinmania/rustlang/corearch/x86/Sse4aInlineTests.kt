@@ -1,14 +1,7 @@
 // port-lint: tests x86/sse4a.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
-import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.asMutPtr
-import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 // `i686`s Streaming SIMD Extensions 4a (`SSE4a`)
 
@@ -70,29 +63,16 @@ public fun testMmInsertiSi64() {
     check(r1 == e1)
 }
 
-public open class MemoryF64 internal constructor(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
+public open class MemoryF64(
+    public var data: DoubleArray,
 ) {
-    public var data: DoubleArray
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-    internal constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
-
-    public fun pointerLayout(): TypeLayout<MemoryF64> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MemoryF64(ptr, layout) }, { it.data })
-
-    public companion object {
-        public operator fun invoke(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()): MemoryF64 = MemoryF64(data, fieldLayout)
-
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()): MemoryF64 = MemoryF64(fieldStorage, fieldLayout)
-    }
+    public companion object
 }
 
 // Miri cannot support this until it is clear how it fits in the Rust memory model
 // (non-temporal store)
 public fun testMmStreamSd() {
-    val mem = MemoryF64(data = doubleArrayOf(1.0, 2.0), fieldLayout = PrimitiveArrayLayouts.doubleArray((2).toInt()))
+    val mem = MemoryF64(data = doubleArrayOf(1.0, 2.0))
     run {
         val vals = mem.data
         val d = vals.asMutPtr()
@@ -106,29 +86,16 @@ public fun testMmStreamSd() {
     check(mem.data[1] == 2.0.toDouble())
 }
 
-public open class MemoryF32 internal constructor(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
+public open class MemoryF32(
+    public var data: FloatArray,
 ) {
-    public var data: FloatArray
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-    internal constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
-
-    public fun pointerLayout(): TypeLayout<MemoryF32> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MemoryF32(ptr, layout) }, { it.data })
-
-    public companion object {
-        public operator fun invoke(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()): MemoryF32 = MemoryF32(data, fieldLayout)
-
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()): MemoryF32 = MemoryF32(fieldStorage, fieldLayout)
-    }
+    public companion object
 }
 
 // Miri cannot support this until it is clear how it fits in the Rust memory model
 // (non-temporal store)
 public fun testMmStreamSs() {
-    val mem = MemoryF32(data = floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f), fieldLayout = PrimitiveArrayLayouts.floatArray((4).toInt()))
+    val mem = MemoryF32(data = floatArrayOf(1.0f, 2.0f, 3.0f, 4.0f))
     run {
         val vals = mem.data
         val d = vals.asMutPtr()

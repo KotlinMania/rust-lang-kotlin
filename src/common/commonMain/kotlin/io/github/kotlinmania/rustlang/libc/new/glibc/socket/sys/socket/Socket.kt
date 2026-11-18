@@ -19,4 +19,6 @@ public open class Mmsghdr(
     public var msgLen: CUint,
 ) {
     public open fun clone(): Mmsghdr = Mmsghdr(msgHdr, msgLen)
+
+    public companion object
 }

@@ -79,7 +79,11 @@ public open class OnceState internal constructor(
 public open class CompletionGuard(
     public var stateAndQueued: Futex,
     public var setStateOnDropTo: Primitive,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         // Use release ordering to propagate changes to all threads checking
         // up on the Once. `futexWakeAll` does its own synchronization, hence
@@ -88,6 +92,8 @@ public open class CompletionGuard(
             futexWakeAll(this.stateAndQueued)
         }
     }
+
+    public companion object
 }
 
 public open class Once(

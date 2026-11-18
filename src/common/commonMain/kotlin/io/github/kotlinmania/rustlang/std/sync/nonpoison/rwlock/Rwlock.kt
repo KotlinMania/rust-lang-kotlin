@@ -506,7 +506,11 @@ public open class RwLockReadGuard<T>(
      * A reference to the internal [sys.RwLock] that we have read-locked.
      */
     public var innerLock: io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex.RwLock,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         // SAFETY: the conditions of `RwLockReadGuard.new` were satisfied when created.
         run {
@@ -613,7 +617,11 @@ public open class RwLockWriteGuard<T>(
      * A reference to the [RwLock] that we have write-locked.
      */
     public var lock: RwLock<T>,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         // SAFETY: the conditions of `RwLockWriteGuard.new` were satisfied when created.
         run {
@@ -800,7 +808,11 @@ public open class MappedRwLockReadGuard<T>(
      * A reference to the internal [sys.RwLock] that we have read-locked.
      */
     public var innerLock: io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex.RwLock,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     // @unstable(feature = "nonpoisonRwlock", issue = "134645")
 
     // @unstable(feature = "nonpoisonRwlock", issue = "134645")
@@ -920,7 +932,11 @@ public open class MappedRwLockWriteGuard<T>(
      * A reference to the internal [sys.RwLock] that we have write-locked.
      */
     public var innerLock: io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex.RwLock,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     // @unstable(feature = "nonpoisonRwlock", issue = "134645")
 
     // @unstable(feature = "nonpoisonRwlock", issue = "134645")

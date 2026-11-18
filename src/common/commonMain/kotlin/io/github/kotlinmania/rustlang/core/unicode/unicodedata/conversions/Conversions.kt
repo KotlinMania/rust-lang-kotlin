@@ -9,27 +9,28 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.wrappingAddSigned
 import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import kotlin.experimental.and
 import kotlin.experimental.or
 
 public open class L1Lut(
     public var l2Luts: List<L2Lut>,
-)
+) {
+    public companion object
+}
 
 public open class L2Lut(
     public var singles: List<Pair<Range, Short>>,
     public var multis: List<Pair<UShort, UShortArray>>,
     public var exceptions: List<Pair<UShort, List<Char>>>,
-)
+) {
+    public companion object
+}
 
 public open class Range(
     public var start: UShort,
@@ -43,34 +44,6 @@ public open class Range(
     public open fun end(): UShort = this.start + this.len.toUShort()
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Range> =
-            object : TypeLayout<Range> {
-                override val alignBytes: Long = 2L
-                override val sizeBytes: Long = 4L
-                override fun readNative(addr: Long): Range =
-                    Range(
-                        (PrimitiveLayouts.U16).readNative(addr),
-                        (PrimitiveLayouts.U8).readNative(addr + 2L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 3L),
-                    )
-                override fun writeNative(addr: Long, value: Range) {
-                    (PrimitiveLayouts.U16).writeNative(addr, value.start)
-                    (PrimitiveLayouts.U8).writeNative(addr + 2L, value.len)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 3L, value.parity)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Range =
-                    Range(
-                        (PrimitiveLayouts.U16).readBytes(buf, offset),
-                        (PrimitiveLayouts.U8).readBytes(buf, offset + 2),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 3),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Range) {
-                    (PrimitiveLayouts.U16).writeBytes(buf, offset, value.start)
-                    (PrimitiveLayouts.U8).writeBytes(buf, offset + 2, value.len)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 3, value.parity)
-                }
-            }
-
         public fun new(range: RangeInclusive<UShort>, parity: Boolean): Range {
             val start = range.start()
             val end = range.end()

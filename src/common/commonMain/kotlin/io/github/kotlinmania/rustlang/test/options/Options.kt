@@ -1,10 +1,6 @@
 // port-lint: source options.rs
 package io.github.kotlinmania.rustlang.test.options
 
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-
 // Enums denoting options for test execution.
 
 /**
@@ -224,30 +220,6 @@ public open class Options(
     }
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Options> =
-            object : TypeLayout<Options> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 2L
-                override fun readNative(addr: Long): Options =
-                    Options(
-                        (PrimitiveLayouts.BOOL).readNative(addr),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 1L),
-                    )
-                override fun writeNative(addr: Long, value: Options) {
-                    (PrimitiveLayouts.BOOL).writeNative(addr, value.displayOutput)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.panicAbort)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Options =
-                    Options(
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Options) {
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.displayOutput)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.panicAbort)
-                }
-            }
-
         public fun new(): Options = Options(displayOutput = false, panicAbort = false)
     }
 }

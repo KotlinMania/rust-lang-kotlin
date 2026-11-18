@@ -249,6 +249,8 @@ public open class ParseCharError(
             CharErrorKind.EmptyString -> "cannot parse char from empty string"
             CharErrorKind.TooManyChars -> "too many characters in string"
         }.fmt(f)
+
+    public companion object
 }
 
 public sealed class CharErrorKind {

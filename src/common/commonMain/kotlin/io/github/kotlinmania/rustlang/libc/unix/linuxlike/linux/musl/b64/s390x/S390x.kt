@@ -242,6 +242,8 @@ public open class Statfs(
     public var fSpare: UIntArray,
 ) {
     public open fun clone(): Statfs = Statfs(fType, fBsize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFsid, fNamelen, fFrsize, fFlags, fSpare)
+
+    public companion object
 }
 
 public open class PswT(
@@ -282,6 +284,8 @@ public open class FpregsetT(
     public var fprs: List<FpregT>,
 ) {
     public open fun clone(): FpregsetT = FpregsetT(fpc, fprs)
+
+    public companion object
 }
 
 public open class McontextT(
@@ -291,6 +295,8 @@ public open class McontextT(
     public var fpregs: FpregsetT,
 ) {
     public open fun clone(): McontextT = McontextT(psw, gregs, aregs, fpregs)
+
+    public companion object
 }
 
 public open class UcontextT internal constructor(

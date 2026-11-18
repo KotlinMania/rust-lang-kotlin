@@ -203,4 +203,6 @@ public open class Children(
     public open fun clone(): Children = Children(value)
 
     public open fun next(): Diagnostic? = this.value.next()
+
+    public companion object
 }

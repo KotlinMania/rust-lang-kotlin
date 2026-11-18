@@ -1,17 +1,13 @@
 // port-lint: source iter/adapters/skip_while.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.skipwhile
 
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 private class DebugStruct(
@@ -60,36 +56,6 @@ public open class SkipWhile<I, P>(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "SkipWhile").field("iter", this.iter).field("flag", this.flag).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
-        public fun <I, P> typeLayout(typeLayoutI: TypeLayout<I>, typeLayoutP: TypeLayout<P>): TypeLayout<SkipWhile<I, P>> =
-            object : TypeLayout<SkipWhile<I, P>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes, typeLayoutP.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, 1L)
-                private val off2: Long = alignUpBytes((off1 + 1L), typeLayoutP.alignBytes)
-                override val sizeBytes: Long = alignUpBytes((off2 + typeLayoutP.sizeBytes), alignBytes)
-                override fun readNative(addr: Long): SkipWhile<I, P> =
-                    SkipWhile(
-                        (typeLayoutI).readNative(addr),
-                        (PrimitiveLayouts.BOOL).readNative(addr + off1),
-                        (typeLayoutP).readNative(addr + off2),
-                    )
-                override fun writeNative(addr: Long, value: SkipWhile<I, P>) {
-                    (typeLayoutI).writeNative(addr, value.iter)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + off1, value.flag)
-                    (typeLayoutP).writeNative(addr + off2, value.predicate)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): SkipWhile<I, P> =
-                    SkipWhile(
-                        (typeLayoutI).readBytes(buf, offset),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + off1.toInt()),
-                        (typeLayoutP).readBytes(buf, offset + off2.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: SkipWhile<I, P>) {
-                    (typeLayoutI).writeBytes(buf, offset, value.iter)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + off1.toInt(), value.flag)
-                    (typeLayoutP).writeBytes(buf, offset + off2.toInt(), value.predicate)
-                }
-            }
-
         public fun <I, P> new(iter: I, predicate: P): SkipWhile<I, P> = SkipWhile(iter = iter, flag = false, predicate = predicate)
     }
 }

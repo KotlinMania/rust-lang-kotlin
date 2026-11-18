@@ -57,7 +57,11 @@ public open class PanicGuard<T, A : Allocator>(
      * Original length of the Vec.
      */
     public var originalLen: Int,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         // Scalar-compress the decided prefix: move kept elements to write position.
         var dst = this.write
@@ -85,6 +89,8 @@ public open class PanicGuard<T, A : Allocator>(
         // SAFETY: After filling holes, all items are in contiguous memory.
         this.v.setLen(dst)
     }
+
+    public companion object
 }
 
 /**

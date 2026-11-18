@@ -95,9 +95,13 @@ public open class LazyLock<T, F> internal constructor(
     // Note(nonpoisonOnce): if possible, switch to nonpoison version once it is available
     public var once: Once,
     dataCtorArg: UnsafeCell<Data<T, F>>,
-) {
+) : AutoCloseable {
     public var data: UnsafeCell<Data<T, F>> = dataCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun drop() {
         when (this.once.state()) {

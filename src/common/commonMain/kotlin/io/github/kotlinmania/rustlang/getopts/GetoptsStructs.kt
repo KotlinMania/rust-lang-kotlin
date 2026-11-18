@@ -508,6 +508,8 @@ public open class Opt(
     public var aliases: List<Opt>,
 ) {
     public open fun clone(): Opt = Opt(name, hasarg, occur, aliases)
+
+    public companion object
 }
 
 /**
@@ -563,6 +565,8 @@ public open class OptGroup(
             }
         }
     }
+
+    public companion object
 }
 
 /**
@@ -880,4 +884,6 @@ public open class Matches(
      * ```
      */
     public open fun freeTrailingStart(): Int? = this.argsEnd
+
+    public companion object
 }

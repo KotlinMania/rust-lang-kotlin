@@ -657,7 +657,11 @@ public open class Mutex<T>(
 public open class MutexGuard<T>(
     public var lock: Mutex<T>,
     public var poison: Guard,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     /**
      * A [MutexGuard] is not `Send` to maximize platform portability.
      *
@@ -768,7 +772,11 @@ public open class MappedMutexGuard<T>(
     public var poisonFlag: Flag,
     public var poison: Guard,
     public var variance: Unit,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun deref(): T = this.data.asRef()
 
     public open fun derefMut(): T = this.data.asMut()

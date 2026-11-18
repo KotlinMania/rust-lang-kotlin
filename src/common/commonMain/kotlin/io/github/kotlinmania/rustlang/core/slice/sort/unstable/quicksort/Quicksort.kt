@@ -211,7 +211,9 @@ public open class PartitionState<T>(
     public var numLt: Int,
     // Gap guard that tracks the temporary duplicate in the input.
     public var gap: GapGuardRaw<T>,
-)
+) {
+    public companion object
+}
 
 public fun <T> partitionLomutoBranchlessCyclic(v: MutableList<T>, pivot: T, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     // Novel partition implementation by Lukas Bergdoll and Orson Peters. Branchless Lomuto
@@ -309,7 +311,11 @@ public fun <T> partitionLomutoBranchlessSimple(v: MutableList<T>, pivot: T, isLe
 public open class GapGuard<T>(
     public var pos: MutPtr,
     public var value: T,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         // SAFETY: `self` MUST be constructed in a way that makes copying the gap value into
         // `self.pos` sound.
@@ -317,6 +323,8 @@ public open class GapGuard<T>(
             copyNonoverlapping(this.value, this.pos, 1)
         }
     }
+
+    public companion object
 }
 
 /**
@@ -326,7 +334,11 @@ public open class GapGuard<T>(
 public open class GapGuardRaw<T>(
     public var pos: MutPtr,
     public var value: MutPtr,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         // SAFETY: `self` MUST be constructed in a way that makes copying the gap value into
         // `self.pos` sound.

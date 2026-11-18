@@ -6,11 +6,8 @@ import io.github.kotlinmania.rustlang.core.char.methods.isAsciiUppercase
 import io.github.kotlinmania.rustlang.core.char.methods.toDigit
 import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatn.repeatN
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedMul
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.len
@@ -530,46 +527,6 @@ public open class Flags(
     public open fun clone(): Flags = Flags(width, precision, alternate, left, sign, space)
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Flags> =
-            object : TypeLayout<Flags> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 24L
-                override fun readNative(addr: Long): Flags =
-                    Flags(
-                        (PrimitiveLayouts.USIZE64).readNative(addr),
-                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 16L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 17L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 18L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 19L),
-                    )
-                override fun writeNative(addr: Long, value: Flags) {
-                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.width)
-                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.precision)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 16L, value.alternate)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 17L, value.left)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 18L, value.sign)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 19L, value.space)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Flags =
-                    Flags(
-                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
-                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 16),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 17),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 18),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 19),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Flags) {
-                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.width)
-                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.precision)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 16, value.alternate)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 17, value.left)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 18, value.sign)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 19, value.space)
-                }
-            }
-
         public fun new(): Flags = Flags(width = 0, precision = 0, alternate = false, left = false, sign = false, space = false)
     }
 }

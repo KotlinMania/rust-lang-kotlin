@@ -114,6 +114,8 @@ public open class Demangle(
         }
         return Result.Ok<Unit, Error>(Unit)
     }
+
+    public companion object
 }
 
 // All Rust symbols are in theory lists of "::"-separated identifiers. Some

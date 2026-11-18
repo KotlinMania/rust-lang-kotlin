@@ -76,9 +76,13 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
      * The filter test predicate.
      */
     public var pred: F,
-) {
+) : AutoCloseable {
     public var vec: VecDeque<T, A> = vecCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     /**
      * Returns a reference to the underlying allocator.

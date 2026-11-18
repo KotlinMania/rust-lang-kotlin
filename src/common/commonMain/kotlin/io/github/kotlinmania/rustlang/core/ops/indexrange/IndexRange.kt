@@ -3,15 +3,12 @@ package io.github.kotlinmania.rustlang.core.ops.indexrange
 
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.uncheckedAdd
 import io.github.kotlinmania.rustlang.core.num.uncheckedSub
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
@@ -192,30 +189,6 @@ public open class IndexRange(
     // SAFETY: Because we only deal in `Int`, our `len` is always perfect.
 
     public companion object {
-        public fun typeLayout(): TypeLayout<IndexRange> =
-            object : TypeLayout<IndexRange> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 16L
-                override fun readNative(addr: Long): IndexRange =
-                    IndexRange(
-                        (PrimitiveLayouts.USIZE64).readNative(addr),
-                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
-                    )
-                override fun writeNative(addr: Long, value: IndexRange) {
-                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.start)
-                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.end)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): IndexRange =
-                    IndexRange(
-                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
-                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: IndexRange) {
-                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.start)
-                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.end)
-                }
-            }
-
         /**
          * # Safety
          * - `start <= end`

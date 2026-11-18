@@ -2,8 +2,6 @@
 package io.github.kotlinmania.rustlang.std.sys.args.unsupported
 
 import io.github.kotlinmania.rustlang.core.fmt.Error
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 
@@ -27,21 +25,7 @@ public open class Args : Iterable<OsString> {
 
     public open fun len(): Int = 0
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<Args> =
-            object : TypeLayout<Args> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): Args =
-                    Args()
-                override fun writeNative(addr: Long, value: Args) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Args =
-                    Args()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Args) {
-                }
-            }
-    }
+    public companion object
 }
 
 public fun args(): Args = Args()

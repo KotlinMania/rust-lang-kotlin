@@ -104,7 +104,7 @@ public open class LinkedList<T, A : Allocator> internal constructor(
     public var len: Int,
     public var alloc: A,
     public var marker: Unit,
-) : Iterable<T> {
+) : Iterable<T>, AutoCloseable {
     public var head: NonNull? = headCtorArg
         internal set
 
@@ -112,6 +112,10 @@ public open class LinkedList<T, A : Allocator> internal constructor(
         internal set
 
     override fun iterator(): Iterator<T> = this.intoIter().iterator()
+
+    override fun close() {
+        this.drop()
+    }
 
     // private methods
 

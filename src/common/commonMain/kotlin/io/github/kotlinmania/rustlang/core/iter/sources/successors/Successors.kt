@@ -70,6 +70,8 @@ public open class Successors<T, F>(
     public open fun clone(): Successors<T, F> = Successors(next, succ)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Successors").field("next", this.next).finish(); Result.Ok<Unit, Unit>(Unit) }
+
+    public companion object
 }
 
 public fun <T> Successors<T, F>.next(): T? {

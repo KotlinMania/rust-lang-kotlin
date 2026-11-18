@@ -403,6 +403,8 @@ public open class Itimerspec(
     public var itValue: Timespec,
 ) {
     public open fun clone(): Itimerspec = Itimerspec(itInterval, itValue)
+
+    public companion object
 }
 
 public open class FsidT(
@@ -1351,6 +1353,8 @@ public open class In6Pktinfo(
     public var ipi6Ifindex: CUint,
 ) {
     public open fun clone(): In6Pktinfo = In6Pktinfo(ipi6Addr, ipi6Ifindex)
+
+    public companion object
 }
 
 public open class ArpdRequest(
@@ -1835,6 +1839,8 @@ public open class Ifreq(
     public var ifrIfru: CAnonymousIfrIfru,
 ) {
     public open fun clone(): Ifreq = Ifreq(ifrName, ifrIfru)
+
+    public companion object
 }
 
 public class CAnonymousIfcIfcu internal constructor(
@@ -1875,6 +1881,8 @@ public open class Ifconf(
     public var ifcIfcu: CAnonymousIfcIfcu,
 ) {
     public open fun clone(): Ifconf = Ifconf(ifcLen, ifcIfcu)
+
+    public companion object
 }
 
 public val DATE_BASE: NlItem = 0x20000

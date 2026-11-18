@@ -138,6 +138,8 @@ public open class ShmidDs(
     public var pad2: CUlong,
 ) {
     public open fun clone(): ShmidDs = ShmidDs(shmPerm, shmSegsz, shmAtime, shmDtime, shmCtime, shmCpid, shmLpid, shmNattch, pad1, pad2)
+
+    public companion object
 }
 
 public open class MsqidDs(
@@ -154,6 +156,8 @@ public open class MsqidDs(
     public var pad2: CUlong,
 ) {
     public open fun clone(): MsqidDs = MsqidDs(msgPerm, msgStime, msgRtime, msgCtime, msgCbytes, msgQnum, msgQbytes, msgLspid, msgLrpid, pad1, pad2)
+
+    public companion object
 }
 
 public open class SemT(

@@ -5,15 +5,13 @@ import io.github.kotlinmania.rustlang.core.hint.blackBox
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf64
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.addrOf
 import io.github.kotlinmania.rustlang.core.mem.addrOfMut
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.asMutPtr
 import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
@@ -22,6 +20,8 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.corearch.simd.F64x2
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import kotlin.experimental.inv
@@ -1328,22 +1328,29 @@ public fun testMmMovemaskPd() {
     check(r1 == 0x3)
 }
 
-public open class Memory internal constructor(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
+public open class Memory(
+    public var data: DoubleArray,
 ) {
-    public var data: DoubleArray
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-    internal constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
-
-    public fun pointerLayout(): TypeLayout<Memory> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Memory(ptr, layout) }, { it.data })
-
     public companion object {
-        public operator fun invoke(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()): Memory = Memory(data, fieldLayout)
-
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()): Memory = Memory(fieldStorage, fieldLayout)
+        public fun typeLayout(): TypeLayout<Memory> =
+            object : TypeLayout<Memory> {
+                override val alignBytes: Long = 16L
+                override val sizeBytes: Long = 32L
+                override fun readNative(addr: Long): Memory =
+                    Memory(
+                        (PrimitiveArrayLayouts.doubleArray(4)).readNative(addr),
+                    )
+                override fun writeNative(addr: Long, value: Memory) {
+                    (PrimitiveArrayLayouts.doubleArray(4)).writeNative(addr, value.data)
+                }
+                override fun readBytes(buf: ByteArray, offset: Int): Memory =
+                    Memory(
+                        (PrimitiveArrayLayouts.doubleArray(4)).readBytes(buf, offset),
+                    )
+                override fun writeBytes(buf: ByteArray, offset: Int, value: Memory) {
+                    (PrimitiveArrayLayouts.doubleArray(4)).writeBytes(buf, offset, value.data)
+                }
+            }
     }
 }
 
@@ -1381,17 +1388,8 @@ public fun testMmLoadlPd() {
 // (non-temporal store)
 public fun testMmStreamPd() {
     open class Memory(
-        public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
-    ) {
-        public var data: DoubleArray
-            get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 128L)), AlignedTypeLayout(fieldLayout, 128L))
-
-        public fun pointerLayout(): TypeLayout<Memory> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Memory(ptr, layout) }, { it.data })
-    }
+        public var data: DoubleArray,
+    )
     val a = mmSet1Pd(7.0)
     val mem = Memory(data = DoubleArray(2) { -1.0 })
     run {

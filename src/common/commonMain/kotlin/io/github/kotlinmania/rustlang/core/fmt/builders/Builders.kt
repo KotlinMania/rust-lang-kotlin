@@ -2,14 +2,9 @@
 package io.github.kotlinmania.rustlang.core.fmt.builders
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.default.Default
 import io.github.kotlinmania.rustlang.core.default.default
 import io.github.kotlinmania.rustlang.core.fmt.Error
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public open class PadAdapter(
@@ -44,26 +39,6 @@ public open class PadAdapterState(
     public var onNewline: Boolean,
 ) {
     public companion object {
-        public fun typeLayout(): TypeLayout<PadAdapterState> =
-            object : TypeLayout<PadAdapterState> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 1L
-                override fun readNative(addr: Long): PadAdapterState =
-                    PadAdapterState(
-                        (PrimitiveLayouts.BOOL).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: PadAdapterState) {
-                    (PrimitiveLayouts.BOOL).writeNative(addr, value.onNewline)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): PadAdapterState =
-                    PadAdapterState(
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: PadAdapterState) {
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.onNewline)
-                }
-            }
-
         public fun default(): PadAdapterState = PadAdapterState(onNewline = true)
     }
 }
@@ -87,6 +62,8 @@ public open class DebugOnce<F>(
         set(v) {
             value = v
         }
+
+    public companion object
 }
 
 public fun DebugOnce<F>.fmt(f: StringBuilder): Result<Unit, Unit> =
@@ -811,6 +788,8 @@ public open class DebugSet(
         this.inner.result = this.inner.result.andThen({ this.inner.fmt.append("}") })
         return this.inner.result
     }
+
+    public companion object
 }
 
 public fun debugSetNew(fmt: StringBuilder): DebugSet {
@@ -990,6 +969,8 @@ public open class DebugList(
         this.inner.result = this.inner.result.andThen({ this.inner.fmt.append("]") })
         return this.inner.result
     }
+
+    public companion object
 }
 
 public fun debugListNew(fmt: StringBuilder): DebugList {
@@ -1419,27 +1400,7 @@ public open class FromFn<F>(
             value = v
         }
 
-    public companion object {
-        public fun <F> typeLayout(typeLayoutF: TypeLayout<F>): TypeLayout<FromFn<F>> =
-            object : TypeLayout<FromFn<F>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutF.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutF.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): FromFn<F> =
-                    FromFn(
-                        (typeLayoutF).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: FromFn<F>) {
-                    (typeLayoutF).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): FromFn<F> =
-                    FromFn(
-                        (typeLayoutF).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: FromFn<F>) {
-                    (typeLayoutF).writeBytes(buf, offset, value.value)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun FromFn<F>.fmt(f: StringBuilder): Result<Unit, Unit> = (this.value)(f)

@@ -30,9 +30,13 @@ import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.Timespec
 
 public open class Condvar internal constructor(
     innerCtorArg: COpaque<PthreadCondT>,
-) {
+) : AutoCloseable {
     public var inner: COpaque<PthreadCondT> = innerCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun raw(): MutPtr {
         val inner = this.mapUnchecked({ c -> c.inner })

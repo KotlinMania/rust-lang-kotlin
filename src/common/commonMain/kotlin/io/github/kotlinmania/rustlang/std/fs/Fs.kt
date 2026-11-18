@@ -1953,6 +1953,8 @@ public open class ReadDir(
     public open fun dir(): Result<Dir, io.github.kotlinmania.rustlang.core.io.error.Error> = this.value.dir().map({ d -> Dir(inner = d) })
 
     public open fun next(): Result<DirEntry, io.github.kotlinmania.rustlang.core.io.error.Error>? = this.value.next()?.let({ entry -> entry.map({ DirEntry(it) }) })
+
+    public companion object
 }
 
 /**
@@ -2141,6 +2143,8 @@ public open class DirEntry(
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugTuple(f, "DirEntry").field(this.path()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.fs.unix.DirEntry = this.value
+
+    public companion object
 }
 
 /**
@@ -2720,6 +2724,8 @@ public open class FileType(
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "FileType").field("is_file", this.isFile()).field("is_dir", this.isDir()).field("is_symlink", this.isSymlink()).finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.fs.unix.FileType = this.value
+
+    public companion object
 }
 
 /**

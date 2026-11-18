@@ -2580,6 +2580,8 @@ public open class FromUtf8Error(
     public open fun utf8Error(): Utf8Error = this.error
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.error).toString()); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 /**
@@ -2605,6 +2607,8 @@ public open class FromUtf16Error(
             FromUtf16ErrorKind.LoneSurrogate -> "invalid utf-16: lone surrogate found"
             FromUtf16ErrorKind.OddBytes -> "invalid utf-16: odd number of bytes"
         }.fmt(f)
+
+    public companion object
 }
 
 public sealed class FromUtf16ErrorKind {
@@ -3071,6 +3075,8 @@ public open class IntoChars(
         buf.extend(this)
         return buf
     }
+
+    public companion object
 }
 
 /**
@@ -3095,7 +3101,7 @@ public open class Drain internal constructor(
      * Current remaining range to remove
      */
     public var iter: Chars,
-) : AsRef<kotlin.String>, FromCharIterSpec, Iterable<Char> {
+) : AsRef<kotlin.String>, FromCharIterSpec, Iterable<Char>, AutoCloseable {
     /**
      * Will be used as &a mut String in the destructor
      */
@@ -3109,6 +3115,10 @@ public open class Drain internal constructor(
                 else -> setNext(v)
             }
         }
+    }
+
+    override fun close() {
+        this.drop()
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "Drain").field(this.asStr()).finish(); Result.Ok<Unit, Error>(Unit) }

@@ -2,12 +2,8 @@
 package io.github.kotlinmania.rustlang.std.sync.mpmc.utils
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSpinLoopHint
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.std.thread.functions.yieldNow
 
 // Starting from Intel's Sandy Bridge, spatial prefetcher is now pulling pairs of 64-byte cache
@@ -59,26 +55,6 @@ public open class CachePadded<T>(
     public open fun derefMut(): T = this.value
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<CachePadded<T>> =
-            object : TypeLayout<CachePadded<T>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): CachePadded<T> =
-                    CachePadded(
-                        (typeLayoutT).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: CachePadded<T>) {
-                    (typeLayoutT).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): CachePadded<T> =
-                    CachePadded(
-                        (typeLayoutT).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: CachePadded<T>) {
-                    (typeLayoutT).writeBytes(buf, offset, value.value)
-                }
-            }
-
         /**
          * Pads and aligns a value to the length of a cache line.
          */

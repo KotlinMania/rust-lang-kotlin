@@ -5,18 +5,13 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Error
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.ilog2
 import io.github.kotlinmania.rustlang.core.num.saturatingAddUnsigned
 import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.num.saturatingSubUnsigned
 import io.github.kotlinmania.rustlang.core.num.trailingZeros
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libm.math.support.env.Round
 import io.github.kotlinmania.rustlang.libm.math.support.env.Status
@@ -117,6 +112,8 @@ public open class HexFloatParseError(
         }
 
     public open fun clone(): HexFloatParseError = HexFloatParseError(value)
+
+    public companion object
 }
 
 /**
@@ -334,31 +331,7 @@ public open class Parsed(
     public var sig: U128,
     public var exp: Int,
 ) {
-    public companion object {
-        public fun typeLayout(): TypeLayout<Parsed> =
-            object : TypeLayout<Parsed> {
-                override val alignBytes: Long = 16L
-                override val sizeBytes: Long = 32L
-                override fun readNative(addr: Long): Parsed =
-                    Parsed(
-                        (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readNative(addr),
-                        (PrimitiveLayouts.I32).readNative(addr + 16L),
-                    )
-                override fun writeNative(addr: Long, value: Parsed) {
-                    (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeNative(addr, value.sig)
-                    (PrimitiveLayouts.I32).writeNative(addr + 16L, value.exp)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Parsed =
-                    Parsed(
-                        (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readBytes(buf, offset),
-                        (PrimitiveLayouts.I32).readBytes(buf, offset + 16),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Parsed) {
-                    (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeBytes(buf, offset, value.sig)
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 16, value.exp)
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -539,27 +512,7 @@ public open class Hex<T>(
 
     public open fun fmtLowerHex(f: StringBuilder): Result<Unit, Error> = this.value.fmt(f)
 
-    public companion object {
-        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Hex<T>> =
-            object : TypeLayout<Hex<T>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): Hex<T> =
-                    Hex(
-                        (typeLayoutT).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Hex<T>) {
-                    (typeLayoutT).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Hex<T> =
-                    Hex(
-                        (typeLayoutT).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Hex<T>) {
-                    (typeLayoutT).writeBytes(buf, offset, value.value)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> F.fmt(f: StringBuilder): Result<Unit, Error> =

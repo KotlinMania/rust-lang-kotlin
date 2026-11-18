@@ -2,11 +2,8 @@
 package io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder
 
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.FpCategory
 import io.github.kotlinmania.rustlang.core.num.imp.traits.FloatExt
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import kotlin.experimental.and
 
 // Decodes a floating-point value into individual parts and error ranges.
@@ -46,43 +43,7 @@ public open class Decoded(
 ) {
     public open fun clone(): Decoded = Decoded(mant, minus, plus, exp, inclusive)
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<Decoded> =
-            object : TypeLayout<Decoded> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 32L
-                override fun readNative(addr: Long): Decoded =
-                    Decoded(
-                        (PrimitiveLayouts.U64).readNative(addr),
-                        (PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (PrimitiveLayouts.U64).readNative(addr + 16L),
-                        (PrimitiveLayouts.I16).readNative(addr + 24L),
-                        (PrimitiveLayouts.BOOL).readNative(addr + 26L),
-                    )
-                override fun writeNative(addr: Long, value: Decoded) {
-                    (PrimitiveLayouts.U64).writeNative(addr, value.mant)
-                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.minus)
-                    (PrimitiveLayouts.U64).writeNative(addr + 16L, value.plus)
-                    (PrimitiveLayouts.I16).writeNative(addr + 24L, value.exp)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + 26L, value.inclusive)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Decoded =
-                    Decoded(
-                        (PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 16),
-                        (PrimitiveLayouts.I16).readBytes(buf, offset + 24),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 26),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Decoded) {
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.mant)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.minus)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 16, value.plus)
-                    (PrimitiveLayouts.I16).writeBytes(buf, offset + 24, value.exp)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 26, value.inclusive)
-                }
-            }
-    }
+    public companion object
 }
 
 /**

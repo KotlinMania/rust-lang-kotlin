@@ -62,7 +62,7 @@ public open class Drain<T, A : Allocator> internal constructor(
     public var remaining: Int,
     // Needed to make Drain covariant over T
     public var marker: Unit,
-) : Iterable<T> {
+) : Iterable<T>, AutoCloseable {
     // We can't just use a VecDeque<T, A>, as that would make Drain invariant over T
     // and we want it to be covariant instead
     public var deque: NonNull = dequeCtorArg
@@ -75,6 +75,10 @@ public open class Drain<T, A : Allocator> internal constructor(
                 else -> setNext(v)
             }
         }
+    }
+
+    override fun close() {
+        this.drop()
     }
 
     // Only returns pointers to the slices, as that's all we need

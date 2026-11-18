@@ -1,19 +1,14 @@
 // port-lint: source iter/adapters/zip.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.zip
 
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
@@ -186,41 +181,6 @@ public open class Zip<A, B>(
     }
 
     public companion object {
-        public fun <A, B> typeLayout(typeLayoutA: TypeLayout<A>, typeLayoutB: TypeLayout<B>): TypeLayout<Zip<A, B>> =
-            object : TypeLayout<Zip<A, B>> {
-                override val alignBytes: Long = listOf(8L, typeLayoutA.alignBytes, typeLayoutB.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutA.sizeBytes, typeLayoutB.alignBytes)
-                private val off2: Long = alignUpBytes((off1 + typeLayoutB.sizeBytes), 8L)
-                private val off3: Long = alignUpBytes((off2 + 8L), 8L)
-                override val sizeBytes: Long = alignUpBytes((off3 + 8L), alignBytes)
-                override fun readNative(addr: Long): Zip<A, B> =
-                    Zip(
-                        (typeLayoutA).readNative(addr),
-                        (typeLayoutB).readNative(addr + off1),
-                        (PrimitiveLayouts.USIZE64).readNative(addr + off2),
-                        (PrimitiveLayouts.USIZE64).readNative(addr + off3),
-                    )
-                override fun writeNative(addr: Long, value: Zip<A, B>) {
-                    (typeLayoutA).writeNative(addr, value.a)
-                    (typeLayoutB).writeNative(addr + off1, value.b)
-                    (PrimitiveLayouts.USIZE64).writeNative(addr + off2, value.index)
-                    (PrimitiveLayouts.USIZE64).writeNative(addr + off3, value.len)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Zip<A, B> =
-                    Zip(
-                        (typeLayoutA).readBytes(buf, offset),
-                        (typeLayoutB).readBytes(buf, offset + off1.toInt()),
-                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + off2.toInt()),
-                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + off3.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Zip<A, B>) {
-                    (typeLayoutA).writeBytes(buf, offset, value.a)
-                    (typeLayoutB).writeBytes(buf, offset + off1.toInt(), value.b)
-                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off2.toInt(), value.index)
-                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off3.toInt(), value.len)
-                }
-            }
-
         public fun <Item, A, B> new(a: A, b: B): Zip<A, B> = ZipImpl.new(a, b)
 
         public fun <Item, A, B> newAB(a: A, b: B): Zip<A, B> where A : Iterator<Item>, B : Iterator<Item> = Zip(a = a, b = b, index = 0, len = 0)

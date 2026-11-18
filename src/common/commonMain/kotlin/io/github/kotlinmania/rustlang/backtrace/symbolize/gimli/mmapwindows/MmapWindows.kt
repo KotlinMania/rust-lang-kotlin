@@ -17,9 +17,13 @@ public open class Mmap internal constructor(
     public var file: File,
     ptrCtorArg: MutPtr,
     public var len: Int,
-) {
+) : AutoCloseable {
     public var ptr: MutPtr = ptrCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun deref(): List<UByte> = Slice.fromRawParts(ConstPtr((ConstPtr((this.ptr).rawAddress)).rawAddress), this.len)
 

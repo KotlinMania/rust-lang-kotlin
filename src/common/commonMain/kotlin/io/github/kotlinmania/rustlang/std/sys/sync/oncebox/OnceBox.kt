@@ -22,7 +22,11 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.load
 
 public open class OnceBox<T>(
     public var ptr: AtomicPtr,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     /**
      * Gets access to the value, assuming it is already initialized and this
      * initialization has been observed by the current thread.

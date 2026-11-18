@@ -141,7 +141,9 @@ public open class Inner(
      * Equals `true` when the channel is disconnected.
      */
     public var isDisconnected: Boolean,
-)
+) {
+    public companion object
+}
 
 /**
  * Zero-capacity channel.

@@ -38,13 +38,19 @@ public fun interface ClientRunCallback {
 
 public open class TokenStream(
     public var handle: Handle,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     // Forward `Drop.drop` to the inherent `drop` method.
     public open fun drop() {
         Methods.tsDrop(TokenStream(handle = this.handle))
     }
 
     public open fun clone(): TokenStream = Methods.tsClone(this)
+
+    public companion object
 }
 
 public fun <S> TokenStream.encode(w: Buffer, s: S) {

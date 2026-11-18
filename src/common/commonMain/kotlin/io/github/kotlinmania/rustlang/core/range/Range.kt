@@ -2,9 +2,6 @@
 package io.github.kotlinmania.rustlang.core.range
 
 import io.github.kotlinmania.rustlang.core.clone.clone
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
 import io.github.kotlinmania.rustlang.core.ops.range.Bound.Excluded
@@ -12,7 +9,6 @@ import io.github.kotlinmania.rustlang.core.ops.range.Bound.Included
 import io.github.kotlinmania.rustlang.core.ops.range.Bound.Unbounded
 import io.github.kotlinmania.rustlang.core.ops.range.OneSidedRangeBound
 import io.github.kotlinmania.rustlang.core.ops.range.bound
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.range.iter.RangeFromIter
 import io.github.kotlinmania.rustlang.core.range.iter.RangeInclusiveIter
 import io.github.kotlinmania.rustlang.core.range.iter.RangeIter
@@ -146,32 +142,7 @@ public open class Range<Idx>(
      */
     public open fun isEmpty(): Boolean = !((kmCompareValues(this.start, this.end) < 0))
 
-    public companion object {
-        public fun <Idx> typeLayout(typeLayoutIdx: TypeLayout<Idx>): TypeLayout<Range<Idx>> =
-            object : TypeLayout<Range<Idx>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutIdx.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutIdx.sizeBytes, typeLayoutIdx.alignBytes)
-                override val sizeBytes: Long = alignUpBytes((off1 + typeLayoutIdx.sizeBytes), alignBytes)
-                override fun readNative(addr: Long): Range<Idx> =
-                    Range(
-                        (typeLayoutIdx).readNative(addr),
-                        (typeLayoutIdx).readNative(addr + off1),
-                    )
-                override fun writeNative(addr: Long, value: Range<Idx>) {
-                    (typeLayoutIdx).writeNative(addr, value.start)
-                    (typeLayoutIdx).writeNative(addr + off1, value.end)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Range<Idx> =
-                    Range(
-                        (typeLayoutIdx).readBytes(buf, offset),
-                        (typeLayoutIdx).readBytes(buf, offset + off1.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Range<Idx>) {
-                    (typeLayoutIdx).writeBytes(buf, offset, value.start)
-                    (typeLayoutIdx).writeBytes(buf, offset + off1.toInt(), value.end)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <T> Range<T>.startBound(): Bound<T> = Included(this.start)
@@ -302,32 +273,7 @@ public open class RangeInclusive<Idx>(
      */
     public open fun iter(): RangeInclusiveIter<Idx> = this.clone().intoIter()
 
-    public companion object {
-        public fun <Idx> typeLayout(typeLayoutIdx: TypeLayout<Idx>): TypeLayout<RangeInclusive<Idx>> =
-            object : TypeLayout<RangeInclusive<Idx>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutIdx.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutIdx.sizeBytes, typeLayoutIdx.alignBytes)
-                override val sizeBytes: Long = alignUpBytes((off1 + typeLayoutIdx.sizeBytes), alignBytes)
-                override fun readNative(addr: Long): RangeInclusive<Idx> =
-                    RangeInclusive(
-                        (typeLayoutIdx).readNative(addr),
-                        (typeLayoutIdx).readNative(addr + off1),
-                    )
-                override fun writeNative(addr: Long, value: RangeInclusive<Idx>) {
-                    (typeLayoutIdx).writeNative(addr, value.start)
-                    (typeLayoutIdx).writeNative(addr + off1, value.last)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): RangeInclusive<Idx> =
-                    RangeInclusive(
-                        (typeLayoutIdx).readBytes(buf, offset),
-                        (typeLayoutIdx).readBytes(buf, offset + off1.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: RangeInclusive<Idx>) {
-                    (typeLayoutIdx).writeBytes(buf, offset, value.start)
-                    (typeLayoutIdx).writeBytes(buf, offset + off1.toInt(), value.last)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <T> RangeInclusive<T>.startBound(): Bound<T> = Included(this.start)
@@ -469,27 +415,7 @@ public open class RangeFrom<Idx>(
      */
     public open fun <U> contains(item: U): Boolean = RangeFrom.contains(this, item)
 
-    public companion object {
-        public fun <Idx> typeLayout(typeLayoutIdx: TypeLayout<Idx>): TypeLayout<RangeFrom<Idx>> =
-            object : TypeLayout<RangeFrom<Idx>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutIdx.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutIdx.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): RangeFrom<Idx> =
-                    RangeFrom(
-                        (typeLayoutIdx).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: RangeFrom<Idx>) {
-                    (typeLayoutIdx).writeNative(addr, value.start)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): RangeFrom<Idx> =
-                    RangeFrom(
-                        (typeLayoutIdx).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: RangeFrom<Idx>) {
-                    (typeLayoutIdx).writeBytes(buf, offset, value.start)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <T> RangeFrom<T>.startBound(): Bound<T> = Included(this.start)
@@ -592,27 +518,7 @@ public open class RangeToInclusive<Idx>(
      */
     public open fun <U> contains(item: U): Boolean = RangeToInclusive.contains(this, item)
 
-    public companion object {
-        public fun <Idx> typeLayout(typeLayoutIdx: TypeLayout<Idx>): TypeLayout<RangeToInclusive<Idx>> =
-            object : TypeLayout<RangeToInclusive<Idx>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutIdx.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutIdx.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): RangeToInclusive<Idx> =
-                    RangeToInclusive(
-                        (typeLayoutIdx).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: RangeToInclusive<Idx>) {
-                    (typeLayoutIdx).writeNative(addr, value.last)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): RangeToInclusive<Idx> =
-                    RangeToInclusive(
-                        (typeLayoutIdx).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: RangeToInclusive<Idx>) {
-                    (typeLayoutIdx).writeBytes(buf, offset, value.last)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <T> fromRangeToInclusiveT(value: io.github.kotlinmania.rustlang.core.range.legacy.RangeToInclusive<T>): RangeToInclusive<T> = RangeToInclusive(last = value.end)

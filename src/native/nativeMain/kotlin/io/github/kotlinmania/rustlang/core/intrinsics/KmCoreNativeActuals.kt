@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalForeignApi::class)
+@file:OptIn(ExperimentalForeignApi::class, kotlin.experimental.ExperimentalNativeApi::class)
 
 package io.github.kotlinmania.rustlang.core.intrinsics
 
@@ -495,3 +495,55 @@ public actual fun kmDoubleToU128Unchecked(v: Double): U128ValueOutcome =
         io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmDoubleToU128UncheckedOut(v, outLo.ptr, outHi.ptr)
         U128ValueOutcome(outLo.value, outHi.value)
     }
+
+private class KmNativeCleanState(
+    private val cleanup: () -> Unit,
+) {
+    private val state = kotlin.concurrent.atomics.AtomicInt(0)
+
+    fun disarm() {
+        state.compareAndSet(0, 1)
+    }
+
+    fun clean() {
+        if (state.compareAndSet(0, 2)) {
+            cleanup()
+        }
+    }
+}
+
+public actual class KmResourceCleaner internal constructor() : KmForgettableResource {
+    private var cleanState: KmNativeCleanState? = null
+    private var nativeCleaner: kotlin.native.ref.Cleaner? = null
+
+    internal fun attach(state: KmNativeCleanState, cleaner: kotlin.native.ref.Cleaner) {
+        this.cleanState = state
+        this.nativeCleaner = cleaner
+    }
+
+    public actual fun disarm() {
+        if (nativeCleaner == null) return
+        val target = cleanState
+        nativeCleaner = null
+        cleanState = null
+        target?.disarm()
+    }
+
+    public actual fun cleanNow() {
+        if (nativeCleaner == null) return
+        val target = cleanState
+        nativeCleaner = null
+        cleanState = null
+        target?.clean()
+    }
+
+    public actual override fun disarmCleaner(): Unit = disarm()
+
+    public actual override fun close(): Unit = cleanNow()
+}
+
+public actual fun kmRegisterResourceCleaner(owner: Any, cleanup: () -> Unit): KmResourceCleaner {
+    val state = KmNativeCleanState(cleanup)
+    val cleaner = kotlin.native.ref.createCleaner(state) { it.clean() }
+    return KmResourceCleaner().apply { attach(state, cleaner) }
+}

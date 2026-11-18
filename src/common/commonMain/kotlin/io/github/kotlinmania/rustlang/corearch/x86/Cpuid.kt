@@ -1,10 +1,6 @@
 // port-lint: source x86/cpuid.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-
 // `cpuid` intrinsics
 
 // ^^ the derived impl of Debug for CpuidResult is not @inline and that's OK.
@@ -32,39 +28,7 @@ public open class CpuidResult(
 ) {
     public open fun clone(): CpuidResult = CpuidResult(eax, ebx, ecx, edx)
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<CpuidResult> =
-            object : TypeLayout<CpuidResult> {
-                override val alignBytes: Long = 4L
-                override val sizeBytes: Long = 16L
-                override fun readNative(addr: Long): CpuidResult =
-                    CpuidResult(
-                        (PrimitiveLayouts.U32).readNative(addr),
-                        (PrimitiveLayouts.U32).readNative(addr + 4L),
-                        (PrimitiveLayouts.U32).readNative(addr + 8L),
-                        (PrimitiveLayouts.U32).readNative(addr + 12L),
-                    )
-                override fun writeNative(addr: Long, value: CpuidResult) {
-                    (PrimitiveLayouts.U32).writeNative(addr, value.eax)
-                    (PrimitiveLayouts.U32).writeNative(addr + 4L, value.ebx)
-                    (PrimitiveLayouts.U32).writeNative(addr + 8L, value.ecx)
-                    (PrimitiveLayouts.U32).writeNative(addr + 12L, value.edx)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): CpuidResult =
-                    CpuidResult(
-                        (PrimitiveLayouts.U32).readBytes(buf, offset),
-                        (PrimitiveLayouts.U32).readBytes(buf, offset + 4),
-                        (PrimitiveLayouts.U32).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.U32).readBytes(buf, offset + 12),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: CpuidResult) {
-                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.eax)
-                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.ebx)
-                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 8, value.ecx)
-                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 12, value.edx)
-                }
-            }
-    }
+    public companion object
 }
 
 /**

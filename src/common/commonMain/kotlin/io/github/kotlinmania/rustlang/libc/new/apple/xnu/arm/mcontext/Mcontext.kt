@@ -16,6 +16,8 @@ public open class DarwinMcontext64(
     public var ns: DarwinArmNeonState64,
 ) {
     public open fun clone(): DarwinMcontext64 = DarwinMcontext64(es, ss, ns)
+
+    public companion object
 }
 
 public typealias McontextT = MutPtr

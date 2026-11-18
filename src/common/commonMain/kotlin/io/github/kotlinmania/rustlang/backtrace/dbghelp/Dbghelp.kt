@@ -446,9 +446,13 @@ public fun interface SymQueryInlineTrace {
 
 public open class Init internal constructor(
     lockCtorArg: Handle,
-) {
+) : AutoCloseable {
     public var lock: Handle = lockCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun symGetOptions(): SymGetOptions = DBGHELP.symGetOptions()!!
 

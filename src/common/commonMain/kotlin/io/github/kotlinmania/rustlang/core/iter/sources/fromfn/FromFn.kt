@@ -1,10 +1,6 @@
 // port-lint: source iter/sources/from_fn.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.fromfn
 
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 private class DebugStruct(
@@ -93,27 +89,7 @@ public open class FromFn<F>(
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "FromFn").finish(); Result.Ok<Unit, Unit>(Unit) }
 
-    public companion object {
-        public fun <F> typeLayout(typeLayoutF: TypeLayout<F>): TypeLayout<FromFn<F>> =
-            object : TypeLayout<FromFn<F>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutF.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutF.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): FromFn<F> =
-                    FromFn(
-                        (typeLayoutF).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: FromFn<F>) {
-                    (typeLayoutF).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): FromFn<F> =
-                    FromFn(
-                        (typeLayoutF).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: FromFn<F>) {
-                    (typeLayoutF).writeBytes(buf, offset, value.value)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <T> FromFn<F>.next(): T? = (this.value)()

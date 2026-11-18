@@ -411,11 +411,15 @@ public interface UseCloned<T> : Clone<T>
 // These structs should never appear in user code.
 public open class AssertParamIsClone<T : Clone<T>>(
     public var field: Unit,
-)
+) {
+    public companion object
+}
 
 public open class AssertParamIsCopy<T>(
     public var field: Unit,
-)
+) {
+    public companion object
+}
 
 // Note(#126799): when `Holder.clone` allows use of `CloneToUninit`, rewrite these examples with it
 // since `Rc` is a distraction.

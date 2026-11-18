@@ -29,12 +29,16 @@ public open class ExtraHomeDirs(
     public var dataPath: OsString?,
 ) {
     public open fun clone(): ExtraHomeDirs = ExtraHomeDirs(runtime, configPath, dataPath)
+
+    public companion object
 }
 
 public open class ExtraMediaDirs(
     public var templates: PathBuf?,
 ) {
     public open fun clone(): ExtraMediaDirs = ExtraMediaDirs(templates)
+
+    public companion object
 }
 
 /**

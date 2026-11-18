@@ -701,6 +701,8 @@ public open class TpacketBlockDesc(
     public var hdr: TpacketBdHeaderU,
 ) {
     public open fun clone(): TpacketBlockDesc = TpacketBlockDesc(version, offsetToPriv, hdr)
+
+    public companion object
 }
 
 public val PACKET_MR_PROMISC: CInt = 1

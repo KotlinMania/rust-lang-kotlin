@@ -118,6 +118,8 @@ public open class StdinRaw(
     public override fun readToEnd(buf: MutableList<UByte>): Result<Int, Error> = handleEbadf(this.value.readToEnd(buf), { Result.Ok(0) })
 
     public override fun readToString(buf: String): Result<Int, Error> = handleEbadf(this.value.readToString(buf), { Result.Ok(0) })
+
+    public companion object
 }
 
 /**
@@ -151,6 +153,8 @@ public open class StdoutRaw(
     public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = handleEbadf(this.value.writeAllVectored(bufs), { Result.Ok(Unit) })
 
     public override fun writeFmt(fmt: Arguments): Result<Unit, Error> = handleEbadf(this.value.writeFmt(fmt), { Result.Ok(Unit) })
+
+    public companion object
 }
 
 /**
@@ -184,6 +188,8 @@ public open class StderrRaw(
     public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = handleEbadf(this.value.writeAllVectored(bufs), { Result.Ok(Unit) })
 
     public override fun writeFmt(fmt: Arguments): Result<Unit, Error> = handleEbadf(this.value.writeFmt(fmt), { Result.Ok(Unit) })
+
+    public companion object
 }
 
 /**

@@ -1,17 +1,12 @@
 // port-lint: source iter/adapters/enumerate.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.enumerate
 
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
@@ -198,31 +193,6 @@ public open class Enumerate<I>(
     public open fun isEmpty(): Boolean = this.iter.isEmpty()
 
     public companion object {
-        public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<Enumerate<I>> =
-            object : TypeLayout<Enumerate<I>> {
-                override val alignBytes: Long = listOf(8L, typeLayoutI.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, 8L)
-                override val sizeBytes: Long = alignUpBytes((off1 + 8L), alignBytes)
-                override fun readNative(addr: Long): Enumerate<I> =
-                    Enumerate(
-                        (typeLayoutI).readNative(addr),
-                        (PrimitiveLayouts.USIZE64).readNative(addr + off1),
-                    )
-                override fun writeNative(addr: Long, value: Enumerate<I>) {
-                    (typeLayoutI).writeNative(addr, value.iter)
-                    (PrimitiveLayouts.USIZE64).writeNative(addr + off1, value.count)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Enumerate<I> =
-                    Enumerate(
-                        (typeLayoutI).readBytes(buf, offset),
-                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + off1.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Enumerate<I>) {
-                    (typeLayoutI).writeBytes(buf, offset, value.iter)
-                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off1.toInt(), value.count)
-                }
-            }
-
         public fun <I> new(iter: I): Enumerate<I> = Enumerate(iter = iter, count = 0)
 
         /**

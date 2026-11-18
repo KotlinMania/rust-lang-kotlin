@@ -6,10 +6,7 @@ import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.fmt.Write
 import io.github.kotlinmania.rustlang.core.io.error.Result
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.get
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.str.len
@@ -249,25 +246,5 @@ public open class EscapedString<S : AsRef<String>>(
         return RustResult.Ok<Unit, Error>(Unit)
     }
 
-    public companion object {
-        public fun <S : AsRef<String>> typeLayout(typeLayoutS: TypeLayout<S>): TypeLayout<EscapedString<S>> =
-            object : TypeLayout<EscapedString<S>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutS.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutS.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): EscapedString<S> =
-                    EscapedString(
-                        (typeLayoutS).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: EscapedString<S>) {
-                    (typeLayoutS).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): EscapedString<S> =
-                    EscapedString(
-                        (typeLayoutS).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: EscapedString<S>) {
-                    (typeLayoutS).writeBytes(buf, offset, value.value)
-                }
-            }
-    }
+    public companion object
 }

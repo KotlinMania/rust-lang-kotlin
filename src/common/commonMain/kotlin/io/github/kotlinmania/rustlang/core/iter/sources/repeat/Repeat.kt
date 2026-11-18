@@ -2,13 +2,9 @@
 package io.github.kotlinmania.rustlang.core.iter.sources.repeat
 
 import io.github.kotlinmania.rustlang.core.clone.clone
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -127,25 +123,5 @@ public open class Repeat<A>(
 
     public open fun nthBack(n: Int): A? = this.element.clone()
 
-    public companion object {
-        public fun <A> typeLayout(typeLayoutA: TypeLayout<A>): TypeLayout<Repeat<A>> =
-            object : TypeLayout<Repeat<A>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutA.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutA.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): Repeat<A> =
-                    Repeat(
-                        (typeLayoutA).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Repeat<A>) {
-                    (typeLayoutA).writeNative(addr, value.element)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Repeat<A> =
-                    Repeat(
-                        (typeLayoutA).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Repeat<A>) {
-                    (typeLayoutA).writeBytes(buf, offset, value.element)
-                }
-            }
-    }
+    public companion object
 }

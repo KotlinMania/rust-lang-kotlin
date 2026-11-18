@@ -224,3 +224,54 @@ public actual fun kmFloatToU64Unchecked(v: Float): ULong = KmLinearMemoryArena.f
 public actual fun kmDoubleToU64Unchecked(v: Double): ULong = KmLinearMemoryArena.doubleToU64Unchecked(v)
 public actual fun kmFloatToU128Unchecked(v: Float): U128ValueOutcome = KmLinearMemoryArena.floatToU128Unchecked(v)
 public actual fun kmDoubleToU128Unchecked(v: Double): U128ValueOutcome = KmLinearMemoryArena.doubleToU128Unchecked(v)
+
+private class KmWasmWasiCleanState(
+    private var cleanup: (() -> Unit)?,
+) {
+    private var state: Int = 0
+
+    fun disarm() {
+        if (state == 0) {
+            state = 1
+            cleanup = null
+        }
+    }
+
+    fun clean() {
+        if (state == 0) {
+            state = 2
+            val action = cleanup
+            cleanup = null
+            action?.invoke()
+        }
+    }
+}
+
+public actual class KmResourceCleaner internal constructor() : KmForgettableResource {
+    private var cleanState: KmWasmWasiCleanState? = null
+
+    internal fun attach(state: KmWasmWasiCleanState) {
+        cleanState = state
+    }
+
+    public actual fun disarm() {
+        val target = cleanState
+        cleanState = null
+        target?.disarm()
+    }
+
+    public actual fun cleanNow() {
+        val target = cleanState
+        cleanState = null
+        target?.clean()
+    }
+
+    public actual override fun disarmCleaner(): Unit = disarm()
+
+    public actual override fun close(): Unit = cleanNow()
+}
+
+public actual fun kmRegisterResourceCleaner(owner: Any, cleanup: () -> Unit): KmResourceCleaner {
+    val state = KmWasmWasiCleanState(cleanup)
+    return KmResourceCleaner().apply { attach(state) }
+}

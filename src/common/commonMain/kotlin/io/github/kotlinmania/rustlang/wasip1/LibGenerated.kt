@@ -1175,6 +1175,8 @@ public open class Dirent(
     public var dType: Filetype,
 ) {
     public open fun clone(): Dirent = Dirent(dNext, dIno, dNamlen, dType)
+
+    public companion object
 }
 
 public open class Advice internal constructor(
@@ -1307,6 +1309,8 @@ public open class Fdstat(
     public var fsRightsInheriting: Rights,
 ) {
     public open fun clone(): Fdstat = Fdstat(fsFiletype, fsFlags, fsRightsBase, fsRightsInheriting)
+
+    public companion object
 }
 
 public typealias Device = ULong
@@ -1399,6 +1403,8 @@ public open class Filestat(
     public var ctim: Timestamp,
 ) {
     public open fun clone(): Filestat = Filestat(dev, ino, filetype, nlink, size, atim, mtim, ctim)
+
+    public companion object
 }
 
 public typealias Userdata = ULong
@@ -1537,6 +1543,8 @@ public open class Event(
     public var fdReadwrite: EventFdReadwrite,
 ) {
     public open fun clone(): Event = Event(userdata, error, type, fdReadwrite)
+
+    public companion object
 }
 
 public typealias Subclockflags = UShort
@@ -1566,6 +1574,8 @@ public open class SubscriptionClock(
     public var flags: Subclockflags,
 ) {
     public open fun clone(): SubscriptionClock = SubscriptionClock(id, timeout, precision, flags)
+
+    public companion object
 }
 
 public open class SubscriptionFdReadwrite(
@@ -1610,6 +1620,8 @@ public open class SubscriptionU(
     public var u: SubscriptionUU,
 ) {
     public open fun clone(): SubscriptionU = SubscriptionU(tag, u)
+
+    public companion object
 }
 
 public open class Subscription(
@@ -1624,6 +1636,8 @@ public open class Subscription(
     public var u: SubscriptionU,
 ) {
     public open fun clone(): Subscription = Subscription(userdata, u)
+
+    public companion object
 }
 
 public typealias Exitcode = UInt
@@ -2103,6 +2117,8 @@ public open class Prestat(
     public var u: PrestatU,
 ) {
     public open fun clone(): Prestat = Prestat(tag, u)
+
+    public companion object
 }
 
 /**

@@ -75,6 +75,8 @@ public open class TestExecTime(
     public open fun clone(): TestExecTime = TestExecTime(value)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this.value.asSecsF64()}s"); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 /**
@@ -92,6 +94,8 @@ public open class TestSuiteExecTime(
     public open fun clone(): TestSuiteExecTime = TestSuiteExecTime(value)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this.value.asSecsF64()}s"); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 /**

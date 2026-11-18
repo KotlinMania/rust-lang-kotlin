@@ -7,8 +7,6 @@ import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.write.Write
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
@@ -45,20 +43,6 @@ public open class Stdin : Read<Stdin> {
     public override fun readToString(buf: String): Result<Int, Error> = Result.Ok<Int, Error>(0)
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Stdin> =
-            object : TypeLayout<Stdin> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): Stdin =
-                    Stdin()
-                override fun writeNative(addr: Long, value: Stdin) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Stdin =
-                    Stdin()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Stdin) {
-                }
-            }
-
         public fun new(): Stdin = Stdin()
     }
 }
@@ -81,20 +65,6 @@ public open class Stdout : Write<Stdout> {
     public override fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Stdout> =
-            object : TypeLayout<Stdout> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): Stdout =
-                    Stdout()
-                override fun writeNative(addr: Long, value: Stdout) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Stdout =
-                    Stdout()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Stdout) {
-                }
-            }
-
         public fun new(): Stdout = Stdout()
     }
 }

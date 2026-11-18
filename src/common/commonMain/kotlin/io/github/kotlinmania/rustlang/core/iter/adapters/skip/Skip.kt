@@ -1,14 +1,10 @@
 // port-lint: source iter/adapters/skip.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.skip
 
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.intrinsics.unlikely
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
@@ -20,7 +16,6 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.drop.Drop
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
@@ -248,31 +243,6 @@ public open class Skip<I>(
     }
 
     public companion object {
-        public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<Skip<I>> =
-            object : TypeLayout<Skip<I>> {
-                override val alignBytes: Long = listOf(8L, typeLayoutI.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, 8L)
-                override val sizeBytes: Long = alignUpBytes((off1 + 8L), alignBytes)
-                override fun readNative(addr: Long): Skip<I> =
-                    Skip(
-                        (typeLayoutI).readNative(addr),
-                        (PrimitiveLayouts.USIZE64).readNative(addr + off1),
-                    )
-                override fun writeNative(addr: Long, value: Skip<I>) {
-                    (typeLayoutI).writeNative(addr, value.iter)
-                    (PrimitiveLayouts.USIZE64).writeNative(addr + off1, value.n)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Skip<I> =
-                    Skip(
-                        (typeLayoutI).readBytes(buf, offset),
-                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + off1.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Skip<I>) {
-                    (typeLayoutI).writeBytes(buf, offset, value.iter)
-                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off1.toInt(), value.n)
-                }
-            }
-
         public fun <I> new(iter: I, n: Int): Skip<I> = Skip(iter = iter, n = n)
     }
 }

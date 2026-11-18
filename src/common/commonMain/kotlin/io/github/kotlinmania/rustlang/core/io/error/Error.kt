@@ -535,7 +535,9 @@ public sealed class ErrorData<C> {
 public open class SimpleMessage(
     public var kind: ErrorKind,
     public var message: String,
-)
+) {
+    public companion object
+}
 
 public fun Repr.fmt(fmt: StringBuilder): RustResult<Unit, Unit> =
     when (val matchVal = this.data()) {
@@ -598,7 +600,11 @@ public open class Custom(
      * Call to drop a pointer to `Custom`.
      */
     public var outerDrop: CustomOuterDropCallback,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     // SAFETY: All members of `Custom` are `Send`
 
     // SAFETY: All members of `Custom` are `Sync`

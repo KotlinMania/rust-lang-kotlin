@@ -312,9 +312,13 @@ public open class Rc<T, A : Allocator> internal constructor(
     ptrCtorArg: NonNull,
     public var phantom: Unit,
     public var alloc: A,
-) : PinSafePointer, DerefPure, UseCloned, Share, RcEqIdent<T, A>, AsRef<T> {
+) : PinSafePointer, DerefPure, UseCloned, Share, RcEqIdent<T, A>, AsRef<T>, AutoCloseable {
     public var ptr: NonNull = ptrCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     // Note that this negative impl isn't strictly necessary for correctness,
     // as `Rc` transitively contains a `Cell`, which is itself `!Sync`.
@@ -2655,7 +2659,7 @@ public fun <T, I : TrustedLen<T>> I.toRcSliceT(): Rc<List<T>, Global> {
 public open class Weak<T, A : Allocator> internal constructor(
     ptrCtorArg: NonNull,
     public var alloc: A,
-) : UseCloned {
+) : UseCloned, AutoCloseable {
     // This is a `NonNull` to allow optimizing the size of this type in enums,
     // but it is not necessarily a valid pointer.
     // `Weak.new` sets this to `Int.MAX` so that it doesn’t need
@@ -2663,6 +2667,10 @@ public open class Weak<T, A : Allocator> internal constructor(
     // will ever have because RcInner has alignment at least 2.
     public var ptr: NonNull = ptrCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     /**
      * Returns a reference to the underlying allocator.
@@ -3302,9 +3310,13 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
     // references exist, we already have a form of shared mutability!
     public var marker2: Unit,
     public var alloc: A,
-) : PinSafePointer, DerefPure, BorrowMut<T>, AsRef<T>, AsMut<T> {
+) : PinSafePointer, DerefPure, BorrowMut<T>, AsRef<T>, AsMut<T>, AutoCloseable {
     public var ptr: NonNull = ptrCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     // @unstable(feature = "uniqueRcArc", issue = "112566")
 
@@ -3798,9 +3810,13 @@ public open class UniqueRcUninit<T, A : Allocator> internal constructor(
     ptrCtorArg: NonNull,
     public var layoutForValue: Layout,
     public var alloc: A?,
-) {
+) : AutoCloseable {
     public var ptr: NonNull = ptrCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     /**
      * Returns the pointer to be written into to initialize the [Rc].

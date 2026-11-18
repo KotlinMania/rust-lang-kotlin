@@ -16,11 +16,6 @@ import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
 import io.github.kotlinmania.rustlang.core.intrinsics.integerMax
 import io.github.kotlinmania.rustlang.core.intrinsics.integerMin
 import io.github.kotlinmania.rustlang.core.intrinsics.threeWayCompare
-import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.component10
 import io.github.kotlinmania.rustlang.core.mem.component11
 import io.github.kotlinmania.rustlang.core.mem.component12
@@ -32,9 +27,6 @@ import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
-import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import kotlin.experimental.and
 import kotlin.experimental.or
 
@@ -421,7 +413,9 @@ public interface Eq : PartialEq<Eq> {
 // This struct should never appear in user code.
 public open class AssertParamIsEq<T : Eq>(
     public var field: Unit,
-)
+) {
+    public companion object
+}
 
 // This is a lang item only so that `BinOp.Cmp` in MIR can return it.
 // It has no special behavior, but does require that the three variants
@@ -691,8 +685,7 @@ public sealed class Ordering(
  * ```
  */
 public open class Reverse<T>(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
+    public var value: T,
 ) {
     public var field0: T
         get() = value
@@ -700,19 +693,13 @@ public open class Reverse<T>(
             value = v
         }
 
-    public var value: T
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-    public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
-
-    public fun pointerLayout(): TypeLayout<Reverse<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Reverse<T>(ptr, layout) }, { it.value })
-
-    public open fun clone(): Reverse<T> = Reverse(this.value.clone(), fieldLayout = this.fieldLayout)
+    public open fun clone(): Reverse<T> = Reverse(this.value.clone())
 
     public open fun cloneFrom(source: Reverse<T>) {
         this.value = source.value
     }
+
+    public companion object
 }
 
 public fun <T : PartialOrd<T>> Reverse<T>.partialCmp(other: Reverse<T>): Ordering? = other.value.partialCmp(this.value)
@@ -738,32 +725,7 @@ public open class KeyAndValue<K, V>(
 ) {
     public open fun clone(): KeyAndValue<K, V> = KeyAndValue(key, value)
 
-    public companion object {
-        public fun <K, V> typeLayout(typeLayoutK: TypeLayout<K>, typeLayoutV: TypeLayout<V>): TypeLayout<KeyAndValue<K, V>> =
-            object : TypeLayout<KeyAndValue<K, V>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutK.alignBytes, typeLayoutV.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutK.sizeBytes, typeLayoutV.alignBytes)
-                override val sizeBytes: Long = alignUpBytes((off1 + typeLayoutV.sizeBytes), alignBytes)
-                override fun readNative(addr: Long): KeyAndValue<K, V> =
-                    KeyAndValue(
-                        (typeLayoutK).readNative(addr),
-                        (typeLayoutV).readNative(addr + off1),
-                    )
-                override fun writeNative(addr: Long, value: KeyAndValue<K, V>) {
-                    (typeLayoutK).writeNative(addr, value.key)
-                    (typeLayoutV).writeNative(addr + off1, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): KeyAndValue<K, V> =
-                    KeyAndValue(
-                        (typeLayoutK).readBytes(buf, offset),
-                        (typeLayoutV).readBytes(buf, offset + off1.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: KeyAndValue<K, V>) {
-                    (typeLayoutK).writeBytes(buf, offset, value.key)
-                    (typeLayoutV).writeBytes(buf, offset + off1.toInt(), value.value)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <K : PartialEq<K>, V> KeyAndValue<K, V>.eq(other: KeyAndValue<K, V>): Boolean = this.key == other.key

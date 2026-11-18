@@ -99,7 +99,7 @@ public open class IntoIter<T, A : Allocator>(
      * For non-ZSTs the pointer is treated as `NonNull<T>`
      */
     public var end: ConstPtr,
-) : AsRef<List<T>>, TrustedFused, TrustedLen, InPlaceIterable, SourceIter, Iterable<T> {
+) : AsRef<List<T>>, TrustedFused, TrustedLen, InPlaceIterable, SourceIter, Iterable<T>, AutoCloseable {
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
@@ -107,6 +107,10 @@ public open class IntoIter<T, A : Allocator>(
                 else -> setNext(v)
             }
         }
+    }
+
+    override fun close() {
+        this.drop()
     }
 
     // Manually mirroring what `List` has,

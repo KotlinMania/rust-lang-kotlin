@@ -121,4 +121,6 @@ public open class Formatted(
         }
         return written
     }
+
+    public companion object
 }

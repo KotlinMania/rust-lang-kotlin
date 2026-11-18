@@ -1,10 +1,7 @@
 package io.github.kotlinmania.rustlang.rustcdemangle
 
 import io.github.kotlinmania.rustlang.core.fmt.Error
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.checkedSub
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -56,6 +53,8 @@ public open class Demangle(
     }
 
     public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 /**
@@ -66,47 +65,13 @@ public open class TryDemangleError(
 ) {
     public open fun clone(): TryDemangleError = TryDemangleError(priv)
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<TryDemangleError> =
-            object : TypeLayout<TryDemangleError> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): TryDemangleError =
-                    TryDemangleError(
-                        (PrimitiveLayouts.UNIT).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: TryDemangleError) {
-                    (PrimitiveLayouts.UNIT).writeNative(addr, value.priv)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): TryDemangleError =
-                    TryDemangleError(
-                        (PrimitiveLayouts.UNIT).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: TryDemangleError) {
-                    (PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.priv)
-                }
-            }
-    }
+    public companion object
 }
 
 public open class SizeLimitExhausted {
     public open fun clone(): SizeLimitExhausted = SizeLimitExhausted()
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<SizeLimitExhausted> =
-            object : TypeLayout<SizeLimitExhausted> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): SizeLimitExhausted =
-                    SizeLimitExhausted()
-                override fun writeNative(addr: Long, value: SizeLimitExhausted) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): SizeLimitExhausted =
-                    SizeLimitExhausted()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: SizeLimitExhausted) {
-                }
-            }
-    }
+    public companion object
 }
 
 public open class SizeLimitedFmtAdapter<F> internal constructor(

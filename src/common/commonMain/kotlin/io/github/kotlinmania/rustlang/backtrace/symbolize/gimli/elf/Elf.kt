@@ -19,11 +19,8 @@ import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.path.PathB
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.stash.Stash
 import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.num.checkedSub
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.len
@@ -184,35 +181,7 @@ public open class ParsedSym(
     public var size: ULong,
     public var name: UInt,
 ) {
-    public companion object {
-        public fun typeLayout(): TypeLayout<ParsedSym> =
-            object : TypeLayout<ParsedSym> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 24L
-                override fun readNative(addr: Long): ParsedSym =
-                    ParsedSym(
-                        (PrimitiveLayouts.U64).readNative(addr),
-                        (PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (PrimitiveLayouts.U32).readNative(addr + 16L),
-                    )
-                override fun writeNative(addr: Long, value: ParsedSym) {
-                    (PrimitiveLayouts.U64).writeNative(addr, value.address)
-                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.size)
-                    (PrimitiveLayouts.U32).writeNative(addr + 16L, value.name)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): ParsedSym =
-                    ParsedSym(
-                        (PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.U32).readBytes(buf, offset + 16),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: ParsedSym) {
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.address)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.size)
-                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 16, value.name)
-                }
-            }
-    }
+    public companion object
 }
 
 public open class Object internal constructor(

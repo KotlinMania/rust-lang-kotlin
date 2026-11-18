@@ -1,12 +1,7 @@
 // port-lint: source math/support/env.rs
 package io.github.kotlinmania.rustlang.libm.math.support.env
 
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Error
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import kotlin.experimental.and
 import kotlin.experimental.inv
@@ -33,31 +28,6 @@ public open class FpResult<T>(
     public var status: Status,
 ) {
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<FpResult<T>> =
-            object : TypeLayout<FpResult<T>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutT.sizeBytes, 1L)
-                override val sizeBytes: Long = alignUpBytes((off1 + 1L), alignBytes)
-                override fun readNative(addr: Long): FpResult<T> =
-                    FpResult(
-                        (typeLayoutT).readNative(addr),
-                        (Status.typeLayout()).readNative(addr + off1),
-                    )
-                override fun writeNative(addr: Long, value: FpResult<T>) {
-                    (typeLayoutT).writeNative(addr, value.value)
-                    (Status.typeLayout()).writeNative(addr + off1, value.status)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): FpResult<T> =
-                    FpResult(
-                        (typeLayoutT).readBytes(buf, offset),
-                        (Status.typeLayout()).readBytes(buf, offset + off1.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: FpResult<T>) {
-                    (typeLayoutT).writeBytes(buf, offset, value.value)
-                    (Status.typeLayout()).writeBytes(buf, offset + off1.toInt(), value.status)
-                }
-            }
-
         public fun <T> new(value: T, status: Status): FpResult<T> = FpResult(value = value, status = status)
 
         /**
@@ -186,26 +156,6 @@ public open class Status(
     }
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Status> =
-            object : TypeLayout<Status> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 1L
-                override fun readNative(addr: Long): Status =
-                    Status(
-                        (PrimitiveLayouts.U8).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Status) {
-                    (PrimitiveLayouts.U8).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Status =
-                    Status(
-                        (PrimitiveLayouts.U8).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Status) {
-                    (PrimitiveLayouts.U8).writeBytes(buf, offset, value.value)
-                }
-            }
-
         // Note that if we ever store/load this to/from floating point control status registers, it
         // may be worth making these values platform-dependent to line up with register layout
         // to avoid bit swapping. For the time being, this isn't a concern.

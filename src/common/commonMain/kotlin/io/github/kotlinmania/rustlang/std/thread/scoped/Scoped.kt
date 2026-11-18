@@ -99,6 +99,8 @@ public open class Scope(
     public open fun <T> spawn(f: () -> T): ScopedJoinHandle<T> = Builder.new().spawnScoped(this, f).expect("failed to spawn thread")
 
     public open fun fmt(f: StringBuilder): RustResult<Unit, Error> = run { DebugStruct(f, "Scope").field("num_running_threads", this.data.numRunningThreads.load(Ordering.Relaxed)).field("a_thread_panicked", this.data.aThreadPanicked.load(Ordering.Relaxed)).field("main_thread", this.data.mainThread).finishNonExhaustive(); RustResult.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 /**
@@ -178,6 +180,8 @@ public open class ScopedJoinHandle<T>(
     public open fun isFinished(): Boolean = this.value.isFinished()
 
     public open fun fmt(f: StringBuilder): RustResult<Unit, Error> = run { DebugStruct(f, "ScopedJoinHandle").finishNonExhaustive(); RustResult.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 public open class ScopeData(
@@ -207,6 +211,8 @@ public open class ScopeData(
             this.mainThread.unpark()
         }
     }
+
+    public companion object
 }
 
 /**

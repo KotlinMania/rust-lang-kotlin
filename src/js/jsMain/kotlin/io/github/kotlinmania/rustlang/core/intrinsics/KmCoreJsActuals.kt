@@ -886,3 +886,77 @@ public actual fun kmDoubleToU128Unchecked(v: Double): U128ValueOutcome =
     } else {
         KmLinearMemoryArena.doubleToU128Unchecked(v)
     }
+
+@JsName("FinalizationRegistry")
+private external class KmJsFinalizationRegistry(callback: (Int) -> Unit) {
+    fun register(target: Any, heldValue: Int, unregisterToken: Any)
+    fun unregister(unregisterToken: Any): Boolean
+}
+
+private class KmJsCleanToken
+
+private object KmJsCleanerRegistry {
+    private var nextTokenId: Int = 1
+    private val pendingCleanups = hashMapOf<Int, () -> Unit>()
+    private val registry =
+        KmJsFinalizationRegistry { tokenId ->
+            val action = pendingCleanups.remove(tokenId)
+            if (action != null) {
+                action()
+            }
+        }
+
+    fun register(owner: Any, cleanup: () -> Unit): KmResourceCleaner {
+        val id = nextTokenId++
+        val token = KmJsCleanToken()
+        pendingCleanups[id] = cleanup
+        registry.register(owner, id, token)
+        return KmResourceCleaner().apply { attach(id, token) }
+    }
+
+    fun disarm(id: Int, token: KmJsCleanToken) {
+        pendingCleanups.remove(id)
+        registry.unregister(token)
+    }
+
+    fun clean(id: Int, token: KmJsCleanToken) {
+        registry.unregister(token)
+        val action = pendingCleanups.remove(id)
+        if (action != null) {
+            action()
+        }
+    }
+}
+
+public actual class KmResourceCleaner internal constructor() : KmForgettableResource {
+    private var tokenId: Int = 0
+    private var token: KmJsCleanToken? = null
+
+    internal fun attach(id: Int, cleanToken: KmJsCleanToken) {
+        tokenId = id
+        token = cleanToken
+    }
+
+    public actual fun disarm() {
+        val activeToken = token ?: return
+        val activeId = tokenId
+        token = null
+        tokenId = 0
+        KmJsCleanerRegistry.disarm(activeId, activeToken)
+    }
+
+    public actual fun cleanNow() {
+        val activeToken = token ?: return
+        val activeId = tokenId
+        token = null
+        tokenId = 0
+        KmJsCleanerRegistry.clean(activeId, activeToken)
+    }
+
+    public actual override fun disarmCleaner(): Unit = disarm()
+
+    public actual override fun close(): Unit = cleanNow()
+}
+
+public actual fun kmRegisterResourceCleaner(owner: Any, cleanup: () -> Unit): KmResourceCleaner =
+    KmJsCleanerRegistry.register(owner, cleanup)

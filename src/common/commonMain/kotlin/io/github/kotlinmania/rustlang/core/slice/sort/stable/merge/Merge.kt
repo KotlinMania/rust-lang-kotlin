@@ -82,7 +82,11 @@ public open class MergeState<T>(
     public var start: MutPtr,
     public var end: MutPtr,
     public var dst: MutPtr,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     /**
      * # Safety
      * The caller MUST guarantee that `self` is initialized in a way where `start -> end` is

@@ -9,11 +9,9 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.fmt.Error
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.num.fromStrRadix
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
@@ -277,6 +275,8 @@ public open class LexError(
         }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(this.value); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 /**
@@ -285,21 +285,7 @@ public open class LexError(
 public open class ExpandError {
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("macro expansion failed"); Result.Ok<Unit, Error>(Unit) }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<ExpandError> =
-            object : TypeLayout<ExpandError> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): ExpandError =
-                    ExpandError()
-                override fun writeNative(addr: Long, value: ExpandError) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): ExpandError =
-                    ExpandError()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: ExpandError) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**

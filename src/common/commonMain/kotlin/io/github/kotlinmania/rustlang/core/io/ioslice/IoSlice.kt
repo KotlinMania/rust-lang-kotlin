@@ -1,15 +1,9 @@
 // port-lint: source io/io_slice.rs
 package io.github.kotlinmania.rustlang.core.io.ioslice
 
-import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.num.checkedSub
-import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.len
@@ -22,23 +16,14 @@ import io.github.kotlinmania.rustlang.core.str.len
  * ABI compatible with the `iovec` type on Unix platforms and `WSABUF` on
  * Windows.
  */
-public open class IoSliceMut internal constructor(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSliceMut> = UnresolvedTypeLayout(),
+public open class IoSliceMut(
+    public var value: io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSliceMut,
 ) {
     public var field0: io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSliceMut
         get() = value
         set(v) {
             value = v
         }
-
-    public var value: io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSliceMut
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-    internal constructor(value: io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSliceMut, fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSliceMut> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
-
-    public fun pointerLayout(): TypeLayout<IoSliceMut> = TransparentTypeLayout(fieldLayout, { ptr, layout -> IoSliceMut(ptr, layout) }, { it.value })
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this.value.asSlice()).toString()); Result.Ok<Unit, Unit>(Unit) }
 
@@ -92,10 +77,6 @@ public open class IoSliceMut internal constructor(
     public open fun derefMut(): MutableList<UByte> = this.value.asMutSlice()
 
     public companion object {
-        public operator fun invoke(value: io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSliceMut, fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSliceMut> = UnresolvedTypeLayout()): IoSliceMut = IoSliceMut(value, fieldLayout)
-
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSliceMut> = UnresolvedTypeLayout()): IoSliceMut = IoSliceMut(fieldStorage, fieldLayout)
-
         /**
          * Creates a new `IoSliceMut` wrapping a byte slice.
          *
@@ -103,7 +84,7 @@ public open class IoSliceMut internal constructor(
          *
          * Panics on Windows if the slice is larger than 4GB.
          */
-        public fun new(buf: MutableList<UByte>, fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSliceMut> = UnresolvedTypeLayout()): IoSliceMut = IoSliceMut(io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSliceMut.new(buf), fieldLayout = fieldLayout)
+        public fun new(buf: MutableList<UByte>): IoSliceMut = IoSliceMut(io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSliceMut.new(buf))
 
         /**
          * Advance a slice of slices.
@@ -169,9 +150,8 @@ public open class IoSliceMut internal constructor(
  * ABI compatible with the `iovec` type on Unix platforms and `WSABUF` on
  * Windows.
  */
-public open class IoSlice internal constructor(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSlice> = UnresolvedTypeLayout(),
+public open class IoSlice(
+    public var value: io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSlice,
 ) {
     public var field0: io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSlice
         get() = value
@@ -179,15 +159,7 @@ public open class IoSlice internal constructor(
             value = v
         }
 
-    public var value: io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSlice
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-    internal constructor(value: io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSlice, fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSlice> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
-
-    public fun pointerLayout(): TypeLayout<IoSlice> = TransparentTypeLayout(fieldLayout, { ptr, layout -> IoSlice(ptr, layout) }, { it.value })
-
-    public open fun clone(): IoSlice = IoSlice(value, fieldLayout)
+    public open fun clone(): IoSlice = IoSlice(value)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this.value.asSlice()).toString()); Result.Ok<Unit, Unit>(Unit) }
 
@@ -244,10 +216,6 @@ public open class IoSlice internal constructor(
     public open fun deref(): List<UByte> = this.value.asSlice()
 
     public companion object {
-        public operator fun invoke(value: io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSlice, fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSlice> = UnresolvedTypeLayout()): IoSlice = IoSlice(value, fieldLayout)
-
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSlice> = UnresolvedTypeLayout()): IoSlice = IoSlice(fieldStorage, fieldLayout)
-
         /**
          * Creates a new `IoSlice` wrapping a byte slice.
          *
@@ -255,7 +223,7 @@ public open class IoSlice internal constructor(
          *
          * Panics on Windows if the slice is larger than 4GB.
          */
-        public fun new(buf: List<UByte>, fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSlice> = UnresolvedTypeLayout()): IoSlice = IoSlice(io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSlice.new(buf), fieldLayout = fieldLayout)
+        public fun new(buf: List<UByte>): IoSlice = IoSlice(io.github.kotlinmania.rustlang.core.io.ioslice.repr.IoSlice.new(buf))
 
         /**
          * Advance a slice of slices.

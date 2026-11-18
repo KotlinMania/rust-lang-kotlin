@@ -7,9 +7,13 @@ import io.github.kotlinmania.rustlang.std.sys.sync.oncebox.OnceBox
 
 public open class Mutex internal constructor(
     palCtorArg: OnceBox<io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.mutex.Mutex>,
-) {
+) : AutoCloseable {
     public var pal: OnceBox<io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.mutex.Mutex> = palCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun get(): Pin<io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.mutex.Mutex> {
         // If the initialization race is lost, the new mutex is destroyed.

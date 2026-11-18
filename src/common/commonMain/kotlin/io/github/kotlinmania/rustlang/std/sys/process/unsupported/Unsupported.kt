@@ -2,11 +2,8 @@
 package io.github.kotlinmania.rustlang.std.sys.process.unsupported
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.iter.Iter
@@ -200,21 +197,7 @@ public open class ExitStatus {
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("<dummy exit status>"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<ExitStatus> =
-            object : TypeLayout<ExitStatus> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): ExitStatus =
-                    ExitStatus()
-                override fun writeNative(addr: Long, value: ExitStatus) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): ExitStatus =
-                    ExitStatus()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: ExitStatus) {
-                }
-            }
-    }
+    public companion object
 }
 
 public open class ExitStatusError(
@@ -235,6 +218,8 @@ public open class ExitStatusError(
     public open fun into(): ExitStatus = this.value
 
     public open fun code(): NonZero<Int, NonZeroI32Inner>? = this.value
+
+    public companion object
 }
 
 public open class ExitCode(
@@ -251,26 +236,6 @@ public open class ExitCode(
     public open fun asI32(): Int = this.value.toInt()
 
     public companion object {
-        public fun typeLayout(): TypeLayout<ExitCode> =
-            object : TypeLayout<ExitCode> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 1L
-                override fun readNative(addr: Long): ExitCode =
-                    ExitCode(
-                        (PrimitiveLayouts.U8).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: ExitCode) {
-                    (PrimitiveLayouts.U8).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): ExitCode =
-                    ExitCode(
-                        (PrimitiveLayouts.U8).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: ExitCode) {
-                    (PrimitiveLayouts.U8).writeBytes(buf, offset, value.value)
-                }
-            }
-
         public val SUCCESS: ExitCode = ExitCode(0)
 
         public val FAILURE: ExitCode = ExitCode(1)
@@ -295,6 +260,8 @@ public open class Process(
     public open fun wait(): Result<ExitStatus, Error> = this.value
 
     public open fun tryWait(): Result<ExitStatus?, Error> = this.value
+
+    public companion object
 }
 
 public open class CommandArgs internal constructor(

@@ -99,11 +99,15 @@ public open class VecDeque<T, A : Allocator> internal constructor(
     // if `T` is zero-Sized, then `self.len <= Int.MAX`, otherwise `self.len <= Long.MAX as Int`.
     public var len: Int,
     bufCtorArg: RawVec<T, A>,
-) : SpecExtendFromWithin, Iterable<T> {
+) : SpecExtendFromWithin, Iterable<T>, AutoCloseable {
     public var buf: RawVec<T, A> = bufCtorArg
         internal set
 
     override fun iterator(): Iterator<T> = this.intoIter().iterator()
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun clone(): VecDeque<T, A> {
         val deq = VecDeque.withCapacityIn(this.len(), this.allocator().clone())
@@ -130,6 +134,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
             dropInPlace(front)
         }
         // RawVec handles deallocation
+        this.buf.close()
     }
 
     /**
@@ -3423,12 +3428,16 @@ public fun <T> fromVecDequeT(arr: List<T>, n: Int = 0, typeLayoutT: TypeLayout<T
  */
 public open class Dropper<T>(
     public var value: MutableList<T>,
-) {
+) : AutoCloseable {
     public var field0: MutableList<T>
         get() = value
         set(v) {
             value = v
         }
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun drop() {
         // ignore-tidy-undocumented-unchecked
@@ -3436,4 +3445,6 @@ public open class Dropper<T>(
             dropInPlace(this.value)
         }
     }
+
+    public companion object
 }

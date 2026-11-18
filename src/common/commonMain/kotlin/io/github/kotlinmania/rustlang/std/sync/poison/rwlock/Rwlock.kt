@@ -636,7 +636,11 @@ public open class RwLockReadGuard<T>(
      * A reference to the internal [sys.RwLock] that we have read-locked.
      */
     public var innerLock: io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex.RwLock,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         // SAFETY: the conditions of `RwLockReadGuard.new` were satisfied when created.
         run {
@@ -745,7 +749,11 @@ public open class RwLockWriteGuard<T>(
      * The poison guard. See the [poison] module for more information.
      */
     public var poison: Guard,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         this.lock.poison.done(this.poison)
         // SAFETY: the conditions of `RwLockWriteGuard.new` were satisfied when created.
@@ -921,7 +929,11 @@ public open class MappedRwLockReadGuard<T>(
      * A reference to the internal [sys.RwLock] that we have read-locked.
      */
     public var innerLock: io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex.RwLock,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         // SAFETY: the conditions of `RwLockReadGuard.new` were satisfied when the original guard
         // was created, and have been upheld throughout `map` and/or `filterMap`.
@@ -1037,7 +1049,11 @@ public open class MappedRwLockWriteGuard<T>(
      * The poison guard. See the [poison] module for more information.
      */
     public var poisonGuard: Guard,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         this.poisonFlag.done(this.poisonGuard)
         // SAFETY: the conditions of `RwLockWriteGuard.new` were satisfied when the original guard

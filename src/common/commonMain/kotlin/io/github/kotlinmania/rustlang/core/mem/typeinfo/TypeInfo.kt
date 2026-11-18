@@ -23,9 +23,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVariantNa
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVariantNonExhaustive
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVariantReflectedAttrs
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVariants
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.metadata.DynMetadata
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // MVP for exposing compile-time information about types in a
@@ -65,6 +63,8 @@ public open class TraitImpl<T>(
      * Gets the raw vtable for type reflection mapping
      */
     public open fun getVtable(): DynMetadata<T> = this.vtable
+
+    public companion object
 }
 
 /**
@@ -164,7 +164,9 @@ public open class DynTrait(
      * The predicates of  a dynamic trait.
      */
     public var predicates: List<DynTraitPredicate>,
-)
+) {
+    public companion object
+}
 
 /**
  * Compile-time type information about a dynamic trait predicate.
@@ -174,7 +176,9 @@ public open class DynTraitPredicate(
      * The type of the trait as a dynamic trait type.
      */
     public var traitTy: Trait,
-)
+) {
+    public companion object
+}
 
 /**
  * Compile-time type information about a trait.
@@ -188,7 +192,9 @@ public open class Trait(
      * Whether the trait is an auto trait
      */
     public var isAuto: Boolean,
-)
+) {
+    public companion object
+}
 
 /**
  * Compile-time type information about instantiated generics of structs, enum and union variants.
@@ -212,21 +218,7 @@ public sealed class Generic {
  * Compile-time type information about generic scopes.
  */
 public open class Lifetime {
-    public companion object {
-        public fun typeLayout(): TypeLayout<Lifetime> =
-            object : TypeLayout<Lifetime> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): Lifetime =
-                    Lifetime()
-                override fun writeNative(addr: Long, value: Lifetime) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Lifetime =
-                    Lifetime()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Lifetime) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -237,7 +229,9 @@ public open class GenericType(
      * The type itself.
      */
     public var ty: RustTypeId,
-)
+) {
+    public companion object
+}
 
 /**
  * Compile-time type information about generic const parameters.
@@ -247,27 +241,15 @@ public open class Const(
      * The const's type.
      */
     public var ty: RustTypeId,
-)
+) {
+    public companion object
+}
 
 /**
  * Compile-time type information about string slice types.
  */
 public open class Str {
-    public companion object {
-        public fun typeLayout(): TypeLayout<Str> =
-            object : TypeLayout<Str> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): Str =
-                    Str()
-                override fun writeNative(addr: Long, value: Str) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Str =
-                    Str()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Str) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -324,6 +306,8 @@ public open class FnPtr(
      * specified this returns `TypeId.of<Unit>`.
      */
     public open fun output(): RustTypeId = this.output
+
+    public companion object
 }
 
 /**
@@ -832,6 +816,8 @@ public open class VariantId(
      * ```
      */
     public open fun reflectedAttrs(): List<String> = typeIdVariantReflectedAttrs(this.base, this.variant)
+
+    public companion object
 }
 
 /**
@@ -902,4 +888,6 @@ public open class FieldId(
      * ```
      */
     public open fun reflectedAttrs(): List<String> = typeIdReflectedAttrs(this.frtTypeId)
+
+    public companion object
 }

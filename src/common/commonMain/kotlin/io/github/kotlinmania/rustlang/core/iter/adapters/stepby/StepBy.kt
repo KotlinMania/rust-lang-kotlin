@@ -1,12 +1,8 @@
 // port-lint: source iter/adapters/step_by.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.stepby
 
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
 import io.github.kotlinmania.rustlang.core.iter.sources.fromfn.fromFn
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.divCeil
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
@@ -15,7 +11,6 @@ import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.range.iter.RangeIter
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.len
@@ -247,36 +242,6 @@ public open class StepBy<I>(
     }
 
     public companion object {
-        public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<StepBy<I>> =
-            object : TypeLayout<StepBy<I>> {
-                override val alignBytes: Long = listOf(8L, typeLayoutI.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, 8L)
-                private val off2: Long = alignUpBytes((off1 + 8L), 1L)
-                override val sizeBytes: Long = alignUpBytes((off2 + 1L), alignBytes)
-                override fun readNative(addr: Long): StepBy<I> =
-                    StepBy(
-                        (typeLayoutI).readNative(addr),
-                        (PrimitiveLayouts.USIZE64).readNative(addr + off1),
-                        (PrimitiveLayouts.BOOL).readNative(addr + off2),
-                    )
-                override fun writeNative(addr: Long, value: StepBy<I>) {
-                    (typeLayoutI).writeNative(addr, value.iter)
-                    (PrimitiveLayouts.USIZE64).writeNative(addr + off1, value.stepMinusOne)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + off2, value.firstTake)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): StepBy<I> =
-                    StepBy(
-                        (typeLayoutI).readBytes(buf, offset),
-                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + off1.toInt()),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + off2.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: StepBy<I>) {
-                    (typeLayoutI).writeBytes(buf, offset, value.iter)
-                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off1.toInt(), value.stepMinusOne)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + off2.toInt(), value.firstTake)
-                }
-            }
-
         public fun <I> new(iter: I, step: Int, setupIFn: (I, Int) -> Any?): StepBy<I> {
             check(step != 0)
             val iter1 = setupIFn(iter, step)

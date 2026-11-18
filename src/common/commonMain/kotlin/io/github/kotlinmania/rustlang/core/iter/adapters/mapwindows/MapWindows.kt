@@ -180,8 +180,12 @@ public open class MapWindowsInner<I, Item> internal constructor(
 public open class Buffer<T>(
     public var buffer: List<List<MaybeUninit<T>>>,
     public var start: Int,
-) {
+) : AutoCloseable {
     public val n: Int = 0
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun bufferPtr(): ConstPtr = ConstPtr((this.buffer.asPtr()).rawAddress)
 

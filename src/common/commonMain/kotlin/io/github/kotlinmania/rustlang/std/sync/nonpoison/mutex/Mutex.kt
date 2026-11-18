@@ -400,7 +400,11 @@ public open class Mutex<T>(
  */
 public open class MutexGuard<T>(
     public var lock: Mutex<T>,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     /**
      * A [MutexGuard] is not `Send` to maximize platform portability.
      *
@@ -513,7 +517,11 @@ public open class MappedMutexGuard<T>(
     public var data: NonNull,
     public var inner: io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex,
     public var variance: Unit,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     // @unstable(feature = "nonpoisonMutex", issue = "134645")
 
     // @unstable(feature = "nonpoisonMutex", issue = "134645")

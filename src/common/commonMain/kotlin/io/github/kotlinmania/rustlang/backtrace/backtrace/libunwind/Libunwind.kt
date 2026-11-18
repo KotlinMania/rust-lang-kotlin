@@ -167,7 +167,11 @@ public sealed class Frame {
 
 public open class Bomb(
     public var enabled: Boolean,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         if (this.enabled) {
             error("cannot panic during the backtrace function")

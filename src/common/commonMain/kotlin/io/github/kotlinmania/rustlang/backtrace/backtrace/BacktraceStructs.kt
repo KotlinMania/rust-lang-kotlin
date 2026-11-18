@@ -82,4 +82,6 @@ public open class Frame(
     public open fun moduleBaseAddress(): MutPtr? = this.inner.moduleBaseAddress()
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Frame").field("ip", this.ip()).field("symbol_address", this.symbolAddress()).finish(); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }

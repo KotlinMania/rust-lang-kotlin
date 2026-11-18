@@ -37,6 +37,8 @@ public open class ParIter<T>(
         val iter = this.inner.iter().map({ x -> x.asRef() })
         return run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(iter).finish(); Result.Ok<Unit, Error>(Unit) }
     }
+
+    public companion object
 }
 
 /**
@@ -56,6 +58,8 @@ public open class ParIterMut<T>(
     public open fun <C> driveUnindexed(consumer: C): Result where C : UnindexedConsumer<T> = this.inner.map({ x -> x.asMut() }).driveUnindexed(consumer)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = ParIter(inner = this.inner.clone(), marker = Unit).fmt(f)
+
+    public companion object
 }
 
 /**

@@ -5,13 +5,9 @@ import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.iter.range.Step
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.range.Range
 import io.github.kotlinmania.rustlang.core.range.RangeFrom
 import io.github.kotlinmania.rustlang.core.range.RangeInclusive
@@ -53,6 +49,8 @@ public open class RangeIter<A>(
      * ```
      */
     public open fun remainder(): io.github.kotlinmania.rustlang.core.range.Range<A> = Range(start = this.value.start, end = this.value.end)
+
+    public companion object
 }
 
 public val MAY_HAVE_SIDE_EFFECT: Boolean = false
@@ -113,9 +111,9 @@ public fun <A : Step<A>> io.github.kotlinmania.rustlang.core.range.Range<A>.into
  * By-value [RangeInclusive] iterator.
  */
 public open class RangeInclusiveIter<A>(
-    public var value: io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive<A>,
+    public var value: RangeInclusive<A>,
 ) {
-    public var field0: io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive<A>
+    public var field0: RangeInclusive<A>
         get() = value
         set(v) {
             value = v
@@ -143,12 +141,14 @@ public open class RangeInclusiveIter<A>(
      * }
      * ```
      */
-    public open fun remainder(): RangeInclusive<A>? {
+    public open fun remainder(): io.github.kotlinmania.rustlang.core.range.RangeInclusive<A>? {
         if (this.value.isEmpty()) {
             return null
         }
         return RangeInclusive(start = this.value.start, last = this.value.end)
     }
+
+    public companion object
 }
 
 public fun <A : Step<A>> RangeInclusiveIter<A>.next(): A? = this.value.next()
@@ -175,7 +175,7 @@ public fun <A : Step<A>> RangeInclusiveIter<A>.nthBack(n: Int): A? = this.value.
 
 public fun <A : Step<A>> RangeInclusiveIter<A>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 
-public fun <A : Step<A>> RangeInclusive<A>.intoIter(): RangeInclusiveIter<A> = RangeInclusiveIter(this.into())
+public fun <A : Step<A>> io.github.kotlinmania.rustlang.core.range.RangeInclusive<A>.intoIter(): RangeInclusiveIter<A> = RangeInclusiveIter(this.into())
 
 /**
  * By-value [RangeFrom] iterator.
@@ -217,32 +217,7 @@ public open class RangeFromIter<A>(
         return RangeFrom(start = this.start)
     }
 
-    public companion object {
-        public fun <A> typeLayout(typeLayoutA: TypeLayout<A>): TypeLayout<RangeFromIter<A>> =
-            object : TypeLayout<RangeFromIter<A>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutA.alignBytes).max()
-                private val off1: Long = alignUpBytes(typeLayoutA.sizeBytes, 1L)
-                override val sizeBytes: Long = alignUpBytes((off1 + 1L), alignBytes)
-                override fun readNative(addr: Long): RangeFromIter<A> =
-                    RangeFromIter(
-                        (typeLayoutA).readNative(addr),
-                        (PrimitiveLayouts.BOOL).readNative(addr + off1),
-                    )
-                override fun writeNative(addr: Long, value: RangeFromIter<A>) {
-                    (typeLayoutA).writeNative(addr, value.start)
-                    (PrimitiveLayouts.BOOL).writeNative(addr + off1, value.exhausted)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): RangeFromIter<A> =
-                    RangeFromIter(
-                        (typeLayoutA).readBytes(buf, offset),
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + off1.toInt()),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: RangeFromIter<A>) {
-                    (typeLayoutA).writeBytes(buf, offset, value.start)
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + off1.toInt(), value.exhausted)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <A : Step<A>> RangeFromIter<A>.next(): A? {

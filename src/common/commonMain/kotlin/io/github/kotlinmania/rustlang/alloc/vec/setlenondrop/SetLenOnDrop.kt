@@ -11,9 +11,13 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 public open class SetLenOnDrop internal constructor(
     lenCtorArg: RustMutableReference<Int>,
     public var localLen: Int,
-) {
+) : AutoCloseable {
     public var len: RustMutableReference<Int> = lenCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun incrementLen(increment: Int) {
         this.localLen += increment

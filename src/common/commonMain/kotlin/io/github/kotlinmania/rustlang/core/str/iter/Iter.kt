@@ -9,10 +9,18 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.map.Map
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.num.divCeil
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingAdd
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.len
@@ -242,6 +250,8 @@ public open class Chars(
         // SAFETY: `Chars` is only made from a str, which guarantees the iter is valid UTF-8.
         return fromUtf8Unchecked(this.iter.toList())
     }
+
+    public companion object
 }
 
 /**
@@ -334,6 +344,8 @@ public open class CharIndices(
      * ```
      */
     public open fun offset(): Int = this.frontOffset
+
+    public companion object
 }
 
 /**
@@ -586,6 +598,8 @@ public open class SplitInternal<P : Pattern<Searcher>, Searcher>(
         // SAFETY: `self.start` and `self.end` always lie on unicode boundaries.
         return this.matcher.haystack().getUnchecked(this.start until this.end)
     }
+
+    public companion object
 }
 
 /**
@@ -594,11 +608,9 @@ public open class SplitInternal<P : Pattern<Searcher>, Searcher>(
  * [split]: str.split
  */
 public open class Split<P : Pattern<Searcher>, Searcher> internal constructor(
-    valueCtorArg: SplitInternal<P, Searcher>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout(),
 ) : Iterable<String> {
-    public var value: SplitInternal<P, Searcher> = valueCtorArg
-        internal set
-
     public var field0: SplitInternal<P, Searcher>
         get() = value
         set(v) {
@@ -614,11 +626,19 @@ public open class Split<P : Pattern<Searcher>, Searcher> internal constructor(
         }
     }
 
+    public var value: SplitInternal<P, Searcher>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(value: SplitInternal<P, Searcher>, fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<Split<P, Searcher>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Split<P, Searcher>(ptr, layout) }, { it.value })
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "Split").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? = this.value.next()
 
-    public open fun clone(): Split<P, Searcher> = Split(this.value.clone())
+    public open fun clone(): Split<P, Searcher> = Split(this.value.clone(), fieldLayout = this.fieldLayout)
 
     public open fun nextBack(): String? = this.value.nextBack()
 
@@ -644,11 +664,9 @@ public open class Split<P : Pattern<Searcher>, Searcher> internal constructor(
     public open fun remainder(): String? = this.value.remainder()
 
     public companion object {
-        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
-            value: SplitInternal<P, Searcher>,
-        ): Split<P, Searcher> = Split<P, Searcher>(
-            valueCtorArg = value,
-        )
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(value: SplitInternal<P, Searcher>, fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout()): Split<P, Searcher> = Split<P, Searcher>(value, fieldLayout)
+
+        public fun <P : Pattern<Searcher>, Searcher> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout()): Split<P, Searcher> = Split<P, Searcher>(fieldStorage, fieldLayout)
     }
 }
 
@@ -658,11 +676,9 @@ public open class Split<P : Pattern<Searcher>, Searcher> internal constructor(
  * [rsplit]: str.rsplit
  */
 public open class RSplit<P : Pattern<Searcher>, Searcher> internal constructor(
-    valueCtorArg: SplitInternal<P, Searcher>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout(),
 ) : Iterable<String> {
-    public var value: SplitInternal<P, Searcher> = valueCtorArg
-        internal set
-
     public var field0: SplitInternal<P, Searcher>
         get() = value
         set(v) {
@@ -678,11 +694,19 @@ public open class RSplit<P : Pattern<Searcher>, Searcher> internal constructor(
         }
     }
 
+    public var value: SplitInternal<P, Searcher>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(value: SplitInternal<P, Searcher>, fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<RSplit<P, Searcher>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> RSplit<P, Searcher>(ptr, layout) }, { it.value })
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "RSplit").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? = this.value.nextBack()
 
-    public open fun clone(): RSplit<P, Searcher> = RSplit(this.value.clone())
+    public open fun clone(): RSplit<P, Searcher> = RSplit(this.value.clone(), fieldLayout = this.fieldLayout)
 
     public open fun nextBack(): String? = this.value.next()
 
@@ -708,11 +732,9 @@ public open class RSplit<P : Pattern<Searcher>, Searcher> internal constructor(
     public open fun remainder(): String? = this.value.remainder()
 
     public companion object {
-        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
-            value: SplitInternal<P, Searcher>,
-        ): RSplit<P, Searcher> = RSplit<P, Searcher>(
-            valueCtorArg = value,
-        )
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(value: SplitInternal<P, Searcher>, fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout()): RSplit<P, Searcher> = RSplit<P, Searcher>(value, fieldLayout)
+
+        public fun <P : Pattern<Searcher>, Searcher> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout()): RSplit<P, Searcher> = RSplit<P, Searcher>(fieldStorage, fieldLayout)
     }
 }
 
@@ -722,11 +744,9 @@ public open class RSplit<P : Pattern<Searcher>, Searcher> internal constructor(
  * [splitTerminator]: str.splitTerminator
  */
 public open class SplitTerminator<P : Pattern<Searcher>, Searcher> internal constructor(
-    valueCtorArg: SplitInternal<P, Searcher>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout(),
 ) : Iterable<String> {
-    public var value: SplitInternal<P, Searcher> = valueCtorArg
-        internal set
-
     public var field0: SplitInternal<P, Searcher>
         get() = value
         set(v) {
@@ -742,11 +762,19 @@ public open class SplitTerminator<P : Pattern<Searcher>, Searcher> internal cons
         }
     }
 
+    public var value: SplitInternal<P, Searcher>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(value: SplitInternal<P, Searcher>, fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<SplitTerminator<P, Searcher>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> SplitTerminator<P, Searcher>(ptr, layout) }, { it.value })
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "SplitTerminator").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? = this.value.next()
 
-    public open fun clone(): SplitTerminator<P, Searcher> = SplitTerminator(this.value.clone())
+    public open fun clone(): SplitTerminator<P, Searcher> = SplitTerminator(this.value.clone(), fieldLayout = this.fieldLayout)
 
     public open fun nextBack(): String? = this.value.nextBack()
 
@@ -772,11 +800,9 @@ public open class SplitTerminator<P : Pattern<Searcher>, Searcher> internal cons
     public open fun remainder(): String? = this.value.remainder()
 
     public companion object {
-        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
-            value: SplitInternal<P, Searcher>,
-        ): SplitTerminator<P, Searcher> = SplitTerminator<P, Searcher>(
-            valueCtorArg = value,
-        )
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(value: SplitInternal<P, Searcher>, fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout()): SplitTerminator<P, Searcher> = SplitTerminator<P, Searcher>(value, fieldLayout)
+
+        public fun <P : Pattern<Searcher>, Searcher> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout()): SplitTerminator<P, Searcher> = SplitTerminator<P, Searcher>(fieldStorage, fieldLayout)
     }
 }
 
@@ -786,11 +812,9 @@ public open class SplitTerminator<P : Pattern<Searcher>, Searcher> internal cons
  * [rsplitTerminator]: str.rsplitTerminator
  */
 public open class RSplitTerminator<P : Pattern<Searcher>, Searcher> internal constructor(
-    valueCtorArg: SplitInternal<P, Searcher>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout(),
 ) : Iterable<String> {
-    public var value: SplitInternal<P, Searcher> = valueCtorArg
-        internal set
-
     public var field0: SplitInternal<P, Searcher>
         get() = value
         set(v) {
@@ -806,11 +830,19 @@ public open class RSplitTerminator<P : Pattern<Searcher>, Searcher> internal con
         }
     }
 
+    public var value: SplitInternal<P, Searcher>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(value: SplitInternal<P, Searcher>, fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<RSplitTerminator<P, Searcher>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> RSplitTerminator<P, Searcher>(ptr, layout) }, { it.value })
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "RSplitTerminator").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? = this.value.nextBack()
 
-    public open fun clone(): RSplitTerminator<P, Searcher> = RSplitTerminator(this.value.clone())
+    public open fun clone(): RSplitTerminator<P, Searcher> = RSplitTerminator(this.value.clone(), fieldLayout = this.fieldLayout)
 
     public open fun nextBack(): String? = this.value.next()
 
@@ -836,11 +868,9 @@ public open class RSplitTerminator<P : Pattern<Searcher>, Searcher> internal con
     public open fun remainder(): String? = this.value.remainder()
 
     public companion object {
-        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
-            value: SplitInternal<P, Searcher>,
-        ): RSplitTerminator<P, Searcher> = RSplitTerminator<P, Searcher>(
-            valueCtorArg = value,
-        )
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(value: SplitInternal<P, Searcher>, fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout()): RSplitTerminator<P, Searcher> = RSplitTerminator<P, Searcher>(value, fieldLayout)
+
+        public fun <P : Pattern<Searcher>, Searcher> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout()): RSplitTerminator<P, Searcher> = RSplitTerminator<P, Searcher>(fieldStorage, fieldLayout)
     }
 }
 
@@ -906,11 +936,9 @@ public open class SplitNInternal<P : Pattern<Searcher>, Searcher> internal const
  * [splitn]: str.splitn
  */
 public open class SplitN<P : Pattern<Searcher>, Searcher> internal constructor(
-    valueCtorArg: SplitNInternal<P, Searcher>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<SplitNInternal<P, Searcher>> = UnresolvedTypeLayout(),
 ) : Iterable<String> {
-    public var value: SplitNInternal<P, Searcher> = valueCtorArg
-        internal set
-
     public var field0: SplitNInternal<P, Searcher>
         get() = value
         set(v) {
@@ -926,11 +954,19 @@ public open class SplitN<P : Pattern<Searcher>, Searcher> internal constructor(
         }
     }
 
+    public var value: SplitNInternal<P, Searcher>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(value: SplitNInternal<P, Searcher>, fieldLayout: TypeLayout<SplitNInternal<P, Searcher>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<SplitN<P, Searcher>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> SplitN<P, Searcher>(ptr, layout) }, { it.value })
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "SplitN").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? = this.value.next()
 
-    public open fun clone(): SplitN<P, Searcher> = SplitN(this.value.clone())
+    public open fun clone(): SplitN<P, Searcher> = SplitN(this.value.clone(), fieldLayout = this.fieldLayout)
 
     /**
      * Returns remainder of the split string.
@@ -954,11 +990,9 @@ public open class SplitN<P : Pattern<Searcher>, Searcher> internal constructor(
     public open fun remainder(): String? = this.value.remainder()
 
     public companion object {
-        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
-            value: SplitNInternal<P, Searcher>,
-        ): SplitN<P, Searcher> = SplitN<P, Searcher>(
-            valueCtorArg = value,
-        )
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(value: SplitNInternal<P, Searcher>, fieldLayout: TypeLayout<SplitNInternal<P, Searcher>> = UnresolvedTypeLayout()): SplitN<P, Searcher> = SplitN<P, Searcher>(value, fieldLayout)
+
+        public fun <P : Pattern<Searcher>, Searcher> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<SplitNInternal<P, Searcher>> = UnresolvedTypeLayout()): SplitN<P, Searcher> = SplitN<P, Searcher>(fieldStorage, fieldLayout)
     }
 }
 
@@ -968,11 +1002,9 @@ public open class SplitN<P : Pattern<Searcher>, Searcher> internal constructor(
  * [rsplitn]: str.rsplitn
  */
 public open class RSplitN<P : Pattern<Searcher>, Searcher> internal constructor(
-    valueCtorArg: SplitNInternal<P, Searcher>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<SplitNInternal<P, Searcher>> = UnresolvedTypeLayout(),
 ) : Iterable<String> {
-    public var value: SplitNInternal<P, Searcher> = valueCtorArg
-        internal set
-
     public var field0: SplitNInternal<P, Searcher>
         get() = value
         set(v) {
@@ -988,11 +1020,19 @@ public open class RSplitN<P : Pattern<Searcher>, Searcher> internal constructor(
         }
     }
 
+    public var value: SplitNInternal<P, Searcher>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(value: SplitNInternal<P, Searcher>, fieldLayout: TypeLayout<SplitNInternal<P, Searcher>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<RSplitN<P, Searcher>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> RSplitN<P, Searcher>(ptr, layout) }, { it.value })
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "RSplitN").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? = this.value.nextBack()
 
-    public open fun clone(): RSplitN<P, Searcher> = RSplitN(this.value.clone())
+    public open fun clone(): RSplitN<P, Searcher> = RSplitN(this.value.clone(), fieldLayout = this.fieldLayout)
 
     /**
      * Returns remainder of the split string.
@@ -1016,16 +1056,15 @@ public open class RSplitN<P : Pattern<Searcher>, Searcher> internal constructor(
     public open fun remainder(): String? = this.value.remainder()
 
     public companion object {
-        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
-            value: SplitNInternal<P, Searcher>,
-        ): RSplitN<P, Searcher> = RSplitN<P, Searcher>(
-            valueCtorArg = value,
-        )
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(value: SplitNInternal<P, Searcher>, fieldLayout: TypeLayout<SplitNInternal<P, Searcher>> = UnresolvedTypeLayout()): RSplitN<P, Searcher> = RSplitN<P, Searcher>(value, fieldLayout)
+
+        public fun <P : Pattern<Searcher>, Searcher> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<SplitNInternal<P, Searcher>> = UnresolvedTypeLayout()): RSplitN<P, Searcher> = RSplitN<P, Searcher>(fieldStorage, fieldLayout)
     }
 }
 
-public open class MatchIndicesInternal<P : Pattern<Searcher>, Searcher>(
-    public var value: Searcher,
+public open class MatchIndicesInternal<P : Pattern<Searcher>, Searcher> internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<Searcher> = UnresolvedTypeLayout(),
 ) {
     public var field0: Searcher
         get() = value
@@ -1033,9 +1072,17 @@ public open class MatchIndicesInternal<P : Pattern<Searcher>, Searcher>(
             value = v
         }
 
+    public var value: Searcher
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(value: Searcher, fieldLayout: TypeLayout<Searcher> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<MatchIndicesInternal<P, Searcher>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MatchIndicesInternal<P, Searcher>(ptr, layout) }, { it.value })
+
     public open fun clone(): MatchIndicesInternal<P, Searcher> {
         val s = this
-        return MatchIndicesInternal(s.value.clone())
+        return MatchIndicesInternal(s.value.clone(), fieldLayout = this.fieldLayout)
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "MatchIndicesInternal").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
@@ -1043,6 +1090,12 @@ public open class MatchIndicesInternal<P : Pattern<Searcher>, Searcher>(
     public open fun next(): Pair<Int, String>? = this.value.nextMatch().map({ (start, end) -> Pair(start, this.value.haystack().getUnchecked(start until end)) })
 
     public open fun nextBack(): Pair<Int, String>? = this.value.nextMatchBack().map({ (start, end) -> Pair(start, this.value.haystack().getUnchecked(start until end)) })
+
+    public companion object {
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(value: Searcher, fieldLayout: TypeLayout<Searcher> = UnresolvedTypeLayout()): MatchIndicesInternal<P, Searcher> = MatchIndicesInternal<P, Searcher>(value, fieldLayout)
+
+        public fun <P : Pattern<Searcher>, Searcher> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Searcher> = UnresolvedTypeLayout()): MatchIndicesInternal<P, Searcher> = MatchIndicesInternal<P, Searcher>(fieldStorage, fieldLayout)
+    }
 }
 
 /**
@@ -1051,11 +1104,9 @@ public open class MatchIndicesInternal<P : Pattern<Searcher>, Searcher>(
  * [matchIndices]: str.matchIndices
  */
 public open class MatchIndices<P : Pattern<Searcher>, Searcher> internal constructor(
-    valueCtorArg: MatchIndicesInternal<P, Searcher>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<MatchIndicesInternal<P, Searcher>> = UnresolvedTypeLayout(),
 ) : Iterable<Pair<Int, String>> {
-    public var value: MatchIndicesInternal<P, Searcher> = valueCtorArg
-        internal set
-
     public var field0: MatchIndicesInternal<P, Searcher>
         get() = value
         set(v) {
@@ -1071,20 +1122,26 @@ public open class MatchIndices<P : Pattern<Searcher>, Searcher> internal constru
         }
     }
 
+    public var value: MatchIndicesInternal<P, Searcher>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(value: MatchIndicesInternal<P, Searcher>, fieldLayout: TypeLayout<MatchIndicesInternal<P, Searcher>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<MatchIndices<P, Searcher>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MatchIndices<P, Searcher>(ptr, layout) }, { it.value })
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "MatchIndices").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): Pair<Int, String>? = this.value.next()
 
-    public open fun clone(): MatchIndices<P, Searcher> = MatchIndices(this.value.clone())
+    public open fun clone(): MatchIndices<P, Searcher> = MatchIndices(this.value.clone(), fieldLayout = this.fieldLayout)
 
     public open fun nextBack(): Pair<Int, String>? = this.value.nextBack()
 
     public companion object {
-        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
-            value: MatchIndicesInternal<P, Searcher>,
-        ): MatchIndices<P, Searcher> = MatchIndices<P, Searcher>(
-            valueCtorArg = value,
-        )
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(value: MatchIndicesInternal<P, Searcher>, fieldLayout: TypeLayout<MatchIndicesInternal<P, Searcher>> = UnresolvedTypeLayout()): MatchIndices<P, Searcher> = MatchIndices<P, Searcher>(value, fieldLayout)
+
+        public fun <P : Pattern<Searcher>, Searcher> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<MatchIndicesInternal<P, Searcher>> = UnresolvedTypeLayout()): MatchIndices<P, Searcher> = MatchIndices<P, Searcher>(fieldStorage, fieldLayout)
     }
 }
 
@@ -1094,11 +1151,9 @@ public open class MatchIndices<P : Pattern<Searcher>, Searcher> internal constru
  * [rmatchIndices]: str.rmatchIndices
  */
 public open class RMatchIndices<P : Pattern<Searcher>, Searcher> internal constructor(
-    valueCtorArg: MatchIndicesInternal<P, Searcher>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<MatchIndicesInternal<P, Searcher>> = UnresolvedTypeLayout(),
 ) : Iterable<Pair<Int, String>> {
-    public var value: MatchIndicesInternal<P, Searcher> = valueCtorArg
-        internal set
-
     public var field0: MatchIndicesInternal<P, Searcher>
         get() = value
         set(v) {
@@ -1114,25 +1169,32 @@ public open class RMatchIndices<P : Pattern<Searcher>, Searcher> internal constr
         }
     }
 
+    public var value: MatchIndicesInternal<P, Searcher>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(value: MatchIndicesInternal<P, Searcher>, fieldLayout: TypeLayout<MatchIndicesInternal<P, Searcher>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<RMatchIndices<P, Searcher>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> RMatchIndices<P, Searcher>(ptr, layout) }, { it.value })
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "RMatchIndices").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): Pair<Int, String>? = this.value.nextBack()
 
-    public open fun clone(): RMatchIndices<P, Searcher> = RMatchIndices(this.value.clone())
+    public open fun clone(): RMatchIndices<P, Searcher> = RMatchIndices(this.value.clone(), fieldLayout = this.fieldLayout)
 
     public open fun nextBack(): Pair<Int, String>? = this.value.next()
 
     public companion object {
-        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
-            value: MatchIndicesInternal<P, Searcher>,
-        ): RMatchIndices<P, Searcher> = RMatchIndices<P, Searcher>(
-            valueCtorArg = value,
-        )
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(value: MatchIndicesInternal<P, Searcher>, fieldLayout: TypeLayout<MatchIndicesInternal<P, Searcher>> = UnresolvedTypeLayout()): RMatchIndices<P, Searcher> = RMatchIndices<P, Searcher>(value, fieldLayout)
+
+        public fun <P : Pattern<Searcher>, Searcher> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<MatchIndicesInternal<P, Searcher>> = UnresolvedTypeLayout()): RMatchIndices<P, Searcher> = RMatchIndices<P, Searcher>(fieldStorage, fieldLayout)
     }
 }
 
-public open class MatchesInternal<P : Pattern<Searcher>, Searcher>(
-    public var value: Searcher,
+public open class MatchesInternal<P : Pattern<Searcher>, Searcher> internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<Searcher> = UnresolvedTypeLayout(),
 ) {
     public var field0: Searcher
         get() = value
@@ -1140,9 +1202,17 @@ public open class MatchesInternal<P : Pattern<Searcher>, Searcher>(
             value = v
         }
 
+    public var value: Searcher
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(value: Searcher, fieldLayout: TypeLayout<Searcher> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<MatchesInternal<P, Searcher>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MatchesInternal<P, Searcher>(ptr, layout) }, { it.value })
+
     public open fun clone(): MatchesInternal<P, Searcher> {
         val s = this
-        return MatchesInternal(s.value.clone())
+        return MatchesInternal(s.value.clone(), fieldLayout = this.fieldLayout)
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "MatchesInternal").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
@@ -1156,6 +1226,12 @@ public open class MatchesInternal<P : Pattern<Searcher>, Searcher>(
         // SAFETY: `Searcher` guarantees that `start` and `end` lie on unicode boundaries.
         return this.value.nextMatchBack().map({ (a, b) -> this.value.haystack().getUnchecked(a until b) })
     }
+
+    public companion object {
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(value: Searcher, fieldLayout: TypeLayout<Searcher> = UnresolvedTypeLayout()): MatchesInternal<P, Searcher> = MatchesInternal<P, Searcher>(value, fieldLayout)
+
+        public fun <P : Pattern<Searcher>, Searcher> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Searcher> = UnresolvedTypeLayout()): MatchesInternal<P, Searcher> = MatchesInternal<P, Searcher>(fieldStorage, fieldLayout)
+    }
 }
 
 /**
@@ -1164,11 +1240,9 @@ public open class MatchesInternal<P : Pattern<Searcher>, Searcher>(
  * [matches]: str.matches
  */
 public open class Matches<P : Pattern<Searcher>, Searcher> internal constructor(
-    valueCtorArg: MatchesInternal<P, Searcher>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<MatchesInternal<P, Searcher>> = UnresolvedTypeLayout(),
 ) : Iterable<String> {
-    public var value: MatchesInternal<P, Searcher> = valueCtorArg
-        internal set
-
     public var field0: MatchesInternal<P, Searcher>
         get() = value
         set(v) {
@@ -1184,20 +1258,26 @@ public open class Matches<P : Pattern<Searcher>, Searcher> internal constructor(
         }
     }
 
+    public var value: MatchesInternal<P, Searcher>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(value: MatchesInternal<P, Searcher>, fieldLayout: TypeLayout<MatchesInternal<P, Searcher>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<Matches<P, Searcher>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Matches<P, Searcher>(ptr, layout) }, { it.value })
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "Matches").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? = this.value.next()
 
-    public open fun clone(): Matches<P, Searcher> = Matches(this.value.clone())
+    public open fun clone(): Matches<P, Searcher> = Matches(this.value.clone(), fieldLayout = this.fieldLayout)
 
     public open fun nextBack(): String? = this.value.nextBack()
 
     public companion object {
-        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
-            value: MatchesInternal<P, Searcher>,
-        ): Matches<P, Searcher> = Matches<P, Searcher>(
-            valueCtorArg = value,
-        )
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(value: MatchesInternal<P, Searcher>, fieldLayout: TypeLayout<MatchesInternal<P, Searcher>> = UnresolvedTypeLayout()): Matches<P, Searcher> = Matches<P, Searcher>(value, fieldLayout)
+
+        public fun <P : Pattern<Searcher>, Searcher> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<MatchesInternal<P, Searcher>> = UnresolvedTypeLayout()): Matches<P, Searcher> = Matches<P, Searcher>(fieldStorage, fieldLayout)
     }
 }
 
@@ -1207,11 +1287,9 @@ public open class Matches<P : Pattern<Searcher>, Searcher> internal constructor(
  * [rmatches]: str.rmatches
  */
 public open class RMatches<P : Pattern<Searcher>, Searcher> internal constructor(
-    valueCtorArg: MatchesInternal<P, Searcher>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<MatchesInternal<P, Searcher>> = UnresolvedTypeLayout(),
 ) : Iterable<String> {
-    public var value: MatchesInternal<P, Searcher> = valueCtorArg
-        internal set
-
     public var field0: MatchesInternal<P, Searcher>
         get() = value
         set(v) {
@@ -1227,20 +1305,26 @@ public open class RMatches<P : Pattern<Searcher>, Searcher> internal constructor
         }
     }
 
+    public var value: MatchesInternal<P, Searcher>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(value: MatchesInternal<P, Searcher>, fieldLayout: TypeLayout<MatchesInternal<P, Searcher>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<RMatches<P, Searcher>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> RMatches<P, Searcher>(ptr, layout) }, { it.value })
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "RMatches").field(this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun next(): String? = this.value.nextBack()
 
-    public open fun clone(): RMatches<P, Searcher> = RMatches(this.value.clone())
+    public open fun clone(): RMatches<P, Searcher> = RMatches(this.value.clone(), fieldLayout = this.fieldLayout)
 
     public open fun nextBack(): String? = this.value.next()
 
     public companion object {
-        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
-            value: MatchesInternal<P, Searcher>,
-        ): RMatches<P, Searcher> = RMatches<P, Searcher>(
-            valueCtorArg = value,
-        )
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(value: MatchesInternal<P, Searcher>, fieldLayout: TypeLayout<MatchesInternal<P, Searcher>> = UnresolvedTypeLayout()): RMatches<P, Searcher> = RMatches<P, Searcher>(value, fieldLayout)
+
+        public fun <P : Pattern<Searcher>, Searcher> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<MatchesInternal<P, Searcher>> = UnresolvedTypeLayout()): RMatches<P, Searcher> = RMatches<P, Searcher>(fieldStorage, fieldLayout)
     }
 }
 
@@ -1341,6 +1425,8 @@ public open class LinesAny(
     public open fun sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
 
     public open fun nextBack(): String? = this.value.nextBack()
+
+    public companion object
 }
 
 /**
@@ -1487,11 +1573,9 @@ public open class SplitAsciiWhitespace internal constructor(
  * [splitInclusive]: str.splitInclusive
  */
 public open class SplitInclusive<P : Pattern<Searcher>, Searcher> internal constructor(
-    valueCtorArg: SplitInternal<P, Searcher>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout(),
 ) : Iterable<String> {
-    public var value: SplitInternal<P, Searcher> = valueCtorArg
-        internal set
-
     public var field0: SplitInternal<P, Searcher>
         get() = value
         set(v) {
@@ -1507,12 +1591,20 @@ public open class SplitInclusive<P : Pattern<Searcher>, Searcher> internal const
         }
     }
 
+    public var value: SplitInternal<P, Searcher>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(value: SplitInternal<P, Searcher>, fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<SplitInclusive<P, Searcher>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> SplitInclusive<P, Searcher>(ptr, layout) }, { it.value })
+
     public open fun next(): String? = this.value.nextInclusive()
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "SplitInclusive").field("0", this.value).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
-    public open fun clone(): SplitInclusive<P, Searcher> = SplitInclusive(this.value.clone())
+    public open fun clone(): SplitInclusive<P, Searcher> = SplitInclusive(this.value.clone(), fieldLayout = this.fieldLayout)
 
     public open fun nextBack(): String? = this.value.nextBackInclusive()
 
@@ -1538,11 +1630,9 @@ public open class SplitInclusive<P : Pattern<Searcher>, Searcher> internal const
     public open fun remainder(): String? = this.value.remainder()
 
     public companion object {
-        public operator fun <P : Pattern<Searcher>, Searcher> invoke(
-            value: SplitInternal<P, Searcher>,
-        ): SplitInclusive<P, Searcher> = SplitInclusive<P, Searcher>(
-            valueCtorArg = value,
-        )
+        public operator fun <P : Pattern<Searcher>, Searcher> invoke(value: SplitInternal<P, Searcher>, fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout()): SplitInclusive<P, Searcher> = SplitInclusive<P, Searcher>(value, fieldLayout)
+
+        public fun <P : Pattern<Searcher>, Searcher> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<SplitInternal<P, Searcher>> = UnresolvedTypeLayout()): SplitInclusive<P, Searcher> = SplitInclusive<P, Searcher>(fieldStorage, fieldLayout)
     }
 }
 
@@ -1641,6 +1731,8 @@ public open class EncodeUtf16(
             })
         })
     }
+
+    public companion object
 }
 
 /**

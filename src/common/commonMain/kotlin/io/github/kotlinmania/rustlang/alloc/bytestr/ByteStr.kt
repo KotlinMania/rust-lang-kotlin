@@ -13,17 +13,11 @@ import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
 import io.github.kotlinmania.rustlang.core.ops.range.RangeTo
 import io.github.kotlinmania.rustlang.core.ops.range.RangeToInclusive
-import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
@@ -50,9 +44,8 @@ public typealias Owned = ByteString
  * The `Debug` and `Display` implementations for `ByteString` are the same as those for `ByteStr`,
  * showing invalid UTF-8 as hex escapes or the Unicode replacement character, respectively.
  */
-public open class ByteString internal constructor(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout(),
+public open class ByteString(
+    public var value: List<UByte>,
 ) : DerefPure, AsRef<List<UByte>>, AsMut<List<UByte>>, Borrow<List<UByte>>, BorrowMut<List<UByte>>, FromStr<Nothing> {
     public var field0: List<UByte>
         get() = value
@@ -60,15 +53,7 @@ public open class ByteString internal constructor(
             value = v
         }
 
-    public var value: List<UByte>
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-    internal constructor(value: List<UByte>, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
-
-    public fun pointerLayout(): TypeLayout<ByteString> = TransparentTypeLayout(fieldLayout, { ptr, layout -> ByteString(ptr, layout) }, { it.value })
-
-    public open fun clone(): ByteString = ByteString(value, fieldLayout)
+    public open fun clone(): ByteString = ByteString(value)
 
     public open fun asBytes(): List<UByte> = this.value
 
@@ -196,10 +181,6 @@ public open class ByteString internal constructor(
     public open fun partialCmp(other: ByteString): Ordering? = PartialOrd.partialCmp(this.value, other.value)
 
     public companion object {
-        public operator fun invoke(value: List<UByte>, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString = ByteString(value, fieldLayout)
-
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString = ByteString(fieldStorage, fieldLayout)
-
         // Omitted due to inference failures
         //
         // @unstable(feature = "byteStr", issue = "134915")
@@ -217,39 +198,39 @@ public open class ByteString internal constructor(
         // ByteString(s.intoBytes())
         // )
         // )
-        public fun from(s: ByteStr, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString = ByteString(s.value.toVec(), fieldLayout = fieldLayout)
+        public fun from(s: ByteStr): ByteString = ByteString(s.value.toVec())
 
-        public fun <I : Iterable<Char>> fromIter(iter: I, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString = ByteString(iter.iterator().joinToString("").intoBytes(), fieldLayout = fieldLayout)
+        public fun <I : Iterable<Char>> fromIter(iter: I): ByteString = ByteString(iter.iterator().joinToString("").intoBytes())
 
-        public fun <I : Iterable<UByte>> fromIterUByte(iter: I, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString = ByteString(iter.iterator().toMutableList(), fieldLayout = fieldLayout)
+        public fun <I : Iterable<UByte>> fromIterUByte(iter: I): ByteString = ByteString(iter.iterator().toMutableList())
 
-        public fun <I : Iterable<String>> fromIterString(iter: I, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString = ByteString(iter.iterator().joinToString("").intoBytes(), fieldLayout = fieldLayout)
+        public fun <I : Iterable<String>> fromIterString(iter: I): ByteString = ByteString(iter.iterator().joinToString("").intoBytes())
 
-        public fun <I : Iterable<List<UByte>>> fromIterUByteSlice(iter: I, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString {
+        public fun <I : Iterable<List<UByte>>> fromIterUByteSlice(iter: I): ByteString {
             val buf = mutableListOf<UByte>()
             for (b in iter) {
                 buf.addAll(b)
             }
-            return ByteString(buf, fieldLayout = fieldLayout)
+            return ByteString(buf)
         }
 
-        public fun <I : Iterable<ByteStr>> fromIterByteStr(iter: I, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString {
+        public fun <I : Iterable<ByteStr>> fromIterByteStr(iter: I): ByteString {
             val buf = mutableListOf<UByte>()
             for (b in iter) {
                 buf.addAll(b.value)
             }
-            return ByteString(buf, fieldLayout = fieldLayout)
+            return ByteString(buf)
         }
 
-        public fun <I : Iterable<ByteString>> fromIterByteString(iter: I, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): ByteString {
+        public fun <I : Iterable<ByteString>> fromIterByteString(iter: I): ByteString {
             val buf = mutableListOf<UByte>()
             for (b in iter) {
                 buf.append(b.value)
             }
-            return ByteString(buf, fieldLayout = fieldLayout)
+            return ByteString(buf)
         }
 
-        public fun fromStr(s: String, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): Result<ByteString, Nothing> = Result.Ok<ByteString, Nothing>(ByteString((s.encodeToByteArray().map { it.toUByte() }).toMutableList(), fieldLayout = fieldLayout))
+        public fun fromStr(s: String): Result<ByteString, Nothing> = Result.Ok<ByteString, Nothing>(ByteString((s.encodeToByteArray().map { it.toUByte() }).toMutableList()))
     }
 }
 
@@ -321,7 +302,7 @@ public fun List<UByte>.partialCmp(other: ByteString): Ordering? {
     return PartialOrd.partialCmp(thisRef, other.asBytes())
 }
 
-public fun ByteStr.toOwned(): ByteString = ByteString(this.value.toVec(), fieldLayout = UnresolvedTypeLayout<List<UByte>>())
+public fun ByteStr.toOwned(): ByteString = ByteString(this.value.toVec())
 
 public fun String.Companion.tryFrom(s: ByteString): Result<String, FromUtf8Error> = String.fromUtf8(s.value)
 

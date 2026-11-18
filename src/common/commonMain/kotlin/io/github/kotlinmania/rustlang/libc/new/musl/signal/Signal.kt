@@ -87,6 +87,8 @@ public open class SiginfoT(
         state = 31 * state + (this.siCode).hashCode()
         return state
     }
+
+    public companion object
 }
 
 public open class CAnonymousSiginfoTSiFields(
@@ -102,6 +104,8 @@ public open class CAnonymousSiFieldsSiCommon(
     public var second: CAnonymousSiCommonSecond,
 ) {
     public open fun clone(): CAnonymousSiFieldsSiCommon = CAnonymousSiFieldsSiCommon(first, second)
+
+    public companion object
 }
 
 public open class CAnonymousSiFieldsSigfault internal constructor(

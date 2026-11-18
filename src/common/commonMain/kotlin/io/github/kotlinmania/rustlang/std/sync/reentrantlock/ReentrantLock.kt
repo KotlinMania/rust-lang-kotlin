@@ -337,7 +337,11 @@ public open class Tid(
  */
 public open class ReentrantLockGuard<T>(
     public var lock: ReentrantLock<T>,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun deref(): T = this.lock.data
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
@@ -354,4 +358,6 @@ public open class ReentrantLockGuard<T>(
             }
         }
     }
+
+    public companion object
 }

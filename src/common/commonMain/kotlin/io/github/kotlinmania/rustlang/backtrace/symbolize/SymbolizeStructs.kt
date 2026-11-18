@@ -146,6 +146,8 @@ public open class Symbol(
         }
         return run { d.finish(); Result.Ok<Unit, Error>(Unit) }
     }
+
+    public companion object
 }
 
 // Maybe a parsed C++ symbol, if parsing the mangled symbol as Rust

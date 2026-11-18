@@ -20,4 +20,6 @@ public open class FilteredTests(
     }
 
     public open fun totalLen(): Int = this.tests.size + this.benches.size
+
+    public companion object
 }

@@ -35,6 +35,8 @@ public open class EagerStorage<T>(
     public fun pointerLayout(): TypeLayout<EagerStorage<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> EagerStorage<T>(ptr, layout) }, { it.value })
 
     // SAFETY: the target doesn't have threads.
+
+    public companion object
 }
 
 public sealed class State {

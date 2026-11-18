@@ -146,7 +146,11 @@ public sealed class PrintFmt {
 public open class BacktraceFrameFmt(
     public var fmt: BacktraceFmt,
     public var symbolIndex: Int,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     /**
      * Prints a `BacktraceFrame` with this frame formatter.
      *
@@ -301,4 +305,6 @@ public open class BacktraceFrameFmt(
     public open fun drop() {
         this.fmt.frameIndex += 1
     }
+
+    public companion object
 }

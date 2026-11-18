@@ -128,7 +128,11 @@ public open class BufWriter<W : Write<W>>(
     // flag tells the Drop impl if it should skip the flush.
     public var panicked: Boolean,
     public var inner: W,
-) : Write<BufWriter<W>>, Seek {
+) : Write<BufWriter<W>>, Seek, AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     /**
      * Unwraps this `BufWriter<W>`, returning the underlying writer.
      *
@@ -704,4 +708,6 @@ public open class WriterPanicked(
     public open fun fmt(f: StringBuilder): RustResult<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("BufWriter inner writer panicked, what data remains unwritten is not known"); RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun fmtDebug(f: StringBuilder): RustResult<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "WriterPanicked").field("buffer", "${this.buf.size}/${this.buf.capacity()}").finish(); RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
+
+    public companion object
 }

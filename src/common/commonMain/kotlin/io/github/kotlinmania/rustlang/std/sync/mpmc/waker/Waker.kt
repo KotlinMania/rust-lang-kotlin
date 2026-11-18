@@ -66,7 +66,11 @@ public open class Waker(
      * A list of operations waiting to be ready.
      */
     public var observers: MutableList<Entry>,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     /**
      * Registers a select operation.
      */
@@ -169,12 +173,16 @@ public open class SyncWaker internal constructor(
      * `true` if the waker is empty.
      */
     public var isEmpty: AtomicBool,
-) {
+) : AutoCloseable {
     /**
      * The inner `Waker`.
      */
     public var inner: Mutex<Waker> = innerCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     /**
      * Registers the current thread with an operation.

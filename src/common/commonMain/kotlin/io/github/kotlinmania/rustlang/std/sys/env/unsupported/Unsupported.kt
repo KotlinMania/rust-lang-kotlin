@@ -29,6 +29,8 @@ public open class Env(
     public open fun fmt(arg0: StringBuilder): Result<Unit, Error> = this.value
 
     public open fun next(): Pair<OsString, OsString>? = this.value
+
+    public companion object
 }
 
 public fun env(): Env {

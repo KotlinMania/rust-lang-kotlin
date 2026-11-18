@@ -456,6 +456,8 @@ public open class Messages(
             ancillaryResult
         }
     }
+
+    public companion object
 }
 
 /**

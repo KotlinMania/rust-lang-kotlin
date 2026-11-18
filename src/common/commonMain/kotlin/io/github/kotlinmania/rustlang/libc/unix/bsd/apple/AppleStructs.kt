@@ -97,6 +97,8 @@ public open class Timezone(
     public var marker: Unit,
 ) {
     public open fun clone(): Timezone = Timezone(data, marker)
+
+    public companion object
 }
 
 // Note(exhaustive): review for 1.0

@@ -8,6 +8,10 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.fuse.Fuse
 import io.github.kotlinmania.rustlang.core.iter.adapters.map.Map
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
@@ -18,6 +22,8 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
 
 private class DebugStruct(
@@ -53,25 +59,29 @@ private class DebugStruct(
  * for more.
  */
 public open class FlatMap<I, U, F, Item, IntoIter> internal constructor(
-    innerCtorArg: FlattenCompat<Map<I, F>, IntoIter>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<FlattenCompat<Map<I, F>, IntoIter>> = UnresolvedTypeLayout(),
 ) {
-    public var inner: FlattenCompat<Map<I, F>, IntoIter> = innerCtorArg
-        internal set
+    public var inner: FlattenCompat<Map<I, F>, IntoIter>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(inner: FlattenCompat<Map<I, F>, IntoIter>, fieldLayout: TypeLayout<FlattenCompat<Map<I, F>, IntoIter>> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<FlatMap<I, U, F, Item, IntoIter>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> FlatMap<I, U, F, Item, IntoIter>(ptr, layout) }, { it.inner })
 
     public open fun intoParts(): Triple<IntoIter?, I?, IntoIter?> = Triple(this.inner.frontiter, this.inner.iter.intoInner().map({ it.intoInner() }), this.inner.backiter)
 
-    public open fun clone(): FlatMap<I, U, F, Item, IntoIter> = FlatMap(inner = this.inner.clone())
+    public open fun clone(): FlatMap<I, U, F, Item, IntoIter> = FlatMap(inner = this.inner.clone(), fieldLayout = this.fieldLayout)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "FlatMap").field("inner", this.inner).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
-        public operator fun <I, U, F, Item, IntoIter> invoke(
-            inner: FlattenCompat<Map<I, F>, IntoIter>,
-        ): FlatMap<I, U, F, Item, IntoIter> = FlatMap<I, U, F, Item, IntoIter>(
-            innerCtorArg = inner,
-        )
+        public operator fun <I, U, F, Item, IntoIter> invoke(inner: FlattenCompat<Map<I, F>, IntoIter>, fieldLayout: TypeLayout<FlattenCompat<Map<I, F>, IntoIter>> = UnresolvedTypeLayout()): FlatMap<I, U, F, Item, IntoIter> = FlatMap<I, U, F, Item, IntoIter>(inner, fieldLayout)
 
-        public fun <Item, I, U> new(iter: I, f: (Item) -> U): FlatMap<I, U, (Item) -> U, Item, IntoIter> = FlatMap(inner = FlattenCompat.new(iter.map(f)))
+        public fun <I, U, F, Item, IntoIter> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<FlattenCompat<Map<I, F>, IntoIter>> = UnresolvedTypeLayout()): FlatMap<I, U, F, Item, IntoIter> = FlatMap<I, U, F, Item, IntoIter>(fieldStorage, fieldLayout)
+
+        public fun <Item, I, U> new(iter: I, f: (Item) -> U, fieldLayout: TypeLayout<FlattenCompat<Map<I, (Item) -> U>, IntoIter>> = UnresolvedTypeLayout()): FlatMap<I, U, (Item) -> U, Item, IntoIter> = FlatMap(inner = FlattenCompat.new(iter.map(f)), fieldLayout = fieldLayout)
     }
 }
 
@@ -112,19 +122,23 @@ public fun <Source, I, U, F> FlatMap<I, U, F, Item, IntoIter>.asInner(): Source 
  * [flatten]: Iterator.flatten()
  */
 public open class Flatten<I, Item> internal constructor(
-    innerCtorArg: FlattenCompat<I, IntoIter>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<FlattenCompat<I, IntoIter>> = UnresolvedTypeLayout(),
 ) : TrustedLen {
-    public var inner: FlattenCompat<I, IntoIter> = innerCtorArg
-        internal set
+    public var inner: FlattenCompat<I, IntoIter>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(inner: FlattenCompat<I, IntoIter>, fieldLayout: TypeLayout<FlattenCompat<I, IntoIter>> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<Flatten<I, Item>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Flatten<I, Item>(ptr, layout) }, { it.inner })
 
     public companion object {
-        public operator fun <I, Item> invoke(
-            inner: FlattenCompat<I, IntoIter>,
-        ): Flatten<I, Item> = Flatten<I, Item>(
-            innerCtorArg = inner,
-        )
+        public operator fun <I, Item> invoke(inner: FlattenCompat<I, IntoIter>, fieldLayout: TypeLayout<FlattenCompat<I, IntoIter>> = UnresolvedTypeLayout()): Flatten<I, Item> = Flatten<I, Item>(inner, fieldLayout)
 
-        public fun <Item, I : Iterator<Item>> new(iter: I): Flatten<I, Item> = Flatten(inner = FlattenCompat.new(iter))
+        public fun <I, Item> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<FlattenCompat<I, IntoIter>> = UnresolvedTypeLayout()): Flatten<I, Item> = Flatten<I, Item>(fieldStorage, fieldLayout)
+
+        public fun <Item, I : Iterator<Item>> new(iter: I, fieldLayout: TypeLayout<FlattenCompat<I, IntoIter>> = UnresolvedTypeLayout()): Flatten<I, Item> = Flatten(inner = FlattenCompat.new(iter), fieldLayout = fieldLayout)
 
         /**
          * Creates a `Flatten` iterator from the default value of `I`.
@@ -138,13 +152,13 @@ public open class Flatten<I, Item> internal constructor(
          * }
          * ```
          */
-        public fun <Item, I : Iterator<Item>> default(defaultIFn: () -> I): Flatten<I, Item> where I : Iterator<Item> = Flatten.new(defaultIFn())
+        public fun <Item, I : Iterator<Item>> default(fieldLayout: TypeLayout<FlattenCompat<I, IntoIter>> = UnresolvedTypeLayout(), defaultIFn: () -> I): Flatten<I, Item> where I : Iterator<Item> = Flatten.new(defaultIFn(), fieldLayout = fieldLayout)
     }
 }
 
 public fun <Item, I, U> Flatten<I, Item>.fmt(f: StringBuilder): Result<Unit, Unit> where I : Iterator<Item>, U : Iterator<Item> = run { DebugStruct(f, "Flatten").field("inner", this.inner).finish(); Result.Ok<Unit, Unit>(Unit) }
 
-public fun <Item, I, U> Flatten<I, Item>.clone(): Flatten<I, Item> where I : Iterator<Item>, U : Iterator<Item> = Flatten(inner = this.inner.clone())
+public fun <Item, I, U> Flatten<I, Item>.clone(): Flatten<I, Item> where I : Iterator<Item>, U : Iterator<Item> = Flatten(inner = this.inner.clone(), fieldLayout = this.fieldLayout)
 
 public fun <Item, I, U> Flatten<I, Item>.next(): Item? where I : Iterator<Item>, U : Iterator<Item> = this.inner.next()
 

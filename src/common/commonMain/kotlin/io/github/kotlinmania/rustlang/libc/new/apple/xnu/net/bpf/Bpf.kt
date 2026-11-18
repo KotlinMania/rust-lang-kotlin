@@ -113,6 +113,8 @@ public open class BpfDltlist(
     public var bflU: CAnonymousBflU,
 ) {
     public open fun clone(): BpfDltlist = BpfDltlist(bflLen, bflU)
+
+    public companion object
 }
 
 public class CAnonymousBflU internal constructor(

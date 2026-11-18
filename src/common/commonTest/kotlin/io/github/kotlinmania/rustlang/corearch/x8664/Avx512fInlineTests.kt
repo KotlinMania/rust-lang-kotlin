@@ -4,11 +4,7 @@ package io.github.kotlinmania.rustlang.corearch.x8664
 import io.github.kotlinmania.rustlang.core.hint.blackBox
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -11649,17 +11645,8 @@ public fun testMmStoreuEpi64() {
 
 public fun testMm512LoadEpi64() {
     open class Align(
-        public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
-    ) {
-        public var data: LongArray
-            get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
-
-        public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
-    }
+        public var data: LongArray,
+    )
     val a = Align(data = doubleArrayOf(4.0, 3.0, 2.0, 5.0, -8.0, -9.0, -64.0, -50.0))
     val p = (a.data).asPtr()
     val r = mm512LoadEpi64(blackBox(p))
@@ -11669,17 +11656,8 @@ public fun testMm512LoadEpi64() {
 
 public fun testMm256LoadEpi64() {
     open class Align(
-        public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
-    ) {
-        public var data: LongArray
-            get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
-
-        public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
-    }
+        public var data: LongArray,
+    )
     val a = Align(data = doubleArrayOf(4.0, 3.0, 2.0, 5.0))
     val p = (a.data).asPtr()
     val r = mm256LoadEpi64(blackBox(p))
@@ -11689,17 +11667,8 @@ public fun testMm256LoadEpi64() {
 
 public fun testMmLoadEpi64() {
     open class Align(
-        public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
-    ) {
-        public var data: LongArray
-            get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
-
-        public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
-    }
+        public var data: LongArray,
+    )
     val a = Align(data = doubleArrayOf(4.0, 3.0))
     val p = (a.data).asPtr()
     val r = mmLoadEpi64(blackBox(p))
@@ -11739,17 +11708,8 @@ public fun testMmStoreEpi64() {
 
 public fun testMm512LoadPd() {
     open class Align(
-        public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
-    ) {
-        public var data: DoubleArray
-            get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
-
-        public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
-    }
+        public var data: DoubleArray,
+    )
     val a = Align(data = doubleArrayOf(4.0, 3.0, 2.0, 5.0, -8.0, -9.0, -64.0, -50.0))
     val p = (a.data).asPtr()
     val r = mm512LoadPd(blackBox(p))

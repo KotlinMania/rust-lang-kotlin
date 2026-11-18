@@ -1190,33 +1190,18 @@ public fun <T> ConstPtr.alignOffset(align: Int, typeLayoutT: TypeLayout<T> = Unr
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
- * import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
- * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
- * import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
- * import io.github.kotlinmania.rustlang.core.mem.TypeLayout
- * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
- * import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
- * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  *
  * // On some platforms, the alignment of i32 is less than 4.
  * @repr(align(4))
- * open class AlignedI32(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) {
+ * open class AlignedI32(public var value: Int) {
  *     public var field0: Int
  *         get() = value
  *         set(v) {
  *             value = v
  *         }
- *
- *     public var value: Int
- *         get() = fieldLayout.readNative(fieldStorage.rawAddress)
- *         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
- *
- *     public constructor(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
- *
- *     public fun pointerLayout(): TypeLayout<AlignedI32> = TransparentTypeLayout(fieldLayout, { ptr, layout -> AlignedI32(ptr, layout) }, { it.value })
  * }
- * val localStorageL7C0 = AddressableLocal(AlignedI32(42, fieldLayout = PrimitiveLayouts.I32), AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.I32, { ptr, layout -> AlignedI32(ptr, layout) }, { it.value }), 4L))
+ * val localStorageL7C0 = AddressableLocal(AlignedI32(42), AlignedI32.typeLayout())
  * val ptr = ConstPtr(localStorageL7C0.asMutPtr().rawAddress)
  * check(ptr.isAligned())
  * check(!ConstPtr((ptr).rawAddress + ((1).toLong())).isAligned())
@@ -1238,42 +1223,27 @@ public fun <T> ConstPtr.isAligned(typeLayoutT: TypeLayout<T> = UnresolvedTypeLay
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
- * import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
- * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
- * import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
- * import io.github.kotlinmania.rustlang.core.mem.TypeLayout
- * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
- * import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
- * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  *
  * @feature(pointerIsAlignedTo)
  * public fun doctestEntry() {
  *     // On some platforms, the alignment of i32 is less than 4.
  *     @repr(align(4))
- *     open class AlignedI32(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) {
+ *     open class AlignedI32(public var value: Int) {
  *         public var field0: Int
  *             get() = value
  *             set(v) {
  *                 value = v
  *             }
- *
- *         public var value: Int
- *             get() = fieldLayout.readNative(fieldStorage.rawAddress)
- *             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
- *
- *         public constructor(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
- *
- *         public fun pointerLayout(): TypeLayout<AlignedI32> = TransparentTypeLayout(fieldLayout, { ptr, layout -> AlignedI32(ptr, layout) }, { it.value })
  *     }
- *     val localStorageL9C0 = AddressableLocal(AlignedI32(42, fieldLayout = PrimitiveLayouts.I32), AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.I32, { ptr, layout -> AlignedI32(ptr, layout) }, { it.value }), 4L))
+ *     val localStorageL9C0 = AddressableLocal(AlignedI32(42), AlignedI32.typeLayout())
  *     val ptr = ConstPtr(localStorageL9C0.asMutPtr().rawAddress)
  *     check(ptr.isAlignedTo(1))
  *     check(ptr.isAlignedTo(2))
  *     check(ptr.isAlignedTo(4))
  *     check(ConstPtr((ptr).rawAddress + ((2).toLong())).isAlignedTo(2))
  *     check(!ConstPtr((ptr).rawAddress + ((2).toLong())).isAlignedTo(4))
- *     check(ptr.isAlignedTo(8) != ConstPtr((ptr).rawAddress + ((1).toLong() * (AlignedTypeLayout(TransparentTypeLayout(PrimitiveLayouts.I32, { ptr, layout -> AlignedI32(ptr, layout) }, { it.value }), 4L)).strideBytes)).isAlignedTo(8))
+ *     check(ptr.isAlignedTo(8) != ConstPtr((ptr).rawAddress + ((1).toLong() * (AlignedI32.typeLayout()).strideBytes)).isAlignedTo(8))
  * }
  * ```
  */

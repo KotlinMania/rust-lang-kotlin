@@ -290,6 +290,8 @@ public open class Align1<T>(
     public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 1L)), AlignedTypeLayout(fieldLayout, 1L))
 
     public fun pointerLayout(): TypeLayout<Align1<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align1<T>(ptr, layout) }, { it.value })
+
+    public companion object
 }
 
 public open class Align2<T>(
@@ -309,6 +311,8 @@ public open class Align2<T>(
     public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 2L)), AlignedTypeLayout(fieldLayout, 2L))
 
     public fun pointerLayout(): TypeLayout<Align2<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align2<T>(ptr, layout) }, { it.value })
+
+    public companion object
 }
 
 public open class Align4<T>(
@@ -328,6 +332,8 @@ public open class Align4<T>(
     public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
 
     public fun pointerLayout(): TypeLayout<Align4<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align4<T>(ptr, layout) }, { it.value })
+
+    public companion object
 }
 
 public open class Align8<T>(
@@ -347,6 +353,8 @@ public open class Align8<T>(
     public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 8L)), AlignedTypeLayout(fieldLayout, 8L))
 
     public fun pointerLayout(): TypeLayout<Align8<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align8<T>(ptr, layout) }, { it.value })
+
+    public companion object
 }
 
 public open class Align16<T>(
@@ -366,6 +374,8 @@ public open class Align16<T>(
     public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
     public fun pointerLayout(): TypeLayout<Align16<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align16<T>(ptr, layout) }, { it.value })
+
+    public companion object
 }
 
 //

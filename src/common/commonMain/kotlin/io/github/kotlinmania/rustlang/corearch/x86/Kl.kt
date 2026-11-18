@@ -20,7 +20,9 @@ public open class EncodeKey128Output(
     public var field4: M128i,
     public var field5: M128i,
     public var field6: M128i,
-)
+) {
+    public companion object
+}
 
 public open class EncodeKey256Output(
     public var field0: UInt,
@@ -31,12 +33,16 @@ public open class EncodeKey256Output(
     public var field5: M128i,
     public var field6: M128i,
     public var field7: M128i,
-)
+) {
+    public companion object
+}
 
 public open class AesOutput(
     public var field0: UByte,
     public var field1: M128i,
-)
+) {
+    public companion object
+}
 
 public open class WideAesOutput(
     public var field0: UByte,
@@ -48,7 +54,9 @@ public open class WideAesOutput(
     public var field6: M128i,
     public var field7: M128i,
     public var field8: M128i,
-)
+) {
+    public companion object
+}
 
 public expect fun loadiwkey(integrityKey: M128i, keyLo: M128i, keyHi: M128i, control: UInt)
 

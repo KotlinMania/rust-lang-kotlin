@@ -154,9 +154,13 @@ public val TAG_SIMPLE: Int = 0x3
 public open class Repr internal constructor(
     field0CtorArg: NonNull,
     public var field1: Unit,
-) {
+) : AutoCloseable {
     public var field0: NonNull = field0CtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     // All the types `Repr` stores internally are ThreadSafe, and so is it.
 

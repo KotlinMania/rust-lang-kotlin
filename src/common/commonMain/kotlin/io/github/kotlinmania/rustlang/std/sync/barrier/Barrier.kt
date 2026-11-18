@@ -2,9 +2,6 @@
 package io.github.kotlinmania.rustlang.std.sync.barrier
 
 import io.github.kotlinmania.rustlang.core.fmt.Error
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.condvar.Condvar
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
@@ -152,31 +149,7 @@ public open class BarrierState(
     public var count: Int,
     public var generationId: Int,
 ) {
-    public companion object {
-        public fun typeLayout(): TypeLayout<BarrierState> =
-            object : TypeLayout<BarrierState> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 16L
-                override fun readNative(addr: Long): BarrierState =
-                    BarrierState(
-                        (PrimitiveLayouts.USIZE64).readNative(addr),
-                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
-                    )
-                override fun writeNative(addr: Long, value: BarrierState) {
-                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.count)
-                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.generationId)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): BarrierState =
-                    BarrierState(
-                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
-                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: BarrierState) {
-                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.count)
-                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.generationId)
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -222,25 +195,5 @@ public open class BarrierWaitResult(
      */
     public open fun isLeader(): Boolean = this.value
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<BarrierWaitResult> =
-            object : TypeLayout<BarrierWaitResult> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 1L
-                override fun readNative(addr: Long): BarrierWaitResult =
-                    BarrierWaitResult(
-                        (PrimitiveLayouts.BOOL).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: BarrierWaitResult) {
-                    (PrimitiveLayouts.BOOL).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): BarrierWaitResult =
-                    BarrierWaitResult(
-                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: BarrierWaitResult) {
-                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.value)
-                }
-            }
-    }
+    public companion object
 }

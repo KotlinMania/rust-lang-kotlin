@@ -354,6 +354,8 @@ public open class InputEvent(
     public var value: S32,
 ) {
     public open fun clone(): InputEvent = InputEvent(time, type, code, value)
+
+    public companion object
 }
 
 public open class InputId(
@@ -1155,6 +1157,8 @@ public open class PosixSpawnattrT(
     public var pad: IntArray,
 ) {
     public open fun clone(): PosixSpawnattrT = PosixSpawnattrT(flags, pgrp, sd, ss, prio, sp, policy, pad)
+
+    public companion object
 }
 
 public open class Genlmsghdr(
@@ -1675,6 +1679,8 @@ public open class In6Ifreq(
     public var ifr6Ifindex: CInt,
 ) {
     public open fun clone(): In6Ifreq = In6Ifreq(ifr6Addr, ifr6Prefixlen, ifr6Ifindex)
+
+    public companion object
 }
 
 public open class OpenHow(
@@ -2190,6 +2196,8 @@ public open class IwScanReq(
     public var channelList: List<IwFreq>,
 ) {
     public open fun clone(): IwScanReq = IwScanReq(scanType, essidLen, numChannels, flags, bssid, essid, minChannelTime, maxChannelTime, channelList)
+
+    public companion object
 }
 
 public open class IwEncodeExt(
@@ -2202,6 +2210,8 @@ public open class IwEncodeExt(
     public var key: UByteArray,
 ) {
     public open fun clone(): IwEncodeExt = IwEncodeExt(extFlags, txSeq, rxSeq, addr, alg, keyLen, key)
+
+    public companion object
 }
 
 public open class IwPmksa(
@@ -2210,6 +2220,8 @@ public open class IwPmksa(
     public var pmkid: UByteArray,
 ) {
     public open fun clone(): IwPmksa = IwPmksa(cmd, bssid, pmkid)
+
+    public companion object
 }
 
 public open class IwPmkidCand(
@@ -2218,6 +2230,8 @@ public open class IwPmkidCand(
     public var bssid: Sockaddr,
 ) {
     public open fun clone(): IwPmkidCand = IwPmkidCand(flags, index, bssid)
+
+    public companion object
 }
 
 public open class IwStatistics(
@@ -4209,6 +4223,8 @@ public open class Fpos64T(
     public var marker: Unit,
 ) {
     public open fun clone(): Fpos64T = Fpos64T(data, marker)
+
+    public companion object
 }
 
 public open class IwThrspy(
@@ -4218,6 +4234,8 @@ public open class IwThrspy(
     public var high: IwQuality,
 ) {
     public open fun clone(): IwThrspy = IwThrspy(addr, qual, low, high)
+
+    public companion object
 }
 
 public open class IwMlme(
@@ -4226,6 +4244,8 @@ public open class IwMlme(
     public var addr: Sockaddr,
 ) {
     public open fun clone(): IwMlme = IwMlme(cmd, reasonCode, addr)
+
+    public companion object
 }
 
 public open class IwMichaelmicfailure(
@@ -4234,6 +4254,8 @@ public open class IwMichaelmicfailure(
     public var tsc: UByteArray,
 ) {
     public open fun clone(): IwMichaelmicfailure = IwMichaelmicfailure(flags, srcAddr, tsc)
+
+    public companion object
 }
 
 public open class AfAlgIv(
@@ -4333,6 +4355,8 @@ public open class IwEvent(
     public var u: IwreqData,
 ) {
     public open fun clone(): IwEvent = IwEvent(len, cmd, u)
+
+    public companion object
 }
 
 public open class CAnonymousIwreq(
@@ -4346,6 +4370,8 @@ public open class Iwreq(
     public var u: IwreqData,
 ) {
     public open fun clone(): Iwreq = Iwreq(ifrIfrn, u)
+
+    public companion object
 }
 
 // linux/ptpClock.h
@@ -4371,6 +4397,8 @@ public open class PtpPeroutRequest(
     public var anonymous2: CAnonymousPtpPeroutRequest2,
 ) {
     public open fun clone(): PtpPeroutRequest = PtpPeroutRequest(anonymous1, period, index, flags, anonymous2)
+
+    public companion object
 }
 
 // linux/ifXdp.h
@@ -4379,6 +4407,8 @@ public open class XskTxMetadata(
     public var xskTxMetadataUnion: CAnonymousXskTxMetadataUnion,
 ) {
     public open fun clone(): XskTxMetadata = XskTxMetadata(flags, xskTxMetadataUnion)
+
+    public companion object
 }
 
 public open class CAnonymousXskTxMetadataUnion(

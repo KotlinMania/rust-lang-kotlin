@@ -128,6 +128,8 @@ public open class Aligned8<T>(
     public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 8L)), AlignedTypeLayout(fieldLayout, 8L))
 
     public fun pointerLayout(): TypeLayout<Aligned8<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Aligned8<T>(ptr, layout) }, { it.value })
+
+    public companion object
 }
 
 public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit) {

@@ -12,9 +12,13 @@ import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlernone
 
 public open class Handler internal constructor(
     dataCtorArg: MutPtr,
-) {
+) : AutoCloseable {
     public var data: MutPtr = dataCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun drop() {
         // The stack overflow detection logic, even if disabled, has some

@@ -1849,6 +1849,8 @@ public open class DisplaySeconds(
             }
         return fmtDecimal(f, this.value.secs, this.value.nanos.asInner(), NANOS_PER_SEC / 10u, prefix, "s")
     }
+
+    public companion object
 }
 
 /**
@@ -1886,6 +1888,8 @@ public open class TryFromFloatSecsError(
                 "cannot convert float seconds to Duration: value is either too big or NaN"
             }
         }.fmt(f)
+
+    public companion object
 }
 
 public sealed class TryFromFloatSecsErrorKind {

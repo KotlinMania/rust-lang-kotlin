@@ -506,12 +506,16 @@ public open class AsyncPipe internal constructor(
     // needs a stable address
     public var dst: MutableList<UByte>,
     public var state: State,
-) {
+) : AutoCloseable {
     public var pipe: Handle = pipeCtorArg
         internal set
 
     public var event: Handle = eventCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     /**
      * Executes an overlapped read operation.

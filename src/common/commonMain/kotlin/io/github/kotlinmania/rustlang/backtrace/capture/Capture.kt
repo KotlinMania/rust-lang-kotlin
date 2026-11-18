@@ -540,6 +540,8 @@ public open class BacktraceSymbol(
     public open fun colno(): UInt? = this.colno
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Error> = run { DebugStruct(fmt, "BacktraceSymbol").field("name", this.name()).field("addr", this.addr()).field("filename", this.filename()).field("lineno", this.lineno()).field("colno", this.colno()).finish(); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 public open class SerializedFrame(
@@ -547,7 +549,9 @@ public open class SerializedFrame(
     public var symbolAddress: Int,
     public var moduleBaseAddress: Int?,
     public var symbols: List<BacktraceSymbol>?,
-)
+) {
+    public companion object
+}
 
 public fun <S> BacktraceFrame.serialize(s: S): Result<Ok, Error> where S : Serializer {
     val frame = this.frame

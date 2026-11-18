@@ -1795,6 +1795,8 @@ public open class Immut(
         set(v) {
             value = v
         }
+
+    public companion object
 }
 
 public open class Mut(
@@ -1805,6 +1807,8 @@ public open class Mut(
         set(v) {
             value = v
         }
+
+    public companion object
 }
 
 public open class ValMut(
@@ -1815,6 +1819,8 @@ public open class ValMut(
         set(v) {
             value = v
         }
+
+    public companion object
 }
 
 public interface BorrowType {

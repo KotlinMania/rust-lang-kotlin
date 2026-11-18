@@ -3,12 +3,10 @@ package io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo
 
 import io.github.kotlinmania.rustlang.core.hint.spinLoop
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.addrOf
 import io.github.kotlinmania.rustlang.core.mem.addrOfMut
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -52,7 +50,9 @@ public open class ThreadInfo(
     public var tid: ULong,
     public var name: String?,
     public var guardPageRange: IntRange,
-)
+) {
+    public companion object
+}
 
 public var LOCK: Mutex<Unit> = Mutex.new(Unit)
 
@@ -63,26 +63,16 @@ public var SPIN_LOCK: AtomicUsize = AtomicUsize.new(0)
 // items are removed.
 public var THREAD_INFO: MutableMap<Int, ThreadInfo> = mutableMapOf()
 
-public open class UnlockOnDrop {
+public open class UnlockOnDrop : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         SPIN_LOCK.store(0, Ordering.Release)
     }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<UnlockOnDrop> =
-            object : TypeLayout<UnlockOnDrop> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): UnlockOnDrop =
-                    UnlockOnDrop()
-                override fun writeNative(addr: Long, value: UnlockOnDrop) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): UnlockOnDrop =
-                    UnlockOnDrop()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: UnlockOnDrop) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**

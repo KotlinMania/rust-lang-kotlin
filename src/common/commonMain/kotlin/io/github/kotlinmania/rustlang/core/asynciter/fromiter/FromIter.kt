@@ -2,10 +2,6 @@
 package io.github.kotlinmania.rustlang.core.asynciter.fromiter
 
 import io.github.kotlinmania.rustlang.core.asynciter.asynciter.AsyncIterator
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.task.poll.Poll
 import io.github.kotlinmania.rustlang.core.task.wake.Context
 
@@ -28,27 +24,7 @@ public open class FromIter<I>(
 
     public override fun sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
 
-    public companion object {
-        public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<FromIter<I>> =
-            object : TypeLayout<FromIter<I>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutI.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): FromIter<I> =
-                    FromIter(
-                        (typeLayoutI).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: FromIter<I>) {
-                    (typeLayoutI).writeNative(addr, value.iter)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): FromIter<I> =
-                    FromIter(
-                        (typeLayoutI).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: FromIter<I>) {
-                    (typeLayoutI).writeBytes(buf, offset, value.iter)
-                }
-            }
-    }
+    public companion object
 }
 
 /**

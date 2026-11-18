@@ -201,7 +201,11 @@ public open class VaListInner internal constructor(
 public open class VaList(
     public var inner: VaListInner,
     public var marker: PhantomCovariantLifetime,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
         // No need to include `_marker` in debug output.
         return run { DebugTuple(f, "VaList").field(this.inner).finish(); Result.Ok<Unit, Unit>(Unit) }
@@ -268,6 +272,8 @@ public open class VaList(
         // SAFETY: the caller must uphold the safety contract for `vaArg`.
         return vaArg(this)
     }
+
+    public companion object
 }
 
 // We may unseal this trait in the future, but currently our `vaArg` implementations don't support

@@ -83,6 +83,8 @@ public open class Context(
     public var padding2: UIntArray,
 ) {
     public open fun clone(): Context = Context(contextFlags, r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, sp, lr, pc, cpsr, fpsrc, padding, u, bvr, bcr, wvr, wcr, padding2)
+
+    public companion object
 }
 
 public val IMAGE_FILE_MACHINE_ARMNT: ImageFileMachine = 0x01c4u.toUShort()

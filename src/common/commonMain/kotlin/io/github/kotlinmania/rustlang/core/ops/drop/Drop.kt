@@ -189,7 +189,7 @@ import io.github.kotlinmania.rustlang.core.pin.Pin
  * [drop check]: ../../nomicon/dropck.html
  * [nomicon]: ../../nomicon/phantom-data.html#an-exception-the-special-case-of-the-standard-library-and-its-unstable-mayDangle
  */
-public interface Drop {
+public interface Drop : AutoCloseable {
     /**
      * Executes the destructor for this type.
      *
@@ -242,4 +242,6 @@ public interface Drop {
      * See also [Drop.drop] for more details.
      */
     public fun pinDrop() {}
+
+    public override fun close(): Unit = drop()
 }

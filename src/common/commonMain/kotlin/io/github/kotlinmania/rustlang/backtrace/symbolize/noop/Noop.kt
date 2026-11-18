@@ -25,6 +25,8 @@ public open class Symbol(
     public open fun lineno(): UInt? = null
 
     public open fun colno(): UInt? = null
+
+    public companion object
 }
 
 public fun clearSymbolCache() {}

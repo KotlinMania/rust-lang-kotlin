@@ -477,6 +477,8 @@ public open class StatxExtraFields(
     public var stxBtime: StatxTimestamp,
 ) {
     public open fun clone(): StatxExtraFields = StatxExtraFields(stxMask, stxBtime)
+
+    public companion object
 }
 
 // We prefer `statx` on Linux if available, which contains file creation time,
@@ -576,7 +578,9 @@ public fun tryStatx(fd: CInt, path: ConstPtr, flags: Int, mask: UInt): RustResul
 public open class InnerReadDir(
     public var dirp: DirStream,
     public var root: PathBuf,
-)
+) {
+    public companion object
+}
 
 public open class ReadDir(
     public var inner: InnerReadDir,
@@ -662,7 +666,7 @@ public open class ReadDir(
 
 public open class DirStream internal constructor(
     valueCtorArg: MutPtr,
-) {
+) : AutoCloseable {
     public var value: MutPtr = valueCtorArg
         internal set
 
@@ -671,6 +675,10 @@ public open class DirStream internal constructor(
         set(v) {
             value = v
         }
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun drop() {
         // dirfd isn't supported everywhere
@@ -795,6 +803,8 @@ public open class DirEntry(
     public open fun ino(): ULong = this.entry.dIno
 
     public open fun fileNameOsStr(): OsStr = OsStr.fromBytes(this.name.asBytes())
+
+    public companion object
 }
 
 // Define a minimal subset of fields we need from `dirent64`, especially since
@@ -1062,6 +1072,8 @@ public open class FileTimes(
     public open fun setCreated(t: SystemTime) {
         this.created = t
     }
+
+    public companion object
 }
 
 public open class FileType(
@@ -1618,6 +1630,8 @@ public open class CachedFileMetadata(
     public override fun isWriteVectored(): Boolean = this.field0.isWriteVectored()
 
     public override fun flush(): Result<Unit> = this.field0.flush()
+
+    public companion object
 }
 
 public fun copy(from: Path, to: Path): RustResult<ULong, Error> {

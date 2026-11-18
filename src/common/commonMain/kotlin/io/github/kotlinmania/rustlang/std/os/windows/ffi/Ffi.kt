@@ -145,4 +145,6 @@ public open class EncodeWide(
     public open fun next(): UShort? = this.inner.next()
 
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
+
+    public companion object
 }

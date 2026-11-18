@@ -4,6 +4,7 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.intrinsics.KmForgettableResource
 import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
 import io.github.kotlinmania.rustlang.core.intrinsics.readViaCopy
 import io.github.kotlinmania.rustlang.core.intrinsics.typedSwapNonoverlapping
@@ -132,7 +133,7 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
  * [ub]: ../../reference/behavior-considered-undefined.html
  */
 public fun <T> forget(t: T) {
-    t
+    if (t is KmForgettableResource) t.disarmCleaner()
 }
 
 /**
@@ -912,7 +913,9 @@ public fun <T> replace(dest: T, src: T, typeLayoutT: TypeLayout<T> = UnresolvedT
  * // still available
  * ```
  */
-public fun <T> drop(x: T) {}
+public fun <T> drop(x: T) {
+    if (x is AutoCloseable) x.close()
+}
 
 /**
  * Bitwise-copies a value.

@@ -42,6 +42,8 @@ public open class Ready<T>(
      * ```
      */
     public open fun intoInner(): T = (this.value ?: error("`into_inner()` should not be called on `Ready` after completion"))
+
+    public companion object
 }
 
 /**

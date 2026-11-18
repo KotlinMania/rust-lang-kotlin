@@ -73,7 +73,11 @@ public open class ThinBox<T>(
     // but that would be invariant in `T`, and we want covariance.
     public var ptr: WithOpaqueHeader,
     public var marker: Unit,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     /**
      * `ThinBox<T>` is `Send` if `T` is `Send` because the data is owned.
      */

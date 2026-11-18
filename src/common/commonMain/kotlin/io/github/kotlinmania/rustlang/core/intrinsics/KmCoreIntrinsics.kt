@@ -341,3 +341,16 @@ public fun kmInternWideStr(literal: String): ConstPtr {
     internedWideStrPool[literal] = addr
     return ConstPtr(addr)
 }
+
+public interface KmForgettableResource : AutoCloseable {
+    public fun disarmCleaner()
+}
+
+public expect class KmResourceCleaner internal constructor() : KmForgettableResource {
+    public fun cleanNow()
+    public fun disarm()
+    public override fun disarmCleaner()
+    public override fun close()
+}
+
+public expect fun kmRegisterResourceCleaner(owner: Any, cleanup: () -> Unit): KmResourceCleaner

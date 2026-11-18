@@ -58,6 +58,8 @@ public open class Statfs(
     public var fSpare: LongArray,
 ) {
     public open fun clone(): Statfs = Statfs(fType, fBsize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFsid, fNamelen, fFrsize, fSpare)
+
+    public companion object
 }
 
 public open class Flock(
@@ -448,6 +450,8 @@ public open class Statfs64(
     public var fSpare: LongArray,
 ) {
     public open fun clone(): Statfs64 = Statfs64(fType, fBsize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFsid, fNamelen, fFrsize, fFlags, fSpare)
+
+    public companion object
 }
 
 public open class PthreadAttrT(

@@ -342,6 +342,8 @@ public open class LookupHost(
     }
 
     public open fun next(): SocketAddr? = this.value
+
+    public companion object
 }
 
 public fun lookupHost(host: String, port: UShort): Result<LookupHost, Error> = unsupported()

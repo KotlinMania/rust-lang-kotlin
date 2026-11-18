@@ -19,7 +19,9 @@ public open class Token(
     public var array: ArrayToken,
     public var list: ListToken,
     public var zero: ZeroToken,
-)
+) {
+    public companion object
+}
 
 /**
  * Identifier associated with an operation by a specific thread on a specific channel.

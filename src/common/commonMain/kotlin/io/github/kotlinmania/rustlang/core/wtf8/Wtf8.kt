@@ -661,6 +661,8 @@ public open class Wtf8CodePoints(
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "Wtf8CodePoints").field(Wtf8.fromBytesUnchecked(this.bytes.toList())).finish(); Result.Ok<Unit, Unit>(Unit) }
+
+    public companion object
 }
 
 /**
@@ -739,4 +741,6 @@ public open class EncodeWide(
         f.append(")")
         return Result.Ok<Unit, Unit>(Unit)
     }
+
+    public companion object
 }

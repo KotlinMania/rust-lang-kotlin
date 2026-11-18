@@ -393,4 +393,6 @@ public open class Incoming(
     public open fun next(): Result<UnixStream, io.github.kotlinmania.rustlang.core.io.error.Error>? = this.listener.accept().map({ s -> s.first })
 
     public open fun sizeHint(): Pair<Int, Int?> = Pair(Int.MAX_VALUE, null)
+
+    public companion object
 }

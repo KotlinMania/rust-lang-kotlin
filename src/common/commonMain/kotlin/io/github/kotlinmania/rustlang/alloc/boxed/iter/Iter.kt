@@ -116,6 +116,8 @@ public open class BoxedArrayIntoIter<T, A : Allocator>(
     public var inner: ArrayDeque<T>,
 ) {
     public val n: Int = 0
+
+    public companion object
 }
 
 /**

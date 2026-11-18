@@ -110,7 +110,7 @@ public typealias CFDictionaryRef = CFTypeRef
  */
 public open class CFHandle internal constructor(
     valueCtorArg: MutPtr,
-) {
+) : AutoCloseable {
     public var value: MutPtr = valueCtorArg
         internal set
 
@@ -119,6 +119,10 @@ public open class CFHandle internal constructor(
         set(v) {
             value = v
         }
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun kCFAllocatorNull(): CFAllocatorRef {
         // Available: in all CF versions.

@@ -184,6 +184,8 @@ public open class Context(
     public var wvr: ULongArray,
 ) {
     public open fun clone(): Context = Context(contextFlags, cpsr, anonymous, sp, pc, v, fpcr, fpsr, bcr, bvr, wcr, wvr)
+
+    public companion object
 }
 
 public open class Context0(
@@ -617,6 +619,8 @@ public open class ImageArm64RuntimeFunctionEntry(
     public var anonymous: ImageArm64RuntimeFunctionEntry0,
 ) {
     public open fun clone(): ImageArm64RuntimeFunctionEntry = ImageArm64RuntimeFunctionEntry(beginAddress, anonymous)
+
+    public companion object
 }
 
 public open class ImageArm64RuntimeFunctionEntry0(
@@ -662,6 +666,8 @@ public open class ImageRuntimeFunctionEntry(
     public var anonymous: ImageRuntimeFunctionEntry0,
 ) {
     public open fun clone(): ImageRuntimeFunctionEntry = ImageRuntimeFunctionEntry(beginAddress, endAddress, anonymous)
+
+    public companion object
 }
 
 public open class ImageRuntimeFunctionEntry0(
@@ -2045,6 +2051,8 @@ public open class UnwindHistoryTable(
     public var entry: List<UnwindHistoryTableEntry>,
 ) {
     public open fun clone(): UnwindHistoryTable = UnwindHistoryTable(count, localHint, globalHint, search, once, lowAddress, highAddress, entry)
+
+    public companion object
 }
 
 public open class UnwindHistoryTableEntry internal constructor(

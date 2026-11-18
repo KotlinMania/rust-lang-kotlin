@@ -65,7 +65,11 @@ public typealias Hasher = DefaultHasher
 
 public open class Droppable(
     public var k: Int,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         DROP_VECTOR.with({ slot ->
             slot.borrowMut()[this.k] -= 1
@@ -106,11 +110,17 @@ public open class Droppable(
 
 public open class MyAllocInner(
     public var dropCount: AtomicI8,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         println("MyAlloc freed.")
         this.dropCount.fetchSub(1, Ordering.SeqCst)
     }
+
+    public companion object
 }
 
 public open class MyAlloc(
@@ -140,7 +150,11 @@ public open class CheckedCloneDrop<T>(
     public var panicInDrop: Boolean,
     public var dropped: Boolean,
     public var data: T,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun clone(): CheckedCloneDrop<T> {
         if (this.panicInClone) {
             error("panic in clone")

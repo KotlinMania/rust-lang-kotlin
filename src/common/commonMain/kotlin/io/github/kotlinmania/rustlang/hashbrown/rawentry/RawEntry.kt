@@ -349,6 +349,8 @@ public open class RawEntryBuilderMut<K, V, S, A : Allocator>(
         }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "RawEntryBuilder").finish(); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 /**
@@ -1458,4 +1460,6 @@ public open class RawEntryBuilder<K, V, S, A : Allocator>(
     public open fun fromHash(hash: ULong, isMatch: (K) -> Boolean): Pair<K, V>? = this.search(hash, isMatch)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "RawEntryBuilder").finish(); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }

@@ -46,6 +46,8 @@ public open class Pending<T>(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Pending").finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun clone(): Pending<T> = pending()
+
+    public companion object
 }
 
 /**

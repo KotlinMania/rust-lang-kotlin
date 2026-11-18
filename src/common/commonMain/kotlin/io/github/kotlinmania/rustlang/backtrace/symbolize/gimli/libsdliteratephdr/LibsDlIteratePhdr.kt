@@ -31,7 +31,9 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.DlPhdrInfo
 public open class CallbackData(
     public var libs: List<Library>,
     public var maps: List<MapsEntry>?,
-)
+) {
+    public companion object
+}
 
 public fun nativeLibraries(): List<Library> {
     val cbData = CallbackData(libs = mutableListOf(), maps = parseMaps().ok())

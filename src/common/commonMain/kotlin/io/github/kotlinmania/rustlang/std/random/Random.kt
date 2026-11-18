@@ -1,8 +1,6 @@
 // port-lint: source random.rs
 package io.github.kotlinmania.rustlang.std.random
 
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.random.*
 
 // Random value generation.
@@ -151,21 +149,7 @@ public open class SystemRng : Rng {
         fillBytes(bytes)
     }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<SystemRng> =
-            object : TypeLayout<SystemRng> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): SystemRng =
-                    SystemRng()
-                override fun writeNative(addr: Long, value: SystemRng) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): SystemRng =
-                    SystemRng()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: SystemRng) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**

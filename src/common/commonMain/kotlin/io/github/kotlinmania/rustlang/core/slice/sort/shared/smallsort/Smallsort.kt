@@ -236,7 +236,11 @@ public open class CopyOnDrop<T>(
     public var src: ConstPtr,
     public var dst: MutPtr,
     public var len: Int,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         // SAFETY: `src` must contain `len` initialized elements, and dst must
         // be valid to write `len` elements.

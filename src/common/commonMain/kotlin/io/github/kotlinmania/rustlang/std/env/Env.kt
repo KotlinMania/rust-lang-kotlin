@@ -143,6 +143,8 @@ public open class Vars(
         val inner = this.inner.inner
         return run { DebugStruct(f, "Vars").field("inner", inner).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
     }
+
+    public companion object
 }
 
 /**
@@ -172,6 +174,8 @@ public open class VarsOs(
         val inner = this.inner
         return run { DebugStruct(f, "VarsOs").field("inner", inner).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
     }
+
+    public companion object
 }
 
 /**
@@ -475,6 +479,8 @@ public open class SplitPaths(
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "SplitPaths").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
+
+    public companion object
 }
 
 /**
@@ -541,6 +547,8 @@ public open class SplitPathsRef(
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "SplitPathsRef").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
+
+    public companion object
 }
 
 /**
@@ -574,6 +582,8 @@ public open class JoinPathsError(
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.inner.fmt(f)
 
     public open fun description(): String = this.inner.description()
+
+    public companion object
 }
 
 /**
@@ -847,6 +857,8 @@ public open class Args(
         val inner = this.inner.inner
         return run { DebugStruct(f, "Args").field("inner", inner).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
     }
+
+    public companion object
 }
 
 /**
@@ -902,6 +914,8 @@ public open class ArgsOs(
         val inner = this.inner
         return run { DebugStruct(f, "ArgsOs").field("inner", inner).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
     }
+
+    public companion object
 }
 
 /**

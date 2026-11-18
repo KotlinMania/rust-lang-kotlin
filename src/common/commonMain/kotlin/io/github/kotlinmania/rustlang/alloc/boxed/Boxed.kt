@@ -288,7 +288,11 @@ public fun <T> fromNonNullT(value: BoxRaw<T>): NonNull = value.asNonNullPtr()
 public open class Box<T, A : Allocator>(
     public var field0: BoxRaw<T>,
     public var field1: A,
-) : DerefPure, LegacyReceiver, PinSafePointer, Borrow<T>, BorrowMut<T>, AsRef<T>, AsMut<T> {
+) : DerefPure, LegacyReceiver, PinSafePointer, Borrow<T>, BorrowMut<T>, AsRef<T>, AsMut<T>, AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         // the T in the Holder is dropped by the compiler before the destructor is run
         val ptr = this.field0

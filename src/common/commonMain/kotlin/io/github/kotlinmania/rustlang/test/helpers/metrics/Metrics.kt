@@ -1,9 +1,6 @@
 // port-lint: source helpers/metrics.rs
 package io.github.kotlinmania.rustlang.test.helpers.metrics
 
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.iter
 
 // Benchmark metrics.
@@ -15,30 +12,6 @@ public open class Metric(
     public open fun clone(): Metric = Metric(value, noise)
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Metric> =
-            object : TypeLayout<Metric> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 16L
-                override fun readNative(addr: Long): Metric =
-                    Metric(
-                        (PrimitiveLayouts.F64).readNative(addr),
-                        (PrimitiveLayouts.F64).readNative(addr + 8L),
-                    )
-                override fun writeNative(addr: Long, value: Metric) {
-                    (PrimitiveLayouts.F64).writeNative(addr, value.value)
-                    (PrimitiveLayouts.F64).writeNative(addr + 8L, value.noise)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Metric =
-                    Metric(
-                        (PrimitiveLayouts.F64).readBytes(buf, offset),
-                        (PrimitiveLayouts.F64).readBytes(buf, offset + 8),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Metric) {
-                    (PrimitiveLayouts.F64).writeBytes(buf, offset, value.value)
-                    (PrimitiveLayouts.F64).writeBytes(buf, offset + 8, value.noise)
-                }
-            }
-
         public fun new(value: Double, noise: Double): Metric = Metric(value = value, noise = noise)
     }
 }

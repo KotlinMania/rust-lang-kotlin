@@ -3,8 +3,6 @@ package io.github.kotlinmania.rustlang.core.num.imp.x87f80
 
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.fmt.Result
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 private class DebugTuple(
     private val out: StringBuilder,
@@ -44,21 +42,7 @@ private class DebugTuple(
 public open class X87F80Raw {
     public open fun clone(): X87F80Raw = X87F80Raw()
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<X87F80Raw> =
-            object : TypeLayout<X87F80Raw> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): X87F80Raw =
-                    X87F80Raw()
-                override fun writeNative(addr: Long, value: X87F80Raw) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): X87F80Raw =
-                    X87F80Raw()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: X87F80Raw) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -83,25 +67,5 @@ public open class X87F80(
 
     public open fun fmt(f: Formatter): Result = DebugTuple(f, "x87_f80").finish()
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<X87F80> =
-            object : TypeLayout<X87F80> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): X87F80 =
-                    X87F80(
-                        (X87F80Raw.typeLayout()).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: X87F80) {
-                    (X87F80Raw.typeLayout()).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): X87F80 =
-                    X87F80(
-                        (X87F80Raw.typeLayout()).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: X87F80) {
-                    (X87F80Raw.typeLayout()).writeBytes(buf, offset, value.value)
-                }
-            }
-    }
+    public companion object
 }

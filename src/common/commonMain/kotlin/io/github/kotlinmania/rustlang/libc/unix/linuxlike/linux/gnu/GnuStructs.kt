@@ -1097,6 +1097,8 @@ public open class PtraceSyscallInfo(
     public var u: CAnonymousPtraceSyscallInfoData,
 ) {
     public open fun clone(): PtraceSyscallInfo = PtraceSyscallInfo(op, reserved, flags, arch, instructionPointer, stackPointer, u)
+
+    public companion object
 }
 
 public open class PtraceSudConfig(
@@ -1593,6 +1595,8 @@ public open class FanotifyEventInfoPidfd(
     public var pidfd: S32,
 ) {
     public open fun clone(): FanotifyEventInfoPidfd = FanotifyEventInfoPidfd(hdr, pidfd)
+
+    public companion object
 }
 
 public open class FanotifyEventInfoError(
@@ -1601,6 +1605,8 @@ public open class FanotifyEventInfoError(
     public var errorCount: U32,
 ) {
     public open fun clone(): FanotifyEventInfoError = FanotifyEventInfoError(hdr, error, errorCount)
+
+    public companion object
 }
 
 public open class SemT(

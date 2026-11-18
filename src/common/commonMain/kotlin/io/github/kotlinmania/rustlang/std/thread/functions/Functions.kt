@@ -2,11 +2,9 @@
 package io.github.kotlinmania.rustlang.std.thread.functions
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.process.abort
@@ -369,7 +367,11 @@ public fun sleepUntil(deadline: Instant) {
  * Used to ensure that `park` and `parkTimeout` do not unwind, as that can
  * cause undefined behavior if not handled correctly (see #102398 for context).
  */
-public open class PanicGuard {
+public open class PanicGuard : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     public open fun drop() {
         run {
             when (val matchVal = panicOutput()) {
@@ -386,21 +388,7 @@ public open class PanicGuard {
         }
     }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<PanicGuard> =
-            object : TypeLayout<PanicGuard> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): PanicGuard =
-                    PanicGuard()
-                override fun writeNative(addr: Long, value: PanicGuard) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): PanicGuard =
-                    PanicGuard()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: PanicGuard) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**

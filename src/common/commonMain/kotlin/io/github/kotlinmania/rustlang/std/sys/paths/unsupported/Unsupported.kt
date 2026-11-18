@@ -2,8 +2,6 @@
 package io.github.kotlinmania.rustlang.std.sys.paths.unsupported
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
@@ -29,6 +27,8 @@ public open class SplitPaths(
     }
 
     public open fun next(): PathBuf? = this.field0
+
+    public companion object
 }
 
 public open class SplitPathsRef(
@@ -45,6 +45,8 @@ public open class SplitPathsRef(
     }
 
     public open fun next(): Path? = this.field0
+
+    public companion object
 }
 
 public fun splitPaths(unparsed: OsStr): SplitPaths {
@@ -56,21 +58,7 @@ public fun splitPathsRef(unparsed: OsStr): SplitPathsRef? = null
 public open class JoinPathsError {
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("not supported on this platform yet"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<JoinPathsError> =
-            object : TypeLayout<JoinPathsError> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): JoinPathsError =
-                    JoinPathsError()
-                override fun writeNative(addr: Long, value: JoinPathsError) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): JoinPathsError =
-                    JoinPathsError()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: JoinPathsError) {
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <I> joinPaths(paths: I): Result<OsString, JoinPathsError> where I : Iterator<OsStr> = Result.Err<OsString, JoinPathsError>(JoinPathsError())

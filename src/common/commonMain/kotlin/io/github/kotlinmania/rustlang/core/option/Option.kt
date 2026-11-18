@@ -2270,6 +2270,8 @@ public open class Item<A>(
     public open fun nextBack(): Option<A> = this.opt.also { this.opt = null }
 
     public open fun len(): Int = this.opt.len()
+
+    public companion object
 }
 
 /**
@@ -2298,6 +2300,8 @@ public open class Iter<A>(
     public open fun nextBack(): Option<A> = this.inner.nextBack()
 
     public open fun clone(): Iter<A> = Iter(inner = this.inner.clone())
+
+    public companion object
 }
 
 /**
@@ -2324,6 +2328,8 @@ public open class IterMut<A>(
     public open fun sizeHint(): Pair<Int, Option<Int>> = this.inner.sizeHint()
 
     public open fun nextBack(): Option<A> = this.inner.nextBack()
+
+    public companion object
 }
 
 /**
@@ -2352,6 +2358,8 @@ public open class IntoIter<A>(
     public open fun sizeHint(): Pair<Int, Option<Int>> = this.inner.sizeHint()
 
     public open fun nextBack(): Option<A> = this.inner.nextBack()
+
+    public companion object
 }
 
 /**
@@ -2487,6 +2495,8 @@ public open class OptionFlatten<A>(
             }
             null -> init
         }
+
+    public companion object
 }
 
 // ////////////////////////////////////////////////////////////////////////

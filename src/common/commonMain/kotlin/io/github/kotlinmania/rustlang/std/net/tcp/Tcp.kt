@@ -1102,6 +1102,8 @@ public open class Incoming(
     // `AsSocket`/`From<OwnedSocket>`/`Into<OwnedSocket>` and
     // `AsRawSocket`/`IntoRawSocket`/`FromRawSocket` on Windows.
     public open fun next(): Result<TcpStream, Error>? = this.listener.accept().map({ p -> p.first })
+
+    public companion object
 }
 
 /**
@@ -1125,4 +1127,6 @@ public open class IntoIncoming(
     }
 
     public open fun next(): Result<TcpStream, Error>? = this.listener.accept().map({ p -> p.first })
+
+    public companion object
 }

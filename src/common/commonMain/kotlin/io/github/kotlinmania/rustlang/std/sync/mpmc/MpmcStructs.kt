@@ -74,7 +74,11 @@ private class DebugStruct(
  */
 public open class Sender<T>(
     public var flavor: SenderFlavor<T>,
-) {
+) : AutoCloseable {
+    override fun close() {
+        this.drop()
+    }
+
     /**
      * Attempts to send a message into the channel without blocking.
      *
@@ -514,6 +518,8 @@ public open class Sender<T>(
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Sender").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 /**
@@ -554,8 +560,12 @@ public open class Sender<T>(
  */
 public open class Receiver<T>(
     public var flavor: ReceiverFlavor<T>,
-) : Iterable<T> {
+) : Iterable<T>, AutoCloseable {
     override fun iterator(): Iterator<T> = this.intoIter().iterator()
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun intoIter(): Iter<T> = this.iter()
 
@@ -1140,6 +1150,8 @@ public open class Receiver<T>(
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Receiver").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
+
+    public companion object
 }
 
 /**
@@ -1184,6 +1196,8 @@ public open class Iter<T>(
     }
 
     public open fun next(): T? = this.rx.recv().ok()
+
+    public companion object
 }
 
 /**
@@ -1239,6 +1253,8 @@ public open class TryIter<T>(
     }
 
     public open fun next(): T? = this.rx.tryRecv().ok()
+
+    public companion object
 }
 
 /**
@@ -1284,4 +1300,6 @@ public open class IntoIter<T>(
     }
 
     public open fun next(): T? = this.rx.recv().ok()
+
+    public companion object
 }

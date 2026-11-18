@@ -33,7 +33,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.toU16s
 public open class Env internal constructor(
     baseCtorArg: MutPtr,
     public var iter: EnvIterator,
-) : Iterable<Pair<OsString, OsString>> {
+) : Iterable<Pair<OsString, OsString>>, AutoCloseable {
     public var base: MutPtr = baseCtorArg
         internal set
 
@@ -44,6 +44,10 @@ public open class Env internal constructor(
                 else -> setNext(v)
             }
         }
+    }
+
+    override fun close() {
+        this.drop()
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> {

@@ -58,9 +58,13 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 public open class RawVec<T, A : Allocator> internal constructor(
     innerCtorArg: RawVecInner<A>,
     public var marker: Unit,
-) {
+) : AutoCloseable {
     public var inner: RawVecInner<A> = innerCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     /**
      * A specialized version of `self.reserve(len, 1)` which requires the

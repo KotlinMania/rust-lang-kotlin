@@ -526,4 +526,6 @@ public open class AddrParseError(
             AddrKind.SocketV4 -> "invalid IPv4 socket address syntax"
             AddrKind.SocketV6 -> "invalid IPv6 socket address syntax"
         }.fmt(f)
+
+    public companion object
 }

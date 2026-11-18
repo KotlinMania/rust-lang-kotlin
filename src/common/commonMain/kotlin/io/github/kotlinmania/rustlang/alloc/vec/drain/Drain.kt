@@ -78,7 +78,7 @@ public open class Drain<T, A : Allocator> internal constructor(
      */
     public var iter: ArrayDeque<T>,
     vecCtorArg: NonNull,
-) : AsRef<List<T>>, TrustedLen, Iterable<T> {
+) : AsRef<List<T>>, TrustedLen, Iterable<T>, AutoCloseable {
     public var vec: NonNull = vecCtorArg
         internal set
 
@@ -89,6 +89,10 @@ public open class Drain<T, A : Allocator> internal constructor(
                 else -> setNext(v)
             }
         }
+    }
+
+    override fun close() {
+        this.drop()
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "Drain").field(this.iter.toList()).finish(); Result.Ok<Unit, Error>(Unit) }

@@ -12,9 +12,11 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
@@ -812,11 +814,9 @@ public open class SplitInclusiveMut<T, P, Output>(
  * [slices]: slice
  */
 public open class RSplit<T, P, Output> internal constructor(
-    innerCtorArg: Split<T, P, Output>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<Split<T, P, Output>> = UnresolvedTypeLayout(),
 ) : SplitIter, Iterable<List<T>> {
-    public var inner: Split<T, P, Output> = innerCtorArg
-        internal set
-
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@RSplit.next()) {
@@ -826,10 +826,18 @@ public open class RSplit<T, P, Output> internal constructor(
         }
     }
 
+    public var inner: Split<T, P, Output>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(inner: Split<T, P, Output>, fieldLayout: TypeLayout<Split<T, P, Output>> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<RSplit<T, P, Output>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> RSplit<T, P, Output>(ptr, layout) }, { it.inner })
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "RSplit").field("v", this.inner.v).field("finished", this.inner.finished).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
-    public open fun clone(): RSplit<T, P, Output> = RSplit(inner = this.inner.clone())
+    public open fun clone(): RSplit<T, P, Output> = RSplit(inner = this.inner.clone(), fieldLayout = this.fieldLayout)
 
     public open fun next(): List<T>? = this.inner.nextBack()
 
@@ -840,13 +848,11 @@ public open class RSplit<T, P, Output> internal constructor(
     public override fun finish(): List<T>? = this.inner.finish()
 
     public companion object {
-        public operator fun <T, P, Output> invoke(
-            inner: Split<T, P, Output>,
-        ): RSplit<T, P, Output> = RSplit<T, P, Output>(
-            innerCtorArg = inner,
-        )
+        public operator fun <T, P, Output> invoke(inner: Split<T, P, Output>, fieldLayout: TypeLayout<Split<T, P, Output>> = UnresolvedTypeLayout()): RSplit<T, P, Output> = RSplit<T, P, Output>(inner, fieldLayout)
 
-        public fun <T> new(slice: List<T>, pred: (T) -> Boolean): RSplit<T, P, Output> = RSplit(inner = Split.new(slice, pred))
+        public fun <T, P, Output> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Split<T, P, Output>> = UnresolvedTypeLayout()): RSplit<T, P, Output> = RSplit<T, P, Output>(fieldStorage, fieldLayout)
+
+        public fun <T> new(slice: List<T>, pred: (T) -> Boolean, fieldLayout: TypeLayout<Split<T, (T) -> Boolean, Output>> = UnresolvedTypeLayout()): RSplit<T, P, Output> = RSplit(inner = Split.new(slice, pred), fieldLayout = fieldLayout)
     }
 }
 
@@ -867,11 +873,9 @@ public open class RSplit<T, P, Output> internal constructor(
  * [slices]: slice
  */
 public open class RSplitMut<T, P, Output> internal constructor(
-    innerCtorArg: SplitMut<T, P, Output>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<SplitMut<T, P, Output>> = UnresolvedTypeLayout(),
 ) : SplitIter, Iterable<MutableList<T>> {
-    public var inner: SplitMut<T, P, Output> = innerCtorArg
-        internal set
-
     override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
         override fun computeNext() {
             when (val v = this@RSplitMut.next()) {
@@ -880,6 +884,14 @@ public open class RSplitMut<T, P, Output> internal constructor(
             }
         }
     }
+
+    public var inner: SplitMut<T, P, Output>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(inner: SplitMut<T, P, Output>, fieldLayout: TypeLayout<SplitMut<T, P, Output>> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<RSplitMut<T, P, Output>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> RSplitMut<T, P, Output>(ptr, layout) }, { it.inner })
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "RSplitMut").field("v", this.inner.v).field("finished", this.inner.finished).finish(); Result.Ok<Unit, Unit>(Unit) }
 
@@ -892,13 +904,11 @@ public open class RSplitMut<T, P, Output> internal constructor(
     public open fun nextBack(): MutableList<T>? = this.inner.next()
 
     public companion object {
-        public operator fun <T, P, Output> invoke(
-            inner: SplitMut<T, P, Output>,
-        ): RSplitMut<T, P, Output> = RSplitMut<T, P, Output>(
-            innerCtorArg = inner,
-        )
+        public operator fun <T, P, Output> invoke(inner: SplitMut<T, P, Output>, fieldLayout: TypeLayout<SplitMut<T, P, Output>> = UnresolvedTypeLayout()): RSplitMut<T, P, Output> = RSplitMut<T, P, Output>(inner, fieldLayout)
 
-        public fun <T> new(slice: MutableList<T>, pred: (T) -> Boolean): RSplitMut<T, P, Output> = RSplitMut(inner = SplitMut.new(slice, pred))
+        public fun <T, P, Output> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<SplitMut<T, P, Output>> = UnresolvedTypeLayout()): RSplitMut<T, P, Output> = RSplitMut<T, P, Output>(fieldStorage, fieldLayout)
+
+        public fun <T> new(slice: MutableList<T>, pred: (T) -> Boolean, fieldLayout: TypeLayout<SplitMut<T, (T) -> Boolean, Output>> = UnresolvedTypeLayout()): RSplitMut<T, P, Output> = RSplitMut(inner = SplitMut.new(slice, pred), fieldLayout = fieldLayout)
     }
 }
 
@@ -977,21 +987,25 @@ public fun <T, I : SplitIter> GenericSplitN<I>.sizeHint(): Pair<Int, Int?> {
  * [slices]: slice
  */
 public open class SplitN<T, P, Output> internal constructor(
-    innerCtorArg: GenericSplitN<Split<T, P, Output>>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<GenericSplitN<Split<T, P, Output>>> = UnresolvedTypeLayout(),
 ) {
-    public var inner: GenericSplitN<Split<T, P, Output>> = innerCtorArg
-        internal set
+    public var inner: GenericSplitN<Split<T, P, Output>>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(inner: GenericSplitN<Split<T, P, Output>>, fieldLayout: TypeLayout<GenericSplitN<Split<T, P, Output>>> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<SplitN<T, P, Output>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> SplitN<T, P, Output>(ptr, layout) }, { it.inner })
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "SplitN").field("inner", this.inner).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
-        public operator fun <T, P, Output> invoke(
-            inner: GenericSplitN<Split<T, P, Output>>,
-        ): SplitN<T, P, Output> = SplitN<T, P, Output>(
-            innerCtorArg = inner,
-        )
+        public operator fun <T, P, Output> invoke(inner: GenericSplitN<Split<T, P, Output>>, fieldLayout: TypeLayout<GenericSplitN<Split<T, P, Output>>> = UnresolvedTypeLayout()): SplitN<T, P, Output> = SplitN<T, P, Output>(inner, fieldLayout)
 
-        public fun <T> new(s: Split<T, (T) -> Boolean, Output>, n: Int): SplitN<T, P, Output> = SplitN(inner = GenericSplitN(iter = s, count = n))
+        public fun <T, P, Output> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<GenericSplitN<Split<T, P, Output>>> = UnresolvedTypeLayout()): SplitN<T, P, Output> = SplitN<T, P, Output>(fieldStorage, fieldLayout)
+
+        public fun <T> new(s: Split<T, (T) -> Boolean, Output>, n: Int, fieldLayout: TypeLayout<GenericSplitN<Split<T, (T) -> Boolean, Output>>> = UnresolvedTypeLayout()): SplitN<T, P, Output> = SplitN(inner = GenericSplitN(iter = s, count = n), fieldLayout = fieldLayout)
     }
 }
 
@@ -1016,21 +1030,25 @@ public open class SplitN<T, P, Output> internal constructor(
  * [slices]: slice
  */
 public open class RSplitN<T, P, Output> internal constructor(
-    innerCtorArg: GenericSplitN<RSplit<T, P, Output>>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<GenericSplitN<RSplit<T, P, Output>>> = UnresolvedTypeLayout(),
 ) {
-    public var inner: GenericSplitN<RSplit<T, P, Output>> = innerCtorArg
-        internal set
+    public var inner: GenericSplitN<RSplit<T, P, Output>>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(inner: GenericSplitN<RSplit<T, P, Output>>, fieldLayout: TypeLayout<GenericSplitN<RSplit<T, P, Output>>> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<RSplitN<T, P, Output>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> RSplitN<T, P, Output>(ptr, layout) }, { it.inner })
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "RSplitN").field("inner", this.inner).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
-        public operator fun <T, P, Output> invoke(
-            inner: GenericSplitN<RSplit<T, P, Output>>,
-        ): RSplitN<T, P, Output> = RSplitN<T, P, Output>(
-            innerCtorArg = inner,
-        )
+        public operator fun <T, P, Output> invoke(inner: GenericSplitN<RSplit<T, P, Output>>, fieldLayout: TypeLayout<GenericSplitN<RSplit<T, P, Output>>> = UnresolvedTypeLayout()): RSplitN<T, P, Output> = RSplitN<T, P, Output>(inner, fieldLayout)
 
-        public fun <T> new(s: RSplit<T, (T) -> Boolean, Output>, n: Int): RSplitN<T, P, Output> = RSplitN(inner = GenericSplitN(iter = s, count = n))
+        public fun <T, P, Output> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<GenericSplitN<RSplit<T, P, Output>>> = UnresolvedTypeLayout()): RSplitN<T, P, Output> = RSplitN<T, P, Output>(fieldStorage, fieldLayout)
+
+        public fun <T> new(s: RSplit<T, (T) -> Boolean, Output>, n: Int, fieldLayout: TypeLayout<GenericSplitN<RSplit<T, (T) -> Boolean, Output>>> = UnresolvedTypeLayout()): RSplitN<T, P, Output> = RSplitN(inner = GenericSplitN(iter = s, count = n), fieldLayout = fieldLayout)
     }
 }
 
@@ -1051,21 +1069,25 @@ public open class RSplitN<T, P, Output> internal constructor(
  * [slices]: slice
  */
 public open class SplitNMut<T, P, Output> internal constructor(
-    innerCtorArg: GenericSplitN<SplitMut<T, P, Output>>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<GenericSplitN<SplitMut<T, P, Output>>> = UnresolvedTypeLayout(),
 ) {
-    public var inner: GenericSplitN<SplitMut<T, P, Output>> = innerCtorArg
-        internal set
+    public var inner: GenericSplitN<SplitMut<T, P, Output>>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(inner: GenericSplitN<SplitMut<T, P, Output>>, fieldLayout: TypeLayout<GenericSplitN<SplitMut<T, P, Output>>> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<SplitNMut<T, P, Output>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> SplitNMut<T, P, Output>(ptr, layout) }, { it.inner })
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "SplitNMut").field("inner", this.inner).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
-        public operator fun <T, P, Output> invoke(
-            inner: GenericSplitN<SplitMut<T, P, Output>>,
-        ): SplitNMut<T, P, Output> = SplitNMut<T, P, Output>(
-            innerCtorArg = inner,
-        )
+        public operator fun <T, P, Output> invoke(inner: GenericSplitN<SplitMut<T, P, Output>>, fieldLayout: TypeLayout<GenericSplitN<SplitMut<T, P, Output>>> = UnresolvedTypeLayout()): SplitNMut<T, P, Output> = SplitNMut<T, P, Output>(inner, fieldLayout)
 
-        public fun <T> new(s: SplitMut<T, (T) -> Boolean, Output>, n: Int): SplitNMut<T, P, Output> = SplitNMut(inner = GenericSplitN(iter = s, count = n))
+        public fun <T, P, Output> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<GenericSplitN<SplitMut<T, P, Output>>> = UnresolvedTypeLayout()): SplitNMut<T, P, Output> = SplitNMut<T, P, Output>(fieldStorage, fieldLayout)
+
+        public fun <T> new(s: SplitMut<T, (T) -> Boolean, Output>, n: Int, fieldLayout: TypeLayout<GenericSplitN<SplitMut<T, (T) -> Boolean, Output>>> = UnresolvedTypeLayout()): SplitNMut<T, P, Output> = SplitNMut(inner = GenericSplitN(iter = s, count = n), fieldLayout = fieldLayout)
     }
 }
 
@@ -1087,21 +1109,25 @@ public open class SplitNMut<T, P, Output> internal constructor(
  * [slices]: slice
  */
 public open class RSplitNMut<T, P, Output> internal constructor(
-    innerCtorArg: GenericSplitN<RSplitMut<T, P, Output>>,
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<GenericSplitN<RSplitMut<T, P, Output>>> = UnresolvedTypeLayout(),
 ) {
-    public var inner: GenericSplitN<RSplitMut<T, P, Output>> = innerCtorArg
-        internal set
+    public var inner: GenericSplitN<RSplitMut<T, P, Output>>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(inner: GenericSplitN<RSplitMut<T, P, Output>>, fieldLayout: TypeLayout<GenericSplitN<RSplitMut<T, P, Output>>> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<RSplitNMut<T, P, Output>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> RSplitNMut<T, P, Output>(ptr, layout) }, { it.inner })
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "RSplitNMut").field("inner", this.inner).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
-        public operator fun <T, P, Output> invoke(
-            inner: GenericSplitN<RSplitMut<T, P, Output>>,
-        ): RSplitNMut<T, P, Output> = RSplitNMut<T, P, Output>(
-            innerCtorArg = inner,
-        )
+        public operator fun <T, P, Output> invoke(inner: GenericSplitN<RSplitMut<T, P, Output>>, fieldLayout: TypeLayout<GenericSplitN<RSplitMut<T, P, Output>>> = UnresolvedTypeLayout()): RSplitNMut<T, P, Output> = RSplitNMut<T, P, Output>(inner, fieldLayout)
 
-        public fun <T> new(s: RSplitMut<T, (T) -> Boolean, Output>, n: Int): RSplitNMut<T, P, Output> = RSplitNMut(inner = GenericSplitN(iter = s, count = n))
+        public fun <T, P, Output> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<GenericSplitN<RSplitMut<T, P, Output>>> = UnresolvedTypeLayout()): RSplitNMut<T, P, Output> = RSplitNMut<T, P, Output>(fieldStorage, fieldLayout)
+
+        public fun <T> new(s: RSplitMut<T, (T) -> Boolean, Output>, n: Int, fieldLayout: TypeLayout<GenericSplitN<RSplitMut<T, (T) -> Boolean, Output>>> = UnresolvedTypeLayout()): RSplitNMut<T, P, Output> = RSplitNMut(inner = GenericSplitN(iter = s, count = n), fieldLayout = fieldLayout)
     }
 }
 

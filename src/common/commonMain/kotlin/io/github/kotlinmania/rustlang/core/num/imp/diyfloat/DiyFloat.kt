@@ -1,14 +1,11 @@
 // port-lint: source num/imp/diy_float.rs
 package io.github.kotlinmania.rustlang.core.num.imp.diyfloat
 
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.carryingMul
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 // Extended precision "soft float", for internal use only.
 
@@ -71,29 +68,5 @@ public open class Fp(
         return Fp(f = this.f shl edelta1, e = e)
     }
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<Fp> =
-            object : TypeLayout<Fp> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 16L
-                override fun readNative(addr: Long): Fp =
-                    Fp(
-                        (PrimitiveLayouts.U64).readNative(addr),
-                        (PrimitiveLayouts.I16).readNative(addr + 8L),
-                    )
-                override fun writeNative(addr: Long, value: Fp) {
-                    (PrimitiveLayouts.U64).writeNative(addr, value.f)
-                    (PrimitiveLayouts.I16).writeNative(addr + 8L, value.e)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Fp =
-                    Fp(
-                        (PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (PrimitiveLayouts.I16).readBytes(buf, offset + 8),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Fp) {
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.f)
-                    (PrimitiveLayouts.I16).writeBytes(buf, offset + 8, value.e)
-                }
-            }
-    }
+    public companion object
 }

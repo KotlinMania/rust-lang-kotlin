@@ -16,6 +16,8 @@ public open class DarwinMcontext64(
     public var fs: DarwinX86FloatState64,
 ) {
     public open fun clone(): DarwinMcontext64 = DarwinMcontext64(es, ss, fs)
+
+    public companion object
 }
 
 public typealias McontextT = MutPtr

@@ -25,9 +25,13 @@ public open class Buffer internal constructor(
     public var capacity: Int,
     public var reserve: BufferReserveCallback,
     public var drop: BufferDropCallback,
-) {
+) : AutoCloseable {
     public var data: MutPtr = dataCtorArg
         internal set
+
+    override fun close() {
+        this.drop()
+    }
 
     public open fun deref(): List<UByte> = Slice.fromRawParts((this.data).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.len)
 

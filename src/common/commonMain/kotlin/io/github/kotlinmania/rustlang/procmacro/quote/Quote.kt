@@ -2,11 +2,7 @@
 package io.github.kotlinmania.rustlang.procmacro.quote
 
 import io.github.kotlinmania.rustlang.core.clone.clone
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.procmacro.Delimiter
 import io.github.kotlinmania.rustlang.procmacro.Group
@@ -40,21 +36,7 @@ public open class HasIterator : BitOr<ThereIsNoIteratorInRepetition, HasIterator
 
     public override fun bitor(rhs: HasIterator): HasIterator = HasIterator()
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<HasIterator> =
-            object : TypeLayout<HasIterator> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): HasIterator =
-                    HasIterator()
-                override fun writeNative(addr: Long, value: HasIterator) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): HasIterator =
-                    HasIterator()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: HasIterator) {
-                }
-            }
-    }
+    public companion object
 }
 
 // True
@@ -64,21 +46,7 @@ public open class ThereIsNoIteratorInRepetition : BitOr<ThereIsNoIteratorInRepet
 
     public override fun bitor(rhs: HasIterator): HasIterator = HasIterator()
 
-    public companion object {
-        public fun typeLayout(): TypeLayout<ThereIsNoIteratorInRepetition> =
-            object : TypeLayout<ThereIsNoIteratorInRepetition> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): ThereIsNoIteratorInRepetition =
-                    ThereIsNoIteratorInRepetition()
-                override fun writeNative(addr: Long, value: ThereIsNoIteratorInRepetition) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): ThereIsNoIteratorInRepetition =
-                    ThereIsNoIteratorInRepetition()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: ThereIsNoIteratorInRepetition) {
-                }
-            }
-    }
+    public companion object
 }
 
 /**
@@ -150,27 +118,7 @@ public open class RepInterp<T>(
 
     public open fun nextIterator(): Item? = this.value.next()
 
-    public companion object {
-        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<RepInterp<T>> =
-            object : TypeLayout<RepInterp<T>> {
-                override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
-                override fun readNative(addr: Long): RepInterp<T> =
-                    RepInterp(
-                        (typeLayoutT).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: RepInterp<T>) {
-                    (typeLayoutT).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): RepInterp<T> =
-                    RepInterp(
-                        (typeLayoutT).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: RepInterp<T>) {
-                    (typeLayoutT).writeBytes(buf, offset, value.value)
-                }
-            }
-    }
+    public companion object
 }
 
 public fun <T : ToTokens> RepInterp<T>.toTokens(tokens: TokenStream) {
