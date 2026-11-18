@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.callerLocation
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.sizeOfValRaw
+import io.github.kotlinmania.rustlang.core.num.uncheckedAdd
 import io.github.kotlinmania.rustlang.core.ptr.constptr.add
 import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.constptr.cast

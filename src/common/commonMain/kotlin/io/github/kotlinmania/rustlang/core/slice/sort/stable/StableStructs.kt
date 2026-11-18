@@ -16,6 +16,8 @@ public open class AlignedStorage<T> internal constructor(
     public var storage: List<MaybeUninit<UByte>> = storageCtorArg
         internal set
 
+    public val n: Int = 0
+
     public open fun asUninitSliceMut(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutableList<MaybeUninit<T>> {
         val len = N / sizeOf<T>(typeLayoutT = typeLayoutT)
         // SAFETY: `_align` ensures we are correctly aligned.

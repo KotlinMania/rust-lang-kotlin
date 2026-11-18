@@ -6,8 +6,8 @@ import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.hint.coldPath
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.num.imp.libm.complex.rustDivhc3
-import io.github.kotlinmania.rustlang.core.num.imp.libm.complex.rustMulhc3
+import io.github.kotlinmania.rustlang.core.num.imp.libm.rustDivhc3
+import io.github.kotlinmania.rustlang.core.num.imp.libm.rustMulhc3
 import io.github.kotlinmania.rustlang.core.ops.arith.Add
 import io.github.kotlinmania.rustlang.core.ops.arith.Neg
 import io.github.kotlinmania.rustlang.core.ops.arith.Sub

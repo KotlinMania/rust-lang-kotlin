@@ -8,6 +8,9 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
 
 // Support for rounding directions and status flags as specified by IEEE 754.
 //

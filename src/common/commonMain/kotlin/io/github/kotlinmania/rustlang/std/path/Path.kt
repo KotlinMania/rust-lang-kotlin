@@ -37,7 +37,6 @@ import io.github.kotlinmania.rustlang.core.slice.splitLast
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.ReadDir
 import io.github.kotlinmania.rustlang.std.fs.exists
 import io.github.kotlinmania.rustlang.std.fs.metadata
@@ -52,6 +51,7 @@ import io.github.kotlinmania.rustlang.std.sys.path.isSepByte
 import io.github.kotlinmania.rustlang.std.sys.path.unix.HAS_PREFIXES
 import io.github.kotlinmania.rustlang.std.sys.path.unix.isVerbatimSep
 import io.github.kotlinmania.rustlang.std.sys.path.unix.parsePrefix
+import kotlin.experimental.inv
 
 // Cross-platform path manipulation.
 //
@@ -706,7 +706,7 @@ public open class Components(
 
     public open fun clone(): Components = Components(path, prefix, hasPhysicalRoot, front, back)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         open class DebugHelper(
             public var value: Path,
         ) {
@@ -716,9 +716,9 @@ public open class Components(
                     value = v
                 }
 
-            public open fun fmt(f1: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f1.append(entries.joinToString(", ", "[", "]")) } }.entries(this.value.components()).finish(); Result.Ok<Unit, Error>(Unit) }
+            public open fun fmt(f1: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f1.append(entries.joinToString(", ", "[", "]")) } }.entries(this.value.components()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
         }
-        return run { DebugTuple(f, "Components").field(DebugHelper(this.asPath())).finish(); Result.Ok<Unit, Error>(Unit) }
+        return run { DebugTuple(f, "Components").field(DebugHelper(this.asPath())).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
     }
 
     // how long is the prefix, if any?
@@ -1051,7 +1051,7 @@ public open class Iter(
 
     public open fun clone(): Iter = Iter(inner)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         open class DebugHelper(
             public var value: Path,
         ) {
@@ -1061,9 +1061,9 @@ public open class Iter(
                     value = v
                 }
 
-            public open fun fmt(f1: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f1.append(entries.joinToString(", ", "[", "]")) } }.entries(this.value.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
+            public open fun fmt(f1: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f1.append(entries.joinToString(", ", "[", "]")) } }.entries(this.value.iter()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
         }
-        return run { DebugTuple(f, "Iter").field(DebugHelper(this.asPath())).finish(); Result.Ok<Unit, Error>(Unit) }
+        return run { DebugTuple(f, "Iter").field(DebugHelper(this.asPath())).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
     }
 
     /**
@@ -1709,7 +1709,7 @@ public open class PathBuf(
         this.inner = source.inner
     }
 
-    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(formatter: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { formatter.append((this).toString()); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun deref(): Path = Path.new(this.inner)
 
@@ -2802,7 +2802,7 @@ public open class Path internal constructor(
      * println("${metadata.fileType()}")
      * ```
      */
-    public open fun metadata(): Result<Metadata, io.github.kotlinmania.rustlang.core.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.metadata(this)
+    public open fun metadata(): Result<io.github.kotlinmania.rustlang.std.fs.Metadata, io.github.kotlinmania.rustlang.core.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.metadata(this)
 
     /**
      * Queries the metadata about a file without following symlinks.
@@ -2819,7 +2819,7 @@ public open class Path internal constructor(
      * println("${metadata.fileType()}")
      * ```
      */
-    public open fun symlinkMetadata(): Result<Metadata, io.github.kotlinmania.rustlang.core.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.symlinkMetadata(this)
+    public open fun symlinkMetadata(): Result<io.github.kotlinmania.rustlang.std.fs.Metadata, io.github.kotlinmania.rustlang.core.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.symlinkMetadata(this)
 
     /**
      * Returns the canonical, absolute form of the path with all intermediate
@@ -2919,7 +2919,7 @@ public open class Path internal constructor(
                     lexical.push(prefix.asOsStr())
                     iter.next()
                     when (val matchVal1 = iter.peek()) {
-                        is Some -> {
+                        is Some<*> -> {
                             val p2 = matchVal1
                             lexical.push(p2)
                             iter.next()
@@ -3159,7 +3159,7 @@ public open class Path internal constructor(
 
     public open fun asRef(): OsStr = this.inner
 
-    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this.inner).toString()); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(formatter: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { formatter.append((this.inner).toString()); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun eq(other: Path): Boolean = (this.components() == other.components()).toUByte()
 
@@ -3287,7 +3287,7 @@ public open class Path internal constructor(
          */
         public fun fromCowPath(cow: Path): Path =
             when (cow) {
-                is Cow.Borrowed -> {
+                is Cow.Borrowed<*, *> -> {
                     val (path) = cow
                     Box.from(path)
                 }
@@ -3362,7 +3362,7 @@ public open class StripPrefixError(
 
     public open fun clone(): StripPrefixError = StripPrefixError(value)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = "prefix not found".fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = "prefix not found".fmt(f)
 
     public companion object {
         public fun typeLayout(): TypeLayout<StripPrefixError> =
@@ -3392,7 +3392,7 @@ public open class StripPrefixError(
  * would escape the path.
  */
 public open class NormalizeError {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("parent reference `..` points outside of base directory"); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("parent reference `..` points outside of base directory"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<NormalizeError> =
@@ -3434,9 +3434,9 @@ public open class NormalizeError {
 public open class Display(
     public var inner: io.github.kotlinmania.rustlang.std.ffi.osstr.Display,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append((this.inner).toString()); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append((this.inner).toString()); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 }
 
 public fun String.eq(other: Path): Boolean = (other == this).toUByte()

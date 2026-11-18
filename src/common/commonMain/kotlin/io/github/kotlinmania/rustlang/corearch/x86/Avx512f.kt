@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
@@ -12,8 +13,10 @@ import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.num.castUnsigned
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.writeUnaligned
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
@@ -47,6 +50,10 @@ import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 import io.github.kotlinmania.rustlang.corearch.simd.U8x8
 import io.github.kotlinmania.rustlang.corearch.simd.simdImax
 import io.github.kotlinmania.rustlang.corearch.simd.simdImin
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
+import kotlin.experimental.xor
 
 /**
  * Computes the absolute values of packed 32-bit integers in `a`.
@@ -22851,7 +22858,7 @@ public fun mm512Setr4Epi64(d: Long, c: Long, b: Long, a: Long): M512i = mm512Set
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmplt_ps_mask&expand=1074)
  */
-public fun mm512CmpltPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask<CmpLtOs>(a, b)
+public fun mm512CmpltPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask(a, b, CMP_LT_OS)
 
 // should be vcmpps
 
@@ -22860,7 +22867,7 @@ public fun mm512CmpltPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask<CmpLtOs>
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmplt_ps_mask&expand=1075)
  */
-public fun mm512MaskCmpltPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512MaskCmpPsMask<CmpLtOs>(k1, a, b)
+public fun mm512MaskCmpltPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512MaskCmpPsMask(k1, a, b, CMP_LT_OS)
 
 // should be vcmpps
 
@@ -22869,7 +22876,7 @@ public fun mm512MaskCmpltPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512M
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpnlt_ps_mask&expand=1154)
  */
-public fun mm512CmpnltPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask<CmpNltUs>(a, b)
+public fun mm512CmpnltPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask(a, b, CMP_NLT_US)
 
 // should be vcmpps
 
@@ -22878,7 +22885,7 @@ public fun mm512CmpnltPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask<CmpNltU
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpnlt_ps_mask&expand=1155)
  */
-public fun mm512MaskCmpnltPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512MaskCmpPsMask<CmpNltUs>(k1, a, b)
+public fun mm512MaskCmpnltPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512MaskCmpPsMask(k1, a, b, CMP_NLT_US)
 
 // should be vcmpps
 
@@ -22887,7 +22894,7 @@ public fun mm512MaskCmpnltPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmple_ps_mask&expand=1013)
  */
-public fun mm512CmplePsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask<CmpLeOs>(a, b)
+public fun mm512CmplePsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask(a, b, CMP_LE_OS)
 
 // should be vcmpps
 
@@ -22896,7 +22903,7 @@ public fun mm512CmplePsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask<CmpLeOs>
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmple_ps_mask&expand=1014)
  */
-public fun mm512MaskCmplePsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512MaskCmpPsMask<CmpLeOs>(k1, a, b)
+public fun mm512MaskCmplePsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512MaskCmpPsMask(k1, a, b, CMP_LE_OS)
 
 // should be vcmpps
 
@@ -22905,7 +22912,7 @@ public fun mm512MaskCmplePsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512M
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpnle_ps_mask&expand=1146)
  */
-public fun mm512CmpnlePsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask<CmpNleUs>(a, b)
+public fun mm512CmpnlePsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask(a, b, CMP_NLE_US)
 
 // should be vcmpps
 
@@ -22914,7 +22921,7 @@ public fun mm512CmpnlePsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask<CmpNleU
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpnle_ps_mask&expand=1147)
  */
-public fun mm512MaskCmpnlePsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512MaskCmpPsMask<CmpNleUs>(k1, a, b)
+public fun mm512MaskCmpnlePsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512MaskCmpPsMask(k1, a, b, CMP_NLE_US)
 
 // should be vcmpps
 
@@ -22923,7 +22930,7 @@ public fun mm512MaskCmpnlePsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpeq_ps_mask&expand=828)
  */
-public fun mm512CmpeqPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask<CmpEqOq>(a, b)
+public fun mm512CmpeqPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask(a, b, CMP_EQ_OQ)
 
 // should be vcmpps
 
@@ -22932,7 +22939,7 @@ public fun mm512CmpeqPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask<CmpEqOq>
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpeq_ps_mask&expand=829)
  */
-public fun mm512MaskCmpeqPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512MaskCmpPsMask<CmpEqOq>(k1, a, b)
+public fun mm512MaskCmpeqPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512MaskCmpPsMask(k1, a, b, CMP_EQ_OQ)
 
 // should be vcmpps
 
@@ -22941,7 +22948,7 @@ public fun mm512MaskCmpeqPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512M
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpneq_ps_mask&expand=1130)
  */
-public fun mm512CmpneqPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask<CmpNeqUq>(a, b)
+public fun mm512CmpneqPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask(a, b, CMP_NEQ_UQ)
 
 // should be vcmpps
 
@@ -22950,7 +22957,7 @@ public fun mm512CmpneqPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask<CmpNeqU
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpneq_ps_mask&expand=1131)
  */
-public fun mm512MaskCmpneqPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512MaskCmpPsMask<CmpNeqUq>(k1, a, b)
+public fun mm512MaskCmpneqPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512MaskCmpPsMask(k1, a, b, CMP_NEQ_UQ)
 
 /**
  * Compare packed single-precision (32-bit) floating-point elements in a and b based on the comparison operand specified by imm8, and store the results in mask vector k.
@@ -23099,7 +23106,7 @@ public fun mm512MaskCmpRoundPsMask(m: Mmask16, a: M512, b: M512, imm5: Int, sae:
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpord_ps_mask&expand=1162)
  */
-public fun mm512CmpordPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask<CmpOrdQ>(a, b)
+public fun mm512CmpordPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask(a, b, CMP_ORD_Q)
 
 // should be vcmpps
 
@@ -23108,7 +23115,7 @@ public fun mm512CmpordPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask<CmpOrdQ
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpord_ps_mask&expand=1163)
  */
-public fun mm512MaskCmpordPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512MaskCmpPsMask<CmpOrdQ>(k1, a, b)
+public fun mm512MaskCmpordPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512MaskCmpPsMask(k1, a, b, CMP_ORD_Q)
 
 // should be vcmpps
 
@@ -23117,7 +23124,7 @@ public fun mm512MaskCmpordPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpunord_ps_mask&expand=1170)
  */
-public fun mm512CmpunordPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask<CmpUnordQ>(a, b)
+public fun mm512CmpunordPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask(a, b, CMP_UNORD_Q)
 
 // should be vcmpps
 
@@ -23126,7 +23133,7 @@ public fun mm512CmpunordPsMask(a: M512, b: M512): Mmask16 = mm512CmpPsMask<CmpUn
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpunord_ps_mask&expand=1171)
  */
-public fun mm512MaskCmpunordPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512MaskCmpPsMask<CmpUnordQ>(k1, a, b)
+public fun mm512MaskCmpunordPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm512MaskCmpPsMask(k1, a, b, CMP_UNORD_Q)
 
 // should be vcmppd
 
@@ -23135,7 +23142,7 @@ public fun mm512MaskCmpunordPsMask(k1: Mmask16, a: M512, b: M512): Mmask16 = mm5
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmplt_pd_mask&expand=1071)
  */
-public fun mm512CmpltPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask<CmpLtOs>(a, b)
+public fun mm512CmpltPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask(a, b, CMP_LT_OS)
 
 // should be vcmppd
 
@@ -23144,7 +23151,7 @@ public fun mm512CmpltPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask<CmpLtOs
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmplt_pd_mask&expand=1072)
  */
-public fun mm512MaskCmpltPdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512MaskCmpPdMask<CmpLtOs>(k1, a, b)
+public fun mm512MaskCmpltPdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512MaskCmpPdMask(k1, a, b, CMP_LT_OS)
 
 // should be vcmppd
 
@@ -23153,7 +23160,7 @@ public fun mm512MaskCmpltPdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512M
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpnlt_pd_mask&expand=1151)
  */
-public fun mm512CmpnltPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask<CmpNltUs>(a, b)
+public fun mm512CmpnltPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask(a, b, CMP_NLT_US)
 
 // should be vcmppd
 
@@ -23162,7 +23169,7 @@ public fun mm512CmpnltPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask<CmpNlt
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpnlt_pd_mask&expand=1152)
  */
-public fun mm512MaskCmpnltPdMask(m: Mmask8, a: M512d, b: M512d): Mmask8 = mm512MaskCmpPdMask<CmpNltUs>(m, a, b)
+public fun mm512MaskCmpnltPdMask(m: Mmask8, a: M512d, b: M512d): Mmask8 = mm512MaskCmpPdMask(m, a, b, CMP_NLT_US)
 
 // should be vcmppd
 
@@ -23171,7 +23178,7 @@ public fun mm512MaskCmpnltPdMask(m: Mmask8, a: M512d, b: M512d): Mmask8 = mm512M
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmple_pd_mask&expand=1010)
  */
-public fun mm512CmplePdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask<CmpLeOs>(a, b)
+public fun mm512CmplePdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask(a, b, CMP_LE_OS)
 
 // should be vcmppd
 
@@ -23180,7 +23187,7 @@ public fun mm512CmplePdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask<CmpLeOs
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmple_pd_mask&expand=1011)
  */
-public fun mm512MaskCmplePdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512MaskCmpPdMask<CmpLeOs>(k1, a, b)
+public fun mm512MaskCmplePdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512MaskCmpPdMask(k1, a, b, CMP_LE_OS)
 
 // should be vcmppd
 
@@ -23189,7 +23196,7 @@ public fun mm512MaskCmplePdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512M
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpnle_pd_mask&expand=1143)
  */
-public fun mm512CmpnlePdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask<CmpNleUs>(a, b)
+public fun mm512CmpnlePdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask(a, b, CMP_NLE_US)
 
 // should be vcmppd
 
@@ -23198,7 +23205,7 @@ public fun mm512CmpnlePdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask<CmpNle
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpnle_pd_mask&expand=1144)
  */
-public fun mm512MaskCmpnlePdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512MaskCmpPdMask<CmpNleUs>(k1, a, b)
+public fun mm512MaskCmpnlePdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512MaskCmpPdMask(k1, a, b, CMP_NLE_US)
 
 // should be vcmppd
 
@@ -23207,7 +23214,7 @@ public fun mm512MaskCmpnlePdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpeq_pd_mask&expand=822)
  */
-public fun mm512CmpeqPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask<CmpEqOq>(a, b)
+public fun mm512CmpeqPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask(a, b, CMP_EQ_OQ)
 
 // should be vcmppd
 
@@ -23216,7 +23223,7 @@ public fun mm512CmpeqPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask<CmpEqOq
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpeq_pd_mask&expand=823)
  */
-public fun mm512MaskCmpeqPdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512MaskCmpPdMask<CmpEqOq>(k1, a, b)
+public fun mm512MaskCmpeqPdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512MaskCmpPdMask(k1, a, b, CMP_EQ_OQ)
 
 // should be vcmppd
 
@@ -23225,7 +23232,7 @@ public fun mm512MaskCmpeqPdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512M
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpneq_pd_mask&expand=1127)
  */
-public fun mm512CmpneqPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask<CmpNeqUq>(a, b)
+public fun mm512CmpneqPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask(a, b, CMP_NEQ_UQ)
 
 // should be vcmppd
 
@@ -23234,7 +23241,7 @@ public fun mm512CmpneqPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask<CmpNeq
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpneq_pd_mask&expand=1128)
  */
-public fun mm512MaskCmpneqPdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512MaskCmpPdMask<CmpNeqUq>(k1, a, b)
+public fun mm512MaskCmpneqPdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512MaskCmpPdMask(k1, a, b, CMP_NEQ_UQ)
 
 /**
  * Compare packed double-precision (64-bit) floating-point elements in a and b based on the comparison operand specified by imm8, and store the results in mask vector k.
@@ -23383,7 +23390,7 @@ public fun mm512MaskCmpRoundPdMask(k1: Mmask8, a: M512d, b: M512d, imm5: Int, sa
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpord_pd_mask&expand=1159)
  */
-public fun mm512CmpordPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask<CmpOrdQ>(a, b)
+public fun mm512CmpordPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask(a, b, CMP_ORD_Q)
 
 // should be vcmppd
 
@@ -23392,7 +23399,7 @@ public fun mm512CmpordPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask<CmpOrd
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpord_pd_mask&expand=1160)
  */
-public fun mm512MaskCmpordPdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512MaskCmpPdMask<CmpOrdQ>(k1, a, b)
+public fun mm512MaskCmpordPdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512MaskCmpPdMask(k1, a, b, CMP_ORD_Q)
 
 // should be vcmppd
 
@@ -23401,7 +23408,7 @@ public fun mm512MaskCmpordPdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpunord_pd_mask&expand=1167)
  */
-public fun mm512CmpunordPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask<CmpUnordQ>(a, b)
+public fun mm512CmpunordPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask(a, b, CMP_UNORD_Q)
 
 // should be vcmppd
 
@@ -23410,7 +23417,7 @@ public fun mm512CmpunordPdMask(a: M512d, b: M512d): Mmask8 = mm512CmpPdMask<CmpU
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpunord_pd_mask&expand=1168)
  */
-public fun mm512MaskCmpunordPdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512MaskCmpPdMask<CmpUnordQ>(k1, a, b)
+public fun mm512MaskCmpunordPdMask(k1: Mmask8, a: M512d, b: M512d): Mmask8 = mm512MaskCmpPdMask(k1, a, b, CMP_UNORD_Q)
 
 /**
  * Compare the lower single-precision (32-bit) floating-point element in a and b based on the comparison operand specified by imm8, and store the result in mask vector k.

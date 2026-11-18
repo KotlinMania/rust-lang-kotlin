@@ -15,6 +15,7 @@ import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.uncheckedMul
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.castSlice
@@ -322,7 +323,7 @@ public open class RawVec<T, A : Allocator> internal constructor(
  * `RawVec` with capacity `Int.MAX`. Useful for implementing
  * delayed allocation.
  */
-public fun <T> RawVec.Companion.new(): RawVec<T, Global> = RawVec.newIn(Global())
+public fun <T> RawVec.Companion.new(): RawVec<T, Global> = RawVec.newIn(io.github.kotlinmania.rustlang.alloc.alloc.Global())
 
 /**
  * Creates a `RawVec` (on the system heap) with exactly the
@@ -346,7 +347,7 @@ public fun <T> RawVec.Companion.withCapacity(capacity: Int, typeLayoutT: TypeLay
 /**
  * Like `withCapacity`, but guarantees the buffer is zeroed.
  */
-public fun <T> RawVec.Companion.withCapacityZeroed(capacity: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): RawVec<T, Global> = RawVec(inner = RawVecInner.withCapacityZeroedIn(capacity, Global(), Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt())), marker = Unit)
+public fun <T> RawVec.Companion.withCapacityZeroed(capacity: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): RawVec<T, Global> = RawVec(inner = RawVecInner.withCapacityZeroedIn(capacity, io.github.kotlinmania.rustlang.alloc.alloc.Global(), Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt())), marker = Unit)
 
 /**
  * Like a `RawVec`, but only generic over the allocator, not the type.
@@ -818,7 +819,7 @@ public open class RawVecInner<A : Allocator> internal constructor(
 
 public fun RawVecInner.Companion.withCapacity(capacity: Int, elemLayout: Layout): RawVecInner<Global> =
     run {
-        val matchVal = RawVecInner.tryAllocateIn(capacity, AllocInit.Uninitialized, Global(), elemLayout)
+        val matchVal = RawVecInner.tryAllocateIn(capacity, AllocInit.Uninitialized, io.github.kotlinmania.rustlang.alloc.alloc.Global(), elemLayout)
         when (matchVal) { is Result.Ok<*, *> -> {
             val res = matchVal.okValue()
             res

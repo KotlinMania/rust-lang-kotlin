@@ -19,6 +19,8 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import kotlin.experimental.inv
+import kotlin.experimental.or
 
 public fun testMm512AbsEpi32() {
     val a = mm512SetrEpi32(0, 1, -1, Int.MAX_VALUE, Int.MIN_VALUE, 100, -100, -32, 0, 1, -1, Int.MAX_VALUE, Int.MIN_VALUE, 100, -100, -32)
@@ -2883,7 +2885,7 @@ public fun testMm512Mask3FnmsubRoundPs() {
 public fun testMm512MaxRoundPs() {
     val a = mm512SetrPs(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f)
     val b = mm512SetrPs(15.0f, 14.0f, 13.0f, 12.0f, 11.0f, 10.0f, 9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f, 0.0f)
-    val r = mm512MaxRoundPs<MmFroundCurDirection>(a, b)
+    val r = mm512MaxRoundPs(a, b, MM_FROUND_CUR_DIRECTION)
     val e = mm512SetrPs(15.0f, 14.0f, 13.0f, 12.0f, 11.0f, 10.0f, 9.0f, 8.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f)
     assertEqM512(r, e)
 }
@@ -2891,9 +2893,9 @@ public fun testMm512MaxRoundPs() {
 public fun testMm512MaskMaxRoundPs() {
     val a = mm512SetrPs(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f)
     val b = mm512SetrPs(15.0f, 14.0f, 13.0f, 12.0f, 11.0f, 10.0f, 9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f, 0.0f)
-    val r = mm512MaskMaxRoundPs<MmFroundCurDirection>(a, 0u, a, b)
+    val r = mm512MaskMaxRoundPs(a, 0u, a, b, MM_FROUND_CUR_DIRECTION)
     assertEqM512(r, a)
-    val r1 = mm512MaskMaxRoundPs<MmFroundCurDirection>(a, 0xFFu, a, b)
+    val r1 = mm512MaskMaxRoundPs(a, 0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mm512SetrPs(15.0f, 14.0f, 13.0f, 12.0f, 11.0f, 10.0f, 9.0f, 8.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f)
     assertEqM512(r1, e)
 }
@@ -2901,9 +2903,9 @@ public fun testMm512MaskMaxRoundPs() {
 public fun testMm512MaskzMaxRoundPs() {
     val a = mm512SetrPs(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f)
     val b = mm512SetrPs(15.0f, 14.0f, 13.0f, 12.0f, 11.0f, 10.0f, 9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f, 0.0f)
-    val r = mm512MaskzMaxRoundPs<MmFroundCurDirection>(0u, a, b)
+    val r = mm512MaskzMaxRoundPs(0u, a, b, MM_FROUND_CUR_DIRECTION)
     assertEqM512(r, mm512SetzeroPs())
-    val r1 = mm512MaskzMaxRoundPs<MmFroundCurDirection>(0xFFu, a, b)
+    val r1 = mm512MaskzMaxRoundPs(0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mm512SetrPs(15.0f, 14.0f, 13.0f, 12.0f, 11.0f, 10.0f, 9.0f, 8.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)
     assertEqM512(r1, e)
 }
@@ -2911,7 +2913,7 @@ public fun testMm512MaskzMaxRoundPs() {
 public fun testMm512MinRoundPs() {
     val a = mm512SetrPs(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f)
     val b = mm512SetrPs(15.0f, 14.0f, 13.0f, 12.0f, 11.0f, 10.0f, 9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f, 0.0f)
-    val r = mm512MinRoundPs<MmFroundCurDirection>(a, b)
+    val r = mm512MinRoundPs(a, b, MM_FROUND_CUR_DIRECTION)
     val e = mm512SetrPs(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f, 0.0f)
     assertEqM512(r, e)
 }
@@ -2919,9 +2921,9 @@ public fun testMm512MinRoundPs() {
 public fun testMm512MaskMinRoundPs() {
     val a = mm512SetrPs(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f)
     val b = mm512SetrPs(15.0f, 14.0f, 13.0f, 12.0f, 11.0f, 10.0f, 9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f, 0.0f)
-    val r = mm512MaskMinRoundPs<MmFroundCurDirection>(a, 0u, a, b)
+    val r = mm512MaskMinRoundPs(a, 0u, a, b, MM_FROUND_CUR_DIRECTION)
     assertEqM512(r, a)
-    val r1 = mm512MaskMinRoundPs<MmFroundCurDirection>(a, 0xFFu, a, b)
+    val r1 = mm512MaskMinRoundPs(a, 0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mm512SetrPs(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f)
     assertEqM512(r1, e)
 }
@@ -2929,60 +2931,60 @@ public fun testMm512MaskMinRoundPs() {
 public fun testMm512MaskzMinRoundPs() {
     val a = mm512SetrPs(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f)
     val b = mm512SetrPs(15.0f, 14.0f, 13.0f, 12.0f, 11.0f, 10.0f, 9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f, 0.0f)
-    val r = mm512MaskzMinRoundPs<MmFroundCurDirection>(0u, a, b)
+    val r = mm512MaskzMinRoundPs(0u, a, b, MM_FROUND_CUR_DIRECTION)
     assertEqM512(r, mm512SetzeroPs())
-    val r1 = mm512MaskzMinRoundPs<MmFroundCurDirection>(0xFFu, a, b)
+    val r1 = mm512MaskzMinRoundPs(0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mm512SetrPs(0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)
     assertEqM512(r1, e)
 }
 
 public fun testMm512GetexpRoundPs() {
     val a = mm512Set1Ps(3.0f)
-    val r = mm512GetexpRoundPs<MmFroundCurDirection>(a)
+    val r = mm512GetexpRoundPs(a, MM_FROUND_CUR_DIRECTION)
     val e = mm512Set1Ps(1.0f)
     assertEqM512(r, e)
 }
 
 public fun testMm512MaskGetexpRoundPs() {
     val a = mm512Set1Ps(3.0f)
-    val r = mm512MaskGetexpRoundPs<MmFroundCurDirection>(a, 0u, a)
+    val r = mm512MaskGetexpRoundPs(a, 0u, a, MM_FROUND_CUR_DIRECTION)
     assertEqM512(r, a)
-    val r1 = mm512MaskGetexpRoundPs<MmFroundCurDirection>(a, 0xFF00u, a)
+    val r1 = mm512MaskGetexpRoundPs(a, 0xFF00u, a, MM_FROUND_CUR_DIRECTION)
     val e = mm512SetrPs(3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f)
     assertEqM512(r1, e)
 }
 
 public fun testMm512MaskzGetexpRoundPs() {
     val a = mm512Set1Ps(3.0f)
-    val r = mm512MaskzGetexpRoundPs<MmFroundCurDirection>(0u, a)
+    val r = mm512MaskzGetexpRoundPs(0u, a, MM_FROUND_CUR_DIRECTION)
     assertEqM512(r, mm512SetzeroPs())
-    val r1 = mm512MaskzGetexpRoundPs<MmFroundCurDirection>(0xFF00u, a)
+    val r1 = mm512MaskzGetexpRoundPs(0xFF00u, a, MM_FROUND_CUR_DIRECTION)
     val e = mm512SetrPs(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f)
     assertEqM512(r1, e)
 }
 
 public fun testMm512RoundscaleRoundPs() {
     val a = mm512Set1Ps(1.1f)
-    val r = mm512RoundscaleRoundPs<MmFroundCurDirection>(a, 0)
+    val r = mm512RoundscaleRoundPs(a, 0, MM_FROUND_CUR_DIRECTION)
     val e = mm512Set1Ps(1.0f)
     assertEqM512(r, e)
 }
 
 public fun testMm512MaskRoundscaleRoundPs() {
     val a = mm512Set1Ps(1.1f)
-    val r = mm512MaskRoundscaleRoundPs<MmFroundCurDirection>(a, 0u, a, 0)
+    val r = mm512MaskRoundscaleRoundPs(a, 0u, a, 0, MM_FROUND_CUR_DIRECTION)
     val e = mm512Set1Ps(1.1f)
     assertEqM512(r, e)
-    val r1 = mm512MaskRoundscaleRoundPs<MmFroundCurDirection>(a, 0xFFFFu, a, 0)
+    val r1 = mm512MaskRoundscaleRoundPs(a, 0xFFFFu, a, 0, MM_FROUND_CUR_DIRECTION)
     val e1 = mm512Set1Ps(1.0f)
     assertEqM512(r1, e1)
 }
 
 public fun testMm512MaskzRoundscaleRoundPs() {
     val a = mm512Set1Ps(1.1f)
-    val r = mm512MaskzRoundscaleRoundPs<MmFroundCurDirection>(0u, a, 0)
+    val r = mm512MaskzRoundscaleRoundPs(0u, a, 0, MM_FROUND_CUR_DIRECTION)
     assertEqM512(r, mm512SetzeroPs())
-    val r1 = mm512MaskzRoundscaleRoundPs<MmFroundCurDirection>(0xFFFFu, a, 0)
+    val r1 = mm512MaskzRoundscaleRoundPs(0xFFFFu, a, 0, MM_FROUND_CUR_DIRECTION)
     val e = mm512Set1Ps(1.0f)
     assertEqM512(r1, e)
 }
@@ -3019,7 +3021,7 @@ public fun testMm512FixupimmRoundPs() {
     val a = mm512Set1Ps(Float.NaN)
     val b = mm512Set1Ps(Float.MAX_VALUE)
     val c = mm512Set1Epi32(Int.MAX_VALUE)
-    val r = mm512FixupimmRoundPs<MmFroundCurDirection>(a, b, c, 5)
+    val r = mm512FixupimmRoundPs(a, b, c, 5, MM_FROUND_CUR_DIRECTION)
     val e = mm512Set1Ps(0.0f)
     assertEqM512(r, e)
 }
@@ -3028,7 +3030,7 @@ public fun testMm512MaskFixupimmRoundPs() {
     val a = mm512SetPs(Float.NaN, Float.NaN, Float.NaN, Float.NaN, Float.NaN, Float.NaN, Float.NaN, Float.NaN, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f)
     val b = mm512Set1Ps(Float.MAX_VALUE)
     val c = mm512Set1Epi32(Int.MAX_VALUE)
-    val r = mm512MaskFixupimmRoundPs<MmFroundCurDirection>(a, 0xFF00u, b, c, 5)
+    val r = mm512MaskFixupimmRoundPs(a, 0xFF00u, b, c, 5, MM_FROUND_CUR_DIRECTION)
     val e = mm512SetPs(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f)
     assertEqM512(r, e)
 }
@@ -3037,32 +3039,32 @@ public fun testMm512MaskzFixupimmRoundPs() {
     val a = mm512SetPs(Float.NaN, Float.NaN, Float.NaN, Float.NaN, Float.NaN, Float.NaN, Float.NaN, Float.NaN, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f)
     val b = mm512Set1Ps(Float.MAX_VALUE)
     val c = mm512Set1Epi32(Int.MAX_VALUE)
-    val r = mm512MaskzFixupimmRoundPs<MmFroundCurDirection>(0xFF00u, a, b, c, 5)
+    val r = mm512MaskzFixupimmRoundPs(0xFF00u, a, b, c, 5, MM_FROUND_CUR_DIRECTION)
     val e = mm512SetPs(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)
     assertEqM512(r, e)
 }
 
 public fun testMm512GetmantRoundPs() {
     val a = mm512Set1Ps(10.0f)
-    val r = mm512GetmantRoundPs<MmFroundCurDirection>(a, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC)
+    val r = mm512GetmantRoundPs(a, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC, MM_FROUND_CUR_DIRECTION)
     val e = mm512Set1Ps(1.25f)
     assertEqM512(r, e)
 }
 
 public fun testMm512MaskGetmantRoundPs() {
     val a = mm512Set1Ps(10.0f)
-    val r = mm512MaskGetmantRoundPs<MmFroundCurDirection>(a, 0u, a, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC)
+    val r = mm512MaskGetmantRoundPs(a, 0u, a, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC, MM_FROUND_CUR_DIRECTION)
     assertEqM512(r, a)
-    val r1 = mm512MaskGetmantRoundPs<MmFroundCurDirection>(a, 0xFF00u, a, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC)
+    val r1 = mm512MaskGetmantRoundPs(a, 0xFF00u, a, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC, MM_FROUND_CUR_DIRECTION)
     val e = mm512SetrPs(10.0f, 10.0f, 10.0f, 10.0f, 10.0f, 10.0f, 10.0f, 10.0f, 1.25f, 1.25f, 1.25f, 1.25f, 1.25f, 1.25f, 1.25f, 1.25f)
     assertEqM512(r1, e)
 }
 
 public fun testMm512MaskzGetmantRoundPs() {
     val a = mm512Set1Ps(10.0f)
-    val r = mm512MaskzGetmantRoundPs<MmFroundCurDirection>(0u, a, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC)
+    val r = mm512MaskzGetmantRoundPs(0u, a, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC, MM_FROUND_CUR_DIRECTION)
     assertEqM512(r, mm512SetzeroPs())
-    val r1 = mm512MaskzGetmantRoundPs<MmFroundCurDirection>(0xFF00u, a, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC)
+    val r1 = mm512MaskzGetmantRoundPs(0xFF00u, a, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC, MM_FROUND_CUR_DIRECTION)
     val e = mm512SetrPs(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.25f, 1.25f, 1.25f, 1.25f, 1.25f, 1.25f, 1.25f, 1.25f)
     assertEqM512(r1, e)
 }
@@ -4179,7 +4181,7 @@ public fun testMm512MaskzCvtRoundepu32Ps() {
 
 public fun testMm512CvtRoundpsPh() {
     val a = mm512Set1Ps(1.0f)
-    val r = mm512CvtRoundpsPh<MmFroundNoExc>(a)
+    val r = mm512CvtRoundpsPh(a, MM_FROUND_NO_EXC)
     val e = mm256SetrEpi64x(4323521613979991040L, 4323521613979991040L, 4323521613979991040L, 4323521613979991040L)
     assertEqM256i(r, e)
 }
@@ -4187,18 +4189,18 @@ public fun testMm512CvtRoundpsPh() {
 public fun testMm512MaskCvtRoundpsPh() {
     val a = mm512Set1Ps(1.0f)
     val src = mm256Set1Epi16(0)
-    val r = mm512MaskCvtRoundpsPh<MmFroundNoExc>(src, 0u, a)
+    val r = mm512MaskCvtRoundpsPh(src, 0u, a, MM_FROUND_NO_EXC)
     assertEqM256i(r, src)
-    val r1 = mm512MaskCvtRoundpsPh<MmFroundNoExc>(src, 0xFFu, a)
+    val r1 = mm512MaskCvtRoundpsPh(src, 0xFFu, a, MM_FROUND_NO_EXC)
     val e = mm256SetrEpi64x(4323521613979991040L, 4323521613979991040L, 0L, 0L)
     assertEqM256i(r1, e)
 }
 
 public fun testMm512MaskzCvtRoundpsPh() {
     val a = mm512Set1Ps(1.0f)
-    val r = mm512MaskzCvtRoundpsPh<MmFroundNoExc>(0u, a)
+    val r = mm512MaskzCvtRoundpsPh(0u, a, MM_FROUND_NO_EXC)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm512MaskzCvtRoundpsPh<MmFroundNoExc>(0xFFu, a)
+    val r1 = mm512MaskzCvtRoundpsPh(0xFFu, a, MM_FROUND_NO_EXC)
     val e = mm256SetrEpi64x(4323521613979991040L, 4323521613979991040L, 0L, 0L)
     assertEqM256i(r1, e)
 }
@@ -4206,18 +4208,18 @@ public fun testMm512MaskzCvtRoundpsPh() {
 public fun testMm256MaskCvtRoundpsPh() {
     val a = mm256Set1Ps(1.0f)
     val src = mmSet1Epi16(0)
-    val r = mm256MaskCvtRoundpsPh<MmFroundCurDirection>(src, 0u, a)
+    val r = mm256MaskCvtRoundpsPh(src, 0u, a, MM_FROUND_CUR_DIRECTION)
     assertEqM128i(r, src)
-    val r1 = mm256MaskCvtRoundpsPh<MmFroundCurDirection>(src, 0xFFu, a)
+    val r1 = mm256MaskCvtRoundpsPh(src, 0xFFu, a, MM_FROUND_CUR_DIRECTION)
     val e = mmSetrEpi64x(4323521613979991040, 4323521613979991040)
     assertEqM128i(r1, e)
 }
 
 public fun testMm256MaskzCvtRoundpsPh() {
     val a = mm256Set1Ps(1.0f)
-    val r = mm256MaskzCvtRoundpsPh<MmFroundCurDirection>(0u, a)
+    val r = mm256MaskzCvtRoundpsPh(0u, a, MM_FROUND_CUR_DIRECTION)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mm256MaskzCvtRoundpsPh<MmFroundCurDirection>(0xFFu, a)
+    val r1 = mm256MaskzCvtRoundpsPh(0xFFu, a, MM_FROUND_CUR_DIRECTION)
     val e = mmSetrEpi64x(4323521613979991040, 4323521613979991040)
     assertEqM128i(r1, e)
 }
@@ -4225,25 +4227,25 @@ public fun testMm256MaskzCvtRoundpsPh() {
 public fun testMmMaskCvtRoundpsPh() {
     val a = mmSet1Ps(1.0f)
     val src = mmSet1Epi16(0)
-    val r = mmMaskCvtRoundpsPh<MmFroundCurDirection>(src, 0u, a)
+    val r = mmMaskCvtRoundpsPh(src, 0u, a, MM_FROUND_CUR_DIRECTION)
     assertEqM128i(r, src)
-    val r1 = mmMaskCvtRoundpsPh<MmFroundCurDirection>(src, 0xFu, a)
+    val r1 = mmMaskCvtRoundpsPh(src, 0xFu, a, MM_FROUND_CUR_DIRECTION)
     val e = mmSetrEpi64x(4323521613979991040, 0)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzCvtRoundpsPh() {
     val a = mmSet1Ps(1.0f)
-    val r = mmMaskzCvtRoundpsPh<MmFroundCurDirection>(0u, a)
+    val r = mmMaskzCvtRoundpsPh(0u, a, MM_FROUND_CUR_DIRECTION)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzCvtRoundpsPh<MmFroundCurDirection>(0xFu, a)
+    val r1 = mmMaskzCvtRoundpsPh(0xFu, a, MM_FROUND_CUR_DIRECTION)
     val e = mmSetrEpi64x(4323521613979991040, 0)
     assertEqM128i(r1, e)
 }
 
 public fun testMm512CvtpsPh() {
     val a = mm512Set1Ps(1.0f)
-    val r = mm512CvtpsPh<MmFroundNoExc>(a)
+    val r = mm512CvtpsPh(a, MM_FROUND_NO_EXC)
     val e = mm256SetrEpi64x(4323521613979991040L, 4323521613979991040L, 4323521613979991040L, 4323521613979991040L)
     assertEqM256i(r, e)
 }
@@ -4251,18 +4253,18 @@ public fun testMm512CvtpsPh() {
 public fun testMm512MaskCvtpsPh() {
     val a = mm512Set1Ps(1.0f)
     val src = mm256Set1Epi16(0)
-    val r = mm512MaskCvtpsPh<MmFroundNoExc>(src, 0u, a)
+    val r = mm512MaskCvtpsPh(src, 0u, a, MM_FROUND_NO_EXC)
     assertEqM256i(r, src)
-    val r1 = mm512MaskCvtpsPh<MmFroundNoExc>(src, 0xFFu, a)
+    val r1 = mm512MaskCvtpsPh(src, 0xFFu, a, MM_FROUND_NO_EXC)
     val e = mm256SetrEpi64x(4323521613979991040L, 4323521613979991040L, 0L, 0L)
     assertEqM256i(r1, e)
 }
 
 public fun testMm512MaskzCvtpsPh() {
     val a = mm512Set1Ps(1.0f)
-    val r = mm512MaskzCvtpsPh<MmFroundNoExc>(0u, a)
+    val r = mm512MaskzCvtpsPh(0u, a, MM_FROUND_NO_EXC)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm512MaskzCvtpsPh<MmFroundNoExc>(0xFFu, a)
+    val r1 = mm512MaskzCvtpsPh(0xFFu, a, MM_FROUND_NO_EXC)
     val e = mm256SetrEpi64x(4323521613979991040L, 4323521613979991040L, 0L, 0L)
     assertEqM256i(r1, e)
 }
@@ -4270,18 +4272,18 @@ public fun testMm512MaskzCvtpsPh() {
 public fun testMm256MaskCvtpsPh() {
     val a = mm256Set1Ps(1.0f)
     val src = mmSet1Epi16(0)
-    val r = mm256MaskCvtpsPh<MmFroundCurDirection>(src, 0u, a)
+    val r = mm256MaskCvtpsPh(src, 0u, a, MM_FROUND_CUR_DIRECTION)
     assertEqM128i(r, src)
-    val r1 = mm256MaskCvtpsPh<MmFroundCurDirection>(src, 0xFFu, a)
+    val r1 = mm256MaskCvtpsPh(src, 0xFFu, a, MM_FROUND_CUR_DIRECTION)
     val e = mmSetrEpi64x(4323521613979991040, 4323521613979991040)
     assertEqM128i(r1, e)
 }
 
 public fun testMm256MaskzCvtpsPh() {
     val a = mm256Set1Ps(1.0f)
-    val r = mm256MaskzCvtpsPh<MmFroundCurDirection>(0u, a)
+    val r = mm256MaskzCvtpsPh(0u, a, MM_FROUND_CUR_DIRECTION)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mm256MaskzCvtpsPh<MmFroundCurDirection>(0xFFu, a)
+    val r1 = mm256MaskzCvtpsPh(0xFFu, a, MM_FROUND_CUR_DIRECTION)
     val e = mmSetrEpi64x(4323521613979991040, 4323521613979991040)
     assertEqM128i(r1, e)
 }
@@ -4289,25 +4291,25 @@ public fun testMm256MaskzCvtpsPh() {
 public fun testMmMaskCvtpsPh() {
     val a = mmSet1Ps(1.0f)
     val src = mmSet1Epi16(0)
-    val r = mmMaskCvtpsPh<MmFroundCurDirection>(src, 0u, a)
+    val r = mmMaskCvtpsPh(src, 0u, a, MM_FROUND_CUR_DIRECTION)
     assertEqM128i(r, src)
-    val r1 = mmMaskCvtpsPh<MmFroundCurDirection>(src, 0xFu, a)
+    val r1 = mmMaskCvtpsPh(src, 0xFu, a, MM_FROUND_CUR_DIRECTION)
     val e = mmSetrEpi64x(4323521613979991040, 0)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzCvtpsPh() {
     val a = mmSet1Ps(1.0f)
-    val r = mmMaskzCvtpsPh<MmFroundCurDirection>(0u, a)
+    val r = mmMaskzCvtpsPh(0u, a, MM_FROUND_CUR_DIRECTION)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzCvtpsPh<MmFroundCurDirection>(0xFu, a)
+    val r1 = mmMaskzCvtpsPh(0xFu, a, MM_FROUND_CUR_DIRECTION)
     val e = mmSetrEpi64x(4323521613979991040, 0)
     assertEqM128i(r1, e)
 }
 
 public fun testMm512CvtRoundphPs() {
     val a = mm256SetrEpi64x(4323521613979991040L, 4323521613979991040L, 4323521613979991040L, 4323521613979991040L)
-    val r = mm512CvtRoundphPs<MmFroundNoExc>(a)
+    val r = mm512CvtRoundphPs(a, MM_FROUND_NO_EXC)
     val e = mm512Set1Ps(1.0f)
     assertEqM512(r, e)
 }
@@ -4315,18 +4317,18 @@ public fun testMm512CvtRoundphPs() {
 public fun testMm512MaskCvtRoundphPs() {
     val a = mm256SetrEpi64x(4323521613979991040L, 4323521613979991040L, 4323521613979991040L, 4323521613979991040L)
     val src = mm512Set1Ps(0.0f)
-    val r = mm512MaskCvtRoundphPs<MmFroundNoExc>(src, 0u, a)
+    val r = mm512MaskCvtRoundphPs(src, 0u, a, MM_FROUND_NO_EXC)
     assertEqM512(r, src)
-    val r1 = mm512MaskCvtRoundphPs<MmFroundNoExc>(src, 0xFFu, a)
+    val r1 = mm512MaskCvtRoundphPs(src, 0xFFu, a, MM_FROUND_NO_EXC)
     val e = mm512SetrPs(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)
     assertEqM512(r1, e)
 }
 
 public fun testMm512MaskzCvtRoundphPs() {
     val a = mm256SetrEpi64x(4323521613979991040L, 4323521613979991040L, 4323521613979991040L, 4323521613979991040L)
-    val r = mm512MaskzCvtRoundphPs<MmFroundNoExc>(0u, a)
+    val r = mm512MaskzCvtRoundphPs(0u, a, MM_FROUND_NO_EXC)
     assertEqM512(r, mm512SetzeroPs())
-    val r1 = mm512MaskzCvtRoundphPs<MmFroundNoExc>(0xFFu, a)
+    val r1 = mm512MaskzCvtRoundphPs(0xFFu, a, MM_FROUND_NO_EXC)
     val e = mm512SetrPs(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)
     assertEqM512(r1, e)
 }
@@ -4397,7 +4399,7 @@ public fun testMmMaskzCvtphPs() {
 
 public fun testMm512CvttRoundpsEpi32() {
     val a = mm512SetrPs(0.0f, -1.5f, 2.0f, -3.5f, 4.0f, -5.5f, 6.0f, -7.5f, 8.0f, 9.5f, 10.0f, 11.5f, 12.0f, 13.5f, 14.0f, 15.5f)
-    val r = mm512CvttRoundpsEpi32<MmFroundNoExc>(a)
+    val r = mm512CvttRoundpsEpi32(a, MM_FROUND_NO_EXC)
     val e = mm512SetrEpi32(0, -1, 2, -3, 4, -5, 6, -7, 8, 9, 10, 11, 12, 13, 14, 15)
     assertEqM512i(r, e)
 }
@@ -4405,25 +4407,25 @@ public fun testMm512CvttRoundpsEpi32() {
 public fun testMm512MaskCvttRoundpsEpi32() {
     val a = mm512SetrPs(0.0f, -1.5f, 2.0f, -3.5f, 4.0f, -5.5f, 6.0f, -7.5f, 8.0f, 9.5f, 10.0f, 11.5f, 12.0f, 13.5f, 14.0f, 15.5f)
     val src = mm512Set1Epi32(0)
-    val r = mm512MaskCvttRoundpsEpi32<MmFroundNoExc>(src, 0u, a)
+    val r = mm512MaskCvttRoundpsEpi32(src, 0u, a, MM_FROUND_NO_EXC)
     assertEqM512i(r, src)
-    val r1 = mm512MaskCvttRoundpsEpi32<MmFroundNoExc>(src, 0xFFu, a)
+    val r1 = mm512MaskCvttRoundpsEpi32(src, 0xFFu, a, MM_FROUND_NO_EXC)
     val e = mm512SetrEpi32(0, -1, 2, -3, 4, -5, 6, -7, 0, 0, 0, 0, 0, 0, 0, 0)
     assertEqM512i(r1, e)
 }
 
 public fun testMm512MaskzCvttRoundpsEpi32() {
     val a = mm512SetrPs(0.0f, -1.5f, 2.0f, -3.5f, 4.0f, -5.5f, 6.0f, -7.5f, 8.0f, 9.5f, 10.0f, 11.5f, 12.0f, 13.5f, 14.0f, 15.5f)
-    val r = mm512MaskzCvttRoundpsEpi32<MmFroundNoExc>(0u, a)
+    val r = mm512MaskzCvttRoundpsEpi32(0u, a, MM_FROUND_NO_EXC)
     assertEqM512i(r, mm512SetzeroSi512())
-    val r1 = mm512MaskzCvttRoundpsEpi32<MmFroundNoExc>(0xFFu, a)
+    val r1 = mm512MaskzCvttRoundpsEpi32(0xFFu, a, MM_FROUND_NO_EXC)
     val e = mm512SetrEpi32(0, -1, 2, -3, 4, -5, 6, -7, 0, 0, 0, 0, 0, 0, 0, 0)
     assertEqM512i(r1, e)
 }
 
 public fun testMm512CvttRoundpsEpu32() {
     val a = mm512SetrPs(0.0f, -1.5f, 2.0f, -3.5f, 4.0f, -5.5f, 6.0f, -7.5f, 8.0f, 9.5f, 10.0f, 11.5f, 12.0f, 13.5f, 14.0f, 15.5f)
-    val r = mm512CvttRoundpsEpu32<MmFroundNoExc>(a)
+    val r = mm512CvttRoundpsEpu32(a, MM_FROUND_NO_EXC)
     val e = mm512SetrEpi32(0, -1, 2, -1, 4, -1, 6, -1, 8, 9, 10, 11, 12, 13, 14, 15)
     assertEqM512i(r, e)
 }
@@ -4431,18 +4433,18 @@ public fun testMm512CvttRoundpsEpu32() {
 public fun testMm512MaskCvttRoundpsEpu32() {
     val a = mm512SetrPs(0.0f, -1.5f, 2.0f, -3.5f, 4.0f, -5.5f, 6.0f, -7.5f, 8.0f, 9.5f, 10.0f, 11.5f, 12.0f, 13.5f, 14.0f, 15.5f)
     val src = mm512Set1Epi32(0)
-    val r = mm512MaskCvttRoundpsEpu32<MmFroundNoExc>(src, 0u, a)
+    val r = mm512MaskCvttRoundpsEpu32(src, 0u, a, MM_FROUND_NO_EXC)
     assertEqM512i(r, src)
-    val r1 = mm512MaskCvttRoundpsEpu32<MmFroundNoExc>(src, 0xFFu, a)
+    val r1 = mm512MaskCvttRoundpsEpu32(src, 0xFFu, a, MM_FROUND_NO_EXC)
     val e = mm512SetrEpi32(0, -1, 2, -1, 4, -1, 6, -1, 0, 0, 0, 0, 0, 0, 0, 0)
     assertEqM512i(r1, e)
 }
 
 public fun testMm512MaskzCvttRoundpsEpu32() {
     val a = mm512SetrPs(0.0f, -1.5f, 2.0f, -3.5f, 4.0f, -5.5f, 6.0f, -7.5f, 8.0f, 9.5f, 10.0f, 11.5f, 12.0f, 13.5f, 14.0f, 15.5f)
-    val r = mm512MaskzCvttRoundpsEpu32<MmFroundNoExc>(0u, a)
+    val r = mm512MaskzCvttRoundpsEpu32(0u, a, MM_FROUND_NO_EXC)
     assertEqM512i(r, mm512SetzeroSi512())
-    val r1 = mm512MaskzCvttRoundpsEpu32<MmFroundNoExc>(0xFFu, a)
+    val r1 = mm512MaskzCvttRoundpsEpu32(0xFFu, a, MM_FROUND_NO_EXC)
     val e = mm512SetrEpi32(0, -1, 2, -1, 4, -1, 6, -1, 0, 0, 0, 0, 0, 0, 0, 0)
     assertEqM512i(r1, e)
 }
@@ -4778,7 +4780,7 @@ public fun testMm512MaskCmpneqPsMask() {
 public fun testMm512CmpPsMask() {
     val a = mm512SetPs(0.0f, 1.0f, -1.0f, 13.0f, Float.MAX_VALUE, (-Float.MAX_VALUE), 100.0f, -100.0f, 0.0f, 1.0f, -1.0f, 13.0f, Float.MAX_VALUE, (-Float.MAX_VALUE), 100.0f, -100.0f)
     val b = mm512Set1Ps(-1.0f)
-    val m = mm512CmpPsMask<CmpLtOq>(a, b)
+    val m = mm512CmpPsMask(a, b, CMP_LT_OQ)
     check(m == 0x505u.toUShort())
 }
 
@@ -4786,14 +4788,14 @@ public fun testMm512MaskCmpPsMask() {
     val a = mm512SetPs(0.0f, 1.0f, -1.0f, 13.0f, Float.MAX_VALUE, (-Float.MAX_VALUE), 100.0f, -100.0f, 0.0f, 1.0f, -1.0f, 13.0f, Float.MAX_VALUE, (-Float.MAX_VALUE), 100.0f, -100.0f)
     val b = mm512Set1Ps(-1.0f)
     val mask = 0x6666
-    val r = mm512MaskCmpPsMask<CmpLtOq>(mask, a, b)
+    val r = mm512MaskCmpPsMask(mask, a, b, CMP_LT_OQ)
     check(r == 0x404u.toUShort())
 }
 
 public fun testMm256CmpPsMask() {
     val a = mm256SetPs(0.0f, 1.0f, -1.0f, 13.0f, Float.MAX_VALUE, (-Float.MAX_VALUE), 100.0f, -100.0f)
     val b = mm256Set1Ps(-1.0f)
-    val m = mm256CmpPsMask<CmpLtOq>(a, b)
+    val m = mm256CmpPsMask(a, b, CMP_LT_OQ)
     check(m == 0x5u.toUByte())
 }
 
@@ -4801,14 +4803,14 @@ public fun testMm256MaskCmpPsMask() {
     val a = mm256SetPs(0.0f, 1.0f, -1.0f, 13.0f, Float.MAX_VALUE, (-Float.MAX_VALUE), 100.0f, -100.0f)
     val b = mm256Set1Ps(-1.0f)
     val mask = 0x66
-    val r = mm256MaskCmpPsMask<CmpLtOq>(mask, a, b)
+    val r = mm256MaskCmpPsMask(mask, a, b, CMP_LT_OQ)
     check(r == 0x4u.toUByte())
 }
 
 public fun testMmCmpPsMask() {
     val a = mmSetPs(0.0f, 1.0f, -1.0f, 13.0f)
     val b = mmSet1Ps(1.0f)
-    val m = mmCmpPsMask<CmpLtOq>(a, b)
+    val m = mmCmpPsMask(a, b, CMP_LT_OQ)
     check(m == 0xAu.toUByte())
 }
 
@@ -4816,14 +4818,14 @@ public fun testMmMaskCmpPsMask() {
     val a = mmSetPs(0.0f, 1.0f, -1.0f, 13.0f)
     val b = mmSet1Ps(1.0f)
     val mask = 0xFF
-    val r = mmMaskCmpPsMask<CmpLtOq>(mask, a, b)
+    val r = mmMaskCmpPsMask(mask, a, b, CMP_LT_OQ)
     check(r == 0xAu.toUByte())
 }
 
 public fun testMm512CmpRoundPsMask() {
     val a = mm512SetPs(0.0f, 1.0f, -1.0f, 13.0f, Float.MAX_VALUE, (-Float.MAX_VALUE), 100.0f, -100.0f, 0.0f, 1.0f, -1.0f, 13.0f, Float.MAX_VALUE, (-Float.MAX_VALUE), 100.0f, -100.0f)
     val b = mm512Set1Ps(-1.0f)
-    val m = mm512CmpRoundPsMask<CmpLtOq, MmFroundCurDirection>(a, b)
+    val m = mm512CmpRoundPsMask(a, b, CMP_LT_OQ, MM_FROUND_CUR_DIRECTION)
     check(m == 0x505u.toUShort())
 }
 
@@ -4831,7 +4833,7 @@ public fun testMm512MaskCmpRoundPsMask() {
     val a = mm512SetPs(0.0f, 1.0f, -1.0f, 13.0f, Float.MAX_VALUE, (-Float.MAX_VALUE), 100.0f, -100.0f, 0.0f, 1.0f, -1.0f, 13.0f, Float.MAX_VALUE, (-Float.MAX_VALUE), 100.0f, -100.0f)
     val b = mm512Set1Ps(-1.0f)
     val mask = 0x6666
-    val r = mm512MaskCmpRoundPsMask<CmpLtOq, MmFroundCurDirection>(mask, a, b)
+    val r = mm512MaskCmpRoundPsMask(mask, a, b, CMP_LT_OQ, MM_FROUND_CUR_DIRECTION)
     check(r == 0x404u.toUShort())
 }
 
@@ -4868,64 +4870,64 @@ public fun testMm512MaskCmpunordPsMask() {
 public fun testMmCmpSsMask() {
     val a = mmSetrPs(2.0f, 1.0f, 1.0f, 1.0f)
     val b = mmSetrPs(1.0f, 2.0f, 2.0f, 2.0f)
-    val m = mmCmpSsMask<CmpGeOs>(a, b)
+    val m = mmCmpSsMask(a, b, CMP_GE_OS)
     check(m == 1u.toUByte())
 }
 
 public fun testMmMaskCmpSsMask() {
     val a = mmSetrPs(2.0f, 1.0f, 1.0f, 1.0f)
     val b = mmSetrPs(1.0f, 2.0f, 2.0f, 2.0f)
-    val m = mmMaskCmpSsMask<CmpGeOs>(0x2u, a, b)
+    val m = mmMaskCmpSsMask(0x2u, a, b, CMP_GE_OS)
     check(m == 0u.toUByte())
-    val m1 = mmMaskCmpSsMask<CmpGeOs>(0x1u, a, b)
+    val m1 = mmMaskCmpSsMask(0x1u, a, b, CMP_GE_OS)
     check(m1 == 1u.toUByte())
 }
 
 public fun testMmCmpRoundSsMask() {
     val a = mmSetrPs(2.0f, 1.0f, 1.0f, 1.0f)
     val b = mmSetrPs(1.0f, 2.0f, 2.0f, 2.0f)
-    val m = mmCmpRoundSsMask<CmpGeOs, MmFroundCurDirection>(a, b)
+    val m = mmCmpRoundSsMask(a, b, CMP_GE_OS, MM_FROUND_CUR_DIRECTION)
     check(m == 1u.toUByte())
 }
 
 public fun testMmMaskCmpRoundSsMask() {
     val a = mmSetrPs(2.0f, 1.0f, 1.0f, 1.0f)
     val b = mmSetrPs(1.0f, 2.0f, 2.0f, 2.0f)
-    val m = mmMaskCmpRoundSsMask<CmpGeOs, MmFroundCurDirection>(0x2u, a, b)
+    val m = mmMaskCmpRoundSsMask(0x2u, a, b, CMP_GE_OS, MM_FROUND_CUR_DIRECTION)
     check(m == 0u.toUByte())
-    val m1 = mmMaskCmpRoundSsMask<CmpGeOs, MmFroundCurDirection>(0x1u, a, b)
+    val m1 = mmMaskCmpRoundSsMask(0x1u, a, b, CMP_GE_OS, MM_FROUND_CUR_DIRECTION)
     check(m1 == 1u.toUByte())
 }
 
 public fun testMmCmpSdMask() {
     val a = mmSetrPd(2.0, 1.0)
     val b = mmSetrPd(1.0, 2.0)
-    val m = mmCmpSdMask<CmpGeOs>(a, b)
+    val m = mmCmpSdMask(a, b, CMP_GE_OS)
     check(m == 1u.toUByte())
 }
 
 public fun testMmMaskCmpSdMask() {
     val a = mmSetrPd(2.0, 1.0)
     val b = mmSetrPd(1.0, 2.0)
-    val m = mmMaskCmpSdMask<CmpGeOs>(0x2u, a, b)
+    val m = mmMaskCmpSdMask(0x2u, a, b, CMP_GE_OS)
     check(m == 0u.toUByte())
-    val m1 = mmMaskCmpSdMask<CmpGeOs>(0x1u, a, b)
+    val m1 = mmMaskCmpSdMask(0x1u, a, b, CMP_GE_OS)
     check(m1 == 1u.toUByte())
 }
 
 public fun testMmCmpRoundSdMask() {
     val a = mmSetrPd(2.0, 1.0)
     val b = mmSetrPd(1.0, 2.0)
-    val m = mmCmpRoundSdMask<CmpGeOs, MmFroundCurDirection>(a, b)
+    val m = mmCmpRoundSdMask(a, b, CMP_GE_OS, MM_FROUND_CUR_DIRECTION)
     check(m == 1u.toUByte())
 }
 
 public fun testMmMaskCmpRoundSdMask() {
     val a = mmSetrPd(2.0, 1.0)
     val b = mmSetrPd(1.0, 2.0)
-    val m = mmMaskCmpRoundSdMask<CmpGeOs, MmFroundCurDirection>(0x2u, a, b)
+    val m = mmMaskCmpRoundSdMask(0x2u, a, b, CMP_GE_OS, MM_FROUND_CUR_DIRECTION)
     check(m == 0u.toUByte())
-    val m1 = mmMaskCmpRoundSdMask<CmpGeOs, MmFroundCurDirection>(0x1u, a, b)
+    val m1 = mmMaskCmpRoundSdMask(0x1u, a, b, CMP_GE_OS, MM_FROUND_CUR_DIRECTION)
     check(m1 == 1u.toUByte())
 }
 
@@ -12673,7 +12675,7 @@ public fun testMmMaskzDivRoundSd() {
 public fun testMmMaxRoundSs() {
     val a = mmSetPs(0.0f, 1.0f, 2.0f, 3.0f)
     val b = mmSetPs(4.0f, 5.0f, 6.0f, 7.0f)
-    val r = mmMaxRoundSs<MmFroundCurDirection>(a, b)
+    val r = mmMaxRoundSs(a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(0.0f, 1.0f, 2.0f, 7.0f)
     assertEqM128(r, e)
 }
@@ -12681,10 +12683,10 @@ public fun testMmMaxRoundSs() {
 public fun testMmMaskMaxRoundSs() {
     val a = mmSetPs(0.0f, 1.0f, 2.0f, 3.0f)
     val b = mmSetPs(4.0f, 5.0f, 6.0f, 7.0f)
-    val r = mmMaskMaxRoundSs<MmFroundCurDirection>(a, 0u, a, b)
+    val r = mmMaskMaxRoundSs(a, 0u, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(0.0f, 1.0f, 2.0f, 3.0f)
     assertEqM128(r, e)
-    val r1 = mmMaskMaxRoundSs<MmFroundCurDirection>(a, 0xFFu, a, b)
+    val r1 = mmMaskMaxRoundSs(a, 0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPs(0.0f, 1.0f, 2.0f, 7.0f)
     assertEqM128(r1, e1)
 }
@@ -12692,10 +12694,10 @@ public fun testMmMaskMaxRoundSs() {
 public fun testMmMaskzMaxRoundSs() {
     val a = mmSetPs(0.0f, 1.0f, 2.0f, 3.0f)
     val b = mmSetPs(4.0f, 5.0f, 6.0f, 7.0f)
-    val r = mmMaskzMaxRoundSs<MmFroundCurDirection>(0u, a, b)
+    val r = mmMaskzMaxRoundSs(0u, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(0.0f, 1.0f, 2.0f, 0.0f)
     assertEqM128(r, e)
-    val r1 = mmMaskzMaxRoundSs<MmFroundCurDirection>(0xFFu, a, b)
+    val r1 = mmMaskzMaxRoundSs(0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPs(0.0f, 1.0f, 2.0f, 7.0f)
     assertEqM128(r1, e1)
 }
@@ -12703,7 +12705,7 @@ public fun testMmMaskzMaxRoundSs() {
 public fun testMmMaxRoundSd() {
     val a = mmSetPd(0.0, 1.0)
     val b = mmSetPd(2.0, 3.0)
-    val r = mmMaxRoundSd<MmFroundCurDirection>(a, b)
+    val r = mmMaxRoundSd(a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(0.0, 3.0)
     assertEqM128d(r, e)
 }
@@ -12711,10 +12713,10 @@ public fun testMmMaxRoundSd() {
 public fun testMmMaskMaxRoundSd() {
     val a = mmSetPd(0.0, 1.0)
     val b = mmSetPd(2.0, 3.0)
-    val r = mmMaskMaxRoundSd<MmFroundCurDirection>(a, 0u, a, b)
+    val r = mmMaskMaxRoundSd(a, 0u, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(0.0, 1.0)
     assertEqM128d(r, e)
-    val r1 = mmMaskMaxRoundSd<MmFroundCurDirection>(a, 0xFFu, a, b)
+    val r1 = mmMaskMaxRoundSd(a, 0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPd(0.0, 3.0)
     assertEqM128d(r1, e1)
 }
@@ -12722,10 +12724,10 @@ public fun testMmMaskMaxRoundSd() {
 public fun testMmMaskzMaxRoundSd() {
     val a = mmSetPd(0.0, 1.0)
     val b = mmSetPd(2.0, 3.0)
-    val r = mmMaskzMaxRoundSd<MmFroundCurDirection>(0u, a, b)
+    val r = mmMaskzMaxRoundSd(0u, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(0.0, 0.0)
     assertEqM128d(r, e)
-    val r1 = mmMaskzMaxRoundSd<MmFroundCurDirection>(0xFFu, a, b)
+    val r1 = mmMaskzMaxRoundSd(0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPd(0.0, 3.0)
     assertEqM128d(r1, e1)
 }
@@ -12733,7 +12735,7 @@ public fun testMmMaskzMaxRoundSd() {
 public fun testMmMinRoundSs() {
     val a = mmSetPs(0.0f, 1.0f, 2.0f, 3.0f)
     val b = mmSetPs(4.0f, 5.0f, 6.0f, 7.0f)
-    val r = mmMinRoundSs<MmFroundCurDirection>(a, b)
+    val r = mmMinRoundSs(a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(0.0f, 1.0f, 2.0f, 3.0f)
     assertEqM128(r, e)
 }
@@ -12741,10 +12743,10 @@ public fun testMmMinRoundSs() {
 public fun testMmMaskMinRoundSs() {
     val a = mmSetPs(0.0f, 1.0f, 2.0f, 3.0f)
     val b = mmSetPs(4.0f, 5.0f, 6.0f, 7.0f)
-    val r = mmMaskMinRoundSs<MmFroundCurDirection>(a, 0u, a, b)
+    val r = mmMaskMinRoundSs(a, 0u, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(0.0f, 1.0f, 2.0f, 3.0f)
     assertEqM128(r, e)
-    val r1 = mmMaskMinRoundSs<MmFroundCurDirection>(a, 0xFFu, a, b)
+    val r1 = mmMaskMinRoundSs(a, 0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPs(0.0f, 1.0f, 2.0f, 3.0f)
     assertEqM128(r1, e1)
 }
@@ -12752,10 +12754,10 @@ public fun testMmMaskMinRoundSs() {
 public fun testMmMaskzMinRoundSs() {
     val a = mmSetPs(0.0f, 1.0f, 2.0f, 3.0f)
     val b = mmSetPs(4.0f, 5.0f, 6.0f, 7.0f)
-    val r = mmMaskzMinRoundSs<MmFroundCurDirection>(0u, a, b)
+    val r = mmMaskzMinRoundSs(0u, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(0.0f, 1.0f, 2.0f, 0.0f)
     assertEqM128(r, e)
-    val r1 = mmMaskzMinRoundSs<MmFroundCurDirection>(0xFFu, a, b)
+    val r1 = mmMaskzMinRoundSs(0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPs(0.0f, 1.0f, 2.0f, 3.0f)
     assertEqM128(r1, e1)
 }
@@ -12763,7 +12765,7 @@ public fun testMmMaskzMinRoundSs() {
 public fun testMmMinRoundSd() {
     val a = mmSetPd(0.0, 1.0)
     val b = mmSetPd(2.0, 3.0)
-    val r = mmMinRoundSd<MmFroundCurDirection>(a, b)
+    val r = mmMinRoundSd(a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(0.0, 1.0)
     assertEqM128d(r, e)
 }
@@ -12771,10 +12773,10 @@ public fun testMmMinRoundSd() {
 public fun testMmMaskMinRoundSd() {
     val a = mmSetPd(0.0, 1.0)
     val b = mmSetPd(2.0, 3.0)
-    val r = mmMaskMinRoundSd<MmFroundCurDirection>(a, 0u, a, b)
+    val r = mmMaskMinRoundSd(a, 0u, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(0.0, 1.0)
     assertEqM128d(r, e)
-    val r1 = mmMaskMinRoundSd<MmFroundCurDirection>(a, 0xFFu, a, b)
+    val r1 = mmMaskMinRoundSd(a, 0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPd(0.0, 1.0)
     assertEqM128d(r1, e1)
 }
@@ -12782,10 +12784,10 @@ public fun testMmMaskMinRoundSd() {
 public fun testMmMaskzMinRoundSd() {
     val a = mmSetPd(0.0, 1.0)
     val b = mmSetPd(2.0, 3.0)
-    val r = mmMaskzMinRoundSd<MmFroundCurDirection>(0u, a, b)
+    val r = mmMaskzMinRoundSd(0u, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(0.0, 0.0)
     assertEqM128d(r, e)
-    val r1 = mmMaskzMinRoundSd<MmFroundCurDirection>(0xFFu, a, b)
+    val r1 = mmMaskzMinRoundSd(0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPd(0.0, 1.0)
     assertEqM128d(r1, e1)
 }
@@ -12855,7 +12857,7 @@ public fun testMmMaskzSqrtRoundSd() {
 public fun testMmGetexpRoundSs() {
     val a = mmSet1Ps(2.0f)
     val b = mmSet1Ps(3.0f)
-    val r = mmGetexpRoundSs<MmFroundCurDirection>(a, b)
+    val r = mmGetexpRoundSs(a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(2.0f, 2.0f, 2.0f, 1.0f)
     assertEqM128(r, e)
 }
@@ -12863,10 +12865,10 @@ public fun testMmGetexpRoundSs() {
 public fun testMmMaskGetexpRoundSs() {
     val a = mmSet1Ps(2.0f)
     val b = mmSet1Ps(3.0f)
-    val r = mmMaskGetexpRoundSs<MmFroundCurDirection>(a, 0u, a, b)
+    val r = mmMaskGetexpRoundSs(a, 0u, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(2.0f, 2.0f, 2.0f, 2.0f)
     assertEqM128(r, e)
-    val r1 = mmMaskGetexpRoundSs<MmFroundCurDirection>(a, 0xFFu, a, b)
+    val r1 = mmMaskGetexpRoundSs(a, 0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPs(2.0f, 2.0f, 2.0f, 1.0f)
     assertEqM128(r1, e1)
 }
@@ -12874,10 +12876,10 @@ public fun testMmMaskGetexpRoundSs() {
 public fun testMmMaskzGetexpRoundSs() {
     val a = mmSet1Ps(2.0f)
     val b = mmSet1Ps(3.0f)
-    val r = mmMaskzGetexpRoundSs<MmFroundCurDirection>(0u, a, b)
+    val r = mmMaskzGetexpRoundSs(0u, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(2.0f, 2.0f, 2.0f, 0.0f)
     assertEqM128(r, e)
-    val r1 = mmMaskzGetexpRoundSs<MmFroundCurDirection>(0xFFu, a, b)
+    val r1 = mmMaskzGetexpRoundSs(0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPs(2.0f, 2.0f, 2.0f, 1.0f)
     assertEqM128(r1, e1)
 }
@@ -12885,7 +12887,7 @@ public fun testMmMaskzGetexpRoundSs() {
 public fun testMmGetexpRoundSd() {
     val a = mmSet1Pd(2.0)
     val b = mmSet1Pd(3.0)
-    val r = mmGetexpRoundSd<MmFroundCurDirection>(a, b)
+    val r = mmGetexpRoundSd(a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(2.0, 1.0)
     assertEqM128d(r, e)
 }
@@ -12893,10 +12895,10 @@ public fun testMmGetexpRoundSd() {
 public fun testMmMaskGetexpRoundSd() {
     val a = mmSet1Pd(2.0)
     val b = mmSet1Pd(3.0)
-    val r = mmMaskGetexpRoundSd<MmFroundCurDirection>(a, 0u, a, b)
+    val r = mmMaskGetexpRoundSd(a, 0u, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(2.0, 2.0)
     assertEqM128d(r, e)
-    val r1 = mmMaskGetexpRoundSd<MmFroundCurDirection>(a, 0xFFu, a, b)
+    val r1 = mmMaskGetexpRoundSd(a, 0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPd(2.0, 1.0)
     assertEqM128d(r1, e1)
 }
@@ -12904,10 +12906,10 @@ public fun testMmMaskGetexpRoundSd() {
 public fun testMmMaskzGetexpRoundSd() {
     val a = mmSet1Pd(2.0)
     val b = mmSet1Pd(3.0)
-    val r = mmMaskzGetexpRoundSd<MmFroundCurDirection>(0u, a, b)
+    val r = mmMaskzGetexpRoundSd(0u, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(2.0, 0.0)
     assertEqM128d(r, e)
-    val r1 = mmMaskzGetexpRoundSd<MmFroundCurDirection>(0xFFu, a, b)
+    val r1 = mmMaskzGetexpRoundSd(0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPd(2.0, 1.0)
     assertEqM128d(r1, e1)
 }
@@ -12915,7 +12917,7 @@ public fun testMmMaskzGetexpRoundSd() {
 public fun testMmGetmantRoundSs() {
     val a = mmSet1Ps(20.0f)
     val b = mmSet1Ps(10.0f)
-    val r = mmGetmantRoundSs<MmFroundCurDirection>(a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC)
+    val r = mmGetmantRoundSs(a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(20.0f, 20.0f, 20.0f, 1.25f)
     assertEqM128(r, e)
 }
@@ -12923,10 +12925,10 @@ public fun testMmGetmantRoundSs() {
 public fun testMmMaskGetmantRoundSs() {
     val a = mmSet1Ps(20.0f)
     val b = mmSet1Ps(10.0f)
-    val r = mmMaskGetmantRoundSs<MmFroundCurDirection>(a, 0u, a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC)
+    val r = mmMaskGetmantRoundSs(a, 0u, a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(20.0f, 20.0f, 20.0f, 20.0f)
     assertEqM128(r, e)
-    val r1 = mmMaskGetmantRoundSs<MmFroundCurDirection>(a, 0xFFu, a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC)
+    val r1 = mmMaskGetmantRoundSs(a, 0xFFu, a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPs(20.0f, 20.0f, 20.0f, 1.25f)
     assertEqM128(r1, e1)
 }
@@ -12934,10 +12936,10 @@ public fun testMmMaskGetmantRoundSs() {
 public fun testMmMaskzGetmantRoundSs() {
     val a = mmSet1Ps(20.0f)
     val b = mmSet1Ps(10.0f)
-    val r = mmMaskzGetmantRoundSs<MmFroundCurDirection>(0u, a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC)
+    val r = mmMaskzGetmantRoundSs(0u, a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(20.0f, 20.0f, 20.0f, 0.0f)
     assertEqM128(r, e)
-    val r1 = mmMaskzGetmantRoundSs<MmFroundCurDirection>(0xFFu, a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC)
+    val r1 = mmMaskzGetmantRoundSs(0xFFu, a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPs(20.0f, 20.0f, 20.0f, 1.25f)
     assertEqM128(r1, e1)
 }
@@ -12945,7 +12947,7 @@ public fun testMmMaskzGetmantRoundSs() {
 public fun testMmGetmantRoundSd() {
     val a = mmSet1Pd(20.0)
     val b = mmSet1Pd(10.0)
-    val r = mmGetmantRoundSd<MmFroundCurDirection>(a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC)
+    val r = mmGetmantRoundSd(a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(20.0, 1.25)
     assertEqM128d(r, e)
 }
@@ -12953,10 +12955,10 @@ public fun testMmGetmantRoundSd() {
 public fun testMmMaskGetmantRoundSd() {
     val a = mmSet1Pd(20.0)
     val b = mmSet1Pd(10.0)
-    val r = mmMaskGetmantRoundSd<MmFroundCurDirection>(a, 0u, a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC)
+    val r = mmMaskGetmantRoundSd(a, 0u, a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(20.0, 20.0)
     assertEqM128d(r, e)
-    val r1 = mmMaskGetmantRoundSd<MmFroundCurDirection>(a, 0xFFu, a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC)
+    val r1 = mmMaskGetmantRoundSd(a, 0xFFu, a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPd(20.0, 1.25)
     assertEqM128d(r1, e1)
 }
@@ -12964,10 +12966,10 @@ public fun testMmMaskGetmantRoundSd() {
 public fun testMmMaskzGetmantRoundSd() {
     val a = mmSet1Pd(20.0)
     val b = mmSet1Pd(10.0)
-    val r = mmMaskzGetmantRoundSd<MmFroundCurDirection>(0u, a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC)
+    val r = mmMaskzGetmantRoundSd(0u, a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(20.0, 0.0)
     assertEqM128d(r, e)
-    val r1 = mmMaskzGetmantRoundSd<MmFroundCurDirection>(0xFFu, a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC)
+    val r1 = mmMaskzGetmantRoundSd(0xFFu, a, b, MM_MANT_NORM_1_2, MM_MANT_SIGN_SRC, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPd(20.0, 1.25)
     assertEqM128d(r1, e1)
 }
@@ -12975,7 +12977,7 @@ public fun testMmMaskzGetmantRoundSd() {
 public fun testMmRoundscaleRoundSs() {
     val a = mmSet1Ps(2.2f)
     val b = mmSet1Ps(1.1f)
-    val r = mmRoundscaleRoundSs<MmFroundCurDirection>(a, b, 0)
+    val r = mmRoundscaleRoundSs(a, b, 0, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(2.2f, 2.2f, 2.2f, 1.0f)
     assertEqM128(r, e)
 }
@@ -12983,10 +12985,10 @@ public fun testMmRoundscaleRoundSs() {
 public fun testMmMaskRoundscaleRoundSs() {
     val a = mmSet1Ps(2.2f)
     val b = mmSet1Ps(1.1f)
-    val r = mmMaskRoundscaleRoundSs<MmFroundCurDirection>(a, 0u, a, b, 0)
+    val r = mmMaskRoundscaleRoundSs(a, 0u, a, b, 0, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(2.2f, 2.2f, 2.2f, 2.2f)
     assertEqM128(r, e)
-    val r1 = mmMaskRoundscaleRoundSs<MmFroundCurDirection>(a, 0xFFu, a, b, 0)
+    val r1 = mmMaskRoundscaleRoundSs(a, 0xFFu, a, b, 0, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPs(2.2f, 2.2f, 2.2f, 1.0f)
     assertEqM128(r1, e1)
 }
@@ -12994,10 +12996,10 @@ public fun testMmMaskRoundscaleRoundSs() {
 public fun testMmMaskzRoundscaleRoundSs() {
     val a = mmSet1Ps(2.2f)
     val b = mmSet1Ps(1.1f)
-    val r = mmMaskzRoundscaleRoundSs<MmFroundCurDirection>(0u, a, b, 0)
+    val r = mmMaskzRoundscaleRoundSs(0u, a, b, 0, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(2.2f, 2.2f, 2.2f, 0.0f)
     assertEqM128(r, e)
-    val r1 = mmMaskzRoundscaleRoundSs<MmFroundCurDirection>(0xFFu, a, b, 0)
+    val r1 = mmMaskzRoundscaleRoundSs(0xFFu, a, b, 0, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPs(2.2f, 2.2f, 2.2f, 1.0f)
     assertEqM128(r1, e1)
 }
@@ -13005,7 +13007,7 @@ public fun testMmMaskzRoundscaleRoundSs() {
 public fun testMmRoundscaleRoundSd() {
     val a = mmSet1Pd(2.2)
     val b = mmSet1Pd(1.1)
-    val r = mmRoundscaleRoundSd<MmFroundCurDirection>(a, b, 0)
+    val r = mmRoundscaleRoundSd(a, b, 0, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(2.2, 1.0)
     assertEqM128d(r, e)
 }
@@ -13013,10 +13015,10 @@ public fun testMmRoundscaleRoundSd() {
 public fun testMmMaskRoundscaleRoundSd() {
     val a = mmSet1Pd(2.2)
     val b = mmSet1Pd(1.1)
-    val r = mmMaskRoundscaleRoundSd<MmFroundCurDirection>(a, 0u, a, b, 0)
+    val r = mmMaskRoundscaleRoundSd(a, 0u, a, b, 0, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(2.2, 2.2)
     assertEqM128d(r, e)
-    val r1 = mmMaskRoundscaleRoundSd<MmFroundCurDirection>(a, 0xFFu, a, b, 0)
+    val r1 = mmMaskRoundscaleRoundSd(a, 0xFFu, a, b, 0, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPd(2.2, 1.0)
     assertEqM128d(r1, e1)
 }
@@ -13024,10 +13026,10 @@ public fun testMmMaskRoundscaleRoundSd() {
 public fun testMmMaskzRoundscaleRoundSd() {
     val a = mmSet1Pd(2.2)
     val b = mmSet1Pd(1.1)
-    val r = mmMaskzRoundscaleRoundSd<MmFroundCurDirection>(0u, a, b, 0)
+    val r = mmMaskzRoundscaleRoundSd(0u, a, b, 0, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(2.2, 0.0)
     assertEqM128d(r, e)
-    val r1 = mmMaskzRoundscaleRoundSd<MmFroundCurDirection>(0xFFu, a, b, 0)
+    val r1 = mmMaskzRoundscaleRoundSd(0xFFu, a, b, 0, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPd(2.2, 1.0)
     assertEqM128d(r1, e1)
 }
@@ -13500,7 +13502,7 @@ public fun testMmFixupimmRoundSs() {
     val a = mmSetPs(1.0f, 0.0f, 0.0f, Float.NaN)
     val b = mmSet1Ps(Float.MAX_VALUE)
     val c = mmSet1Epi32(Int.MAX_VALUE)
-    val r = mmFixupimmRoundSs<MmFroundCurDirection>(a, b, c, 5)
+    val r = mmFixupimmRoundSs(a, b, c, 5, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE, -0.0f)
     assertEqM128(r, e)
 }
@@ -13509,7 +13511,7 @@ public fun testMmMaskFixupimmRoundSs() {
     val a = mmSetPs(0.0f, 0.0f, 0.0f, Float.NaN)
     val b = mmSet1Ps(Float.MAX_VALUE)
     val c = mmSet1Epi32(Int.MAX_VALUE)
-    val r = mmMaskFixupimmRoundSs<MmFroundCurDirection>(a, 0xFFu, b, c, 5)
+    val r = mmMaskFixupimmRoundSs(a, 0xFFu, b, c, 5, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE, -0.0f)
     assertEqM128(r, e)
 }
@@ -13518,10 +13520,10 @@ public fun testMmMaskzFixupimmRoundSs() {
     val a = mmSetPs(0.0f, 0.0f, 0.0f, Float.NaN)
     val b = mmSet1Ps(Float.MAX_VALUE)
     val c = mmSet1Epi32(Int.MAX_VALUE)
-    val r = mmMaskzFixupimmRoundSs<MmFroundCurDirection>(0x0u, a, b, c, 5)
+    val r = mmMaskzFixupimmRoundSs(0x0u, a, b, c, 5, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPs(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE, 0.0f)
     assertEqM128(r, e)
-    val r1 = mmMaskzFixupimmRoundSs<MmFroundCurDirection>(0xFFu, a, b, c, 5)
+    val r1 = mmMaskzFixupimmRoundSs(0xFFu, a, b, c, 5, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPs(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE, -0.0f)
     assertEqM128(r1, e1)
 }
@@ -13530,7 +13532,7 @@ public fun testMmFixupimmRoundSd() {
     val a = mmSetPd(0.0, Double.NaN)
     val b = mmSet1Pd(Double.MAX_VALUE)
     val c = mmSet1Epi64x(Int.MAX_VALUE.toLong())
-    val r = mmFixupimmRoundSd<MmFroundCurDirection>(a, b, c, 5)
+    val r = mmFixupimmRoundSd(a, b, c, 5, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(Double.MAX_VALUE, -0.0)
     assertEqM128d(r, e)
 }
@@ -13539,7 +13541,7 @@ public fun testMmMaskFixupimmRoundSd() {
     val a = mmSetPd(0.0, Double.NaN)
     val b = mmSet1Pd(Double.MAX_VALUE)
     val c = mmSet1Epi64x(Int.MAX_VALUE.toLong())
-    val r = mmMaskFixupimmRoundSd<MmFroundCurDirection>(a, 0xFFu, b, c, 5)
+    val r = mmMaskFixupimmRoundSd(a, 0xFFu, b, c, 5, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(Double.MAX_VALUE, -0.0)
     assertEqM128d(r, e)
 }
@@ -13548,10 +13550,10 @@ public fun testMmMaskzFixupimmRoundSd() {
     val a = mmSetPd(0.0, Double.NaN)
     val b = mmSet1Pd(Double.MAX_VALUE)
     val c = mmSet1Epi64x(Int.MAX_VALUE.toLong())
-    val r = mmMaskzFixupimmRoundSd<MmFroundCurDirection>(0x0u, a, b, c, 5)
+    val r = mmMaskzFixupimmRoundSd(0x0u, a, b, c, 5, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(Double.MAX_VALUE, 0.0)
     assertEqM128d(r, e)
-    val r1 = mmMaskzFixupimmRoundSd<MmFroundCurDirection>(0xFFu, a, b, c, 5)
+    val r1 = mmMaskzFixupimmRoundSd(0xFFu, a, b, c, 5, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPd(Double.MAX_VALUE, -0.0)
     assertEqM128d(r1, e1)
 }
@@ -13601,7 +13603,7 @@ public fun testMmMaskzCvtsdSs() {
 public fun testMmCvtRoundssSd() {
     val a = mmSetPd(6.0, -7.5)
     val b = mmSetPs(0.0f, -0.5f, 1.0f, -1.5f)
-    val r = mmCvtRoundssSd<MmFroundCurDirection>(a, b)
+    val r = mmCvtRoundssSd(a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(6.0, -1.5)
     assertEqM128d(r, e)
 }
@@ -13609,9 +13611,9 @@ public fun testMmCvtRoundssSd() {
 public fun testMmMaskCvtRoundssSd() {
     val a = mmSetPd(6.0, -7.5)
     val b = mmSetPs(0.0f, -0.5f, 1.0f, -1.5f)
-    val r = mmMaskCvtRoundssSd<MmFroundCurDirection>(a, 0u, a, b)
+    val r = mmMaskCvtRoundssSd(a, 0u, a, b, MM_FROUND_CUR_DIRECTION)
     assertEqM128d(r, a)
-    val r1 = mmMaskCvtRoundssSd<MmFroundCurDirection>(a, 0xFFu, a, b)
+    val r1 = mmMaskCvtRoundssSd(a, 0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(6.0, -1.5)
     assertEqM128d(r1, e)
 }
@@ -13619,10 +13621,10 @@ public fun testMmMaskCvtRoundssSd() {
 public fun testMmMaskzCvtRoundssSd() {
     val a = mmSetPd(6.0, -7.5)
     val b = mmSetPs(0.0f, -0.5f, 1.0f, -1.5f)
-    val r = mmMaskzCvtRoundssSd<MmFroundCurDirection>(0u, a, b)
+    val r = mmMaskzCvtRoundssSd(0u, a, b, MM_FROUND_CUR_DIRECTION)
     val e = mmSetPd(6.0, 0.0)
     assertEqM128d(r, e)
-    val r1 = mmMaskzCvtRoundssSd<MmFroundCurDirection>(0xFFu, a, b)
+    val r1 = mmMaskzCvtRoundssSd(0xFFu, a, b, MM_FROUND_CUR_DIRECTION)
     val e1 = mmSetPd(6.0, -1.5)
     assertEqM128d(r1, e1)
 }
@@ -13768,21 +13770,21 @@ public fun testMmCvti32Sd() {
 
 public fun testMmCvttRoundssSi32() {
     val a = mmSetPs(0.0f, -0.5f, 1.0f, -1.5f)
-    val r = mmCvttRoundssSi32<MmFroundNoExc>(a)
+    val r = mmCvttRoundssSi32(a, MM_FROUND_NO_EXC)
     val e: Int = -1
     check(r == e)
 }
 
 public fun testMmCvttRoundssI32() {
     val a = mmSetPs(0.0f, -0.5f, 1.0f, -1.5f)
-    val r = mmCvttRoundssI32<MmFroundNoExc>(a)
+    val r = mmCvttRoundssI32(a, MM_FROUND_NO_EXC)
     val e: Int = -1
     check(r == e)
 }
 
 public fun testMmCvttRoundssU32() {
     val a = mmSetPs(0.0f, -0.5f, 1.0f, -1.5f)
-    val r = mmCvttRoundssU32<MmFroundNoExc>(a)
+    val r = mmCvttRoundssU32(a, MM_FROUND_NO_EXC)
     val e: UInt = UInt.MAX_VALUE
     check(r == e)
 }
@@ -13803,21 +13805,21 @@ public fun testMmCvttssU32() {
 
 public fun testMmCvttRoundsdSi32() {
     val a = mmSetPd(1.0, -1.5)
-    val r = mmCvttRoundsdSi32<MmFroundNoExc>(a)
+    val r = mmCvttRoundsdSi32(a, MM_FROUND_NO_EXC)
     val e: Int = -1
     check(r == e)
 }
 
 public fun testMmCvttRoundsdI32() {
     val a = mmSetPd(1.0, -1.5)
-    val r = mmCvttRoundsdI32<MmFroundNoExc>(a)
+    val r = mmCvttRoundsdI32(a, MM_FROUND_NO_EXC)
     val e: Int = -1
     check(r == e)
 }
 
 public fun testMmCvttRoundsdU32() {
     val a = mmSetPd(1.0, -1.5)
-    val r = mmCvttRoundsdU32<MmFroundNoExc>(a)
+    val r = mmCvttRoundsdU32(a, MM_FROUND_NO_EXC)
     val e: UInt = UInt.MAX_VALUE
     check(r == e)
 }
@@ -13855,7 +13857,7 @@ public fun testMmCvtu32Sd() {
 public fun testMmComiRoundSs() {
     val a = mmSet1Ps(2.2f)
     val b = mmSet1Ps(1.1f)
-    val r = mmComiRoundSs<MmFroundCurDirection>(a, b, 0)
+    val r = mmComiRoundSs(a, b, 0, MM_FROUND_CUR_DIRECTION)
     val e: Int = 0
     check(r == e)
 }
@@ -13863,7 +13865,7 @@ public fun testMmComiRoundSs() {
 public fun testMmComiRoundSd() {
     val a = mmSet1Pd(2.2)
     val b = mmSet1Pd(1.1)
-    val r = mmComiRoundSd<MmFroundCurDirection>(a, b, 0)
+    val r = mmComiRoundSd(a, b, 0, MM_FROUND_CUR_DIRECTION)
     val e: Int = 0
     check(r == e)
 }

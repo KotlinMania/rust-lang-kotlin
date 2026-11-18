@@ -3,6 +3,10 @@ package io.github.kotlinmania.rustlang.core.ops.bit
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
+import kotlin.experimental.xor
 
 /**
  * The unary negation operator `!`. It performs either logical or bitwise negation,

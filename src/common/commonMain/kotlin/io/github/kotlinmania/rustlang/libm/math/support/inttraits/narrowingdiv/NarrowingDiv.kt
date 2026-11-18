@@ -4,6 +4,8 @@ package io.github.kotlinmania.rustlang.libm.math.support.inttraits.narrowingdiv
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
+import io.github.kotlinmania.rustlang.core.num.overflowingAdd
+import io.github.kotlinmania.rustlang.core.num.overflowingSub
 import io.github.kotlinmania.rustlang.libm.math.support.big.U256
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.DInt
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.HInt

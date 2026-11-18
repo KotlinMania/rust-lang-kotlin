@@ -1,6 +1,8 @@
 // port-lint: source sys/time/unsupported.rs
 package io.github.kotlinmania.rustlang.std.sys.time.unsupported
 
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
 

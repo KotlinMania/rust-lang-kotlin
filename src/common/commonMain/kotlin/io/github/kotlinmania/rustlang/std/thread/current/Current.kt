@@ -4,21 +4,21 @@ package io.github.kotlinmania.rustlang.std.thread.current
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.enable
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.apple.enable
 import io.github.kotlinmania.rustlang.std.thread.id.ThreadId
 import io.github.kotlinmania.rustlang.std.thread.mainthread.main
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 
 public val NONE: MutPtr = MutPtr(0L)
 
-public val BUSY: MutPtr = ptr.withoutProvenanceMut(1)
+public val BUSY: MutPtr = withoutProvenanceMut(1)
 
-public val DESTROYED: MutPtr = ptr.withoutProvenanceMut(2)
+public val DESTROYED: MutPtr = withoutProvenanceMut(2)
 
 public var ID: Cell<Any?> = Cell.new(null)
 

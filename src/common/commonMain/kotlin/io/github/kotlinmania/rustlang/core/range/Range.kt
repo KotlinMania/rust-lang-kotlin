@@ -493,7 +493,7 @@ public open class RangeFrom<Idx>(
 
 public fun <T> RangeFrom<T>.startBound(): Bound<T> = Included(this.start)
 
-public fun <T> RangeFrom<T>.endBound(): Bound<T> = Unbounded
+public fun <T> RangeFrom<T>.endBound(): Bound<T> = Unbounded()
 
 // This impl intentionally does not have `T: ? Sized`;
 // see https://github.com/rust-lang/rust/pull/61584 for discussion of why.
@@ -506,9 +506,9 @@ public fun <T> RangeFrom<T>.endBound(): Bound<T> = Unbounded
  */
 public fun <T> RangeFrom<T>.startBoundT(): Bound<T> = Included(this.start)
 
-public fun <T> RangeFrom<T>.endBoundT(): Bound<T> = Unbounded
+public fun <T> RangeFrom<T>.endBoundT(): Bound<T> = Unbounded()
 
-public fun <T> RangeFrom<T>.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Included(this.start), Unbounded)
+public fun <T> RangeFrom<T>.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Included(this.start), Unbounded())
 
 public fun <T> RangeFrom<T>.bound(): Pair<OneSidedRangeBound, T> = Pair(OneSidedRangeBound.StartInclusive, this.start)
 
@@ -620,14 +620,14 @@ public fun <T> fromRangeToInclusiveT(value: RangeToInclusive<T>): io.github.kotl
 
 // RangeToInclusive<Idx> cannot impl From<RangeTo<Idx>>
 // because underflow would be possible with (..0).into()
-public fun <T> RangeToInclusive<T>.startBound(): Bound<T> = Unbounded
+public fun <T> RangeToInclusive<T>.startBound(): Bound<T> = Unbounded()
 
 public fun <T> RangeToInclusive<T>.endBound(): Bound<T> = Included(this.last)
 
-public fun <T> RangeToInclusive<T>.startBoundT(): Bound<T> = Unbounded
+public fun <T> RangeToInclusive<T>.startBoundT(): Bound<T> = Unbounded()
 
 public fun <T> RangeToInclusive<T>.endBoundT(): Bound<T> = Included(this.last)
 
-public fun <T> RangeToInclusive<T>.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Unbounded, Included(this.last))
+public fun <T> RangeToInclusive<T>.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Unbounded(), Included(this.last))
 
 public fun <T> RangeToInclusive<T>.bound(): Pair<OneSidedRangeBound, T> = Pair(OneSidedRangeBound.EndInclusive, this.last)

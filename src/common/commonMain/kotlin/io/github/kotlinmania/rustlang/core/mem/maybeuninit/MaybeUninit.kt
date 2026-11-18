@@ -1168,7 +1168,7 @@ public open class MaybeUninit<T>(
          * }
          * ```
          */
-        public fun <T> arrayAssumeInit(array: List<MaybeUninit<T>>, n: Int): List<T> {
+        public fun <T> arrayAssumeInit(array: List<MaybeUninit<T>>, n: Int = 0): List<T> {
             // SAFETY:
             // * The caller guarantees that all elements of the array are initialized
             // * `MaybeUninit<T>` and T are guaranteed to have the same layout
@@ -1734,28 +1734,28 @@ public fun <T> List<MaybeUninit<T>>.assumeInitMut(typeLayoutT: TypeLayout<T> = U
  * }
  * ```
  */
-public fun <T> MaybeUninit<List<T>>.transpose(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<MaybeUninit<T>> {
+public fun <T> MaybeUninit<List<T>>.transpose(n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<MaybeUninit<T>> {
     // SAFETY: T and MaybeUninit<T> have the same layout
     return transmuteWithLayouts<MaybeUninit<List<T>>, List<MaybeUninit<T>>>(this, UnresolvedTypeLayout<MaybeUninit<List<T>>>(), UnresolvedTypeLayout<List<MaybeUninit<T>>>())
 }
 
-public fun <T> fromMaybeUninitTArrayn(arr: List<MaybeUninit<T>>, n: Int): MaybeUninit<List<T>> = arr.transpose()
+public fun <T> fromMaybeUninitTArrayn(arr: List<MaybeUninit<T>>, n: Int = 0): MaybeUninit<List<T>> = arr.transpose()
 
-public fun <T> MaybeUninit<List<T>>.asRef(n: Int): List<MaybeUninit<T>> {
+public fun <T> MaybeUninit<List<T>>.asRef(n: Int = 0): List<MaybeUninit<T>> {
     // SAFETY: T and MaybeUninit<T> have the same layout
     return ConstPtr((this).rawAddress)
 }
 
-public fun <T> MaybeUninit<List<T>>.asRefMaybeUninitTSlice(n: Int): List<MaybeUninit<T>> = this.asRef()
+public fun <T> MaybeUninit<List<T>>.asRefMaybeUninitTSlice(n: Int = 0): List<MaybeUninit<T>> = this.asRef()
 
-public fun <T> MaybeUninit<List<T>>.asMut(n: Int): List<MaybeUninit<T>> {
+public fun <T> MaybeUninit<List<T>>.asMut(n: Int = 0): List<MaybeUninit<T>> {
     // SAFETY: T and MaybeUninit<T> have the same layout
     return MutPtr((this).rawAddress)
 }
 
-public fun <T> MaybeUninit<List<T>>.asMutMaybeUninitTSlice(n: Int): MutableList<MaybeUninit<T>> = this.asMut()
+public fun <T> MaybeUninit<List<T>>.asMutMaybeUninitTSlice(n: Int = 0): MutableList<MaybeUninit<T>> = this.asMut()
 
-public fun <T> fromMaybeUninitTArrayn(arr: MaybeUninit<List<T>>, n: Int): List<MaybeUninit<T>> = arr.transpose(n)
+public fun <T> fromMaybeUninitTArrayn(arr: MaybeUninit<List<T>>, n: Int = 0): List<MaybeUninit<T>> = arr.transpose(n)
 
 /**
  * Transposes a `[MaybeUninit<T>; N]` into a `MaybeUninit<[T; N]>`.
@@ -1775,7 +1775,7 @@ public fun <T> fromMaybeUninitTArrayn(arr: MaybeUninit<List<T>>, n: Int): List<M
  * }
  * ```
  */
-public fun <T> List<MaybeUninit<T>>.transpose(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MaybeUninit<List<T>> {
+public fun <T> List<MaybeUninit<T>>.transpose(n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MaybeUninit<List<T>> {
     // SAFETY: T and MaybeUninit<T> have the same layout
     return transmuteWithLayouts<List<MaybeUninit<T>>, MaybeUninit<List<T>>>(this, UnresolvedTypeLayout<List<MaybeUninit<T>>>(), UnresolvedTypeLayout<MaybeUninit<List<T>>>())
 }

@@ -33,7 +33,7 @@ import io.github.kotlinmania.rustlang.libm.math.floor.floorf128
 import io.github.kotlinmania.rustlang.libm.math.floor.floorf16
 import io.github.kotlinmania.rustlang.libm.math.fma.fmaf128
 import io.github.kotlinmania.rustlang.libm.math.fmaf16.fmaf16
-import io.github.kotlinmania.rustlang.libm.math.generic.fabs
+import io.github.kotlinmania.rustlang.libm.math.generic.fabs.fabs
 import io.github.kotlinmania.rustlang.libm.math.roundeven.roundevenf
 import io.github.kotlinmania.rustlang.libm.math.roundeven.roundevenf128
 import io.github.kotlinmania.rustlang.libm.math.roundeven.roundevenf16
@@ -432,7 +432,7 @@ public fun F16.absFloat(): F16 {
 
 public fun F16.copysignFloat(other: F16): F16 {
     F16.fromFloat(kmCopysignf32(this.toFloat(), other.toFloat()))
-    return io.github.kotlinmania.rustlang.libm.math.generic.copysign(this, other)
+    return io.github.kotlinmania.rustlang.libm.math.generic.copysign.copysign(this, other)
 }
 
 public fun F16.fma(y: F16, z: F16): F16 {
@@ -547,7 +547,7 @@ public fun kotlin.Float.absFloat(): kotlin.Float {
 
 public fun kotlin.Float.copysignFloat(other: kotlin.Float): kotlin.Float {
     kmCopysignf32(this, other)
-    return io.github.kotlinmania.rustlang.libm.math.generic.copysign(this, other)
+    return io.github.kotlinmania.rustlang.libm.math.generic.copysign.copysign(this, other)
 }
 
 public fun kotlin.Float.fma(y: kotlin.Float, z: kotlin.Float): kotlin.Float {
@@ -662,7 +662,7 @@ public fun Double.absFloat(): Double {
 
 public fun Double.copysignFloat(other: Double): Double {
     kmCopysignf64(this, other)
-    return io.github.kotlinmania.rustlang.libm.math.generic.copysign(this, other)
+    return io.github.kotlinmania.rustlang.libm.math.generic.copysign.copysign(this, other)
 }
 
 public fun Double.fma(y: Double, z: Double): Double {
@@ -777,7 +777,7 @@ public fun F128.absFloat(): F128 {
 
 public fun F128.copysignFloat(other: F128): F128 {
     F128.fromDouble(kmCopysignf64(this.toDouble(), other.toDouble()))
-    return io.github.kotlinmania.rustlang.libm.math.generic.copysign(this, other)
+    return io.github.kotlinmania.rustlang.libm.math.generic.copysign.copysign(this, other)
 }
 
 public fun F128.fma(y: F128, z: F128): F128 {

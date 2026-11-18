@@ -11,20 +11,18 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.map.entry.Occupied
 import io.github.kotlinmania.rustlang.alloc.collections.btree.map.entry.VacantEntry
 import io.github.kotlinmania.rustlang.alloc.collections.btree.navigate.LazyLeafRange
 import io.github.kotlinmania.rustlang.alloc.collections.btree.navigate.LeafRange
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Dying
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.ForceResult.*
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Handle
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Immut
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.LeafOrInternal
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.MIN_LEN_AFTER_SPLIT
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Mut
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.NodeRef
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Root
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Dying
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Edge
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Immut
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.KV
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.LeafOrInternal
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Mut
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.ValMut
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.ValMut
 import io.github.kotlinmania.rustlang.alloc.collections.btree.search.SearchBound
 import io.github.kotlinmania.rustlang.alloc.collections.btree.search.SearchResult.*
 import io.github.kotlinmania.rustlang.alloc.collections.btree.setval.SetValZST
@@ -1266,7 +1264,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
 
     public open fun cmp(other: BTreeMap<K, V, A>): Ordering = this.iter().cmp(other.iter())
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<String>(); fun entry(k: Any?, v: Any?) = apply { entries.add("$k: $v") }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<String>(); fun entry(k: Any?, v: Any?) = apply { entries.add("$k: $v") }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     /**
      * Gets an iterator over the entries of the map, sorted by key.
@@ -1675,7 +1673,7 @@ public open class Iter<K, V> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun next(): Pair<K, V>? =
         if (this.length == 0) {
@@ -1756,9 +1754,9 @@ public open class IterMut<K, V> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         val range = Iter(range = this.range.reborrow(), length = this.length)
-        return run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(range).finish(); Result.Ok<Unit, Error>(Unit) }
+        return run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(range).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
     }
 
     public open fun next(): Pair<K, V>? =
@@ -1852,7 +1850,7 @@ public open class IntoIter<K, V, A : AllocatorClone> internal constructor(
      */
     public open fun iter(): Iter<K, V> = Iter(range = this.range.reborrow(), length = this.length)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun drop() {
         open class DropGuard<K, V, A : AllocatorClone>(
@@ -1891,7 +1889,7 @@ public open class IntoIter<K, V, A : AllocatorClone> internal constructor(
      * Core of a `next` method returning a dying KV handle,
      * invalidated by further calls to this function and some others.
      */
-    public open fun dyingNext(): Handle<NodeRef<Dying, K, V, LeafOrInternal>, KV>? =
+    public open fun dyingNext(): Handle<NodeRef<Dying, K, V, LeafOrInternal>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.KV>? =
         if (this.length == 0) {
             this.range.deallocatingEnd(this.alloc.clone())
             null
@@ -1905,7 +1903,7 @@ public open class IntoIter<K, V, A : AllocatorClone> internal constructor(
      * Core of a `nextBack` method returning a dying KV handle,
      * invalidated by further calls to this function and some others.
      */
-    public open fun dyingNextBack(): Handle<NodeRef<Dying, K, V, LeafOrInternal>, KV>? =
+    public open fun dyingNextBack(): Handle<NodeRef<Dying, K, V, LeafOrInternal>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.KV>? =
         if (this.length == 0) {
             this.range.deallocatingEnd(this.alloc.clone())
             null
@@ -1974,7 +1972,7 @@ public open class Keys<K, V>(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun next(): K? = this.inner.next()?.let({ (k, _) -> k })
 
@@ -2027,7 +2025,7 @@ public open class Values<K, V>(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun next(): V? = this.inner.next()?.let({ (_, v) -> v })
 
@@ -2076,7 +2074,7 @@ public open class ValuesMut<K, V>(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, value) -> value })).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, value) -> value })).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun next(): V? = this.inner.next()?.let({ (_, v) -> v })
 
@@ -2126,7 +2124,7 @@ public open class IntoKeys<K, V, A : AllocatorClone> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (key, _) -> key })).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (key, _) -> key })).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun next(): K? = this.inner.next()?.let({ (k, _) -> k })
 
@@ -2186,7 +2184,7 @@ public open class IntoValues<K, V, A : AllocatorClone> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, value) -> value })).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, value) -> value })).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun next(): V? = this.inner.next()?.let({ (_, v) -> v })
 
@@ -2242,7 +2240,7 @@ public open class Range<K, V> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun next(): Pair<K, V>? = this.inner.nextChecked()
 
@@ -2302,9 +2300,9 @@ public open class RangeMut<K, V> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         val range = Range(inner = this.inner.reborrow())
-        return run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(range).finish(); Result.Ok<Unit, Error>(Unit) }
+        return run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(range).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
     }
 
     public open fun next(): Pair<K, V>? = this.inner.nextChecked()
@@ -2353,7 +2351,7 @@ public open class RangeMut<K, V> internal constructor(
  * map.put(1, "a")
  * ```
  */
-public fun <K, V> BTreeMap.Companion.new(): BTreeMap<K, V, Global> = BTreeMap(root = null, length = 0, alloc = Global(), marker = Unit)
+public fun <K, V> BTreeMap.Companion.new(): BTreeMap<K, V, Global> = BTreeMap(root = null, length = 0, alloc = io.github.kotlinmania.rustlang.alloc.alloc.Global(), marker = Unit)
 
 /**
  * This `class` is created by the [extractIf] method on [BTreeMap].
@@ -2368,7 +2366,7 @@ public open class ExtractIf<K, V, R, F, A : AllocatorClone>(
      */
     public var alloc: A,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "ExtractIf").field("peek", this.inner.peek()).finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "ExtractIf").field("peek", this.inner.peek()).finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 }
 
 /**
@@ -2378,7 +2376,7 @@ public open class ExtractIf<K, V, R, F, A : AllocatorClone>(
 public open class ExtractIfInner<K, V, R> internal constructor(
     lengthCtorArg: RustMutableReference<Int>,
     dormantRootCtorArg: DormantMutRef<Root<K, V>>?,
-    curLeafEdgeCtorArg: Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf>, Edge>?,
+    curLeafEdgeCtorArg: Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>?,
     /**
      * Range over which iteration was requested.  We don't need the left side, but we
      * can't extract the right side without requiring K: Clone.
@@ -2403,7 +2401,7 @@ public open class ExtractIfInner<K, V, R> internal constructor(
      * Empty if the map has no root, if iteration went beyond the last leaf edge,
      * or if a panic occurred in the predicate.
      */
-    public var curLeafEdge: Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf>, Edge>? = curLeafEdgeCtorArg
+    public var curLeafEdge: Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>? = curLeafEdgeCtorArg
         internal set
 
     /**
@@ -2436,7 +2434,7 @@ public open class ExtractIfInner<K, V, R> internal constructor(
                         val (end1) = matchVal1
                         Unit
                     }
-                    matchVal1 == Bound.Unbounded -> Unit
+                    matchVal1 is Bound.Unbounded<*> -> Unit
                     else -> { return null }
                 }
             }
@@ -2473,7 +2471,7 @@ public open class ExtractIfInner<K, V, R> internal constructor(
         public operator fun <K, V, R> invoke(
             length: RustMutableReference<Int>,
             dormantRoot: DormantMutRef<Root<K, V>>?,
-            curLeafEdge: Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf>, Edge>?,
+            curLeafEdge: Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>?,
             range: R,
         ): ExtractIfInner<K, V, R> = ExtractIfInner<K, V, R>(
             lengthCtorArg = length,
@@ -2501,7 +2499,7 @@ public fun <K, V, I : Iterable<Pair<K, V>>> fromIteratorFromIterBTreeMapKV(iter:
     }
     // use stable sort to preserve the insertion order.
     inputs.sortBy({ a, b -> a.first.cmp(b.first) })
-    return BTreeMap.bulkBuildFromSortedIter(inputs, Global())
+    return BTreeMap.bulkBuildFromSortedIter(inputs, io.github.kotlinmania.rustlang.alloc.alloc.Global())
 }
 
 /**
@@ -2530,13 +2528,13 @@ public fun <K, Q, V, A : AllocatorClone> BTreeMap<K, V, A>.index(key: Q): V wher
  * check(map1 == map2)
  * ```
  */
-public fun <K, V> fromBTreeMapKV(arr: List<Pair<K, V>>, n: Int): BTreeMap<K, V, Global> {
+public fun <K, V> fromBTreeMapKV(arr: List<Pair<K, V>>, n: Int = 0): BTreeMap<K, V, Global> {
     if (n == 0) {
         return BTreeMap.new()
     }
     // use stable sort to preserve the insertion order.
     arr.sortBy({ a, b -> a.first.cmp(b.first) })
-    return BTreeMap.bulkBuildFromSortedIter(arr, Global())
+    return BTreeMap.bulkBuildFromSortedIter(arr, io.github.kotlinmania.rustlang.alloc.alloc.Global())
 }
 
 /**
@@ -2550,11 +2548,11 @@ public fun <K, V> fromBTreeMapKV(arr: List<Pair<K, V>>, n: Int): BTreeMap<K, V, 
  * A `Cursor` is created with the [BTreeMap.lowerBound] and [BTreeMap.upperBound] methods.
  */
 public open class Cursor<K, V> internal constructor(
-    currentCtorArg: Handle<NodeRef<Immut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf>, Edge>?,
-    public var root: Root<K, V>?,
+    currentCtorArg: Handle<NodeRef<Immut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>?,
+    public var root: io.github.kotlinmania.rustlang.alloc.collections.btree.node.Root<K, V>?,
 ) {
     // If current is None then it means the tree has not been allocated yet.
-    public var current: Handle<NodeRef<Immut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf>, Edge>? = currentCtorArg
+    public var current: Handle<NodeRef<Immut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>? = currentCtorArg
         internal set
 
     public open fun clone(): Cursor<K, V> {
@@ -2564,7 +2562,7 @@ public open class Cursor<K, V> internal constructor(
         return Cursor(current = current, root = root)
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("Cursor"); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("Cursor"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     /**
      * Advances the cursor to the next gap, returning the key and value of the
@@ -2632,8 +2630,8 @@ public open class Cursor<K, V> internal constructor(
 
     public companion object {
         public operator fun <K, V> invoke(
-            current: Handle<NodeRef<Immut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf>, Edge>?,
-            root: Root<K, V>?,
+            current: Handle<NodeRef<Immut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>?,
+            root: io.github.kotlinmania.rustlang.alloc.collections.btree.node.Root<K, V>?,
         ): Cursor<K, V> = Cursor<K, V>(
             currentCtorArg = current,
             root = root,
@@ -2658,7 +2656,7 @@ public open class Cursor<K, V> internal constructor(
 public open class CursorMut<K, V, A>(
     public var inner: CursorMutKey<K, V, A>,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("CursorMut"); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("CursorMut"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     /**
      * Advances the cursor to the next gap, returning the key and value of the
@@ -2839,22 +2837,22 @@ public open class CursorMut<K, V, A>(
  * * All keys in the tree must remain in sorted order.
  */
 public open class CursorMutKey<K, V, A> internal constructor(
-    currentCtorArg: Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf>, Edge>?,
-    rootCtorArg: DormantMutRef<Root<K, V>?>,
+    currentCtorArg: Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>?,
+    rootCtorArg: DormantMutRef<io.github.kotlinmania.rustlang.alloc.collections.btree.node.Root<K, V>?>,
     lengthCtorArg: RustMutableReference<Int>,
     public var alloc: A,
 ) {
     // If current is None then it means the tree has not been allocated yet.
-    public var current: Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf>, Edge>? = currentCtorArg
+    public var current: Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>? = currentCtorArg
         internal set
 
-    public var root: DormantMutRef<Root<K, V>?> = rootCtorArg
+    public var root: DormantMutRef<io.github.kotlinmania.rustlang.alloc.collections.btree.node.Root<K, V>?> = rootCtorArg
         internal set
 
     public var length: RustMutableReference<Int> = lengthCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("CursorMutKey"); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("CursorMutKey"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     /**
      * Advances the cursor to the next gap, returning the key and value of the
@@ -3183,8 +3181,8 @@ public open class CursorMutKey<K, V, A> internal constructor(
 
     public companion object {
         public operator fun <K, V, A> invoke(
-            current: Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf>, Edge>?,
-            root: DormantMutRef<Root<K, V>?>,
+            current: Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>?,
+            root: DormantMutRef<io.github.kotlinmania.rustlang.alloc.collections.btree.node.Root<K, V>?>,
             length: RustMutableReference<Int>,
             alloc: A,
         ): CursorMutKey<K, V, A> = CursorMutKey<K, V, A>(
@@ -3204,7 +3202,7 @@ public open class CursorMutKey<K, V, A> internal constructor(
 public open class UnorderedKeyError {
     public open fun clone(): UnorderedKeyError = UnorderedKeyError()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("key is not properly ordered relative to neighbors"); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("key is not properly ordered relative to neighbors"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<UnorderedKeyError> =

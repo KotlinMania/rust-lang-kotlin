@@ -39,14 +39,14 @@ public fun testMm256CvtphPs() {
 
 public fun testMmCvtpsPh() {
     val a = mmSetPs(1.0f, 2.0f, 3.0f, 4.0f)
-    val r = mmCvtpsPh<MmFroundCurDirection>(a)
+    val r = mmCvtpsPh(a, MM_FROUND_CUR_DIRECTION)
     val e = mmSetEpi16(0, 0, 0, 0, F16_ONE, F16_TWO, F16_THREE, F16_FOUR)
     assertEqM128i(r, e)
 }
 
 public fun testMm256CvtpsPh() {
     val a = mm256SetPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f)
-    val r = mm256CvtpsPh<MmFroundCurDirection>(a)
+    val r = mm256CvtpsPh(a, MM_FROUND_CUR_DIRECTION)
     val e = mmSetEpi16(F16_ONE, F16_TWO, F16_THREE, F16_FOUR, F16_FIVE, F16_SIX, F16_SEVEN, F16_EIGHT)
     assertEqM128i(r, e)
 }

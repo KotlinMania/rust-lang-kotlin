@@ -1732,7 +1732,7 @@ public fun testMm512MaskzCvtpsEpu64() {
 
 public fun testMm512CvttRoundpdEpi64() {
     val a = mm512SetPd(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
-    val r = mm512CvttRoundpdEpi64<MmFroundNoExc>(a)
+    val r = mm512CvttRoundpdEpi64(a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L)
     assertEqM512i(r, e)
 }
@@ -1740,14 +1740,14 @@ public fun testMm512CvttRoundpdEpi64() {
 public fun testMm512MaskCvttRoundpdEpi64() {
     val a = mm512SetPd(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
     val b = mm512SetEpi64(9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L)
-    val r = mm512MaskCvttRoundpdEpi64<MmFroundNoExc>(b, 0x69u, a)
+    val r = mm512MaskCvttRoundpdEpi64(b, 0x69u, a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(9L, 2L, 3L, 12L, 5L, 14L, 15L, 8L)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvttRoundpdEpi64() {
     val a = mm512SetPd(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
-    val r = mm512MaskzCvttRoundpdEpi64<MmFroundNoExc>(0x69u, a)
+    val r = mm512MaskzCvttRoundpdEpi64(0x69u, a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(0L, 2L, 3L, 0L, 5L, 0L, 0L, 8L)
     assertEqM512i(r, e)
 }
@@ -1820,7 +1820,7 @@ public fun testMm512MaskzCvttpdEpi64() {
 
 public fun testMm512CvttRoundpsEpi64() {
     val a = mm256SetPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f)
-    val r = mm512CvttRoundpsEpi64<MmFroundNoExc>(a)
+    val r = mm512CvttRoundpsEpi64(a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L)
     assertEqM512i(r, e)
 }
@@ -1828,14 +1828,14 @@ public fun testMm512CvttRoundpsEpi64() {
 public fun testMm512MaskCvttRoundpsEpi64() {
     val a = mm256SetPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f)
     val b = mm512SetEpi64(9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L)
-    val r = mm512MaskCvttRoundpsEpi64<MmFroundNoExc>(b, 0x69u, a)
+    val r = mm512MaskCvttRoundpsEpi64(b, 0x69u, a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(9L, 2L, 3L, 12L, 5L, 14L, 15L, 8L)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvttRoundpsEpi64() {
     val a = mm256SetPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f)
-    val r = mm512MaskzCvttRoundpsEpi64<MmFroundNoExc>(0x69u, a)
+    val r = mm512MaskzCvttRoundpsEpi64(0x69u, a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(0L, 2L, 3L, 0L, 5L, 0L, 0L, 8L)
     assertEqM512i(r, e)
 }
@@ -1908,7 +1908,7 @@ public fun testMm512MaskzCvttpsEpi64() {
 
 public fun testMm512CvttRoundpdEpu64() {
     val a = mm512SetPd(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
-    val r = mm512CvttRoundpdEpu64<MmFroundNoExc>(a)
+    val r = mm512CvttRoundpdEpu64(a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L)
     assertEqM512i(r, e)
 }
@@ -1916,14 +1916,14 @@ public fun testMm512CvttRoundpdEpu64() {
 public fun testMm512MaskCvttRoundpdEpu64() {
     val a = mm512SetPd(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
     val b = mm512SetEpi64(9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L)
-    val r = mm512MaskCvttRoundpdEpu64<MmFroundNoExc>(b, 0x69u, a)
+    val r = mm512MaskCvttRoundpdEpu64(b, 0x69u, a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(9L, 2L, 3L, 12L, 5L, 14L, 15L, 8L)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvttRoundpdEpu64() {
     val a = mm512SetPd(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
-    val r = mm512MaskzCvttRoundpdEpu64<MmFroundNoExc>(0x69u, a)
+    val r = mm512MaskzCvttRoundpdEpu64(0x69u, a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(0L, 2L, 3L, 0L, 5L, 0L, 0L, 8L)
     assertEqM512i(r, e)
 }
@@ -1996,7 +1996,7 @@ public fun testMm512MaskzCvttpdEpu64() {
 
 public fun testMm512CvttRoundpsEpu64() {
     val a = mm256SetPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f)
-    val r = mm512CvttRoundpsEpu64<MmFroundNoExc>(a)
+    val r = mm512CvttRoundpsEpu64(a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L)
     assertEqM512i(r, e)
 }
@@ -2004,14 +2004,14 @@ public fun testMm512CvttRoundpsEpu64() {
 public fun testMm512MaskCvttRoundpsEpu64() {
     val a = mm256SetPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f)
     val b = mm512SetEpi64(9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L)
-    val r = mm512MaskCvttRoundpsEpu64<MmFroundNoExc>(b, 0x69u, a)
+    val r = mm512MaskCvttRoundpsEpu64(b, 0x69u, a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(9L, 2L, 3L, 12L, 5L, 14L, 15L, 8L)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvttRoundpsEpu64() {
     val a = mm256SetPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f)
-    val r = mm512MaskzCvttRoundpsEpu64<MmFroundNoExc>(0x69u, a)
+    val r = mm512MaskzCvttRoundpsEpu64(0x69u, a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(0L, 2L, 3L, 0L, 5L, 0L, 0L, 8L)
     assertEqM512i(r, e)
 }
@@ -2442,7 +2442,7 @@ public fun testMm512MovmEpi64() {
 public fun testMm512RangeRoundPd() {
     val a = mm512SetPd(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
     val b = mm512SetPd(2.0, 1.0, 4.0, 3.0, 6.0, 5.0, 8.0, 7.0)
-    val r = mm512RangeRoundPd<MmFroundNoExc>(a, b, 0x5)
+    val r = mm512RangeRoundPd(a, b, 0x5, MM_FROUND_NO_EXC)
     val e = mm512SetPd(2.0, 2.0, 4.0, 4.0, 6.0, 6.0, 8.0, 8.0)
     assertEqM512d(r, e)
 }
@@ -2451,7 +2451,7 @@ public fun testMm512MaskRangeRoundPd() {
     val a = mm512SetPd(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
     val b = mm512SetPd(2.0, 1.0, 4.0, 3.0, 6.0, 5.0, 8.0, 7.0)
     val c = mm512SetPd(9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0)
-    val r = mm512MaskRangeRoundPd<MmFroundNoExc>(c, 0x69u, a, b, 0x5)
+    val r = mm512MaskRangeRoundPd(c, 0x69u, a, b, 0x5, MM_FROUND_NO_EXC)
     val e = mm512SetPd(9.0, 2.0, 4.0, 12.0, 6.0, 14.0, 15.0, 8.0)
     assertEqM512d(r, e)
 }
@@ -2459,7 +2459,7 @@ public fun testMm512MaskRangeRoundPd() {
 public fun testMm512MaskzRangeRoundPd() {
     val a = mm512SetPd(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
     val b = mm512SetPd(2.0, 1.0, 4.0, 3.0, 6.0, 5.0, 8.0, 7.0)
-    val r = mm512MaskzRangeRoundPd<MmFroundNoExc>(0x69u, a, b, 0x5)
+    val r = mm512MaskzRangeRoundPd(0x69u, a, b, 0x5, MM_FROUND_NO_EXC)
     val e = mm512SetPd(0.0, 2.0, 4.0, 0.0, 6.0, 0.0, 0.0, 8.0)
     assertEqM512d(r, e)
 }
@@ -2542,7 +2542,7 @@ public fun testMm512MaskzRangePd() {
 public fun testMm512RangeRoundPs() {
     val a = mm512SetPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f)
     val b = mm512SetPs(2.0f, 1.0f, 4.0f, 3.0f, 6.0f, 5.0f, 8.0f, 7.0f, 10.0f, 9.0f, 12.0f, 11.0f, 14.0f, 13.0f, 16.0f, 15.0f)
-    val r = mm512RangeRoundPs<MmFroundNoExc>(a, b, 0x5)
+    val r = mm512RangeRoundPs(a, b, 0x5, MM_FROUND_NO_EXC)
     val e = mm512SetPs(2.0f, 2.0f, 4.0f, 4.0f, 6.0f, 6.0f, 8.0f, 8.0f, 10.0f, 10.0f, 12.0f, 12.0f, 14.0f, 14.0f, 16.0f, 16.0f)
     assertEqM512(r, e)
 }
@@ -2551,7 +2551,7 @@ public fun testMm512MaskRangeRoundPs() {
     val a = mm512SetPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f)
     val b = mm512SetPs(2.0f, 1.0f, 4.0f, 3.0f, 6.0f, 5.0f, 8.0f, 7.0f, 10.0f, 9.0f, 12.0f, 11.0f, 14.0f, 13.0f, 16.0f, 15.0f)
     val c = mm512SetPs(17.0f, 18.0f, 19.0f, 20.0f, 21.0f, 22.0f, 23.0f, 24.0f, 25.0f, 26.0f, 27.0f, 28.0f, 29.0f, 30.0f, 31.0f, 32.0f)
-    val r = mm512MaskRangeRoundPs<MmFroundNoExc>(c, 0x693Cu, a, b, 0x5)
+    val r = mm512MaskRangeRoundPs(c, 0x693Cu, a, b, 0x5, MM_FROUND_NO_EXC)
     val e = mm512SetPs(17.0f, 2.0f, 4.0f, 20.0f, 6.0f, 22.0f, 23.0f, 8.0f, 25.0f, 26.0f, 12.0f, 12.0f, 14.0f, 14.0f, 31.0f, 32.0f)
     assertEqM512(r, e)
 }
@@ -2559,7 +2559,7 @@ public fun testMm512MaskRangeRoundPs() {
 public fun testMm512MaskzRangeRoundPs() {
     val a = mm512SetPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f)
     val b = mm512SetPs(2.0f, 1.0f, 4.0f, 3.0f, 6.0f, 5.0f, 8.0f, 7.0f, 10.0f, 9.0f, 12.0f, 11.0f, 14.0f, 13.0f, 16.0f, 15.0f)
-    val r = mm512MaskzRangeRoundPs<MmFroundNoExc>(0x693Cu, a, b, 0x5)
+    val r = mm512MaskzRangeRoundPs(0x693Cu, a, b, 0x5, MM_FROUND_NO_EXC)
     val e = mm512SetPs(0.0f, 2.0f, 4.0f, 0.0f, 6.0f, 0.0f, 0.0f, 8.0f, 0.0f, 0.0f, 12.0f, 12.0f, 14.0f, 14.0f, 0.0f, 0.0f)
     assertEqM512(r, e)
 }
@@ -2642,7 +2642,7 @@ public fun testMm512MaskzRangePs() {
 public fun testMmRangeRoundSd() {
     val a = mmSetSd(1.0)
     val b = mmSetSd(2.0)
-    val r = mmRangeRoundSd<MmFroundNoExc>(a, b, 0x5)
+    val r = mmRangeRoundSd(a, b, 0x5, MM_FROUND_NO_EXC)
     val e = mmSetSd(2.0)
     assertEqM128d(r, e)
 }
@@ -2651,7 +2651,7 @@ public fun testMmMaskRangeRoundSd() {
     val a = mmSetSd(1.0)
     val b = mmSetSd(2.0)
     val c = mmSetSd(3.0)
-    val r = mmMaskRangeRoundSd<MmFroundNoExc>(c, 0x0u, a, b, 0x5)
+    val r = mmMaskRangeRoundSd(c, 0x0u, a, b, 0x5, MM_FROUND_NO_EXC)
     val e = mmSetSd(3.0)
     assertEqM128d(r, e)
 }
@@ -2659,7 +2659,7 @@ public fun testMmMaskRangeRoundSd() {
 public fun testMmMaskzRangeRoundSd() {
     val a = mmSetSd(1.0)
     val b = mmSetSd(2.0)
-    val r = mmMaskzRangeRoundSd<MmFroundNoExc>(0x0u, a, b, 0x5)
+    val r = mmMaskzRangeRoundSd(0x0u, a, b, 0x5, MM_FROUND_NO_EXC)
     val e = mmSetSd(0.0)
     assertEqM128d(r, e)
 }
@@ -2684,7 +2684,7 @@ public fun testMmMaskzRangeSd() {
 public fun testMmRangeRoundSs() {
     val a = mmSetSs(1.0f)
     val b = mmSetSs(2.0f)
-    val r = mmRangeRoundSs<MmFroundNoExc>(a, b, 0x5)
+    val r = mmRangeRoundSs(a, b, 0x5, MM_FROUND_NO_EXC)
     val e = mmSetSs(2.0f)
     assertEqM128(r, e)
 }
@@ -2693,7 +2693,7 @@ public fun testMmMaskRangeRoundSs() {
     val a = mmSetSs(1.0f)
     val b = mmSetSs(2.0f)
     val c = mmSetSs(3.0f)
-    val r = mmMaskRangeRoundSs<MmFroundNoExc>(c, 0x0u, a, b, 0x5)
+    val r = mmMaskRangeRoundSs(c, 0x0u, a, b, 0x5, MM_FROUND_NO_EXC)
     val e = mmSetSs(3.0f)
     assertEqM128(r, e)
 }
@@ -2701,7 +2701,7 @@ public fun testMmMaskRangeRoundSs() {
 public fun testMmMaskzRangeRoundSs() {
     val a = mmSetSs(1.0f)
     val b = mmSetSs(2.0f)
-    val r = mmMaskzRangeRoundSs<MmFroundNoExc>(0x0u, a, b, 0x5)
+    val r = mmMaskzRangeRoundSs(0x0u, a, b, 0x5, MM_FROUND_NO_EXC)
     val e = mmSetSs(0.0f)
     assertEqM128(r, e)
 }
@@ -2725,7 +2725,7 @@ public fun testMmMaskzRangeSs() {
 
 public fun testMm512ReduceRoundPd() {
     val a = mm512SetPd(0.25, 0.50, 0.75, 1.0, 1.25, 1.50, 1.75, 2.0)
-    val r = mm512ReduceRoundPd<MmFroundNoExc>(a, 16 or MM_FROUND_TO_ZERO)
+    val r = mm512ReduceRoundPd(a, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
     val e = mm512SetPd(0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0)
     assertEqM512d(r, e)
 }
@@ -2733,14 +2733,14 @@ public fun testMm512ReduceRoundPd() {
 public fun testMm512MaskReduceRoundPd() {
     val a = mm512SetPd(0.25, 0.50, 0.75, 1.0, 1.25, 1.50, 1.75, 2.0)
     val src = mm512SetPd(3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0)
-    val r = mm512MaskReduceRoundPd<MmFroundNoExc>(src, 0x69u, a, 16 or MM_FROUND_TO_ZERO)
+    val r = mm512MaskReduceRoundPd(src, 0x69u, a, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
     val e = mm512SetPd(3.0, 0.0, 0.25, 6.0, 0.25, 8.0, 9.0, 0.0)
     assertEqM512d(r, e)
 }
 
 public fun testMm512MaskzReduceRoundPd() {
     val a = mm512SetPd(0.25, 0.50, 0.75, 1.0, 1.25, 1.50, 1.75, 2.0)
-    val r = mm512MaskzReduceRoundPd<MmFroundNoExc>(0x69u, a, 16 or MM_FROUND_TO_ZERO)
+    val r = mm512MaskzReduceRoundPd(0x69u, a, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
     val e = mm512SetPd(0.0, 0.0, 0.25, 0.0, 0.25, 0.0, 0.0, 0.0)
     assertEqM512d(r, e)
 }
@@ -2813,7 +2813,7 @@ public fun testMm512MaskzReducePd() {
 
 public fun testMm512ReduceRoundPs() {
     val a = mm512SetPs(0.25f, 0.50f, 0.75f, 1.0f, 1.25f, 1.50f, 1.75f, 2.0f, 2.25f, 2.50f, 2.75f, 3.0f, 3.25f, 3.50f, 3.75f, 4.0f)
-    val r = mm512ReduceRoundPs<MmFroundNoExc>(a, 16 or MM_FROUND_TO_ZERO)
+    val r = mm512ReduceRoundPs(a, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
     val e = mm512SetPs(0.25f, 0.0f, 0.25f, 0.0f, 0.25f, 0.0f, 0.25f, 0.0f, 0.25f, 0.0f, 0.25f, 0.0f, 0.25f, 0.0f, 0.25f, 0.0f)
     assertEqM512(r, e)
 }
@@ -2821,14 +2821,14 @@ public fun testMm512ReduceRoundPs() {
 public fun testMm512MaskReduceRoundPs() {
     val a = mm512SetPs(0.25f, 0.50f, 0.75f, 1.0f, 1.25f, 1.50f, 1.75f, 2.0f, 2.25f, 2.50f, 2.75f, 3.0f, 3.25f, 3.50f, 3.75f, 4.0f)
     val src = mm512SetPs(5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f, 17.0f, 18.0f, 19.0f, 20.0f)
-    val r = mm512MaskReduceRoundPs<MmFroundNoExc>(src, 0x693Cu, a, 16 or MM_FROUND_TO_ZERO)
+    val r = mm512MaskReduceRoundPs(src, 0x693Cu, a, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
     val e = mm512SetPs(5.0f, 0.0f, 0.25f, 8.0f, 0.25f, 10.0f, 11.0f, 0.0f, 13.0f, 14.0f, 0.25f, 0.0f, 0.25f, 0.0f, 19.0f, 20.0f)
     assertEqM512(r, e)
 }
 
 public fun testMm512MaskzReduceRoundPs() {
     val a = mm512SetPs(0.25f, 0.50f, 0.75f, 1.0f, 1.25f, 1.50f, 1.75f, 2.0f, 2.25f, 2.50f, 2.75f, 3.0f, 3.25f, 3.50f, 3.75f, 4.0f)
-    val r = mm512MaskzReduceRoundPs<MmFroundNoExc>(0x693Cu, a, 16 or MM_FROUND_TO_ZERO)
+    val r = mm512MaskzReduceRoundPs(0x693Cu, a, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
     val e = mm512SetPs(0.0f, 0.0f, 0.25f, 0.0f, 0.25f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.25f, 0.0f, 0.25f, 0.0f, 0.0f, 0.0f)
     assertEqM512(r, e)
 }
@@ -2902,7 +2902,7 @@ public fun testMm512MaskzReducePs() {
 public fun testMmReduceRoundSd() {
     val a = mmSetPd(1.0, 2.0)
     val b = mmSetSd(0.25)
-    val r = mmReduceRoundSd<MmFroundNoExc>(a, b, 16 or MM_FROUND_TO_ZERO)
+    val r = mmReduceRoundSd(a, b, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
     val e = mmSetPd(1.0, 0.25)
     assertEqM128d(r, e)
 }
@@ -2911,7 +2911,7 @@ public fun testMmMaskReduceRoundSd() {
     val a = mmSetPd(1.0, 2.0)
     val b = mmSetSd(0.25)
     val c = mmSetPd(3.0, 4.0)
-    val r = mmMaskReduceRoundSd<MmFroundNoExc>(c, 0x0u, a, b, 16 or MM_FROUND_TO_ZERO)
+    val r = mmMaskReduceRoundSd(c, 0x0u, a, b, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
     val e = mmSetPd(1.0, 4.0)
     assertEqM128d(r, e)
 }
@@ -2919,7 +2919,7 @@ public fun testMmMaskReduceRoundSd() {
 public fun testMmMaskzReduceRoundSd() {
     val a = mmSetPd(1.0, 2.0)
     val b = mmSetSd(0.25)
-    val r = mmMaskzReduceRoundSd<MmFroundNoExc>(0x0u, a, b, 16 or MM_FROUND_TO_ZERO)
+    val r = mmMaskzReduceRoundSd(0x0u, a, b, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
     val e = mmSetPd(1.0, 0.0)
     assertEqM128d(r, e)
 }
@@ -2952,7 +2952,7 @@ public fun testMmMaskzReduceSd() {
 public fun testMmReduceRoundSs() {
     val a = mmSetPs(1.0f, 2.0f, 3.0f, 4.0f)
     val b = mmSetSs(0.25f)
-    val r = mmReduceRoundSs<MmFroundNoExc>(a, b, 16 or MM_FROUND_TO_ZERO)
+    val r = mmReduceRoundSs(a, b, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
     val e = mmSetPs(1.0f, 2.0f, 3.0f, 0.25f)
     assertEqM128(r, e)
 }
@@ -2961,7 +2961,7 @@ public fun testMmMaskReduceRoundSs() {
     val a = mmSetPs(1.0f, 2.0f, 3.0f, 4.0f)
     val b = mmSetSs(0.25f)
     val c = mmSetPs(5.0f, 6.0f, 7.0f, 8.0f)
-    val r = mmMaskReduceRoundSs<MmFroundNoExc>(c, 0x0u, a, b, 16 or MM_FROUND_TO_ZERO)
+    val r = mmMaskReduceRoundSs(c, 0x0u, a, b, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
     val e = mmSetPs(1.0f, 2.0f, 3.0f, 8.0f)
     assertEqM128(r, e)
 }
@@ -2969,7 +2969,7 @@ public fun testMmMaskReduceRoundSs() {
 public fun testMmMaskzReduceRoundSs() {
     val a = mmSetPs(1.0f, 2.0f, 3.0f, 4.0f)
     val b = mmSetSs(0.25f)
-    val r = mmMaskzReduceRoundSs<MmFroundNoExc>(0x0u, a, b, 16 or MM_FROUND_TO_ZERO)
+    val r = mmMaskzReduceRoundSs(0x0u, a, b, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
     val e = mmSetPs(1.0f, 2.0f, 3.0f, 0.0f)
     assertEqM128(r, e)
 }

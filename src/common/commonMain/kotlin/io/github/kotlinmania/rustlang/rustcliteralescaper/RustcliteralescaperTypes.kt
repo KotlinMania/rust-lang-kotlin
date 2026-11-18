@@ -374,7 +374,7 @@ public interface Unescape<Unit> {
                 when (c) {
                     '\\' -> {
                         when (val matchVal1 = chars.asStr().encodeToByteArray().map { it.toUByte() }.first()) {
-                            is Some -> {
+                            is Some<*> -> {
                                 chars.next()
                                 // skip whitespace for backslash newline, see [Rust language reference]
                                 // (https://doc.rust-lang.org/reference/tokens.html#string-literals).

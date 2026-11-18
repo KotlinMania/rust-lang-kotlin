@@ -9,11 +9,11 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.libc.calloc
 import io.github.kotlinmania.rustlang.libc.posixMemalign
 import io.github.kotlinmania.rustlang.std.sys.alloc.MIN_ALIGN
 import io.github.kotlinmania.rustlang.std.sys.alloc.reallocFallback
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.writeBytes
 
 public expect fun malloc(size: CSizeT): MutPtr
 
@@ -49,7 +49,7 @@ public fun allocZeroed(layout: Layout): MutPtr {
     } else {
         val ptr = alloc(layout)
         if (!ptr.isNull()) {
-            ptr.writeBytes(ptr, 0, layout.size())
+            writeBytes(ptr, 0, layout.size())
         }
         ptr
     }

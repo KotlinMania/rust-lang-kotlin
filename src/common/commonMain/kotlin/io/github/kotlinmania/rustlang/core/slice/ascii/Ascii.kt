@@ -119,7 +119,7 @@ public fun List<UByte>.eqIgnoreAsciiCase(other: List<UByte>): Boolean {
         // 2. The slice lengths must greater than or equal to N, which this
         // if-statement is checking.
         if (this.size >= CHUNK_SIZE) {
-            return this.eqIgnoreAsciiCaseChunks<ChunkSize>(other)
+            return this.eqIgnoreAsciiCaseChunks(other, CHUNK_SIZE)
         }
     }
     return this.eqIgnoreAsciiCaseSimple(other)
@@ -163,7 +163,7 @@ public fun List<UByte>.eqIgnoreAsciiCaseSimple(other: List<UByte>): Boolean {
  */
 public fun List<UByte>.eqIgnoreAsciiCaseChunks(other: List<UByte>, n: Int): Boolean {
     // Branchless check to encourage auto-vectorization
-    fun eqIgnoreAsciiInner(lhs: UByteArray, rhs: UByteArray, l: Int): Boolean {
+    fun eqIgnoreAsciiInner(lhs: UByteArray, rhs: UByteArray, l: Int = 0): Boolean {
         var equalAscii = true
         var j = 0
         while (j < l) {
@@ -174,8 +174,8 @@ public fun List<UByte>.eqIgnoreAsciiCaseChunks(other: List<UByte>, n: Int): Bool
     }
     // Note(const-Note): The while-loops that follow should be replaced by
     // for-loops when available in const.
-    val (selfChunks, selfRem) = this.asChunks()
-    val (otherChunks, _) = other.asChunks()
+    val (selfChunks, selfRem) = this.asChunks(n)
+    val (otherChunks, _) = other.asChunks(n)
     // Process the chunks, returning early if an inequality is found
     var i = 0
     while (i < selfChunks.len() && i < otherChunks.len()) {
@@ -190,9 +190,9 @@ public fun List<UByte>.eqIgnoreAsciiCaseChunks(other: List<UByte>, n: Int): Bool
     // If there are remaining tails, load the last N bytes in the slices to
     // avoid falling back to per-byte checking.
     if (!selfRem.isEmpty()) {
-        if (Pair(this.lastChunk(), other.lastChunk()) != null) {
-            val aRem = Pair(this.lastChunk(), other.lastChunk()).first
-            val bRem = Pair(this.lastChunk(), other.lastChunk()).second
+        if (Pair(this.lastChunk(n), other.lastChunk(n)) != null) {
+            val aRem = Pair(this.lastChunk(n), other.lastChunk(n)).first
+            val bRem = Pair(this.lastChunk(n), other.lastChunk(n)).second
             if (!eqIgnoreAsciiInner(aRem, bRem)) {
                 return false
             }
@@ -683,7 +683,7 @@ public fun isAscii(s: List<UByte>): Boolean {
 public val SSE2_CHUNK_SIZE: Int = 64
 
 public fun isAsciiSse2(bytes: List<UByte>): Boolean {
-    val (chunks, rest) = bytes.asChunks()
+    val (chunks, rest) = bytes.asChunks(SSE2_CHUNK_SIZE)
     for (chunk in chunks) {
         val ptr = chunk.asPtr()
         // SAFETY: chunk is 64 bytes. SSE2 is baseline on x8664.
@@ -719,7 +719,7 @@ public val NEON_CHUNK_SIZE: Int = 64
 public val NEON_VECTOR_SIZE: Int = 16
 
 public fun isAsciiNeon(bytes: List<UByte>): Boolean {
-    val (chunks, rest) = bytes.asChunks()
+    val (chunks, rest) = bytes.asChunks(NEON_CHUNK_SIZE)
     for (chunk in chunks) {
         val ptr = chunk.asPtr()
         // SAFETY: chunk is 64 bytes, and `vld1qU8` has no alignment requirement.
@@ -741,7 +741,7 @@ public fun isAsciiNeon(bytes: List<UByte>): Boolean {
     }
     // The unrolled loop above leaves up to 63 bytes, so sweep those a vector at
     // a time before falling back to a byte-at-a-time check.
-    val (vectors, rest1) = rest.asChunks()
+    val (vectors, rest1) = rest.asChunks(NEON_VECTOR_SIZE)
     for (vector in vectors) {
         // SAFETY: vector is 16 bytes, and `vld1qU8` has no alignment requirement.
         val max1 = vmaxvqU8(vld1qU8(vector.asPtr()))

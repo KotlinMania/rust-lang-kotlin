@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sync.nonpoison.rwlock
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.needsDrop
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
@@ -157,7 +158,7 @@ public open class RwLock<T>(
      */
     public open fun replace(value: T): T {
         val guard = this.write()
-        return replace(guard, value)
+        return io.github.kotlinmania.rustlang.core.mem.replace(guard, value)
     }
 
     /**

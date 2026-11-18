@@ -9,11 +9,11 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.alignOffset
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.std.sys.alloc.MIN_ALIGN
 import io.github.kotlinmania.rustlang.std.sys.alloc.reallocFallback
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.read
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.write
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Bool
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Handle
 
@@ -196,7 +196,7 @@ public fun allocate(layout: Layout, zeroed: Boolean): MutPtr {
         // SAFETY: Because the size and alignment of a header is <= `MIN_ALIGN` and `aligned`
         // is aligned to at least `MIN_ALIGN` and has at least `MIN_ALIGN` bytes of padding before
         // it, it is safe to write a header directly before it.
-        ptr.write(MutPtr(((MutPtr(aligned.rawAddress, aligned.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes)), Header(ptr), typeLayoutT = Header.typeLayout())
+        write(MutPtr(((MutPtr(aligned.rawAddress, aligned.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes)), Header(ptr), typeLayoutT = Header.typeLayout())
         // SAFETY: The returned pointer does not point to the start of an allocated block,
         // but there is a header readable directly before it containing the location of the start
         // of the block.
@@ -223,7 +223,7 @@ public fun dealloc(ptr: MutPtr, layout: Layout) {
         // The location of the start of the block is stored in the padding before `ptr`.
         // SAFETY: Because of the contract of `System`, `ptr` is guaranteed to be non-null
         // and have a header readable directly before it.
-        ptr.read((MutPtr(((MutPtr(ptr.rawAddress, ptr.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes))).asConstPtr(), typeLayoutT = Header.typeLayout()).first
+        read((MutPtr(((MutPtr(ptr.rawAddress, ptr.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes))).asConstPtr(), typeLayoutT = Header.typeLayout()).first
     }
     // because `ptr` has been successfully allocated with this allocator,
     // there must be a valid process heap.

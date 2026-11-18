@@ -50,7 +50,7 @@ public interface Select<T> {
     public fun select(trueValues: T, falseValues: T): T
 }
 
-public fun <T, U> Mask<U>.select(trueValues: Simd<T>, falseValues: Simd<T>, n: Int): Simd<T> where U : MaskElement<U, Any?, Any?> {
+public fun <T, U> Mask<U>.select(trueValues: Simd<T>, falseValues: Simd<T>, n: Int = 0): Simd<T> where U : MaskElement<U, Any?, Any?> {
     // Safety:
     // simdAs between masks is always safe (they're vectors of ints).
     // simdSelect uses a mask that matches the width and number of elements
@@ -60,16 +60,16 @@ public fun <T, U> Mask<U>.select(trueValues: Simd<T>, falseValues: Simd<T>, n: I
     }
 }
 
-public fun <Mask, T> ULong.select(trueValues: Simd<T>, falseValues: Simd<T>, n: Int): Simd<T> {
-    fun <Mask, T, U : FixEndianness<U>> selectImpl(bitmask: U, trueValues1: Simd<T>, falseValues1: Simd<T>, m: Int, n: Int): Simd<T> {
+public fun <Mask, T> ULong.select(trueValues: Simd<T>, falseValues: Simd<T>, n: Int = 0): Simd<T> {
+    fun <Mask, T, U : FixEndianness<U>> selectImpl(bitmask: U, trueValues1: Simd<T>, falseValues1: Simd<T>, m: Int, n: Int = 0): Simd<T> {
         val default = trueValues1[0]
-        val trueValues2 = trueValues1.resize(default)
-        val falseValues2 = falseValues1.resize(default)
+        val trueValues2 = trueValues1.resize(default, m)
+        val falseValues2 = falseValues1.resize(default, m)
         // LLVM assumes bit order should match endianness
         val bitmask1 = bitmask.fixEndianness()
         // Safety: the caller guarantees that the size of U matches M
         val selected = run { val simdArg0 = bitmask1; val simdArg1 = trueValues2; val simdArg2 = falseValues2; simdArg1 }
-        return selected.resize(default)
+        return selected.resize(default, n)
     }
     run {
         check(n <= 64) { "number of elements can't be greater than 64" }
@@ -94,13 +94,13 @@ public fun <Mask, T> ULong.select(trueValues: Simd<T>, falseValues: Simd<T>, n: 
     }
 }
 
-public fun <T, U> Mask<U>.select(trueValues: Mask<T>, falseValues: Mask<T>, n: Int): Mask<T> where T : MaskElement<T, Any?, Any?>, U : MaskElement<U, Any?, Any?> {
+public fun <T, U> Mask<U>.select(trueValues: Mask<T>, falseValues: Mask<T>, n: Int = 0): Mask<T> where T : MaskElement<T, Any?, Any?>, U : MaskElement<U, Any?, Any?> {
     val selected: Simd<T> = this.select(trueValues.toSimd(), falseValues.toSimd())
     // Safety: all values come from masks
     return Mask.fromSimdUnchecked(selected, n)
 }
 
-public fun <T> ULong.select(trueValues: Mask<T>, falseValues: Mask<T>, n: Int): Mask<T> where T : MaskElement<T, Any?, Any?> {
+public fun <T> ULong.select(trueValues: Mask<T>, falseValues: Mask<T>, n: Int = 0): Mask<T> where T : MaskElement<T, Any?, Any?> {
     val selected: Simd<T> = this.select(trueValues.toSimd(), falseValues.toSimd())
     // Safety: all values come from masks
     return Mask.fromSimdUnchecked(selected, n)

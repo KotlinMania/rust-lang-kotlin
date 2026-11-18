@@ -94,18 +94,18 @@ public open class Scan<I, St, F>(
     }
 }
 
-public fun <B, I, St> Scan<I, St, F>.next(): B? {
+public fun <Item, B, I, St> Scan<I, St, F>.next(): B? where I : Iterator<Item> {
     val a = (this.iter.next() ?: return null)
     return (this.f)(this.state, a)
 }
 
-public fun <B, I, St> Scan<I, St, F>.sizeHint(): Pair<Int, Int?> {
+public fun <Item, B, I, St> Scan<I, St, F>.sizeHint(): Pair<Int, Int?> where I : Iterator<Item> {
     val (_, upper) = this.iter.sizeHint()
     return Pair(0, upper)
     // can't know a lower bound, due to the scan function
 }
 
-public fun <Residual, B, I, St, Acc, R> Scan<I, St, F>.tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Item, Residual, B, I, St, Acc, R> Scan<I, St, F>.tryFold(init: Acc, fold: (Acc, B) -> R): R where I : Iterator<Item>, R : Try<R, Acc, Residual> {
     fun <Residual, T, St, B, Acc, R : Try<R, Acc, Residual>> scan(state: St, f: (St, T) -> B?, fold1: (Acc, B) -> R): (Acc, T) -> ControlFlow<R, Acc> =
         { acc, x -> when (val matchVal = f(state, x)) {
             null -> ControlFlow.Break(acc)
@@ -119,7 +119,7 @@ public fun <Residual, B, I, St, Acc, R> Scan<I, St, F>.tryFold(init: Acc, fold: 
     return this.iter.tryFold(init, scan(state, f, fold)).intoTry()
 }
 
-public fun <B, I, St, Aaa> Scan<I, St, F>.fold(init: Aaa, fold: (Aaa, B) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
+public fun <Item, B, I, St, Aaa> Scan<I, St, F>.fold(init: Aaa, fold: (Aaa, B) -> Aaa): Aaa where I : Iterator<Item> = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
 
 public fun <Source, St, F, I> Scan<I, St, F>.asInner(): Source where I : SourceIter<Source> {
     // SAFETY: unchecked function forwarding to unchecked function with the same requirements

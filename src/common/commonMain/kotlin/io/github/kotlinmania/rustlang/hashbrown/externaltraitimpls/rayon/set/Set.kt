@@ -2,8 +2,9 @@
 package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.set
 
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
+import io.github.kotlinmania.rustlang.core.num.divCeil
 import io.github.kotlinmania.rustlang.hashbrown.HashSet
-import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.helpers.collect
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.map.ParKeys
 import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.IntoParallelIterator

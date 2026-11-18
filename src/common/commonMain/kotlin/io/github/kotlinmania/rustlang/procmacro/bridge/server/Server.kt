@@ -175,7 +175,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
         val server = this.server
         val reader = buf
         when (ApiTags.decode(reader, Unit)) {
-            ApiTags.trackEnvVar -> {
+            ApiTags.TrackEnvVar -> {
                 var callMethod =
                     {
                         val variable = String.decode(reader, handleStore).unmark()
@@ -192,7 +192,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r.encode(buf, handleStore)
             }
-            ApiTags.trackPath -> {
+            ApiTags.TrackPath -> {
                 var callMethod1 =
                     {
                         val path = String.decode(reader, handleStore).unmark()
@@ -208,7 +208,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r1.encode(buf, handleStore)
             }
-            ApiTags.literalFromStr -> {
+            ApiTags.LiteralFromStr -> {
                 var callMethod2 =
                     {
                         val s = String.decode(reader, handleStore).unmark()
@@ -225,7 +225,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r2.encode(buf, handleStore)
             }
-            ApiTags.emitDiagnostic -> {
+            ApiTags.EmitDiagnostic -> {
                 var callMethod3 =
                     {
                         val diagnostic = Diagnostic.decode(reader, handleStore).unmark()
@@ -241,7 +241,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r3.encode(buf, handleStore)
             }
-            ApiTags.tsDrop -> {
+            ApiTags.TsDrop -> {
                 var callMethod4 =
                     {
                         val stream = MarkedTokenStream.decode(reader, handleStore).unmark()
@@ -257,7 +257,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r4.encode(buf, handleStore)
             }
-            ApiTags.tsClone -> {
+            ApiTags.TsClone -> {
                 var callMethod5 =
                     {
                         val stream = MarkedTokenStream.decode(reader, handleStore).unmark()
@@ -274,7 +274,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r5.encode(buf, handleStore)
             }
-            ApiTags.tsIsEmpty -> {
+            ApiTags.TsIsEmpty -> {
                 var callMethod6 =
                     {
                         val stream = MarkedTokenStream.decode(reader, handleStore).unmark()
@@ -291,7 +291,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r6.encode(buf, handleStore)
             }
-            ApiTags.tsExpandExpr -> {
+            ApiTags.TsExpandExpr -> {
                 var callMethod7 =
                     {
                         val stream = MarkedTokenStream.decode(reader, handleStore).unmark()
@@ -308,7 +308,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r7.encode(buf, handleStore)
             }
-            ApiTags.tsFromStr -> {
+            ApiTags.TsFromStr -> {
                 var callMethod8 =
                     {
                         val src = String.decode(reader, handleStore).unmark()
@@ -325,7 +325,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r8.encode(buf, handleStore)
             }
-            ApiTags.tsToString -> {
+            ApiTags.TsToString -> {
                 var callMethod9 =
                     {
                         val stream = MarkedTokenStream.decode(reader, handleStore).unmark()
@@ -342,7 +342,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r9.encode(buf, handleStore)
             }
-            ApiTags.tsFromTokenTree -> {
+            ApiTags.TsFromTokenTree -> {
                 var callMethod10 =
                     {
                         val tree = TokenTree.decode(reader, handleStore).unmark()
@@ -359,7 +359,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r10.encode(buf, handleStore)
             }
-            ApiTags.tsConcatTrees -> {
+            ApiTags.TsConcatTrees -> {
                 var callMethod11 =
                     {
                         val base = MarkedTokenStream.decode(reader, handleStore).unmark()
@@ -377,7 +377,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r11.encode(buf, handleStore)
             }
-            ApiTags.tsConcatStreams -> {
+            ApiTags.TsConcatStreams -> {
                 var callMethod12 =
                     {
                         val base = MarkedTokenStream.decode(reader, handleStore).unmark()
@@ -395,7 +395,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r12.encode(buf, handleStore)
             }
-            ApiTags.tsIntoTrees -> {
+            ApiTags.TsIntoTrees -> {
                 var callMethod13 =
                     {
                         val stream = MarkedTokenStream.decode(reader, handleStore).unmark()
@@ -412,7 +412,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r13.encode(buf, handleStore)
             }
-            ApiTags.spanDebug -> {
+            ApiTags.SpanDebug -> {
                 var callMethod14 =
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
@@ -429,7 +429,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r14.encode(buf, handleStore)
             }
-            ApiTags.spanParent -> {
+            ApiTags.SpanParent -> {
                 var callMethod15 =
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
@@ -446,7 +446,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r15.encode(buf, handleStore)
             }
-            ApiTags.spanSource -> {
+            ApiTags.SpanSource -> {
                 var callMethod16 =
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
@@ -463,7 +463,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r16.encode(buf, handleStore)
             }
-            ApiTags.spanByteRange -> {
+            ApiTags.SpanByteRange -> {
                 var callMethod17 =
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
@@ -480,7 +480,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r17.encode(buf, handleStore)
             }
-            ApiTags.spanStart -> {
+            ApiTags.SpanStart -> {
                 var callMethod18 =
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
@@ -497,7 +497,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r18.encode(buf, handleStore)
             }
-            ApiTags.spanEnd -> {
+            ApiTags.SpanEnd -> {
                 var callMethod19 =
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
@@ -514,7 +514,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r19.encode(buf, handleStore)
             }
-            ApiTags.spanLine -> {
+            ApiTags.SpanLine -> {
                 var callMethod20 =
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
@@ -531,7 +531,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r20.encode(buf, handleStore)
             }
-            ApiTags.spanColumn -> {
+            ApiTags.SpanColumn -> {
                 var callMethod21 =
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
@@ -548,7 +548,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r21.encode(buf, handleStore)
             }
-            ApiTags.spanFile -> {
+            ApiTags.SpanFile -> {
                 var callMethod22 =
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
@@ -565,7 +565,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r22.encode(buf, handleStore)
             }
-            ApiTags.spanLocalFile -> {
+            ApiTags.SpanLocalFile -> {
                 var callMethod23 =
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
@@ -582,7 +582,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r23.encode(buf, handleStore)
             }
-            ApiTags.spanJoin -> {
+            ApiTags.SpanJoin -> {
                 var callMethod24 =
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
@@ -600,7 +600,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r24.encode(buf, handleStore)
             }
-            ApiTags.spanSubspan -> {
+            ApiTags.SpanSubspan -> {
                 var callMethod25 =
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
@@ -619,7 +619,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r25.encode(buf, handleStore)
             }
-            ApiTags.spanResolvedAt -> {
+            ApiTags.SpanResolvedAt -> {
                 var callMethod26 =
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
@@ -637,7 +637,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r26.encode(buf, handleStore)
             }
-            ApiTags.spanSourceText -> {
+            ApiTags.SpanSourceText -> {
                 var callMethod27 =
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
@@ -654,7 +654,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r27.encode(buf, handleStore)
             }
-            ApiTags.spanSaveSpan -> {
+            ApiTags.SpanSaveSpan -> {
                 var callMethod28 =
                     {
                         val span = MarkedSpan.decode(reader, handleStore).unmark()
@@ -671,7 +671,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r28.encode(buf, handleStore)
             }
-            ApiTags.spanRecoverProcMacroSpan -> {
+            ApiTags.SpanRecoverProcMacroSpan -> {
                 var callMethod29 =
                     {
                         val id = Int.decode(reader, handleStore).unmark()
@@ -688,7 +688,7 @@ public open class Dispatcher<S : Server<TokenStream, Span, Symbol>, TokenStream,
                 buf.clear()
                 r29.encode(buf, handleStore)
             }
-            ApiTags.symbolNormalizeAndValidateIdent -> {
+            ApiTags.SymbolNormalizeAndValidateIdent -> {
                 var callMethod30 =
                     {
                         val string = String.decode(reader, handleStore).unmark()

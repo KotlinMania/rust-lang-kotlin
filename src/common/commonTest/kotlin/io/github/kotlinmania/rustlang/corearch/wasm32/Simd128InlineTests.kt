@@ -39,6 +39,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.sub
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import kotlin.experimental.inv
 
 // This module implements the [WebAssembly `SIMD128` ISA].
 //

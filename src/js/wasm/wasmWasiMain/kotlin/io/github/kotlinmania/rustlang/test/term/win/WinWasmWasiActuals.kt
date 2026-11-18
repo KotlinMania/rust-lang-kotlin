@@ -3,6 +3,7 @@
 package io.github.kotlinmania.rustlang.test.term.win
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import kotlin.experimental.or
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun setConsoleTextAttribute(handle: Handle, attr: Word): Bool =

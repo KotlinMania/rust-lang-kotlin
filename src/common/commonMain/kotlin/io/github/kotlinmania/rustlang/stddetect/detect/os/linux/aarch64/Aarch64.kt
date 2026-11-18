@@ -175,115 +175,115 @@ public open class AtHwcap(
             // $ rustc --print cfg --target aarch64-linux-android -C target-cpu=exynos-m3 | grep targetFeature
             // See also https://github.com/rust-lang/stdarch/pull/1378#discussionR1103748342.
             if (isExynos9810) {
-                enableFeature(Feature::fp, this.fp)
-                enableFeature(Feature::crc, this.crc32)
+                enableFeature(Feature.Fp, this.fp)
+                enableFeature(Feature.Crc, this.crc32)
                 // ASIMD support requires float support - if half-floats are
                 // supported, it also requires half-float support:
                 val asimd = this.fp && this.asimd && (this.fphp.inv() or this.asimdhp)
-                enableFeature(Feature::asimd, asimd)
+                enableFeature(Feature.Asimd, asimd)
                 // Cryptographic extensions require ASIMD
                 // AES also covers FEAT_PMULL
-                enableFeature(Feature::aes, this.aes && this.pmull && asimd)
-                enableFeature(Feature::sha2, this.sha1 && this.sha2 && asimd)
+                enableFeature(Feature.Aes, this.aes && this.pmull && asimd)
+                enableFeature(Feature.Sha2, this.sha1 && this.sha2 && asimd)
                 return value
             }
-            enableFeature(Feature::fp, this.fp)
+            enableFeature(Feature.Fp, this.fp)
             // Half-float support requires float support
-            enableFeature(Feature::fp16, this.fp && this.fphp)
+            enableFeature(Feature.Fp16, this.fp && this.fphp)
             // FHM (fp16fml in LLVM) requires half float support
-            enableFeature(Feature::fhm, this.fphp && this.fhm)
-            enableFeature(Feature::pmull, this.pmull)
-            enableFeature(Feature::crc, this.crc32)
-            enableFeature(Feature::lse, this.atomics)
-            enableFeature(Feature::lse2, this.uscat)
-            enableFeature(Feature::lse128, this.lse128 && this.atomics)
-            enableFeature(Feature::rcpc, this.lrcpc)
+            enableFeature(Feature.Fhm, this.fphp && this.fhm)
+            enableFeature(Feature.Pmull, this.pmull)
+            enableFeature(Feature.Crc, this.crc32)
+            enableFeature(Feature.Lse, this.atomics)
+            enableFeature(Feature.Lse2, this.uscat)
+            enableFeature(Feature.Lse128, this.lse128 && this.atomics)
+            enableFeature(Feature.Rcpc, this.lrcpc)
             // RCPC2 (rcpc-immo in LLVM) requires RCPC support
             val rcpc2 = this.ilrcpc && this.lrcpc
-            enableFeature(Feature::rcpc2, rcpc2)
-            enableFeature(Feature::rcpc3, this.lrcpc3 && rcpc2)
-            enableFeature(Feature::dit, this.dit)
-            enableFeature(Feature::flagm, this.flagm)
-            enableFeature(Feature::flagm2, this.flagm2)
-            enableFeature(Feature::ssbs, this.ssbs)
-            enableFeature(Feature::sb, this.sb)
-            enableFeature(Feature::paca, this.paca)
-            enableFeature(Feature::pacg, this.pacg)
+            enableFeature(Feature.Rcpc2, rcpc2)
+            enableFeature(Feature.Rcpc3, this.lrcpc3 && rcpc2)
+            enableFeature(Feature.Dit, this.dit)
+            enableFeature(Feature.Flagm, this.flagm)
+            enableFeature(Feature.Flagm2, this.flagm2)
+            enableFeature(Feature.Ssbs, this.ssbs)
+            enableFeature(Feature.Sb, this.sb)
+            enableFeature(Feature.Paca, this.paca)
+            enableFeature(Feature.Pacg, this.pacg)
             // enableFeature(Feature.pauthLr, self.pauthlr);
-            enableFeature(Feature::dpb, this.dcpop)
-            enableFeature(Feature::dpb2, this.dcpodp)
-            enableFeature(Feature::rand, this.rng)
-            enableFeature(Feature::bti, this.bti)
-            enableFeature(Feature::mte, this.mte)
+            enableFeature(Feature.Dpb, this.dcpop)
+            enableFeature(Feature.Dpb2, this.dcpodp)
+            enableFeature(Feature.Rand, this.rng)
+            enableFeature(Feature.Bti, this.bti)
+            enableFeature(Feature.Mte, this.mte)
             // jsconv requires float support
-            enableFeature(Feature::jsconv, this.jscvt && this.fp)
-            enableFeature(Feature::rdm, this.asimdrdm)
-            enableFeature(Feature::dotprod, this.asimddp)
-            enableFeature(Feature::frintts, this.frint)
+            enableFeature(Feature.Jsconv, this.jscvt && this.fp)
+            enableFeature(Feature.Rdm, this.asimdrdm)
+            enableFeature(Feature.Dotprod, this.asimddp)
+            enableFeature(Feature.Frintts, this.frint)
             // FEAT_I8MM & FEAT_BF16 also include optional SVE components which linux exposes
             // separately. We ignore that distinction here.
-            enableFeature(Feature::i8mm, this.i8mm)
-            enableFeature(Feature::bf16, this.bf16)
+            enableFeature(Feature.I8mm, this.i8mm)
+            enableFeature(Feature.Bf16, this.bf16)
             // ASIMD support requires float support - if half-floats are
             // supported, it also requires half-float support:
             val asimd1 = this.fp && this.asimd && (this.fphp.inv() or this.asimdhp)
-            enableFeature(Feature::asimd, asimd1)
+            enableFeature(Feature.Asimd, asimd1)
             // ASIMD extensions require ASIMD support:
-            enableFeature(Feature::fcma, this.fcma && asimd1)
-            enableFeature(Feature::sve, this.sve && asimd1)
+            enableFeature(Feature.Fcma, this.fcma && asimd1)
+            enableFeature(Feature.Sve, this.sve && asimd1)
             // SVE extensions require SVE & ASIMD
-            enableFeature(Feature::f32mm, this.svef32mm && this.sve && asimd1)
-            enableFeature(Feature::f64mm, this.svef64mm && this.sve && asimd1)
+            enableFeature(Feature.F32mm, this.svef32mm && this.sve && asimd1)
+            enableFeature(Feature.F64mm, this.svef64mm && this.sve && asimd1)
             // Cryptographic extensions require ASIMD
-            enableFeature(Feature::aes, this.aes && asimd1)
-            enableFeature(Feature::sha2, this.sha1 && this.sha2 && asimd1)
+            enableFeature(Feature.Aes, this.aes && asimd1)
+            enableFeature(Feature.Sha2, this.sha1 && this.sha2 && asimd1)
             // SHA512/SHA3 require SHA1 & SHA256
-            enableFeature(Feature::sha3, this.sha512 && this.sha3 && this.sha1 && this.sha2 && asimd1)
-            enableFeature(Feature::sm4, this.sm3 && this.sm4 && asimd1)
+            enableFeature(Feature.Sha3, this.sha512 && this.sha3 && this.sha1 && this.sha2 && asimd1)
+            enableFeature(Feature.Sm4, this.sm3 && this.sm4 && asimd1)
             // SVE2 requires SVE
             val sve2 = this.sve2 && this.sve && asimd1
-            enableFeature(Feature::sve2, sve2)
-            enableFeature(Feature::sve2p1, this.sve2p1 && sve2)
+            enableFeature(Feature.Sve2, sve2)
+            enableFeature(Feature.Sve2p1, this.sve2p1 && sve2)
             // SVE2 extensions require SVE2 and crypto features
-            enableFeature(Feature::sve2Aes, this.sveaes && this.svepmull && sve2 && this.aes)
-            enableFeature(Feature::sve2Sm4, this.svesm4 && sve2 && this.sm3 && this.sm4)
-            enableFeature(Feature::sve2Sha3, this.svesha3 && sve2 && this.sha512 && this.sha3 && this.sha1 && this.sha2)
-            enableFeature(Feature::sve2Bitperm, this.svebitperm && this.sve2)
-            enableFeature(Feature::sveB16b16, this.bf16 && this.sveb16b16)
-            enableFeature(Feature::hbc, this.hbc)
-            enableFeature(Feature::mops, this.mops)
-            enableFeature(Feature::ecv, this.ecv)
-            enableFeature(Feature::lut, this.lut)
-            enableFeature(Feature::cssc, this.cssc)
-            enableFeature(Feature::fpmr, this.fpmr)
-            enableFeature(Feature::faminmax, this.faminmax)
+            enableFeature(Feature.Sve2Aes, this.sveaes && this.svepmull && sve2 && this.aes)
+            enableFeature(Feature.Sve2Sm4, this.svesm4 && sve2 && this.sm3 && this.sm4)
+            enableFeature(Feature.Sve2Sha3, this.svesha3 && sve2 && this.sha512 && this.sha3 && this.sha1 && this.sha2)
+            enableFeature(Feature.Sve2Bitperm, this.svebitperm && this.sve2)
+            enableFeature(Feature.SveB16b16, this.bf16 && this.sveb16b16)
+            enableFeature(Feature.Hbc, this.hbc)
+            enableFeature(Feature.Mops, this.mops)
+            enableFeature(Feature.Ecv, this.ecv)
+            enableFeature(Feature.Lut, this.lut)
+            enableFeature(Feature.Cssc, this.cssc)
+            enableFeature(Feature.Fpmr, this.fpmr)
+            enableFeature(Feature.Faminmax, this.faminmax)
             val fp8 = this.f8cvt && this.faminmax && this.lut && this.bf16
-            enableFeature(Feature::fp8, fp8)
+            enableFeature(Feature.Fp8, fp8)
             val fp8fma = this.f8fma && fp8
-            enableFeature(Feature::fp8fma, fp8fma)
+            enableFeature(Feature.Fp8fma, fp8fma)
             val fp8dot4 = this.f8dp4 && fp8fma
-            enableFeature(Feature::fp8dot4, fp8dot4)
-            enableFeature(Feature::fp8dot2, this.f8dp2 && fp8dot4)
-            enableFeature(Feature::wfxt, this.wfxt)
+            enableFeature(Feature.Fp8dot4, fp8dot4)
+            enableFeature(Feature.Fp8dot2, this.f8dp2 && fp8dot4)
+            enableFeature(Feature.Wfxt, this.wfxt)
             val sme = this.sme && this.bf16
-            enableFeature(Feature::sme, sme)
-            enableFeature(Feature::smeI16i64, this.smei16i64 && sme)
-            enableFeature(Feature::smeF64f64, this.smef64f64 && sme)
-            enableFeature(Feature::smeFa64, this.smefa64 && sme && sve2)
+            enableFeature(Feature.Sme, sme)
+            enableFeature(Feature.SmeI16i64, this.smei16i64 && sme)
+            enableFeature(Feature.SmeF64f64, this.smef64f64 && sme)
+            enableFeature(Feature.SmeFa64, this.smefa64 && sme && sve2)
             val sme2 = this.sme2 && sme
-            enableFeature(Feature::sme2, sme2)
-            enableFeature(Feature::sme2p1, this.sme2p1 && sme2)
-            enableFeature(Feature::smeB16b16, sme2 && this.bf16 && this.sveb16b16 && this.smeb16b16)
-            enableFeature(Feature::smeF16f16, this.smef16f16 && sme2)
-            enableFeature(Feature::smeLutv2, this.smelutv2)
+            enableFeature(Feature.Sme2, sme2)
+            enableFeature(Feature.Sme2p1, this.sme2p1 && sme2)
+            enableFeature(Feature.SmeB16b16, sme2 && this.bf16 && this.sveb16b16 && this.smeb16b16)
+            enableFeature(Feature.SmeF16f16, this.smef16f16 && sme2)
+            enableFeature(Feature.SmeLutv2, this.smelutv2)
             val smeF8f32 = this.smef8f32 && sme2 && fp8
-            enableFeature(Feature::smeF8f32, smeF8f32)
-            enableFeature(Feature::smeF8f16, this.smef8f16 && smeF8f32)
+            enableFeature(Feature.SmeF8f32, smeF8f32)
+            enableFeature(Feature.SmeF8f16, this.smef8f16 && smeF8f32)
             val ssveFp8fma = this.smesf8fma && sme2 && fp8
-            enableFeature(Feature::ssveFp8fma, ssveFp8fma)
+            enableFeature(Feature.SsveFp8fma, ssveFp8fma)
             val ssveFp8dot4 = this.smesf8dp4 && ssveFp8fma
-            enableFeature(Feature::ssveFp8dot4, ssveFp8dot4)
-            enableFeature(Feature::ssveFp8dot2, this.smesf8dp2 && ssveFp8dot4)
+            enableFeature(Feature.SsveFp8dot4, ssveFp8dot4)
+            enableFeature(Feature.SsveFp8dot2, this.smesf8dp2 && ssveFp8dot4)
         }
         return value
     }

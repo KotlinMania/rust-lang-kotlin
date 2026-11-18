@@ -5,7 +5,6 @@ package io.github.kotlinmania.rustlang.std.sys.io.error.unix
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
-import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -140,7 +139,7 @@ public fun decodeErrorKind(errno: Int): ErrorKind =
 /**
  * Gets a detailed string description for the given error number.
  */
-public fun formatError(errno: Int, f: StringBuilder): Result<Unit, Error> {
+public fun formatError(errno: Int, f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
     val TMPBUF_SZ: Int =
         if (false) {
             1024
@@ -158,6 +157,6 @@ public fun formatError(errno: Int, f: StringBuilder): Result<Unit, Error> {
         val p1 = ConstPtr(p.rawAddress, p.rawMeta)
         // We can't always expect a UTF-8 environment. When we don't get that luxury,
         // it's better to give a low-quality error message than none at all.
-        run { f.append("${CStr.fromPtr(p1).display()}"); Result.Ok<Unit, Error>(Unit) }
+        run { f.append("${CStr.fromPtr(p1).display()}"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
     }
 }

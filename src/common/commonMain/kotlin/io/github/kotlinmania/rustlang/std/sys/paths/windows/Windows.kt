@@ -7,7 +7,6 @@ import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
-import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -22,6 +21,7 @@ import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.getLastError
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.getTempPath2W
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getCurrentDirectoryW
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getModuleFileNameW
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getUserProfileDirectoryW
@@ -163,7 +163,7 @@ public fun homeDirCrt(): PathBuf? =
             // GetUserProfileDirectoryW does not quite use the usual protocol for
             // negotiating the buffer size, so we have to translate.
             run {
-                val matchVal = getUserProfileDirectoryW(ptr.withoutProvenanceMut(CURRENT_PROCESS_TOKEN), buf, sz)
+                val matchVal = getUserProfileDirectoryW(withoutProvenanceMut(CURRENT_PROCESS_TOKEN), buf, sz)
                 when {
                     matchVal == 0 && getLastError() != WinError.INSUFFICIENT_BUFFER -> 0
                     matchVal == 0 -> sz

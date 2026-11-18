@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.libm.math.support.modular
 
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.HInt
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
@@ -19,7 +20,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
  * Compute the remainder `(x<<e) % y` with unbounded integers.
  * Requires `x<2y` and `y.leadingZeros() >= 2`
  */
-public fun <D, OtherSign, Unsigned, H, U> linearMulReduction(x: U, e: UInt, y: U): U where U : HInt<U, D, OtherSign, Unsigned>, U : Int<U, OtherSign, U> {
+public fun <D, OtherSign, H, Unsigned, U> linearMulReduction(x: U, e: UInt, y: U): U where U : HInt<U, D, OtherSign, Unsigned>, U : Int<U, OtherSign, U> {
     var e1 = e
     var y1 = y
     check((kmCompareValues(y1, U.MAX shr 2) <= 0))

@@ -343,7 +343,7 @@ public fun <T> vecXxpermdi(a: T, b: T, dm: Int): T where T : VectorPermDI<T> {
     run {
         check(0 <= dm && dm < (1 shl 2)) { "DM doesn't fit in 2 bits (unsigned)" }
     }
-    return a.vecXxpermdi(b, dm.toUByte())
+    return a.vecXxpermdi(b, dm.toUByte(), dm)
 }
 
 /**

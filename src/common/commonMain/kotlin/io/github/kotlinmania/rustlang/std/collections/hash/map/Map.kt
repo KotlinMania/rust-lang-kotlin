@@ -7,7 +7,6 @@ import io.github.kotlinmania.rustlang.alloc.collections.TryReserveErrorKind
 import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
-import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.hashbrown.rustcentry.RustcEntry
@@ -766,7 +765,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
      * val got = libraries.getDisjointMut(listOf("Athenæum", "Athenæum"))
      * ```
      */
-    public open fun <Q> getDisjointMut(ks: List<Q>, n: Int): List<V> = this.base.getDisjointMut(ks, n)
+    public open fun <Q> getDisjointMut(ks: List<Q>, n: Int = 0): List<V> = this.base.getDisjointMut(ks, n)
 
     /**
      * Attempts to get mutable references to `N` values in the map at once, without validating that
@@ -807,7 +806,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
      * check(got1 == listOf(RustMutableReference(allocateNativeCell(1807, PrimitiveLayouts.I32), PrimitiveLayouts.I32), null))
      * ```
      */
-    public open fun <Q> getDisjointUncheckedMut(ks: List<Q>, n: Int): List<V> = this.base.getDisjointUncheckedMut(ks, n)
+    public open fun <Q> getDisjointUncheckedMut(ks: List<Q>, n: Int = 0): List<V> = this.base.getDisjointUncheckedMut(ks, n)
 
     /**
      * Returns `true` if the map contains a value for the specified key.
@@ -960,7 +959,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
         this.base = source.base
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<String>(); fun entry(k: Any?, v: Any?) = apply { entries.add("$k: $v") }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<String>(); fun entry(k: Any?, v: Any?) = apply { entries.add("$k: $v") }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun intoIter(): Iter<K, V> = this.iter()
 
@@ -1213,7 +1212,7 @@ public fun <K, Q, V, S, A> HashMap<K, V, S, A>.index(key: Q): V where K : Borrow
  * check(map1 == map2)
  * ```
  */
-public fun <K, V> fromHashMapKVRandomState(arr: List<Pair<K, V>>, n: Int): HashMap<K, V, RandomState, Global> = HashMap.fromIter(arr)
+public fun <K, V> fromHashMapKVRandomState(arr: List<Pair<K, V>>, n: Int = 0): HashMap<K, V, RandomState, Global> = HashMap.fromIter(arr)
 
 /**
  * An iterator over the entries of a `HashMap`.
@@ -1245,7 +1244,7 @@ public open class Iter<K, V>(
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Iter<K, V> = Iter(base = this.base.clone())
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun next(): Pair<K, V>? = this.base.next()
 
@@ -1304,7 +1303,7 @@ public open class IterMut<K, V>(
 
     public open fun len(): Int = this.base.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public fun <K, V> default(): IterMut<K, V> = IterMut(base = IterMut.default())
@@ -1356,7 +1355,7 @@ public open class IntoIter<K, V, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.base.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -1399,7 +1398,7 @@ public open class Keys<K, V>(
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Keys<K, V> = Keys(inner = this.inner.clone())
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun next(): K? = this.inner.next()?.let({ (k, _) -> k })
 
@@ -1446,7 +1445,7 @@ public open class Values<K, V>(
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Values<K, V> = Values(inner = this.inner.clone())
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun next(): V? = this.inner.next()?.let({ (_, v) -> v })
 
@@ -1506,7 +1505,7 @@ public open class Drain<K, V, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.base.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -1537,7 +1536,7 @@ public open class ExtractIf<K, V, F, A : Allocator> internal constructor(
     public var base: io.github.kotlinmania.rustlang.hashbrown.ExtractIf<K, V, F, A> = baseCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "ExtractIf").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "ExtractIf").finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public operator fun <K, V, F, A : Allocator> invoke(
@@ -1585,7 +1584,7 @@ public open class ValuesMut<K, V>(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, value) -> value })).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, value) -> value })).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public fun <K, V> default(): ValuesMut<K, V> = ValuesMut(inner = IterMut.default())
@@ -1632,7 +1631,7 @@ public open class IntoKeys<K, V, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (k, _) -> k })).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (k, _) -> k })).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -1685,7 +1684,7 @@ public open class IntoValues<K, V, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, v) -> v })).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, v) -> v })).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -1972,15 +1971,15 @@ public sealed class Entry<K, V, A : Allocator> {
         }
 }
 
-public fun <K, V> Entry<K, V, Global>.fmt(f: StringBuilder): Result<Unit, Error> =
+public fun <K, V> Entry<K, V, Global>.fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
     when (this) {
         is Vacant<*, *, *> -> {
             val (v) = this as Vacant<*, *, *>
-            run { DebugTuple(f, "Entry").field(v).finish(); Result.Ok<Unit, Error>(Unit) }
+            run { DebugTuple(f, "Entry").field(v).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
         }
         is Occupied<*, *, *> -> {
             val (o) = this as Occupied<*, *, *>
-            run { DebugTuple(f, "Entry").field(o).finish(); Result.Ok<Unit, Error>(Unit) }
+            run { DebugTuple(f, "Entry").field(o).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
         }
     }
 
@@ -1994,7 +1993,7 @@ public open class OccupiedEntry<K, V, A : Allocator> internal constructor(
     public var base: RustcOccupiedEntry<K, V, A> = baseCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     /**
      * Gets a reference to the key in the entry.
@@ -2175,7 +2174,7 @@ public open class VacantEntry<K, V, A : Allocator> internal constructor(
     public var base: RustcVacantEntry<K, V, A> = baseCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "VacantEntry").field(this.key()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugTuple(f, "VacantEntry").field(this.key()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     /**
      * Gets a reference to the key that would be used when inserting a value
@@ -2289,7 +2288,7 @@ public open class OccupiedError<K, V, A : Allocator> internal constructor(
     public var entry: OccupiedEntry<K, V, A> = entryCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "OccupiedError").field("key", this.entry.key()).field("uninserted_key", this.key).field("old_value", this.entry.get()).field("new_value", this.value).finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "OccupiedError").field("key", this.entry.key()).field("uninserted_key", this.key).field("old_value", this.entry.get()).field("new_value", this.value).finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(

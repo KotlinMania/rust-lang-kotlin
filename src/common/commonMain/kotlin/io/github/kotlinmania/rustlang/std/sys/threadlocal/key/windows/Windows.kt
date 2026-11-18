@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.key.windows
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.drop
+import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.castMut
@@ -32,7 +33,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.tlsFree
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.tlsGetValue
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.tlsSetValue
 import io.github.kotlinmania.rustlang.std.sys.stdio.windows.panicOutput
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.enable
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.windows.enable
 
 // Implementation of `LazyKey` for Windows.
 //

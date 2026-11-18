@@ -10,7 +10,7 @@ import io.github.kotlinmania.rustlang.backtrace.windowssys.INVALID_HANDLE_VALUE
 import io.github.kotlinmania.rustlang.backtrace.windowssys.Moduleentry32w
 import io.github.kotlinmania.rustlang.backtrace.windowssys.TH32CS_SNAPMODULE
 import io.github.kotlinmania.rustlang.backtrace.windowssys.TRUE
-import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 
@@ -31,7 +31,7 @@ public fun addLoadedImages(ret: List<Library>) {
             return
         }
         // huge struct, probably should avoid manually initializing it even if we can
-        val me = MaybeUninit.zeroed(UnresolvedTypeLayout<Moduleentry32w>()).assumeInit()
+        val me = MaybeUninit.zeroed(PrimitiveLayouts.U8).assumeInit()
         me.dwSize = sizeOfVal(me).toUInt()
         if (Module32FirstW(snap, me) == TRUE) {
             while (true) {

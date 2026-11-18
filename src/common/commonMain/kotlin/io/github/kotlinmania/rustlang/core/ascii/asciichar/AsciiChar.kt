@@ -23,8 +23,10 @@ import io.github.kotlinmania.rustlang.core.escape.HEX_DIGITS
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.num.uncheckedAdd
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import kotlin.experimental.and
 import io.github.kotlinmania.rustlang.core.ascii.asciichar.AsciiChar.ReverseSolidus as Backslash
 
 // This uses the name `AsciiChar`, even though it's not exposed that way right now,

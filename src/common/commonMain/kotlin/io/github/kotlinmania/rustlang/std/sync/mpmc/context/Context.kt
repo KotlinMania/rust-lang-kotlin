@@ -13,7 +13,6 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Selected
 import io.github.kotlinmania.rustlang.std.sync.mpmc.waker.currentThreadId
 import io.github.kotlinmania.rustlang.std.thread.current.currentOrUnnamed
-import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalProcessAttrs
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 import io.github.kotlinmania.rustlang.std.time.Instant
 

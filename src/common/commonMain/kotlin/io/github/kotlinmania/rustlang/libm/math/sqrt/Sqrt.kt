@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.env.Round
  */
 public fun sqrtf16(x: F16): F16 {
     if (true) {
-        return io.github.kotlinmania.rustlang.libm.math.arch.sqrtf16(x)
+        return io.github.kotlinmania.rustlang.libm.math.arch.aarch64.sqrt.sqrtf16(x)
     }
     return sqrtRound(x, Round.Nearest).value
 }
@@ -21,7 +21,7 @@ public fun sqrtf16(x: F16): F16 {
  */
 public fun sqrtf(x: kotlin.Float): kotlin.Float {
     if (true) {
-        return io.github.kotlinmania.rustlang.libm.math.arch.sqrtf(x)
+        return io.github.kotlinmania.rustlang.libm.math.arch.aarch64.sqrt.sqrtf(x)
     }
     return sqrtRound(x, Round.Nearest).value
 }
@@ -31,7 +31,7 @@ public fun sqrtf(x: kotlin.Float): kotlin.Float {
  */
 public fun sqrt(x: Double): Double {
     if (true) {
-        return io.github.kotlinmania.rustlang.libm.math.arch.sqrt(x)
+        return io.github.kotlinmania.rustlang.libm.math.arch.aarch64.sqrt.sqrt(x)
     }
     return sqrtRound(x, Round.Nearest).value
 }

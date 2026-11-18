@@ -1045,7 +1045,7 @@ public fun <T, S, I : Iterable<T>> fromIteratorFromIterHashSetTS(iter: I, defaul
  * check(set1 == set2)
  * ```
  */
-public fun <T> fromHashSetTRandomState(arr: List<T>, n: Int): HashSet<T, RandomState, Global> = HashSet.fromIter(arr)
+public fun <T> fromHashSetTRandomState(arr: List<T>, n: Int = 0): HashSet<T, RandomState, Global> = HashSet.fromIter(arr)
 
 public fun <T, S, A, I : Iterable<T>> HashSet<T, S, A>.extend(iter: I) where S : BuildHasher, A : Allocator {
     this.base.extend(iter)

@@ -106,7 +106,7 @@ public open class Zip<A, B>(
 
     public open fun nthAB(n: Int): Pair<Item, Item>? = this.superNth(n)
 
-    public open fun nextBackAB(): Pair<Item, Item>? {
+    public open fun <Item> nextBackAB(): Pair<Item, Item>? {
         val aSz = this.a.len()
         val bSz = this.b.len()
         if (aSz != bSz) {
@@ -219,9 +219,9 @@ public open class Zip<A, B>(
                 }
             }
 
-        public fun <A, B> new(a: A, b: B): Zip<A, B> = ZipImpl.new(a, b)
+        public fun <Item, A, B> new(a: A, b: B): Zip<A, B> = ZipImpl.new(a, b)
 
-        public fun <A, B> newAB(a: A, b: B): Zip<A, B> = Zip(a = a, b = b, index = 0, len = 0)
+        public fun <Item, A, B> newAB(a: A, b: B): Zip<A, B> where A : Iterator<Item>, B : Iterator<Item> = Zip(a = a, b = b, index = 0, len = 0)
     }
 }
 
@@ -263,24 +263,24 @@ public interface ZipImpl<A, B, T, Item> {
 
     public fun nth(n: Int): Item?
 
-    public fun nextBack(): Item?
+    public fun <Item> nextBack(): Item?
 
     public fun <Acc> fold(init: Acc, f: (Acc, Item) -> Acc): Acc
 
-    public fun getUnchecked(idx: Int): Item
+    public fun <Item> getUnchecked(idx: Int): Item
 }
 
-public fun <A, B> zipImplNewZipAB(a: A, b: B): Zip<A, B> where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce = Zip(a = a, b = b, index = 0, len = 0)
+public fun <Item, A, B> zipImplNewZipAB(a: A, b: B): Zip<A, B> where A : TrustedRandomAccessNoCoerce, A : Iterator<Item>, B : TrustedRandomAccessNoCoerce, B : Iterator<Item> = Zip(a = a, b = b, index = 0, len = 0)
 
-public fun <A, B> Zip<A, B>.next(): Pair<Item, Item>? where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce {
+public fun <Item, A, B> Zip<A, B>.next(): Pair<Item, Item>? where A : TrustedRandomAccessNoCoerce, A : Iterator<Item>, B : TrustedRandomAccessNoCoerce, B : Iterator<Item> {
     val x = (this.a.next() ?: return null)
     val y = (this.b.next() ?: return null)
     return Pair(x, y)
 }
 
-public fun <A, B> Zip<A, B>.nth(n: Int): Pair<Item, Item>? where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce = this.superNth(n)
+public fun <Item, A, B> Zip<A, B>.nth(n: Int): Pair<Item, Item>? where A : TrustedRandomAccessNoCoerce, A : Iterator<Item>, B : TrustedRandomAccessNoCoerce, B : Iterator<Item> = this.superNth(n)
 
-public fun <A, B> Zip<A, B>.nextBack(): Pair<Item, Item>? where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce {
+public fun <Item, A, B> Zip<A, B>.nextBack(): Pair<Item, Item>? where A : TrustedRandomAccessNoCoerce, A : Iterator<Item>, B : TrustedRandomAccessNoCoerce, B : Iterator<Item> {
     val aSz = this.a.len()
     val bSz = this.b.len()
     if (aSz != bSz) {
@@ -308,19 +308,19 @@ public fun <A, B> Zip<A, B>.nextBack(): Pair<Item, Item>? where A : TrustedRando
     }
 }
 
-public fun <A, B> Zip<A, B>.sizeHint(): Pair<Int, Int?> where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce {
+public fun <Item, A, B> Zip<A, B>.sizeHint(): Pair<Int, Int?> where A : TrustedRandomAccessNoCoerce, A : Iterator<Item>, B : TrustedRandomAccessNoCoerce, B : Iterator<Item> {
     val size = minOf(this.a.size(), this.b.size())
     return Pair(size, size)
 }
 
-public fun <A, B> Zip<A, B>.getUnchecked(idx: Int): Item where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce {
+public fun <Item, A, B> Zip<A, B>.getUnchecked(idx: Int): Item where A : TrustedRandomAccessNoCoerce, A : Iterator<Item>, B : TrustedRandomAccessNoCoerce, B : Iterator<Item> {
     val idx1 = this.index + idx
     // SAFETY: the caller must uphold the contract for
     // `Iterator.__iterator_get_unchecked`.
     return Pair(this.a.iteratorGetUnchecked(idx1), this.b.iteratorGetUnchecked(idx1))
 }
 
-public fun <A, B, Acc> Zip<A, B>.fold(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce {
+public fun <Item, A, B, Acc> Zip<A, B>.fold(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc where A : TrustedRandomAccessNoCoerce, A : Iterator<Item>, B : TrustedRandomAccessNoCoerce, B : Iterator<Item> {
     var accum = init
     val len = this.sizeHint().first
     for (i in 0 until len) {
@@ -334,7 +334,7 @@ public fun <A, B, Acc> Zip<A, B>.fold(init: Acc, f: (Acc, Pair<Item, Item>) -> A
     return accum
 }
 
-public fun <A, B> Zip<A, B>.nextAB(): Pair<Item, Item>? where A : TrustedRandomAccess, B : TrustedRandomAccess =
+public fun <Item, A, B> Zip<A, B>.nextAB(): Pair<Item, Item>? where A : TrustedRandomAccess, A : Iterator<Item>, B : TrustedRandomAccess, B : Iterator<Item> =
     if (this.index < this.len) {
         val i = this.index
         // since getUnchecked executes code which can panic we increment the counters beforehand
@@ -346,12 +346,12 @@ public fun <A, B> Zip<A, B>.nextAB(): Pair<Item, Item>? where A : TrustedRandomA
         null
     }
 
-public fun <A, B> Zip<A, B>.sizeHintAB(): Pair<Int, Int?> where A : TrustedRandomAccess, B : TrustedRandomAccess {
+public fun <Item, A, B> Zip<A, B>.sizeHintAB(): Pair<Int, Int?> where A : TrustedRandomAccess, A : Iterator<Item>, B : TrustedRandomAccess, B : Iterator<Item> {
     val len = this.len - this.index
     return Pair(len, len)
 }
 
-public fun <A, B> Zip<A, B>.nthAB(n: Int): Pair<Item, Item>? where A : TrustedRandomAccess, B : TrustedRandomAccess {
+public fun <Item, A, B> Zip<A, B>.nthAB(n: Int): Pair<Item, Item>? where A : TrustedRandomAccess, A : Iterator<Item>, B : TrustedRandomAccess, B : Iterator<Item> {
     val delta = minOf(n, this.len - this.index)
     val end = this.index + delta
     while (this.index < end) {
@@ -377,7 +377,7 @@ public fun <A, B> Zip<A, B>.nthAB(n: Int): Pair<Item, Item>? where A : TrustedRa
     return this.superNth(n - delta)
 }
 
-public fun <A, B> Zip<A, B>.nextBackAB(): Pair<Item, Item>? where A : TrustedRandomAccess, B : TrustedRandomAccess {
+public fun <Item, A, B> Zip<A, B>.nextBackAB(): Pair<Item, Item>? where A : TrustedRandomAccess, A : Iterator<Item>, B : TrustedRandomAccess, B : Iterator<Item> {
     // No effects when the iterator is exhausted, to reduce the number of
     // cases the unchecked code has to handle.
     // See #137255 for a case where where too many epicycles lead to unsoundness.
@@ -416,7 +416,7 @@ public fun <A, B> Zip<A, B>.nextBackAB(): Pair<Item, Item>? where A : TrustedRan
                             val rightVal = matchVal.second
                             if (!(leftVal == rightVal)) {
                                 val kind = AssertKind.Eq
-                                assertFailed(kind, leftVal, rightVal, Option.None)
+                                assertFailed(kind, leftVal, rightVal, Option.None())
                             }
                         }
                     }
@@ -525,7 +525,7 @@ public interface TrustedRandomAccess : TrustedRandomAccessNoCoerce
  * [TrustedRandomAccess] and `TrustedRandomAccessNoCoerce`.
  */
 public interface TrustedRandomAccessNoCoerce {
-    public fun size(): Int = this.sizeHint().first
+    public fun <Item> size(): Int = this.sizeHint().first
 
     /**
      * `true` if getting an iterator element may have side effects.
@@ -542,7 +542,7 @@ public interface TrustedRandomAccessNoCoerce {
  *
  * Same requirements calling `getUnchecked` directly.
  */
-public fun <I> tryGetUnchecked(it: I, idx: Int): Item {
+public fun <Item, I> tryGetUnchecked(it: I, idx: Int): Item where I : Iterator<Item> {
     // SAFETY: the caller must uphold the contract for
     // `Iterator.__iterator_get_unchecked`.
     return it.tryGetUnchecked(idx)
@@ -556,7 +556,7 @@ public interface SpecTrustedRandomAccess {
     public fun tryGetUnchecked(index: Int): Item
 }
 
-public fun <I> I.tryGetUnchecked(arg0: Int): Item {
+public fun <Item, I : Iterator<Item>> I.tryGetUnchecked(arg0: Int): Item {
     error("Should only be called on TrustedRandomAccess iterators")
 }
 

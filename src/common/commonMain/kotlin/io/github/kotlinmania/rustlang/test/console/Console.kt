@@ -16,11 +16,11 @@ import io.github.kotlinmania.rustlang.test.cli.TestOpts
 import io.github.kotlinmania.rustlang.test.event.CompletedTest
 import io.github.kotlinmania.rustlang.test.event.TestEvent
 import io.github.kotlinmania.rustlang.test.filterTests
-import io.github.kotlinmania.rustlang.test.formatters.JsonFormatter
-import io.github.kotlinmania.rustlang.test.formatters.JunitFormatter
 import io.github.kotlinmania.rustlang.test.formatters.OutputFormatter
-import io.github.kotlinmania.rustlang.test.formatters.PrettyFormatter
-import io.github.kotlinmania.rustlang.test.formatters.TerseFormatter
+import io.github.kotlinmania.rustlang.test.formatters.json.JsonFormatter
+import io.github.kotlinmania.rustlang.test.formatters.junit.JunitFormatter
+import io.github.kotlinmania.rustlang.test.formatters.pretty.PrettyFormatter
+import io.github.kotlinmania.rustlang.test.formatters.terse.TerseFormatter
 import io.github.kotlinmania.rustlang.test.helpers.concurrency.getConcurrency
 import io.github.kotlinmania.rustlang.test.helpers.metrics.MetricMap
 import io.github.kotlinmania.rustlang.test.options.Options

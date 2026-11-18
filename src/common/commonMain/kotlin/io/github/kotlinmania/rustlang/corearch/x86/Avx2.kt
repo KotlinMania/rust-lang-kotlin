@@ -36,6 +36,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U8x4
 import io.github.kotlinmania.rustlang.corearch.simd.U8x8
 import io.github.kotlinmania.rustlang.corearch.simd.simdImax
 import io.github.kotlinmania.rustlang.corearch.simd.simdImin
+import kotlin.experimental.and
 
 // Advanced Vector Extensions 2 (AVX)
 //

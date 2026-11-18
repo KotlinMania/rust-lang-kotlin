@@ -55,7 +55,7 @@ import io.github.kotlinmania.rustlang.core.slice.iter.Iter
  * check(strings == listOf("Hello there!", "Hello there!"))
  * ```
  */
-public fun <T> repeat(value: T, n: Int): List<T> {
+public fun <T> repeat(value: T, n: Int = 0): List<T> {
     val iter = repeatN(value, n)
     // SAFETY: Unless a panic occurs, fromFn will call the closure N times,
     // and repeatN's next() will return Some for N times.
@@ -111,7 +111,7 @@ public fun <T> repeat(value: T, n: Int): List<T> {
  * check(a == listOf(1, 2, 4, 8, 16, 32))
  * ```
  */
-public fun <T> fromFn(f: (Int) -> T, n: Int): List<T> = tryFromFn(NeverShortCircuit.wrapMut1(f), n).first
+public fun <T> fromFn(f: (Int) -> T, n: Int = 0): List<T> = tryFromFn(NeverShortCircuit.wrapMut1(f), n).first
 
 /**
  * Creates an array `[T; N]` where each fallible array element `T` is returned by the `cb` call.
@@ -144,7 +144,7 @@ public fun <T> fromFn(f: (Int) -> T, n: Int): List<T> = tryFromFn(NeverShortCirc
  * }
  * ```
  */
-public fun <Output, Residual, R> tryFromFn(cb: (Int) -> R, n: Int): ChangeOutputType<R, List<Output>> where R : Try<R, Output, Residual> {
+public fun <Output, Residual, R> tryFromFn(cb: (Int) -> R, n: Int = 0): ChangeOutputType<R, List<Output>> where R : Try<R, Output, Residual> {
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Output>()) }
     return when (val matchVal = tryFromFnErased(array, cb)) {
         is ControlFlow.Break<*, *> -> {
@@ -215,10 +215,10 @@ public fun <Output, Residual, R : Try<R, Output, Residual>> tryFromFnErased(buff
  *
  * Used for [Iterator.nextChunk].
  */
-public fun <T> iterNextChunk(iter: Any, n: Int): Result<List<T>, IntoIter<T>> = iter.specNextChunk()
+public fun <T> iterNextChunk(iter: Any, n: Int = 0): Result<List<T>, IntoIter<T>> = iter.specNextChunk()
 
 // SAFETY: `from` must have len items, and len items must be < N.
-public fun <T> write(to: List<MaybeUninit<T>>, from: Any, len: Int, n: Int) {
+public fun <T> write(to: List<MaybeUninit<T>>, from: Any, len: Int, n: Int = 0) {
     val guard = Guard(arrayMut = to, initialized = 0)
     while (guard.initialized < len) {
         // SAFETY: caller has guaranteed, from has len items.
@@ -268,10 +268,10 @@ public fun <T> iterNextChunkErased(buffer: MutableList<MaybeUninit<T>>, iter: An
  *
  * Used for [DoubleEndedIterator.nextChunkBack].
  */
-public fun <T> iterNextChunkBack(iter: Any, n: Int): Result<List<T>, IntoIter<T>> = iter.specNextChunkBack()
+public fun <T> iterNextChunkBack(iter: Any, n: Int = 0): Result<List<T>, IntoIter<T>> = iter.specNextChunkBack()
 
 // SAFETY: `from` must have len items, and len items must be < N.
-public fun <T> writeBack(to: List<MaybeUninit<T>>, from: Any, len: Int, n: Int) {
+public fun <T> writeBack(to: List<MaybeUninit<T>>, from: Any, len: Int, n: Int = 0) {
     val guard = GuardBack(arrayMut = to, initialized = 0)
     while (guard.initialized < len) {
         // SAFETY: caller has guaranteed, from has len items.
@@ -305,13 +305,13 @@ public fun <T> iterNextChunkBackErased(buffer: MutableList<MaybeUninit<T>>, iter
     return Result.Ok<Unit, Int>(Unit)
 }
 
-public fun <T> List<T>.asRefTSliceFromTArrayn(n: Int): List<T> = this
+public fun <T> List<T>.asRefTSliceFromTArrayn(n: Int = 0): List<T> = this
 
-public fun <T> List<T>.asMutTSliceFromTArrayn(n: Int): MutableList<T> = this
+public fun <T> List<T>.asMutTSliceFromTArrayn(n: Int = 0): MutableList<T> = this
 
-public fun <T> List<T>.borrowTSliceFromTArrayn(n: Int): List<T> = this
+public fun <T> List<T>.borrowTSliceFromTArrayn(n: Int = 0): List<T> = this
 
-public fun <T> List<T>.borrowMutTSliceFromTArrayn(n: Int): MutableList<T> = this
+public fun <T> List<T>.borrowMutTSliceFromTArrayn(n: Int = 0): MutableList<T> = this
 
 /**
  * Tries to create an array `[T; N]` by copying from a slice `[T]`.
@@ -329,7 +329,7 @@ public fun <T> List<T>.borrowMutTSliceFromTArrayn(n: Int): MutableList<T> = this
  * }
  * ```
  */
-public fun <T> tryFromTArrayn(slice: List<T>, n: Int): Result<List<T>, TryFromSliceError> = List.tryFrom(slice).copied()
+public fun <T> tryFromTArrayn(slice: List<T>, n: Int = 0): Result<List<T>, TryFromSliceError> = List.tryFrom(slice).copied()
 
 /**
  * Tries to create an array `[T; N]` by copying from a mutable slice `[T]`.
@@ -347,7 +347,7 @@ public fun <T> tryFromTArrayn(slice: List<T>, n: Int): Result<List<T>, TryFromSl
  * }
  * ```
  */
-public fun <T> tryFromTArrayn(slice: MutableList<T>, n: Int): Result<List<T>, TryFromSliceError> = List.tryFrom(slice)
+public fun <T> tryFromTArrayn(slice: MutableList<T>, n: Int = 0): Result<List<T>, TryFromSliceError> = List.tryFrom(slice)
 
 /**
  * Tries to create an array ref `[T; N]` from a slice ref `[T]`. Succeeds if
@@ -400,47 +400,47 @@ public fun <T> tryFromTArrayn(slice: MutableList<T>, n: Int): Result<List<T>, Tr
  * }
  * ```
  */
-public fun <T, H> List<T>.hashFromTArrayn(state: H, n: Int) {
+public fun <T, H> List<T>.hashFromTArrayn(state: H, n: Int = 0) {
     this.hash(state)
 }
 
-public fun <T> List<T>.fmtFromTArrayn(f: StringBuilder, n: Int): Result<Unit, Unit> = run { f.append((this).toString()); Result.Ok<Unit, Unit>(Unit) }
+public fun <T> List<T>.fmtFromTArrayn(f: StringBuilder, n: Int = 0): Result<Unit, Unit> = run { f.append((this).toString()); Result.Ok<Unit, Unit>(Unit) }
 
-public fun <T> List<T>.intoIter(n: Int): Iter<T> = this.iter()
+public fun <T> List<T>.intoIter(n: Int = 0): Iter<T> = this.iter()
 
-public fun <T, I> List<T>.indexIFromTArrayn(index: I, n: Int): Output = (((this as Any?) as List<T>)).index(index)
+public fun <T, I> List<T>.indexIFromTArrayn(index: I, n: Int = 0): Output = (((this as Any?) as List<T>)).index(index)
 
-public fun <T, I> List<T>.indexMutIFromTArrayn(index: I, n: Int): Output = (((this as Any?) as MutableList<T>)).indexMut(index)
-
-/**
- * Implements comparison of arrays [lexicographically](Ord#lexicographical-comparison).
- */
-public fun <T> List<T>.partialCmpFromTArrayn(other: List<T>, n: Int): Ordering? = List.partialCmp(this, other)
-
-public fun <T> List<T>.ltFromTArrayn(other: List<T>, n: Int): Boolean = List.lt(this, other)
-
-public fun <T> List<T>.leFromTArrayn(other: List<T>, n: Int): Boolean = List.le(this, other)
-
-public fun <T> List<T>.geFromTArrayn(other: List<T>, n: Int): Boolean = List.ge(this, other)
-
-public fun <T> List<T>.gtFromTArrayn(other: List<T>, n: Int): Boolean = List.gt(this, other)
-
-public fun <T> List<T>.chainingLessFromTArrayn(other: List<T>, n: Int): ControlFlow<Boolean, Unit> = List.chainingLess(this, other)
-
-public fun <T> List<T>.chainingGreaterFromTArrayn(other: List<T>, n: Int): ControlFlow<Boolean, Unit> = List.chainingGreater(this, other)
+public fun <T, I> List<T>.indexMutIFromTArrayn(index: I, n: Int = 0): Output = (((this as Any?) as MutableList<T>)).indexMut(index)
 
 /**
  * Implements comparison of arrays [lexicographically](Ord#lexicographical-comparison).
  */
-public fun <T> List<T>.cmpFromTArrayn(other: List<T>, n: Int): Ordering = this.cmp(other)
+public fun <T> List<T>.partialCmpFromTArrayn(other: List<T>, n: Int = 0): Ordering? = List.partialCmp(this, other)
 
-public fun <T> List<T>.cloneFromTArrayn(n: Int): List<T> = SpecArrayClone.clone(this)
+public fun <T> List<T>.ltFromTArrayn(other: List<T>, n: Int = 0): Boolean = List.lt(this, other)
 
-public fun <T> List<T>.cloneFromFromTArrayn(other: List<T>, n: Int) {
+public fun <T> List<T>.leFromTArrayn(other: List<T>, n: Int = 0): Boolean = List.le(this, other)
+
+public fun <T> List<T>.geFromTArrayn(other: List<T>, n: Int = 0): Boolean = List.ge(this, other)
+
+public fun <T> List<T>.gtFromTArrayn(other: List<T>, n: Int = 0): Boolean = List.gt(this, other)
+
+public fun <T> List<T>.chainingLessFromTArrayn(other: List<T>, n: Int = 0): ControlFlow<Boolean, Unit> = List.chainingLess(this, other)
+
+public fun <T> List<T>.chainingGreaterFromTArrayn(other: List<T>, n: Int = 0): ControlFlow<Boolean, Unit> = List.chainingGreater(this, other)
+
+/**
+ * Implements comparison of arrays [lexicographically](Ord#lexicographical-comparison).
+ */
+public fun <T> List<T>.cmpFromTArrayn(other: List<T>, n: Int = 0): Ordering = this.cmp(other)
+
+public fun <T> List<T>.cloneFromTArrayn(n: Int = 0): List<T> = SpecArrayClone.clone(this)
+
+public fun <T> List<T>.cloneFromFromTArrayn(other: List<T>, n: Int = 0) {
     this.cloneFromSlice(other)
 }
 
-public fun <T> specArrayCloneCloneT(array: List<T>, n: Int): List<T> {
+public fun <T> specArrayCloneCloneT(array: List<T>, n: Int = 0): List<T> {
     var ptr: ConstPtr = array.asPtr()
     // SAFETY: Unless a panic occurs, fromFn will call the closure N times,
     // so our pointer arithmetic will be in bounds for the N-element array.
@@ -583,7 +583,7 @@ public fun <T> defaultTArray3211111111111111111111111111111111(): List<T> = list
  * check(y2 == listOf(6, 9, 3, 3))
  * ```
  */
-public fun <T, U> List<T>.map(f: (T) -> U, n: Int): List<U> = this.tryMap(NeverShortCircuit.wrapMut1(f)).first
+public fun <T, U> List<T>.map(f: (T) -> U, n: Int = 0): List<U> = this.tryMap(NeverShortCircuit.wrapMut1(f)).first
 
 /**
  * A fallible function `f` applied to each element on array `self` in order to
@@ -615,7 +615,7 @@ public fun <T, U> List<T>.map(f: (T) -> U, n: Int): List<U> = this.tryMap(NeverS
  * }
  * ```
  */
-public fun <Output, Residual, T, R> List<T>.tryMap(f: (T) -> R, n: Int): ChangeOutputType<R, List<Output>> where R : Try<R, Output, Residual> {
+public fun <Output, Residual, T, R> List<T>.tryMap(f: (T) -> R, n: Int = 0): ChangeOutputType<R, List<Output>> where R : Try<R, Output, Residual> {
     val me = this
     // SAFETY: tryFromFn calls `f` N times.
     val f1 = Drain.new(me, f, n)
@@ -625,13 +625,13 @@ public fun <Output, Residual, T, R> List<T>.tryMap(f: (T) -> R, n: Int): ChangeO
 /**
  * Returns a slice containing the entire array. Equivalent to `s[..]`.
  */
-public fun <T> List<T>.asSlice(n: Int): List<T> = this
+public fun <T> List<T>.asSlice(n: Int = 0): List<T> = this
 
 /**
  * Returns a mutable slice containing the entire array. Equivalent to
  * `s[..]`.
  */
-public fun <T> List<T>.asMutSlice(n: Int): MutableList<T> = this
+public fun <T> List<T>.asMutSlice(n: Int = 0): MutableList<T> = this
 
 /**
  * Borrows each element and returns an array of references with the same
@@ -657,7 +657,7 @@ public fun <T> List<T>.asMutSlice(n: Int): MutableList<T> = this
  * check(strings.len() == 3)
  * ```
  */
-public fun <T> List<T>.eachRef(n: Int): List<T> {
+public fun <T> List<T>.eachRef(n: Int = 0): List<T> {
     val buf = MutableList(n) { ConstPtr(0L) }
     // Note(constTraitImpl): We would like to simply use iterators for this (as in the original implementation), but this is not allowed in constant expressions.
     var i = 0
@@ -685,7 +685,7 @@ public fun <T> List<T>.eachRef(n: Int): List<T> {
  * check(floats == listOf(0.0, 2.7, -1.0))
  * ```
  */
-public fun <T> List<T>.eachMut(n: Int): List<T> {
+public fun <T> List<T>.eachMut(n: Int = 0): List<T> {
     val buf = MutableList(n) { MutPtr(0L) }
     // Note(constTraitImpl): We would like to simply use iterators for this (as in the original implementation), but this is not allowed in constant expressions.
     var i = 0
@@ -715,24 +715,24 @@ public fun <T> List<T>.eachMut(n: Int): List<T> {
  * public fun doctestEntry() {
  *     val v = listOf(1, 2, 3, 4, 5, 6)
  *     run {
- *         val (left, right) = v.splitArrayRef()
+ *         val (left, right) = v.splitArrayRef(0)
  *         check(left == listOf())
  *         check(right == listOf(1, 2, 3, 4, 5, 6))
  *     }
  *     run {
- *         val (left1, right1) = v.splitArrayRef()
+ *         val (left1, right1) = v.splitArrayRef(2)
  *         check(left1 == listOf(1, 2))
  *         check(right1 == listOf(3, 4, 5, 6))
  *     }
  *     run {
- *         val (left2, right2) = v.splitArrayRef()
+ *         val (left2, right2) = v.splitArrayRef(6)
  *         check(left2 == listOf(1, 2, 3, 4, 5, 6))
  *         check(right2 == listOf())
  *     }
  * }
  * ```
  */
-public fun <T> List<T>.splitArrayRef(n: Int, m: Int): Pair<List<T>, List<T>> = this.splitFirstChunk().unwrap()
+public fun <T> List<T>.splitArrayRef(n: Int = 0, m: Int = 0): Pair<List<T>, List<T>> = this.splitFirstChunk(m).unwrap()
 
 /**
  * Divides one mutable array reference into two at an index.
@@ -751,7 +751,7 @@ public fun <T> List<T>.splitArrayRef(n: Int, m: Int): Pair<List<T>, List<T>> = t
  * @feature(splitArray)
  * public fun doctestEntry() {
  *     var v = mutableListOf(1, 0, 3, 0, 5, 6)
- *     val (left, right) = v.splitArrayMut()
+ *     val (left, right) = v.splitArrayMut(2)
  *     check(left == listOf(1, 0))
  *     check(right == listOf(3, 0, 5, 6))
  *     left[1] = 2
@@ -760,7 +760,7 @@ public fun <T> List<T>.splitArrayRef(n: Int, m: Int): Pair<List<T>, List<T>> = t
  * }
  * ```
  */
-public fun <T> List<T>.splitArrayMut(n: Int, m: Int): Pair<List<T>, MutableList<T>> = this.splitFirstChunkMut().unwrap()
+public fun <T> List<T>.splitArrayMut(n: Int = 0, m: Int = 0): Pair<List<T>, MutableList<T>> = this.splitFirstChunkMut(m).unwrap()
 
 /**
  * Divides one array reference into two at an index from the end.
@@ -780,24 +780,24 @@ public fun <T> List<T>.splitArrayMut(n: Int, m: Int): Pair<List<T>, MutableList<
  * public fun doctestEntry() {
  *     val v = listOf(1, 2, 3, 4, 5, 6)
  *     run {
- *         val (left, right) = v.rsplitArrayRef()
+ *         val (left, right) = v.rsplitArrayRef(0)
  *         check(left == listOf(1, 2, 3, 4, 5, 6))
  *         check(right == listOf())
  *     }
  *     run {
- *         val (left1, right1) = v.rsplitArrayRef()
+ *         val (left1, right1) = v.rsplitArrayRef(2)
  *         check(left1 == listOf(1, 2, 3, 4))
  *         check(right1 == listOf(5, 6))
  *     }
  *     run {
- *         val (left2, right2) = v.rsplitArrayRef()
+ *         val (left2, right2) = v.rsplitArrayRef(6)
  *         check(left2 == listOf())
  *         check(right2 == listOf(1, 2, 3, 4, 5, 6))
  *     }
  * }
  * ```
  */
-public fun <T> List<T>.rsplitArrayRef(n: Int, m: Int): Pair<List<T>, List<T>> = this.splitLastChunk().unwrap()
+public fun <T> List<T>.rsplitArrayRef(n: Int = 0, m: Int = 0): Pair<List<T>, List<T>> = this.splitLastChunk(m).unwrap()
 
 /**
  * Divides one mutable array reference into two at an index from the end.
@@ -816,7 +816,7 @@ public fun <T> List<T>.rsplitArrayRef(n: Int, m: Int): Pair<List<T>, List<T>> = 
  * @feature(splitArray)
  * public fun doctestEntry() {
  *     var v = mutableListOf(1, 0, 3, 0, 5, 6)
- *     val (left, right) = v.rsplitArrayMut()
+ *     val (left, right) = v.rsplitArrayMut(4)
  *     check(left == listOf(1, 0))
  *     check(right == listOf(3, 0, 5, 6))
  *     left[1] = 2
@@ -825,9 +825,9 @@ public fun <T> List<T>.rsplitArrayRef(n: Int, m: Int): Pair<List<T>, List<T>> = 
  * }
  * ```
  */
-public fun <T> List<T>.rsplitArrayMut(n: Int, m: Int): Pair<MutableList<T>, List<T>> = this.splitLastChunkMut().unwrap()
+public fun <T> List<T>.rsplitArrayMut(n: Int = 0, m: Int = 0): Pair<MutableList<T>, List<T>> = this.splitLastChunkMut(m).unwrap()
 
-public fun <I : Iterator<T>, T> I.specNextChunk(n: Int): Result<List<T>, IntoIter<T>> {
+public fun <I : Iterator<T>, T> I.specNextChunk(n: Int = 0): Result<List<T>, IntoIter<T>> {
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     val r = iterNextChunkErased(array, this)
     return when (r) { is Result.Ok<*, *> -> {
@@ -840,7 +840,7 @@ public fun <I : Iterator<T>, T> I.specNextChunk(n: Int): Result<List<T>, IntoIte
     } }
 }
 
-public fun <I, T> I.specNextChunkTN(n: Int): Result<List<T>, IntoIter<T>> where I : Iterator<T>, I : TrustedLen {
+public fun <I, T> I.specNextChunkTN(n: Int = 0): Result<List<T>, IntoIter<T>> where I : Iterator<T>, I : TrustedLen {
     val len = this.sizeHint().first
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     return if (len < n) {
@@ -856,7 +856,7 @@ public fun <I, T> I.specNextChunkTN(n: Int): Result<List<T>, IntoIter<T>> where 
     }
 }
 
-public fun <I, T> I.specNextChunkBack(n: Int): Result<List<T>, IntoIter<T>> {
+public fun <I : Iterator<T>, T> I.specNextChunkBack(n: Int = 0): Result<List<T>, IntoIter<T>> {
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     val r = iterNextChunkBackErased(array, this)
     return when (r) { is Result.Ok<*, *> -> {
@@ -869,7 +869,7 @@ public fun <I, T> I.specNextChunkBack(n: Int): Result<List<T>, IntoIter<T>> {
     } }
 }
 
-public fun <I : TrustedLen, T> I.specNextChunkBackTN(n: Int): Result<List<T>, IntoIter<T>> {
+public fun <I, T> I.specNextChunkBackTN(n: Int = 0): Result<List<T>, IntoIter<T>> where I : Iterator<T>, I : TrustedLen {
     val len = this.sizeHint().first
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     return if (len < n) {

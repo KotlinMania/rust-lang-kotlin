@@ -24,6 +24,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.chunksExact
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
+import kotlin.experimental.or
 
 // Comparison traits for `[T]`.
 
@@ -223,7 +224,7 @@ public fun <T : BytewiseEq<T>> T.sliceContains(x: List<T>, typeLayoutT: TypeLayo
         // compare like their underlying bytes. Since `T` is one byte, both the value and
         // slice can be read as `UByte`s.
         val (byte, bytes) = Pair(transmuteCopy<T, UByte>(this), linearSliceView(ConstPtr((x.asPtr()).rawAddress), x.size, PrimitiveLayouts.U8))
-        memchr.memchr(byte, bytes) != null
+        memchr(byte, bytes) != null
     } else {
         x.any({ y -> y == this })
     }

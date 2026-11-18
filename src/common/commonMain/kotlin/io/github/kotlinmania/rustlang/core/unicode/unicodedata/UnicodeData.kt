@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.num.rotateLeft
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -31,7 +32,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 // toTitle                    :   356 bytes,    136 codepoints in  49 ranges (U+0000DF - U+01DF95) using 2-level LUT
 // toCasefold                 :    32 bytes,    174 codepoints in   5 ranges (U+000131 - U+00ABBF) using 2-level LUT
 // Total                       : 15290 bytes
-public fun bitsetSearch(needle: UInt, chunkIdxMap: UByteArray, bitsetChunkIdx: List<UByteArray>, bitsetCanonical: ULongArray, bitsetCanonicalized: List<Pair<UByte, UByte>>, n: Int, chunkSize: Int, n1: Int, canonical: Int, canonicalized: Int): Boolean {
+public fun bitsetSearch(needle: UInt, chunkIdxMap: UByteArray, bitsetChunkIdx: List<UByteArray>, bitsetCanonical: ULongArray, bitsetCanonicalized: List<Pair<UByte, UByte>>, n: Int = 0, chunkSize: Int = 0, n1: Int = 0, canonical: Int = 0, canonicalized: Int = 0): Boolean {
     val bucketIdx = (needle / 64u).toInt()
     val chunkMapIdx = bucketIdx / chunkSize
     val chunkPiece = bucketIdx % chunkSize
@@ -108,7 +109,7 @@ public open class ShortOffsetRunHeader internal constructor(
  * - The last element of `shortOffsetRuns` must be greater than `std.char.MAX`.
  * - The start indices of all elements in `shortOffsetRuns` must be less than `OFFSETS`.
  */
-public fun skipSearch(needle: Char, shortOffsetRuns: List<ShortOffsetRunHeader>, offsets: UByteArray, sor: Int): Boolean {
+public fun skipSearch(needle: Char, shortOffsetRuns: List<ShortOffsetRunHeader>, offsets: UByteArray, sor: Int = 0): Boolean {
     val needle1 = needle.toUInt()
     val lastIdx =
         run {

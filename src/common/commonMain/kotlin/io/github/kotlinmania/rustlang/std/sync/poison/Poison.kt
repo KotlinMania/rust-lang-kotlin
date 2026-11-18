@@ -296,13 +296,13 @@ public sealed class TryLockError<T> {
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is TryLockError.Poisoned<*> -> "Poisoned(..)".fmt(f)
-            TryLockError.WouldBlock -> "WouldBlock".fmt(f)
+            is TryLockError.WouldBlock<*> -> "WouldBlock".fmt(f)
         }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is TryLockError.Poisoned<*> -> "poisoned lock: another task failed inside"
-            TryLockError.WouldBlock -> "try_lock failed because the operation would block"
+            is TryLockError.WouldBlock<*> -> "try_lock failed because the operation would block"
         }.fmt(f)
 
     public open fun cause(): Any? =

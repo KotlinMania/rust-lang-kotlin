@@ -18,6 +18,7 @@ import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
 import io.github.kotlinmania.rustlang.stddetect.detect.cache.Initializer
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
 import io.github.kotlinmania.rustlang.stddetect.detect.os.riscv.implyFeatures
+import kotlin.experimental.and
 
 // Run-time feature detection for RISC-V on Linux.
 //
@@ -235,11 +236,11 @@ public fun detectFeatures(): Initializer {
     val auxv = auxv().expect("read auxvec")
     // should not fail on RISC-V platform
     var hasI = test(auxv.hwcap, (105u - 97u).into())
-    enableFeature(Feature::a, test(auxv.hwcap, (97u - 97u).into()))
-    enableFeature(Feature::c, test(auxv.hwcap, (99u - 97u).into()))
-    enableFeature(Feature::d, test(auxv.hwcap, (100u - 97u).into()))
-    enableFeature(Feature::f, test(auxv.hwcap, (102u - 97u).into()))
-    enableFeature(Feature::m, test(auxv.hwcap, (109u - 97u).into()))
+    enableFeature(Feature.A, test(auxv.hwcap, (97u - 97u).into()))
+    enableFeature(Feature.C, test(auxv.hwcap, (99u - 97u).into()))
+    enableFeature(Feature.D, test(auxv.hwcap, (100u - 97u).into()))
+    enableFeature(Feature.F, test(auxv.hwcap, (102u - 97u).into()))
+    enableFeature(Feature.M, test(auxv.hwcap, (109u - 97u).into()))
     val hasV = test(auxv.hwcap, (118u - 97u).into())
     var isVSet = false
     // Use riscvHwprobe syscall to query more extensions and
@@ -289,13 +290,13 @@ public fun detectFeatures(): Initializer {
                     else -> {
                         val value1 = matchVal
                         // Deprecated method for fallback
-                        enableFeature(Feature::unalignedScalarMem, value1 and RISCV_HWPROBE_MISALIGNED_MASK == RISCV_HWPROBE_MISALIGNED_FAST)
+                        enableFeature(Feature.UnalignedScalarMem, value1 and RISCV_HWPROBE_MISALIGNED_MASK == RISCV_HWPROBE_MISALIGNED_FAST)
                     }
                 }
             }
             else -> {
                 val value2 = matchVal1
-                enableFeature(Feature::unalignedScalarMem, value2 == RISCV_HWPROBE_MISALIGNED_SCALAR_FAST)
+                enableFeature(Feature.UnalignedScalarMem, value2 == RISCV_HWPROBE_MISALIGNED_SCALAR_FAST)
             }
         }
         // Query vector misaligned behavior.
@@ -303,7 +304,7 @@ public fun detectFeatures(): Initializer {
             null -> {}
             else -> {
                 val value3 = matchVal2
-                enableFeature(Feature::unalignedVectorMem, value3 == RISCV_HWPROBE_MISALIGNED_VECTOR_FAST)
+                enableFeature(Feature.UnalignedVectorMem, value3 == RISCV_HWPROBE_MISALIGNED_VECTOR_FAST)
             }
         }
         // Query whether "I" base and extensions "M" and "A" (as in the ISA
@@ -316,53 +317,53 @@ public fun detectFeatures(): Initializer {
             break
         }
         hasI = true
-        enableFeature(Feature::zicsr, true)
-        enableFeature(Feature::zicntr, true)
-        enableFeature(Feature::zifencei, true)
-        enableFeature(Feature::m, true)
-        enableFeature(Feature::a, true)
+        enableFeature(Feature.Zicsr, true)
+        enableFeature(Feature.Zicntr, true)
+        enableFeature(Feature.Zifencei, true)
+        enableFeature(Feature.M, true)
+        enableFeature(Feature.A, true)
         // Enable features based on `RISCV_HWPROBE_KEY_IMA_EXT_0`.
         val imaExt0 = t[Indices.Extensions.value.toInt()].get() ?: break
         val test = { mask -> (imaExt0 and mask) != 0 }
-        enableFeature(Feature::d, test(RISCV_HWPROBE_IMA_FD.toUInt()))
+        enableFeature(Feature.D, test(RISCV_HWPROBE_IMA_FD.toUInt()))
         // F is implied.
-        enableFeature(Feature::c, test(RISCV_HWPROBE_IMA_C.toUInt()))
-        enableFeature(Feature::zicntr, test(RISCV_HWPROBE_EXT_ZICNTR.toUInt()))
-        enableFeature(Feature::zihpm, test(RISCV_HWPROBE_EXT_ZIHPM.toUInt()))
-        enableFeature(Feature::zihintntl, test(RISCV_HWPROBE_EXT_ZIHINTNTL.toUInt()))
-        enableFeature(Feature::zihintpause, test(RISCV_HWPROBE_EXT_ZIHINTPAUSE.toUInt()))
-        enableFeature(Feature::zimop, test(RISCV_HWPROBE_EXT_ZIMOP.toUInt()))
-        enableFeature(Feature::zicbom, test(RISCV_HWPROBE_EXT_ZICBOM.toUInt()))
-        enableFeature(Feature::zicboz, test(RISCV_HWPROBE_EXT_ZICBOZ.toUInt()))
-        enableFeature(Feature::zicond, test(RISCV_HWPROBE_EXT_ZICOND.toUInt()))
-        enableFeature(Feature::zalrsc, test(RISCV_HWPROBE_EXT_ZALRSC.toUInt()))
-        enableFeature(Feature::zaamo, test(RISCV_HWPROBE_EXT_ZAAMO.toUInt()))
-        enableFeature(Feature::zawrs, test(RISCV_HWPROBE_EXT_ZAWRS.toUInt()))
-        enableFeature(Feature::zabha, test(RISCV_HWPROBE_EXT_ZABHA.toUInt()))
-        enableFeature(Feature::zacas, test(RISCV_HWPROBE_EXT_ZACAS.toUInt()))
-        enableFeature(Feature::ztso, test(RISCV_HWPROBE_EXT_ZTSO.toUInt()))
-        enableFeature(Feature::zba, test(RISCV_HWPROBE_EXT_ZBA.toUInt()))
-        enableFeature(Feature::zbb, test(RISCV_HWPROBE_EXT_ZBB.toUInt()))
-        enableFeature(Feature::zbs, test(RISCV_HWPROBE_EXT_ZBS.toUInt()))
-        enableFeature(Feature::zbc, test(RISCV_HWPROBE_EXT_ZBC.toUInt()))
-        enableFeature(Feature::zbkb, test(RISCV_HWPROBE_EXT_ZBKB.toUInt()))
-        enableFeature(Feature::zbkc, test(RISCV_HWPROBE_EXT_ZBKC.toUInt()))
-        enableFeature(Feature::zbkx, test(RISCV_HWPROBE_EXT_ZBKX.toUInt()))
-        enableFeature(Feature::zknd, test(RISCV_HWPROBE_EXT_ZKND.toUInt()))
-        enableFeature(Feature::zkne, test(RISCV_HWPROBE_EXT_ZKNE.toUInt()))
-        enableFeature(Feature::zknh, test(RISCV_HWPROBE_EXT_ZKNH.toUInt()))
-        enableFeature(Feature::zksed, test(RISCV_HWPROBE_EXT_ZKSED.toUInt()))
-        enableFeature(Feature::zksh, test(RISCV_HWPROBE_EXT_ZKSH.toUInt()))
-        enableFeature(Feature::zkt, test(RISCV_HWPROBE_EXT_ZKT.toUInt()))
-        enableFeature(Feature::zcmop, test(RISCV_HWPROBE_EXT_ZCMOP.toUInt()))
-        enableFeature(Feature::zca, test(RISCV_HWPROBE_EXT_ZCA.toUInt()))
-        enableFeature(Feature::zcf, test(RISCV_HWPROBE_EXT_ZCF.toUInt()))
-        enableFeature(Feature::zcd, test(RISCV_HWPROBE_EXT_ZCD.toUInt()))
-        enableFeature(Feature::zcb, test(RISCV_HWPROBE_EXT_ZCB.toUInt()))
-        enableFeature(Feature::zfh, test(RISCV_HWPROBE_EXT_ZFH.toUInt()))
-        enableFeature(Feature::zfhmin, test(RISCV_HWPROBE_EXT_ZFHMIN.toUInt()))
-        enableFeature(Feature::zfa, test(RISCV_HWPROBE_EXT_ZFA.toUInt()))
-        enableFeature(Feature::zfbfmin, test(RISCV_HWPROBE_EXT_ZFBFMIN.toUInt()))
+        enableFeature(Feature.C, test(RISCV_HWPROBE_IMA_C.toUInt()))
+        enableFeature(Feature.Zicntr, test(RISCV_HWPROBE_EXT_ZICNTR.toUInt()))
+        enableFeature(Feature.Zihpm, test(RISCV_HWPROBE_EXT_ZIHPM.toUInt()))
+        enableFeature(Feature.Zihintntl, test(RISCV_HWPROBE_EXT_ZIHINTNTL.toUInt()))
+        enableFeature(Feature.Zihintpause, test(RISCV_HWPROBE_EXT_ZIHINTPAUSE.toUInt()))
+        enableFeature(Feature.Zimop, test(RISCV_HWPROBE_EXT_ZIMOP.toUInt()))
+        enableFeature(Feature.Zicbom, test(RISCV_HWPROBE_EXT_ZICBOM.toUInt()))
+        enableFeature(Feature.Zicboz, test(RISCV_HWPROBE_EXT_ZICBOZ.toUInt()))
+        enableFeature(Feature.Zicond, test(RISCV_HWPROBE_EXT_ZICOND.toUInt()))
+        enableFeature(Feature.Zalrsc, test(RISCV_HWPROBE_EXT_ZALRSC.toUInt()))
+        enableFeature(Feature.Zaamo, test(RISCV_HWPROBE_EXT_ZAAMO.toUInt()))
+        enableFeature(Feature.Zawrs, test(RISCV_HWPROBE_EXT_ZAWRS.toUInt()))
+        enableFeature(Feature.Zabha, test(RISCV_HWPROBE_EXT_ZABHA.toUInt()))
+        enableFeature(Feature.Zacas, test(RISCV_HWPROBE_EXT_ZACAS.toUInt()))
+        enableFeature(Feature.Ztso, test(RISCV_HWPROBE_EXT_ZTSO.toUInt()))
+        enableFeature(Feature.Zba, test(RISCV_HWPROBE_EXT_ZBA.toUInt()))
+        enableFeature(Feature.Zbb, test(RISCV_HWPROBE_EXT_ZBB.toUInt()))
+        enableFeature(Feature.Zbs, test(RISCV_HWPROBE_EXT_ZBS.toUInt()))
+        enableFeature(Feature.Zbc, test(RISCV_HWPROBE_EXT_ZBC.toUInt()))
+        enableFeature(Feature.Zbkb, test(RISCV_HWPROBE_EXT_ZBKB.toUInt()))
+        enableFeature(Feature.Zbkc, test(RISCV_HWPROBE_EXT_ZBKC.toUInt()))
+        enableFeature(Feature.Zbkx, test(RISCV_HWPROBE_EXT_ZBKX.toUInt()))
+        enableFeature(Feature.Zknd, test(RISCV_HWPROBE_EXT_ZKND.toUInt()))
+        enableFeature(Feature.Zkne, test(RISCV_HWPROBE_EXT_ZKNE.toUInt()))
+        enableFeature(Feature.Zknh, test(RISCV_HWPROBE_EXT_ZKNH.toUInt()))
+        enableFeature(Feature.Zksed, test(RISCV_HWPROBE_EXT_ZKSED.toUInt()))
+        enableFeature(Feature.Zksh, test(RISCV_HWPROBE_EXT_ZKSH.toUInt()))
+        enableFeature(Feature.Zkt, test(RISCV_HWPROBE_EXT_ZKT.toUInt()))
+        enableFeature(Feature.Zcmop, test(RISCV_HWPROBE_EXT_ZCMOP.toUInt()))
+        enableFeature(Feature.Zca, test(RISCV_HWPROBE_EXT_ZCA.toUInt()))
+        enableFeature(Feature.Zcf, test(RISCV_HWPROBE_EXT_ZCF.toUInt()))
+        enableFeature(Feature.Zcd, test(RISCV_HWPROBE_EXT_ZCD.toUInt()))
+        enableFeature(Feature.Zcb, test(RISCV_HWPROBE_EXT_ZCB.toUInt()))
+        enableFeature(Feature.Zfh, test(RISCV_HWPROBE_EXT_ZFH.toUInt()))
+        enableFeature(Feature.Zfhmin, test(RISCV_HWPROBE_EXT_ZFHMIN.toUInt()))
+        enableFeature(Feature.Zfa, test(RISCV_HWPROBE_EXT_ZFA.toUInt()))
+        enableFeature(Feature.Zfbfmin, test(RISCV_HWPROBE_EXT_ZFBFMIN.toUInt()))
         // Use prctl (if any) to determine whether the vector extension
         // is enabled on the current thread (assuming the entire process
         // share the same status).  If prctl fails (e.g. QEMU userland emulator
@@ -377,38 +378,38 @@ public fun detectFeatures(): Initializer {
             }
         }
         if (hasVectors) {
-            enableFeature(Feature::v, test(RISCV_HWPROBE_IMA_V.toUInt()))
-            enableFeature(Feature::zve32x, test(RISCV_HWPROBE_EXT_ZVE32X.toUInt()))
-            enableFeature(Feature::zve32f, test(RISCV_HWPROBE_EXT_ZVE32F.toUInt()))
-            enableFeature(Feature::zve64x, test(RISCV_HWPROBE_EXT_ZVE64X.toUInt()))
-            enableFeature(Feature::zve64f, test(RISCV_HWPROBE_EXT_ZVE64F.toUInt()))
-            enableFeature(Feature::zve64d, test(RISCV_HWPROBE_EXT_ZVE64D.toUInt()))
-            enableFeature(Feature::zvbb, test(RISCV_HWPROBE_EXT_ZVBB.toUInt()))
-            enableFeature(Feature::zvbc, test(RISCV_HWPROBE_EXT_ZVBC.toUInt()))
-            enableFeature(Feature::zvkb, test(RISCV_HWPROBE_EXT_ZVKB.toUInt()))
-            enableFeature(Feature::zvkg, test(RISCV_HWPROBE_EXT_ZVKG.toUInt()))
-            enableFeature(Feature::zvkned, test(RISCV_HWPROBE_EXT_ZVKNED.toUInt()))
-            enableFeature(Feature::zvknha, test(RISCV_HWPROBE_EXT_ZVKNHA.toUInt()))
-            enableFeature(Feature::zvknhb, test(RISCV_HWPROBE_EXT_ZVKNHB.toUInt()))
-            enableFeature(Feature::zvksed, test(RISCV_HWPROBE_EXT_ZVKSED.toUInt()))
-            enableFeature(Feature::zvksh, test(RISCV_HWPROBE_EXT_ZVKSH.toUInt()))
-            enableFeature(Feature::zvkt, test(RISCV_HWPROBE_EXT_ZVKT.toUInt()))
-            enableFeature(Feature::zvfh, test(RISCV_HWPROBE_EXT_ZVFH.toUInt()))
-            enableFeature(Feature::zvfhmin, test(RISCV_HWPROBE_EXT_ZVFHMIN.toUInt()))
-            enableFeature(Feature::zvfbfmin, test(RISCV_HWPROBE_EXT_ZVFBFMIN.toUInt()))
-            enableFeature(Feature::zvfbfwma, test(RISCV_HWPROBE_EXT_ZVFBFWMA.toUInt()))
+            enableFeature(Feature.V, test(RISCV_HWPROBE_IMA_V.toUInt()))
+            enableFeature(Feature.Zve32x, test(RISCV_HWPROBE_EXT_ZVE32X.toUInt()))
+            enableFeature(Feature.Zve32f, test(RISCV_HWPROBE_EXT_ZVE32F.toUInt()))
+            enableFeature(Feature.Zve64x, test(RISCV_HWPROBE_EXT_ZVE64X.toUInt()))
+            enableFeature(Feature.Zve64f, test(RISCV_HWPROBE_EXT_ZVE64F.toUInt()))
+            enableFeature(Feature.Zve64d, test(RISCV_HWPROBE_EXT_ZVE64D.toUInt()))
+            enableFeature(Feature.Zvbb, test(RISCV_HWPROBE_EXT_ZVBB.toUInt()))
+            enableFeature(Feature.Zvbc, test(RISCV_HWPROBE_EXT_ZVBC.toUInt()))
+            enableFeature(Feature.Zvkb, test(RISCV_HWPROBE_EXT_ZVKB.toUInt()))
+            enableFeature(Feature.Zvkg, test(RISCV_HWPROBE_EXT_ZVKG.toUInt()))
+            enableFeature(Feature.Zvkned, test(RISCV_HWPROBE_EXT_ZVKNED.toUInt()))
+            enableFeature(Feature.Zvknha, test(RISCV_HWPROBE_EXT_ZVKNHA.toUInt()))
+            enableFeature(Feature.Zvknhb, test(RISCV_HWPROBE_EXT_ZVKNHB.toUInt()))
+            enableFeature(Feature.Zvksed, test(RISCV_HWPROBE_EXT_ZVKSED.toUInt()))
+            enableFeature(Feature.Zvksh, test(RISCV_HWPROBE_EXT_ZVKSH.toUInt()))
+            enableFeature(Feature.Zvkt, test(RISCV_HWPROBE_EXT_ZVKT.toUInt()))
+            enableFeature(Feature.Zvfh, test(RISCV_HWPROBE_EXT_ZVFH.toUInt()))
+            enableFeature(Feature.Zvfhmin, test(RISCV_HWPROBE_EXT_ZVFHMIN.toUInt()))
+            enableFeature(Feature.Zvfbfmin, test(RISCV_HWPROBE_EXT_ZVFBFMIN.toUInt()))
+            enableFeature(Feature.Zvfbfwma, test(RISCV_HWPROBE_EXT_ZVFBFWMA.toUInt()))
         }
         isVSet = true
     }
     // Set V purely depending on the auxiliary vector
     // only if no fine-grained vector extension detection is available.
     if (!isVSet) {
-        enableFeature(Feature::v, hasV)
+        enableFeature(Feature.V, hasV)
     }
     // Handle base ISA.
     // If future RV128I is supported, implement with `enableFeature` here.
     // Note that we should use `targetArch` instead of `targetPointerWidth`
     // to avoid misdetection caused by experimental ABIs such as RV64ILP32.
-    enableFeature(Feature::rv64i, hasI)
+    enableFeature(Feature.Rv64i, hasI)
     return implyFeatures(value)
 }

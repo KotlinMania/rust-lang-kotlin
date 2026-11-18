@@ -9,7 +9,6 @@ import io.github.kotlinmania.rustlang.core.intrinsics.readViaCopy
 import io.github.kotlinmania.rustlang.core.intrinsics.typedSwapNonoverlapping
 import io.github.kotlinmania.rustlang.core.intrinsics.writeViaMove
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.panic.constAssert
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
@@ -1318,7 +1317,7 @@ public fun <T> variantCount(): Int = 1
  * [inhabited]: https://doc.rust-lang.org/reference/glossary.html#inhabited
  */
 public inline fun <reified T> conjureZst(): T {
-    constAssert(((UnresolvedTypeLayout<T>()).sizeBytes == 0L), "mem::conjure_zst invoked on a non-zero-sized type", "mem::conjure_zst invoked on type {name}, which is not zero-sized", name, any, typeName, T)
+    check(((UnresolvedTypeLayout<T>()).sizeBytes == 0L)) { "mem::conjure_zst invoked on a non-zero-sized type" }
     // SAFETY: because the caller must guarantee that it's inhabited and zero-sized,
     // there's nothing in the representation that needs to be set.
     // `assumeInit` calls `assertInhabited`, so we don't need to here.

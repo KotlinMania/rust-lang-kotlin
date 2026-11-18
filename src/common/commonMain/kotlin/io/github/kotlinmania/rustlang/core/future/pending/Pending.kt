@@ -41,7 +41,7 @@ public class DebugStruct(
 public open class Pending<T>(
     public var data: Unit,
 ) : Future<T> {
-    public override fun poll(arg0: Context): Poll<T> = Poll.Pending
+    public override fun poll(arg0: Context): Poll<T> = Poll.Pending()
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Pending").finish(); Result.Ok<Unit, Unit>(Unit) }
 

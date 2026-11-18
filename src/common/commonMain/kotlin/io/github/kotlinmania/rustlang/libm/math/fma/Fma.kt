@@ -15,7 +15,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.env.Round
  */
 public fun fmaf(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float {
     if (true) {
-        return io.github.kotlinmania.rustlang.libm.math.arch.fmaf(x, y, z)
+        return io.github.kotlinmania.rustlang.libm.math.arch.aarch64.fma.fmaf(x, y, z)
     }
     return fmaWideRound(x, y, z, Round.Nearest).value
 }
@@ -27,7 +27,7 @@ public fun fmaf(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float
  */
 public fun fma(x: Double, y: Double, z: Double): Double {
     if (true) {
-        return io.github.kotlinmania.rustlang.libm.math.arch.fma(x, y, z)
+        return io.github.kotlinmania.rustlang.libm.math.arch.aarch64.fma.fma(x, y, z)
     }
     return fmaRound(x, y, z, Round.Nearest).value
 }

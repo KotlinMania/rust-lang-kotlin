@@ -61,6 +61,7 @@ import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnvs
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandResolvedEnvs
 import io.github.kotlinmania.rustlang.std.sys.process.unix.common.cstringarray.CStringArray
 import io.github.kotlinmania.rustlang.std.sys.process.unix.common.cstringarray.CStringIter
+import kotlin.experimental.or
 
 public class DebugStruct(
     private val out: StringBuilder,

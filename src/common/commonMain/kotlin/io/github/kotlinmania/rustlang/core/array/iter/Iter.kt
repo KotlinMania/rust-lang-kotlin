@@ -27,6 +27,8 @@ public typealias InnerUnsized<T> = PolymorphicIter<List<MaybeUninit<T>>>
 public open class IntoIter<T>(
     public var inner: InnerSized<T>,
 ) : TrustedLen, Iterable<T> {
+    public val n: Int = 0
+
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
@@ -112,7 +114,7 @@ public open class IntoIter<T>(
         /**
          * Creates a new iterator over the given `array`.
          */
-        public fun <T> new(array: List<T>, n: Int): IntoIter<T> = array.intoIter()
+        public fun <T> new(array: List<T>, n: Int = 0): IntoIter<T> = array.intoIter()
 
         /**
          * Creates an iterator over the elements in a partially-initialized buffer.
@@ -140,7 +142,7 @@ public open class IntoIter<T>(
          * @feature(arrayIntoIterConstructors)
          * @feature(maybeUninitUninitArrayTranspose)
          * public fun doctestEntry() {
-         *     fun <T> nextChunk(it: Any, n: Int): Result<List<T>> {
+         *     fun <T> nextChunk(it: Any, n: Int = 0): Result<List<T>> {
          *         var buffer = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Result<List<T>>>()) }
          *         var i = 0
          *         while (i < n) {
@@ -168,7 +170,7 @@ public open class IntoIter<T>(
          * }
          * ```
          */
-        public fun <T> newUnchecked(buffer: List<MaybeUninit<T>>, initialized: IntRange, n: Int): IntoIter<T> {
+        public fun <T> newUnchecked(buffer: List<MaybeUninit<T>>, initialized: IntRange, n: Int = 0): IntoIter<T> {
             // SAFETY: one of our safety conditions is that the range is canonical.
             val alive = IndexRange.newUnchecked(initialized.start, initialized.end)
             // SAFETY: one of our safety condition is that these items are initialized.
@@ -260,7 +262,7 @@ public open class IntoIter<T>(
  *
  * [array]: prim@array
  */
-public fun <T> List<T>.intoIterFromTArrayn(n: Int): IntoIter<T> {
+public fun <T> List<T>.intoIterFromTArrayn(n: Int = 0): IntoIter<T> {
     // SAFETY: The reinterpret here is actually safe. The docs of `MaybeUninit`
     // promise:
     //

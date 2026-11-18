@@ -177,9 +177,9 @@ public open class Fuse<I>(
 
     public open fun findI(predicate: (Item) -> Boolean): Item? = andThenOrClear(this.iter, { iter -> iter.indexOf(predicate).takeIf { it >= 0 } })
 
-    public open fun nextBackI(): Item? = andThenOrClear(this.iter, { iter -> iter.nextBack() })
+    public open fun <Item> nextBackI(): Item? = andThenOrClear(this.iter, { iter -> iter.nextBack() })
 
-    public open fun advanceBackByI(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
+    public open fun <Item> advanceBackByI(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val iter = this.iter ?: return when (val matchVal = NonZero.new<NonZeroUsizeInner, Int>(n)) {
     null -> Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
     else -> {
@@ -194,9 +194,9 @@ public open class Fuse<I>(
         return res
     }
 
-    public open fun nthBackI(n: Int): Item? = andThenOrClear(this.iter, { iter -> iter.nthBack(n) })
+    public open fun <Item> nthBackI(n: Int): Item? = andThenOrClear(this.iter, { iter -> iter.nthBack(n) })
 
-    public open fun <Residual, Acc, R> tryRfoldI(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+    public open fun <Residual, Item, Acc, R> tryRfoldI(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         var acc1 = acc
         when (val matchVal = this.iter) {
             null -> {}
@@ -209,7 +209,7 @@ public open class Fuse<I>(
         return acc1
     }
 
-    public open fun rfindI(predicate: (Item) -> Boolean): Item? = andThenOrClear(this.iter, { iter -> iter.rfind(predicate) })
+    public open fun <Item> rfindI(predicate: (Item) -> Boolean): Item? = andThenOrClear(this.iter, { iter -> iter.rfind(predicate) })
 
     /**
      * Specialized `Fuse` impl which doesn't bother clearing `iter` when exhausted.
@@ -254,11 +254,11 @@ public open class Fuse<I>(
         return (this.iter ?: return null).indexOf(predicate).takeIf { it >= 0 }
     }
 
-    public open fun nextBackII(): Item? {
+    public open fun <Item> nextBackII(): Item? {
         return (this.iter ?: return null).nextBack()
     }
 
-    public open fun advanceBackByII(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
+    public open fun <Item> advanceBackByII(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
         when (val matchVal = this.iter) {
             null -> when (val matchVal1 = NonZero.new<NonZeroUsizeInner, Int>(n)) {
                 null -> Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
@@ -273,11 +273,11 @@ public open class Fuse<I>(
             }
         }
 
-    public open fun nthBackII(n: Int): Item? {
+    public open fun <Item> nthBackII(n: Int): Item? {
         return (this.iter ?: return null).nthBack(n)
     }
 
-    public open fun <Residual, Acc, R> tryRfoldII(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+    public open fun <Residual, Item, Acc, R> tryRfoldII(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         var acc1 = acc
         when (val matchVal = this.iter) {
             null -> {}
@@ -289,7 +289,7 @@ public open class Fuse<I>(
         return acc1
     }
 
-    public open fun rfindII(predicate: (Item) -> Boolean): Item? {
+    public open fun <Item> rfindII(predicate: (Item) -> Boolean): Item? {
         return (this.iter ?: return null).rfind(predicate)
     }
 
@@ -362,15 +362,15 @@ public interface FuseImpl<I, Item> {
 
     public fun find(predicate: (Item) -> Boolean): Item?
 
-    public fun nextBack(): Item?
+    public fun <Item> nextBack(): Item?
 
-    public fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>>
+    public fun <Item> advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>>
 
-    public fun nthBack(n: Int): Item?
+    public fun <Item> nthBack(n: Int): Item?
 
-    public fun <Residual, Acc, R> tryRfold(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual>
+    public fun <Residual, Item, Acc, R> tryRfold(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual>
 
-    public fun rfind(predicate: (Item) -> Boolean): Item?
+    public fun <Item> rfind(predicate: (Item) -> Boolean): Item?
 }
 
 // This is used by Flatten's SourceIter impl

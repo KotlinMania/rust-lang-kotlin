@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.convert.num.from
@@ -14,6 +15,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.writeUnaligned
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
@@ -36,6 +38,10 @@ import io.github.kotlinmania.rustlang.corearch.simd.U8x64
 import io.github.kotlinmania.rustlang.corearch.simd.U8x8
 import io.github.kotlinmania.rustlang.corearch.simd.simdImax
 import io.github.kotlinmania.rustlang.corearch.simd.simdImin
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
+import kotlin.experimental.xor
 
 /**
  * Compute the absolute value of packed signed 16-bit integers in a, and store the unsigned results in dst.
@@ -1957,7 +1963,7 @@ public fun mm512CmpltEpu16Mask(a: M512i, b: M512i): Mmask32 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmplt_epu16_mask&expand=1051)
  */
-public fun mm512MaskCmpltEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask<MmCmpintLt>(k1, a, b)
+public fun mm512MaskCmpltEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask(k1, a, b, MM_CMPINT_LT)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for less-than, and store the results in mask vector k.
@@ -1971,7 +1977,7 @@ public fun mm256CmpltEpu16Mask(a: M256i, b: M256i): Mmask16 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmplt_epu16_mask&expand=1049)
  */
-public fun mm256MaskCmpltEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask<MmCmpintLt>(k1, a, b)
+public fun mm256MaskCmpltEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask(k1, a, b, MM_CMPINT_LT)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for less-than, and store the results in mask vector k.
@@ -1985,7 +1991,7 @@ public fun mmCmpltEpu16Mask(a: M128i, b: M128i): Mmask8 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmplt_epu16_mask&expand=1019)
  */
-public fun mmMaskCmpltEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask<MmCmpintLt>(k1, a, b)
+public fun mmMaskCmpltEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask(k1, a, b, MM_CMPINT_LT)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for less-than, and store the results in mask vector k.
@@ -1999,7 +2005,7 @@ public fun mm512CmpltEpu8Mask(a: M512i, b: M512i): Mmask64 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmplt_epu8_mask&expand=1069)
  */
-public fun mm512MaskCmpltEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask<MmCmpintLt>(k1, a, b)
+public fun mm512MaskCmpltEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask(k1, a, b, MM_CMPINT_LT)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for less-than, and store the results in mask vector k.
@@ -2013,7 +2019,7 @@ public fun mm256CmpltEpu8Mask(a: M256i, b: M256i): Mmask32 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmplt_epu8_mask&expand=1067)
  */
-public fun mm256MaskCmpltEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask<MmCmpintLt>(k1, a, b)
+public fun mm256MaskCmpltEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask(k1, a, b, MM_CMPINT_LT)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for less-than, and store the results in mask vector k.
@@ -2027,7 +2033,7 @@ public fun mmCmpltEpu8Mask(a: M128i, b: M128i): Mmask16 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmplt_epu8_mask&expand=1065)
  */
-public fun mmMaskCmpltEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask<MmCmpintLt>(k1, a, b)
+public fun mmMaskCmpltEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask(k1, a, b, MM_CMPINT_LT)
 
 /**
  * Compare packed signed 16-bit integers in a and b for less-than, and store the results in mask vector k.
@@ -2041,7 +2047,7 @@ public fun mm512CmpltEpi16Mask(a: M512i, b: M512i): Mmask32 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmplt_epi16_mask&expand=1023)
  */
-public fun mm512MaskCmpltEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask<MmCmpintLt>(k1, a, b)
+public fun mm512MaskCmpltEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask(k1, a, b, MM_CMPINT_LT)
 
 /**
  * Compare packed signed 16-bit integers in a and b for less-than, and store the results in mask vector k.
@@ -2055,7 +2061,7 @@ public fun mm256CmpltEpi16Mask(a: M256i, b: M256i): Mmask16 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmplt_epi16_mask&expand=1021)
  */
-public fun mm256MaskCmpltEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask<MmCmpintLt>(k1, a, b)
+public fun mm256MaskCmpltEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask(k1, a, b, MM_CMPINT_LT)
 
 /**
  * Compare packed signed 16-bit integers in a and b for less-than, and store the results in mask vector k.
@@ -2069,7 +2075,7 @@ public fun mmCmpltEpi16Mask(a: M128i, b: M128i): Mmask8 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmplt_epi16_mask&expand=1019)
  */
-public fun mmMaskCmpltEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask<MmCmpintLt>(k1, a, b)
+public fun mmMaskCmpltEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask(k1, a, b, MM_CMPINT_LT)
 
 /**
  * Compare packed signed 8-bit integers in a and b for less-than, and store the results in mask vector k.
@@ -2083,7 +2089,7 @@ public fun mm512CmpltEpi8Mask(a: M512i, b: M512i): Mmask64 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmplt_epi8_mask&expand=1045)
  */
-public fun mm512MaskCmpltEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask<MmCmpintLt>(k1, a, b)
+public fun mm512MaskCmpltEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask(k1, a, b, MM_CMPINT_LT)
 
 /**
  * Compare packed signed 8-bit integers in a and b for less-than, and store the results in mask vector k.
@@ -2097,7 +2103,7 @@ public fun mm256CmpltEpi8Mask(a: M256i, b: M256i): Mmask32 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmplt_epi8_mask&expand=1043)
  */
-public fun mm256MaskCmpltEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask<MmCmpintLt>(k1, a, b)
+public fun mm256MaskCmpltEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask(k1, a, b, MM_CMPINT_LT)
 
 /**
  * Compare packed signed 8-bit integers in a and b for less-than, and store the results in mask vector k.
@@ -2111,7 +2117,7 @@ public fun mmCmpltEpi8Mask(a: M128i, b: M128i): Mmask16 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmplt_epi8_mask&expand=1041)
  */
-public fun mmMaskCmpltEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask<MmCmpintLt>(k1, a, b)
+public fun mmMaskCmpltEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask(k1, a, b, MM_CMPINT_LT)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for greater-than, and store the results in mask vector k.
@@ -2125,7 +2131,7 @@ public fun mm512CmpgtEpu16Mask(a: M512i, b: M512i): Mmask32 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpgt_epu16_mask&expand=928)
  */
-public fun mm512MaskCmpgtEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask<MmCmpintNle>(k1, a, b)
+public fun mm512MaskCmpgtEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask(k1, a, b, MM_CMPINT_NLE)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for greater-than, and store the results in mask vector k.
@@ -2139,7 +2145,7 @@ public fun mm256CmpgtEpu16Mask(a: M256i, b: M256i): Mmask16 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpgt_epu16_mask&expand=926)
  */
-public fun mm256MaskCmpgtEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask<MmCmpintNle>(k1, a, b)
+public fun mm256MaskCmpgtEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask(k1, a, b, MM_CMPINT_NLE)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for greater-than, and store the results in mask vector k.
@@ -2153,7 +2159,7 @@ public fun mmCmpgtEpu16Mask(a: M128i, b: M128i): Mmask8 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpgt_epu16_mask&expand=924)
  */
-public fun mmMaskCmpgtEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask<MmCmpintNle>(k1, a, b)
+public fun mmMaskCmpgtEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask(k1, a, b, MM_CMPINT_NLE)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for greater-than, and store the results in mask vector k.
@@ -2167,7 +2173,7 @@ public fun mm512CmpgtEpu8Mask(a: M512i, b: M512i): Mmask64 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpgt_epu8_mask&expand=946)
  */
-public fun mm512MaskCmpgtEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask<MmCmpintNle>(k1, a, b)
+public fun mm512MaskCmpgtEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask(k1, a, b, MM_CMPINT_NLE)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for greater-than, and store the results in mask vector k.
@@ -2181,7 +2187,7 @@ public fun mm256CmpgtEpu8Mask(a: M256i, b: M256i): Mmask32 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpgt_epu8_mask&expand=944)
  */
-public fun mm256MaskCmpgtEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask<MmCmpintNle>(k1, a, b)
+public fun mm256MaskCmpgtEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask(k1, a, b, MM_CMPINT_NLE)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for greater-than, and store the results in mask vector k.
@@ -2195,7 +2201,7 @@ public fun mmCmpgtEpu8Mask(a: M128i, b: M128i): Mmask16 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpgt_epu8_mask&expand=942)
  */
-public fun mmMaskCmpgtEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask<MmCmpintNle>(k1, a, b)
+public fun mmMaskCmpgtEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask(k1, a, b, MM_CMPINT_NLE)
 
 /**
  * Compare packed signed 16-bit integers in a and b for greater-than, and store the results in mask vector k.
@@ -2209,7 +2215,7 @@ public fun mm512CmpgtEpi16Mask(a: M512i, b: M512i): Mmask32 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpgt_epi16_mask&expand=898)
  */
-public fun mm512MaskCmpgtEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask<MmCmpintNle>(k1, a, b)
+public fun mm512MaskCmpgtEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask(k1, a, b, MM_CMPINT_NLE)
 
 /**
  * Compare packed signed 16-bit integers in a and b for greater-than, and store the results in mask vector k.
@@ -2223,7 +2229,7 @@ public fun mm256CmpgtEpi16Mask(a: M256i, b: M256i): Mmask16 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpgt_epi16_mask&expand=896)
  */
-public fun mm256MaskCmpgtEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask<MmCmpintNle>(k1, a, b)
+public fun mm256MaskCmpgtEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask(k1, a, b, MM_CMPINT_NLE)
 
 /**
  * Compare packed signed 16-bit integers in a and b for greater-than, and store the results in mask vector k.
@@ -2237,7 +2243,7 @@ public fun mmCmpgtEpi16Mask(a: M128i, b: M128i): Mmask8 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpgt_epi16_mask&expand=894)
  */
-public fun mmMaskCmpgtEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask<MmCmpintNle>(k1, a, b)
+public fun mmMaskCmpgtEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask(k1, a, b, MM_CMPINT_NLE)
 
 /**
  * Compare packed signed 8-bit integers in a and b for greater-than, and store the results in mask vector k.
@@ -2251,7 +2257,7 @@ public fun mm512CmpgtEpi8Mask(a: M512i, b: M512i): Mmask64 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpgt_epi8_mask&expand=922)
  */
-public fun mm512MaskCmpgtEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask<MmCmpintNle>(k1, a, b)
+public fun mm512MaskCmpgtEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask(k1, a, b, MM_CMPINT_NLE)
 
 /**
  * Compare packed signed 8-bit integers in a and b for greater-than, and store the results in mask vector k.
@@ -2265,7 +2271,7 @@ public fun mm256CmpgtEpi8Mask(a: M256i, b: M256i): Mmask32 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpgt_epi8_mask&expand=920)
  */
-public fun mm256MaskCmpgtEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask<MmCmpintNle>(k1, a, b)
+public fun mm256MaskCmpgtEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask(k1, a, b, MM_CMPINT_NLE)
 
 /**
  * Compare packed signed 8-bit integers in a and b for greater-than, and store the results in mask vector k.
@@ -2279,7 +2285,7 @@ public fun mmCmpgtEpi8Mask(a: M128i, b: M128i): Mmask16 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpgt_epi8_mask&expand=918)
  */
-public fun mmMaskCmpgtEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask<MmCmpintNle>(k1, a, b)
+public fun mmMaskCmpgtEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask(k1, a, b, MM_CMPINT_NLE)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
@@ -2293,7 +2299,7 @@ public fun mm512CmpleEpu16Mask(a: M512i, b: M512i): Mmask32 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmple_epu16_mask&expand=990)
  */
-public fun mm512MaskCmpleEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask<MmCmpintLe>(k1, a, b)
+public fun mm512MaskCmpleEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask(k1, a, b, MM_CMPINT_LE)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
@@ -2307,7 +2313,7 @@ public fun mm256CmpleEpu16Mask(a: M256i, b: M256i): Mmask16 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmple_epu16_mask&expand=988)
  */
-public fun mm256MaskCmpleEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask<MmCmpintLe>(k1, a, b)
+public fun mm256MaskCmpleEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask(k1, a, b, MM_CMPINT_LE)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
@@ -2321,7 +2327,7 @@ public fun mmCmpleEpu16Mask(a: M128i, b: M128i): Mmask8 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmple_epu16_mask&expand=986)
  */
-public fun mmMaskCmpleEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask<MmCmpintLe>(k1, a, b)
+public fun mmMaskCmpleEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask(k1, a, b, MM_CMPINT_LE)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
@@ -2335,7 +2341,7 @@ public fun mm512CmpleEpu8Mask(a: M512i, b: M512i): Mmask64 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmple_epu8_mask&expand=1008)
  */
-public fun mm512MaskCmpleEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask<MmCmpintLe>(k1, a, b)
+public fun mm512MaskCmpleEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask(k1, a, b, MM_CMPINT_LE)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
@@ -2349,7 +2355,7 @@ public fun mm256CmpleEpu8Mask(a: M256i, b: M256i): Mmask32 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmple_epu8_mask&expand=1006)
  */
-public fun mm256MaskCmpleEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask<MmCmpintLe>(k1, a, b)
+public fun mm256MaskCmpleEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask(k1, a, b, MM_CMPINT_LE)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
@@ -2363,7 +2369,7 @@ public fun mmCmpleEpu8Mask(a: M128i, b: M128i): Mmask16 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmple_epu8_mask&expand=1004)
  */
-public fun mmMaskCmpleEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask<MmCmpintLe>(k1, a, b)
+public fun mmMaskCmpleEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask(k1, a, b, MM_CMPINT_LE)
 
 /**
  * Compare packed signed 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
@@ -2377,7 +2383,7 @@ public fun mm512CmpleEpi16Mask(a: M512i, b: M512i): Mmask32 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmple_epi16_mask&expand=966)
  */
-public fun mm512MaskCmpleEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask<MmCmpintLe>(k1, a, b)
+public fun mm512MaskCmpleEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask(k1, a, b, MM_CMPINT_LE)
 
 /**
  * Compare packed signed 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
@@ -2391,7 +2397,7 @@ public fun mm256CmpleEpi16Mask(a: M256i, b: M256i): Mmask16 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmple_epi16_mask&expand=964)
  */
-public fun mm256MaskCmpleEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask<MmCmpintLe>(k1, a, b)
+public fun mm256MaskCmpleEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask(k1, a, b, MM_CMPINT_LE)
 
 /**
  * Compare packed signed 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
@@ -2405,7 +2411,7 @@ public fun mmCmpleEpi16Mask(a: M128i, b: M128i): Mmask8 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmple_epi16_mask&expand=962)
  */
-public fun mmMaskCmpleEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask<MmCmpintLe>(k1, a, b)
+public fun mmMaskCmpleEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask(k1, a, b, MM_CMPINT_LE)
 
 /**
  * Compare packed signed 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
@@ -2419,7 +2425,7 @@ public fun mm512CmpleEpi8Mask(a: M512i, b: M512i): Mmask64 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmple_epi8_mask&expand=984)
  */
-public fun mm512MaskCmpleEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask<MmCmpintLe>(k1, a, b)
+public fun mm512MaskCmpleEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask(k1, a, b, MM_CMPINT_LE)
 
 /**
  * Compare packed signed 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
@@ -2433,7 +2439,7 @@ public fun mm256CmpleEpi8Mask(a: M256i, b: M256i): Mmask32 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmple_epi8_mask&expand=982)
  */
-public fun mm256MaskCmpleEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask<MmCmpintLe>(k1, a, b)
+public fun mm256MaskCmpleEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask(k1, a, b, MM_CMPINT_LE)
 
 /**
  * Compare packed signed 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
@@ -2447,7 +2453,7 @@ public fun mmCmpleEpi8Mask(a: M128i, b: M128i): Mmask16 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmple_epi8_mask&expand=980)
  */
-public fun mmMaskCmpleEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask<MmCmpintLe>(k1, a, b)
+public fun mmMaskCmpleEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask(k1, a, b, MM_CMPINT_LE)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
@@ -2461,7 +2467,7 @@ public fun mm512CmpgeEpu16Mask(a: M512i, b: M512i): Mmask32 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpge_epu16_mask&expand=868)
  */
-public fun mm512MaskCmpgeEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask<MmCmpintNlt>(k1, a, b)
+public fun mm512MaskCmpgeEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask(k1, a, b, MM_CMPINT_NLT)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
@@ -2475,7 +2481,7 @@ public fun mm256CmpgeEpu16Mask(a: M256i, b: M256i): Mmask16 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpge_epu16_mask&expand=866)
  */
-public fun mm256MaskCmpgeEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask<MmCmpintNlt>(k1, a, b)
+public fun mm256MaskCmpgeEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask(k1, a, b, MM_CMPINT_NLT)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
@@ -2489,7 +2495,7 @@ public fun mmCmpgeEpu16Mask(a: M128i, b: M128i): Mmask8 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpge_epu16_mask&expand=864)
  */
-public fun mmMaskCmpgeEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask<MmCmpintNlt>(k1, a, b)
+public fun mmMaskCmpgeEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask(k1, a, b, MM_CMPINT_NLT)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
@@ -2503,7 +2509,7 @@ public fun mm512CmpgeEpu8Mask(a: M512i, b: M512i): Mmask64 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpge_epu8_mask&expand=886)
  */
-public fun mm512MaskCmpgeEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask<MmCmpintNlt>(k1, a, b)
+public fun mm512MaskCmpgeEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask(k1, a, b, MM_CMPINT_NLT)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
@@ -2517,7 +2523,7 @@ public fun mm256CmpgeEpu8Mask(a: M256i, b: M256i): Mmask32 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpge_epu8_mask&expand=884)
  */
-public fun mm256MaskCmpgeEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask<MmCmpintNlt>(k1, a, b)
+public fun mm256MaskCmpgeEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask(k1, a, b, MM_CMPINT_NLT)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
@@ -2531,7 +2537,7 @@ public fun mmCmpgeEpu8Mask(a: M128i, b: M128i): Mmask16 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpge_epu8_mask&expand=882)
  */
-public fun mmMaskCmpgeEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask<MmCmpintNlt>(k1, a, b)
+public fun mmMaskCmpgeEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask(k1, a, b, MM_CMPINT_NLT)
 
 /**
  * Compare packed signed 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
@@ -2545,7 +2551,7 @@ public fun mm512CmpgeEpi16Mask(a: M512i, b: M512i): Mmask32 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpge_epi16_mask&expand=844)
  */
-public fun mm512MaskCmpgeEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask<MmCmpintNlt>(k1, a, b)
+public fun mm512MaskCmpgeEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask(k1, a, b, MM_CMPINT_NLT)
 
 /**
  * Compare packed signed 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
@@ -2559,7 +2565,7 @@ public fun mm256CmpgeEpi16Mask(a: M256i, b: M256i): Mmask16 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpge_epi16_mask&expand=842)
  */
-public fun mm256MaskCmpgeEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask<MmCmpintNlt>(k1, a, b)
+public fun mm256MaskCmpgeEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask(k1, a, b, MM_CMPINT_NLT)
 
 /**
  * Compare packed signed 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
@@ -2573,7 +2579,7 @@ public fun mmCmpgeEpi16Mask(a: M128i, b: M128i): Mmask8 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpge_epi16_mask&expand=840)
  */
-public fun mmMaskCmpgeEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask<MmCmpintNlt>(k1, a, b)
+public fun mmMaskCmpgeEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask(k1, a, b, MM_CMPINT_NLT)
 
 /**
  * Compare packed signed 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
@@ -2587,7 +2593,7 @@ public fun mm512CmpgeEpi8Mask(a: M512i, b: M512i): Mmask64 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpge_epi8_mask&expand=862)
  */
-public fun mm512MaskCmpgeEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask<MmCmpintNlt>(k1, a, b)
+public fun mm512MaskCmpgeEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask(k1, a, b, MM_CMPINT_NLT)
 
 /**
  * Compare packed signed 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
@@ -2601,7 +2607,7 @@ public fun mm256CmpgeEpi8Mask(a: M256i, b: M256i): Mmask32 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpge_epi8_mask&expand=860)
  */
-public fun mm256MaskCmpgeEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask<MmCmpintNlt>(k1, a, b)
+public fun mm256MaskCmpgeEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask(k1, a, b, MM_CMPINT_NLT)
 
 /**
  * Compare packed signed 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
@@ -2615,7 +2621,7 @@ public fun mmCmpgeEpi8Mask(a: M128i, b: M128i): Mmask16 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpge_epi8_mask&expand=858)
  */
-public fun mmMaskCmpgeEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask<MmCmpintNlt>(k1, a, b)
+public fun mmMaskCmpgeEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask(k1, a, b, MM_CMPINT_NLT)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for equality, and store the results in mask vector k.
@@ -2629,7 +2635,7 @@ public fun mm512CmpeqEpu16Mask(a: M512i, b: M512i): Mmask32 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpeq_epu16_mask&expand=802)
  */
-public fun mm512MaskCmpeqEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask<MmCmpintEq>(k1, a, b)
+public fun mm512MaskCmpeqEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask(k1, a, b, MM_CMPINT_EQ)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for equality, and store the results in mask vector k.
@@ -2643,7 +2649,7 @@ public fun mm256CmpeqEpu16Mask(a: M256i, b: M256i): Mmask16 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpeq_epu16_mask&expand=800)
  */
-public fun mm256MaskCmpeqEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask<MmCmpintEq>(k1, a, b)
+public fun mm256MaskCmpeqEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask(k1, a, b, MM_CMPINT_EQ)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for equality, and store the results in mask vector k.
@@ -2657,7 +2663,7 @@ public fun mmCmpeqEpu16Mask(a: M128i, b: M128i): Mmask8 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpeq_epu16_mask&expand=798)
  */
-public fun mmMaskCmpeqEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask<MmCmpintEq>(k1, a, b)
+public fun mmMaskCmpeqEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask(k1, a, b, MM_CMPINT_EQ)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for equality, and store the results in mask vector k.
@@ -2671,7 +2677,7 @@ public fun mm512CmpeqEpu8Mask(a: M512i, b: M512i): Mmask64 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpeq_epu8_mask&expand=820)
  */
-public fun mm512MaskCmpeqEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask<MmCmpintEq>(k1, a, b)
+public fun mm512MaskCmpeqEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask(k1, a, b, MM_CMPINT_EQ)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for equality, and store the results in mask vector k.
@@ -2685,7 +2691,7 @@ public fun mm256CmpeqEpu8Mask(a: M256i, b: M256i): Mmask32 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpeq_epu8_mask&expand=818)
  */
-public fun mm256MaskCmpeqEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask<MmCmpintEq>(k1, a, b)
+public fun mm256MaskCmpeqEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask(k1, a, b, MM_CMPINT_EQ)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for equality, and store the results in mask vector k.
@@ -2699,7 +2705,7 @@ public fun mmCmpeqEpu8Mask(a: M128i, b: M128i): Mmask16 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpeq_epu8_mask&expand=816)
  */
-public fun mmMaskCmpeqEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask<MmCmpintEq>(k1, a, b)
+public fun mmMaskCmpeqEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask(k1, a, b, MM_CMPINT_EQ)
 
 /**
  * Compare packed signed 16-bit integers in a and b for equality, and store the results in mask vector k.
@@ -2713,7 +2719,7 @@ public fun mm512CmpeqEpi16Mask(a: M512i, b: M512i): Mmask32 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpeq_epi16_mask&expand=772)
  */
-public fun mm512MaskCmpeqEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask<MmCmpintEq>(k1, a, b)
+public fun mm512MaskCmpeqEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask(k1, a, b, MM_CMPINT_EQ)
 
 /**
  * Compare packed signed 16-bit integers in a and b for equality, and store the results in mask vector k.
@@ -2727,7 +2733,7 @@ public fun mm256CmpeqEpi16Mask(a: M256i, b: M256i): Mmask16 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpeq_epi16_mask&expand=770)
  */
-public fun mm256MaskCmpeqEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask<MmCmpintEq>(k1, a, b)
+public fun mm256MaskCmpeqEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask(k1, a, b, MM_CMPINT_EQ)
 
 /**
  * Compare packed signed 16-bit integers in a and b for equality, and store the results in mask vector k.
@@ -2741,7 +2747,7 @@ public fun mmCmpeqEpi16Mask(a: M128i, b: M128i): Mmask8 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpeq_epi16_mask&expand=768)
  */
-public fun mmMaskCmpeqEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask<MmCmpintEq>(k1, a, b)
+public fun mmMaskCmpeqEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask(k1, a, b, MM_CMPINT_EQ)
 
 /**
  * Compare packed signed 8-bit integers in a and b for equality, and store the results in mask vector k.
@@ -2755,7 +2761,7 @@ public fun mm512CmpeqEpi8Mask(a: M512i, b: M512i): Mmask64 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpeq_epi8_mask&expand=796)
  */
-public fun mm512MaskCmpeqEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask<MmCmpintEq>(k1, a, b)
+public fun mm512MaskCmpeqEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask(k1, a, b, MM_CMPINT_EQ)
 
 /**
  * Compare packed signed 8-bit integers in a and b for equality, and store the results in mask vector k.
@@ -2769,7 +2775,7 @@ public fun mm256CmpeqEpi8Mask(a: M256i, b: M256i): Mmask32 = run { val simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpeq_epi8_mask&expand=794)
  */
-public fun mm256MaskCmpeqEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask<MmCmpintEq>(k1, a, b)
+public fun mm256MaskCmpeqEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask(k1, a, b, MM_CMPINT_EQ)
 
 /**
  * Compare packed signed 8-bit integers in a and b for equality, and store the results in mask vector k.
@@ -2783,7 +2789,7 @@ public fun mmCmpeqEpi8Mask(a: M128i, b: M128i): Mmask16 = run { val simdArg0 = r
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpeq_epi8_mask&expand=792)
  */
-public fun mmMaskCmpeqEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask<MmCmpintEq>(k1, a, b)
+public fun mmMaskCmpeqEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask(k1, a, b, MM_CMPINT_EQ)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for not-equal, and store the results in mask vector k.
@@ -2797,7 +2803,7 @@ public fun mm512CmpneqEpu16Mask(a: M512i, b: M512i): Mmask32 = run { val simdArg
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpneq_epu16_mask&expand=1107)
  */
-public fun mm512MaskCmpneqEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask<MmCmpintNe>(k1, a, b)
+public fun mm512MaskCmpneqEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask(k1, a, b, MM_CMPINT_NE)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for not-equal, and store the results in mask vector k.
@@ -2811,7 +2817,7 @@ public fun mm256CmpneqEpu16Mask(a: M256i, b: M256i): Mmask16 = run { val simdArg
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpneq_epu16_mask&expand=1105)
  */
-public fun mm256MaskCmpneqEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask<MmCmpintNe>(k1, a, b)
+public fun mm256MaskCmpneqEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask(k1, a, b, MM_CMPINT_NE)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for not-equal, and store the results in mask vector k.
@@ -2825,7 +2831,7 @@ public fun mmCmpneqEpu16Mask(a: M128i, b: M128i): Mmask8 = run { val simdArg0 = 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpneq_epu16_mask&expand=1103)
  */
-public fun mmMaskCmpneqEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask<MmCmpintNe>(k1, a, b)
+public fun mmMaskCmpneqEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask(k1, a, b, MM_CMPINT_NE)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for not-equal, and store the results in mask vector k.
@@ -2839,7 +2845,7 @@ public fun mm512CmpneqEpu8Mask(a: M512i, b: M512i): Mmask64 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpneq_epu8_mask&expand=1125)
  */
-public fun mm512MaskCmpneqEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask<MmCmpintNe>(k1, a, b)
+public fun mm512MaskCmpneqEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask(k1, a, b, MM_CMPINT_NE)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for not-equal, and store the results in mask vector k.
@@ -2853,7 +2859,7 @@ public fun mm256CmpneqEpu8Mask(a: M256i, b: M256i): Mmask32 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpneq_epu8_mask&expand=1123)
  */
-public fun mm256MaskCmpneqEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask<MmCmpintNe>(k1, a, b)
+public fun mm256MaskCmpneqEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask(k1, a, b, MM_CMPINT_NE)
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for not-equal, and store the results in mask vector k.
@@ -2867,7 +2873,7 @@ public fun mmCmpneqEpu8Mask(a: M128i, b: M128i): Mmask16 = run { val simdArg0 = 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpneq_epu8_mask&expand=1121)
  */
-public fun mmMaskCmpneqEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask<MmCmpintNe>(k1, a, b)
+public fun mmMaskCmpneqEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask(k1, a, b, MM_CMPINT_NE)
 
 /**
  * Compare packed signed 16-bit integers in a and b for not-equal, and store the results in mask vector k.
@@ -2881,7 +2887,7 @@ public fun mm512CmpneqEpi16Mask(a: M512i, b: M512i): Mmask32 = run { val simdArg
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpneq_epi16_mask&expand=1083)
  */
-public fun mm512MaskCmpneqEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask<MmCmpintNe>(k1, a, b)
+public fun mm512MaskCmpneqEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask(k1, a, b, MM_CMPINT_NE)
 
 /**
  * Compare packed signed 16-bit integers in a and b for not-equal, and store the results in mask vector k.
@@ -2895,7 +2901,7 @@ public fun mm256CmpneqEpi16Mask(a: M256i, b: M256i): Mmask16 = run { val simdArg
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpneq_epi16_mask&expand=1081)
  */
-public fun mm256MaskCmpneqEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask<MmCmpintNe>(k1, a, b)
+public fun mm256MaskCmpneqEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask(k1, a, b, MM_CMPINT_NE)
 
 /**
  * Compare packed signed 16-bit integers in a and b for not-equal, and store the results in mask vector k.
@@ -2909,7 +2915,7 @@ public fun mmCmpneqEpi16Mask(a: M128i, b: M128i): Mmask8 = run { val simdArg0 = 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpneq_epi16_mask&expand=1079)
  */
-public fun mmMaskCmpneqEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask<MmCmpintNe>(k1, a, b)
+public fun mmMaskCmpneqEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask(k1, a, b, MM_CMPINT_NE)
 
 /**
  * Compare packed signed 8-bit integers in a and b for not-equal, and store the results in mask vector k.
@@ -2923,7 +2929,7 @@ public fun mm512CmpneqEpi8Mask(a: M512i, b: M512i): Mmask64 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpneq_epi8_mask&expand=1101)
  */
-public fun mm512MaskCmpneqEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask<MmCmpintNe>(k1, a, b)
+public fun mm512MaskCmpneqEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask(k1, a, b, MM_CMPINT_NE)
 
 /**
  * Compare packed signed 8-bit integers in a and b for not-equal, and store the results in mask vector k.
@@ -2937,7 +2943,7 @@ public fun mm256CmpneqEpi8Mask(a: M256i, b: M256i): Mmask32 = run { val simdArg0
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpneq_epi8_mask&expand=1099)
  */
-public fun mm256MaskCmpneqEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask<MmCmpintNe>(k1, a, b)
+public fun mm256MaskCmpneqEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask(k1, a, b, MM_CMPINT_NE)
 
 /**
  * Compare packed signed 8-bit integers in a and b for not-equal, and store the results in mask vector k.
@@ -2951,7 +2957,7 @@ public fun mmCmpneqEpi8Mask(a: M128i, b: M128i): Mmask16 = run { val simdArg0 = 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpneq_epi8_mask&expand=1097)
  */
-public fun mmMaskCmpneqEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask<MmCmpintNe>(k1, a, b)
+public fun mmMaskCmpneqEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask(k1, a, b, MM_CMPINT_NE)
 
 /**
  * Compare packed unsigned 16-bit integers in a and b based on the comparison operand specified by `IMM8`, and store the results in mask vector k.

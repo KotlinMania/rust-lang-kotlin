@@ -2,11 +2,11 @@ package io.github.kotlinmania.rustlang.core.intrinsics
 
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.intrinsics.bounds.FloatPrimitive
+import io.github.kotlinmania.rustlang.core.num.imp.libm.LikelyAvailable
+import io.github.kotlinmania.rustlang.core.num.imp.libm.MaybeAvailable
 import io.github.kotlinmania.rustlang.core.num.imp.libm.fmaf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.fmaf128
 import io.github.kotlinmania.rustlang.core.num.imp.libm.fmaf16
-import io.github.kotlinmania.rustlang.core.num.imp.libm.likelyavailable.pow
-import io.github.kotlinmania.rustlang.core.num.imp.libm.maybeavailable.powf128
 import io.github.kotlinmania.rustlang.core.num.imp.libm.powidf2
 import io.github.kotlinmania.rustlang.core.num.imp.libm.powisf2
 import io.github.kotlinmania.rustlang.core.num.imp.libm.powitf2
@@ -85,11 +85,11 @@ public fun dispatchF128(a: T, x: Int): T = powitf2(a, x)
 
 public fun dispatchF16(a: T, x: T): T = F16.fromFloat(kmPowf32(a.toFloat(), x.toFloat()))
 
-public fun dispatchFloat(a: T, x: T): T = io.github.kotlinmania.rustlang.core.num.imp.libm.likelyavailable.powf(a, x)
+public fun dispatchFloat(a: T, x: T): T = LikelyAvailable.powf(a, x)
 
-public fun dispatchDouble(a: T, x: T): T = pow(a, x)
+public fun dispatchDouble(a: T, x: T): T = LikelyAvailable.pow(a, x)
 
-public fun dispatchF128(a: T, x: T): T = powf128(a, x)
+public fun dispatchF128(a: T, x: T): T = MaybeAvailable.powf128(a, x)
 
 public fun dispatchF16(a: T, b: T, c: T): T = fmaf16(a, b, c)
 

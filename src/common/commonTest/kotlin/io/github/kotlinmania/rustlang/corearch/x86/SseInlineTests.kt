@@ -778,7 +778,7 @@ public fun testMmCvtSs2si() {
 
 public fun testMmCvttssSi32() {
     val inputs = listOf(Pair(42.0f, 42), Pair(-31.4, -31), Pair(-33.5, -33), Pair(-34.5, -34), Pair(10.999, 10), Pair(-5.99, -5), Pair(4.0e10, Int.MIN_VALUE), Pair(4.0e-10, 0), Pair(NAN, Int.MIN_VALUE), Pair(2147483500.1, 2147483520))
-    for ((i, xi, e) in inputs.iter().mapIndexed { index, item -> Pair(index, item) }) {
+    for ((i, xi, e) in inputs.mapIndexed { index, item -> Pair(index, item) }) {
         val x = mmSetrPs(xi, 1.0f, 3.0f, 4.0f)
         val r = mmCvttssSi32(x)
         check(e == r)
@@ -787,7 +787,7 @@ public fun testMmCvttssSi32() {
 
 public fun testMmCvttSs2si() {
     val inputs = listOf(Pair(42.0f, 42), Pair(-31.4, -31), Pair(-33.5, -33), Pair(-34.5, -34), Pair(10.999, 10), Pair(-5.99, -5), Pair(4.0e10, Int.MIN_VALUE), Pair(4.0e-10, 0), Pair(NAN, Int.MIN_VALUE), Pair(2147483500.1, 2147483520))
-    for ((i, xi, e) in inputs.iter().mapIndexed { index, item -> Pair(index, item) }) {
+    for ((i, xi, e) in inputs.mapIndexed { index, item -> Pair(index, item) }) {
         val x = mmSetrPs(xi, 1.0f, 3.0f, 4.0f)
         val r = mmCvttSs2si(x)
         check(e == r)

@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.backtrace.types
 
 import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString.*
-import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
@@ -80,5 +79,5 @@ public sealed class BytesOrWideString {
         error("unreachable")
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.toStrLossy().fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.toStrLossy().fmt(f)
 }

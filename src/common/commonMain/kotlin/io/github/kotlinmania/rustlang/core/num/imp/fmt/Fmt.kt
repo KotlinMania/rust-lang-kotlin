@@ -1,6 +1,8 @@
 // port-lint: source num/imp/fmt.rs
 package io.github.kotlinmania.rustlang.core.num.imp.fmt
 
+import io.github.kotlinmania.rustlang.core.num.saturatingAdd
+
 // Shared utilities used by both float and integer formatting.
 
 /**

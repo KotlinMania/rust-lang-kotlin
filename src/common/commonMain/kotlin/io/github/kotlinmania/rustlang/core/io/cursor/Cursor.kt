@@ -15,6 +15,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.num.checkedAddSigned
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.splitAtMut
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
@@ -349,29 +350,29 @@ public fun Cursor<MutableList<UByte>>.writeAllVectored(bufs: MutableList<IoSlice
 
 public fun Cursor<MutableList<UByte>>.flush(): Result<Unit> = RustResult.Ok(Unit)
 
-public fun Cursor<UByteArray>.write(buf: List<UByte>, n: Int): Result<Int> {
+public fun Cursor<UByteArray>.write(buf: List<UByte>, n: Int = 0): Result<Int> {
     val (pos, inner) = this.intoPartsMut()
     return sliceWrite(pos, inner, buf)
 }
 
-public fun Cursor<UByteArray>.writeVectored(bufs: List<IoSlice>, n: Int): Result<Int> {
+public fun Cursor<UByteArray>.writeVectored(bufs: List<IoSlice>, n: Int = 0): Result<Int> {
     val (pos, inner) = this.intoPartsMut()
     return sliceWriteVectored(pos, inner, bufs)
 }
 
-public fun Cursor<UByteArray>.isWriteVectored(n: Int): Boolean = true
+public fun Cursor<UByteArray>.isWriteVectored(n: Int = 0): Boolean = true
 
-public fun Cursor<UByteArray>.writeAll(buf: List<UByte>, n: Int): Result<Unit> {
+public fun Cursor<UByteArray>.writeAll(buf: List<UByte>, n: Int = 0): Result<Unit> {
     val (pos, inner) = this.intoPartsMut()
     return sliceWriteAll(pos, inner, buf)
 }
 
-public fun Cursor<UByteArray>.writeAllVectored(bufs: MutableList<IoSlice>, n: Int): Result<Unit> {
+public fun Cursor<UByteArray>.writeAllVectored(bufs: MutableList<IoSlice>, n: Int = 0): Result<Unit> {
     val (pos, inner) = this.intoPartsMut()
     return sliceWriteAllVectored(pos, inner, bufs)
 }
 
-public fun Cursor<UByteArray>.flush(n: Int): Result<Unit> = RustResult.Ok(Unit)
+public fun Cursor<UByteArray>.flush(n: Int = 0): Result<Unit> = RustResult.Ok(Unit)
 
 public fun Cursor<T>.seek(style: SeekFrom): Result<ULong> {
     val (basePos, offset) =

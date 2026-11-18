@@ -12,4 +12,4 @@ import io.github.kotlinmania.rustlang.coresimd.Simd
  * check("${List(4) { -1.0 }}" == "$floats")
  * ```
  */
-public fun <Mask, T> Simd<T>.fmt(f: StringBuilder, n: Int): Result<Unit, Error> = List.fmt(this.asArray(), f)
+public fun <Mask, T> Simd<T>.fmt(f: StringBuilder, n: Int = 0): Result<Unit, Error> = List.fmt(this.asArray(), f)

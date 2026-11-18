@@ -24,6 +24,9 @@ import io.github.kotlinmania.rustlang.core.ops.bit.Not
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.splitFirst
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
 
 /**
  * An IP address, either IPv4 or IPv6.

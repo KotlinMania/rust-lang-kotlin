@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.map.Map
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.num.divCeil
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
@@ -158,7 +159,7 @@ public open class Chars(
         var remainder1 = remainder
         val CHUNK_SIZE: Int = 32
         if (remainder1 >= CHUNK_SIZE) {
-            val chunks = this.iter.toList().asChunks<ChunkSize>().first.iter()
+            val chunks = this.iter.toList().asChunks(CHUNK_SIZE).first.iter()
             var bytesSkipped: Int = 0
             while (remainder1 > CHUNK_SIZE && chunks.next() != null) {
                 bytesSkipped += CHUNK_SIZE

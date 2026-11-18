@@ -14,11 +14,11 @@ import io.github.kotlinmania.rustlang.corearch.armshared.dsb
  */
 public open class LD : Dmb, Dsb {
     public override fun dmb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.LD)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.LD)
     }
 
     public override fun dsb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.LD)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.LD)
     }
 
     public companion object {
@@ -44,11 +44,11 @@ public open class LD : Dmb, Dsb {
  */
 public open class Ishld : Dmb, Dsb {
     public override fun dmb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Ishld)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(Ishld)
     }
 
     public override fun dsb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Ishld)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(Ishld)
     }
 
     public companion object {
@@ -74,11 +74,11 @@ public open class Ishld : Dmb, Dsb {
  */
 public open class Nshld : Dmb, Dsb {
     public override fun dmb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Nshld)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(Nshld)
     }
 
     public override fun dsb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Nshld)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(Nshld)
     }
 
     public companion object {
@@ -104,11 +104,11 @@ public open class Nshld : Dmb, Dsb {
  */
 public open class Oshld : Dmb, Dsb {
     public override fun dmb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Oshld)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(Oshld)
     }
 
     public override fun dsb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Oshld)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(Oshld)
     }
 
     public companion object {

@@ -49,6 +49,8 @@ import io.github.kotlinmania.rustlang.corearch.simd.U32x4
 import io.github.kotlinmania.rustlang.corearch.simd.U64x2
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 import io.github.kotlinmania.rustlang.corearch.simd.U8x8
+import kotlin.experimental.and
+import kotlin.experimental.inv
 
 // This module implements the [WebAssembly `SIMD128` ISA].
 //

@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.divCeil
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
@@ -179,7 +180,7 @@ public open class StepBy<I>(
 
     public override fun <Residual, Acc, R> specTryFold(acc: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         var acc1 = acc
-        fun <I> nth(iter: I, stepMinusOne: Int): () -> Item? = { iter.nth(stepMinusOne) }
+        fun <Item, I : Iterator<Item>> nth(iter: I, stepMinusOne: Int): () -> Item? = { iter.nth(stepMinusOne) }
         if (this.firstTake) {
             this.firstTake = false
             when (val matchVal = this.iter.next()) {
@@ -195,7 +196,7 @@ public open class StepBy<I>(
 
     public override fun <Acc> specFold(acc: Acc, f: (Acc, Item) -> Acc): Acc {
         var acc1 = acc
-        fun <I> nth(iter: I, stepMinusOne: Int): () -> Item? = { iter.nth(stepMinusOne) }
+        fun <Item, I : Iterator<Item>> nth(iter: I, stepMinusOne: Int): () -> Item? = { iter.nth(stepMinusOne) }
         if (this.firstTake) {
             this.firstTake = false
             when (val matchVal = this.iter.next()) {
@@ -221,7 +222,7 @@ public open class StepBy<I>(
     }
 
     public override fun <Residual, Acc, R> specTryRfold(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
-        fun <I> nthBack(iter: I, stepMinusOne: Int): () -> Item? = { iter.nthBack(stepMinusOne) }
+        fun <Item, I : Iterator<Item>> nthBack(iter: I, stepMinusOne: Int): () -> Item? = { iter.nthBack(stepMinusOne) }
         return when (val matchVal = this.nextBack()) {
             null -> init
             else -> {
@@ -233,7 +234,7 @@ public open class StepBy<I>(
     }
 
     public override fun <Acc> specRfold(init: Acc, f: (Acc, Item) -> Acc): Acc {
-        fun <I> nthBack(iter: I, stepMinusOne: Int): () -> Item? = { iter.nthBack(stepMinusOne) }
+        fun <Item, I : Iterator<Item>> nthBack(iter: I, stepMinusOne: Int): () -> Item? = { iter.nthBack(stepMinusOne) }
         return when (val matchVal = this.nextBack()) {
             null -> init
             else -> {
@@ -332,13 +333,13 @@ public interface StepByImpl<I, Item> {
  * it must also be specialized for backwards iteration.
  */
 public interface StepByBackImpl<I, Item> {
-    public fun specNextBack(): Item?
+    public fun <Item> specNextBack(): Item?
 
-    public fun specNthBack(n: Int): Item?
+    public fun <Item> specNthBack(n: Int): Item?
 
-    public fun <Residual, Acc, R> specTryRfold(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual>
+    public fun <Item, Residual, Acc, R> specTryRfold(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual>
 
-    public fun <Acc> specRfold(init: Acc, f: (Acc, Item) -> Acc): Acc
+    public fun <Item, Acc> specRfold(init: Acc, f: (Acc, Item) -> Acc): Acc
 }
 
 /**

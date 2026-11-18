@@ -12,6 +12,8 @@ import io.github.kotlinmania.rustlang.core.ops.bit.BitAnd
 import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
 import io.github.kotlinmania.rustlang.core.ops.bit.Shl
 import io.github.kotlinmania.rustlang.core.ops.bit.Shr
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 // Numeric traits used for internal implementations.
 

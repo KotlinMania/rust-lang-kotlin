@@ -164,7 +164,7 @@ public fun u8SliceCastCharSlice(x: List<UByte>): List<CChar> {
  * Replace bytes in an array with those from a slice. This is a polyfill for `[T].copyFromSlice`
  * in `const`.
  */
-public fun <T> replaceArrayItems(dst: List<T>, src: List<T>, start: Int, n: Int): List<T> {
+public fun <T> replaceArrayItems(dst: List<T>, src: List<T>, start: Int, n: Int = 0): List<T> {
     var i = 0
     while (i < src.size) {
         dst[i + start] = src[i]

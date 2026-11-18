@@ -4,6 +4,8 @@ package io.github.kotlinmania.rustlang.coresimd.tobytes
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.coresimd.Simd
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 /**
  * Converts SIMD vectors to vectors of bytes

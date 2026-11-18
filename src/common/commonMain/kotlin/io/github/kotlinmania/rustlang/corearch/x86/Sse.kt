@@ -21,6 +21,9 @@ import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.simd.I32x4
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
 
 // Streaming SIMD Extensions (SSE)
 

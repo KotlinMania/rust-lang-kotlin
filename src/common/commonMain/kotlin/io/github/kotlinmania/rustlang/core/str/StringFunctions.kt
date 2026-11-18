@@ -96,7 +96,7 @@ public fun sliceErrorFailRt(s: String, begin: Int, end: Int): Nothing {
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
                     val kind = AssertKind.Eq
-                    assertFailed(kind, leftVal, rightVal, Option.None)
+                    assertFailed(kind, leftVal, rightVal, Option.None())
                 }
             }
         }

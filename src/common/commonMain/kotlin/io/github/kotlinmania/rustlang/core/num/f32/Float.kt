@@ -27,7 +27,7 @@ import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.FpCategory
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cbrtf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.fdimf
-import io.github.kotlinmania.rustlang.core.panic.constAssert
+import io.github.kotlinmania.rustlang.core.num.midpoint
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // Constants for the `Float` single-precision floating point type.
@@ -1247,7 +1247,7 @@ public fun kotlin.Float.totalCmp(other: kotlin.Float): Ordering {
  */
 public fun kotlin.Float.clamp(min: kotlin.Float, max: kotlin.Float): kotlin.Float {
     var selfMut = this
-    constAssert(min <= max, "min > max, or either was NaN", "min > max, or either was NaN. min = {min:?}, max = {max:?}", min, max)
+    check(min <= max) { "min > max, or either was NaN" }
     if (selfMut < min) {
         selfMut = min
     }

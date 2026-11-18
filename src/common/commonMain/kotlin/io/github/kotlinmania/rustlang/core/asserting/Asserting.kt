@@ -102,7 +102,9 @@ public open class Capture<E, M>(
     // If Some, then `E` implements [Printable] and was evaluated.
     public var elem: E?,
     public var phantom: Unit,
-)
+) {
+    public companion object
+}
 
 public fun <M, T> Capture.Companion.new(): Capture<M, T> = Capture(elem = null, phantom = Unit)
 

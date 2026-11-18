@@ -1706,7 +1706,7 @@ public open class Arguments internal constructor(
          */
         // SAFETY: The caller must ensure that the provided template and args encode a valid
         // fmt.Arguments, as documented above.
-        public fun new(template: UByteArray, args: List<Argument>, n: Int, m: Int): Arguments {
+        public fun new(template: UByteArray, args: List<Argument>, n: Int = 0, m: Int = 0): Arguments {
             // SAFETY: Responsibility of the caller.
             return Arguments(template = transmuteWithLayouts<UByteArray, NonNull>(template, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<NonNull>()), args = transmuteWithLayouts<List<Argument>, NonNull>(args, UnresolvedTypeLayout<List<Argument>>(), UnresolvedTypeLayout<NonNull>()))
         }

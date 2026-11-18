@@ -26,7 +26,7 @@ public fun detectFeatures(): Initializer {
     when (val matchVal = auxv()) {
         is Result.Ok<*, *> -> {
             val auxv = matchVal.okValue()
-            enableFeature(value, Feature::msa, test(auxv.hwcap, 1u))
+            enableFeature(value, Feature.Msa, test(auxv.hwcap, 1u))
             return value
         }
         else -> {}

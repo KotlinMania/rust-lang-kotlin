@@ -136,29 +136,29 @@ public fun <T, B, Acc> mapFold(f: (T) -> B, g: (Acc, B) -> Acc): (Acc, T) -> Acc
 
 public fun <T, B, Acc, R> mapTryFold(f: (T) -> B, g: (Acc, B) -> R): (Acc, T) -> R = { acc, elt -> g(acc, f(elt)) }
 
-public fun <B, I> Map<I, F>.next(): B? = this.iter.next()?.let(this.f)
+public fun <Item, B, I : Iterator<Item>> Map<I, F>.next(): B? = this.iter.next()?.let(this.f)
 
-public fun <B, I> Map<I, F>.sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
+public fun <Item, B, I : Iterator<Item>> Map<I, F>.sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
 
-public fun <Residual, B, I, Acc, R> Map<I, F>.tryFold(init: Acc, g: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, mapTryFold(this.f, g))
+public fun <Item, Residual, B, I : Iterator<Item>, Acc, R> Map<I, F>.tryFold(init: Acc, g: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, mapTryFold(this.f, g))
 
-public fun <B, I, Acc> Map<I, F>.fold(init: Acc, g: (Acc, B) -> Acc): Acc = this.iter.fold(init, mapFold(this.f, g))
+public fun <Item, B, I : Iterator<Item>, Acc> Map<I, F>.fold(init: Acc, g: (Acc, B) -> Acc): Acc = this.iter.fold(init, mapFold(this.f, g))
 
-public fun <B, I> Map<I, F>.iteratorGetUnchecked(idx: Int): B {
+public fun <Item, B, I : Iterator<Item>> Map<I, F>.iteratorGetUnchecked(idx: Int): B {
     // SAFETY: the caller must uphold the contract for
     // `Iterator.__iterator_get_unchecked`.
     return (this.f)(tryGetUnchecked(this.iter, idx))
 }
 
-public fun <B, I> Map<I, F>.nextBack(): B? = this.iter.nextBack()?.let(this.f)
+public fun <Item, B, I : Iterator<Item>> Map<I, F>.nextBack(): B? = this.iter.nextBack()?.let(this.f)
 
-public fun <Residual, B, I, Acc, R> Map<I, F>.tryRfold(init: Acc, g: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, mapTryFold(this.f, g))
+public fun <Item, Residual, B, I : Iterator<Item>, Acc, R> Map<I, F>.tryRfold(init: Acc, g: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, mapTryFold(this.f, g))
 
-public fun <B, I, Acc> Map<I, F>.rfold(init: Acc, g: (Acc, B) -> Acc): Acc = this.iter.rfold(init, mapFold(this.f, g))
+public fun <Item, B, I : Iterator<Item>, Acc> Map<I, F>.rfold(init: Acc, g: (Acc, B) -> Acc): Acc = this.iter.rfold(init, mapFold(this.f, g))
 
-public fun <B, I> Map<I, F>.len(): Int = this.iter.len()
+public fun <Item, B, I : Iterator<Item>> Map<I, F>.len(): Int = this.iter.len()
 
-public fun <B, I> Map<I, F>.isEmpty(): Boolean = this.iter.isEmpty()
+public fun <Item, B, I : Iterator<Item>> Map<I, F>.isEmpty(): Boolean = this.iter.isEmpty()
 
 public val MAY_HAVE_SIDE_EFFECT: Boolean = true
 

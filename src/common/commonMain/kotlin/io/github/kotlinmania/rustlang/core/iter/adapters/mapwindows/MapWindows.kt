@@ -8,7 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.checkedMul
-import io.github.kotlinmania.rustlang.core.option.Item
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
@@ -60,6 +60,8 @@ public open class MapWindows<I, F, Item> internal constructor(
     public var inner: MapWindowsInner<I, Item> = innerCtorArg
         internal set
 
+    public val n: Int = 0
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "MapWindows").field("iter", this.inner.iter).finish(); Result.Ok<Unit, Unit>(Unit) }
 
     public open fun clone(): MapWindows<I, F, Item> = MapWindows(f = this.f.clone(), inner = this.inner.clone())
@@ -73,7 +75,7 @@ public open class MapWindows<I, F, Item> internal constructor(
             innerCtorArg = inner,
         )
 
-        public fun <I, F> new(iter: I, f: F, n: Int, typeLayoutI: TypeLayout<I> = UnresolvedTypeLayout()): MapWindows<I, F, Item> {
+        public fun <Item, I : Iterator<Item>, F> new(iter: I, f: F, n: Int, typeLayoutI: TypeLayout<I> = UnresolvedTypeLayout()): MapWindows<I, F, Item> {
             check(n != 0) { "array in `Iterator::map_windows` must contain more than 0 elements" }
             // Only ZST arrays' length can be so large.
             if (((UnresolvedTypeLayout<Item>()).sizeBytes == 0L)) {
@@ -102,6 +104,8 @@ public open class MapWindowsInner<I, Item> internal constructor(
     // Note: should we shrink the size of `buffer` using niche optimization?
     public var buffer: Buffer<Item>? = bufferCtorArg
         internal set
+
+    public val n: Int = 0
 
     public open fun nextWindow(): List<Item>? {
         when (val matchVal = this.buffer) {
@@ -152,7 +156,7 @@ public open class MapWindowsInner<I, Item> internal constructor(
             bufferCtorArg = buffer,
         )
 
-        public fun <I> new(iter: I, n: Int): MapWindowsInner<I, Item> = MapWindowsInner(iter = iter, buffer = null)
+        public fun <Item, I : Iterator<Item>> new(iter: I, n: Int): MapWindowsInner<I, Item> = MapWindowsInner(iter = iter, buffer = null)
     }
 }
 
@@ -172,6 +176,8 @@ public open class Buffer<T>(
     public var buffer: List<List<MaybeUninit<T>>>,
     public var start: Int,
 ) {
+    public val n: Int = 0
+
     public open fun bufferPtr(): ConstPtr = ConstPtr((this.buffer.asPtr()).rawAddress)
 
     public open fun bufferMutPtr(): MutPtr = MutPtr((this.buffer.asMutPtr()).rawAddress)
@@ -284,10 +290,10 @@ public open class Buffer<T>(
     }
 }
 
-public fun <I, R> MapWindows<I, F, Item>.next(n: Int): R? {
+public fun <Item, I, R> MapWindows<I, F, Item>.next(n: Int = 0): R? where I : Iterator<Item> {
     val window = (this.inner.nextWindow() ?: return null)
     val out = (this.f)(window)
     return out
 }
 
-public fun <I, R> MapWindows<I, F, Item>.sizeHint(n: Int): Pair<Int, Int?> = this.inner.sizeHint()
+public fun <Item, I, R> MapWindows<I, F, Item>.sizeHint(n: Int = 0): Pair<Int, Int?> where I : Iterator<Item> = this.inner.sizeHint()

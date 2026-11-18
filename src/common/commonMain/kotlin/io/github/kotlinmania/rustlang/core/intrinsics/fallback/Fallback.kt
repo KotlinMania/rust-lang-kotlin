@@ -7,9 +7,13 @@ import io.github.kotlinmania.rustlang.core.intrinsics.assume
 import io.github.kotlinmania.rustlang.core.intrinsics.disjointBitor
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShl
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShr
+import io.github.kotlinmania.rustlang.core.num.carryingMulAdd
 import io.github.kotlinmania.rustlang.core.num.overflowingAdd
 import io.github.kotlinmania.rustlang.core.num.wrappingAdd
 import io.github.kotlinmania.rustlang.core.num.wrappingMul
+import kotlin.experimental.and
+import kotlin.experimental.or
+import kotlin.experimental.xor
 
 public interface CarryingMulAdd<T, out Unsigned> {
     public fun carryingMulAdd(multiplicand: T, addend: T, carry: T): Pair<Unsigned, T>

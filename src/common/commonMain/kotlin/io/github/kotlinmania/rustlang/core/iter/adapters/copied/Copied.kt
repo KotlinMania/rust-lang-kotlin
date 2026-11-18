@@ -80,7 +80,7 @@ public fun <T, Acc, R> copyTryFold(f: (Acc, T) -> R): (Acc, T) -> R = { acc, elt
 
 public fun <I, T> Copied<I>.next(): T? where I : Iterator<T> = this.it.next()
 
-public fun <I, T> Copied<I>.nextChunk(n: Int, specNextChunkIFn: (I) -> Result<List<T>, IntoIter<T>>): Result<List<T>, IntoIter<T>> where I : Iterator<T> = specNextChunkIFn(this.it)
+public fun <I, T> Copied<I>.nextChunk(n: Int = 0, specNextChunkIFn: (I) -> Result<List<T>, IntoIter<T>>): Result<List<T>, IntoIter<T>> where I : Iterator<T> = specNextChunkIFn(this.it)
 
 public fun <I, T> Copied<I>.sizeHint(): Pair<Int, Int?> where I : Iterator<T> = this.it.sizeHint()
 
@@ -102,17 +102,17 @@ public fun <I, T> Copied<I>.iteratorGetUnchecked(idx: Int): T where I : Iterator
     return tryGetUnchecked(this.it, idx)
 }
 
-public fun <I, T> Copied<I>.nextBack(): T? = this.it.nextBack()
+public fun <I, T> Copied<I>.nextBack(): T? where I : Iterator<T> = this.it.nextBack()
 
-public fun <Residual, I, T, B, R> Copied<I>.tryRfold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> = this.it.tryRfold(init, copyTryFold(f))
+public fun <Residual, I, T, B, R> Copied<I>.tryRfold(init: B, f: (B, T) -> R): R where I : Iterator<T>, R : Try<R, B, Residual> = this.it.tryRfold(init, copyTryFold(f))
 
-public fun <I, T, Acc> Copied<I>.rfold(init: Acc, f: (Acc, T) -> Acc): Acc = this.it.rfold(init, copyFold(f))
+public fun <I, T, Acc> Copied<I>.rfold(init: Acc, f: (Acc, T) -> Acc): Acc where I : Iterator<T> = this.it.rfold(init, copyFold(f))
 
-public fun <I, T> Copied<I>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.it.advanceBackBy(n)
+public fun <I, T> Copied<I>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> where I : Iterator<T> = this.it.advanceBackBy(n)
 
-public fun <I, T> Copied<I>.len(): Int = this.it.len()
+public fun <I, T> Copied<I>.len(): Int where I : Iterator<T> = this.it.len()
 
-public fun <I, T> Copied<I>.isEmpty(): Boolean = this.it.isEmpty()
+public fun <I, T> Copied<I>.isEmpty(): Boolean where I : Iterator<T> = this.it.isEmpty()
 
 public val MAY_HAVE_SIDE_EFFECT: Boolean = I.MAY_HAVE_SIDE_EFFECT
 
@@ -122,9 +122,9 @@ public interface SpecNextChunk<T> : Iterator<T> {
     public fun next(): T?
 }
 
-public fun <I, T> I.specNextChunk(n: Int): Result<List<T>, IntoIter<T>> where I : Iterator<T> = iterNextChunk(this.copied(), n)
+public fun <I, T> I.specNextChunk(n: Int = 0): Result<List<T>, IntoIter<T>> where I : Iterator<T> = iterNextChunk(this.copied(), n)
 
-public fun <T> Iter<T>.specNextChunk(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<List<T>, IntoIter<T>> {
+public fun <T> Iter<T>.specNextChunk(n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<List<T>, IntoIter<T>> {
     val rawArray = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Result<List<T>, IntoIter<T>>>()) }
     val len = this.len()
     if (((typeLayoutT).sizeBytes == 0L)) {

@@ -21,6 +21,9 @@ import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memrchr
 import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.str.iter.CharIndices
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
 import io.github.kotlinmania.rustlang.core.Mask8x16 as Mask
 import io.github.kotlinmania.rustlang.core.U8x16 as Block
 
@@ -771,9 +774,9 @@ public interface MultiCharEq {
 
 public fun ((Char) -> Boolean).matches(c: Char): Boolean = this(c)
 
-public fun List<Char>.matchesFromCharArrayn(c: Char, n: Int): Boolean = this.contains(c)
+public fun List<Char>.matchesFromCharArrayn(c: Char, n: Int = 0): Boolean = this.contains(c)
 
-public fun List<Char>.matches(c: Char, n: Int): Boolean = this.contains(c)
+public fun List<Char>.matches(c: Char, n: Int = 0): Boolean = this.contains(c)
 
 public fun List<Char>.matches(c: Char): Boolean = this.contains(c)
 
@@ -877,6 +880,8 @@ public open class CharArraySearcher(
             value = v
         }
 
+    public val n: Int = 0
+
     public open fun clone(): CharArraySearcher = CharArraySearcher(value)
 
     public override fun haystack(): String = this.value.haystack()
@@ -906,6 +911,8 @@ public open class CharArrayRefSearcher(
             value = v
         }
 
+    public val n: Int = 0
+
     public open fun clone(): CharArrayRefSearcher = CharArrayRefSearcher(value)
 
     public override fun haystack(): String = this.value.haystack()
@@ -933,17 +940,17 @@ public open class CharArrayRefSearcher(
  * check("Hello world".indexOf(listOf('h', 'w')).takeIf { it >= 0 } == 6)
  * ```
  */
-public fun List<Char>.intoSearcherFromCharArrayn(haystack: String, n: Int): CharArraySearcher = (CharArraySearcher)((MultiCharEqPattern)(this).intoSearcher(haystack))
+public fun List<Char>.intoSearcherFromCharArrayn(haystack: String, n: Int = 0): CharArraySearcher = (CharArraySearcher)((MultiCharEqPattern)(this).intoSearcher(haystack))
 
-public fun List<Char>.isContainedInFromCharArrayn(haystack: String, n: Int): Boolean = (MultiCharEqPattern)(this).isContainedIn(haystack)
+public fun List<Char>.isContainedInFromCharArrayn(haystack: String, n: Int = 0): Boolean = (MultiCharEqPattern)(this).isContainedIn(haystack)
 
-public fun List<Char>.isPrefixOfFromCharArrayn(haystack: String, n: Int): Boolean = (MultiCharEqPattern)(this).isPrefixOf(haystack)
+public fun List<Char>.isPrefixOfFromCharArrayn(haystack: String, n: Int = 0): Boolean = (MultiCharEqPattern)(this).isPrefixOf(haystack)
 
-public fun List<Char>.stripPrefixOfFromCharArrayn(haystack: String, n: Int): String? = (MultiCharEqPattern)(this).stripPrefixOf(haystack)
+public fun List<Char>.stripPrefixOfFromCharArrayn(haystack: String, n: Int = 0): String? = (MultiCharEqPattern)(this).stripPrefixOf(haystack)
 
-public fun List<Char>.isSuffixOfFromCharArrayn(haystack: String, n: Int): Boolean = (MultiCharEqPattern)(this).isSuffixOf(haystack)
+public fun List<Char>.isSuffixOfFromCharArrayn(haystack: String, n: Int = 0): Boolean = (MultiCharEqPattern)(this).isSuffixOf(haystack)
 
-public fun List<Char>.stripSuffixOfFromCharArrayn(haystack: String, n: Int): String? = (MultiCharEqPattern)(this).stripSuffixOf(haystack)
+public fun List<Char>.stripSuffixOfFromCharArrayn(haystack: String, n: Int = 0): String? = (MultiCharEqPattern)(this).stripSuffixOf(haystack)
 
 /**
  * Searches for chars that are equal to any of the [char]s in the array.
@@ -955,17 +962,17 @@ public fun List<Char>.stripSuffixOfFromCharArrayn(haystack: String, n: Int): Str
  * check("Hello world".indexOf(listOf('h', 'w')).takeIf { it >= 0 } == 6)
  * ```
  */
-public fun List<Char>.intoSearcher(haystack: String, n: Int): CharArrayRefSearcher = (CharArrayRefSearcher)((MultiCharEqPattern)(this).intoSearcher(haystack))
+public fun List<Char>.intoSearcher(haystack: String, n: Int = 0): CharArrayRefSearcher = (CharArrayRefSearcher)((MultiCharEqPattern)(this).intoSearcher(haystack))
 
-public fun List<Char>.isContainedIn(haystack: String, n: Int): Boolean = (MultiCharEqPattern)(this).isContainedIn(haystack)
+public fun List<Char>.isContainedIn(haystack: String, n: Int = 0): Boolean = (MultiCharEqPattern)(this).isContainedIn(haystack)
 
-public fun List<Char>.isPrefixOf(haystack: String, n: Int): Boolean = (MultiCharEqPattern)(this).isPrefixOf(haystack)
+public fun List<Char>.isPrefixOf(haystack: String, n: Int = 0): Boolean = (MultiCharEqPattern)(this).isPrefixOf(haystack)
 
-public fun List<Char>.stripPrefixOf(haystack: String, n: Int): String? = (MultiCharEqPattern)(this).stripPrefixOf(haystack)
+public fun List<Char>.stripPrefixOf(haystack: String, n: Int = 0): String? = (MultiCharEqPattern)(this).stripPrefixOf(haystack)
 
-public fun List<Char>.isSuffixOf(haystack: String, n: Int): Boolean = (MultiCharEqPattern)(this).isSuffixOf(haystack)
+public fun List<Char>.isSuffixOf(haystack: String, n: Int = 0): Boolean = (MultiCharEqPattern)(this).isSuffixOf(haystack)
 
-public fun List<Char>.stripSuffixOf(haystack: String, n: Int): String? = (MultiCharEqPattern)(this).stripSuffixOf(haystack)
+public fun List<Char>.stripSuffixOf(haystack: String, n: Int = 0): String? = (MultiCharEqPattern)(this).stripSuffixOf(haystack)
 
 // ////////////////////////////////////////////////////////////////////////
 // Impl for &[char]
@@ -2147,7 +2154,7 @@ public fun smallSliceEq(x: List<UByte>, y: List<UByte>): Boolean {
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
                     val kind = AssertKind.Eq
-                    assertFailed(kind, leftVal, rightVal, Option.None)
+                    assertFailed(kind, leftVal, rightVal, Option.None())
                 }
             }
         }

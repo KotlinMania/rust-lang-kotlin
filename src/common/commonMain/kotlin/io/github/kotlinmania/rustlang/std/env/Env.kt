@@ -11,18 +11,19 @@ import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.sync.mpmc.IntoIter
 import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 import io.github.kotlinmania.rustlang.std.sys.env.unix.env
 import io.github.kotlinmania.rustlang.std.sys.env.unix.getenv
 import io.github.kotlinmania.rustlang.std.sys.env.unix.setenv
 import io.github.kotlinmania.rustlang.std.sys.env.unix.unsetenv
-import io.github.kotlinmania.rustlang.std.sys.envconsts.os.DLL_EXTENSION
-import io.github.kotlinmania.rustlang.std.sys.envconsts.os.DLL_PREFIX
-import io.github.kotlinmania.rustlang.std.sys.envconsts.os.DLL_SUFFIX
-import io.github.kotlinmania.rustlang.std.sys.envconsts.os.EXE_EXTENSION
-import io.github.kotlinmania.rustlang.std.sys.envconsts.os.EXE_SUFFIX
-import io.github.kotlinmania.rustlang.std.sys.envconsts.os.FAMILY
-import io.github.kotlinmania.rustlang.std.sys.envconsts.os.OS
+import io.github.kotlinmania.rustlang.std.sys.envconsts.DLL_EXTENSION
+import io.github.kotlinmania.rustlang.std.sys.envconsts.DLL_PREFIX
+import io.github.kotlinmania.rustlang.std.sys.envconsts.DLL_SUFFIX
+import io.github.kotlinmania.rustlang.std.sys.envconsts.EXE_EXTENSION
+import io.github.kotlinmania.rustlang.std.sys.envconsts.EXE_SUFFIX
+import io.github.kotlinmania.rustlang.std.sys.envconsts.FAMILY
+import io.github.kotlinmania.rustlang.std.sys.envconsts.OS
 import io.github.kotlinmania.rustlang.std.sys.paths.unix.chdir
 import io.github.kotlinmania.rustlang.std.sys.paths.unix.getcwd
 
@@ -874,7 +875,7 @@ public open class ArgsOs(
 
     public open fun next(): OsString? = this.inner.next()
 
-    public open fun nextChunk(n: Int): Result<List<OsString>, IntoIter<OsString>> = this.inner.nextChunk()
+    public open fun nextChunk(n: Int = 0): Result<List<OsString>, IntoIter<OsString>> = this.inner.nextChunk()
 
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 

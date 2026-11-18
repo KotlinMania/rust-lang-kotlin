@@ -11,7 +11,9 @@ import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv6Addr
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedAddUnsigned
 import io.github.kotlinmania.rustlang.core.num.checkedSub
+import io.github.kotlinmania.rustlang.core.num.checkedSubUnsigned
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU128Inner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU16Inner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU32Inner
@@ -20,16 +22,25 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU8Inner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.overflowingAdd
+import io.github.kotlinmania.rustlang.core.num.overflowingAddUnsigned
 import io.github.kotlinmania.rustlang.core.num.overflowingSub
+import io.github.kotlinmania.rustlang.core.num.overflowingSubUnsigned
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
+import io.github.kotlinmania.rustlang.core.num.uncheckedAdd
+import io.github.kotlinmania.rustlang.core.num.uncheckedSub
 import io.github.kotlinmania.rustlang.core.num.wrappingAdd
+import io.github.kotlinmania.rustlang.core.num.wrappingAddUnsigned
 import io.github.kotlinmania.rustlang.core.num.wrappingSub
+import io.github.kotlinmania.rustlang.core.num.wrappingSubUnsigned
 import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
 import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
+import kotlin.experimental.and
+import kotlin.experimental.or
 import io.github.kotlinmania.rustlang.core.ascii.Char as AsciiChar
 
 // Safety: This macro must only be used on types that are `Copy` and result in ranges

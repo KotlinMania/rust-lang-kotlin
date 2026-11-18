@@ -14,6 +14,9 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.sub
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingAdd
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingSub
 import io.github.kotlinmania.rustlang.core.result.Result
+import kotlin.experimental.and
+import kotlin.experimental.or
+import kotlin.experimental.xor
 
 // Definitions of `Wrapping<T>`.
 
@@ -79,6 +82,8 @@ public open class Wrapping<T>(
     public open fun fmtLowerHex(f: StringBuilder): Result<Unit, Unit> = this.value.fmt(f)
 
     public open fun fmtUpperHex(f: StringBuilder): Result<Unit, Unit> = this.value.fmt(f)
+
+    public companion object
 }
 
 public infix fun Wrapping<UByte>.shl(other: Int): Wrapping<UByte> = Wrapping(this.value.wrappingShl(other.toUInt()), fieldLayout = PrimitiveLayouts.U8)

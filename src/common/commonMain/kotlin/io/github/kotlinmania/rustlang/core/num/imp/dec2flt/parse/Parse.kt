@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common.is8digits
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.decimal.Decimal
 import io.github.kotlinmania.rustlang.core.num.imp.traits.Float
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.offsetFrom
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingSub

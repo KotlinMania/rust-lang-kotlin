@@ -10,7 +10,6 @@ import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.s390x.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
-import io.github.kotlinmania.rustlang.stddetect.detect.cache.Initializer
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.AuxVec
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
 
@@ -19,7 +18,7 @@ import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
 /**
  * Try to read the features from the auxiliary vector
  */
-public fun detectFeatures(): cache.Initializer {
+public fun detectFeatures(): Initializer {
     val optHwcap: AtHwcap? = auxv().ok()?.let(Into::into)
     val facilities = ExtendedFacilityList.new()
     return cache(optHwcap, facilities)
@@ -221,8 +220,8 @@ public open class ExtendedFacilityList(
  * [Facility Indications]: https://www.ibm.com/support/pages/sites/default/files/2021-05/SA22-7871-10.pdf#page=63
  * [kernel]: https://github.com/torvalds/linux/blob/b62cef9a5c673f1b8083159f5dc03c1c5daced2f/arch/s390/include/asm/elf.h#L129
  */
-public fun cache(hwcap: AtHwcap?, facilities: ExtendedFacilityList): cache.Initializer {
-    val value = cache.Initializer.default()
+public fun cache(hwcap: AtHwcap?, facilities: ExtendedFacilityList): Initializer {
+    val value = Initializer.default()
     run {
         var enableIfSet =
             { bitIndex, f ->
@@ -233,32 +232,32 @@ public fun cache(hwcap: AtHwcap?, facilities: ExtendedFacilityList): cache.Initi
         // We use HWCAP for `vector` because it requires both hardware and kernel support.
         if (hwcap.vxrs == true) {
             // vector and related
-            enableIfSet(129, Feature::vector)
-            enableIfSet(135, Feature::vectorEnhancements1)
-            enableIfSet(148, Feature::vectorEnhancements2)
-            enableIfSet(198, Feature::vectorEnhancements3)
-            enableIfSet(134, Feature::vectorPackedDecimal)
-            enableIfSet(152, Feature::vectorPackedDecimalEnhancement)
-            enableIfSet(192, Feature::vectorPackedDecimalEnhancement2)
-            enableIfSet(199, Feature::vectorPackedDecimalEnhancement3)
-            enableIfSet(165, Feature::nnpAssist)
+            enableIfSet(129, Feature.Vector)
+            enableIfSet(135, Feature.VectorEnhancements1)
+            enableIfSet(148, Feature.VectorEnhancements2)
+            enableIfSet(198, Feature.VectorEnhancements3)
+            enableIfSet(134, Feature.VectorPackedDecimal)
+            enableIfSet(152, Feature.VectorPackedDecimalEnhancement)
+            enableIfSet(192, Feature.VectorPackedDecimalEnhancement2)
+            enableIfSet(199, Feature.VectorPackedDecimalEnhancement3)
+            enableIfSet(165, Feature.NnpAssist)
         }
         // others
-        enableIfSet(76, Feature::messageSecurityAssistExtension3)
-        enableIfSet(77, Feature::messageSecurityAssistExtension4)
-        enableIfSet(57, Feature::messageSecurityAssistExtension5)
-        enableIfSet(146, Feature::messageSecurityAssistExtension8)
-        enableIfSet(155, Feature::messageSecurityAssistExtension9)
-        enableIfSet(86, Feature::messageSecurityAssistExtension12)
-        enableIfSet(58, Feature::miscellaneousExtensions2)
-        enableIfSet(61, Feature::miscellaneousExtensions3)
-        enableIfSet(84, Feature::miscellaneousExtensions4)
-        enableIfSet(45, Feature::highWord)
-        enableIfSet(73, Feature::transactionalExecution)
-        enableIfSet(133, Feature::guardedStorage)
-        enableIfSet(150, Feature::enhancedSort)
-        enableIfSet(151, Feature::deflateConversion)
-        enableIfSet(201, Feature::concurrentFunctions)
+        enableIfSet(76, Feature.MessageSecurityAssistExtension3)
+        enableIfSet(77, Feature.MessageSecurityAssistExtension4)
+        enableIfSet(57, Feature.MessageSecurityAssistExtension5)
+        enableIfSet(146, Feature.MessageSecurityAssistExtension8)
+        enableIfSet(155, Feature.MessageSecurityAssistExtension9)
+        enableIfSet(86, Feature.MessageSecurityAssistExtension12)
+        enableIfSet(58, Feature.MiscellaneousExtensions2)
+        enableIfSet(61, Feature.MiscellaneousExtensions3)
+        enableIfSet(84, Feature.MiscellaneousExtensions4)
+        enableIfSet(45, Feature.HighWord)
+        enableIfSet(73, Feature.TransactionalExecution)
+        enableIfSet(133, Feature.GuardedStorage)
+        enableIfSet(150, Feature.EnhancedSort)
+        enableIfSet(151, Feature.DeflateConversion)
+        enableIfSet(201, Feature.ConcurrentFunctions)
     }
     return value
 }

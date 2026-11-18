@@ -325,14 +325,14 @@ public open class IntoIter<T, A : Allocator>(
 
     public open fun last(): T? = this.nextBack()
 
-    public open fun nextChunk(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<List<T>, IntoIter<T>> {
+    public open fun nextChunk(n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<List<T>, IntoIter<T>> {
         val rawAry = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Result<List<T>, IntoIter<T>>>()) }
         val len = this.len()
         if (((typeLayoutT).sizeBytes == 0L)) {
             if (len < n) {
                 this.forgetRemainingElements()
                 // SAFETY: ZSTs can be conjured ex nihilo, only the amount has to be correct
-                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len, n))
+                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
             }
             this.end = ConstPtr((this.end).rawAddress - ((n).toLong()))
             // SAFETY: ditto
@@ -344,7 +344,7 @@ public open class IntoIter<T, A : Allocator>(
             run {
                 copyNonoverlapping((this.ptr.asPtr()).asConstPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), len)
                 this.forgetRemainingElements()
-                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len, n))
+                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
             }
         }
         // SAFETY: `len` is larger than the array size. Copy a fixed amount here to fully initialize
@@ -444,18 +444,18 @@ public open class IntoIter<T, A : Allocator>(
         }
     }
 
-    public open fun nextChunkBack(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<List<T>, IntoIter<T>> {
+    public open fun nextChunkBack(n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<List<T>, IntoIter<T>> {
         val rawAry = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Result<List<T>, IntoIter<T>>>()) }
         val len = this.len()
         if (((typeLayoutT).sizeBytes == 0L)) {
             if (len < n) {
                 this.forgetRemainingElements()
                 // SAFETY: ZSTs can be conjured ex nihilo, only the amount has to be correct
-                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, n - len until n, n))
+                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, n - len until n))
             }
             this.end = ConstPtr((this.end).rawAddress - ((n).toLong()))
             // SAFETY: ditto
-            return Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawAry, n))
+            return Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawAry))
         }
         if (len < n) {
             // SAFETY: `len` indicates that this many elements are available
@@ -463,7 +463,7 @@ public open class IntoIter<T, A : Allocator>(
             run {
                 copyNonoverlapping((this.ptr.asPtr()).asConstPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), len)
                 this.forgetRemainingElements()
-                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len, n))
+                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
             }
         }
         // SAFETY: `len` is larger than the array size. Copy a fixed amount here to fully initialize
@@ -471,7 +471,7 @@ public open class IntoIter<T, A : Allocator>(
         return run {
             copyNonoverlapping((this.ptr.add(len - n).asPtr()).asConstPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), n)
             this.end = ConstPtr((this.end).rawAddress - ((n).toLong() * (typeLayoutT).strideBytes))
-            Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawAry, n))
+            Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawAry))
         }
     }
 

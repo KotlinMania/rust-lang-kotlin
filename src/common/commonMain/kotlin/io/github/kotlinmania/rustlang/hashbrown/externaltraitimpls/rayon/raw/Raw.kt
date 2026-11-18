@@ -5,13 +5,13 @@ import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.needsDrop
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.hashbrown.Guard
-import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.bridgeUnindexed
 import io.github.kotlinmania.rustlang.hashbrown.raw.Bucket
 import io.github.kotlinmania.rustlang.hashbrown.raw.RawIter
 import io.github.kotlinmania.rustlang.hashbrown.raw.RawIterRange
 import io.github.kotlinmania.rustlang.hashbrown.raw.RawTable
 import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.ParallelIterator
-import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.plumbing
 import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.plumbing.Folder
 import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.plumbing.UnindexedConsumer
 import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.plumbing.UnindexedProducer
@@ -28,7 +28,7 @@ public open class RawParIter<T>(
 
     public open fun <C> driveUnindexed(consumer: C): Result where C : UnindexedConsumer<Bucket<T>> {
         val producer = ParIterProducer(iter = this.iter)
-        return plumbing.bridgeUnindexed(producer, consumer)
+        return bridgeUnindexed(producer, consumer)
     }
 
     public companion object {
@@ -80,7 +80,7 @@ public open class RawIntoParIter<T, A : Allocator> internal constructor(
                 }
             })
         val producer = ParDrainProducer(iter = iter)
-        return plumbing.bridgeUnindexed(producer, consumer)
+        return bridgeUnindexed(producer, consumer)
     }
 
     public companion object {
@@ -114,7 +114,7 @@ public open class RawParDrain<T, A : Allocator> internal constructor(
         val iter = this.table.asRef().iter().iter
         forget(this)
         val producer = ParDrainProducer(iter = iter)
-        return plumbing.bridgeUnindexed(producer, consumer)
+        return bridgeUnindexed(producer, consumer)
     }
 
     public open fun drop() {

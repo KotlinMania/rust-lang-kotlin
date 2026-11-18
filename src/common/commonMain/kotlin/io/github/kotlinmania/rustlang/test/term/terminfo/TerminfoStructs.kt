@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.result.and
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.test.term.color.Color
+import io.github.kotlinmania.rustlang.test.term.Color
 import io.github.kotlinmania.rustlang.test.term.terminfo.Error.*
 import io.github.kotlinmania.rustlang.test.term.terminfo.parm.Param
 import io.github.kotlinmania.rustlang.test.term.terminfo.parm.Variables

@@ -124,7 +124,7 @@ public fun <A : Allocator> fromBoxUByteSliceA(s: String): List<UByte> {
  * println("$boxed")
  * ```
  */
-public fun <T> fromBoxTSlice(array: List<T>, n: Int): List<T> = array
+public fun <T> fromBoxTSlice(array: List<T>, n: Int = 0): List<T> = array
 
 /**
  * Casts a boxed slice to a boxed array.
@@ -133,7 +133,7 @@ public fun <T> fromBoxTSlice(array: List<T>, n: Int): List<T> = array
  *
  * `boxedSlice.len()` must be exactly `N`.
  */
-public fun <T, A : Allocator> boxedSliceAsArrayUnchecked(boxedSlice: List<T>, n: Int): List<T> {
+public fun <T, A : Allocator> boxedSliceAsArrayUnchecked(boxedSlice: List<T>, n: Int = 0): List<T> {
     check(boxedSlice.size == n)
     // SAFETY: Caller ensures that the length is correct.
     return Box.castUnchecked(boxedSlice)
@@ -150,7 +150,7 @@ public fun <T, A : Allocator> boxedSliceAsArrayUnchecked(boxedSlice: List<T>, n:
  * Returns the old `Holder<[T]>` in the `Err` variant if
  * `boxedSlice.len()` does not equal `N`.
  */
-public fun <T, A : Allocator> tryFromBoxTArraynA(boxedSlice: List<T>, n: Int): Result<List<T>, List<T>> =
+public fun <T, A : Allocator> tryFromBoxTArraynA(boxedSlice: List<T>, n: Int = 0): Result<List<T>, List<T>> =
     if (boxedSlice.size == n) {
         // SAFETY: Checked length.
         Result.Ok<List<T>, List<T>>(boxedSliceAsArrayUnchecked(boxedSlice, n))

@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.rustcdemangle.legacy
 
 import io.github.kotlinmania.rustlang.core.char.methods.toDigit
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.fromStrRadix
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -43,7 +44,7 @@ public open class Demangle(
             while (true) {
                 if (rest.startsWith('.')) {
                     when (val matchVal = rest.substring(1).chars().next()) {
-                        is Some -> {
+                        is Some<*> -> {
                             f.append("::")
                             rest = rest.substring(2)
                         }
@@ -189,13 +190,13 @@ public fun demangle(s: String): Result<Pair<Demangle, String>, Unit> {
             val matchVal = c.toDigit(10u)
             if (matchVal == null) break
             val d = matchVal
-            len = when (val tryResult = (len.checkedMul(10)?.let({ len1 -> len1.checkedAdd(d.toInt()) })?.let { Result.Ok(it) } ?: Result.Err(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.errValue()) }
-            c = when (val tryResult = (chars.next()?.let { Result.Ok(it) } ?: Result.Err(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.errValue()) }
+            len = when (val tryResult = (len.checkedMul(10)?.let({ len1 -> len1.checkedAdd(d.toInt()) })?.let { Result.Ok<Int, Unit>(it) } ?: Result.Err<Int, Unit>(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.errValue()) }
+            c = when (val tryResult = (chars.next()?.let { Result.Ok<Char, Unit>(it) } ?: Result.Err<Char, Unit>(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.errValue()) }
         }
         // `c` already contains the first character of this identifier, skip it and
         // all the other characters of this identifier, to reach the next element.
         for (unused in 0 until len) {
-            c = when (val tryResult = (chars.next()?.let { Result.Ok(it) } ?: Result.Err(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.errValue()) }
+            c = when (val tryResult = (chars.next()?.let { Result.Ok<Char, Unit>(it) } ?: Result.Err<Char, Unit>(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.errValue()) }
         }
         elements += 1
     }

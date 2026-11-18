@@ -200,6 +200,8 @@ public open class Libm<T>(
         set(v) {
             value = v
         }
+
+    public companion object
 }
 
 // verify-apilist-start

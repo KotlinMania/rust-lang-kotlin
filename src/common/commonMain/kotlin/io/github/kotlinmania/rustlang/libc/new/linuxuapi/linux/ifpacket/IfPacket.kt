@@ -17,6 +17,8 @@ import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U64
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SockaddrLl
+import kotlin.experimental.and
+import kotlin.experimental.inv
 
 // Header: `uapi / linux / ifPacket.h`
 

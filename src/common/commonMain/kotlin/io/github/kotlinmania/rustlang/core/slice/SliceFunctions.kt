@@ -29,10 +29,13 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.mem.take
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.checkedSub
+import io.github.kotlinmania.rustlang.core.num.isMultipleOf
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.num.uncheckedMul
 import io.github.kotlinmania.rustlang.core.ops.range.OneSidedRange
 import io.github.kotlinmania.rustlang.core.ops.range.OneSidedRangeBound.End
 import io.github.kotlinmania.rustlang.core.ops.range.OneSidedRangeBound.StartInclusive
@@ -40,7 +43,6 @@ import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
 import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panic.constPanic
 import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -130,7 +132,9 @@ public fun splitPointOf(range: OneSidedRange<Int>): Pair<Direction, Int>? {
 public fun <T> copyFromSliceImpl(dest: MutableList<T>, src: List<T>) {
     // The panic code path was put into a cold function to not bloat the
     // call site.
-    fun lenMismatchFail(dstLen: Int, srcLen: Int): Nothing = constPanic("copy_from_slice: source slice length does not match destination slice length", "copy_from_slice: source slice length ({src_len}) does not match destination slice length ({dst_len})", srcLen, dstLen)
+    fun lenMismatchFail(dstLen: Int, srcLen: Int): Nothing {
+        error("copy_from_slice: source slice length does not match destination slice length")
+    }
     if (dest.size != src.size) {
         lenMismatchFail(dest.size, src.size)
     }
@@ -148,7 +152,7 @@ public fun <T> copyFromSliceImpl(dest: MutableList<T>, src: List<T>) {
  * This will do `binomial(N + 1, 2) = N * (N + 1) / 2 = 0, 1, 3, 6, 10, ..`
  * comparison operations.
  */
-public fun <I : GetDisjointMutIndex<I>> getDisjointCheckValid(indices: List<I>, len: Int, n: Int): Result<Unit, GetDisjointMutError> {
+public fun <I : GetDisjointMutIndex<I>> getDisjointCheckValid(indices: List<I>, len: Int, n: Int = 0): Result<Unit, GetDisjointMutError> {
     // NB: The optimizer should inline the loops into a sequence
     // of instructions without additional branching.
     for ((i, idx) in indices.mapIndexed { index, item -> Pair(index, item) }) {
@@ -405,14 +409,14 @@ public fun <T> List<T>.lastMut(): T? =
  *
  * ```kotlin
  * val u = listOf(10, 40, 30)
- * check(listOf(10, 40) == u.firstChunk())
+ * check(listOf(10, 40) == u.firstChunk(2))
  * val v: List<Int> = listOf(10)
- * check(null == v.firstChunk())
+ * check(null == v.firstChunk(2))
  * val w: List<Int> = listOf()
- * check(listOf() == w.firstChunk())
+ * check(listOf() == w.firstChunk(0))
  * ```
  */
-public fun <T> List<T>.firstChunk(n: Int): List<T>? =
+public fun <T> List<T>.firstChunk(n: Int = 0): List<T>? =
     if (this.size < n) {
         null
     } else {
@@ -430,7 +434,7 @@ public fun <T> List<T>.firstChunk(n: Int): List<T>? =
  *
  * ```kotlin
  * val x = listOf(0, 1, 2)
- * when (val matchVal = x.firstChunkMut()) {
+ * when (val matchVal = x.firstChunkMut(2)) {
  *     null -> {}
  *     else -> {
  *         val first = matchVal
@@ -439,10 +443,10 @@ public fun <T> List<T>.firstChunk(n: Int): List<T>? =
  *     }
  * }
  * check((x).contentEquals(listOf(5, 4, 2)))
- * check(null == x.firstChunkMut())
+ * check(null == x.firstChunkMut(4))
  * ```
  */
-public fun <T> List<T>.firstChunkMut(n: Int): List<T>? =
+public fun <T> List<T>.firstChunkMut(n: Int = 0): List<T>? =
     if (this.size < n) {
         null
     } else {
@@ -461,7 +465,7 @@ public fun <T> List<T>.firstChunkMut(n: Int): List<T>? =
  *
  * ```kotlin
  * val x = listOf(0, 1, 2)
- * when (val matchVal = x.splitFirstChunk()) {
+ * when (val matchVal = x.splitFirstChunk(2)) {
  *     null -> {}
  *     else -> {
  *         val first = matchVal.first
@@ -470,10 +474,10 @@ public fun <T> List<T>.firstChunkMut(n: Int): List<T>? =
  *         check(elements == listOf(2))
  *     }
  * }
- * check(null == x.splitFirstChunk())
+ * check(null == x.splitFirstChunk(4))
  * ```
  */
-public fun <T> List<T>.splitFirstChunk(n: Int): Pair<List<T>, List<T>>? {
+public fun <T> List<T>.splitFirstChunk(n: Int = 0): Pair<List<T>, List<T>>? {
     val (first, tail) = this.splitAtChecked(n) ?: return null
     // SAFETY: We explicitly check for the correct number of elements,
     // and do not let the references outlive the slice.
@@ -490,7 +494,7 @@ public fun <T> List<T>.splitFirstChunk(n: Int): Pair<List<T>, List<T>>? {
  *
  * ```kotlin
  * val x = listOf(0, 1, 2)
- * when (val matchVal = x.splitFirstChunkMut()) {
+ * when (val matchVal = x.splitFirstChunkMut(2)) {
  *     null -> {}
  *     else -> {
  *         val first = matchVal.first
@@ -501,10 +505,10 @@ public fun <T> List<T>.splitFirstChunk(n: Int): Pair<List<T>, List<T>>? {
  *     }
  * }
  * check((x).contentEquals(listOf(3, 4, 5)))
- * check(null == x.splitFirstChunkMut())
+ * check(null == x.splitFirstChunkMut(4))
  * ```
  */
-public fun <T> List<T>.splitFirstChunkMut(n: Int): Pair<List<T>, MutableList<T>>? {
+public fun <T> List<T>.splitFirstChunkMut(n: Int = 0): Pair<List<T>, MutableList<T>>? {
     val (first, tail) = this.splitAtMutChecked(n) ?: return null
     // SAFETY: We explicitly check for the correct number of elements,
     // do not let the reference outlive the slice,
@@ -521,7 +525,7 @@ public fun <T> List<T>.splitFirstChunkMut(n: Int): Pair<List<T>, MutableList<T>>
  *
  * ```kotlin
  * val x = listOf(0, 1, 2)
- * when (val matchVal = x.splitLastChunk()) {
+ * when (val matchVal = x.splitLastChunk(2)) {
  *     null -> {}
  *     else -> {
  *         val elements = matchVal.first
@@ -530,10 +534,10 @@ public fun <T> List<T>.splitFirstChunkMut(n: Int): Pair<List<T>, MutableList<T>>
  *         check(last == listOf(1, 2))
  *     }
  * }
- * check(null == x.splitLastChunk())
+ * check(null == x.splitLastChunk(4))
  * ```
  */
-public fun <T> List<T>.splitLastChunk(n: Int): Pair<List<T>, List<T>>? {
+public fun <T> List<T>.splitLastChunk(n: Int = 0): Pair<List<T>, List<T>>? {
     val index = this.size.checkedSub(n) ?: return null
     val (init, last) = this.splitAt(index)
     // SAFETY: We explicitly check for the correct number of elements,
@@ -551,7 +555,7 @@ public fun <T> List<T>.splitLastChunk(n: Int): Pair<List<T>, List<T>>? {
  *
  * ```kotlin
  * val x = listOf(0, 1, 2)
- * when (val matchVal = x.splitLastChunkMut()) {
+ * when (val matchVal = x.splitLastChunkMut(2)) {
  *     null -> {}
  *     else -> {
  *         val elements = matchVal.first
@@ -562,10 +566,10 @@ public fun <T> List<T>.splitLastChunk(n: Int): Pair<List<T>, List<T>>? {
  *     }
  * }
  * check((x).contentEquals(listOf(5, 3, 4)))
- * check(null == x.splitLastChunkMut())
+ * check(null == x.splitLastChunkMut(4))
  * ```
  */
-public fun <T> List<T>.splitLastChunkMut(n: Int): Pair<MutableList<T>, List<T>>? {
+public fun <T> List<T>.splitLastChunkMut(n: Int = 0): Pair<MutableList<T>, List<T>>? {
     val index = this.size.checkedSub(n) ?: return null
     val (init, last) = this.splitAtMut(index)
     // SAFETY: We explicitly check for the correct number of elements,
@@ -583,14 +587,14 @@ public fun <T> List<T>.splitLastChunkMut(n: Int): Pair<MutableList<T>, List<T>>?
  *
  * ```kotlin
  * val u = listOf(10, 40, 30)
- * check(listOf(40, 30) == u.lastChunk())
+ * check(listOf(40, 30) == u.lastChunk(2))
  * val v: List<Int> = listOf(10)
- * check(null == v.lastChunk())
+ * check(null == v.lastChunk(2))
  * val w: List<Int> = listOf()
- * check(listOf() == w.lastChunk())
+ * check(listOf() == w.lastChunk(0))
  * ```
  */
-public fun <T> List<T>.lastChunk(n: Int): List<T>? {
+public fun <T> List<T>.lastChunk(n: Int = 0): List<T>? {
     // Note(const-Note): Without const traits, we need this instead of `get`.
     val index = this.size.checkedSub(n) ?: return null
     val (_, last) = this.splitAt(index)
@@ -608,7 +612,7 @@ public fun <T> List<T>.lastChunk(n: Int): List<T>? {
  *
  * ```kotlin
  * val x = listOf(0, 1, 2)
- * when (val matchVal = x.lastChunkMut()) {
+ * when (val matchVal = x.lastChunkMut(2)) {
  *     null -> {}
  *     else -> {
  *         val last = matchVal
@@ -617,10 +621,10 @@ public fun <T> List<T>.lastChunk(n: Int): List<T>? {
  *     }
  * }
  * check((x).contentEquals(listOf(0, 10, 20)))
- * check(null == x.lastChunkMut())
+ * check(null == x.lastChunkMut(4))
  * ```
  */
-public fun <T> List<T>.lastChunkMut(n: Int): List<T>? {
+public fun <T> List<T>.lastChunkMut(n: Int = 0): List<T>? {
     // Note(const-Note): Without const traits, we need this instead of `get`.
     val index = this.size.checkedSub(n) ?: return null
     val (_, last) = this.splitAtMut(index)
@@ -831,7 +835,7 @@ public fun <T> List<T>.asMutPtr(): MutPtr = (mutPtrFromRustCast(this)).let { ptr
  *
  * [asPtr]: slice.asPtr
  */
-public fun <T> List<T>.asPtrRange(): Range<ConstPtr> {
+public fun <T> List<T>.asPtrRange(): io.github.kotlinmania.rustlang.core.range.Range<ConstPtr> {
     val start = this.asPtr()
     // SAFETY: The `add` here is safe, because:
     //
@@ -872,7 +876,7 @@ public fun <T> List<T>.asPtrRange(): Range<ConstPtr> {
  *
  * [asMutPtr]: slice.asMutPtr
  */
-public fun <T> List<T>.asMutPtrRange(): Range<MutPtr> {
+public fun <T> List<T>.asMutPtrRange(): io.github.kotlinmania.rustlang.core.range.Range<MutPtr> {
     val start = this.asMutPtr()
     // SAFETY: See asPtrRange() above for why `add` here is safe.
     val end = MutPtr((start).rawAddress + ((this.size).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
@@ -884,7 +888,7 @@ public fun <T> List<T>.asMutPtrRange(): Range<MutPtr> {
  *
  * If `N` is not exactly equal to the length of `self`, then this method returns `None`.
  */
-public fun <T> List<T>.asArray(n: Int): List<T>? =
+public fun <T> List<T>.asArray(n: Int = 0): List<T>? =
     if (this.size == n) {
         val ptr = this.asPtr().castArray()
         // SAFETY: The underlying array of a slice can be reinterpreted as an actual array `[T; N]` if `N` is not greater than the slice's length.
@@ -899,7 +903,7 @@ public fun <T> List<T>.asArray(n: Int): List<T>? =
  *
  * If `N` is not exactly equal to the length of `self`, then this method returns `None`.
  */
-public fun <T> List<T>.asMutArray(n: Int): List<T>? =
+public fun <T> List<T>.asMutArray(n: Int = 0): List<T>? =
     if (this.size == n) {
         val ptr = this.asMutPtr().castArray()
         // SAFETY: The underlying array of a slice can be reinterpreted as an actual array `[T; N]` if `N` is not greater than the slice's length.
@@ -1325,7 +1329,7 @@ public fun <T> List<T>.chunksExactMut(chunkSize: Int): ChunksExactMut<T> {
  * // let chunks: &[[_; 0]] = slice.asChunksUnchecked() // Zero-length chunks are never allowed
  * ```
  */
-public fun <T> List<T>.asChunksUnchecked(n: Int): List<List<T>> {
+public fun <T> List<T>.asChunksUnchecked(n: Int = 0): List<List<T>> {
     Unit
     // SAFETY: Caller must guarantee that `N` is nonzero and exactly divides the slice length
     val newLen = exactDiv(this.size, n)
@@ -1374,11 +1378,11 @@ public fun <T> List<T>.asChunksUnchecked(n: Int): List<List<T>> {
  * import slice
  *
  * val slice = listOf('R', 'u', 's', 't')
- * val (chunks, _) = slice.asChunks() ?: error("slice didn't have even length")
+ * val (chunks, _) = slice.asChunks(2) ?: error("slice didn't have even length")
  * check(chunks == listOf(listOf('R', 'u'), listOf('s', 't')))
  * ```
  */
-public fun <T> List<T>.asChunks(n: Int): Pair<List<List<T>>, List<T>> {
+public fun <T> List<T>.asChunks(n: Int = 0): Pair<List<List<T>>, List<T>> {
     check(n != 0) { "chunk size must be non-zero" }
     val lenRoundedDown = this.size / n * n
     // SAFETY: The rounded-down value is always the same or smaller than the
@@ -1424,7 +1428,7 @@ public fun <T> List<T>.asChunks(n: Int): Pair<List<List<T>>, List<T>> {
  * check(chunks == listOf(listOf('o', 'r'), listOf('e', 'm')))
  * ```
  */
-public fun <T> List<T>.asRchunks(n: Int): Pair<List<T>, List<List<T>>> {
+public fun <T> List<T>.asRchunks(n: Int = 0): Pair<List<T>, List<List<T>>> {
     check(n != 0) { "chunk size must be non-zero" }
     val len = this.size / n
     val (remainder, multipleOfN) = this.splitAt(this.size - len * n)
@@ -1473,7 +1477,7 @@ public fun <T> List<T>.asRchunks(n: Int): Pair<List<T>, List<List<T>>> {
  * // let chunks: &[[_; 0]] = slice.asChunksUncheckedMut() // Zero-length chunks are never allowed
  * ```
  */
-public fun <T> List<T>.asChunksUncheckedMut(n: Int): MutableList<List<T>> {
+public fun <T> List<T>.asChunksUncheckedMut(n: Int = 0): MutableList<List<T>> {
     Unit
     // SAFETY: Caller must guarantee that `N` is nonzero and exactly divides the slice length
     val newLen = exactDiv(this.size, n)
@@ -1519,7 +1523,7 @@ public fun <T> List<T>.asChunksUncheckedMut(n: Int): MutableList<List<T>> {
  * check((v).contentEquals(listOf(1, 1, 2, 2, 9)))
  * ```
  */
-public fun <T> List<T>.asChunksMut(n: Int): Pair<MutableList<List<T>>, MutableList<T>> {
+public fun <T> List<T>.asChunksMut(n: Int = 0): Pair<MutableList<List<T>>, MutableList<T>> {
     check(n != 0) { "chunk size must be non-zero" }
     val lenRoundedDown = this.size / n * n
     // SAFETY: The rounded-down value is always the same or smaller than the
@@ -1568,7 +1572,7 @@ public fun <T> List<T>.asChunksMut(n: Int): Pair<MutableList<List<T>>, MutableLi
  * check((v).contentEquals(listOf(9, 1, 1, 2, 2)))
  * ```
  */
-public fun <T> List<T>.asRchunksMut(n: Int): Pair<MutableList<T>, MutableList<List<T>>> {
+public fun <T> List<T>.asRchunksMut(n: Int = 0): Pair<MutableList<T>, MutableList<List<T>>> {
     check(n != 0) { "chunk size must be non-zero" }
     val len = this.size / n
     val (remainder, multipleOfN) = this.splitAtMut(this.size - len * n)
@@ -1609,7 +1613,7 @@ public fun <T> List<T>.asRchunksMut(n: Int): Pair<MutableList<T>, MutableList<Li
  *
  * [windows]: slice.windows
  */
-public fun <T> List<T>.arrayWindows(n: Int): ArrayWindows<T> {
+public fun <T> List<T>.arrayWindows(n: Int = 0): ArrayWindows<T> {
     check(n != 0) { "window size must be non-zero" }
     return ArrayWindows.new(this, n)
 }
@@ -2971,7 +2975,7 @@ public fun <T> List<T>.sortUnstable(ltTFn: (T, Rhs) -> Boolean) {
  * [total order]: https://en.wikipedia.org/wiki/TotalOrder
  */
 public fun <T> List<T>.sortUnstableBy(compare: (T, T) -> Ordering) {
-    sort(this, { a, b -> compare(a, b) == Ordering.Less })
+    sort(this, { a, b -> compare(a, b) == io.github.kotlinmania.rustlang.core.cmp.Less })
 }
 
 /**
@@ -3700,7 +3704,7 @@ public fun <T> List<T>.rotateRight(k: Int) {
  * }
  * ```
  */
-public fun <T> List<T>.shiftLeft(inserted: List<T>, n: Int): List<T> {
+public fun <T> List<T>.shiftLeft(inserted: List<T>, n: Int = 0): List<T> {
     return when (val matchVal = this.size.checkedSub(n)) {
         null -> {
             // SAFETY: Having checked that the slice is strictly shorter than the
@@ -3742,9 +3746,9 @@ public fun <T> List<T>.shiftLeft(inserted: List<T>, n: Int): List<T> {
             // And none of this can panic, so there's no risk of intermediate unwinds.
             run {
                 val ptr1 = this.asMutPtr()
-                val returned1 = ptr1.castArray().read()
+                val returned1 = ptr1.castArray(n).read()
                 kmCopy((MutPtr((ptr1).rawAddress + ((n).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))).rawAddress, (ptr1).rawAddress, (shift).toLong() * (UnresolvedTypeLayout<T>()).sizeBytes)
-                MutPtr((ptr1).rawAddress + ((shift).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)).castArray().write(inserted)
+                MutPtr((ptr1).rawAddress + ((shift).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)).castArray(n).write(inserted)
                 returned1
             }
         }
@@ -3806,7 +3810,7 @@ public fun <T> List<T>.shiftLeft(inserted: List<T>, n: Int): List<T> {
  * }
  * ```
  */
-public fun <T> List<T>.shiftRight(inserted: List<T>, n: Int): List<T> {
+public fun <T> List<T>.shiftRight(inserted: List<T>, n: Int = 0): List<T> {
     return when (val matchVal = this.size.checkedSub(n)) {
         null -> {
             // SAFETY: Having checked that the slice is strictly shorter than the
@@ -3848,9 +3852,9 @@ public fun <T> List<T>.shiftRight(inserted: List<T>, n: Int): List<T> {
             // And none of this can panic, so there's no risk of intermediate unwinds.
             run {
                 val ptr1 = this.asMutPtr()
-                val returned1 = MutPtr((ptr1).rawAddress + ((shift).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)).castArray().read()
+                val returned1 = MutPtr((ptr1).rawAddress + ((shift).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)).castArray(n).read()
                 kmCopy((ptr1).rawAddress, (MutPtr((ptr1).rawAddress + ((n).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))).rawAddress, (shift).toLong() * (UnresolvedTypeLayout<T>()).sizeBytes)
-                ptr1.castArray().write(inserted)
+                ptr1.castArray(n).write(inserted)
                 returned1
             }
         }
@@ -4301,7 +4305,7 @@ public fun <T, U> List<T>.alignToMut(typeLayoutU: TypeLayout<U> = UnresolvedType
  *         return sums1.reduceSum()
  *     }
  *     val short = listOf(1, 2, 3)
- *     val (prefix, middle, suffix) = short.asSimd()
+ *     val (prefix, middle, suffix) = short.asSimd(4)
  *     check(middle == listOf())
  *     // Not enough elements for anything in the middle
  *     // They might be split in any possible way between prefix and suffix
@@ -4312,14 +4316,14 @@ public fun <T, U> List<T>.alignToMut(typeLayoutU: TypeLayout<U> = UnresolvedType
  * }
  * ```
  */
-public fun <T> List<T>.asSimd(lanes: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Triple<List<T>, List<Simd<T>>, List<T>> {
+public fun <T> List<T>.asSimd(lanes: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Triple<List<T>, List<Simd<T>>, List<T>> {
     when (val matchVal = Pair(sizeOf<Simd<T>>(typeLayoutT = UnresolvedTypeLayout<Simd<T>>()), sizeOf<List<T>>(typeLayoutT = fixedListTypeLayout(typeLayoutT, (lanes).toInt())))) {
         else -> {
             val leftVal = matchVal.first
             val rightVal = matchVal.second
             if (!(leftVal == rightVal)) {
                 val kind = AssertKind.Eq
-                assertFailed(kind, leftVal, rightVal, Option.None)
+                assertFailed(kind, leftVal, rightVal, Option.None())
             }
         }
     }
@@ -4348,14 +4352,14 @@ public fun <T> List<T>.asSimd(lanes: Int, typeLayoutT: TypeLayout<T> = Unresolve
  * be lifted in a way that would make it possible to see panics from this
  * method for something like `LANES == 3`.
  */
-public fun <T> List<T>.asSimdMut(lanes: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Triple<MutableList<T>, MutableList<Simd<T>>, MutableList<T>> {
+public fun <T> List<T>.asSimdMut(lanes: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Triple<MutableList<T>, MutableList<Simd<T>>, MutableList<T>> {
     when (val matchVal = Pair(sizeOf<Simd<T>>(typeLayoutT = UnresolvedTypeLayout<Simd<T>>()), sizeOf<List<T>>(typeLayoutT = fixedListTypeLayout(typeLayoutT, (lanes).toInt())))) {
         else -> {
             val leftVal = matchVal.first
             val rightVal = matchVal.second
             if (!(leftVal == rightVal)) {
                 val kind = AssertKind.Eq
-                assertFailed(kind, leftVal, rightVal, Option.None)
+                assertFailed(kind, leftVal, rightVal, Option.None())
             }
         }
     }
@@ -4781,7 +4785,7 @@ public fun <T> List<T>.splitOffLastMut(): T? {
  * [getDisjointMut]: slice.getDisjointMut
  * [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
  */
-public fun <Output, T, I> List<T>.getDisjointUncheckedMut(indices: List<I>, n: Int): List<Output> where I : GetDisjointMutIndex<I>, I : SliceIndex<List<T>, Output> {
+public fun <Output, T, I> List<T>.getDisjointUncheckedMut(indices: List<I>, n: Int = 0): List<Output> where I : GetDisjointMutIndex<I>, I : SliceIndex<List<T>, Output> {
     // NB: This implementation is written as it is because any variation of
     // `indices.map(| i | self.getUncheckedMut(i))` would make miri unhappy,
     // or generate worse code otherwise. This is also why we need to go
@@ -4854,7 +4858,7 @@ public fun <Output, T, I> List<T>.getDisjointUncheckedMut(indices: List<I>, n: I
  * check((v).contentEquals(listOf(1, 11, 111)))
  * ```
  */
-public fun <Output, T, I> List<T>.getDisjointMut(indices: List<I>, n: Int): Result<List<Output>, GetDisjointMutError> where I : GetDisjointMutIndex<I>, I : SliceIndex<List<T>, Output> {
+public fun <Output, T, I> List<T>.getDisjointMut(indices: List<I>, n: Int = 0): Result<List<Output>, GetDisjointMutError> where I : GetDisjointMutIndex<I>, I : SliceIndex<List<T>, Output> {
     when (val tryResult = getDisjointCheckValid(indices, this.size, n)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<List<Output>, GetDisjointMutError>(tryResult.errValue()) }
     // SAFETY: The `getDisjointCheckValid()` call checked that all indices
     // are disjunct and in bounds.
@@ -5094,7 +5098,7 @@ public fun <T, U> List<MaybeUninit<T>>.alignToUninitMut(): Triple<List<MaybeUnin
  * }
  * ```
  */
-public fun <T> List<List<T>>.asFlattened(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> {
+public fun <T> List<List<T>>.asFlattened(n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> {
     val len =
         if (((typeLayoutT).sizeBytes == 0L)) {
             (this.size.checkedMul(n) ?: error("slice len overflow"))
@@ -5138,7 +5142,7 @@ public fun <T> List<List<T>>.asFlattened(n: Int, typeLayoutT: TypeLayout<T> = Un
  * check(array == listOf(listOf(6, 7, 8), listOf(9, 10, 11), listOf(12, 13, 14)))
  * ```
  */
-public fun <T> List<List<T>>.asFlattenedMut(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutableList<T> {
+public fun <T> List<List<T>>.asFlattenedMut(n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutableList<T> {
     val len =
         if (((typeLayoutT).sizeBytes == 0L)) {
             (this.size.checkedMul(n) ?: error("slice len overflow"))
@@ -5204,7 +5208,7 @@ public fun <T> defaultTSlice(): List<T> = listOf()
 
 public fun <T> List<T>.asSliceFromTSlice(): List<T> = this
 
-public fun <T> List<T>.asSliceFromTArrayn(n: Int): List<T> = this
+public fun <T> List<T>.asSliceFromTArrayn(n: Int = 0): List<T> = this
 
 // SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
 public fun Int.isInBounds(len: Int): Boolean = this < len
@@ -5219,11 +5223,11 @@ public fun IntRange.isOverlapping(other: IntRange): Boolean = (this.start < othe
 // SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
 
 // SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
-public fun range.Range<Int>.isInBounds(len: Int): Boolean = Range.from(this).isInBounds(len)
+public fun Range<Int>.isInBounds(len: Int): Boolean = Range.from(this).isInBounds(len)
 
-public fun range.Range<Int>.isOverlapping(other: range.Range<Int>): Boolean = Range.from(this).isOverlapping(Range.from(other))
+public fun Range<Int>.isOverlapping(other: Range<Int>): Boolean = Range.from(this).isOverlapping(Range.from(other))
 
 // SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
-public fun range.RangeInclusive<Int>.isInBounds(len: Int): Boolean = RangeInclusive.from(this).isInBounds(len)
+public fun RangeInclusive<Int>.isInBounds(len: Int): Boolean = RangeInclusive.from(this).isInBounds(len)
 
-public fun range.RangeInclusive<Int>.isOverlapping(other: range.RangeInclusive<Int>): Boolean = RangeInclusive.from(this).isOverlapping(RangeInclusive.from(other))
+public fun RangeInclusive<Int>.isOverlapping(other: RangeInclusive<Int>): Boolean = RangeInclusive.from(this).isOverlapping(RangeInclusive.from(other))

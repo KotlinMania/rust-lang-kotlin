@@ -17,7 +17,7 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.aarch64.Feature
-import io.github.kotlinmania.rustlang.stddetect.detect.os.detectFeatures
+import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.aarch64.detectFeatures
 
 // Caches run-time feature detection so that it only needs to be computed
 // once.

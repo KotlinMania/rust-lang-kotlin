@@ -9,6 +9,9 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.coresimd.Mask
 import io.github.kotlinmania.rustlang.coresimd.Simd
 import io.github.kotlinmania.rustlang.coresimd.simd.cmp.eq.SimdPartialEq
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
 
 /**
  * Parallel `PartialOrd`.
@@ -62,36 +65,36 @@ public interface SimdOrd<T, out Mask> : SimdPartialOrd<T, Mask> {
     public fun simdClamp(min: T, max: T): T
 }
 
-public fun Simd<UByte>.simdLt(other: Simd<UByte>, n: Int): Mask = Mask.fromSimdUnchecked(run { val simdArg0 = this; val simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); res } }, n)
+public fun Simd<UByte>.simdLt(other: Simd<UByte>, n: Int = 0): Mask = Mask.fromSimdUnchecked(run { val simdArg0 = this; val simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); res } }, n)
 
-public fun Simd<UByte>.simdLe(other: Simd<UByte>, n: Int): Mask = Mask.fromSimdUnchecked(run { val simdArg0 = this; val simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); res } }, n)
+public fun Simd<UByte>.simdLe(other: Simd<UByte>, n: Int = 0): Mask = Mask.fromSimdUnchecked(run { val simdArg0 = this; val simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); res } }, n)
 
-public fun Simd<UByte>.simdGt(other: Simd<UByte>, n: Int): Mask = Mask.fromSimdUnchecked(run { val simdArg0 = this; val simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); res } }, n)
+public fun Simd<UByte>.simdGt(other: Simd<UByte>, n: Int = 0): Mask = Mask.fromSimdUnchecked(run { val simdArg0 = this; val simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); res } }, n)
 
-public fun Simd<UByte>.simdGe(other: Simd<UByte>, n: Int): Mask = Mask.fromSimdUnchecked(run { val simdArg0 = this; val simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); res } }, n)
+public fun Simd<UByte>.simdGe(other: Simd<UByte>, n: Int = 0): Mask = Mask.fromSimdUnchecked(run { val simdArg0 = this; val simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); res } }, n)
 
-public fun Simd<UByte>.simdMax(other: Simd<UByte>, n: Int): Simd<UByte> = this.simdLt(other, n).select(other, this)
+public fun Simd<UByte>.simdMax(other: Simd<UByte>, n: Int = 0): Simd<UByte> = this.simdLt(other, n).select(other, this)
 
-public fun Simd<UByte>.simdMin(other: Simd<UByte>, n: Int): Simd<UByte> = this.simdGt(other, n).select(other, this)
+public fun Simd<UByte>.simdMin(other: Simd<UByte>, n: Int = 0): Simd<UByte> = this.simdGt(other, n).select(other, this)
 
-public fun Simd<UByte>.simdClamp(min: Simd<UByte>, max: Simd<UByte>, n: Int): Simd<UByte> {
+public fun Simd<UByte>.simdClamp(min: Simd<UByte>, max: Simd<UByte>, n: Int = 0): Simd<UByte> {
     check(min.simdLe(max, n).all()) { "each element in `min` must be less than or equal to the corresponding element in `max`" }
     return this.simdMax(min, n).simdMin(max, n)
 }
 
-public fun Mask<Byte>.simdLt(other: Mask<Byte>, n: Int): Mask = this.inv() and other
+public fun Mask<Byte>.simdLt(other: Mask<Byte>, n: Int = 0): Mask = this.inv() and other
 
-public fun Mask<Byte>.simdLe(other: Mask<Byte>, n: Int): Mask = this.inv() or other
+public fun Mask<Byte>.simdLe(other: Mask<Byte>, n: Int = 0): Mask = this.inv() or other
 
-public fun Mask<Byte>.simdGt(other: Mask<Byte>, n: Int): Mask = this and other.inv()
+public fun Mask<Byte>.simdGt(other: Mask<Byte>, n: Int = 0): Mask = this and other.inv()
 
-public fun Mask<Byte>.simdGe(other: Mask<Byte>, n: Int): Mask = this or other.inv()
+public fun Mask<Byte>.simdGe(other: Mask<Byte>, n: Int = 0): Mask = this or other.inv()
 
-public fun Mask<Byte>.simdMax(other: Mask<Byte>, n: Int): Mask<Byte> = this or other
+public fun Mask<Byte>.simdMax(other: Mask<Byte>, n: Int = 0): Mask<Byte> = this or other
 
-public fun Mask<Byte>.simdMin(other: Mask<Byte>, n: Int): Mask<Byte> = this and other
+public fun Mask<Byte>.simdMin(other: Mask<Byte>, n: Int = 0): Mask<Byte> = this and other
 
-public fun Mask<Byte>.simdClamp(min: Mask<Byte>, max: Mask<Byte>, n: Int): Mask<Byte> {
+public fun Mask<Byte>.simdClamp(min: Mask<Byte>, max: Mask<Byte>, n: Int = 0): Mask<Byte> {
     check(min.simdLe(max, n).all()) { "each element in `min` must be less than or equal to the corresponding element in `max`" }
     return this.simdMax(min, n).simdMin(max, n)
 }

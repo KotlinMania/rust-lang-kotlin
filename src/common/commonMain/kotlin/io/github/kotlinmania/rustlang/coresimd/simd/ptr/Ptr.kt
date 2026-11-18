@@ -15,7 +15,7 @@ import io.github.kotlinmania.rustlang.coresimd.Simd
  *
  * Equivalent to calling [core.ptr.withoutProvenance] on each element.
  */
-public fun withoutProvenance(addr: Simd<Int>, n: Int): Simd<ConstPtr> {
+public fun withoutProvenance(addr: Simd<Int>, n: Int = 0): Simd<ConstPtr> {
     // An int-to-pointer reinterpret currently has exactly the intended semantics: it creates a
     // pointer without provenance. Note that this is *not* a stable guarantee about reinterpret
     // semantics, it relies on sysroot crates having special status.
@@ -29,7 +29,7 @@ public fun withoutProvenance(addr: Simd<Int>, n: Int): Simd<ConstPtr> {
  *
  * Equivalent to calling [core.ptr.withoutProvenanceMut] on each element.
  */
-public fun withoutProvenanceMut(addr: Simd<Int>, n: Int): Simd<MutPtr> {
+public fun withoutProvenanceMut(addr: Simd<Int>, n: Int = 0): Simd<MutPtr> {
     // An int-to-pointer reinterpret currently has exactly the intended semantics: it creates a
     // pointer without provenance. Note that this is *not* a stable guarantee about reinterpret
     // semantics, it relies on sysroot crates having special status.
@@ -43,7 +43,7 @@ public fun withoutProvenanceMut(addr: Simd<Int>, n: Int): Simd<MutPtr> {
  *
  * Equivalent to calling [core.ptr.withExposedProvenance] on each element.
  */
-public fun withExposedProvenance(addr: Simd<Int>, n: Int): Simd<ConstPtr> {
+public fun withExposedProvenance(addr: Simd<Int>, n: Int = 0): Simd<ConstPtr> {
     // SAFETY: addr is a vector of Int
     return run { val simdArg0 = addr; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<ConstPtr>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<ConstPtr>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<ConstPtr>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<ConstPtr>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<ConstPtr>>()).alignBytes)); res } }
 }
@@ -53,7 +53,7 @@ public fun withExposedProvenance(addr: Simd<Int>, n: Int): Simd<ConstPtr> {
  *
  * Equivalent to calling [core.ptr.withExposedProvenanceMut] on each element.
  */
-public fun withExposedProvenanceMut(addr: Simd<Int>, n: Int): Simd<MutPtr> {
+public fun withExposedProvenanceMut(addr: Simd<Int>, n: Int = 0): Simd<MutPtr> {
     // SAFETY: addr is a vector of Int
     return run { val simdArg0 = addr; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<MutPtr>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<MutPtr>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<MutPtr>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<MutPtr>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<MutPtr>>()).alignBytes)); res } }
 }

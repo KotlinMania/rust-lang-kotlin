@@ -1898,7 +1898,7 @@ public fun <T, A : Allocator> Rc.Companion.newZeroedSliceIn(len: Int, alloc: A, 
  * }
  * ```
  */
-public fun <T, A : Allocator> Rc<List<T>, A>.intoArray(n: Int): Result<Rc<List<T>, A>, Rc<List<T>, A>> =
+public fun <T, A : Allocator> Rc<List<T>, A>.intoArray(n: Int = 0): Result<Rc<List<T>, A>, Rc<List<T>, A>> =
     if (this.len() == n) {
         val (ptr, alloc) = Rc.intoRawWithAllocator(this)
         val ptr1 = constPtrFromRustCast(ptr)
@@ -2436,7 +2436,7 @@ public fun <T> fromRcT(t: T): Rc<T, Global> = Rc.new(t)
  * check(listOf(1, 2, 3) == shared)
  * ```
  */
-public fun <T> fromRcTSlice(v: List<T>, n: Int): Rc<List<T>, Global> = Rc.from(v, n)
+public fun <T> fromRcTSlice(v: List<T>, n: Int = 0): Rc<List<T>, Global> = Rc.from(v, n)
 
 /**
  * Allocates a reference-counted slice and fills it by cloning `v`s items.
@@ -2545,7 +2545,7 @@ public fun fromRcUByteSlice(rc: Rc<String, Global>): Rc<List<UByte>, Global> {
     return Rc.fromRaw(constPtrFromRustCast(Rc.intoRaw(rc)))
 }
 
-public fun <T, A : Allocator> tryFromRcTArraynA(boxedSlice: Rc<List<T>, A>, n: Int): Result<Rc<List<T>, A>, Rc<List<T>, A>> =
+public fun <T, A : Allocator> tryFromRcTArraynA(boxedSlice: Rc<List<T>, A>, n: Int = 0): Result<Rc<List<T>, A>, Rc<List<T>, A>> =
     if (boxedSlice.len() == n) {
         val (ptr, alloc) = Rc.intoInnerWithAllocator(boxedSlice)
         // ignore-tidy-undocumented-unchecked

@@ -99,7 +99,7 @@ public open class RawRegion<T>(
             return RawRegion(ptr = ptr, len = data.size, marker = Unit)
         }
 
-        public fun <T> from(data: List<T>, n: Int): RawRegion<T> {
+        public fun <T> from(data: List<T>, n: Int = 0): RawRegion<T> {
             // SAFETY: `data.asMutPtr()` is non-null, because it is derived from a reference.
             val ptr = NonNull.newUnchecked(data.asMutPtr())
             return RawRegion(ptr = ptr, len = n, marker = Unit)

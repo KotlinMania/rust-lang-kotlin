@@ -106,29 +106,29 @@ public fun <T, Acc, R> inspectTryFold(f: (T) -> Unit, fold: (Acc, T) -> R): (Acc
         fold(acc, item)
     }
 
-public fun <I> Inspect<I, F>.next(): Item? {
+public fun <Item, I : Iterator<Item>> Inspect<I, F>.next(): Item? {
     val next = this.iter.next()
     return this.doInspect(next)
 }
 
-public fun <I> Inspect<I, F>.sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
+public fun <Item, I : Iterator<Item>> Inspect<I, F>.sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
 
-public fun <Residual, I, Acc, R> Inspect<I, F>.tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, inspectTryFold(this.f, fold))
+public fun <Item, Residual, I : Iterator<Item>, Acc, R> Inspect<I, F>.tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, inspectTryFold(this.f, fold))
 
-public fun <I, Acc> Inspect<I, F>.fold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.iter.fold(init, inspectFold(this.f, fold))
+public fun <Item, I : Iterator<Item>, Acc> Inspect<I, F>.fold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.iter.fold(init, inspectFold(this.f, fold))
 
-public fun <I> Inspect<I, F>.nextBack(): Item? {
+public fun <Item, I : Iterator<Item>> Inspect<I, F>.nextBack(): Item? {
     val next = this.iter.nextBack()
     return this.doInspect(next)
 }
 
-public fun <Residual, I, Acc, R> Inspect<I, F>.tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, inspectTryFold(this.f, fold))
+public fun <Item, Residual, I : Iterator<Item>, Acc, R> Inspect<I, F>.tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, inspectTryFold(this.f, fold))
 
-public fun <I, Acc> Inspect<I, F>.rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.iter.rfold(init, inspectFold(this.f, fold))
+public fun <Item, I : Iterator<Item>, Acc> Inspect<I, F>.rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.iter.rfold(init, inspectFold(this.f, fold))
 
-public fun <I> Inspect<I, F>.len(): Int = this.iter.len()
+public fun <Item, I : Iterator<Item>> Inspect<I, F>.len(): Int = this.iter.len()
 
-public fun <I> Inspect<I, F>.isEmpty(): Boolean = this.iter.isEmpty()
+public fun <Item, I : Iterator<Item>> Inspect<I, F>.isEmpty(): Boolean = this.iter.isEmpty()
 
 public fun <Source, I, F> Inspect<I, F>.asInner(): Source where I : SourceIter<Source> {
     // SAFETY: unchecked function forwarding to unchecked function with the same requirements

@@ -2,8 +2,8 @@
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.key
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.rt.threadCleanup
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy.LazyKey
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.set
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.windows.DTORS
@@ -29,6 +29,6 @@ public fun enable() {
     // Setting the key value to something other than NULL will result in the
     // destructor being run at thread exit.
     run {
-        set(DTORS.force(), ptr.withoutProvenanceMut(1))
+        set(DTORS.force(), withoutProvenanceMut(1))
     }
 }

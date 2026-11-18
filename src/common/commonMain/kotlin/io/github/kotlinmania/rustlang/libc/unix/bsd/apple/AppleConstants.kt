@@ -10,6 +10,8 @@ import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.types.u32CastInt
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT
+import kotlin.experimental.inv
+import kotlin.experimental.or
 
 public val UTX_USERSIZE: Int = 256
 

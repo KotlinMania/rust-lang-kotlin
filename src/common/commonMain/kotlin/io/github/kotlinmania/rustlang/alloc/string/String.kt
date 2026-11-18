@@ -51,6 +51,8 @@ import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.pattern.Utf8Pattern
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 // A UTF-8–encoded, growable string.
 //
@@ -1667,7 +1669,7 @@ public open class RustAllocString(
              *
              * The caller must initialize the number of bytes returned by the closure.
              */
-            fun <T> withSpare(bytes: List<UByte>, then: (List<MaybeUninit<T>>) -> Int, n: Int) {
+            fun <T> withSpare(bytes: List<UByte>, then: (List<MaybeUninit<T>>) -> Int, n: Int = 0) {
                 run {
                     check(sizeOf<T>(typeLayoutT = UnresolvedTypeLayout<T>()) == 1)
                 }
@@ -1675,7 +1677,7 @@ public open class RustAllocString(
                 val oldLen = bytes.size
                 // SAFETY: We reserved enough space for the requested number of bytes.
                 run {
-                    val spare: List<MaybeUninit<T>> = bytes.spareCapacityMut().asMutPtr().cast().castUninit().castArray().asMutUnchecked()
+                    val spare: List<MaybeUninit<T>> = bytes.spareCapacityMut().asMutPtr().cast().castUninit().castArray(n).asMutUnchecked()
                     val written = then(spare)
                     bytes.setLen(oldLen + written)
                 }
@@ -2064,7 +2066,7 @@ public open class RustAllocString(
          * ```
          */
         public fun fromUtf16le(v: List<UByte>): Result<String, FromUtf16Error> {
-            val (chunks, _) = v.asChunks() ?: return Result.Err<String, FromUtf16Error>(FromUtf16Error(kind = FromUtf16ErrorKind.OddBytes))
+            val (chunks, _) = v.asChunks(2) ?: return Result.Err<String, FromUtf16Error>(FromUtf16Error(kind = FromUtf16ErrorKind.OddBytes))
             // SAFETY: The aligned part of `v` can be transmuted into a valid u16 slice.
             return run {
                 val matchVal = Pair(true, v.alignTo<UShort>())
@@ -2115,7 +2117,7 @@ public open class RustAllocString(
                         RustAllocString.fromUtf16Lossy(v2) + "�"
                     }
                     else -> {
-                        val (chunks, remainder) = v.asChunks()
+                        val (chunks, remainder) = v.asChunks(2)
                         val string = Char.decodeUtf16(chunks.iter().copied().map(UShort::fromLeBytes)).map({ r -> r.unwrapOr(Char.REPLACEMENT_CHARACTER) }).joinToString("")
                         if (remainder.isEmpty()) {
                             string
@@ -2145,7 +2147,7 @@ public open class RustAllocString(
          * ```
          */
         public fun fromUtf16be(v: List<UByte>): Result<String, FromUtf16Error> {
-            val (chunks, _) = v.asChunks() ?: return Result.Err<String, FromUtf16Error>(FromUtf16Error(kind = FromUtf16ErrorKind.OddBytes))
+            val (chunks, _) = v.asChunks(2) ?: return Result.Err<String, FromUtf16Error>(FromUtf16Error(kind = FromUtf16ErrorKind.OddBytes))
             // SAFETY: The aligned part of `v` can be transmuted into a valid u16 slice.
             return run {
                 val matchVal = Pair(false, v.alignTo<UShort>())
@@ -2196,7 +2198,7 @@ public open class RustAllocString(
                         RustAllocString.fromUtf16Lossy(v2) + "�"
                     }
                     else -> {
-                        val (chunks, remainder) = v.asChunks()
+                        val (chunks, remainder) = v.asChunks(2)
                         val string = Char.decodeUtf16(chunks.iter().copied().map(UShort::fromBeBytes)).map({ r -> r.unwrapOr(Char.REPLACEMENT_CHARACTER) }).joinToString("")
                         if (remainder.isEmpty()) {
                             string
@@ -2662,7 +2664,7 @@ public fun List<kotlin.String>.specExtendInto(target: String) {
     target.pushStrSlice(this)
 }
 
-public fun List<kotlin.String>.specExtendIntoFromStringArrayn(target: String, n: Int) {
+public fun List<kotlin.String>.specExtendIntoFromStringArrayn(target: String, n: Int = 0) {
     target.pushStrSlice(this)
 }
 

@@ -4,8 +4,8 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.key.tests
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.sync.Arc
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.windows.KEY
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy.LazyKey
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.get
@@ -25,8 +25,8 @@ public class TestsInlineTests {
         run {
             check(((get(k1)).rawAddress == 0L))
             check(((get(k2)).rawAddress == 0L))
-            set(k1, ptr.withoutProvenanceMut(1))
-            set(k2, ptr.withoutProvenanceMut(2))
+            set(k1, withoutProvenanceMut(1))
+            set(k2, withoutProvenanceMut(2))
             check((get(k1)).rawAddress.toInt() == 1)
             check((get(k2)).rawAddress.toInt() == 2)
         }

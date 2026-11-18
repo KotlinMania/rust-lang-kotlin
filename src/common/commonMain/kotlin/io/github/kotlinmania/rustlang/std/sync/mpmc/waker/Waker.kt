@@ -14,7 +14,6 @@ import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Operation
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Selected
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 import io.github.kotlinmania.rustlang.std.thread.local.LocalKey
-import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
 
 // Waking mechanism for threads blocked on channel operations.
 

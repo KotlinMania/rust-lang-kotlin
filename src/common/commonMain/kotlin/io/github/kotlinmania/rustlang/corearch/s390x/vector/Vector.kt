@@ -21,6 +21,7 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.num.carryingAdd
 import io.github.kotlinmania.rustlang.core.num.overflowingAdd
 import io.github.kotlinmania.rustlang.core.num.overflowingSub
 import io.github.kotlinmania.rustlang.core.num.wrappingAdd
@@ -141,6 +142,9 @@ import io.github.kotlinmania.rustlang.corearch.simd.M16x8
 import io.github.kotlinmania.rustlang.corearch.simd.M32x4
 import io.github.kotlinmania.rustlang.corearch.simd.M8x16
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
 
 // s390x vector intrinsics.
 //
@@ -1373,6 +1377,8 @@ public open class ShuffleMask(
             value = v
         }
 
+    public val n: Int = 0
+
     public companion object {
         public fun typeLayout(n: Int = 0): TypeLayout<ShuffleMask> =
             object : TypeLayout<ShuffleMask> {
@@ -1624,7 +1630,7 @@ public fun <T : VectorSqrt<T>> vecSqrt(a: T): T = a.vecSqrt()
 /**
  * Vector Splat
  */
-public fun <T : VectorSplat<T>> vecSplat(a: T, imm: UInt): T = a.vecSplat()
+public fun <T : VectorSplat<T>> vecSplat(a: T, imm: UInt): T = a.vecSplat(imm)
 
 /**
  * Vector Splats
@@ -2290,7 +2296,7 @@ public fun vecBpermU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUns
 /**
  * Vector Gather Element
  */
-public fun <Offset, T : VectorGatherElement<T, Element, Offset>> vecGatherElement(a: T, b: Offset, c: ConstPtr, d: UInt): T = a.vecGatherElement(b, c)
+public fun <Offset, T : VectorGatherElement<T, Element, Offset>> vecGatherElement(a: T, b: Offset, c: ConstPtr, d: UInt): T = a.vecGatherElement(b, c, d)
 
 /**
  * Vector Select
@@ -2343,7 +2349,7 @@ public val VEC_CLASS_FP_NOT_NORMAL: UInt = VEC_CLASS_FP_NAN or VEC_CLASS_FP_SUBN
  * You can use the `__VEC_CLASS_FP_ *` constants as the argument for this operand
  */
 public fun <Result, T : VectorFpTestDataClass<Result>> vecFpTestDataClass(a: T, c: MutPtr, cls: UInt): Result {
-    val (x, y) = a.vecFpTestDataClass()
+    val (x, y) = a.vecFpTestDataClass(cls)
     (PrimitiveLayouts.I32).writeNative((c).rawAddress, y)
     return x
 }
@@ -2351,22 +2357,22 @@ public fun <Result, T : VectorFpTestDataClass<Result>> vecFpTestDataClass(a: T, 
 /**
  * All Elements Not a Number
  */
-public fun <Result, T : VectorFpTestDataClass<Result>> vecAllNan(a: T): Int = Int.from(a.vecFpTestDataClass().second == 0)
+public fun <Result, T : VectorFpTestDataClass<Result>> vecAllNan(a: T): Int = Int.from(a.vecFpTestDataClass(VEC_CLASS_FP_NAN).second == 0)
 
 /**
  * All Elements Numeric
  */
-public fun <Result, T : VectorFpTestDataClass<Result>> vecAllNumeric(a: T): Int = Int.from(a.vecFpTestDataClass().second == 3)
+public fun <Result, T : VectorFpTestDataClass<Result>> vecAllNumeric(a: T): Int = Int.from(a.vecFpTestDataClass(VEC_CLASS_FP_NAN).second == 3)
 
 /**
  * Any Elements Not a Number
  */
-public fun <Result, T : VectorFpTestDataClass<Result>> vecAnyNan(a: T): Int = Int.from(a.vecFpTestDataClass().second != 3)
+public fun <Result, T : VectorFpTestDataClass<Result>> vecAnyNan(a: T): Int = Int.from(a.vecFpTestDataClass(VEC_CLASS_FP_NAN).second != 3)
 
 /**
  * Any Elements Numeric
  */
-public fun <Result, T : VectorFpTestDataClass<Result>> vecAnyNumeric(a: T): Int = Int.from(a.vecFpTestDataClass().second != 0)
+public fun <Result, T : VectorFpTestDataClass<Result>> vecAnyNumeric(a: T): Int = Int.from(a.vecFpTestDataClass(VEC_CLASS_FP_NAN).second != 0)
 
 /**
  * Vector Test under Mask
@@ -2460,7 +2466,7 @@ public fun <T : VectorSld<T>> vecSld(a: T, b: T, c: UInt): T {
     run {
         check(0u <= c && c < (1u shl 4)) { "C doesn't fit in 4 bits (unsigned)" }
     }
-    return a.vecSld(b)
+    return a.vecSld(b, c)
 }
 
 /**
@@ -2470,7 +2476,7 @@ public fun <T : VectorSld<T>> vecSldw(a: T, b: T, c: UInt): T {
     run {
         check(0u <= c && c < (1u shl 2)) { "C doesn't fit in 2 bits (unsigned)" }
     }
-    return a.vecSldw(b)
+    return a.vecSldw(b, c)
 }
 
 /**
@@ -2480,7 +2486,7 @@ public fun <T : VectorSld<T>> vecSldb(a: T, b: T, c: UInt): T {
     run {
         check(0u <= c && c < (1u shl 3)) { "C doesn't fit in 3 bits (unsigned)" }
     }
-    return a.vecSldb(b)
+    return a.vecSldb(b, c)
 }
 
 /**
@@ -2490,34 +2496,34 @@ public fun <T : VectorSrdb<T>> vecSrdb(a: T, b: T, c: UInt): T {
     run {
         check(0u <= c && c < (1u shl 3)) { "C doesn't fit in 3 bits (unsigned)" }
     }
-    return a.vecSrdb(b)
+    return a.vecSrdb(b, c)
 }
 
 /**
  * Vector Compare Ranges
  */
-public fun <Result, T : VectorCompareRange<T, Result>> vecCmprg(a: T, b: T, c: T): Result = a.vstrc(b, c)
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmprg(a: T, b: T, c: T): Result = a.vstrc(b, c, FindImm.Eq.value)
 
 /**
  * Vector Compare Not in Ranges
  */
-public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrg(a: T, b: T, c: T): Result = a.vstrc(b, c)
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrg(a: T, b: T, c: T): Result = a.vstrc(b, c, FindImm.Ne.value)
 
 /**
  * Vector Compare Ranges Index
  */
-public fun <Result, T : VectorCompareRange<T, Result>> vecCmprgIdx(a: T, b: T, c: T): Result = a.vstrc(b, c)
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmprgIdx(a: T, b: T, c: T): Result = a.vstrc(b, c, FindImm.EqIdx.value)
 
 /**
  * Vector Compare Not in Ranges Index
  */
-public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrgIdx(a: T, b: T, c: T): Result = a.vstrc(b, c)
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrgIdx(a: T, b: T, c: T): Result = a.vstrc(b, c, FindImm.NeIdx.value)
 
 /**
  * Vector Compare Ranges with Condition Code
  */
 public fun <Result, T : VectorCompareRange<T, Result>> vecCmprgCc(a: T, b: T, c: T, d: MutPtr): Result {
-    val (x, y) = a.vstrcs(b, c)
+    val (x, y) = a.vstrcs(b, c, FindImm.Eq.value)
     (PrimitiveLayouts.I32).writeNative((d).rawAddress, y)
     return x
 }
@@ -2526,7 +2532,7 @@ public fun <Result, T : VectorCompareRange<T, Result>> vecCmprgCc(a: T, b: T, c:
  * Vector Compare Not in Ranges with Condition Code
  */
 public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrgCc(a: T, b: T, c: T, d: MutPtr): Result {
-    val (x, y) = a.vstrcs(b, c)
+    val (x, y) = a.vstrcs(b, c, FindImm.Ne.value)
     (PrimitiveLayouts.I32).writeNative((d).rawAddress, y)
     return x
 }
@@ -2535,7 +2541,7 @@ public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrgCc(a: T, b: T, c
  * Vector Compare Ranges Index with Condition Code
  */
 public fun <Result, T : VectorCompareRange<T, Result>> vecCmprgIdxCc(a: T, b: T, c: T, d: MutPtr): Result {
-    val (x, y) = a.vstrcs(b, c)
+    val (x, y) = a.vstrcs(b, c, FindImm.EqIdx.value)
     (PrimitiveLayouts.I32).writeNative((d).rawAddress, y)
     return x
 }
@@ -2544,7 +2550,7 @@ public fun <Result, T : VectorCompareRange<T, Result>> vecCmprgIdxCc(a: T, b: T,
  * Vector Compare Not in Ranges Index with Condition Code
  */
 public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrgIdxCc(a: T, b: T, c: T, d: MutPtr): Result {
-    val (x, y) = a.vstrcs(b, c)
+    val (x, y) = a.vstrcs(b, c, FindImm.NeIdx.value)
     (PrimitiveLayouts.I32).writeNative((d).rawAddress, y)
     return x
 }
@@ -2552,18 +2558,18 @@ public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrgIdxCc(a: T, b: T
 /**
  * Vector Compare Ranges or Zero Index
  */
-public fun <Result, T : VectorCompareRange<T, Result>> vecCmprgOr0Idx(a: T, b: T, c: T): Result = a.vstrcz(b, c)
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmprgOr0Idx(a: T, b: T, c: T): Result = a.vstrcz(b, c, FindImm.EqIdx.value)
 
 /**
  * Vector Compare Not in Ranges or Zero Index
  */
-public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrgOr0Idx(a: T, b: T, c: T): Result = a.vstrcz(b, c)
+public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrgOr0Idx(a: T, b: T, c: T): Result = a.vstrcz(b, c, FindImm.NeIdx.value)
 
 /**
  * Vector Compare Ranges or Zero Index with Condition Code
  */
 public fun <Result, T : VectorCompareRange<T, Result>> vecCmprgOr0IdxCc(a: T, b: T, c: T, d: MutPtr): Result {
-    val (x, y) = a.vstrczs(b, c)
+    val (x, y) = a.vstrczs(b, c, FindImm.EqIdx.value)
     (PrimitiveLayouts.I32).writeNative((d).rawAddress, y)
     return x
 }
@@ -2572,7 +2578,7 @@ public fun <Result, T : VectorCompareRange<T, Result>> vecCmprgOr0IdxCc(a: T, b:
  * Vector Compare Not in Ranges or Zero Index with Condition Code
  */
 public fun <Result, T : VectorCompareRange<T, Result>> vecCmpnrgOr0IdxCc(a: T, b: T, c: T, d: MutPtr): Result {
-    val (x, y) = a.vstrczs(b, c)
+    val (x, y) = a.vstrczs(b, c, FindImm.NeIdx.value)
     (PrimitiveLayouts.I32).writeNative((d).rawAddress, y)
     return x
 }

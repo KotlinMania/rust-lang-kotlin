@@ -41,6 +41,9 @@ import io.github.kotlinmania.rustlang.corearch.simd.U64x4
 import io.github.kotlinmania.rustlang.corearch.simd.U64x8
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 import io.github.kotlinmania.rustlang.corearch.simd.U8x32
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
 
 // LoongArch64 SIMD helpers
 

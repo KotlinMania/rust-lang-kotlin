@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.num.imp.diyfloat
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.num.carryingMul
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.AssertKind
@@ -63,7 +64,7 @@ public open class Fp(
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
                     val kind = AssertKind.Eq
-                    assertFailed(kind, leftVal, rightVal, Option.None)
+                    assertFailed(kind, leftVal, rightVal, Option.None())
                 }
             }
         }

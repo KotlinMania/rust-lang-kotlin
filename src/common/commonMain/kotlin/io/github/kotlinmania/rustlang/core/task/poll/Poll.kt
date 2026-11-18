@@ -52,7 +52,7 @@ public sealed class Poll<T> {
                 val (t) = this as Poll.Ready<T>
                 Poll.Ready(f(t))
             }
-            Poll.Pending -> Poll.Pending
+            is Poll.Pending<*> -> Poll.Pending()
         }
 
     /**
@@ -128,7 +128,7 @@ public fun <T, E, U> Poll<Result<T, E>>.mapOk(f: (T) -> U): Poll<Result<U, E>> =
             val e = ((this as Poll.Ready<T>).value as Result.Err<*, *>).errValue()
             Poll.Ready(Result.Err(e))
         }
-        else -> Poll.Pending
+        else -> Poll.Pending()
     }
 
 /**
@@ -157,7 +157,7 @@ public fun <T, E, U> Poll<Result<T, E>>.mapErr(f: (E) -> U): Poll<Result<T, U>> 
             val e = ((this as Poll.Ready<T>).value as Result.Err<*, *>).errValue()
             Poll.Ready(Result.Err(f(e)))
         }
-        else -> Poll.Pending
+        else -> Poll.Pending()
     }
 
 public fun <T, E> tryFromOutputPollResultTE(c: Poll<T>): Poll<Result<T, E>> = c.map({ Result.Ok(it) })
@@ -172,7 +172,7 @@ public fun <T, E> Poll<Result<T, E>>.branch(): ControlFlow<Result<Nothing, E>, P
             val e = ((this as Poll.Ready<T>).value as Result.Err<*, *>).errValue()
             ControlFlow.Break(Result.Err(e))
         }
-        else -> ControlFlow.Continue(Poll.Pending)
+        else -> ControlFlow.Continue(Poll.Pending())
     }
 
 public fun <T, E, F> fromResidualPollResultTF(x: Result<Nothing, E>): Poll<Result<T, F>> =

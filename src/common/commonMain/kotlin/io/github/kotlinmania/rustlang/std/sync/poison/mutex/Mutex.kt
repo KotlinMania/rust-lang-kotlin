@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sync.poison.mutex
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.drop
+import io.github.kotlinmania.rustlang.core.mem.needsDrop
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
@@ -366,7 +367,7 @@ public open class Mutex<T>(
             val matchVal = this.lock()
             when (matchVal) { is Result.Ok<*, *> -> {
                 val guard = matchVal.okValue()
-                Result.Ok(replace(guard, value))
+                Result.Ok(io.github.kotlinmania.rustlang.core.mem.replace(guard, value))
             }; is Result.Err<*, *> -> {
                 Result.Err(PoisonError.new(value))
             } }
@@ -461,7 +462,7 @@ public open class Mutex<T>(
         return if (this.inner.tryLock()) {
             Result.Ok(when (val tryResult = MutexGuard.new(this)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") })
         } else {
-            Result.Err(TryLockError.WouldBlock)
+            Result.Err(TryLockError.WouldBlock())
         }
     }
 

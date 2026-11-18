@@ -2,14 +2,16 @@
 package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.coff
 
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Context
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Dwarf
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.DwarfPackage
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Endian
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.EndianSlice
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Mapping
-import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.gimli
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmap
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.path.Path
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.stash.Stash
 import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
+import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public typealias Pe = ImageNtHeaders64
@@ -93,4 +95,4 @@ public fun getImageBase(data: List<UByte>): Int? {
     return Int.tryFrom(ntHeaders.optionalHeader().imageBase()).ok()
 }
 
-public fun handleSplitDwarf(pkg: gimli.DwarfPackage<EndianSlice<Endian>>?, stash: Stash, load: SplitDwarfLoad<EndianSlice<Endian>>): gimli.Dwarf<EndianSlice<Endian>>? = null
+public fun handleSplitDwarf(pkg: DwarfPackage<EndianSlice<Endian>>?, stash: Stash, load: SplitDwarfLoad<EndianSlice<Endian>>): Dwarf<EndianSlice<Endian>>? = null

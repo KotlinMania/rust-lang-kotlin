@@ -33,6 +33,9 @@ import io.github.kotlinmania.rustlang.corearch.simd.U8x4
 import io.github.kotlinmania.rustlang.corearch.simd.U8x8
 import io.github.kotlinmania.rustlang.corearch.simd.simdImax
 import io.github.kotlinmania.rustlang.corearch.simd.simdImin
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
 
 // Streaming SIMD Extensions 4.1 (SSE4.1)
 

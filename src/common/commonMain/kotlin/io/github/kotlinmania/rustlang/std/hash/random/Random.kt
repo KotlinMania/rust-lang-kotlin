@@ -10,7 +10,6 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sys.random.hashmapRandomKeys
-import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalProcessAttrs
 
 // This module exists to isolate [RandomState] and [DefaultHasher] outside of the
 // [collections] module without actually publicly exporting them, so that parts of that

@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.conjureZst
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.num.uncheckedSub
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.fromMut
@@ -29,7 +30,7 @@ import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
  *
  * SAFETY: must only be called `N` times. Thou shalt not drop the array either.
  */
-public fun <T, U> Drain.Companion.new(array: List<T>, f: (T) -> U, n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Drain<T, F> {
+public fun <T, U> Drain.Companion.new(array: List<T>, f: (T) -> U, n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Drain<T, F> {
     // dont drop the array, transfers "ownership" to Self
     val ptr: NonNull = NonNull.fromMut(array).cast()
     // SAFETY:
@@ -79,6 +80,8 @@ public open class Drain<T, F>(
         // SAFETY: By the type invariant, we're allowed to drop all these. (we own it, after all)
         dropInPlace(slice)
     }
+
+    public companion object
 }
 
 /**

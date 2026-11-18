@@ -341,8 +341,8 @@ public open class Receiver<T>(
      */
     public open fun tryRecv(): Result<T, TryRecvError<T>> =
         this.inner.tryRecv().mapErr({ err -> when (err) {
-            io.github.kotlinmania.rustlang.std.sync.mpmc.TryRecvError.Empty -> TryRecvError.Empty(this)
-            io.github.kotlinmania.rustlang.std.sync.mpmc.TryRecvError.Disconnected -> TryRecvError.Disconnected
+            is io.github.kotlinmania.rustlang.std.sync.mpmc.TryRecvError.Empty<*> -> TryRecvError.Empty(this)
+            is io.github.kotlinmania.rustlang.std.sync.mpmc.TryRecvError.Disconnected<*> -> TryRecvError.Disconnected()
         } })
 
     /**
@@ -380,8 +380,8 @@ public open class Receiver<T>(
      */
     public open fun recvTimeout(timeout: Duration): Result<T, RecvTimeoutError<T>> =
         this.inner.recvTimeout(timeout).mapErr({ err -> when (err) {
-            io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Timeout -> RecvTimeoutError.Timeout(this)
-            io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Disconnected -> RecvTimeoutError.Disconnected
+            is io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Timeout<*> -> RecvTimeoutError.Timeout(this)
+            is io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Disconnected<*> -> RecvTimeoutError.Disconnected()
         } })
 
     /**
@@ -420,8 +420,8 @@ public open class Receiver<T>(
      */
     public open fun recvDeadline(deadline: Instant): Result<T, RecvTimeoutError<T>> =
         this.inner.recvDeadline(deadline).mapErr({ err -> when (err) {
-            io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Timeout -> RecvTimeoutError.Timeout(this)
-            io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Disconnected -> RecvTimeoutError.Disconnected
+            is io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Timeout<*> -> RecvTimeoutError.Timeout(this)
+            is io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Disconnected<*> -> RecvTimeoutError.Disconnected()
         } })
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Receiver").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
@@ -456,7 +456,7 @@ public sealed class TryRecvError<T> {
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is TryRecvError.Empty<*> -> "receiving on an empty oneshot channel".fmt(f)
-            TryRecvError.Disconnected -> "receiving on a closed oneshot channel".fmt(f)
+            is TryRecvError.Disconnected<*> -> "receiving on a closed oneshot channel".fmt(f)
         }
 
     public companion object {
@@ -469,7 +469,7 @@ public sealed class TryRecvError<T> {
          */
         public fun <T> from(err: RecvError): TryRecvError<T> =
             when (err) {
-                RecvError -> TryRecvError.Disconnected
+                RecvError -> TryRecvError.Disconnected()
             }
     }
 }
@@ -536,7 +536,7 @@ public sealed class RecvTimeoutError<T> {
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is RecvTimeoutError.Timeout<*> -> "timed out waiting on oneshot channel".fmt(f)
-            RecvTimeoutError.Disconnected -> "receiving on a closed oneshot channel".fmt(f)
+            is RecvTimeoutError.Disconnected<*> -> "receiving on a closed oneshot channel".fmt(f)
         }
 
     public companion object {
@@ -549,7 +549,7 @@ public sealed class RecvTimeoutError<T> {
          */
         public fun <T> from(err: RecvError): RecvTimeoutError<T> =
             when (err) {
-                RecvError -> RecvTimeoutError.Disconnected
+                RecvError -> RecvTimeoutError.Disconnected()
             }
     }
 }

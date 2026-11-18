@@ -168,7 +168,7 @@ public fun <T, A : Allocator> fromBoxTSliceA(v: Vec<T, A>): List<T> = v.intoBoxe
  * check(b == 100u)
  * ```
  */
-public fun <T, A : Allocator> tryFromTArrayn(vec: Vec<T, A>, n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<List<T>, Vec<T, A>> {
+public fun <T, A : Allocator> tryFromTArrayn(vec: Vec<T, A>, n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<List<T>, Vec<T, A>> {
     if (vec.len() != n) {
         return Result.Err<List<T>, Vec<T, A>>(vec)
     }

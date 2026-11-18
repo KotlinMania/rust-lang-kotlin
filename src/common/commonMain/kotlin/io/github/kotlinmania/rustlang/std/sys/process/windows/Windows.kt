@@ -30,14 +30,13 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
-import io.github.kotlinmania.rustlang.core.ptr.nullVal
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.iter.Iter
-import io.github.kotlinmania.rustlang.std.env.consts.EXE_EXTENSION
-import io.github.kotlinmania.rustlang.std.env.consts.EXE_SUFFIX
+import io.github.kotlinmania.rustlang.std.env.EXE_EXTENSION
+import io.github.kotlinmania.rustlang.std.env.EXE_SUFFIX
 import io.github.kotlinmania.rustlang.std.env.currentExe
 import io.github.kotlinmania.rustlang.std.env.splitPaths
 import io.github.kotlinmania.rustlang.std.env.varOs
@@ -76,6 +75,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.STARTF_USESHOWWINDOW
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.STARTF_USESTDHANDLES
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.WAIT_OBJECT_0
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.WAIT_TIMEOUT
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.nullVal
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.CSTR_EQUAL
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.CSTR_GREATER_THAN
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.CSTR_LESS_THAN

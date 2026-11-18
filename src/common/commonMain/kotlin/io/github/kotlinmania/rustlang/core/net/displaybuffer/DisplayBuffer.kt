@@ -51,6 +51,6 @@ public open class DisplayBuffer internal constructor(
 
         public fun new(buf: MutableList<MaybeUninit<UByte>>): DisplayBuffer = DisplayBuffer(buf = buf, len = 0)
 
-        public fun buffer(size: Int): List<MaybeUninit<UByte>> = List(size) { MaybeUninit.uninit(UnresolvedTypeLayout<List<MaybeUninit<UByte>>>()) }
+        public fun buffer(size: Int = 0): List<MaybeUninit<UByte>> = List(size) { MaybeUninit.uninit(UnresolvedTypeLayout<List<MaybeUninit<UByte>>>()) }
     }
 }

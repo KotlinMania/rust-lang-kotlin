@@ -5,6 +5,8 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import kotlin.experimental.and
+import kotlin.experimental.inv
 
 public val ALWAYS_ABORT_FLAG: Int = 1 shl (32u - 1u).toInt()
 

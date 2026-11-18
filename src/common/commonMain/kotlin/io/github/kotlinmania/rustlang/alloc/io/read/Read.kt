@@ -18,7 +18,11 @@ import io.github.kotlinmania.rustlang.core.io.util.Take
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.dropguard.DropGuard
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedNextMultipleOf
+import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.result.andThen
+import kotlin.experimental.or
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 // Keep this order, it's important for rust-analyzer (the preferred-to-implement method should come first).
@@ -592,7 +596,7 @@ public interface Read<SelfType> {
         // Guard against incorrect `readBufExact` implementations.
         check(borrowedBuf.len() == n)
         // SAFETY: Buffer was initialised above.
-        return RustResult.Ok(MaybeUninit.arrayAssumeInit(buf, n))
+        return RustResult.Ok(MaybeUninit.arrayAssumeInit(buf))
     }
 
     /**

@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -15,7 +16,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.mask
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingByteAdd
-import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
@@ -28,6 +28,7 @@ import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.AcqRel
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
 import io.github.kotlinmania.rustlang.std.sync.once.OnceExclusiveState
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.thread.current.currentOrUnnamed
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
@@ -83,9 +84,9 @@ public open class Once internal constructor(
 
     public open fun setState(newState: OnceExclusiveState) {
         this.stateAndQueue.getMut() = when (newState) {
-            OnceExclusiveState.Incomplete -> ptr.withoutProvenanceMut(INCOMPLETE)
-            OnceExclusiveState.Poisoned -> ptr.withoutProvenanceMut(POISONED)
-            OnceExclusiveState.Complete -> ptr.withoutProvenanceMut(COMPLETE)
+            OnceExclusiveState.Incomplete -> withoutProvenanceMut(INCOMPLETE)
+            OnceExclusiveState.Poisoned -> withoutProvenanceMut(POISONED)
+            OnceExclusiveState.Complete -> withoutProvenanceMut(COMPLETE)
         }
     }
 
@@ -139,10 +140,10 @@ public open class Once internal constructor(
                     }
                     // `waiterQueue` will manage other waiting threads, and
                     // wake them up on drop.
-                    val waiterQueue = WaiterQueue(stateAndQueue = this.stateAndQueue, setStateOnDropTo = ptr.withoutProvenanceMut(POISONED))
+                    val waiterQueue = WaiterQueue(stateAndQueue = this.stateAndQueue, setStateOnDropTo = withoutProvenanceMut(POISONED))
                     // Run the initialization function, letting it know if we're
                     // poisoned or not.
-                    val initState = io.github.kotlinmania.rustlang.std.sync.once.OnceState(inner = OnceState(poisoned = (state == POISONED).toUByte(), setStateOnDropTo = Cell.new(ptr.withoutProvenanceMut(COMPLETE))))
+                    val initState = io.github.kotlinmania.rustlang.std.sync.once.OnceState(inner = OnceState(poisoned = (state == POISONED).toUByte(), setStateOnDropTo = Cell.new(withoutProvenanceMut(COMPLETE))))
                     init(initState)
                     waiterQueue.setStateOnDropTo = initState.inner.setStateOnDropTo.get()
                     return
@@ -166,9 +167,9 @@ public open class Once internal constructor(
             stateAndQueueCtorArg = stateAndQueue,
         )
 
-        public fun new(): Once = Once(stateAndQueue = AtomicPtr.new(ptr.withoutProvenanceMut(INCOMPLETE)))
+        public fun new(): Once = Once(stateAndQueue = AtomicPtr.new(withoutProvenanceMut(INCOMPLETE)))
 
-        public fun newComplete(): Once = Once(stateAndQueue = AtomicPtr.new(ptr.withoutProvenanceMut(COMPLETE)))
+        public fun newComplete(): Once = Once(stateAndQueue = AtomicPtr.new(withoutProvenanceMut(COMPLETE)))
     }
 }
 
@@ -182,7 +183,7 @@ public open class OnceState internal constructor(
     public open fun isPoisoned(): Boolean = this.poisoned
 
     public open fun poison() {
-        this.setStateOnDropTo.set(ptr.withoutProvenanceMut(POISONED))
+        this.setStateOnDropTo.set(withoutProvenanceMut(POISONED))
     }
 
     public companion object {

@@ -121,7 +121,7 @@ public interface Iterator<SelfType, Item> {
      *     // N is inferred as 2
      *     check(iter.nextChunk().unwrap() == listOf('r', 'e', 'm'))
      *     // N is inferred as 3
-     *     check(iter.nextChunk().unwrapErr().asSlice() == listOf())
+     *     check(iter.nextChunk(4).unwrapErr().asSlice() == listOf())
      *     // N is explicitly 4
      * }
      * ```
@@ -378,7 +378,7 @@ public interface Iterator<SelfType, Item> {
      *
      * `advanceNAndReturnFirst` is the equivalent of:
      * ```kotlin
-     * fun <I> advanceNAndReturnFirst(iter: I, n: Int): Item? {
+     * fun <Item, I> advanceNAndReturnFirst(iter: I, n: Int): Item? where I : Iterator<Item> {
      *     val next = iter.next()
      *     if (n > 1) {
      *         iter.nth(n - 2)
@@ -2698,7 +2698,7 @@ public interface Iterator<SelfType, Item> {
      * check(iter.nextBack() == 3)
      * ```
      */
-    public fun rposition(predicate: (Item) -> Boolean): Int? {
+    public fun <Item> rposition(predicate: (Item) -> Boolean): Int? {
         // No need for an overflow check here, because `ExactSizeIterator`
         // implies that the number of elements fits into a `Int`.
         fun <T> check(predicate1: (T) -> Boolean): (Int, T) -> ControlFlow<Int, Int> =
@@ -2874,7 +2874,7 @@ public interface Iterator<SelfType, Item> {
      * check(iter.next() == null)
      * ```
      */
-    public fun rev(): Rev<SelfType> = Rev.new(this)
+    public fun <Item> rev(): Rev<SelfType> = Rev.new(this)
 
     /**
      * Converts an iterator of pairs into a pair of containers.

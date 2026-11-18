@@ -6,6 +6,9 @@ import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
+import io.github.kotlinmania.rustlang.core.num.absDiff
+import io.github.kotlinmania.rustlang.core.num.borrowingSub
+import io.github.kotlinmania.rustlang.core.num.carryingAdd
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.num.overflowingAdd
@@ -34,6 +37,8 @@ import io.github.kotlinmania.rustlang.core.ops.bit.ShlAssign
 import io.github.kotlinmania.rustlang.core.ops.bit.Shr
 import io.github.kotlinmania.rustlang.core.ops.bit.ShrAssign
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.DisplayHex
+import kotlin.experimental.or
+import kotlin.experimental.xor
 
 // Some constants are only used with tests
 

@@ -36,7 +36,7 @@ public fun testXabort() {
     val ABORT_CODE: UInt = 42u
     // aborting outside a transactional region does nothing
     run {
-        xabort<AbortCode>()
+        xabort(ABORT_CODE)
     }
     for (unused in 0 until 10) {
         var x = 0
@@ -44,7 +44,7 @@ public fun testXabort() {
         if (code == XBEGIN_STARTED) {
             x += 1
             run {
-                xabort<AbortCode>()
+                xabort(ABORT_CODE)
             }
         } else if (code and XABORT_EXPLICIT != 0u) {
             val testAbortCode = xabortCode(code)

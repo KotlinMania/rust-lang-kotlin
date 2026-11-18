@@ -202,7 +202,7 @@ public open class Repr internal constructor(
                         val rightVal = matchVal.second
                         if (!(leftVal == rightVal)) {
                             val kind = AssertKind.Eq
-                            assertFailed(kind, leftVal, rightVal, Option.None)
+                            assertFailed(kind, leftVal, rightVal, Option.None())
                         }
                     }
                 }

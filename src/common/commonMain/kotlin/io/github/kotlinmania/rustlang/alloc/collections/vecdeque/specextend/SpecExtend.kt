@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.iter.adapters.copied.Copied
 import io.github.kotlinmania.rustlang.core.iter.adapters.rev.Rev
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 
 // Specialization trait used for VecDeque.extend
 public interface SpecExtend<T, I> {

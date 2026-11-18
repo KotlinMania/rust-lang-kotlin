@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.intoiter
 
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
-import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.index.WrappedIndex
+import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.WrappedIndex
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
@@ -130,7 +130,7 @@ public open class IntoIter<T, A : Allocator> internal constructor(
 
     public open fun last(): T? = this.inner.popBack()
 
-    public open fun nextChunk(n: Int): Result<List<T>, io.github.kotlinmania.rustlang.core.array.iter.IntoIter<T>> {
+    public open fun nextChunk(n: Int = 0): Result<List<T>, io.github.kotlinmania.rustlang.core.array.iter.IntoIter<T>> {
         val rawArr = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Result<List<T>, io.github.kotlinmania.rustlang.core.array.iter.IntoIter<T>>>()) }
         val rawArrPtr = rawArr.asMutPtr().cast()
         val (head, tail) = this.inner.asSlices()
@@ -162,7 +162,7 @@ public open class IntoIter<T, A : Allocator> internal constructor(
             this.inner.len = 0
             // SAFETY: We copied all elements from both slices to the beginning of the array, so
             // the given range is initialized.
-            Result.Err<List<T>, io.github.kotlinmania.rustlang.core.array.iter.IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawArr, 0 until init, n))
+            Result.Err<List<T>, io.github.kotlinmania.rustlang.core.array.iter.IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawArr, 0 until init))
         }
     }
 

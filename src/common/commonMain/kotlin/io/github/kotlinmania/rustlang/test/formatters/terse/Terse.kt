@@ -9,11 +9,7 @@ import io.github.kotlinmania.rustlang.test.bench.fmtBenchSamples
 import io.github.kotlinmania.rustlang.test.console.ConsoleTestDiscoveryState
 import io.github.kotlinmania.rustlang.test.console.ConsoleTestState
 import io.github.kotlinmania.rustlang.test.console.OutputLocation
-import io.github.kotlinmania.rustlang.test.term.color.CYAN
-import io.github.kotlinmania.rustlang.test.term.color.Color
-import io.github.kotlinmania.rustlang.test.term.color.GREEN
-import io.github.kotlinmania.rustlang.test.term.color.RED
-import io.github.kotlinmania.rustlang.test.term.color.YELLOW
+import io.github.kotlinmania.rustlang.test.term.Color
 import io.github.kotlinmania.rustlang.test.testresult.TestResult
 import io.github.kotlinmania.rustlang.test.time.TEST_WARN_TIMEOUT_S
 import io.github.kotlinmania.rustlang.test.time.TestExecTime
@@ -35,7 +31,7 @@ public open class TerseFormatter<T>(
     public var testColumn: Int,
     public var totalTestCount: Int,
 ) {
-    public open fun writeOk(): Result<Unit> = this.writeShortResult(".", GREEN)
+    public open fun writeOk(): Result<Unit> = this.writeShortResult(".", Color.GREEN)
 
     public open fun writeFailed(name: String): Result<Unit> {
         // Put failed tests on their own line and include the test name, so that it's faster
@@ -48,15 +44,15 @@ public open class TerseFormatter<T>(
         }
         this.testCount += 1
         when (val tryResult = this.writePlain("$name --- ")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
-        when (val tryResult = this.writePretty("FAILED", RED)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+        when (val tryResult = this.writePretty("FAILED", Color.RED)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         return this.writePlain("\n")
     }
 
-    public open fun writeIgnored(): Result<Unit> = this.writeShortResult("i", YELLOW)
+    public open fun writeIgnored(): Result<Unit> = this.writeShortResult("i", Color.YELLOW)
 
-    public open fun writeBench(): Result<Unit> = this.writePretty("bench", CYAN)
+    public open fun writeBench(): Result<Unit> = this.writePretty("bench", Color.CYAN)
 
-    public open fun writeShortResult(result: String, color: Color): Result<Unit> {
+    public open fun writeShortResult(result: String, color: Color.Color): Result<Unit> {
         when (val tryResult = this.writePretty(result, color)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         this.testCount += 1
         this.testColumn += 1
@@ -76,7 +72,7 @@ public open class TerseFormatter<T>(
         return RustResult.Ok(Unit)
     }
 
-    public open fun writePretty(word: String, color: Color): Result<Unit> {
+    public open fun writePretty(word: String, color: Color.Color): Result<Unit> {
         return when (val matchVal = this.out) {
             is OutputLocation.Pretty<*> -> {
                 val (term) = matchVal
@@ -243,9 +239,9 @@ public fun <T : Write> TerseFormatter<T>.writeRunFinish(state: ConsoleTestState)
     when (val tryResult = this.writePlain("\ntest result: ")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     if (success) {
         // There's no parallelism at this point so it's safe to use color
-        when (val tryResult = this.writePretty("ok", GREEN)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+        when (val tryResult = this.writePretty("ok", Color.GREEN)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     } else {
-        when (val tryResult = this.writePretty("FAILED", RED)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+        when (val tryResult = this.writePretty("FAILED", Color.RED)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     }
     val s = ". ${state.passed} passed; ${state.failed} failed; ${state.ignored} ignored; ${state.measured} measured; ${state.filteredOut} filtered out"
     when (val tryResult = this.writePlain(s)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }

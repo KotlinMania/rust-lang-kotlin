@@ -94,7 +94,7 @@ public open class SkipWhile<I, P>(
     }
 }
 
-public fun <I> SkipWhile<I, P>.next(): Item? {
+public fun <Item, I : Iterator<Item>> SkipWhile<I, P>.next(): Item? {
     fun <T> check(flag: RustMutableReference<Boolean>, pred: (T) -> Boolean): (T) -> Boolean {
         val flag1 = flag
         return { x ->
@@ -111,13 +111,13 @@ public fun <I> SkipWhile<I, P>.next(): Item? {
     return this.iter.indexOf(check(flag, pred)).takeIf { it >= 0 }
 }
 
-public fun <I> SkipWhile<I, P>.sizeHint(): Pair<Int, Int?> {
+public fun <Item, I : Iterator<Item>> SkipWhile<I, P>.sizeHint(): Pair<Int, Int?> {
     val (_, upper) = this.iter.sizeHint()
     return Pair(0, upper)
     // can't know a lower bound, due to the predicate
 }
 
-public fun <Residual, I, Acc, R> SkipWhile<I, P>.tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Item, Residual, I : Iterator<Item>, Acc, R> SkipWhile<I, P>.tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var init1 = init
     if (!this.flag) {
         when (val matchVal = this.next()) {
@@ -131,7 +131,7 @@ public fun <Residual, I, Acc, R> SkipWhile<I, P>.tryFold(init: Acc, fold: (Acc, 
     return this.iter.tryFold(init1, fold)
 }
 
-public fun <I, Acc> SkipWhile<I, P>.fold(init: Acc, fold: (Acc, Item) -> Acc): Acc {
+public fun <Item, I : Iterator<Item>, Acc> SkipWhile<I, P>.fold(init: Acc, fold: (Acc, Item) -> Acc): Acc {
     var init1 = init
     if (!this.flag) {
         when (val matchVal = this.next()) {

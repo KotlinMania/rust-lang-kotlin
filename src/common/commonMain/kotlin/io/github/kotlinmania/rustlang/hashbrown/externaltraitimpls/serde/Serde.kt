@@ -6,8 +6,8 @@ import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.hashbrown.HashMap
 import io.github.kotlinmania.rustlang.hashbrown.HashSet
-import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
-import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.sizeHint
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.SizeHint
 
 public typealias Value<K, V> = MutableMap<K, V>
 
@@ -27,7 +27,7 @@ public fun <K, V, S, A, D> deserializeHashMapKVSA(deserializer: D, defaultSFn: (
     fun <K, V, S, A> MapVisitor<K, V, S, A>.expecting(formatter: StringBuilder): Result<Unit, Error> where K : Deserialize, V : Deserialize, S : BuildHasher, A : Allocator = run { formatter.append("a map"); Result.Ok<Unit, Error>(Unit) }
 
     fun <K, V, S, A, M> MapVisitor<K, V, S, A>.visitMap(map: M, defaultSFn: () -> S, defaultAFn: () -> A): Result<MutableMap<K, V>, Error> where K : Deserialize, V : Deserialize, S : BuildHasher, A : Allocator, M : MapAccess {
-        val values = HashMap.withCapacityAndHasherIn(sizehint.cautious(map.sizeHint()), defaultSFn(), defaultAFn())
+        val values = HashMap.withCapacityAndHasherIn(SizeHint.cautious(map.sizeHint()), defaultSFn(), defaultAFn())
         while (true) {
             val matchVal = when (val tryResult = map.nextEntry()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<MutableMap<K, V>, Error>(tryResult.errValue()) }
             if (matchVal == null) break
@@ -50,7 +50,7 @@ public fun <T, S, A, D> deserializeHashSetTSA(deserializer: D, defaultSFn: () ->
     fun <T, S, A> SeqVisitor<T, S, A>.expecting(formatter: StringBuilder): Result<Unit, Error> where T : Deserialize, S : BuildHasher, A : Allocator = run { formatter.append("a sequence"); Result.Ok<Unit, Error>(Unit) }
 
     fun <T, S, A, M> SeqVisitor<T, S, A>.visitSeq(seq: M, defaultSFn: () -> S, defaultAFn: () -> A): Result<MutableSet<T>, Error> where T : Deserialize, S : BuildHasher, A : Allocator, M : SeqAccess {
-        val values = HashSet.withCapacityAndHasherIn(sizehint.cautious(seq.sizeHint()), defaultSFn(), defaultAFn())
+        val values = HashSet.withCapacityAndHasherIn(SizeHint.cautious(seq.sizeHint()), defaultSFn(), defaultAFn())
         while (true) {
             val matchVal = when (val tryResult = seq.nextElement()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<MutableSet<T>, Error>(tryResult.errValue()) }
             if (matchVal == null) break
@@ -77,7 +77,7 @@ public fun <T, S, A, D> deserializeDeserializeInPlaceHashSetTSA(deserializer: D,
 
     fun <T, S, A, M> SeqInPlaceVisitor<T, S, A>.visitSeq(seq: M, defaultSFn: () -> S): Result<Unit, Error> where T : Deserialize, S : BuildHasher, A : Allocator, M : SeqAccess {
         this.value.clear()
-        this.value.reserve(sizehint.cautious(seq.sizeHint()))
+        this.value.reserve(SizeHint.cautious(seq.sizeHint()))
         while (true) {
             val matchVal = when (val tryResult = seq.nextElement()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
             if (matchVal == null) break

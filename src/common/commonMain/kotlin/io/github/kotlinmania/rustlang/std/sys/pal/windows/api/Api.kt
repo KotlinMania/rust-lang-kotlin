@@ -114,7 +114,7 @@ public fun utf16Len(s: String): Int {
  *
  * Note that this is designed for use in const contexts so is not optimized.
  */
-public fun toUtf16(s: String, utf16Len: Int): UShortArray {
+public fun toUtf16(s: String, utf16Len: Int = 0): UShortArray {
     val output = UShortArray(utf16Len) { 0u.toUShort() }
     var pos = 0
     val s1 = s.encodeToByteArray().map { it.toUByte() }

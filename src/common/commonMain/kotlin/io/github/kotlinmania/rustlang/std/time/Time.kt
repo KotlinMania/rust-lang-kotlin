@@ -2,6 +2,8 @@
 package io.github.kotlinmania.rustlang.std.time
 
 import io.github.kotlinmania.rustlang.core.error.Error
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.ops.arith.Add
 import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
 import io.github.kotlinmania.rustlang.core.ops.arith.Sub

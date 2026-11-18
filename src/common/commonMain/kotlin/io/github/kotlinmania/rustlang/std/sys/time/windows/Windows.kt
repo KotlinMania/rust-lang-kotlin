@@ -14,6 +14,8 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Filetime
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getSystemTimePreciseAsFileTime
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.INTERVALS_PER_SEC
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.checkedDur2intervals
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.epsilon
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.frequency
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.intervals2dur
 
 public class DebugStruct(
@@ -54,7 +56,7 @@ public open class Instant(
         // On windows there's a threshold below which we consider two timestamps
         // equivalent due to measurement error. For more details + doc link,
         // check the docs on epsilon.
-        val epsilon = perfcounter.epsilon()
+        val epsilon = epsilon()
         return if (other.t > this.t && other.t - this.t <= epsilon) {
             Duration.new(0, 0)
         } else {
@@ -77,8 +79,8 @@ public open class Instant(
             // These relate to seconds by a factor of QueryPerformanceFrequency.
             // In order to keep unit conversions out of normal interval math, we
             // measure in QPC units and immediately convert to nanoseconds.
-            val freq = perfcounter.frequency().toULong()
-            val now = perfcounter.now()
+            val freq = frequency().toULong()
+            val now = io.github.kotlinmania.rustlang.std.sys.pal.windows.time.now()
             // We convert now to `ULong` to be able to use `Duration`.
             val instantNsec = mulDivU64(now.toULong(), NANOS_PER_SEC, freq)
             // We can add an arbitrary offset to shift the epoch of this clock. We do that to avoid

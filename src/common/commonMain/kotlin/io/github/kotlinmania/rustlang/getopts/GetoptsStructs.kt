@@ -740,7 +740,7 @@ public open class Matches(
      */
     public open fun optStrs(name: String): List<String> =
         this.optVals(name).mapNotNull({ (_, v) -> when (v) {
-            is Val -> {
+            is Matches.Val -> {
                 val (s) = v
                 s
             }
@@ -759,7 +759,7 @@ public open class Matches(
      */
     public open fun optStrsPos(name: String): List<Pair<Int, String>> =
         this.optVals(name).mapNotNull({ (p, v) -> when (v) {
-            is Val -> {
+            is Matches.Val -> {
                 val (s) = v
                 Pair(p, s)
             }

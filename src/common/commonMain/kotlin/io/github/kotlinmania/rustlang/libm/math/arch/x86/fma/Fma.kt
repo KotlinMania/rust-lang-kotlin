@@ -1,8 +1,9 @@
 // port-lint: source math/arch/x86/fma.rs
 package io.github.kotlinmania.rustlang.libm.math.arch.x86.fma
 
-import io.github.kotlinmania.rustlang.libm.math.arch.x86.detect.cpuflags.FMA
-import io.github.kotlinmania.rustlang.libm.math.arch.x86.detect.cpuflags.FMA4
+import io.github.kotlinmania.rustlang.libm.math.arch.x86.detect.FMA
+import io.github.kotlinmania.rustlang.libm.math.arch.x86.detect.FMA4
+import io.github.kotlinmania.rustlang.libm.math.arch.x86.detect.cpuFlags
 import io.github.kotlinmania.rustlang.libm.math.arch.x86.detect.getCpuFeatures
 import io.github.kotlinmania.rustlang.libm.math.generic.fma.fmaRound
 import io.github.kotlinmania.rustlang.libm.math.generic.fmawide.fmaWideRound

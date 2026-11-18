@@ -3,8 +3,6 @@
 
 package io.github.kotlinmania.rustlang.std.sys.thread.unix
 
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
@@ -17,6 +15,7 @@ import io.github.kotlinmania.rustlang.core.mem.dropguard.DropGuard
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.num.checkedNextMultipleOf
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -53,6 +52,8 @@ import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.fs.exists
 import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.std.max
+import io.github.kotlinmania.rustlang.std.min
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
@@ -216,7 +217,7 @@ public fun currentOsId(): ULong? {
     return id.toULong()
 }
 
-public fun truncateCstr(cstr: CStr, maxWithNul: Int): UByteArray {
+public fun truncateCstr(cstr: CStr, maxWithNul: Int = 0): UByteArray {
     val result = MutableList(maxWithNul) { 0 }
     for ((src, dst) in (cstr.toBytes().iter().zip(result.subList(0, maxWithNul - 1)))) {
         dst = src.toUByte()

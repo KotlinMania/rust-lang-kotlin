@@ -33,6 +33,9 @@ import io.github.kotlinmania.rustlang.corearch.simd.U32x8
 import io.github.kotlinmania.rustlang.corearch.simd.U64x2
 import io.github.kotlinmania.rustlang.corearch.simd.U64x4
 import io.github.kotlinmania.rustlang.corearch.simd.U64x8
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
 
 /**
  * Set packed half-precision (16-bit) floating-point elements in dst with the supplied values.
@@ -439,7 +442,7 @@ public fun mm512CmpPhMask(a: M512h, b: M512h, imm5: Int): Mmask32 = mm512MaskCmp
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cmp_ph_mask)
  */
-public fun mm512MaskCmpPhMask(k1: Mmask32, a: M512h, b: M512h, imm5: Int): Mmask32 = mm512MaskCmpRoundPhMask<MmFroundCurDirection>(k1, a, b, imm5)
+public fun mm512MaskCmpPhMask(k1: Mmask32, a: M512h, b: M512h, imm5: Int): Mmask32 = mm512MaskCmpRoundPhMask(k1, a, b, imm5, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b based on the comparison
@@ -516,7 +519,7 @@ public fun mmCmpShMask(a: M128h, b: M128h, imm5: Int): Mmask8 {
     run {
         check(0 <= imm5 && imm5 < (1 shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return mmCmpRoundShMask<MmFroundCurDirection>(a, b, imm5)
+    return mmCmpRoundShMask(a, b, imm5, MM_FROUND_CUR_DIRECTION)
 }
 
 /**
@@ -529,7 +532,7 @@ public fun mmMaskCmpShMask(k1: Mmask8, a: M128h, b: M128h, imm5: Int): Mmask8 {
     run {
         check(0 <= imm5 && imm5 < (1 shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return mmMaskCmpRoundShMask<MmFroundCurDirection>(k1, a, b, imm5)
+    return mmMaskCmpRoundShMask(k1, a, b, imm5, MM_FROUND_CUR_DIRECTION)
 }
 
 /**
@@ -560,7 +563,7 @@ public fun mmComiSh(a: M128h, b: M128h, imm5: Int): Int {
     run {
         check(0 <= imm5 && imm5 < (1 shl 5)) { "IMM5 doesn't fit in 5 bits (unsigned)" }
     }
-    return mmComiRoundSh<MmFroundCurDirection>(a, b, imm5)
+    return mmComiRoundSh(a, b, imm5, MM_FROUND_CUR_DIRECTION)
 }
 
 /**
@@ -569,7 +572,7 @@ public fun mmComiSh(a: M128h, b: M128h, imm5: Int): Int {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_comieq_sh)
  */
-public fun mmComieqSh(a: M128h, b: M128h): Int = mmComiSh<CmpEqOs>(a, b)
+public fun mmComieqSh(a: M128h, b: M128h): Int = mmComiSh(a, b, CMP_EQ_OS)
 
 /**
  * Compare the lower half-precision (16-bit) floating-point elements in a and b for greater-than-or-equal,
@@ -577,7 +580,7 @@ public fun mmComieqSh(a: M128h, b: M128h): Int = mmComiSh<CmpEqOs>(a, b)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_comige_sh)
  */
-public fun mmComigeSh(a: M128h, b: M128h): Int = mmComiSh<CmpGeOs>(a, b)
+public fun mmComigeSh(a: M128h, b: M128h): Int = mmComiSh(a, b, CMP_GE_OS)
 
 /**
  * Compare the lower half-precision (16-bit) floating-point elements in a and b for greater-than, and return
@@ -585,7 +588,7 @@ public fun mmComigeSh(a: M128h, b: M128h): Int = mmComiSh<CmpGeOs>(a, b)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_comigt_sh)
  */
-public fun mmComigtSh(a: M128h, b: M128h): Int = mmComiSh<CmpGtOs>(a, b)
+public fun mmComigtSh(a: M128h, b: M128h): Int = mmComiSh(a, b, CMP_GT_OS)
 
 /**
  * Compare the lower half-precision (16-bit) floating-point elements in a and b for less-than-or-equal, and
@@ -593,7 +596,7 @@ public fun mmComigtSh(a: M128h, b: M128h): Int = mmComiSh<CmpGtOs>(a, b)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_comile_sh)
  */
-public fun mmComileSh(a: M128h, b: M128h): Int = mmComiSh<CmpLeOs>(a, b)
+public fun mmComileSh(a: M128h, b: M128h): Int = mmComiSh(a, b, CMP_LE_OS)
 
 /**
  * Compare the lower half-precision (16-bit) floating-point elements in a and b for less-than, and return
@@ -601,7 +604,7 @@ public fun mmComileSh(a: M128h, b: M128h): Int = mmComiSh<CmpLeOs>(a, b)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_comilt_sh)
  */
-public fun mmComiltSh(a: M128h, b: M128h): Int = mmComiSh<CmpLtOs>(a, b)
+public fun mmComiltSh(a: M128h, b: M128h): Int = mmComiSh(a, b, CMP_LT_OS)
 
 /**
  * Compare the lower half-precision (16-bit) floating-point elements in a and b for not-equal, and return
@@ -609,7 +612,7 @@ public fun mmComiltSh(a: M128h, b: M128h): Int = mmComiSh<CmpLtOs>(a, b)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_comineq_sh)
  */
-public fun mmComineqSh(a: M128h, b: M128h): Int = mmComiSh<CmpNeqUs>(a, b)
+public fun mmComineqSh(a: M128h, b: M128h): Int = mmComiSh(a, b, CMP_NEQ_US)
 
 /**
  * Compare the lower half-precision (16-bit) floating-point elements in a and b for equality, and
@@ -617,7 +620,7 @@ public fun mmComineqSh(a: M128h, b: M128h): Int = mmComiSh<CmpNeqUs>(a, b)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_ucomieq_sh)
  */
-public fun mmUcomieqSh(a: M128h, b: M128h): Int = mmComiSh<CmpEqOq>(a, b)
+public fun mmUcomieqSh(a: M128h, b: M128h): Int = mmComiSh(a, b, CMP_EQ_OQ)
 
 /**
  * Compare the lower half-precision (16-bit) floating-point elements in a and b for greater-than-or-equal,
@@ -625,7 +628,7 @@ public fun mmUcomieqSh(a: M128h, b: M128h): Int = mmComiSh<CmpEqOq>(a, b)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_ucomige_sh)
  */
-public fun mmUcomigeSh(a: M128h, b: M128h): Int = mmComiSh<CmpGeOq>(a, b)
+public fun mmUcomigeSh(a: M128h, b: M128h): Int = mmComiSh(a, b, CMP_GE_OQ)
 
 /**
  * Compare the lower half-precision (16-bit) floating-point elements in a and b for greater-than, and return
@@ -633,7 +636,7 @@ public fun mmUcomigeSh(a: M128h, b: M128h): Int = mmComiSh<CmpGeOq>(a, b)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_ucomigt_sh)
  */
-public fun mmUcomigtSh(a: M128h, b: M128h): Int = mmComiSh<CmpGtOq>(a, b)
+public fun mmUcomigtSh(a: M128h, b: M128h): Int = mmComiSh(a, b, CMP_GT_OQ)
 
 /**
  * Compare the lower half-precision (16-bit) floating-point elements in a and b for less-than-or-equal, and
@@ -641,7 +644,7 @@ public fun mmUcomigtSh(a: M128h, b: M128h): Int = mmComiSh<CmpGtOq>(a, b)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_ucomile_sh)
  */
-public fun mmUcomileSh(a: M128h, b: M128h): Int = mmComiSh<CmpLeOq>(a, b)
+public fun mmUcomileSh(a: M128h, b: M128h): Int = mmComiSh(a, b, CMP_LE_OQ)
 
 /**
  * Compare the lower half-precision (16-bit) floating-point elements in a and b for less-than, and return
@@ -649,7 +652,7 @@ public fun mmUcomileSh(a: M128h, b: M128h): Int = mmComiSh<CmpLeOq>(a, b)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_ucomilt_sh)
  */
-public fun mmUcomiltSh(a: M128h, b: M128h): Int = mmComiSh<CmpLtOq>(a, b)
+public fun mmUcomiltSh(a: M128h, b: M128h): Int = mmComiSh(a, b, CMP_LT_OQ)
 
 /**
  * Compare the lower half-precision (16-bit) floating-point elements in a and b for not-equal, and return
@@ -657,7 +660,7 @@ public fun mmUcomiltSh(a: M128h, b: M128h): Int = mmComiSh<CmpLtOq>(a, b)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_ucomineq_sh)
  */
-public fun mmUcomineqSh(a: M128h, b: M128h): Int = mmComiSh<CmpNeqUq>(a, b)
+public fun mmUcomineqSh(a: M128h, b: M128h): Int = mmComiSh(a, b, CMP_NEQ_UQ)
 
 /**
  * Load 128-bits (composed of 8 packed half-precision (16-bit) floating-point elements) from memory into
@@ -1991,7 +1994,7 @@ public fun mm512MulPch(a: M512h, b: M512h): M512h = mm512MaskMulPch(mm512Undefin
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_mul_pch)
  */
-public fun mm512MaskMulPch(src: M512h, k: Mmask16, a: M512h, b: M512h): M512h = mm512MaskMulRoundPch<MmFroundCurDirection>(src, k, a, b)
+public fun mm512MaskMulPch(src: M512h, k: Mmask16, a: M512h, b: M512h): M512h = mm512MaskMulRoundPch(src, k, a, b, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply packed complex numbers in a and b, and store the results in dst using zeromask k (the element
@@ -2087,7 +2090,7 @@ public fun mmMulSch(a: M128h, b: M128h): M128h = mmMaskMulSch(Simd<F16>(List(8) 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_mul_sch)
  */
-public fun mmMaskMulSch(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = mmMaskMulRoundSch<MmFroundCurDirection>(src, k, a, b)
+public fun mmMaskMulSch(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = mmMaskMulRoundSch(src, k, a, b, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply the lower complex numbers in a and b, and store the result in the lower elements of dst using
@@ -2481,7 +2484,7 @@ public fun mm512CmulPch(a: M512h, b: M512h): M512h = mm512MaskCmulPch(mm512Undef
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cmul_pch)
  */
-public fun mm512MaskCmulPch(src: M512h, k: Mmask16, a: M512h, b: M512h): M512h = mm512MaskCmulRoundPch<MmFroundCurDirection>(src, k, a, b)
+public fun mm512MaskCmulPch(src: M512h, k: Mmask16, a: M512h, b: M512h): M512h = mm512MaskCmulRoundPch(src, k, a, b, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply packed complex numbers in a by the complex conjugates of packed complex numbers in b, and
@@ -2580,7 +2583,7 @@ public fun mmCmulSch(a: M128h, b: M128h): M128h = mmMaskCmulSch(Simd<F16>(List(8
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cmul_sch)
  */
-public fun mmMaskCmulSch(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = mmMaskCmulRoundSch<MmFroundCurDirection>(src, k, a, b)
+public fun mmMaskCmulSch(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = mmMaskCmulRoundSch(src, k, a, b, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply the lower complex numbers in a by the complex conjugates of the lower complex numbers in b,
@@ -3136,7 +3139,7 @@ public fun mm256MaskzFmaddPch(k: Mmask8, a: M256h, b: M256h, c: M256h): M256h = 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_fmadd_pch)
  */
-public fun mm512FmaddPch(a: M512h, b: M512h, c: M512h): M512h = mm512FmaddRoundPch<MmFroundCurDirection>(a, b, c)
+public fun mm512FmaddPch(a: M512h, b: M512h, c: M512h): M512h = mm512FmaddRoundPch(a, b, c, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply packed complex numbers in a and b, accumulate to the corresponding complex numbers in c,
@@ -3146,7 +3149,7 @@ public fun mm512FmaddPch(a: M512h, b: M512h, c: M512h): M512h = mm512FmaddRoundP
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_fmadd_pch)
  */
-public fun mm512MaskFmaddPch(a: M512h, k: Mmask16, b: M512h, c: M512h): M512h = mm512MaskFmaddRoundPch<MmFroundCurDirection>(a, k, b, c)
+public fun mm512MaskFmaddPch(a: M512h, k: Mmask16, b: M512h, c: M512h): M512h = mm512MaskFmaddRoundPch(a, k, b, c, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply packed complex numbers in a and b, accumulate to the corresponding complex numbers in c,
@@ -3156,7 +3159,7 @@ public fun mm512MaskFmaddPch(a: M512h, k: Mmask16, b: M512h, c: M512h): M512h = 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask3_fmadd_pch)
  */
-public fun mm512Mask3FmaddPch(a: M512h, b: M512h, c: M512h, k: Mmask16): M512h = mm512Mask3FmaddRoundPch<MmFroundCurDirection>(a, b, c, k)
+public fun mm512Mask3FmaddPch(a: M512h, b: M512h, c: M512h, k: Mmask16): M512h = mm512Mask3FmaddRoundPch(a, b, c, k, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply packed complex numbers in a and b, accumulate to the corresponding complex numbers in c,
@@ -3166,7 +3169,7 @@ public fun mm512Mask3FmaddPch(a: M512h, b: M512h, c: M512h, k: Mmask16): M512h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_maskz_fmadd_pch)
  */
-public fun mm512MaskzFmaddPch(k: Mmask16, a: M512h, b: M512h, c: M512h): M512h = mm512MaskzFmaddRoundPch<MmFroundCurDirection>(k, a, b, c)
+public fun mm512MaskzFmaddPch(k: Mmask16, a: M512h, b: M512h, c: M512h): M512h = mm512MaskzFmaddRoundPch(k, a, b, c, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply packed complex numbers in a and b, accumulate to the corresponding complex numbers in c,
@@ -3272,7 +3275,7 @@ public fun mm512MaskzFmaddRoundPch(k: Mmask16, a: M512h, b: M512h, c: M512h, rou
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_fmadd_sch)
  */
-public fun mmFmaddSch(a: M128h, b: M128h, c: M128h): M128h = mmFmaddRoundSch<MmFroundCurDirection>(a, b, c)
+public fun mmFmaddSch(a: M128h, b: M128h, c: M128h): M128h = mmFmaddRoundSch(a, b, c, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply the lower complex numbers in a and b, accumulate to the lower complex number in c, and
@@ -3283,7 +3286,7 @@ public fun mmFmaddSch(a: M128h, b: M128h, c: M128h): M128h = mmFmaddRoundSch<MmF
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_fmadd_sch)
  */
-public fun mmMaskFmaddSch(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = mmMaskFmaddRoundSch<MmFroundCurDirection>(a, k, b, c)
+public fun mmMaskFmaddSch(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = mmMaskFmaddRoundSch(a, k, b, c, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply the lower complex numbers in a and b, accumulate to the lower complex number in c, and
@@ -3294,7 +3297,7 @@ public fun mmMaskFmaddSch(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = mmMa
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask3_fmadd_sch)
  */
-public fun mmMask3FmaddSch(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = mmMask3FmaddRoundSch<MmFroundCurDirection>(a, b, c, k)
+public fun mmMask3FmaddSch(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = mmMask3FmaddRoundSch(a, b, c, k, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply the lower complex numbers in a and b, accumulate to the lower complex number in c, and
@@ -3305,7 +3308,7 @@ public fun mmMask3FmaddSch(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = mmM
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_maskz_fmadd_sch)
  */
-public fun mmMaskzFmaddSch(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = mmMaskzFmaddRoundSch<MmFroundCurDirection>(k, a, b, c)
+public fun mmMaskzFmaddSch(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = mmMaskzFmaddRoundSch(k, a, b, c, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply the lower complex numbers in a and b, accumulate to the lower complex number in c, and
@@ -3514,7 +3517,7 @@ public fun mm256MaskzFcmaddPch(k: Mmask8, a: M256h, b: M256h, c: M256h): M256h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_fcmadd_pch)
  */
-public fun mm512FcmaddPch(a: M512h, b: M512h, c: M512h): M512h = mm512FcmaddRoundPch<MmFroundCurDirection>(a, b, c)
+public fun mm512FcmaddPch(a: M512h, b: M512h, c: M512h): M512h = mm512FcmaddRoundPch(a, b, c, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply packed complex numbers in a by the complex conjugates of packed complex numbers in b, accumulate
@@ -3525,7 +3528,7 @@ public fun mm512FcmaddPch(a: M512h, b: M512h, c: M512h): M512h = mm512FcmaddRoun
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_fcmadd_pch)
  */
-public fun mm512MaskFcmaddPch(a: M512h, k: Mmask16, b: M512h, c: M512h): M512h = mm512MaskFcmaddRoundPch<MmFroundCurDirection>(a, k, b, c)
+public fun mm512MaskFcmaddPch(a: M512h, k: Mmask16, b: M512h, c: M512h): M512h = mm512MaskFcmaddRoundPch(a, k, b, c, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply packed complex numbers in a by the complex conjugates of packed complex numbers in b, accumulate
@@ -3536,7 +3539,7 @@ public fun mm512MaskFcmaddPch(a: M512h, k: Mmask16, b: M512h, c: M512h): M512h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask3_fcmadd_pch)
  */
-public fun mm512Mask3FcmaddPch(a: M512h, b: M512h, c: M512h, k: Mmask16): M512h = mm512Mask3FcmaddRoundPch<MmFroundCurDirection>(a, b, c, k)
+public fun mm512Mask3FcmaddPch(a: M512h, b: M512h, c: M512h, k: Mmask16): M512h = mm512Mask3FcmaddRoundPch(a, b, c, k, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply packed complex numbers in a by the complex conjugates of packed complex numbers in b, accumulate
@@ -3547,7 +3550,7 @@ public fun mm512Mask3FcmaddPch(a: M512h, b: M512h, c: M512h, k: Mmask16): M512h 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_maskz_fcmadd_pch)
  */
-public fun mm512MaskzFcmaddPch(k: Mmask16, a: M512h, b: M512h, c: M512h): M512h = mm512MaskzFcmaddRoundPch<MmFroundCurDirection>(k, a, b, c)
+public fun mm512MaskzFcmaddPch(k: Mmask16, a: M512h, b: M512h, c: M512h): M512h = mm512MaskzFcmaddRoundPch(k, a, b, c, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply packed complex numbers in a by the complex conjugates of packed complex numbers in b, accumulate
@@ -3658,7 +3661,7 @@ public fun mm512MaskzFcmaddRoundPch(k: Mmask16, a: M512h, b: M512h, c: M512h, ro
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_fcmadd_sch)
  */
-public fun mmFcmaddSch(a: M128h, b: M128h, c: M128h): M128h = mmFcmaddRoundSch<MmFroundCurDirection>(a, b, c)
+public fun mmFcmaddSch(a: M128h, b: M128h, c: M128h): M128h = mmFcmaddRoundSch(a, b, c, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply the lower complex number in a by the complex conjugate of the lower complex number in b,
@@ -3670,7 +3673,7 @@ public fun mmFcmaddSch(a: M128h, b: M128h, c: M128h): M128h = mmFcmaddRoundSch<M
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_fcmadd_sch)
  */
-public fun mmMaskFcmaddSch(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = mmMaskFcmaddRoundSch<MmFroundCurDirection>(a, k, b, c)
+public fun mmMaskFcmaddSch(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = mmMaskFcmaddRoundSch(a, k, b, c, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply the lower complex number in a by the complex conjugate of the lower complex number in b,
@@ -3682,7 +3685,7 @@ public fun mmMaskFcmaddSch(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = mmM
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask3_fcmadd_sch)
  */
-public fun mmMask3FcmaddSch(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = mmMask3FcmaddRoundSch<MmFroundCurDirection>(a, b, c, k)
+public fun mmMask3FcmaddSch(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = mmMask3FcmaddRoundSch(a, b, c, k, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply the lower complex number in a by the complex conjugate of the lower complex number in b,
@@ -3694,7 +3697,7 @@ public fun mmMask3FcmaddSch(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = mm
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_maskz_fcmadd_sch)
  */
-public fun mmMaskzFcmaddSch(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = mmMaskzFcmaddRoundSch<MmFroundCurDirection>(k, a, b, c)
+public fun mmMaskzFcmaddSch(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = mmMaskzFcmaddRoundSch(k, a, b, c, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Multiply the lower complex number in a by the complex conjugate of the lower complex number in b,
@@ -6131,7 +6134,7 @@ public fun mmSqrtSh(a: M128h, b: M128h): M128h = mmMaskSqrtSh(Simd<F16>(List(8) 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_sqrt_sh)
  */
-public fun mmMaskSqrtSh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = mmMaskSqrtRoundSh<MmFroundCurDirection>(src, k, a, b)
+public fun mmMaskSqrtSh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = mmMaskSqrtRoundSh(src, k, a, b, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Compute the square root of the lower half-precision (16-bit) floating-point element in b, store
@@ -6271,7 +6274,7 @@ public fun mm256MaskzMaxPh(k: Mmask16, a: M256h, b: M256h): M256h = run { val si
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_max_ph)
  */
-public fun mm512MaxPh(a: M512h, b: M512h): M512h = mm512MaxRoundPh<MmFroundCurDirection>(a, b)
+public fun mm512MaxPh(a: M512h, b: M512h): M512h = mm512MaxRoundPh(a, b, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b, and store packed maximum
@@ -6359,7 +6362,7 @@ public fun mmMaxSh(a: M128h, b: M128h): M128h = mmMaskMaxSh(mmUndefinedPh(), 0xf
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_max_sh)
  */
-public fun mmMaskMaxSh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = mmMaskMaxRoundSh<MmFroundCurDirection>(src, k, a, b)
+public fun mmMaskMaxSh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = mmMaskMaxRoundSh(src, k, a, b, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Compare the lower half-precision (16-bit) floating-point elements in a and b, store the maximum value
@@ -6484,7 +6487,7 @@ public fun mm256MaskzMinPh(k: Mmask16, a: M256h, b: M256h): M256h = run { val si
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_min_ph)
  */
-public fun mm512MinPh(a: M512h, b: M512h): M512h = mm512MinRoundPh<MmFroundCurDirection>(a, b)
+public fun mm512MinPh(a: M512h, b: M512h): M512h = mm512MinRoundPh(a, b, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b, and store packed minimum
@@ -6571,7 +6574,7 @@ public fun mmMinSh(a: M128h, b: M128h): M128h = mmMaskMinSh(mmUndefinedPh(), 0xf
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_min_sh)
  */
-public fun mmMaskMinSh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = mmMaskMinRoundSh<MmFroundCurDirection>(src, k, a, b)
+public fun mmMaskMinSh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = mmMaskMinRoundSh(src, k, a, b, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Compare the lower half-precision (16-bit) floating-point elements in a and b, store the minimum value
@@ -6706,7 +6709,7 @@ public fun mm512GetexpPh(a: M512h): M512h = mm512MaskGetexpPh(mm512UndefinedPh()
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_getexp_ph)
  */
-public fun mm512MaskGetexpPh(src: M512h, k: Mmask32, a: M512h): M512h = mm512MaskGetexpRoundPh<MmFroundCurDirection>(src, k, a)
+public fun mm512MaskGetexpPh(src: M512h, k: Mmask32, a: M512h): M512h = mm512MaskGetexpRoundPh(src, k, a, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Convert the exponent of each packed half-precision (16-bit) floating-point element in a to a half-precision
@@ -6783,7 +6786,7 @@ public fun mmGetexpSh(a: M128h, b: M128h): M128h = mmMaskGetexpSh(Simd<F16>(List
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_getexp_sh)
  */
-public fun mmMaskGetexpSh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = mmMaskGetexpRoundSh<MmFroundCurDirection>(src, k, a, b)
+public fun mmMaskGetexpSh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = mmMaskGetexpRoundSh(src, k, a, b, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Convert the exponent of the lower half-precision (16-bit) floating-point element in b to a half-precision
@@ -7089,7 +7092,7 @@ public fun mm512MaskGetmantPh(src: M512h, k: Mmask32, a: M512h, norm: MmMantissa
     run {
         check(0 <= sign && sign < (1 shl 2)) { "SIGN doesn't fit in 2 bits (unsigned)" }
     }
-    return mm512MaskGetmantRoundPh<MmFroundCurDirection>(src, k, a, norm, sign)
+    return mm512MaskGetmantRoundPh(src, k, a, norm, sign, MM_FROUND_CUR_DIRECTION)
 }
 
 /**
@@ -7294,7 +7297,7 @@ public fun mmMaskGetmantSh(src: M128h, k: Mmask8, a: M128h, b: M128h, norm: MmMa
     run {
         check(0 <= sign && sign < (1 shl 2)) { "SIGN doesn't fit in 2 bits (unsigned)" }
     }
-    return mmMaskGetmantRoundSh<MmFroundCurDirection>(src, k, a, b, norm, sign)
+    return mmMaskGetmantRoundSh(src, k, a, b, norm, sign, MM_FROUND_CUR_DIRECTION)
 }
 
 /**
@@ -7613,7 +7616,7 @@ public fun mm512MaskRoundscalePh(src: M512h, k: Mmask32, a: M512h, imm8: Int): M
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return mm512MaskRoundscaleRoundPh<MmFroundCurDirection>(src, k, a, imm8)
+    return mm512MaskRoundscaleRoundPh(src, k, a, imm8, MM_FROUND_CUR_DIRECTION)
 }
 
 /**
@@ -7756,7 +7759,7 @@ public fun mmMaskRoundscaleSh(src: M128h, k: Mmask8, a: M128h, b: M128h, imm8: I
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return mmMaskRoundscaleRoundSh<MmFroundCurDirection>(src, k, a, b, imm8)
+    return mmMaskRoundscaleRoundSh(src, k, a, b, imm8, MM_FROUND_CUR_DIRECTION)
 }
 
 /**
@@ -7925,7 +7928,7 @@ public fun mm512ScalefPh(a: M512h, b: M512h): M512h = mm512MaskScalefPh(mm512Und
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_scalef_ph)
  */
-public fun mm512MaskScalefPh(src: M512h, k: Mmask32, a: M512h, b: M512h): M512h = mm512MaskScalefRoundPh<MmFroundCurDirection>(src, k, a, b)
+public fun mm512MaskScalefPh(src: M512h, k: Mmask32, a: M512h, b: M512h): M512h = mm512MaskScalefRoundPh(src, k, a, b, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Scale the packed half-precision (16-bit) floating-point elements in a using values from b, and store
@@ -8015,7 +8018,7 @@ public fun mmScalefSh(a: M128h, b: M128h): M128h = mmMaskScalefSh(Simd<F16>(List
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_scalef_sh)
  */
-public fun mmMaskScalefSh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = mmMaskScalefRoundSh<MmFroundCurDirection>(src, k, a, b)
+public fun mmMaskScalefSh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = mmMaskScalefRoundSh(src, k, a, b, MM_FROUND_CUR_DIRECTION)
 
 /**
  * Scale the packed single-precision (32-bit) floating-point elements in a using values from b, store
@@ -8265,7 +8268,7 @@ public fun mm512MaskReducePh(src: M512h, k: Mmask32, a: M512h, imm8: Int): M512h
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return mm512MaskReduceRoundPh<MmFroundCurDirection>(src, k, a, imm8)
+    return mm512MaskReduceRoundPh(src, k, a, imm8, MM_FROUND_CUR_DIRECTION)
 }
 
 /**
@@ -8413,7 +8416,7 @@ public fun mmMaskReduceSh(src: M128h, k: Mmask8, a: M128h, b: M128h, imm8: Int):
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return mmMaskReduceRoundSh<MmFroundCurDirection>(src, k, a, b, imm8)
+    return mmMaskReduceRoundSh(src, k, a, b, imm8, MM_FROUND_CUR_DIRECTION)
 }
 
 /**

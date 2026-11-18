@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.mem.zeroed
 import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.mkdirat
@@ -33,7 +34,6 @@ import io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.Stat64
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.cfgHasStatx
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.debugPathFd
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.open64
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.tryStatx
 import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runPathWithCstr
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt

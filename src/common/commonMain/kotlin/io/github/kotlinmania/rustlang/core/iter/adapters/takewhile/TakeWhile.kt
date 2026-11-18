@@ -97,7 +97,7 @@ public open class TakeWhile<I, P>(
     }
 }
 
-public fun <I> TakeWhile<I, P>.next(): Item? {
+public fun <Item, I : Iterator<Item>> TakeWhile<I, P>.next(): Item? {
     return if (this.flag) {
         null
     } else {
@@ -111,7 +111,7 @@ public fun <I> TakeWhile<I, P>.next(): Item? {
     }
 }
 
-public fun <I> TakeWhile<I, P>.sizeHint(): Pair<Int, Int?> =
+public fun <Item, I : Iterator<Item>> TakeWhile<I, P>.sizeHint(): Pair<Int, Int?> =
     if (this.flag) {
         Pair(0, 0)
     } else {
@@ -120,7 +120,7 @@ public fun <I> TakeWhile<I, P>.sizeHint(): Pair<Int, Int?> =
         // can't know a lower bound, due to the predicate
     }
 
-public fun <Residual, I, Acc, R> TakeWhile<I, P>.tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Item, Residual, I : Iterator<Item>, Acc, R> TakeWhile<I, P>.tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     fun <Residual, T, Acc, R : Try<R, Acc, Residual>> check(flag: RustMutableReference<Boolean>, p: (T) -> Boolean, fold1: (Acc, T) -> R): (Acc, T) -> ControlFlow<R, Acc> {
         val flag1 = flag
         return { acc, x ->
@@ -141,7 +141,7 @@ public fun <Residual, I, Acc, R> TakeWhile<I, P>.tryFold(init: Acc, fold: (Acc, 
     }
 }
 
-public fun <I, Aaa> TakeWhile<I, P>.fold(init: Aaa, fold: (Aaa, Item) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
+public fun <Item, I : Iterator<Item>, Aaa> TakeWhile<I, P>.fold(init: Aaa, fold: (Aaa, Item) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
 
 public fun <Source, P, I> TakeWhile<I, P>.asInner(): Source where I : SourceIter<Source> {
     // SAFETY: unchecked function forwarding to unchecked function with the same requirements

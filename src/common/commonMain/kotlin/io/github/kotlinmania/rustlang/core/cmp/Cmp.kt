@@ -31,9 +31,10 @@ import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
-import io.github.kotlinmania.rustlang.core.panic.constAssert
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 // Utilities for comparing and ordering values.
 //
@@ -2390,7 +2391,7 @@ public fun Char.chainingGreater(other: Char): ControlFlow<Boolean, Unit> {
 public fun Char.cmp(other: Char): Ordering = threeWayCompare(this, other)
 
 public fun Char.clamp(min: Char, max: Char): Char {
-    constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
+    check(min <= max) { "min > max" }
     return if (this < min) {
         min
     } else if (this > max) {
@@ -2441,7 +2442,7 @@ public fun Int.chainingGreater(other: Int): ControlFlow<Boolean, Unit> {
 public fun Int.cmp(other: Int): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun Int.clamp(min: Int, max: Int): Int {
-    constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
+    check(min <= max) { "min > max" }
     return if (this < min) {
         min
     } else if (this > max) {
@@ -2486,7 +2487,7 @@ public fun UByte.chainingGreater(other: UByte): ControlFlow<Boolean, Unit> {
 public fun UByte.cmp(other: UByte): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun UByte.clamp(min: UByte, max: UByte): UByte {
-    constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
+    check(min <= max) { "min > max" }
     return if (this < min) {
         min
     } else if (this > max) {
@@ -2531,7 +2532,7 @@ public fun UShort.chainingGreater(other: UShort): ControlFlow<Boolean, Unit> {
 public fun UShort.cmp(other: UShort): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun UShort.clamp(min: UShort, max: UShort): UShort {
-    constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
+    check(min <= max) { "min > max" }
     return if (this < min) {
         min
     } else if (this > max) {
@@ -2576,7 +2577,7 @@ public fun UInt.chainingGreater(other: UInt): ControlFlow<Boolean, Unit> {
 public fun UInt.cmp(other: UInt): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun UInt.clamp(min: UInt, max: UInt): UInt {
-    constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
+    check(min <= max) { "min > max" }
     return if (this < min) {
         min
     } else if (this > max) {
@@ -2621,7 +2622,7 @@ public fun ULong.chainingGreater(other: ULong): ControlFlow<Boolean, Unit> {
 public fun ULong.cmp(other: ULong): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun ULong.clamp(min: ULong, max: ULong): ULong {
-    constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
+    check(min <= max) { "min > max" }
     return if (this < min) {
         min
     } else if (this > max) {
@@ -2666,7 +2667,7 @@ public fun U128.chainingGreater(other: U128): ControlFlow<Boolean, Unit> {
 public fun U128.cmp(other: U128): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun U128.clamp(min: U128, max: U128): U128 {
-    constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
+    check(min <= max) { "min > max" }
     return if (this < min) {
         min
     } else if (this > max) {
@@ -2711,7 +2712,7 @@ public fun Byte.chainingGreater(other: Byte): ControlFlow<Boolean, Unit> {
 public fun Byte.cmp(other: Byte): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun Byte.clamp(min: Byte, max: Byte): Byte {
-    constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
+    check(min <= max) { "min > max" }
     return if (this < min) {
         min
     } else if (this > max) {
@@ -2756,7 +2757,7 @@ public fun Short.chainingGreater(other: Short): ControlFlow<Boolean, Unit> {
 public fun Short.cmp(other: Short): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun Short.clamp(min: Short, max: Short): Short {
-    constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
+    check(min <= max) { "min > max" }
     return if (this < min) {
         min
     } else if (this > max) {
@@ -2801,7 +2802,7 @@ public fun Long.chainingGreater(other: Long): ControlFlow<Boolean, Unit> {
 public fun Long.cmp(other: Long): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun Long.clamp(min: Long, max: Long): Long {
-    constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
+    check(min <= max) { "min > max" }
     return if (this < min) {
         min
     } else if (this > max) {
@@ -2846,7 +2847,7 @@ public fun I128.chainingGreater(other: I128): ControlFlow<Boolean, Unit> {
 public fun I128.cmp(other: I128): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun I128.clamp(min: I128, max: I128): I128 {
-    constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
+    check(min <= max) { "min > max" }
     return if (this < min) {
         min
     } else if (this > max) {

@@ -5,9 +5,9 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.node.BorrowType
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.ForceResult.*
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Handle
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.LeafOrInternal
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.NodeRef
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.LeafOrInternal
 import io.github.kotlinmania.rustlang.alloc.collections.btree.search.SearchBound.*
 import io.github.kotlinmania.rustlang.alloc.collections.btree.search.SearchResult.*
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
@@ -49,19 +49,19 @@ public sealed class SearchBound<T> {
                     val (t1) = rangeBound
                     Excluded(t1)
                 }
-                Bound.Unbounded -> AllIncluded
+                is Bound.Unbounded<*> -> AllIncluded()
             }
     }
 }
 
 public sealed class SearchResult<BorrowType, K, V, FoundType, GoDownType> {
-    public class Found<BorrowType, K, V, FoundType, GoDownType> internal constructor(valueCtorArg: Handle<NodeRef<BorrowType, K, V, FoundType>, KV>) : SearchResult<BorrowType, K, V, FoundType, GoDownType>() {
-        public var value: Handle<NodeRef<BorrowType, K, V, FoundType>, KV> = valueCtorArg
+    public class Found<BorrowType, K, V, FoundType, GoDownType> internal constructor(valueCtorArg: Handle<NodeRef<BorrowType, K, V, FoundType>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.KV>) : SearchResult<BorrowType, K, V, FoundType, GoDownType>() {
+        public var value: Handle<NodeRef<BorrowType, K, V, FoundType>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.KV> = valueCtorArg
             internal set
 
-        public operator fun component1(): Handle<NodeRef<BorrowType, K, V, FoundType>, KV> = this.value
+        public operator fun component1(): Handle<NodeRef<BorrowType, K, V, FoundType>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.KV> = this.value
 
-        public fun copy(value: Handle<NodeRef<BorrowType, K, V, FoundType>, KV> = this.value): Found<BorrowType, K, V, FoundType, GoDownType> = Found<BorrowType, K, V, FoundType, GoDownType>(valueCtorArg = value)
+        public fun copy(value: Handle<NodeRef<BorrowType, K, V, FoundType>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.KV> = this.value): Found<BorrowType, K, V, FoundType, GoDownType> = Found<BorrowType, K, V, FoundType, GoDownType>(valueCtorArg = value)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -74,19 +74,19 @@ public sealed class SearchResult<BorrowType, K, V, FoundType, GoDownType> {
 
         public companion object {
             public operator fun <BorrowType, K, V, FoundType, GoDownType> invoke(
-                value: Handle<NodeRef<BorrowType, K, V, FoundType>, KV>,
+                value: Handle<NodeRef<BorrowType, K, V, FoundType>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.KV>,
             ): Found<BorrowType, K, V, FoundType, GoDownType> = Found<BorrowType, K, V, FoundType, GoDownType>(
                 valueCtorArg = value,
             )
         }
     }
-    public class GoDown<BorrowType, K, V, FoundType, GoDownType> internal constructor(valueCtorArg: Handle<NodeRef<BorrowType, K, V, GoDownType>, Edge>) : SearchResult<BorrowType, K, V, FoundType, GoDownType>() {
-        public var value: Handle<NodeRef<BorrowType, K, V, GoDownType>, Edge> = valueCtorArg
+    public class GoDown<BorrowType, K, V, FoundType, GoDownType> internal constructor(valueCtorArg: Handle<NodeRef<BorrowType, K, V, GoDownType>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>) : SearchResult<BorrowType, K, V, FoundType, GoDownType>() {
+        public var value: Handle<NodeRef<BorrowType, K, V, GoDownType>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge> = valueCtorArg
             internal set
 
-        public operator fun component1(): Handle<NodeRef<BorrowType, K, V, GoDownType>, Edge> = this.value
+        public operator fun component1(): Handle<NodeRef<BorrowType, K, V, GoDownType>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge> = this.value
 
-        public fun copy(value: Handle<NodeRef<BorrowType, K, V, GoDownType>, Edge> = this.value): GoDown<BorrowType, K, V, FoundType, GoDownType> = GoDown<BorrowType, K, V, FoundType, GoDownType>(valueCtorArg = value)
+        public fun copy(value: Handle<NodeRef<BorrowType, K, V, GoDownType>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge> = this.value): GoDown<BorrowType, K, V, FoundType, GoDownType> = GoDown<BorrowType, K, V, FoundType, GoDownType>(valueCtorArg = value)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -99,7 +99,7 @@ public sealed class SearchResult<BorrowType, K, V, FoundType, GoDownType> {
 
         public companion object {
             public operator fun <BorrowType, K, V, FoundType, GoDownType> invoke(
-                value: Handle<NodeRef<BorrowType, K, V, GoDownType>, Edge>,
+                value: Handle<NodeRef<BorrowType, K, V, GoDownType>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>,
             ): GoDown<BorrowType, K, V, FoundType, GoDownType> = GoDown<BorrowType, K, V, FoundType, GoDownType>(
                 valueCtorArg = value,
             )
@@ -120,7 +120,7 @@ public sealed class IndexResult {
  * The result is meaningful only if the tree is ordered by key, like the tree
  * in a `BTreeMap` is.
  */
-public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.BorrowType, K, V, Q> NodeRef<BorrowType, K, V, LeafOrInternal>.searchTree(key: Q): SearchResult<BorrowType, K, V, LeafOrInternal, Leaf> where K : Borrow<Q> {
+public fun <BorrowType, K, V, Q> NodeRef<BorrowType, K, V, LeafOrInternal>.searchTree(key: Q): SearchResult<BorrowType, K, V, LeafOrInternal, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf> where K : Borrow<Q> {
     var selfMut = this
     while (true) {
         selfMut = when (val matchVal = selfMut.searchNode(key)) {
@@ -131,7 +131,7 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
             is GoDown<*, *, *, *, *> -> {
                 val (handle1) = matchVal
                 when (val matchVal1 = handle1.force()) {
-                    is io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf -> {
+                    is Leaf -> {
                         val (leaf) = matchVal1
                         return GoDown(leaf)
                     }
@@ -162,7 +162,7 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
  *
  * The result is meaningful only if the tree is ordered by key.
  */
-public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.BorrowType, K, V, Q, R> NodeRef<BorrowType, K, V, LeafOrInternal>.searchTreeForBifurcation(range: R, isSetValVFn: () -> V): Result<List<Any?>, Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>> where K : Borrow<Q>, R : RangeBounds<Q> {
+public fun <BorrowType, K, V, Q, R> NodeRef<BorrowType, K, V, LeafOrInternal>.searchTreeForBifurcation(range: R, isSetValVFn: () -> V): Result<List<Any?>, Handle<NodeRef<BorrowType, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>> where K : Borrow<Q>, R : RangeBounds<Q> {
     var selfMut = this
     // Determine if map or set is being searched
     val isSet = isSetValVFn()
@@ -199,15 +199,15 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
         val (lowerEdgeIdx, lowerChildBound) = selfMut.findLowerBoundIndex(lowerBound)
         val (upperEdgeIdx, upperChildBound) = selfMut.findUpperBoundIndex(upperBound, lowerEdgeIdx)
         if (lowerEdgeIdx < upperEdgeIdx) {
-            return Result.Ok<List<Any?>, Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>>(listOf(selfMut, lowerEdgeIdx, upperEdgeIdx, lowerChildBound, upperChildBound))
+            return Result.Ok<List<Any?>, Handle<NodeRef<BorrowType, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>>(listOf(selfMut, lowerEdgeIdx, upperEdgeIdx, lowerChildBound, upperChildBound))
         }
         check(lowerEdgeIdx == upperEdgeIdx)
         // ignore-tidy-undocumented-unchecked
         val commonEdge = Handle.newEdge(selfMut, lowerEdgeIdx)
         when (val matchVal1 = commonEdge.force()) {
-            is io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf -> {
+            is Leaf -> {
                 val (commonEdge1) = matchVal1
-                return Result.Err<List<Any?>, Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>>(commonEdge1)
+                return Result.Err<List<Any?>, Handle<NodeRef<BorrowType, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>>(commonEdge1)
             }
             is Internal -> {
                 val (commonEdge2) = matchVal1
@@ -226,7 +226,7 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
  *
  * The result is meaningful only if the tree is ordered by key.
  */
-public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.BorrowType, K, V, Q> NodeRef<BorrowType, K, V, LeafOrInternal>.findLowerBoundEdge(bound: SearchBound<Q>): Pair<Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, Edge>, SearchBound<Q>> where K : Borrow<Q> {
+public fun <BorrowType, K, V, Q> NodeRef<BorrowType, K, V, LeafOrInternal>.findLowerBoundEdge(bound: SearchBound<Q>): Pair<Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>, SearchBound<Q>> where K : Borrow<Q> {
     val (edgeIdx, bound1) = this.findLowerBoundIndex(bound)
     // ignore-tidy-undocumented-unchecked
     val edge = Handle.newEdge(this, edgeIdx)
@@ -236,7 +236,7 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
 /**
  * Clone of `findLowerBoundEdge` for the upper bound.
  */
-public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.BorrowType, K, V, Q> NodeRef<BorrowType, K, V, LeafOrInternal>.findUpperBoundEdge(bound: SearchBound<Q>): Pair<Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, Edge>, SearchBound<Q>> where K : Borrow<Q> {
+public fun <BorrowType, K, V, Q> NodeRef<BorrowType, K, V, LeafOrInternal>.findUpperBoundEdge(bound: SearchBound<Q>): Pair<Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>, SearchBound<Q>> where K : Borrow<Q> {
     // ignore-tidy-undocumented-unchecked
     val (edgeIdx, bound1) = this.findUpperBoundIndex(bound, 0)
     // ignore-tidy-undocumented-unchecked
@@ -309,7 +309,7 @@ public fun <BorrowType, K, V, Type, Q> NodeRef<BorrowType, K, V, Type>.findLower
             when (val matchVal = this.findKeyIndex(key, 0)) {
                 is IndexResult.KV -> {
                     val (idx) = matchVal
-                    Pair(idx, AllExcluded)
+                    Pair(idx, AllExcluded())
                 }
                 is IndexResult.Edge -> {
                     val (idx1) = matchVal
@@ -323,7 +323,7 @@ public fun <BorrowType, K, V, Type, Q> NodeRef<BorrowType, K, V, Type>.findLower
             when (val matchVal1 = this.findKeyIndex(key1, 0)) {
                 is IndexResult.KV -> {
                     val (idx2) = matchVal1
-                    Pair(idx2 + 1, AllIncluded)
+                    Pair(idx2 + 1, AllIncluded())
                 }
                 is IndexResult.Edge -> {
                     val (idx3) = matchVal1
@@ -331,8 +331,8 @@ public fun <BorrowType, K, V, Type, Q> NodeRef<BorrowType, K, V, Type>.findLower
                 }
             }
         }
-        AllIncluded -> Pair(0, AllIncluded)
-        AllExcluded -> Pair(this.len(), AllExcluded)
+        is AllIncluded<*> -> Pair(0, AllIncluded())
+        is AllExcluded<*> -> Pair(this.len(), AllExcluded())
     }
 
 /**
@@ -350,7 +350,7 @@ public fun <BorrowType, K, V, Type, Q> NodeRef<BorrowType, K, V, Type>.findUpper
             when (val matchVal = this.findKeyIndex(key, startIndex)) {
                 is IndexResult.KV -> {
                     val (idx) = matchVal
-                    Pair(idx + 1, AllExcluded)
+                    Pair(idx + 1, AllExcluded())
                 }
                 is IndexResult.Edge -> {
                     val (idx1) = matchVal
@@ -364,7 +364,7 @@ public fun <BorrowType, K, V, Type, Q> NodeRef<BorrowType, K, V, Type>.findUpper
             when (val matchVal1 = this.findKeyIndex(key1, startIndex)) {
                 is IndexResult.KV -> {
                     val (idx2) = matchVal1
-                    Pair(idx2, AllIncluded)
+                    Pair(idx2, AllIncluded())
                 }
                 is IndexResult.Edge -> {
                     val (idx3) = matchVal1
@@ -372,6 +372,6 @@ public fun <BorrowType, K, V, Type, Q> NodeRef<BorrowType, K, V, Type>.findUpper
                 }
             }
         }
-        AllIncluded -> Pair(this.len(), AllIncluded)
-        AllExcluded -> Pair(startIndex, AllExcluded)
+        is AllIncluded<*> -> Pair(this.len(), AllIncluded())
+        is AllExcluded<*> -> Pair(startIndex, AllExcluded())
     }

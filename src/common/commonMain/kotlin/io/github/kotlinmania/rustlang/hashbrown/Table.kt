@@ -9,8 +9,8 @@ import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
-import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Global
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
 import io.github.kotlinmania.rustlang.hashbrown.control.tag.Tag
 import io.github.kotlinmania.rustlang.hashbrown.raw.Bucket
 import io.github.kotlinmania.rustlang.hashbrown.raw.FullBucketsIndices
@@ -1109,12 +1109,12 @@ public open class HashTable<T, A> internal constructor(
      * val got = libraries.getDisjointMut(keys.map({ k1 -> hasher1(k1) }), { i, value -> keys[i] == value.first })
      * ```
      */
-    public open fun getDisjointMut(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int): List<T> = this.raw.getDisjointMut(hashes, eq)
+    public open fun getDisjointMut(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int = 0): List<T> = this.raw.getDisjointMut(hashes, eq)
 
     /**
      * Attempts to get mutable references to `N` values in the map at once.
      */
-    public open fun getManyMut(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int): List<T> = this.raw.getDisjointMut(hashes, eq)
+    public open fun getManyMut(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int = 0): List<T> = this.raw.getDisjointMut(hashes, eq)
 
     /**
      * Attempts to get mutable references to `N` values in the map at once, without validating that
@@ -1158,13 +1158,13 @@ public open class HashTable<T, A> internal constructor(
      * check(got1 == listOf(Pair("Athenæum", 1807), null))
      * ```
      */
-    public open fun getDisjointUncheckedMut(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int): List<T> = this.raw.getDisjointUncheckedMut(hashes, eq)
+    public open fun getDisjointUncheckedMut(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int = 0): List<T> = this.raw.getDisjointUncheckedMut(hashes, eq)
 
     /**
      * Attempts to get mutable references to `N` values in the map at once, without validating that
      * the values are unique.
      */
-    public open fun getManyUncheckedMut(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int): List<T> = this.raw.getDisjointUncheckedMut(hashes, eq)
+    public open fun getManyUncheckedMut(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int = 0): List<T> = this.raw.getDisjointUncheckedMut(hashes, eq)
 
     /**
      * Returns the total amount of memory allocated internally by the hash

@@ -20,6 +20,8 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.overflowingAdd
+import io.github.kotlinmania.rustlang.core.num.overflowingAddSigned
 import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -1657,7 +1659,7 @@ public fun MutPtr.isEmpty(): Boolean = this.len() == 0
  *
  * If `N` is not exactly equal to the length of `self`, then this method returns `None`.
  */
-public fun MutPtr.asMutArray(n: Int): MutPtr? =
+public fun MutPtr.asMutArray(n: Int = 0): MutPtr? =
     if (this.len() == n) {
         val me = mutPtrFromRustCast(this.asMutPtr())
         me
@@ -1885,7 +1887,7 @@ public fun <T> MutPtr.asUninitSliceMut(): MutableList<MaybeUninit<T>>? =
 /**
  * Casts from a pointer-to-`T` to a pointer-to-`[T; N]`.
  */
-public fun MutPtr.castArray(n: Int): MutPtr = MutPtr((this).rawAddress)
+public fun MutPtr.castArray(n: Int = 0): MutPtr = MutPtr((this).rawAddress)
 
 /**
  * Returns a raw pointer to the array's buffer.
@@ -1905,7 +1907,7 @@ public fun MutPtr.castArray(n: Int): MutPtr = MutPtr((this).rawAddress)
  * }
  * ```
  */
-public fun MutPtr.asMutPtr(n: Int): MutPtr = MutPtr(this.rawAddress, this.rawMeta)
+public fun MutPtr.asMutPtr(n: Int = 0): MutPtr = MutPtr(this.rawAddress, this.rawMeta)
 
 /**
  * Returns a raw pointer to a mutable slice containing the entire array.
@@ -1926,7 +1928,7 @@ public fun MutPtr.asMutPtr(n: Int): MutPtr = MutPtr(this.rawAddress, this.rawMet
  * }
  * ```
  */
-public fun MutPtr.asMutSlice(n: Int): MutPtr = this
+public fun MutPtr.asMutSlice(n: Int = 0): MutPtr = this
 
 /**
  * For thin pointers, equality is by address, as produced by the [`mut.T.addr`](pointer.addr) method.

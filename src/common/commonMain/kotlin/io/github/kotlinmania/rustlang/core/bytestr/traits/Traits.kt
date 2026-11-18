@@ -84,22 +84,22 @@ public fun String.eqByteStr(other: ByteStr): Boolean {
     return thisRef.eq(other.asBytes())
 }
 
-public fun ByteStr.eq(other: UByteArray, n: Int): Boolean {
+public fun ByteStr.eq(other: UByteArray, n: Int = 0): Boolean {
     val other1: List<UByte> = other.asRef()
     return this.asBytes().eq(other1)
 }
 
-public fun UByteArray.eqByteStrFromUByteArrayn(other: ByteStr, n: Int): Boolean {
+public fun UByteArray.eqByteStrFromUByteArrayn(other: ByteStr, n: Int = 0): Boolean {
     val thisRef: List<UByte> = this.asRef()
     return thisRef.eq(other.asBytes())
 }
 
-public fun ByteStr.eqUByteArrayn(other: UByteArray, n: Int): Boolean {
+public fun ByteStr.eqUByteArrayn(other: UByteArray, n: Int = 0): Boolean {
     val other1: List<UByte> = other.asRef()
     return this.asBytes().eq(other1)
 }
 
-public fun UByteArray.eq(other: ByteStr, n: Int): Boolean {
+public fun UByteArray.eq(other: ByteStr, n: Int = 0): Boolean {
     val thisRef: List<UByte> = this.asRef()
     return thisRef.eq(other.asBytes())
 }

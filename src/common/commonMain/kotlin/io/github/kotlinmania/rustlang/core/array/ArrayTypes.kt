@@ -13,7 +13,7 @@ public interface SpecNextChunk<T> : Iterator<T> {
     public fun next(): T?
 }
 
-public interface SpecNextChunkBack<T> {
+public interface SpecNextChunkBack<T> : Iterator<T> {
     public fun specNextChunkBack(): Result<List<T>, IntoIter<T>>
 
     public fun next(): T?

@@ -11,6 +11,10 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.num.overflowingAdd
+import io.github.kotlinmania.rustlang.core.num.overflowingMul
+import io.github.kotlinmania.rustlang.core.num.saturatingAdd
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.corearch.aarch64.neon.crc32cd
 import io.github.kotlinmania.rustlang.corearch.aarch64.neon.crc32d
@@ -35,6 +39,9 @@ import io.github.kotlinmania.rustlang.corearch.simd.U64x1
 import io.github.kotlinmania.rustlang.corearch.simd.U64x2
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 import io.github.kotlinmania.rustlang.corearch.simd.U8x8
+import kotlin.experimental.and
+import kotlin.experimental.or
+import kotlin.experimental.xor
 
 // ARMv7 NEON intrinsics
 

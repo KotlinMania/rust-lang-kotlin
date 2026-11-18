@@ -20,6 +20,7 @@ import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.adapters.peekable.Peekable
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.drop
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ops.arith.Sub
 import io.github.kotlinmania.rustlang.core.ops.bit.BitAnd
 import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
@@ -1823,7 +1824,7 @@ public fun <T, I : Iterable<T>> fromIteratorFromIterBTreeSetT(iter: I): BTreeSet
  * check(set1 == set2)
  * ```
  */
-public fun <T> fromBTreeSetT(arr: List<T>, n: Int): BTreeSet<T, Global> {
+public fun <T> fromBTreeSetT(arr: List<T>, n: Int = 0): BTreeSet<T, Global> {
     if (n == 0) {
         return BTreeSet.new()
     }

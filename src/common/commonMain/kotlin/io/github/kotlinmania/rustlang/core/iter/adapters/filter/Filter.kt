@@ -63,7 +63,7 @@ public open class Filter<I, P>(
 ) {
     public open fun clone(): Filter<I, P> = Filter(iter, predicate)
 
-    public open fun nextChunkDropless(n: Int): Result<List<Item>, IntoIter<Item>> {
+    public open fun nextChunkDropless(n: Int = 0): Result<List<Item>, IntoIter<Item>> {
         val array: List<MaybeUninit<Item>>  = List(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Item>()) }
         var initialized = 0
         val result =
@@ -140,9 +140,9 @@ public fun <Residual, T, Acc, R : Try<R, Acc, Residual>> filterTryFold(predicate
         acc
     } }
 
-public fun <I> Filter<I, P>.next(): Item? = this.iter.indexOf(this.predicate).takeIf { it >= 0 }
+public fun <Item, I : Iterator<Item>> Filter<I, P>.next(): Item? = this.iter.indexOf(this.predicate).takeIf { it >= 0 }
 
-public fun <I> Filter<I, P>.nextChunk(n: Int): Result<List<Item>, IntoIter<Item>> {
+public fun <Item, I : Iterator<Item>> Filter<I, P>.nextChunk(n: Int = 0): Result<List<Item>, IntoIter<Item>> {
     // avoid codegen for the dead branch
     val fn =
         if (needsDrop<Item>()) {
@@ -153,7 +153,7 @@ public fun <I> Filter<I, P>.nextChunk(n: Int): Result<List<Item>, IntoIter<Item>
     return fn(this)
 }
 
-public fun <I> Filter<I, P>.sizeHint(): Pair<Int, Int?> {
+public fun <Item, I : Iterator<Item>> Filter<I, P>.sizeHint(): Pair<Int, Int?> {
     val (_, upper) = this.iter.sizeHint()
     return Pair(0, upper)
     // can't know a lower bound, due to the predicate
@@ -170,7 +170,7 @@ public fun <I> Filter<I, P>.sizeHint(): Pair<Int, Int?> {
 //
 // Using the branchless version will also simplify the LLVM byte code, thus
 // leaving more budget for LLVM optimizations.
-public fun <I> Filter<I, P>.count(assumeCountLeUpperBoundIFn: (Any?, Any?) -> Unit): Int {
+public fun <Item, I : Iterator<Item>> Filter<I, P>.count(assumeCountLeUpperBoundIFn: (Any?, Any?) -> Unit): Int {
     fun <T> toUsize(predicate: (T) -> Boolean): (T) -> Int = { x -> predicate(x).toInt() }
     val before = this.iter.sizeHint().second.unwrapOr(Int.MAX_VALUE)
     val total = this.iter.map(toUsize(this.predicate)).sum()
@@ -181,15 +181,15 @@ public fun <I> Filter<I, P>.count(assumeCountLeUpperBoundIFn: (Any?, Any?) -> Un
     return total
 }
 
-public fun <Residual, I, Acc, R> Filter<I, P>.tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, filterTryFold(this.predicate, fold))
+public fun <Item, Residual, I : Iterator<Item>, Acc, R> Filter<I, P>.tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, filterTryFold(this.predicate, fold))
 
-public fun <I, Acc> Filter<I, P>.fold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.iter.fold(init, filterFold(this.predicate, fold))
+public fun <Item, I : Iterator<Item>, Acc> Filter<I, P>.fold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.iter.fold(init, filterFold(this.predicate, fold))
 
-public fun <I> Filter<I, P>.nextBack(): Item? = this.iter.rfind(this.predicate)
+public fun <Item, I : Iterator<Item>> Filter<I, P>.nextBack(): Item? = this.iter.rfind(this.predicate)
 
-public fun <Residual, I, Acc, R> Filter<I, P>.tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, filterTryFold(this.predicate, fold))
+public fun <Item, Residual, I : Iterator<Item>, Acc, R> Filter<I, P>.tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, filterTryFold(this.predicate, fold))
 
-public fun <I, Acc> Filter<I, P>.rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.iter.rfold(init, filterFold(this.predicate, fold))
+public fun <Item, I : Iterator<Item>, Acc> Filter<I, P>.rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.iter.rfold(init, filterFold(this.predicate, fold))
 
 public fun <Source, P, I> Filter<I, P>.asInner(): Source where I : SourceIter<Source> {
     // SAFETY: unchecked function forwarding to unchecked function with the same requirements
@@ -213,7 +213,7 @@ public interface SpecAssumeCount {
     public fun assumeCountLeUpperBound(count: Int, upper: Int)
 }
 
-public fun <I> specAssumeCountAssumeCountLeUpperBoundI(count: Int, upper: Int) {
+public fun <Item, I : Iterator<Item>> specAssumeCountAssumeCountLeUpperBoundI(count: Int, upper: Int) {
     // In the default we can't trust the `upper` for soundness
     // because it came from an untrusted `sizeHint`.
     // In debug mode we might as well check that the sizeHint wasn't too small

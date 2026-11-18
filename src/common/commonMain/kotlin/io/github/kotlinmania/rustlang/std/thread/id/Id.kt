@@ -1,6 +1,7 @@
 // port-lint: source thread/id.rs
 package io.github.kotlinmania.rustlang.std.thread.id
 
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU64Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result

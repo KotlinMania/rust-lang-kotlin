@@ -2259,7 +2259,7 @@ public fun <T> LinkedList<T, Global>.specExtend(other: LinkedList<T, Global>) {
  * check(list1 == list2)
  * ```
  */
-public fun <T> fromLinkedListT(arr: List<T>, n: Int): LinkedList<T, Global> = LinkedList.fromIter(arr)
+public fun <T> fromLinkedListT(arr: List<T>, n: Int = 0): LinkedList<T, Global> = LinkedList.fromIter(arr)
 
 // Ensure that `LinkedList` and its read-only iterators are covariant in their type parameters.
 public fun assertCovariance() {

@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.std.sys.pal.unix.weak.tests
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.weak.weak
 
 public class TestsInlineTests {
     @kotlin.test.Test

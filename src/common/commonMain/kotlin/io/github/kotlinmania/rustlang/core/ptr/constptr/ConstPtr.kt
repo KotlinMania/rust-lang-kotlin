@@ -17,6 +17,8 @@ import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.overflowingAdd
+import io.github.kotlinmania.rustlang.core.num.overflowingAddSigned
 import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -1384,7 +1386,7 @@ public fun ConstPtr.asPtr(): ConstPtr = ConstPtr(this.rawAddress, this.rawMeta)
  *
  * If `N` is not exactly equal to the length of `self`, then this method returns `None`.
  */
-public fun ConstPtr.asArray(n: Int): ConstPtr? =
+public fun ConstPtr.asArray(n: Int = 0): ConstPtr? =
     if (this.len() == n) {
         val me = constPtrFromRustCast(this.asPtr())
         me
@@ -1434,7 +1436,7 @@ public fun <T> ConstPtr.asUninitSlice(): List<MaybeUninit<T>>? =
 /**
  * Casts from a pointer-to-`T` to a pointer-to-`[T; N]`.
  */
-public fun ConstPtr.castArray(n: Int): ConstPtr = ConstPtr((this).rawAddress)
+public fun ConstPtr.castArray(n: Int = 0): ConstPtr = ConstPtr((this).rawAddress)
 
 /**
  * Returns a raw pointer to the array's buffer.
@@ -1454,7 +1456,7 @@ public fun ConstPtr.castArray(n: Int): ConstPtr = ConstPtr((this).rawAddress)
  * }
  * ```
  */
-public fun ConstPtr.asPtr(n: Int): ConstPtr = ConstPtr(this.rawAddress, this.rawMeta)
+public fun ConstPtr.asPtr(n: Int = 0): ConstPtr = ConstPtr(this.rawAddress, this.rawMeta)
 
 /**
  * Returns a raw pointer to a slice containing the entire array.
@@ -1473,7 +1475,7 @@ public fun ConstPtr.asPtr(n: Int): ConstPtr = ConstPtr(this.rawAddress, this.raw
  * }
  * ```
  */
-public fun ConstPtr.asSlice(n: Int): ConstPtr = this
+public fun ConstPtr.asSlice(n: Int = 0): ConstPtr = this
 
 /**
  * For thin pointers, equality is by address, as produced by the [`const.T.addr`](pointer.addr) method.

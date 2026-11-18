@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.libm.math.support.modular
 
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.num.isMultipleOf
 import io.github.kotlinmania.rustlang.core.num.pow
 
 // This module provides accelerated modular multiplication by large powers

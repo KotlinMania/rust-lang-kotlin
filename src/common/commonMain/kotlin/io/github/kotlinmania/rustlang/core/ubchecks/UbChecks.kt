@@ -1,6 +1,7 @@
 // port-lint: source ub_checks.rs
 package io.github.kotlinmania.rustlang.core.ubchecks
 
+import io.github.kotlinmania.rustlang.core.num.absDiff
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.panicking.panicNounwind
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr

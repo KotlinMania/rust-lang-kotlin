@@ -21,7 +21,7 @@ public sealed class MaybeDone<F : io.github.kotlinmania.rustlang.core.future.fut
 
     public open fun takeOutput(): Output? =
         when (this) {
-            is MaybeDone.Done<*, *> -> when (val matchVal = replace(this, MaybeDone.Taken)) {
+            is MaybeDone.Done<*, *> -> when (val matchVal = replace(this, MaybeDone.Taken())) {
                 is MaybeDone.Done<*, *> -> {
                     val (value) = matchVal
                     value
@@ -40,7 +40,7 @@ public sealed class MaybeDone<F : io.github.kotlinmania.rustlang.core.future.fut
                 this.set(MaybeDone.Done(value))
             }
             is MaybeDone.Done<*, *> -> {}
-            MaybeDone.Taken -> error("unreachable")
+            is MaybeDone.Taken<*, *> -> error("unreachable")
         }
         return Poll.Ready(Unit)
     }

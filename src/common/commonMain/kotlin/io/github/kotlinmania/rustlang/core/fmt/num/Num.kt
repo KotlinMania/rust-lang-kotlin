@@ -13,6 +13,8 @@ import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.num.carryingMul
+import io.github.kotlinmania.rustlang.core.num.castUnsigned
 import io.github.kotlinmania.rustlang.core.num.checkedPow
 import io.github.kotlinmania.rustlang.core.num.imp.fmt.Formatted
 import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
@@ -22,6 +24,7 @@ import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import kotlin.experimental.and
 
 // Integer and floating-point number formatting
 //
@@ -290,7 +293,7 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
                                     val rightVal = matchVal1.second
                                     if (!(leftVal == rightVal)) {
                                         val kind = AssertKind.Eq
-                                        assertFailed(kind, leftVal, rightVal, Option.None)
+                                        assertFailed(kind, leftVal, rightVal, Option.None())
                                     }
                                 }
                             }

@@ -20,6 +20,7 @@ import io.github.kotlinmania.rustlang.libc.unix.bsd.OffT
 import io.github.kotlinmania.rustlang.libc.unix.bsd.PthreadT
 import io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64.aarch64.BooleanT
+import kotlin.experimental.or
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 @kotlin.wasm.WasmImport("kmcore", "libcUnixBsdAppleGetMACHTASKSELF")

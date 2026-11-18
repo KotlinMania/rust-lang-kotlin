@@ -32,7 +32,9 @@ import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.num.absDiff
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.uncheckedSub
 import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -2881,7 +2883,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
     public open fun partitionPoint(pred: (T) -> Boolean): Int {
         val (front, back) = this.asSlices()
         return when (val matchVal = back.first()?.let(pred)) {
-            is Some -> {
+            is Some<*> -> {
                 back.partitionPoint(pred) + front.len()
             }
             else -> {
@@ -3360,7 +3362,7 @@ public fun <T, U, A : Allocator> VecDeque<T, A>.eq(other: MutableList<U>): Boole
     return sa == oa && sb == ob
 }
 
-public fun <T, U, A : Allocator> VecDeque<T, A>.eq(other: List<U>, n: Int): Boolean {
+public fun <T, U, A : Allocator> VecDeque<T, A>.eq(other: List<U>, n: Int = 0): Boolean {
     if (this.len() != other.size) {
         return false
     }
@@ -3369,7 +3371,7 @@ public fun <T, U, A : Allocator> VecDeque<T, A>.eq(other: List<U>, n: Int): Bool
     return sa == oa && sb == ob
 }
 
-public fun <T, U, A : Allocator> VecDeque<T, A>.eqUArrayn(other: List<U>, n: Int): Boolean {
+public fun <T, U, A : Allocator> VecDeque<T, A>.eqUArrayn(other: List<U>, n: Int = 0): Boolean {
     if (this.len() != other.size) {
         return false
     }
@@ -3389,7 +3391,7 @@ public fun <T, I : Iterable<T>> fromIteratorFromIterVecDequeT(iter: I): VecDeque
  * check(deq1 == deq2)
  * ```
  */
-public fun <T> fromVecDequeT(arr: List<T>, n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): VecDeque<T, Global> {
+public fun <T> fromVecDequeT(arr: List<T>, n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): VecDeque<T, Global> {
     val deq = VecDeque.withCapacity(n)
     val arr1 = arr
     if (!((typeLayoutT).sizeBytes == 0L)) {

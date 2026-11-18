@@ -96,28 +96,28 @@ public interface SimdConstPtr<SelfType, Usize, Isize, out CastPtr, out MutPtr, o
     public fun wrappingSub(count: Usize): SelfType
 }
 
-public fun Simd<ConstPtr>.isNull(n: Int): Mask<Int> = Simd.splat(ConstPtr(0L), n).simdEq(this)
+public fun Simd<ConstPtr>.isNull(n: Int = 0): Mask<Int> = Simd.splat(ConstPtr(0L), n).simdEq(this)
 
-public fun Simd<ConstPtr>.cast(n: Int): Simd<ConstPtr> {
+public fun Simd<ConstPtr>.cast(n: Int = 0): Simd<ConstPtr> {
     check(sizeOf<Metadata>(typeLayoutT = UnresolvedTypeLayout<Metadata>()) == 0)
     check(sizeOf<Metadata>(typeLayoutT = UnresolvedTypeLayout<Metadata>()) == 0)
     // Safety: pointers can be cast
     return run { val simdArg0 = this; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<ConstPtr>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<ConstPtr>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<ConstPtr>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<ConstPtr>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<ConstPtr>>()).alignBytes)); res } }
 }
 
-public fun Simd<ConstPtr>.castMut(n: Int): Simd<MutPtr> {
+public fun Simd<ConstPtr>.castMut(n: Int = 0): Simd<MutPtr> {
     // Safety: pointers can be cast
     return run { val simdArg0 = this; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<MutPtr>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<MutPtr>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<MutPtr>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<MutPtr>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<MutPtr>>()).alignBytes)); res } }
 }
 
-public fun Simd<ConstPtr>.addr(n: Int): Simd<Int> {
+public fun Simd<ConstPtr>.addr(n: Int = 0): Simd<Int> {
     // Note(strictProvenanceMagic): I am magic and should be a compiler intrinsic.
     // SAFETY: Pointer-to-integer transmutes are valid (if you are okay with losing the
     // provenance).
     return transmuteCopy(this)
 }
 
-public fun Simd<ConstPtr>.withAddr(addr: Simd<Int>, n: Int): Simd<ConstPtr> {
+public fun Simd<ConstPtr>.withAddr(addr: Simd<Int>, n: Int = 0): Simd<ConstPtr> {
     // Note(strictProvenanceMagic): I am magic and should be a compiler intrinsic.
     //
     // In the mean-time, this operation is defined to be "as if" it was
@@ -126,16 +126,16 @@ public fun Simd<ConstPtr>.withAddr(addr: Simd<Int>, n: Int): Simd<ConstPtr> {
     return this.cast<UByte>(n).wrappingOffset(addr.cast<Int>(n) - this.addr(n).cast<Int>(n), n).cast(n)
 }
 
-public fun Simd<ConstPtr>.exposeProvenance(n: Int): Simd<Int> {
+public fun Simd<ConstPtr>.exposeProvenance(n: Int = 0): Simd<Int> {
     // Safety: `self` is a pointer vector
     return run { val simdArg0 = this; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Int>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Int>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Int>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Int>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Int>>()).alignBytes)); res } }
 }
 
-public fun Simd<ConstPtr>.wrappingOffset(count: Simd<Int>, n: Int): Simd<ConstPtr> {
+public fun Simd<ConstPtr>.wrappingOffset(count: Simd<Int>, n: Int = 0): Simd<ConstPtr> {
     // Safety: simdArithOffset takes a vector of pointers and a vector of offsets
     return run { val simdArg0 = this; val simdArg1 = count; simdArg0 }
 }
 
-public fun Simd<ConstPtr>.wrappingAdd(count: Simd<Int>, n: Int): Simd<ConstPtr> = this.wrappingOffset(count.cast(n), n)
+public fun Simd<ConstPtr>.wrappingAdd(count: Simd<Int>, n: Int = 0): Simd<ConstPtr> = this.wrappingOffset(count.cast(n), n)
 
-public fun Simd<ConstPtr>.wrappingSub(count: Simd<Int>, n: Int): Simd<ConstPtr> = this.wrappingOffset(-count.cast<Int>(n), n)
+public fun Simd<ConstPtr>.wrappingSub(count: Simd<Int>, n: Int = 0): Simd<ConstPtr> = this.wrappingOffset(-count.cast<Int>(n), n)

@@ -23,10 +23,12 @@ public open class PrefixParser(
     public var path: OsStr,
     public var prefix: UByteArray,
 ) {
+    public val len: Int = 0
+
     public open fun asSlice(): PrefixParserSlice = PrefixParserSlice(path = this.path, prefix = ((this.prefix).sliceArray(0 until LEN.min(this.path.len()))), index = 0)
 
     public companion object {
-        public fun getPrefix(path: OsStr, len: Int): UByteArray {
+        public fun getPrefix(path: OsStr, len: Int = 0): UByteArray {
             val prefix = MutableList(len) { 0 }
             // SAFETY: Only ASCII characters are modified.
             for ((i, ch) in path.asEncodedBytes().iter().take(len).mapIndexed { index, item -> Pair(index, item) }) {

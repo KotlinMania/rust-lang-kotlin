@@ -25,6 +25,7 @@ import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.zeroed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
@@ -176,6 +177,9 @@ import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.time.unix.SystemTime
 import io.github.kotlinmania.rustlang.std.sys.time.unix.UNIX_EPOCH
 import io.github.kotlinmania.rustlang.std.sys.weak.syscall
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 import io.github.kotlinmania.rustlang.libc.fstat as fstat64
 import io.github.kotlinmania.rustlang.libc.ftruncate as ftruncate64

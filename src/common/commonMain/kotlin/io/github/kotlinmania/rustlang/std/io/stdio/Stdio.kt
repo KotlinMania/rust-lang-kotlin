@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.alloc.io.util.Lines
 import io.github.kotlinmania.rustlang.alloc.io.util.SpecReadByte
 import io.github.kotlinmania.rustlang.alloc.io.util.lines
 import io.github.kotlinmania.rustlang.core.cell.RefCell
+import io.github.kotlinmania.rustlang.core.fmt.Arguments
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
